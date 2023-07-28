@@ -22,7 +22,6 @@ from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure import casa_tools
 
 
-
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -69,6 +68,7 @@ def fetch_scan_times(vislist, targets):
     n_spws = np.array([])
     min_spws = np.array([])
     spwslist = np.array([])
+    spws_set = np.array([])
     scansdict = {}
     for vis in vislist:
         scantimesdict[vis] = {}
@@ -84,6 +84,10 @@ def fetch_scan_times(vislist, targets):
             integrations = np.array([])
             for scan in scansdict[vis][target]:
                 spws = msmd.spwsforscan(scan)
+                if spws_set.size == 0:
+                    spws_set = spws.copy()
+                else:
+                    spws_set = np.vstack((spws_set, spws))
                 n_spws = np.append(len(spws), n_spws)
                 min_spws = np.append(np.min(spws), min_spws)
                 spwslist = np.append(spws, spwslist)
@@ -101,11 +105,12 @@ def fetch_scan_times(vislist, targets):
             integrationsdict[vis][target] = integrations.copy()
         msmd.close()
     if np.mean(n_spws) != np.max(n_spws):
-        LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data)')
+        LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
     if np.max(min_spws) != np.min(min_spws):
-        LOG.info('WARNING, INCONSISTENT MINIMUM SPW IN SCANS/MSes (Possibly expected if Multi-band VLA data)')
+        LOG.info('WARNING, INCONSISTENT MINIMUM SPW IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
     spwslist = np.unique(spwslist).astype(int)
-    return scantimesdict, integrationsdict, integrationtimesdict, integrationtimes, np.max(n_spws), np.min(min_spws), spwslist
+    spws_set = np.unique(spws_set, axis=0)
+    return scantimesdict, integrationsdict, integrationtimesdict, integrationtimes, np.max(n_spws), np.min(min_spws), spwslist, spws_set
 
 
 def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
@@ -171,9 +176,9 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
         msmd.close()
     if len(n_spws) > 0:
         if np.mean(n_spws) != np.max(n_spws):
-            LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data)')
+            LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
         if np.max(min_spws) != np.min(min_spws):
-            LOG.info('WARNING, INCONSISTENT MINIMUM SPW IN SCANS/MSes (Possibly expected if Multi-band VLA data)')
+            LOG.info('WARNING, INCONSISTENT MINIMUM SPW IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
         spwslist = np.unique(spwslist).astype(int)
     else:
         return scantimesdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, integrationtimes, -99, -99, spwslist, mosaic_field
@@ -202,9 +207,9 @@ def fetch_spws(vislist, targets):
         msmd.close()
     if len(n_spws) > 1:
         if np.mean(n_spws) != np.max(n_spws):
-            LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data)')
+            LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
         if np.max(min_spws) != np.min(min_spws):
-            LOG.info('WARNING, INCONSISTENT MINIMUM SPW IN SCANS/MSes (Possibly expected if Multi-band VLA data)')
+            LOG.info('WARNING, INCONSISTENT MINIMUM SPW IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
     spwslist = np.unique(spwslist).astype(int)
     if len(n_spws) == 1:
         return n_spws, min_spws, spwslist
@@ -1236,17 +1241,24 @@ def gaussian_norm(x, mean, sigma):
 
 
 def importdata(vislist, all_targets, telescope):
-
-    scantimesdict, integrationsdict, integrationtimesdict, integrationtimes, n_spws, minspw, spwsarray = fetch_scan_times(
+    spectral_scan = False
+    scantimesdict, integrationsdict, integrationtimesdict, integrationtimes, n_spws, minspw, spwsarray, spws_set = fetch_scan_times(
         vislist, all_targets)
     spwslist = spwsarray.tolist()
     spwstring = ','.join(str(spw) for spw in spwslist)
+
+    if spws_set.ndim > 1:
+        nspws_sets = spws_set.shape[0]
+    else:
+        nspws_sets = 1
 
     if 'VLA' in telescope:
         bands, band_properties = get_VLA_bands(vislist, all_targets)
 
     if telescope == 'ALMA' or telescope == 'ACA':
         bands, band_properties = get_ALMA_bands(vislist, spwstring, spwsarray)
+        if nspws_sets > 1 and spws_set.ndim > 1:
+            spectral_scan = True
 
     scantimesdict = {}
     scanstartsdict = {}
@@ -1288,7 +1300,8 @@ def importdata(vislist, all_targets, telescope):
         for delband in bands_to_remove:
             bands.remove(delband)
 
-    return bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, integrationtimesdict, spwslist, spwsarray, mosaic_field_dict
+    return bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, integrationtimesdict, \
+        spwslist, spwsarray, mosaic_field_dict, spectral_scan, spws_set
 
 
 def get_flagged_solns_per_spw(spwlist, gaintable):
@@ -1312,7 +1325,7 @@ def get_flagged_solns_per_spw(spwlist, gaintable):
     return nflags, nunflagged, fracflagged
 
 
-def analyze_inf_EB_flagging(selfcal_library, band, spwlist, gaintable, vis, target, spw_combine_test_gaintable):
+def analyze_inf_EB_flagging(selfcal_library, band, spwlist, gaintable, vis, target, spw_combine_test_gaintable, spectral_scan):
     # if more than two antennas are fully flagged relative to the combinespw results, fallback to combinespw
     max_flagged_ants_combspw = 2.0
     # if only a single (or few) spw(s) has flagging, allow at most this number of antennas to be flagged before mapping
@@ -1323,7 +1336,7 @@ def analyze_inf_EB_flagging(selfcal_library, band, spwlist, gaintable, vis, targ
     spwmap = [False]*len(spwlist)
     nflags, nunflagged, fracflagged = get_flagged_solns_per_spw(spwlist, gaintable)
     nflags_spwcomb, nunflagged_spwcomb, fracflagged_spwcomb = get_flagged_solns_per_spw(
-        spwlist[0], spw_combine_test_gaintable)
+        [spwlist[0]], spw_combine_test_gaintable)
     eff_bws = np.zeros(len(spwlist))
     total_bws = np.zeros(len(spwlist))
     keylist = list(selfcal_library[target][band]['per_spw_stats'].keys())
@@ -1380,5 +1393,7 @@ def analyze_inf_EB_flagging(selfcal_library, band, spwlist, gaintable, vis, targ
             LOG.info(f'{i} {spwlist[i]} {spwmap[i]}')
             if spwmap[i]:
                 applycal_spwmap[int(spwlist[i])] = int(spwlist[map_index])
-
+        # always fallback to combinespw for spectral scans
+        if fallback != '' and spectral_scan:
+            fallback = 'combinespw'
     return fallback, map_index, spwmap, applycal_spwmap
