@@ -1,4 +1,5 @@
 """Display module for skycal task."""
+import collections
 import glob
 import os
 import matplotlib.pyplot as plt
@@ -15,15 +16,16 @@ from ..common import display as sd_display
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Union, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Union, Tuple
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
-    from pipeline.domain import Field, MeasurementSet
+    from pipeline.domain import Field, MeasurementSet, Scan
     from pipeline.hsd.tasks.skycal.skycal import SDSkyCalResults
     from pipeline.infrastructure.callibrary import CalApplication
     from pipeline.infrastructure.launcher import Context
     from pipeline.infrastructure.jobrequest import JobRequest
+
 
 LOG = logging.get_logger(__name__)
 
@@ -237,11 +239,33 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         kwargs_org = self._kwargs.copy()
         try:
             ms = self.context.observing_run.get_ms(self._vis)
-            scans = ms.get_scans(scan_intent='REFERENCE', spw=spw_arg)
-            scan = sorted(scans, key=lambda s: s.id)[0]
-            self._kwargs['scans'] = scan.id
-            # half the scan duration seems to work
-            self._kwargs['solutionTimeThresholdSeconds'] = scan.exposure_time(spw_arg).seconds / 2
+            def __get_sorted_reference_scans(msobj: 'MeasurementSet',
+                                             spw: Optional[Union[int, str,
+                                                                 collections.Sequence]] = None) -> List['Scan']:
+                """
+                Return a list of REFERENCE Scan objects sorted by scan IDs.
+                Args:
+                    msobj: MeasuremetSet object
+                    spw: Spw selection
+                Returns: a list of REFERENCE scan objects sorted by scan ID.
+                """
+                scans = msobj.get_scans(scan_intent='REFERENCE', spw=spw)
+                return sorted(scans, key=lambda s: s.id)
+
+            # The timeTimeThresholdSeconds should be equal to or smaller than
+            # the time gap between the previous reference scan and a selected scan.
+            myqa = casa_tools.quanta
+            scans_all = __get_sorted_reference_scans(ms)
+            # The first scan of the selected spw
+            scan_spw = __get_sorted_reference_scans(ms, spw=spw_arg)[0]
+            idx_scan_spw = [s.id for s in scans_all].index(scan_spw.id)
+            if idx_scan_spw > 0:
+                start_time_scan_spw = myqa.convert(scan_spw.start_time['m0'], 's')['value']
+                end_time_previous_scan = myqa.convert(scans_all[idx_scan_spw - 1].end_time['m0'], 's')['value']
+                self._kwargs['solutionTimeThresholdSeconds'] = start_time_scan_spw - end_time_previous_scan
+            else: # I don't think this should happen but defining a reasonable value to avoid failure.
+                self._kwargs['solutionTimeThresholdSeconds'] = scan_spw.exposure_time(spw_arg).seconds / 2
+            self._kwargs['scans'] = scan_spw.id
             task = super().create_task(spw_arg, antenna_arg, showimage)
         finally:
             self._kwargs = kwargs_org
