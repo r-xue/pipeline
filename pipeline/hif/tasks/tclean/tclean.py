@@ -1167,7 +1167,7 @@ class Tclean(cleanbase.CleanBase):
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma, inputs.hm_masking)
             savemodel = self.image_heuristics.savemodel(iteration)
             niter = self.image_heuristics.niter_by_iteration(iteration, inputs.hm_masking, seq_result.niter)
-            if inputs.cyclefactor:
+            if inputs.cyclefactor not in (None, -999):
                 cyclefactor = inputs.cyclefactor
             else:
                 cyclefactor = self.image_heuristics.cyclefactor(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
@@ -1285,6 +1285,9 @@ class Tclean(cleanbase.CleanBase):
         else:
             imagename = inputs.imagename
 
+        # Fallback for cases that do not set cyclefactor explicitly like
+        # for PIPE-1782. Alternatively, one would have to pass cyclefactor
+        # for all _do_clean calls.
         if cyclefactor is None:
             cyclefactor = inputs.cyclefactor
 
