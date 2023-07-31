@@ -40,7 +40,7 @@ FrequencySpec = collections.namedtuple('FrequencySpec', ['unit', 'data'])
 DirectionSpec = collections.namedtuple('DirectionSpec', ['ref', 'minra', 'maxra', 'mindec', 'maxdec', 'resolution'])
 
 
-def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', inverted: bool) -> 'sdtyping.NpArray2D':
+def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', is_frequency_channel_inverted: bool) -> 'sdtyping.NpArray2D':
     """Find the emission free channels roughly for estimating RMS.
 
     Slice the cube image into n_slices frequeucy-wise (or AXIS3 wise), and return the slice
@@ -50,7 +50,7 @@ def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', inverted: bool) -
     Args:
         naxis3 : a number of pixels along spectral axis
         cube_regrid : data chunk loaded from image cube
-        inverted : flag of channel-inverted image cube
+        is_frequency_channel_inverted : True if frequency channels are in inverted  order. False if not.
 
     Returns:
         RMS map of the part of the cube.
@@ -58,7 +58,7 @@ def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', inverted: bool) -
     n_edge = 2
     n_remaining = n_slices - n_edge * 2
 
-    sliced_rms_maps = [__slice_and_calc_RMS_of_cube_regrid(naxis3, cube_regrid, x, inverted)
+    sliced_rms_maps = [__slice_and_calc_RMS_of_cube_regrid(naxis3, cube_regrid, x, is_frequency_channel_inverted)
                        for x in range(n_edge, n_slices - n_edge)]
     rms_check = np.array([np.nanmean(sliced_rms_maps[x]) for x in range(n_remaining)])
     rms_map = sliced_rms_maps[np.argmin(rms_check)]
@@ -67,19 +67,19 @@ def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', inverted: bool) -
 
 
 def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', pos: int,
-                                        inverted: bool) -> 'sdtyping.NpArray2D':
+                                        is_frequency_channel_inverted: bool) -> 'sdtyping.NpArray2D':
     """Get one chunk from n_slices chunks of cube_regrid, and calculate RMS of it.
 
     Args:
         naxis3 : a number of pixels along spectral axis
         cube_regrid : data chunk loaded from image cube
         pos : position to slice
-        inverted (bool): flag of frequency-inverted image cube
+        is_frequency_channel_inverted : True if frequency channels are in inverted order. False if not.
 
     Returns:
         RMS array of a part of the cube.
     """
-    if inverted:
+    if is_frequency_channel_inverted:
         start_rms_ch, end_rms_ch = ceil(naxis3 * pos / n_slices), ceil(naxis3 * (pos + 1) / n_slices)
     else:
         start_rms_ch, end_rms_ch = int(naxis3 * pos / n_slices), int(naxis3 * (pos + 1) / n_slices)
@@ -108,8 +108,8 @@ def make_figures(peak_sn: 'sdtyping.NpArray2D', mask_map: 'sdtyping.NpArray2D',
         naxis3 : a number of pixels along spectral axis
         peak_sn_threshold : peak SN threshold
         spectrum_at_peak : list of spectrum at peak
-        idy : index y
-        idx : index x
+        idy : y-axis index of pixel (spacial direction)
+        idx : x-axis index of pixel (spacial direction)
         output_name : output file name
         fspec : FrequensySpec(NamedTuple). Defaults to None.
         dspec : DirectionSpec(NamedTuple). Defaults to None.
@@ -207,7 +207,7 @@ def make_figures(peak_sn: 'sdtyping.NpArray2D', mask_map: 'sdtyping.NpArray2D',
 
 
 def warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D', imageitem: 'ImageItem'=None):
-    """Warn if deep absouption feature.
+    """Warn if strong absorption feature is found.
 
     Args:
         masked_average_spectrum: Array of masked average spectrum.
@@ -250,13 +250,13 @@ def read_fits(input: str) -> Tuple['sdtyping.NpArray3D', int, int, int, float, f
     return cube_regrid, naxis1, naxis2, naxis3, cdelt2, cdelt3
 
 
-def detect_contamination(context: 'Context', imageitem: 'ImageItem', inverted: Optional[bool]=False):
+def detect_contamination(context: 'Context', imageitem: 'ImageItem', is_frequency_channel_inverted: Optional[bool]=False):
     """Detect contamination. The main routine of the module.
 
     Args:
         context : object of Pipeline Context
         imageitem : object of ImageItem
-        inverted : flag of channel-inverted image. Defaults to False.
+        is_frequency_channel_inverted : True if frequency channels are in inverted order. False if not.
     """
     imagename = imageitem.imagename
     LOG.info("=================")
@@ -283,7 +283,7 @@ def detect_contamination(context: 'Context', imageitem: 'ImageItem', inverted: O
                           resolution=grid_size)
 
     # Making rms 　& Peak SN maps
-    rms_map = decide_rms(naxis3, cube_regrid, inverted)
+    rms_map = decide_rms(naxis3, cube_regrid, is_frequency_channel_inverted)
     peak_sn = (np.nanmax(cube_regrid, axis=0)) / rms_map
     idy, idx = np.unravel_index(np.nanargmax(peak_sn), peak_sn.shape)
     LOG.debug(f'idx {idx}, idy {idy}')

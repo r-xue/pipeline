@@ -769,7 +769,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return self.__plot_channel_map()
 
-    def __valid_lines(self, is_inverted_image: bool) -> List[List[int]]:
+    def __valid_lines(self, is_freq_chan_inverted_image: bool) -> List[List[int]]:
         """Return list of chnnel ranges of valid spectral lines."""
         group_desc = self.inputs.reduction_group
         ant_index = self.inputs.antennaid_list
@@ -793,7 +793,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 for ll in copy.deepcopy(g.channelmap_range):
                     if ll not in line_list and ll[2] is True:
                         line_list.append(ll)
-        if is_inverted_image:
+        if is_freq_chan_inverted_image:
             _right_edge = float(self.nchan - 1)
             for ll in line_list:
                 ll[0] = _right_edge - ll[0]
@@ -871,13 +871,13 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        is_inverted_image = False
+        is_freq_chan_inverted_image = False
         if isinstance(self.inputs.result, SDImagingResultItem):
-            is_inverted_image = self.inputs.result.freq_axis_reversed
+            is_freq_chan_inverted_image = self.inputs.result.frequency_channel_inverted
 
         # retrieve line list from reduction group
         # key is antenna and spw id
-        line_list = self.__valid_lines(is_inverted_image)
+        line_list = self.__valid_lines(is_freq_chan_inverted_image)
 
         # 2010/6/9 in the case of non-detection of the lines
         if len(line_list) == 0:
@@ -930,7 +930,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         # If the frequency axis of the image cube was inverted and has been corrected to the right direction,
         # indice of frequency and velocity must have an offset to get a center value of them.
-        if is_inverted_image:
+        if is_freq_chan_inverted_image:
             _offset = 0.5
             _left_edge = self.edge[1]
         else:
@@ -951,7 +951,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             # when the real numeric cut-edge is 0.5 then the calculation of index 1-0.5 is to be neary 0.5 and not 0.5.
             # So, the cut-edge which has 0.5 + offset 0.5 like int(19.5 + 0.5) must be 19, not 20.
             _cut_edge_offset = 0
-            if is_inverted_image and _line_center_shifted - int(_line_center_shifted) == 0.5:
+            if is_freq_chan_inverted_image and _line_center_shifted - int(_line_center_shifted) == 0.5:
                 _cut_edge_offset = 1
 
             # shift channel according to the edge parameter
@@ -959,7 +959,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             if float(idx_line_center) == _line_center_shifted:
                 velocity_line_center = self.velocity[idx_line_center]
             else:
-                if is_inverted_image:
+                if is_freq_chan_inverted_image:
                     velocity_line_center = 0.5 * (self.velocity[idx_line_center + 1] +
                                                   self.velocity[idx_line_center])
                 else:

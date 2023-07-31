@@ -365,11 +365,11 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             image_item.antenna = ant_name  # name #(group name)
             outcome = {}
             outcome['image'] = image_item
-            freq_axis_reversed = not self.inputs.is_freq_axis_ascending
+            is_frequency_channel_inverted = not self.inputs.is_freq_axis_ascending
             result = resultobjects.SDImagingResultItem(task=None,
                                                        success=True,
                                                        outcome=outcome,
-                                                       freq_axis_reversed=freq_axis_reversed)
+                                                       frequency_channel_inverted=is_frequency_channel_inverted)
         else:
             # Imaging failed due to missing valid data
             result = resultobjects.SDImagingResultItem(task=None,
