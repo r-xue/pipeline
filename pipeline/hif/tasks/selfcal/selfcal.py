@@ -628,7 +628,7 @@ class Selfcal(basetask.StandardTaskTemplate):
 
                         task_args = {'vis': vis, 'outputvis': outputvis, 'field': field, 'spw': real_spwsel, 'uvrange': uvrange,
                                      'chanaverage': True, 'chanbin': chanbin, 'usewtspectrum': True,
-                                     'datacolumn': 'data', 'reindex': False, 'keepflags': False}
+                                     'datacolumn': 'data', 'reindex': False, 'keepflags': True}
                         outputvis_list.append((vis, outputvis))
 
                         tq.add_jobrequest(casa_tasks.mstransform, task_args, executor=self._executor)
