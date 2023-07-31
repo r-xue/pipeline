@@ -315,8 +315,10 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
         self.ny = ny
         self.org_direction = org_direction
 
-        _ref_spwobj = context.observing_run.get_ms(infiles[0]).spectral_windows[spwids[0]]
-        self.is_freq_axis_ascending = _ref_spwobj.channels.chan_freqs.delta > 0
+    @property
+    def is_freq_axis_ascending(self) -> bool:
+        _ref_spwobj = self.context.observing_run.get_ms(self.infiles[0]).spectral_windows[self.spwids[0]]
+        return _ref_spwobj.channels.chan_freqs.delta > 0
 
 
 class SDImagingWorker(basetask.StandardTaskTemplate):
