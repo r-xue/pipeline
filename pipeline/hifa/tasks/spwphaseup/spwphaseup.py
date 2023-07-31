@@ -21,7 +21,7 @@ from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
 from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from pipeline.hifa.heuristics.phasemetrics import SSFheuristics
+from pipeline.hifa.heuristics.phasemetrics import PhaseStabilityHeuristics
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -747,7 +747,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
             # Initialize the phase RMS structure function assessment
             inputs = copy.deepcopy(self.inputs)
-            phase_rms = SSFheuristics(inputs, outlier_limit=180.0, flag_tolerance=0.3, max_poor_ant=11)
+            phase_rms = PhaseStabilityHeuristics(inputs, outlier_limit=180.0, flag_tolerance=0.3, max_poor_ant=11)
 
             # Do the analysis
             phaserms_results, phaserms_cycletime, phaserms_totaltime, phaserms_antout = phase_rms.analysis()

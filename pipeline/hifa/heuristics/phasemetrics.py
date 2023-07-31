@@ -22,7 +22,7 @@ LOG = infrastructure.get_logger(__name__)
 ##################
 
 
-class SSFheuristics(object):
+class PhaseStabilityHeuristics(object):
     def __init__(self, inputsin, outlier_limit, flag_tolerance, max_poor_ant):
         self.vis = inputsin.ms.basename
         self.outlierlimit = outlier_limit

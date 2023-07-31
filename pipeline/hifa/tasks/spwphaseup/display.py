@@ -13,7 +13,7 @@ LOG = infrastructure.get_logger(__name__)
 class SpatialStructureFunctionChart(object):
     """ 
     Creates a spatial structure function plot from the results 
-    from SSFheuristics. Adapted from PIPE692.py as part of PIPE-1624. 
+    from PhaseStabilityHeuristics. Adapted from PIPE692.py as part of PIPE-1624. 
     """
 
     def __init__(self, context, result):
