@@ -48,7 +48,7 @@ def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NDArray3D', inverted: bool) -
     Args:
         naxis3 : a number of pixels along spectral axis
         cube_regrid : data chunk loaded from image cube
-        inverted : flag of channel-inverted image cube. Defaults to False.
+        inverted : flag of channel-inverted image cube
 
     Returns:
         RMS map of the part of the cube.
