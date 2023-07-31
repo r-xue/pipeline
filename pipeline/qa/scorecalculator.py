@@ -1852,8 +1852,8 @@ def score_decoherence_assessment(ms: MeasurementSet, phaserms_results, outlier_a
     Also checks the outlier antennas and the 80th percentile baseline with and without flagged antennas.
     """
     try:
-        phasermscycle_p80: float = phaserms_results['phasermscycleP80'],
-        bl_p80: float = phaserms_results['blP80'],
+        phasermscycle_p80: float = phaserms_results['phasermscycleP80']
+        bl_p80: float = phaserms_results['blP80']
         bl_p80_orig: float = phaserms_results['blP80orig']
 
         initial_score = 1.0 - phasermscycle_p80/100.0
