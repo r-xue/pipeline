@@ -68,7 +68,7 @@ def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'sdtyping.NpAr
         naxis3 : a number of pixels along spectral axis
         cube_regrid : data chunk loaded from image cube
         pos : position to slice
-        inverted (bool): flag of channel-ibverted image cube
+        inverted (bool): flag of frequency-inverted image cube
 
     Returns:
         RMS array of a part of the cube.
@@ -77,8 +77,12 @@ def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'sdtyping.NpAr
         start_rms_ch, end_rms_ch = ceil(naxis3 * pos / 10), ceil(naxis3 * (pos + 1) / 10)
     else:
         start_rms_ch, end_rms_ch = int(naxis3 * pos / 10), int(naxis3 * (pos + 1) / 10)
-    return ((np.nanstd(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2. + \
-            (np.nanmean(cube_regrid[start_rms_ch:end_rms_ch, :, :], axis=0))**2.)**0.5
+
+    sliced_cube = cube_regrid[start_rms_ch:end_rms_ch, :, :]
+    stddevsq = np.nanstd(sliced_cube, axis=0) ** 2.
+    meansq = np.nanmean(sliced_cube, axis=0) ** 2.
+    rms = (stddevsq + meansq) ** 0.5
+    return rms
 
 
 def make_figures(peak_sn: 'sdtyping.NpArray2D', mask_map: 'sdtyping.NpArray2D',
