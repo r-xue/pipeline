@@ -29,6 +29,8 @@ LOG = infrastructure.get_logger(__name__)
 MATPLOTLIB_FIGURE_NUM = 6666
 std_threshold = 4.
 
+# amount of slicing cube image; see: decide_rms()
+n_slices = 10
 
 # Frequency Spec
 FrequencySpec = collections.namedtuple('FrequencySpec', ['unit', 'data'])
@@ -40,10 +42,10 @@ DirectionSpec = collections.namedtuple('DirectionSpec', ['ref', 'minra', 'maxra'
 
 def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', inverted: bool) -> 'sdtyping.NpArray2D':
     """Find the emission free channels roughly for estimating RMS.
-    
-    Split a chunk of the cube generated from FITS image into 10 chunks, and discards 2 chunks
-    on each end (index 0, 1, and 8, 9), then return the chunk that has the smallest average RMS value
-    for each of the remaining 6 chunks.
+
+    Slice the cube image into n_slices frequeucy-wise (or AXIS3 wise), and return the slice
+    which has the smallest rms value among them.  Each n_edge slices on both edges are
+    excluded from the estimate.
 
     Args:
         naxis3 : a number of pixels along spectral axis
@@ -53,16 +55,20 @@ def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', inverted: bool) -
     Returns:
         RMS map of the part of the cube.
     """
-    rms_maps = [__slice_and_calc_RMS_of_cube_regrid(naxis3, cube_regrid, x, inverted) for x in range(2, 8)]
-    rms_check = np.array([np.nanmean(rms_maps[x]) for x in range(6)])
-    rms_map = rms_maps[np.argmin(rms_check)]
+    n_edge = 2
+    n_remaining = n_slices - n_edge * 2
+
+    sliced_rms_maps = [__slice_and_calc_RMS_of_cube_regrid(naxis3, cube_regrid, x, inverted)
+                       for x in range(n_edge, n_slices - n_edge)]
+    rms_check = np.array([np.nanmean(sliced_rms_maps[x]) for x in range(n_remaining)])
+    rms_map = sliced_rms_maps[np.argmin(rms_check)]
     LOG.info("RMS: {}".format(np.nanmean(rms_map)))
     return rms_map
 
 
 def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', pos: int,
                                         inverted: bool) -> 'sdtyping.NpArray2D':
-    """Get one chunk from 10 chunks of cube_regrid, and calculate RMS of it.
+    """Get one chunk from n_slices chunks of cube_regrid, and calculate RMS of it.
 
     Args:
         naxis3 : a number of pixels along spectral axis
@@ -74,9 +80,9 @@ def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'sdtyping.NpAr
         RMS array of a part of the cube.
     """
     if inverted:
-        start_rms_ch, end_rms_ch = ceil(naxis3 * pos / 10), ceil(naxis3 * (pos + 1) / 10)
+        start_rms_ch, end_rms_ch = ceil(naxis3 * pos / n_slices), ceil(naxis3 * (pos + 1) / n_slices)
     else:
-        start_rms_ch, end_rms_ch = int(naxis3 * pos / 10), int(naxis3 * (pos + 1) / 10)
+        start_rms_ch, end_rms_ch = int(naxis3 * pos / n_slices), int(naxis3 * (pos + 1) / n_slices)
 
     sliced_cube = cube_regrid[start_rms_ch:end_rms_ch, :, :]
     stddevsq = np.nanstd(sliced_cube, axis=0) ** 2.
