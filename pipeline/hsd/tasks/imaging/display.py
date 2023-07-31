@@ -815,7 +815,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         # if all pixels are masked, return fully masked array
         unweight_mask = unweight_ia.getchunk(getmask=True)
-        if numpy.all(unweight_mask is False):
+        if numpy.all(numpy.logical_not(unweight_mask)):
             unweight_ia.close()
             sp_ave = numpy.ma.masked_array(numpy.zeros((self.npol, self.nchan), dtype=numpy.float32),
                                            mask=numpy.ones((self.npol, self.nchan), dtype=numpy.bool))
