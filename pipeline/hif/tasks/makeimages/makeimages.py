@@ -262,7 +262,8 @@ class MakeImages(basetask.StandardTaskTemplate):
                            sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'),
                            pbcor_image_min=cqa.quantity(result.image_min, 'Jy/beam'),
                            pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'),
-                           imagename=result.image.replace('.pbcor', ''))
+                           imagename=result.image.replace('.pbcor', ''),
+                           datatype=result.datatype)
 
 
 class CleanTaskFactory(object):

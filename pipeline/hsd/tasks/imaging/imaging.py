@@ -978,7 +978,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                                     spw=__spwid, is_representative=_pp.is_representative_source_and_spw,
                                     bandwidth=__bw, bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
                                     sensitivity=__cqa.quantity(_pp.image_rms, _pp.brightnessunit),
-                                    effective_bw=__effective_bw, imagename=_rgp.imagename)
+                                    effective_bw=__effective_bw, imagename=_rgp.imagename,
+                                    datatype='ATMCORR')
         __theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
                                           spw=__spwid, is_representative=_pp.is_representative_source_and_spw,
                                           bandwidth=__bw, bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
