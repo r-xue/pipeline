@@ -628,7 +628,10 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             LOG.warning("No valid pixel found in image, %s. Discarding the image from futher processing." % imagename)
             return False
 
-        if self.inputs.is_freq_axis_ascending is False:
-            LOG.info("Channel frequency is inverted. So the channel of output image cube is going to be reversed.")
+        virtual_spw_id = context.observing_run.real2virtual_spw_id(ref_spwid, reference_data)
+
+        if numpy.logical_not(self.inputs.is_freq_axis_ascending):
+            LOG.info(f"Channel frequencies in spw {virtual_spw_id} is in decending order in observation data. "
+                     f"They will be reversed to have the frequency axis of output image cube {imagename} in ascending order.")
 
         return True
