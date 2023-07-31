@@ -1,4 +1,5 @@
 """Set of plotting classes for hsd_imaging task."""
+import copy
 import itertools
 import math
 import os
@@ -780,7 +781,6 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         msobj_list = self.inputs.context.observing_run.measurement_sets
         msname_list = [absolute_path(msobj.name) for msobj in msobj_list]
-        import copy
         for g in group_desc:
             found = False
             for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
