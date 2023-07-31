@@ -75,6 +75,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
                   specmode='repBW' produce an LSRK frequency cube at
                            representative channel width
     outframe      velocity frame of output image (LSRK, '' for automatic)
+                  (not implemented)
     hm_imsize     Image X and Y size in pixels or PB level for single fields.
                   The explicit sizes must be even and divisible by 2,3,5,7 only.
                   The default values are derived as follows:
