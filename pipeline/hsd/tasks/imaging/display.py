@@ -769,36 +769,6 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return self.__plot_channel_map()
 
-    def __valid_lines(self, is_freq_chan_inverted_image: bool) -> List[List[int]]:
-        """Return list of chnnel ranges of valid spectral lines."""
-        group_desc = self.inputs.reduction_group
-        ant_index = self.inputs.antennaid_list
-        spwid_list = self.inputs.spwid_list
-        msid_list = self.inputs.msid_list
-        fieldid_list = self.inputs.fieldid_list
-
-        line_list = []
-
-        msobj_list = self.inputs.context.observing_run.measurement_sets
-        msname_list = [absolute_path(msobj.name) for msobj in msobj_list]
-        for g in group_desc:
-            found = False
-            for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
-                group_msid = msname_list.index(absolute_path(g.ms.name))
-                if group_msid == msid and g.antenna_id == ant and \
-                   g.field_id == fid and g.spw_id == spw:
-                    found = True
-                    break
-            if found:
-                for ll in copy.deepcopy(g.channelmap_range):
-                    if ll not in line_list and ll[2] is True:
-                        line_list.append(ll)
-        if is_freq_chan_inverted_image:
-            _right_edge = float(self.nchan - 1)
-            for ll in line_list:
-                ll[0] = _right_edge - ll[0]
-        return line_list
-
     def __get_integrated_spectra(self) -> numpy.ma.masked_array:
         """Compute integrated spectrum from the image.
 
@@ -877,7 +847,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         # retrieve line list from reduction group
         # key is antenna and spw id
-        line_list = self.__valid_lines(is_freq_chan_inverted_image)
+        line_list = self.inputs.valid_lines(is_freq_chan_inverted_image)
 
         # 2010/6/9 in the case of non-detection of the lines
         if len(line_list) == 0:
