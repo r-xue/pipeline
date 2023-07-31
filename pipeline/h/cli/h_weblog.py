@@ -1,5 +1,3 @@
-from casatasks import casalog
-
 from pipeline import show_weblog
 
 

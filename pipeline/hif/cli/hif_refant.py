@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
                refant=None, geometry=None, flagging=None, parallel=None,
                dryrun=None, acceptresults=None, refantignore=None):

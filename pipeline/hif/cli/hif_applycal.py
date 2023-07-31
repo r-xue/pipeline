@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, applymode=None, calwt=None, flagbackup=None,
                  flagsum=None, flagdetailedsum=None, parallel=None, dryrun=None, acceptresults=None):
 

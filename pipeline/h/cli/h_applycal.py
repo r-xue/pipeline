@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 from . import utils
 
 
+@utils.cli_wrapper
 def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, applymode=None, flagbackup=None, flagsum=None,
                flagdetailedsum=None, parallel=None, dryrun=None, acceptresults=None):
 

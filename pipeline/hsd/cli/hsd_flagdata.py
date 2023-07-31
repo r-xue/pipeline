@@ -2,6 +2,8 @@ import sys
 
 import pipeline.h.cli.utils as utils
 
+
+@utils.cli_wrapper
 def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                  scannumber=None, intents=None, edgespw=None, fracspw=None,
                  fracspwfps=None, online=None, fileonline=None, template=None,

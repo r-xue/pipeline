@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
                    spw=None, contfile=None, linesfile=None, uvrange=None,
                    specmode=None, outframe=None, hm_imsize=None, hm_cell=None,

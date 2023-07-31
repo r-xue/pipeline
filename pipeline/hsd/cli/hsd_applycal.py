@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
     applymode=None, calwt=None, flagbackup=None, parallel=None, dryrun=None, acceptresults=None):
 

@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 from . import utils
 
 
+@utils.cli_wrapper
 def h_mssplit(vis=None, outputvis=None, field=None, intent=None, spw=None, datacolumn=None, chanbin=None, timebin=None,
               replace=None, dryrun=None, acceptresults=None):
 

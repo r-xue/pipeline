@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 from . import utils
 
 
+@utils.cli_wrapper
 def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, overwrite=None,
                  nocopy=None, bdfflags=None, lazy=None, ocorr_mode=None, createmms=None, dryrun=None,
                  acceptresults=None):

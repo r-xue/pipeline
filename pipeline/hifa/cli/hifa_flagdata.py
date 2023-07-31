@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None,
                   scan=None, scannumber=None, intents=None, edgespw=None,
                   fracspw=None, fracspwfps=None, online=None, partialpol=None,

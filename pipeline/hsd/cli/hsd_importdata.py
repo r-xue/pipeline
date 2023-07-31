@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, asis=None, process_caldevice=None, overwrite=None,
                    nocopy=None, bdfflags=None, datacolumns=None, lazy=None, with_pointing_correction=None, createmms=None, dryrun=None,
                    acceptresults=None):
@@ -36,9 +37,6 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, as
     hm_rasterscan            Heuristics method for raster scan analysis. Two analysis modes,
                              time-domain analysis ('time') and direction analysis ('direction'), are available.
                              Default is 'time'.
-    parallel                 Execute using CASA HPC functionality, if available.
-                             options: 'automatic', 'true', 'false', True, False
-                             default: None (equivalent to 'automatic')
     asis                     Creates verbatim copies of the ASDM tables in the output MS.
                              The value given to this option must be a list of table names
                              separated by space characters.
