@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifa_fluxcalflag(vis=None, field=None, intent=None, spw=None, threshold=None, appendlines=None,
                      linesfiles=None, applyflags=None, dryrun=None, acceptresults=None):
 

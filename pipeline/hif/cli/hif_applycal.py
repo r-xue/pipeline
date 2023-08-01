@@ -1,28 +1,27 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, applymode=None, calwt=None, flagbackup=None,
-                 flagsum=None, flagdetailedsum=None, dryrun=None, acceptresults=None):
+                 flagsum=None, flagdetailedsum=None, parallel=None, dryrun=None, acceptresults=None):
 
     """
     hif_applycal ---- Apply the calibration(s) to the data
 
-    
+
     Apply precomputed calibrations to the data.
-    
+
     hif_applycal applies the precomputed calibration tables stored in the pipeline
     context to the set of visibility files using predetermined field and
     spectral window maps and default values for the interpolation schemes.
-    
+
     Users can interact with the pipeline calibration state using the tasks
     h_export_calstate and h_import_calstate.
-    
+
     Output:
-    
+
     results -- The results object for the pipeline task is returned
 
     --------- parameter descriptions ---------------------------------------------
@@ -59,16 +58,19 @@ def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, appl
     flagsum         Compute before and after flagging summary statistics
     flagdetailedsum Compute detailed before and after flagging statistics summaries.
                     Parameter available only when if flagsum is True.
+    parallel        Execute using CASA HPC functionality, if available.
+                    options: 'automatic', 'true', 'false', True, False
+                    default: None (equivalent to False)
     dryrun          Run task (False) or display the command(True).
     acceptresults   Add the results of the task to the pipeline context (True) or
                     reject them (False).
 
     --------- examples -----------------------------------------------------------
 
-    
-    
+
+
     1. Apply the calibration to the target data
-    
+
     hif_applycal (intent='TARGET')
 
 

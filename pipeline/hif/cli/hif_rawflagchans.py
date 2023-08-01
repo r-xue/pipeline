@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_rawflagchans(vis=None, spw=None, intent=None,
   flag_hilo=None, fhl_limit=None, fhl_minsample=None,
   flag_bad_quadrant=None, fbq_hilo_limit=None,

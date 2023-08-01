@@ -22,7 +22,7 @@ LOG = logging.get_logger(__name__)
 
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [6, 2, 0,  115]
+MIN_CASA_REVISION = [6, 5, 4, 7]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 
@@ -235,6 +235,16 @@ class Context(object):
             return 'unknown'
         else:
             return ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
+
+    def get_recipe_name(self):
+        """
+        Get the recipe name from project structure.
+        """
+        ps = self.project_structure
+        if ps is None or ps.recipe_name == 'Undefined':
+            return ''
+        else:
+            return ps.recipe_name
 
 
 class Pipeline(object):
