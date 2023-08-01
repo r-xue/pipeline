@@ -567,8 +567,8 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # PIPE-1802: look for the selfcal/restore resources
         selfcal_resources_list = []
-        if hasattr(self.inputs.context, 'scal_resources') and isinstance(self.inputs.context.scal_resources, list):
-            selfcal_resources_list = self.inputs.context.scal_resources
+        if hasattr(self.inputs.context, 'selfcal_resources') and isinstance(self.inputs.context.selfcal_resources, list):
+            selfcal_resources_list = self.inputs.context.selfcal_resources
         if selfcal_resources_list:
             empty = False
 

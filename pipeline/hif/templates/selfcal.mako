@@ -118,7 +118,7 @@ def fm_reason(slib):
 <h3>List of Self-cal Targets</h3>
 
 % if not cleantargets:
-    <p>No valid self-calibration result is returned.</p>
+    <p>No valid self-calibration result was returned.</p>
     <% return STOP_RENDERING %>
 % endif
 

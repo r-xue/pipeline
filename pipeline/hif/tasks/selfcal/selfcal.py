@@ -44,16 +44,18 @@ class SelfcalResults(basetask.Results):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
 
         # save selfcal results into the Pipeline context
-        if hasattr(context, 'scal_targets'):
-            LOG.warning('context.scal_targets is being over-written.')
-        # we could consider exclude the heuristics from the scal_targets first here.
-        context.scal_targets = self.targets
+        if hasattr(context, 'selfcal_targets'):
+            LOG.warning('context.selfcal_targets is being over-written.')
+
+        scal_targets_ctx = copy.deepcopy(self.targets)
+        for target in scal_targets_ctx:
+            target.pop('heuristics', None)
+        context.selfcal_targets = self.scal_targets_ctx
 
         # if selfcal_resources is None, then the selfcal solver is not triggered and no need to register the
         # selfcal resources for auxproducts exporting.
         if self.selfcal_resources is not None:
-
-            context.scal_resources = self.selfcal_resources
+            context.selfcal_resources = self.selfcal_resources
 
         if self.applycal_result_contline is not None:
             self._register_datatype(context, self.applycal_result_contline, DataType.SELFCAL_CONTLINE_SCIENCE)
@@ -66,10 +68,6 @@ class SelfcalResults(basetask.Results):
         for r in appycal_result:
             for calapp in r.applied:
                 calto_list.append(calapp.calto)
-                # Register applied calibrations and remove them from subsequent on-the-fly calibration calculations.
-                # If they are marked as appliaed, selfcal tables will be packaed into auxcaltables.tgz and list in auxcalapply.txt
-                # LOG.debug('Marking %r as applied',calapp.as_applycal())
-                # context.callibrary.mark_as_applied(calapp.calto, calapp.calfrom)
 
         # register the selfcal results to the observing run
         for calto in calto_list:
@@ -195,9 +193,10 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     def _apply_scal_check_caltable(self, sc_targets, mses=None):
         """Check if all calibration tables required for applying the selfcal solutions are ready to use.
-        
-        caltable_list: a list of calibration tables requested based on the calapply information inside scal_targets
-        caltable_rady: a list of the requested cal tables that are ready to be applied.
+
+        Returns:
+            caltable_list:  a list of calibration tables requested based on the calapply information inside scal_targets
+            caltable_ready: a list of the requested cal tables that are ready to be applied.
         """
 
         if mses is None:
@@ -274,8 +273,8 @@ class Selfcal(basetask.StandardTaskTemplate):
         """Check if we can do selfcal restore from scal_targets saved in the context."""
 
         scal_targets = None
-        if hasattr(self.inputs.context, 'scal_targets'):
-            scal_targets_last = self.inputs.context.scal_targets
+        if hasattr(self.inputs.context, 'selfcal_targets'):
+            scal_targets_last = self.inputs.context.selfcal_targets
             LOG.info('Found selfcal results in the context. Looking for the required caltables for applying the selfcal solutions.')
             caltable_list, caltable_ready = self._apply_scal_check_caltable(scal_targets)
             if len(caltable_ready) < len(caltable_list):

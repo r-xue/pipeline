@@ -105,9 +105,9 @@ def fetch_scan_times(vislist, targets):
             integrationsdict[vis][target] = integrations.copy()
         msmd.close()
     if np.mean(n_spws) != np.max(n_spws):
-        LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
+        LOG.warning('Inconsistent number of spws in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
     if np.max(min_spws) != np.min(min_spws):
-        LOG.info('WARNING, INCONSISTENT MINIMUM SPW IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
+        LOG.warning('Inconsistent minimum spw in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
     spwslist = np.unique(spwslist).astype(int)
     spws_set = np.unique(spws_set, axis=0)
     return scantimesdict, integrationsdict, integrationtimesdict, integrationtimes, np.max(n_spws), np.min(min_spws), spwslist, spws_set
@@ -176,45 +176,14 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
         msmd.close()
     if len(n_spws) > 0:
         if np.mean(n_spws) != np.max(n_spws):
-            LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
+            LOG.warning('Inconsistent number of spws in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
         if np.max(min_spws) != np.min(min_spws):
-            LOG.info('WARNING, INCONSISTENT MINIMUM SPW IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
+            LOG.warning('Inconsistent minimum spw in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
         spwslist = np.unique(spwslist).astype(int)
     else:
         return scantimesdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, integrationtimes, -99, -99, spwslist, mosaic_field
     return scantimesdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, integrationtimes, np.max(n_spws), np.min(
         min_spws), spwslist, mosaic_field
-
-
-def fetch_spws(vislist, targets):
-
-    n_spws = np.array([])
-    min_spws = np.array([])
-    spwslist = np.array([])
-    scansdict = {}
-    for vis in vislist:
-        scansdict[vis] = {}
-        msmd.open(vis)
-        for target in targets:
-            scansdict[vis][target] = msmd.scansforfield(target)
-            scansdict[vis][target].sort()
-        for target in targets:
-            for scan in scansdict[vis][target]:
-                spws = msmd.spwsforscan(scan)
-                n_spws = np.append(len(spws), n_spws)
-                min_spws = np.append(np.min(spws), min_spws)
-                spwslist = np.append(spws, spwslist)
-        msmd.close()
-    if len(n_spws) > 1:
-        if np.mean(n_spws) != np.max(n_spws):
-            LOG.info('WARNING, INCONSISTENT NUMBER OF SPWS IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
-        if np.max(min_spws) != np.min(min_spws):
-            LOG.info('WARNING, INCONSISTENT MINIMUM SPW IN SCANS/MSes (Possibly expected if Multi-band VLA data or ALMA Spectral Scan)')
-    spwslist = np.unique(spwslist).astype(int)
-    if len(n_spws) == 1:
-        return n_spws, min_spws, spwslist
-    else:
-        return np.max(n_spws), np.min(min_spws), spwslist
 
 
 # actual routine used for getting solints

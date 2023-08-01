@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
-                apply=None, parallel=None, recal=None, refantignore=None, restore_resources=None,
+                apply=None, recal=None, refantignore=None, restore_resources=None,
                 n_solints=None, amplitude_selfcal=None, gaincal_minsnr=None,
                 minsnr_to_proceed=None, delta_beam_thresh=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
@@ -34,6 +34,17 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
     recal                   Always re-do self-calibration even solutions/caltables are found in the Pipeline 
                             context or json restore file.
                             default = False
+    refantignore            string list to be ignored as reference antennas.
+                            example:  refantignore='ea02,ea03'
+    restore_resources       Path to the restore resources from a standard run of hif_selfcal.
+                            hif_selfcal will automatically do an exhaustive search to lookup/extract/verify 
+                            the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred 
+                            in selfcal.json, starting from working/, to products/ and rawdata/.
+                            If restore_resources is specified, this file path will be evaluated first
+                            before the pre-defined exhaustive search list.
+                            The value can be the file path of *auxproducts.tgz file or *selfcal.json file.
+    n_solints               number of solution intervals to attempt for self-calibration.
+                            default: 4                            
     amplitude_selfcal       Attempt amplitude self-calibration following phase-only self-calibration; 
                             if median time between scans of a given target is < 150s, 
                             solution intervals of 300s and inf will be attempted, otherwise just 
@@ -66,18 +77,7 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
     inf_EB_gaincal_combine  change gain solution combination parameters for the inf_EB solution interval. 
                             if True, the gaincal combine parameter will be set to 'scan,spw'; if False,
                             the gaincal combine parameter will be set to 'scan'.
-                            default=False
-    n_solints               number of solution intervals to attempt for self-calibration.
-                            default: 4
-    refantignore            string list to be ignored as reference antennas.
-                            example:  refantignore='ea02,ea03'
-    restore_resources       Restore resources from a standard run of hif_selfcal.
-                            hif_selfcal will automatically do an exhaustive search to lookup/extract/verify 
-                            the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred 
-                            inside selfcal.json, starting from working/, to products/ and 
-                            rawdata/. If resource_resources is specified, this file path will be evaluated first
-                            before the pre-defined exhaustive search list.
-                            The value can be as the file path of *auxproducts.tgz file or *selfcal.json file.
+                            default=False                  
     """
 
     #                                                                        #

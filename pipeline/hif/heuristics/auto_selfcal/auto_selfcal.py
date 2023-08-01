@@ -11,14 +11,12 @@ import pipeline.infrastructure as infrastructure
 from pipeline.domain.observingrun import ObservingRun
 from pipeline.infrastructure import casa_tools, utils
 from pipeline.infrastructure.casa_tasks import CasaTasks
-from pipeline.infrastructure.casa_tools import msmd
-from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.tablereader import MeasurementSetReader
 from pipeline.infrastructure import logging
 
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
-                              estimate_SNR, fetch_spws, fetch_targets,
+                              estimate_SNR, fetch_targets,
                               get_dr_correction, get_intflux, get_n_ants,
                               get_nterms, get_sensitivity, get_SNR_self,
                               get_SNR_self_update, get_solints_simple,
@@ -77,14 +75,10 @@ class SelfcalHeuristics(object):
         self.check_all_spws = check_all_spws
         self.refantignore = refantignore
         self.inf_EB_gaincal_combine = inf_EB_gaincal_combine    # Options: 'spw,scan' or 'scan' or 'spw' or 'none'
-        self.inf_EB_gaintype = 'G'              # Options: 'G' or 'T' or 'G,T'
-        self.scale_fov = 1.0  # not used yet
+        self.inf_EB_gaintype = 'G'                              # Options: 'G' or 'T' or 'G,T'
 
         LOG.info('recreating observing run from per-selfcal-target MS(es): %r', self.vislist)
         self.image_heuristics.observing_run = self.get_observing_run(self.vislist)
-
-        # This can be used to test the hif_selfcal exception handling for the selfcal-calibration sequence.
-        # raise RuntimeError('heuristics crashed')
 
     @staticmethod
     def get_observing_run(ms_files):
@@ -104,7 +98,7 @@ class SelfcalHeuristics(object):
             self, vis, imagename, band_properties, band, telescope='undefined', scales=[0],
             smallscalebias=0.6, mask='', nsigma=5.0, imsize=None, cellsize=None, interactive=False, robust=0.5, gain=0.1, niter=50000,
             cycleniter=300, uvtaper=[],
-            savemodel='none', gridder='standard', sidelobethreshold=3.0, smoothfactor=1.0, noisethreshold=5.0, lownoisethreshold=1.5,
+            savemodel='none', gridder='standard', sidelobethreshold=3.0, smoothfactor=1.0,
             parallel=False, nterms=1, cyclefactor=3, uvrange='', threshold='0.0Jy', startmodel='', pblimit=0.1, pbmask=0.1, field='',
             datacolumn='', spw='', obstype='single-point', savemodel_only=False, resume=False):
         """
@@ -123,8 +117,6 @@ class SelfcalHeuristics(object):
         if telescope == 'ALMA':
             sidelobethreshold = 3.0
             smoothfactor = 1.0
-            noisethreshold = 5.0
-            lownoisethreshold = 1.5
             cycleniter = -1
             cyclefactor = 1.0
             LOG.info(band_properties)
@@ -134,16 +126,12 @@ class SelfcalHeuristics(object):
         if telescope == 'ACA':
             sidelobethreshold = 1.25
             smoothfactor = 1.0
-            noisethreshold = 5.0
-            lownoisethreshold = 2.0
             cycleniter = -1
             cyclefactor = 1.0
 
         elif 'VLA' in telescope:
             sidelobethreshold = 2.0
             smoothfactor = 1.0
-            noisethreshold = 5.0
-            lownoisethreshold = 1.5
             pblimit = -0.1
             cycleniter = -1
             cyclefactor = 3.0
@@ -593,6 +581,15 @@ class SelfcalHeuristics(object):
             for band in selfcal_library[target].keys():
                 vislist = selfcal_library[target][band]['vislist'].copy()
                 LOG.info('Starting selfcal procedure on: '+target+' '+band)
+
+                gaincal_preapply_gaintable = {}
+                gaincal_spwmap = {}
+                gaincal_interpolate = {}
+                applycal_gaintable = {}
+                applycal_spwmap = {}
+                fallback = {}
+                applycal_interpolate = {}
+
                 for iteration in range(len(solints[band])):
                     if (iterjump != -1) and (iteration < iterjump):  # allow jumping to amplitude selfcal and not need to use a while loop
                         continue
@@ -658,15 +655,6 @@ class SelfcalHeuristics(object):
 
                         with casa_tools.ImageReader(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0') as image:
                             bm = image.restoringbeam(polarization=0)
-
-                        if iteration == 0:
-                            gaincal_preapply_gaintable = {}
-                            gaincal_spwmap = {}
-                            gaincal_interpolate = {}
-                            applycal_gaintable = {}
-                            applycal_spwmap = {}
-                            fallback = {}
-                            applycal_interpolate = {}
 
                         for vis in vislist:
                             ##
@@ -1322,8 +1310,8 @@ class SelfcalHeuristics(object):
                 scanstartsdict[band],
                 scanendsdict[band],
                 integrationtimesdict[band],
-                self.inf_EB_gaincal_combine, 
-                n_solints=self.n_solints, 
+                self.inf_EB_gaincal_combine,
+                n_solints=self.n_solints,
                 do_amp_selfcal=self.do_amp_selfcal)
             LOG.info(f'{band} {solints[band]}')
             applycal_mode[band] = [self.apply_cal_mode_default]*len(solints[band])
