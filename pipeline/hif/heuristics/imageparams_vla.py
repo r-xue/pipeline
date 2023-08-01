@@ -372,7 +372,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             return threshold
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
-               centreonly=False, vislist=None, spwspec=None, intent: str = '') -> Union[list, int]:
+               centreonly=False, vislist=None, spwspec=None, intent: str = '', joint_intents: str = '') -> Union[list, int]:
         """
         Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
         is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
@@ -395,6 +395,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             in the context.
         :param spwspec: ID list of spectral windows used to create image product. List or string containing comma
             separated spw IDs list.
+        :param intent: field/source intent
+        :param joint_intents: stage intents
         :return: two element list of pixel count along x and y image axes.
         """
         if spwspec is not None:

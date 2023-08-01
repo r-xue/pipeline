@@ -960,10 +960,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     # selected spectral windows. In continuum spectral mode pass the spw list string
                                     # to imsize heuristics (used only for VLA), otherwise pass None to disable the feature.
                                     imsize_spwlist = filtered_spwlist_local if inputs.specmode == 'cont' else None
-                                    himsize = self.heuristics.imsize(
+                                    h_imsize = self.heuristics.imsize(
                                         fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
                                         sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'],
-                                        spwspec=imsize_spwlist, intent=field_intent[1])
+                                        spwspec=imsize_spwlist, intent=field_intent[1], joint_intents=inputs.intent)
                                     if field_intent[1] in [
                                             'PHASE',
                                             'BANDPASS',
@@ -974,8 +974,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                             'POLANGLE',
                                             'POLLEAKAGE'
                                             ]:
-                                        himsize = [min(npix, inputs.calmaxpix) for npix in himsize]
-                                    imsizes[(field_intent[0], spwspec)] = himsize
+                                        h_imsize = [min(npix, inputs.calmaxpix) for npix in h_imsize]
+                                    imsizes[(field_intent[0], spwspec)] = h_imsize
                                     if imsizes[(field_intent[0], spwspec)][0] > max_x_size:
                                         max_x_size = imsizes[(field_intent[0], spwspec)][0]
                                     if imsizes[(field_intent[0], spwspec)][1] > max_y_size:
@@ -1223,11 +1223,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                             else:
                                 nbin = -1
 
-                            # Get stokes value. Note that the full list of intents is
-                            # used to decide whether to do IQUV for ALMA as PIPE-1829
-                            # asked for Stokes I only if other calibration intents are
-                            # done together with POLARIZATION.
-                            stokes = self.heuristics.stokes(inputs.intent)
+                            # Get stokes value. Note that the full list of intents
+                            # (inputs.intent) is used to decide whether to do IQUV
+                            # for ALMA as PIPE-1829 asked for Stokes I only if other
+                            # calibration intents are done together with POLARIZATION.
+                            stokes = self.heuristics.stokes(field_intent[1], inputs.intent)
 
                             if spwspec_ok and (field_intent[0], spwspec) in imsizes and ('invalid' not in cells[spwspec]):
                                 LOG.debug(
