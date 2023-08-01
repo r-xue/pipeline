@@ -44,6 +44,7 @@ import pipeline.domain.measures as measures
 			            <th scope="col" rowspan="2">Correlator Axis</th>
 			            <th scope="col" rowspan="2">Band</th>
 			            <th scope="col" rowspan="2">Band Type</th>
+			            <th scope="col" rowspan="2">Median Feed Receptor Angle (degrees)</th>
 						<%
 						basebandlabel=''
 						if pcontext.project_summary.telescope != 'ALMA':
@@ -109,7 +110,14 @@ import pipeline.domain.measures as measures
                           bandtype = "<td>Unknown</td>"
                       %>
                       ${bandtype}
-					  <%
+                      <%
+                      if spw.median_receptor_angle:
+                          recep_angle = f"<td>{spw.median_receptor_angle[0]:.1f}, {spw.median_receptor_angle[1]:.1f}</td>"
+                      else:
+                          recep_angle = "<td>Unknown</td>"
+                      %>
+                      ${recep_angle}
+                      <%
 						basebanditem=''
 						if pcontext.project_summary.telescope != 'ALMA':
 						    try:
@@ -153,6 +161,7 @@ import pipeline.domain.measures as measures
 			            <th scope="col" rowspan="2">Correlator Axis</th>
 			            <th scope="col" rowspan="2">Band</th>
 			            <th scope="col" rowspan="2">Band Type</th>
+			            <th scope="col" rowspan="2">Median Feed Receptor Angle (degrees)</th>
 						<%
 						     basebandlabel=''
 						     if pcontext.project_summary.telescope != 'ALMA':
@@ -226,6 +235,13 @@ import pipeline.domain.measures as measures
                             bandtype = "<td>Unknown</td>"
                         %>
                         ${bandtype}
+                        <%
+                        if spw.median_receptor_angle:
+                            recep_angle = f"<td>{spw.median_receptor_angle[0]:.1f}, {spw.median_receptor_angle[1]:.1f}</td>"
+                        else:
+                            recep_angle = "<td>Unknown</td>"
+                        %>
+                        ${recep_angle}
 						<%
 						    basebanditem=''
 						    if pcontext.project_summary.telescope != 'ALMA':
