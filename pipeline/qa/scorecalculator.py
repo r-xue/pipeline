@@ -1930,6 +1930,7 @@ def score_decoherence_assessment(ms: MeasurementSet, phaserms_results, outlier_a
     except:
         # For any error in the above:
         base_score = 0.0
+        phasermscycle_p80 = 0.0
         shortmsg = "The phase RMS could not be assessed."
         longmsg = "For {}, the spatial structure function could not be assessed.".format(ms.basename)
         LOG.error(traceback.format_exc())
