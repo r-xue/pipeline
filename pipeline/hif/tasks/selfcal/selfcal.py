@@ -273,7 +273,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         """Check if we can do selfcal restore from scal_targets saved in the context."""
 
         scal_targets = None
-        if hasattr(self.inputs.context, 'selfcal_targets'):
+        if hasattr(self.inputs.context, 'selfcal_targets') and self.inputs.context.selfcal_targets:
             scal_targets_last = self.inputs.context.selfcal_targets
             LOG.info('Found selfcal results in the context. Looking for the required caltables for applying the selfcal solutions.')
             caltable_list, caltable_ready = self._apply_scal_check_caltable(scal_targets)
