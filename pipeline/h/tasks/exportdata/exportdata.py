@@ -307,7 +307,7 @@ class ExportData(basetask.StandardTaskTemplate):
         if not inputs.imaging_products_only:
             if inputs.exportcalprods:
                 sessiondict = self._do_standard_session_products(inputs.context, oussid, session_names, session_vislists,
-                                                             inputs.products_dir)
+                                                                 inputs.products_dir)
             elif inputs.exportmses:
                 # still needs sessiondict
                 for i in range(len(session_names)):
@@ -616,7 +616,11 @@ class ExportData(basetask.StandardTaskTemplate):
         per_ms_calimages = []
         per_ms_calimages_keywords = []
         for i, image in enumerate(calimages):
-            if image.startswith(oussid) or image.startswith('oussid') or image.startswith('unknown'):
+            if (image.startswith(oussid) or
+                any(image.startswith(session_name) for session_name in sessiondict) or
+                image.startswith('oussid') or
+                image.startswith('unknown') or
+                image.startswith('session')):
                 per_ous_calimages.append(image)
                 per_ous_calimages_keywords.append(calimages_fitskeywords[i])
             else:
@@ -664,6 +668,7 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Add the calibrator images
         pipemanifest.add_images(ouss, per_ous_calimages, 'calibrator', per_ous_calimages_keywords)
+        pipemanifest.add_images(ouss, per_ms_calimages, 'calibrator', per_ms_calimages_keywords)
 
         # Add the target images
         pipemanifest.add_images(ouss, targetimages, 'target', targetimages_fitskeywords)
@@ -1012,7 +1017,7 @@ finally:
             if calimages:
                 LOG.info('Exporting calibrator source images')
                 if calintents == '':
-                    intents = ['PHASE', 'BANDPASS', 'CHECK', 'AMPLITUDE']
+                    intents = ['PHASE', 'BANDPASS', 'CHECK', 'AMPLITUDE', 'POLARIZATION']
                 else:
                     intents = calintents.split(',')
                 cleanlist = context.calimlist.get_imlist()
@@ -1094,6 +1099,21 @@ finally:
                             if os.path.exists(imagename) and not os.path.exists(imagename2):
                                 images_list.append((imagename, version))
                                 cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+
+                    # Add POLI/POLA images for polarization calibrators
+                    if image['sourcetype'] == 'POLARIZATION':
+                        if image['imagename'].find('.pbcor') != -1:
+                            for polcal_imtype in ('POLI', 'POLA'):
+                                imagename = image['imagename'].replace('.pbcor', '').replace('IQUV', polcal_imtype)
+                                if os.path.exists(imagename):
+                                    images_list.append((imagename, version))
+                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                        else:
+                            for polcal_imtype in ('POLI', 'POLA'):
+                                imagename = image['imagename'].replace('IQUV', polcal_imtype)
+                                if os.path.exists(imagename):
+                                    images_list.append((imagename, version))
+                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
         else:
             # Assume only the root image name was given.
             cleanlib = imagelibrary.ImageLibrary()
