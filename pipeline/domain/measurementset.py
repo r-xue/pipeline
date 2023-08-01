@@ -650,7 +650,7 @@ class MeasurementSet(object):
         """
         Get the ALMA cycle number from the ALMA control software version that this MeasurementSet was acquired with.
 
-        Returns: 
+        Returns:
             int cycle_number or None if not found
         """
         match = re.search(r"CYCLE(\d+)", self.acs_software_build_version)
@@ -1204,6 +1204,29 @@ class MeasurementSet(object):
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')
             return np.median(integration)
+
+    def get_times_on_source_per_field_id(self, field: str, intent: str):
+        """
+        :param field: field name
+        :param intent: field intent
+        returns dictionary of on source times for selected field IDs
+        """
+        field_ids = [field.id for field in self.fields if intent in field.intents]
+        state_ids = [state.id for state in self.states if intent in state.intents]
+        scan_ids = [s.id for s in self.get_scans(field=field, scan_intent=intent)]
+        # Need to select just one cross correlation row between antenna 1 and 2
+        ant1 = self.antennas[0].id
+        ant2 = self.antennas[1].id
+        # Just a single spw since all spws are observed together
+        first_science_spw_dd_id = [self.get_data_description(spw_id).id for spw_id in [s.id for s in self.get_spectral_windows()]][0]
+        times_on_source_per_field_id = dict()
+        for field_id in field_ids:
+            with casa_tools.TableReader(self.name) as table:
+                taql = '(STATE_ID IN %s AND FIELD_ID IN [%s] AND DATA_DESC_ID in [%s] AND SCAN_NUMBER in [%s] AND ANTENNA1=%s AND ANTENNA2=%s)' % (state_ids, field_id, first_science_spw_dd_id, scan_ids, ant1, ant2)
+                with contextlib.closing(table.query(taql)) as subtable:
+                    integration = subtable.getcol('INTERVAL')
+                times_on_source_per_field_id[field_id] = np.sum(integration)
+        return times_on_source_per_field_id
 
     @property
     def reference_antenna(self):

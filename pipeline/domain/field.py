@@ -125,29 +125,6 @@ class Field(object):
     def gb(self):
         return self.dec
 
-    # Time on source
-    @property
-    def time_on_source(self):
-       """
-       Return the time on source in seconds. The implementation relies
-       on the msmd.timesforfield() time stamps that are stored in
-       self.time. These appear to be in general on the 16 ms granularity
-       for ALMA. There are gaps between the observations when other fields
-       are observed and when other scans are done. The simple algorithm
-       here tries to exclude these gaps to sum up the deltas. It does not
-       correct for edge effects (half integrations before the first and
-       after the last time stamp per observation). This is negligible for
-       the 16 ms granularity and the intended use of this time for the
-       heuristic requested in PIPE-1782. A fully fledged solution would
-       involve reading the INTERVAL column of the MS for a given field
-       based selection. This is more time consuming and should only be
-       considered if the current method is not accurate enough.
-       """
-
-       delta_times = self.time[1:]-self.time[:-1]
-       median_delta_time = np.median(delta_times)
-       return np.sum(delta_times[delta_times <= 3 * median_delta_time])
-
     def set_source_type(self, source_type):
         source_type = source_type.strip().upper()
 

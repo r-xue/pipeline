@@ -1170,7 +1170,7 @@ class Tclean(cleanbase.CleanBase):
             if inputs.cyclefactor not in (None, -999):
                 cyclefactor = inputs.cyclefactor
             else:
-                cyclefactor = self.image_heuristics.cyclefactor(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
+                cyclefactor = self.image_heuristics.cyclefactor(iteration, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
 
             LOG.info('Iteration %s: Clean control parameters' % iteration)
             LOG.info('    Mask %s', new_cleanmask)

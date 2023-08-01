@@ -353,7 +353,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         times_on_source_per_field = []
         for vis in self.vislist:
             ms_do = self.observing_run.get_ms(vis)
-            times_on_source_per_field.extend([f.time_on_source for f in ms_do.fields if f.name == field and intent in f.intents])
+            times_on_source_per_field.extend(ms_do.get_times_on_source_per_field_id(field, intent).values())
 
         if not times_on_source_per_field:
             return False
@@ -363,7 +363,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         if (gridder == 'mosaic'
             and specmode in ('cube', 'repBW')
             and min_time_on_source_per_field <= 60.0
-            and iter0_dirty_dynamic_range >= 30
+            and iter0_dirty_dynamic_range >= 30.0
             and iteration > 0):
             return True
         else:
