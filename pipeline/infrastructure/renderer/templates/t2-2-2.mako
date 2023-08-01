@@ -42,6 +42,7 @@ import pipeline.domain.measures as measures
 						%>
 			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Correlator Axis</th>
+						<th scope="col" rowspan="2">Correlation Bits</th>
 			            <th scope="col" rowspan="2">Band</th>
 			            <th scope="col" rowspan="2">Band Type</th>
 						<%
@@ -101,6 +102,11 @@ import pipeline.domain.measures as measures
 					  <td>${spw.channels[0].getWidth()}</td>
 					  <td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 					  <td>${', '.join(sorted(ms.get_data_description(spw=spw).corr_axis))}</td>
+						% if spw.correlation_bits:
+	                        <td>${spw.correlation_bits}</td>
+						% else:
+							<td>Unknown</td>
+						% endif
 					  <td>${spw.band}</td>
                       <%
                       if spw.receiver:
@@ -150,7 +156,8 @@ import pipeline.domain.measures as measures
 							channels_colspan = '4'
 						%>
 			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
-			            <th scope="col" rowspan="2">Correlator Axis</th>
+						<th scope="col" rowspan="2">Correlator Axis</th>
+                        <th scope="col" rowspan="2">Correlation Bits</th>
 			            <th scope="col" rowspan="2">Band</th>
 			            <th scope="col" rowspan="2">Band Type</th>
 						<%
@@ -218,6 +225,11 @@ import pipeline.domain.measures as measures
 								polarizations = ', '.join(sorted(dd.corr_axis))
 						%>
 						<td>${polarizations}</td>
+						% if spw.correlation_bits:
+	                        <td>${spw.correlation_bits}</td>
+						% else:
+							<td>Unknown</td>
+						% endif
 						<td>${spw.band}</td>
                         <%
                         if spw.receiver:
