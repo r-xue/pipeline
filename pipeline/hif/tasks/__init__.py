@@ -1,5 +1,5 @@
 from .antpos import Antpos
-from .applycal import IFApplycal, HpcIFApplycal
+from .applycal import IFApplycal, SerialIFApplycal
 from .bandpass import BandpassMode, ChannelBandpass, PhcorBandpass
 from .correctedampflag import Correctedampflag
 from .checkproductsize import CheckProductSize
@@ -11,7 +11,7 @@ from .makeimages import MakeImages
 from .makeimlist import MakeImList
 from .mstransform import Mstransform
 from .rawflagchans import Rawflagchans
-from .refant import RefAnt, HpcRefAnt
+from .refant import RefAnt, SerialRefAnt
 from .setmodel import Setjy
 from .setmodel import SetModels
 from .tclean import Tclean

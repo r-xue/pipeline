@@ -236,6 +236,16 @@ class Context(object):
         else:
             return ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
 
+    def get_recipe_name(self):
+        """
+        Get the recipe name from project structure.
+        """
+        ps = self.project_structure
+        if ps is None or ps.recipe_name == 'Undefined':
+            return ''
+        else:
+            return ps.recipe_name
+
 
 class Pipeline(object):
     """
