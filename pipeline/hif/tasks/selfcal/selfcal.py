@@ -44,7 +44,7 @@ class SelfcalResults(basetask.Results):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
 
         # save selfcal results into the Pipeline context
-        if hasattr(context, 'selfcal_targets'):
+        if hasattr(context, 'selfcal_targets') and context.selfcal_targets:
             LOG.warning('context.selfcal_targets is being over-written.')
 
         scal_targets_ctx = copy.deepcopy(self.targets)

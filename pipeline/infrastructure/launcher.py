@@ -103,6 +103,14 @@ class Context(object):
         imaging mode string; may be used to switch between imaging parameter
         heuristics; currently only used for deciding what products to export
 
+    .. py:attribute:: selfcal_targets
+
+        list of targets for which self-calibration is performed
+
+    .. py:attribute:: selfcal_resources
+
+        list of files/tables required for the self-calibration restoration
+
     """
     def __init__(self, name: Optional[str] = None):
         if name is None:
@@ -144,6 +152,8 @@ class Context(object):
         self.per_spw_cont_sensitivities_all_chan = {'robust': None, 'uvtaper': None}
         self.synthesized_beams = {'robust': None, 'uvtaper': None}
         self.imaging_mode = None
+        self.selfcal_targets = []
+        self.selfcal_resources = []
 
         LOG.trace('Creating report directory: %s', self.report_dir)
         utils.mkdir_p(self.report_dir)
