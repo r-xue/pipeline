@@ -5,23 +5,23 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
-    applymode=None, calwt=None, flagbackup=None, dryrun=None, acceptresults=None):
+    applymode=None, calwt=None, flagbackup=None, parallel=None, dryrun=None, acceptresults=None):
 
     """
     hsd_applycal ---- Apply the calibration(s) to the data
 
-    
+
     Apply the calibration to the data.
-    
+
     hif_applycal applies the precomputed calibration tables stored in the pipeline
     context to the set of visibility files using predetermined field and
     spectral window maps and default values for the interpolation schemes.
-    
+
     Users can interact with the pipeline calibration state using the tasks
     h_export_calstate and h_import_calstate.
-    
+
     Output:
-    
+
     results -- The results object for the pipeline task is returned
 
     --------- parameter descriptions ---------------------------------------------
@@ -32,7 +32,7 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
     field         A string containing the list of field names or field ids to which
                   the calibration will be applied. Defaults to all fields in the pipeline context.
                   example: '3C279', '3C279, M82'
-    intent        A string containing the list of intents against which the 
+    intent        A string containing the list of intents against which the
                   selected fields will be matched. Defaults to all supported intents
                   in the pipeline context.
                   example: '*TARGET*'
@@ -53,21 +53,24 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
                     'calonly': calibrate data only, flags from solutions NOT applied
     calwt         Calibrate the weights as well as the data.
     flagbackup    Backup the flags before the applyBackup the flags before the apply.
+    parallel      Execute using CASA HPC functionality, if available.
+                  options: 'automatic', 'true', 'false', True, False
+                  default: None (equivalent to 'automatic')
     dryrun        Run task (False) or display the command(True).
     acceptresults Add the results of the task to the pipeline context (True) or
                   reject them (False).
 
     --------- examples -----------------------------------------------------------
 
-    
-    
+
+
     1. Apply the calibration to the target data
-    
+
     hsd_applycal (intent='TARGET')
-    
-    
+
+
     Issues
-    
+
     There is some discussion about the appropriate values of calwt. Given
     properly scaled data, the correct value should be the CASA default of True.
     However at the current time ALMA is suggesting that calwt be set to True for

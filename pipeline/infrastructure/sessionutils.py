@@ -1,12 +1,15 @@
 import abc
 import collections
+import datetime
 import itertools
 import os
 import tempfile
+import traceback
 from inspect import signature
 
 from pipeline.infrastructure import basetask
 from pipeline.infrastructure import exceptions
+from pipeline.infrastructure import logging
 from . import mpihelpers
 from . import utils
 from . import vdp
@@ -21,6 +24,8 @@ __all__ = [
     'VDPTaskFactory',
     'VisResultTuple'
 ]
+
+LOG = logging.get_logger(__file__)
 
 # VisResultTuple is a data structure used by VDPTaskFactor to group
 # inputs and results.
@@ -85,7 +90,7 @@ def group_into_sessions(context, all_results, measurement_sets=None):
 
     def get_start_time(r):
         basename = os.path.basename(r[0])
-        return ms_start_times.get(basename, None)
+        return ms_start_times.get(basename, datetime.datetime.utcfromtimestamp(0))
 
     results_by_session = sorted(all_results, key=get_session)
     return {session_id: sorted(results_for_session, key=get_start_time)
@@ -343,8 +348,25 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
     def __init__(self, inputs):
         super(ParallelTemplate, self).__init__(inputs)
 
-    def get_result_for_exception(self, vis, result):
-        raise NotImplementedError
+    @basetask.result_finaliser
+    def get_result_for_exception(self, vis: str, exception: Exception) -> basetask.FailedTaskResults:
+        """Generate FailedTaskResults with exception raised.
+
+        This provides default implementation of exception handling.
+
+        Args:
+            vis: List of input visibility data
+            exception: Exception occurred
+
+        Return:
+            a results object with exception raised
+        """
+        LOG.error('Error processing {!s}'.format(os.path.basename(vis)))
+        LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
+        tb = traceback.format_exc()
+        if tb.startswith('None'):
+            tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
+        return basetask.FailedTaskResults(self.__class__, exception, tb)
 
     def prepare(self):
         inputs = self.inputs

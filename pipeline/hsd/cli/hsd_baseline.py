@@ -6,9 +6,9 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                  linewindow=None, linewindowmode=None, edge=None, broadline=None,
-                 clusteringalgorithm=None, deviationmask=None,
+                 clusteringalgorithm=None, deviationmask=None, parallel=None,
                  infiles=None, field=None, antenna=None, spw=None, pol=None,
-                 dryrun=None, acceptresults=None, parallel=None):
+                 dryrun=None, acceptresults=None):
 
     """
     hsd_baseline ---- Detect and validate spectral lines, subtract baseline by masking detected lines
@@ -172,6 +172,10 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     deviationmask       Apply deviation mask in addition to masks determined by
                         the automatic line detection.
 
+    parallel            Execute using CASA HPC functionality, if available.
+                        options: 'automatic', 'true', 'false', True, False
+                        default: None (equivalent to 'automatic')
+
     infiles             List of data files. These must be a name of
                         MeasurementSets that are registered to context via
                         hsd_importdata task.
@@ -202,8 +206,6 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
 
     acceptresults       Add the results of the task to the pipeline context (True)
                         or reject them (False).
-
-    parallel            Execute using CASA HPC functionality, if available.
 
     --------- examples -----------------------------------------------------------
 
