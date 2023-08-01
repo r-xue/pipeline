@@ -898,8 +898,8 @@ class SDChannelMapDisplay(SDImageDisplay):
         data = self.data
         mask = self.mask
 
-        # If the frequency axis of the image cube was inverted and has been corrected to the right direction,
-        # indice of frequency and velocity must have an offset to get a center value of them.
+        # If the frequency channel of the image cube has been inverted to ascending,
+        # indices of frequency and velocity must have an offset to get a center value of them.
         if is_freq_chan_inverted_image:
             _offset = 0.5
             _left_edge = self.edge[1]
@@ -907,16 +907,17 @@ class SDChannelMapDisplay(SDImageDisplay):
             _offset = 0
             _left_edge = self.edge[0]
 
-        # NOTE:
-        # All variables of an index of list, set, array, ... MUST BE NAMED understandable it is an index easily.
-        # In the for loop below, the variables with the prefix 'idx_' or 'indice_' are meant it.
+        # NOTE: Variable names MUST be easy to understand.
+        # The variables with the prefixes, 'idx_' and 'indices_', indicate they are an index or
+        # sequence (list, set, array, etc.) of indices in the loop below.
 
         for line_window in line_list:
             _line_center = line_window[0]
             _line_width = line_window[1]
             _line_center_shifted = _line_center - _left_edge
 
-            # Offset calculation of index(int) from line(float) when line has a decimal point of 0.5 and frequency is inverted;
+            # Offset calculation of index(int) from line(float) when the line has a decimal point of 0.5
+            # and frequency channel of the image is inverted;
             # ex) n=107.5, nchan=128, inverted_n = nchan-1-n = 19.5
             # when the real numeric cut-edge is 0.5 then the calculation of index 1-0.5 is to be neary 0.5 and not 0.5.
             # So, the cut-edge which has 0.5 + offset 0.5 like int(19.5 + 0.5) must be 19, not 20.
@@ -945,24 +946,24 @@ class SDChannelMapDisplay(SDImageDisplay):
             # 2007/9/13 Change the magnification factor 1.2 to your preference (to Dirk)
             # be sure the width of one channel map is integer
             # 2014/1/12 factor 1.4 -> 1.0 since velocity structure was taken into account for the range in validation.py
-            indice_width_of_line = max(int(_line_width / self.NumChannelMap + 0.5), 1)
-            idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indice_width_of_line + 0.5 + _offset)
+            indices_width_of_line = max(int(_line_width / self.NumChannelMap + 0.5), 1)
+            idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indices_width_of_line + 0.5 + _offset)
             # 2007/9/10 remedy for 'out of index' error
-            LOG.debug('idx_left_end, indice_width_of_line, NchanMap : '
-                      f'{idx_left_end}, {indice_width_of_line}, {self.NumChannelMap}')
+            LOG.debug('idx_left_end, indices_width_of_line, NchanMap : '
+                      f'{idx_left_end}, {indices_width_of_line}, {self.NumChannelMap}')
             if idx_left_end < 0:
-                indice_width_of_line = int(idx_line_center * 2.0 / self.NumChannelMap)
-                if indice_width_of_line == 0:
+                indices_width_of_line = int(idx_line_center * 2.0 / self.NumChannelMap)
+                if indices_width_of_line == 0:
                     continue
-                idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indice_width_of_line)
-            elif idx_left_end + indice_width_of_line * self.NumChannelMap > self.nchan:
-                indice_width_of_line = int((self.nchan - 1 - idx_line_center) * 2.0 / self.NumChannelMap)
-                if indice_width_of_line == 0:
+                idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indices_width_of_line)
+            elif idx_left_end + indices_width_of_line * self.NumChannelMap > self.nchan:
+                indices_width_of_line = int((self.nchan - 1 - idx_line_center) * 2.0 / self.NumChannelMap)
+                if indices_width_of_line == 0:
                     continue
-                idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indice_width_of_line)
+                idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indices_width_of_line)
 
             chan0 = max(idx_left_end - 1, 0)
-            chan1 = min(idx_left_end + self.NumChannelMap * indice_width_of_line, self.nchan - 1)
+            chan1 = min(idx_left_end + self.NumChannelMap * indices_width_of_line, self.nchan - 1)
             V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
             V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
             LOG.debug('chan0, chan1, V0, V1, velocity_line_center : '
@@ -980,7 +981,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             # vertical lines for integrated spectrum #2
             for i in range(self.NumChannelMap + 1):
-                idx_chan_left_end = int(idx_left_end + i * indice_width_of_line)
+                idx_chan_left_end = int(idx_left_end + i * indices_width_of_line)
                 vel_chan_left_end = None
                 if idx_chan_left_end == 0:
                     vel_chan_left_end = 0.5 * (self.velocity[idx_chan_left_end] -
@@ -1073,8 +1074,8 @@ class SDChannelMapDisplay(SDImageDisplay):
                 Title = []
                 for i in range(self.NumChannelMap):
                     ii = self.NumChannelMap - i - 1
-                    C0 = idx_left_end + indice_width_of_line * ii
-                    C1 = C0 + indice_width_of_line
+                    C0 = idx_left_end + indices_width_of_line * ii
+                    C1 = C0 + indices_width_of_line
                     if C0 < 0 or C1 >= self.nchan - 1:
                         continue
                     velo = (self.velocity[C0] + self.velocity[C1 - 1]) / 2.0 - velocity_line_center
