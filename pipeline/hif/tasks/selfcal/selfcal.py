@@ -373,7 +373,7 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         # collect the target list
         scal_targets = self._get_scaltargets(scal=True)
-        scal_targets = self._check_mosaic(scal_targets)
+        scal_targets = self._check_scaltargets(scal_targets)
         if not scal_targets:
             return scal_targets
 
@@ -514,22 +514,27 @@ class Selfcal(basetask.StandardTaskTemplate):
     def analyse(self, results):
         return results
 
-    def _check_mosaic(self, scal_targets):
-        """Check if the mosaic is a mosaic or a single field.
+    def _check_scaltargets(self, scal_targets):
+        """Filter out the sources that the selfcal heuristics should not process.
         
-        This is a workaround for a bug in the selfcal heuristics where it will fail if the mosaic is a single field.
+        PIPE-1447/PIPE-1915: we do not execute selfcal heuristics for mosaic or ephemeris sources.
         """
 
         final_scal_target = []
         for scal_target in scal_targets:
-            is_mosaic = scal_target['heuristics'].is_mosaic(scal_target['field'], scal_target['intent'])
-            if is_mosaic:
+            if scal_target['heuristics'].is_mosaic(scal_target['field'], scal_target['intent']):
                 LOG.warning(
                     'Selfcal heuristics does not support mosaic. Skipping target {} spw {}.'.format(
                         scal_target['field'],
                         scal_target['spw']))
-            else:
-                final_scal_target.append(scal_target)
+                continue
+            if scal_target['heuristics'].is_eph_obj(scal_target['field']):
+                LOG.warning(
+                    'Selfcal heuristics does not support ephemeris source. Skipping target {} spw {}.'.format(
+                        scal_target['field'],
+                        scal_target['spw']))
+                continue
+            final_scal_target.append(scal_target)
 
         return final_scal_target
 
