@@ -67,6 +67,7 @@ class MeasurementSet(object):
         acs_software_build_version: ALMA Common Software build version used to create this MS. (None if not ALMA.)
         phase_calapps_for_check_sources : The phase calapps for the check sources 
             from hifa_gfluxscale
+        phaseup_caltable_for_phase_rms : The bandpass phaseup caltable name from hifa_bandpass
         fluxscale_fluxes: flux measurements derived by CASA's fluxscale; used
             in ALMA interferometry polarisation calibration.
     """
@@ -144,6 +145,11 @@ class MeasurementSet(object):
         # so they can be added to the Diagnostic Phase Vs Time plots for hifa_timegaincal
         self.phase_calapps_for_check_sources = []
 
+        # Added for ALMA IF to support PIPE-1624
+        # This phaseup caltable name is saved in hifa_bandpass
+        # so it can be used for the phase RMS stability assessment
+        self.phaseup_caltable_for_phase_rms = []
+        
         # This contains flux measurements derived by CASA's fluxscale as
         # derived during hifa_gfluxscale. Added for ALMA IF as part of
         # PIPE-1776 to support polarisation calibration.

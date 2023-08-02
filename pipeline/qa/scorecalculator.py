@@ -13,6 +13,7 @@ import math
 import operator
 import os
 import re
+import traceback
 from typing import List, Tuple, TYPE_CHECKING
 
 import numpy as np
@@ -21,6 +22,7 @@ from scipy.special import erf
 
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
+from pipeline.domain.measurementset import MeasurementSet
 import pipeline.infrastructure.basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -44,6 +46,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_derived_fluxes_snr',                        # ALMA specific
            'score_phaseup_spw_median_snr_for_phase',          # ALMA specific
            'score_phaseup_spw_median_snr_for_check',          # ALMA specific
+           'score_decoherence_assessment',                    # ALMA specific
            'score_refspw_mapping_fraction',                   # ALMA specific
            'score_missing_phaseup_snrs',                      # ALMA specific
            'score_missing_bandpass_snrs',                     # ALMA specific
@@ -1850,6 +1853,107 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
     applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+
+
+@log_qa
+def score_decoherence_assessment(ms: MeasurementSet, phaserms_results, outlier_antennas: str):
+    """
+    Assess the cycle time phase RMS value, which is important as everything longer than a cycle time
+    is corrected by phase referencing (in terms of atmospheric phase variations).
+
+    Also checks the outlier antennas and the 80th percentile baseline with and without flagged antennas.
+    """
+    try:
+        phasermscycle_p80: float = phaserms_results['phasermscycleP80']
+        bl_p80: float = phaserms_results['blP80']
+        bl_p80_orig: float = phaserms_results['blP80orig']
+
+        initial_score = 1.0 - phasermscycle_p80/100.0
+        RMSstring = str(round(phasermscycle_p80, 2))
+
+        LOG.info("For {0}, the Phase RMS calculated over the cycle time for the unflagged baselines longer than 80th percentile is {1} \
+                    deg".format(ms.basename, RMSstring))
+
+        # Stable Phases, < 30 deg phaseRMS
+        if initial_score > 0.7:
+            base_score = 1.0
+            shortmsg = "Excellent stability Phase RMS (<30deg)."
+            longmsg = "For {0}, excellent stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+                        deg over the cycle time.".format(ms.basename, RMSstring)
+
+            # Check for problem antennas and update the score if needed.
+            # these are outliers >100 deg, or those beyond "outlier_limit" in SSFherusitics (6 MAD)
+            if len(outlier_antennas) > 0:
+                base_score = 0.9
+
+        elif initial_score > 0.5 and initial_score <= 0.7:
+            # 30 to 50 deg phase RMS: not really a problem just informative
+            # that the phase noise is elevated - no 'need' to look
+            # as 50 deg phase RMS can still cause ~30% decoherence
+            base_score = 0.9
+            shortmsg = "Stable conditions phase RMS (30-50deg)."
+            longmsg = "For {0}, good stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+                            deg over the cycle time.".format(ms.basename, RMSstring)
+
+        # These are high phase noise -
+        # outliers have already been clipped past 100 degrees
+        # and those >4 MAD above the P80 phase RMS value
+        # so, if we still get here, the phases were poor/v.bad - or there
+        # were too many antennas classed as bad in the analysis function
+        elif initial_score <= 0.5 and initial_score > 0.3:
+            # 50 - 70 deg phase RMS, i.e. 30-50% lost due to decoherence
+            # The initial score is representative
+            base_score = initial_score
+            shortmsg = "Elevated Phase RMS (50-70deg) exceeds stable parameters."
+            longmsg = "For {0}, elevated phase instability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+                            deg over the cycle time. Some image artifacts/defects may occur.".format(ms.basename, RMSstring)
+
+        elif initial_score <= 0.3:
+            if initial_score <= 0.0:
+                base_score = 0.0
+            else:
+                base_score = initial_score
+
+            shortmsg = "High Phase RMS (>70deg) exceeds limit for poor stability"
+            longmsg = "For {0}, very poor phase stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+                        deg over the cycle time. Significant image artifacts/defects may be present.".format(ms.basename, RMSstring)
+
+        else:  # This should never happen
+            base_score = 0.0
+            shortmsg = "The phase RMS could not be assessed."
+            longmsg = "For {}, the spatial structure function could not be assessed".format(ms)
+
+        # Append antenna outlier information to longmsg if present
+        if len(outlier_antennas) > 0:
+            if len(outlier_antennas.split(",")) == 1:
+                longmsg = "{0} {1} has higher phase RMS.".format(longmsg, outlier_antennas)
+            else:
+                longmsg = "{0} {1} have higher phase RMS".format(longmsg, outlier_antennas)
+
+        # The P80 is shorter than the P80 of all data due to notable baseline flagging
+        #       tbd but if the P80 is 10-15% lower than expected - i.e. can later impact QA2
+        #       as the longer baselines have maybe been flagged out
+        if bl_p80 < bl_p80_orig * 0.85:
+            LOG.info("P80 of unflagged data is more than 15% shorter than P80 of all baselines due to baseline and antennas flags")
+            if base_score == 1.0:
+                base_score = 0.9
+            longmsg = "{} P80 of unflagged data is more than 15% shorter than P80 of all baselines".format(longmsg)
+
+    except:
+        # For any error in the above:
+        base_score = 0.0
+        phasermscycle_p80 = 0.0
+        shortmsg = "The phase RMS could not be assessed."
+        longmsg = "For {}, the spatial structure function could not be assessed.".format(ms.basename)
+        LOG.error(traceback.format_exc())
+
+    # Create metric origin
+    phase_stability_origin = pqa.QAOrigin(metric_name='Phase stability',
+                                          metric_score=phasermscycle_p80,
+                                          metric_units='Degrees')
+       
+    return pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin, 
+                       weblog_location=pqa.WebLogLocation.ACCORDION)
 
 
 @log_qa
