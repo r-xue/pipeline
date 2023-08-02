@@ -648,8 +648,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         # Need to record if there are targets for a vislist
         have_targets = {}
 
-        max_num_targets = 0
-
+        expected_num_targets = 0
         for selected_datatype_str, selected_datatype_info in zip(selected_datatypes_str, selected_datatypes_info):
             for band in band_spws:
                 if band != None:
@@ -730,12 +729,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                         if vislist_for_field != []:
                             vislist_field_spw_combinations[field_intent[0]]['vislist'] = vislist_for_field
                             vislist_field_spw_combinations[field_intent[0]]['spwids'] = sorted(list(spwids_for_field), key=int)
-
-                            # Add number of expected clean targets
-                            if inputs.specmode == 'cont':
-                                max_num_targets += 1
-                            else:
-                                max_num_targets += len(spwids_for_field)
 
                     # Save original vislist_field_spw_combinations dictionary to be able to generate
                     # proper messages if the vis list changes when falling back to a different data
@@ -1132,6 +1125,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 local_selected_datatype_str = global_datatype_str
                                 local_selected_datatype_info = global_datatype_info
 
+                            expected_num_targets += 1
+
                             # PIPE-1710: add a suffix to image file name depending on datatype
                             if local_selected_datatype_str.lower().startswith('regcal'):
                                 datatype_suffix = 'regcal'
@@ -1307,7 +1302,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode})
 
         # Record total number of expected clean targets
-        result.set_max_num_targets(max_num_targets)
+        result.set_expected_num_targets(expected_num_targets)
 
         # Pass contfile and linefile names to context (via resultobjects)
         # for hif_findcont and hif_makeimages
