@@ -323,7 +323,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Determine deconvolver
         if inputs.deconvolver in (None, ''):
-            inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw, inputs.intent)
+            inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw, inputs.intent, inputs.stokes)
 
         # Determine weighting
         if inputs.weighting in (None, ''):
@@ -381,7 +381,8 @@ class Tclean(cleanbase.CleanBase):
             imsize = self.image_heuristics.imsize(fields=field_ids,
                                                   cell=inputs.cell,
                                                   primary_beam=largest_primary_beam,
-                                                  spwspec=imsize_spwlist)
+                                                  spwspec=imsize_spwlist,
+                                                  intent=inputs.intent)
 
             if inputs.imsize in (None, [], ''):
                 inputs.imsize = imsize

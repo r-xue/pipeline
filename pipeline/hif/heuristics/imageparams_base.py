@@ -860,12 +860,23 @@ class ImageParamsHeuristics(object):
         """Determine if it's a mosaic or not.
         
         We consider imaging to be a mosaic if there is more than 1 field_id for any ms.
+        field_str_list is a list of strings, one for each ms, containing the field_ids joined by commas.
         """
         is_mosaic = False
         for field_str in field_str_list:
             if ',' in field_str:
                 is_mosaic = True
         return is_mosaic
+
+    def is_mosaic(self, field, intent, vislist=None):
+        """Determines if the given field/intent from a MS list is considered as a mosaic or not."""
+
+        if vislist is None:
+            vislist = self.vislist
+
+        field_str_list = self.field(intent, field, vislist=vislist)
+
+        return self._is_mosaic(field_str_list)
 
     def is_eph_obj(self, field):
 
@@ -989,7 +1000,7 @@ class ImageParamsHeuristics(object):
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
-               centreonly=False, vislist=None, spwspec=None, intent: str = ''):
+               centreonly=False, vislist=None, spwspec=None, intent: str = '', joint_intents: str = ''):
         """
         Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
         is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
@@ -1003,16 +1014,19 @@ class ImageParamsHeuristics(object):
         :param centreonly: if True, then ignore the spread of field centers.
         :param vislist: list of visibility path string to be used for imaging. If not set then use all visibilities
             in the context.
-        :param intent: field/source intent
         :param spwspec: ID list of spectral windows used to create image product. List or string containing comma
             separated spw IDs list. Not used in the base method.
+        :param intent: field/source intent
+        :param joint_intents: stage intents
         :return: two element list of pixel count along x and y image axes.
         """
 
         # For the time being PIPE-1829 asks for a fixed imsize
         # for polarization calibrators. The subsequent image
-        # analysis depends on the exact numbers.
-        if intent == 'POLARIZATION':
+        # analysis depends on the exact numbers. The IQUV imaging
+        # and analysis is only performed if the stage asks for
+        # polarization intent only.
+        if intent == 'POLARIZATION' and joint_intents == 'POLARIZATION':
             return [256, 256]
 
         if vislist is None:
@@ -1189,8 +1203,8 @@ class ImageParamsHeuristics(object):
 
         return pblimit_image, pblimit_cleanmask
 
-    def deconvolver(self, specmode, spwspec, intent: str = '') -> str:
-        if intent == 'POLARIZATION':
+    def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
+        if intent == 'POLARIZATION' and stokes == 'IQUV':
             return 'clarkstokes'
 
         if (specmode == 'cont'):
@@ -2122,7 +2136,7 @@ class ImageParamsHeuristics(object):
 
         return None
 
-    def stokes(self, intent: str = '') -> str:
+    def stokes(self, intent: str = '', joint_intents: str = '') -> str:
         return 'I'
 
     def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None, results_list=None, clean_no_mask=None):

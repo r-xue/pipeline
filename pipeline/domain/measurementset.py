@@ -12,6 +12,7 @@ import re
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import conversion
 if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
@@ -66,6 +67,8 @@ class MeasurementSet(object):
         acs_software_build_version: ALMA Common Software build version used to create this MS. (None if not ALMA.)
         phase_calapps_for_check_sources : The phase calapps for the check sources 
             from hifa_gfluxscale
+        fluxscale_fluxes: flux measurements derived by CASA's fluxscale; used
+            in ALMA interferometry polarisation calibration.
     """
 
     def __init__(self, name: str, session: Optional[str] = None):
@@ -140,6 +143,11 @@ class MeasurementSet(object):
         # These calapps are saved off from hifa_gfluxscale and saved here 
         # so they can be added to the Diagnostic Phase Vs Time plots for hifa_timegaincal
         self.phase_calapps_for_check_sources = []
+
+        # This contains flux measurements derived by CASA's fluxscale as
+        # derived during hifa_gfluxscale. Added for ALMA IF as part of
+        # PIPE-1776 to support polarisation calibration.
+        self.fluxscale_fluxes: Optional[collections.defaultdict] = None
 
     def _calc_filesize(self):
         """
@@ -217,7 +225,10 @@ class MeasurementSet(object):
             if isinstance(spw, str):
                 if spw in ('', '*'):
                     spw = ','.join(str(spw.id) for spw in self.spectral_windows)
-                spw = spw.split(',')
+                if '~' in spw:
+                    spw = conversion.range_to_list(spw)
+                else:
+                    spw = spw.split(',')
             spw = {int(i) for i in spw}
             pool = {scan for scan in pool for scan_spw in scan.spws if scan_spw.id in spw}
             pool = list(pool)
