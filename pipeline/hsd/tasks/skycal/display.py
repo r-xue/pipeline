@@ -252,7 +252,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                 scans = msobj.get_scans(scan_intent='REFERENCE', spw=spw)
                 return sorted(scans, key=lambda s: s.id)
 
-            # The timeTimeThresholdSeconds should be equal to or smaller than
+            # The solutionTimeThresholdSeconds should be equal to or smaller than
             # the time gap between the previous reference scan and a selected scan.
             myqa = casa_tools.quanta
             scans_all = __get_sorted_reference_scans(ms)
