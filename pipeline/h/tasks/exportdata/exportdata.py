@@ -636,13 +636,13 @@ class ExportData(basetask.StandardTaskTemplate):
         pipemanifest.add_environment_info(ouss)
 
         if stdfproducts.ppr_file:
-            pipemanifest.add_pprfile(ouss, os.path.basename(stdfproducts.ppr_file))
+            pipemanifest.add_pprfile(ouss, os.path.basename(stdfproducts.ppr_file), oussid)
 
         # Add the flagging and calibration products
         for session_name in sessiondict:
             session = pipemanifest.set_session(ouss, session_name)
             if exportcalprods:
-                pipemanifest.add_caltables(session, sessiondict[session_name][1])
+                pipemanifest.add_caltables(session, sessiondict[session_name][1], session_name)
             for vis_name in sessiondict[session_name][0]:
                 immatchlist = [imname for imname in per_ms_calimages if imname.startswith(vis_name)]
                 (ms_file, flags_file, calapply_file) = (None, None, None)
@@ -654,17 +654,17 @@ class ExportData(basetask.StandardTaskTemplate):
                                              'calibrator')
 
         # Add a tar file of the web log
-        pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file))
+        pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file), oussid)
 
         # Add the processing log independently of the web log
-        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file))
+        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file), oussid)
 
         # Add the processing script independently of the web log
-        pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript))
+        pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript), oussid)
 
         # Add the restore script independently of the web log
         if stdfproducts.casa_restore_script != 'Undefined':
-            pipemanifest.add_restorescript(ouss, os.path.basename(stdfproducts.casa_restore_script))
+            pipemanifest.add_restorescript(ouss, os.path.basename(stdfproducts.casa_restore_script), oussid)
 
         # Add the calibrator images
         pipemanifest.add_images(ouss, per_ous_calimages, 'calibrator', per_ous_calimages_keywords)
@@ -1182,22 +1182,37 @@ finally:
                                 'naxis2', 'ctype2', 'cunit2', 'crpix2', 'crval2', 'cdelt2',
                                 'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
                                 'naxis4', 'ctype4', 'cunit4', 'crpix4', 'crval4', 'cdelt4',
-                                'bmaj', 'bmin', 'bpa', 'robust', 'weight']:
-                        try:
-                            fits_keywords[key] = '{}'.format(str(ff[0].header[key]))
-                        except:
-                            # Some images do not have beam, robust or weight keywords
-                            fits_keywords[key] = 'N/A'
+                                'bmaj', 'bmin', 'bpa', 'robust', 'weight',
+                                'rms', 'effbw', 'level',
+                                'ous', 'ctrfrq', 'obspatt', 'arrays',
+                                'pol', 'modifier']:
+                        fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
 
                     if 'nspwnam' in ff[0].header:
                         nspwnam = ff[0].header['nspwnam']
-                        fits_keywords['nspwnam'] = '{}'.format(str(nspwnam))
+                        fits_keywords['nspwnam'] = str(nspwnam)
                         for i in range(1, nspwnam+1):
                             key = 'spwnam{:02d}'.format(i)
-                            try:
-                                fits_keywords[key] = '{}'.format(str(ff[0].header[key]))
-                            except:
-                                fits_keywords[key] = 'N/A'
+                            fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
+
+                    # Some names and/or values need to be mapped
+                    fits_keywords['imagemin'] = str(ff[0].header.get('datamin', 'N/A'))
+                    fits_keywords['imagemax'] = str(ff[0].header.get('datamax', 'N/A'))
+                    fits_keywords['producttype'] = str(ff[0].header.get('specmode', 'N/A'))
+                    imagetype = str(ff[0].header['type'])
+                    if imagetype == 'flux':
+                        fits_keywords['datatype'] = 'pb'
+                    elif imagetype == 'pbcorimage':
+                        fits_keywords['datatype'] = 'pbcor'
+                    elif imagetype == 'cleanmask':
+                        fits_keywords['datatype'] = 'mask'
+                    elif imagetype == 'singledish':
+                        fits_keywords['datatype'] = 'sd'
+                    else:
+                        fits_keywords['datatype'] = 'N/A'
+
+                    fits_keywords['format'] = 'fits'
+
                     ff.close()
                 except Exception as e:
                     LOG.info('Fetching FITS keywords for {} failed: {}'.format(fitsfile, e))
@@ -1209,18 +1224,18 @@ finally:
         return new_cleanlist, fits_list, fits_keywords_list
 
     @staticmethod
-    def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report):
+    def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report, ous_name):
 
         pipemanifest = manifest.PipelineManifest('')
         pipemanifest.import_xml(manifest_file)
         ouss = pipemanifest.get_ous()
 
         if aqua_report:
-            pipemanifest.add_aqua_report(ouss, os.path.basename(aqua_report))
+            pipemanifest.add_aqua_report(ouss, os.path.basename(aqua_report), ous_name)
 
         if aux_fproducts:
             # Add auxiliary data products file
-            pipemanifest.add_aux_products_file(ouss, os.path.basename(aux_fproducts))
+            pipemanifest.add_aux_products_file(ouss, os.path.basename(aux_fproducts), ous_name)
 
         # Add the auxiliary caltables
         if aux_caltablesdict:
@@ -1228,7 +1243,7 @@ finally:
                 session = pipemanifest.get_session(ouss, session_name)
                 if session is None:
                     session = pipemanifest.set_session(ouss, session_name)
-                pipemanifest.add_auxcaltables(session, aux_caltablesdict[session_name][1])
+                pipemanifest.add_auxcaltables(session, aux_caltablesdict[session_name][1], session_name)
                 for vis_name in aux_caltablesdict[session_name][0]:
                     pipemanifest.add_auxasdm(session, vis_name, aux_calapplysdict[vis_name])
 
