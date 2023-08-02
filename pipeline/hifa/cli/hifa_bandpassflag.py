@@ -3,12 +3,13 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None, antenna=None, hm_phaseup=None,
                       phaseupsolint=None, phaseupbw=None, phaseupsnr=None, phaseupnsols=None, hm_bandpass=None,
                       solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None,
                       combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None, antnegsig=None,
                       antpossig=None, tmantint=None, tmint=None, tmbl=None, antblnegsig=None, antblpossig=None,
-                      relaxed_factor=None, niter=None, pipelinemode=None, dryrun=None, acceptresults=None):
+                      relaxed_factor=None, niter=None, dryrun=None, acceptresults=None):
 
     """
     hifa_bandpassflag ---- Bandpass calibration flagging
@@ -27,8 +28,7 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
     run and applied. If no points were flagged, the 'after' plots are not generated
     or displayed.
     
-    If pipeline mode is 'getinputs' then None is returned. Otherwise the
-    results object for the pipeline task is returned.
+    The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -143,11 +143,6 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
     niter          Maximum number of times to iterate on evaluation of flagging
                    heuristics. If an iteration results in no new flags, then subsequent
                    iterations are skipped.
-    pipelinemode   The pipeline operating mode. In 'automatic' mode the pipeline
-                   determines the values of all context defined pipeline inputs automatically.
-                   In interactive mode the user can set the pipeline context defined parameters
-                   manually. In 'getinputs' mode the user can check the settings of
-                   all pipeline parameters without running the task.
     dryrun         Run the commands (True) or generate the commands to be run but
                    do not execute (False).
     acceptresults  Automatically accept the results of the task into the pipeline context (True)

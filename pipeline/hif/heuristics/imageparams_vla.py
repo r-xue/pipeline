@@ -114,8 +114,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         try:
             mean_SBL, p95_SBL = get_mean_amplitude(vis=vis, uvrange=uvrange_SBL, field=field, spw=real_spwids_str)
         except Exception as e:
-            LOG.warning(e)
-            LOG.warning("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(
+            LOG.debug(e)
+            LOG.info("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(
                 str(field), real_spwids_str))
             return '>0.0klambda', 1.0
 
@@ -126,8 +126,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         try:
             mean_MBL, p95_MBL = get_mean_amplitude(vis=vis, uvrange=uvrange_MBL, field=field, spw=real_spwids_str)
         except Exception as e:
-            LOG.warning(e)
-            LOG.warning("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(
+            LOG.debug(e)
+            LOG.info("Data selection error   Field: {!s}, spw: {!s}.   uvrange set to >0.0klambda ".format(
                 str(field), real_spwids_str))
             return '>0.0klambda', 1.0
 

@@ -194,9 +194,9 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
     casa_tools.post_to_log("Procedure name: " + procedureName + "\n", echo_to_screen=echo_to_screen)
 
     # Names of import tasks that need special treatment:
-    import_tasks = ('ImportData', 'ALMAImportData', 'VLAImportData', 'SerialSDImportData', 'HpcSDImportData',
+    import_tasks = ('ImportData', 'ALMAImportData', 'VLAImportData', 'SDImportData',
                     'NROImportData')
-    restore_tasks = ('RestoreData', 'ALMARestoreData', 'VLARestoreData', 'SDRestoreData', 'HpcSDImportData',
+    restore_tasks = ('RestoreData', 'ALMARestoreData', 'VLARestoreData', 'SDRestoreData',
                      'NRORestoreData')
 
     # Loop over the commands

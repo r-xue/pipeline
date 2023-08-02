@@ -17,7 +17,6 @@ import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable, DataType, MeasurementSet
-from pipeline.extern import sensitivity_improvement
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
@@ -40,10 +39,9 @@ LOG = infrastructure.get_logger(__name__)
 
 # SensitivityInfo:
 #     sensitivity: Sensitivity of an image
-#     representative: True if the image is of the representative SpW (regardless of source)
 #     frequency_range: frequency ranges from which the sensitivity is calculated
 #     to_export: True if the sensitivity shall be exported to aqua report. (to avoid exporting NRO sensitivity in K)
-SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity representative frequency_range to_export')
+SensitivityInfo = collections.namedtuple('SensitivityInfo', 'sensitivity frequency_range to_export')
 # RasterInfo: center_ra, center_dec = R.A. and Declination of map center
 #             width=map extent along scan, height=map extent perpendicular to scan
 #             angle=scan direction w.r.t. horizontal coordinate, row_separation=separation between raster rows.
@@ -222,7 +220,9 @@ class SDImaging(basetask.StandardTaskTemplate):
                 try:
                     self.__generate_parameters_for_calculate_sensitivity(_cp, _rgp, _pp)
 
-                    self.__estimate_sensitivity(_cp, _rgp, _pp)
+                    self.__set_representative_flag(_rgp, _pp)
+
+                    self.__warn_if_early_cycle(_rgp)
 
                     self.__calculate_sensitivity(_cp, _rgp, _pp)
                 finally:
@@ -920,53 +920,32 @@ class SDImaging(basetask.StandardTaskTemplate):
         __combine_task = sdcombine.SDImageCombine(__combine_inputs)
         _rgp.imager_result = self._executor.execute(__combine_task)
 
-    def __estimate_sensitivity(self, _cp: imaging_params.CommonParameters,
-                               _rgp: imaging_params.ReductionGroupParameters,
-                               _pp: imaging_params.PostProcessParameters):
-        """Estimate sensitivity before calculation.
+    def __set_representative_flag(self,
+                                  _rgp: imaging_params.ReductionGroupParameters,
+                                  _pp: imaging_params.PostProcessParameters):
+        """Set is_representative_source_and_spw flag.
 
         Args:
-            _cp : Common parameter object of prepare()
             _rgp : Reduction group parameter object of prepare()
             _pp : Imaging post process parameters of prepare()
         """
-        __rep_bw = _rgp.ref_ms.representative_target[2]
-        __rep_source_name, __rep_spwid = _rgp.ref_ms.get_representative_source_spw()
-        _pp.is_representative_spw = __rep_spwid == _rgp.combined.spws[REF_MS_ID] and __rep_bw is not None
-        _pp.is_representative_source_spw = __rep_spwid == _rgp.combined.spws[REF_MS_ID] and __rep_source_name == \
-            utils.dequote(_rgp.source_name)
-        __cqa = casa_tools.quanta
+        __rep_source_name, __rep_spw_id = _rgp.ref_ms.get_representative_source_spw()
+        _pp.is_representative_source_and_spw = \
+            __rep_spw_id == _rgp.combined.spws[REF_MS_ID] and \
+            __rep_source_name == utils.dequote(_rgp.source_name)
 
-        if _pp.is_representative_spw:
-            # skip estimate if data is Cycle 2 and earlier + th effective BW is nominal (= chan_width)
-            __spwobj = _rgp.ref_ms.get_spectral_window(__rep_spwid)
-            if __cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01' and \
-                    __spwobj.channels.chan_effbws[0] == numpy.abs(__spwobj.channels.chan_widths[0]):
-                _pp.is_representative_spw = False
-                LOG.warning("Cycle 2 and earlier project with nominal effective band width. "
-                            "Reporting RMS at native resolution.")
-            else:
-                if not __cqa.isquantity(__rep_bw):  # assume Hz
-                    __rep_bw = __cqa.quantity(__rep_bw, 'Hz')
-                LOG.info("Estimate RMS in representative bandwidth: {:f}kHz (native: {:f}kHz)".format(
-                    __cqa.getvalue(__cqa.convert(__cqa.quantity(__rep_bw), 'kHz'))[0], _pp.chan_width * 1.e-3))
-                __factor = sensitivity_improvement.sensitivityImprovement(_rgp.ref_ms.name, __rep_spwid,
-                                                                          __cqa.tos(__rep_bw))
-                if __factor is None:
-                    LOG.warning('No image RMS improvement because representative bandwidth '
-                                'is narrower than native width')
-                    __factor = 1.0
-                LOG.info("Image RMS improvement of factor {:f} estimated. {:f} => {:f} {}".format(
-                    __factor, _pp.image_rms, _pp.image_rms / __factor, _pp.brightnessunit))
-                _pp.image_rms = _pp.image_rms / __factor
-                _pp.chan_width = numpy.abs(__cqa.getvalue(__cqa.convert(__cqa.quantity(__rep_bw), 'Hz'))[0])
-                _pp.theoretical_rms['value'] = _pp.theoretical_rms['value'] / __factor
-        elif __rep_bw is None:
-            LOG.warning("Representative bandwidth is not available. "
-                        "Skipping estimate of sensitivity in representative band width.")
-        elif __rep_spwid is None:
-            LOG.warning("Representative SPW is not available. "
-                        "Skipping estimate of sensitivity in representative band width.")
+    def __warn_if_early_cycle(self, _rgp: imaging_params.ReductionGroupParameters):
+        """Warn when it processes MeasurementSet of ALMA Cycle 2 and earlier.
+
+        Args:
+            _rgp (imaging_params.ReductionGroupParameters): Reduction group parameter object of prepare()
+        """
+        __cqa = casa_tools.quanta
+        if _rgp.ref_ms.antenna_array.name == 'ALMA' and \
+           __cqa.time(_rgp.ref_ms.start_time['m0'], 0, ['ymd', 'no_time'])[0] < '2015/10/01':
+            LOG.warning("ALMA Cycle 2 and earlier project does not have a valid effective bandwidth. "
+                        "Therefore, a nominal value of channel separation loaded from the MS "
+                        "is used as an effective bandwidth for RMS estimation.")
 
     def __calculate_sensitivity(self, _cp: imaging_params.CommonParameters,
                                 _rgp: imaging_params.ReductionGroupParameters,
@@ -991,20 +970,20 @@ class SDImaging(basetask.StandardTaskTemplate):
         _pp.stat_freqs = str(', ').join(['{:f}~{:f}GHz'.format(__freqs[__iseg] * 1.e-9, __freqs[__iseg + 1] * 1.e-9)
                                         for __iseg in range(0, len(__freqs), 2)])
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _rgp.combined.infiles]
+        __bw = __cqa.quantity(_pp.chan_width, 'Hz')
+        __spwid = str(_rgp.combined.v_spws[REF_MS_ID])
+        __spwobj = _rgp.ref_ms.get_spectral_window(__spwid)
+        __effective_bw = __cqa.quantity(__spwobj.channels.chan_effbws[0], 'Hz')
         __sensitivity = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
-                                    spw=str(_rgp.combined.v_spws[REF_MS_ID]),
-                                    is_representative=_pp.is_representative_source_spw,
-                                    bandwidth=__cqa.quantity(_pp.chan_width, 'Hz'),
-                                    bwmode='repBW', beam=_pp.beam, cell=_pp.qcell,
+                                    spw=__spwid, is_representative=_pp.is_representative_source_and_spw,
+                                    bandwidth=__bw, bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
                                     sensitivity=__cqa.quantity(_pp.image_rms, _pp.brightnessunit),
-                                    imagename=_rgp.imagename)
+                                    effective_bw=__effective_bw, imagename=_rgp.imagename)
         __theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
-                                          spw=str(_rgp.combined.v_spws[REF_MS_ID]),
-                                          is_representative=_pp.is_representative_source_spw,
-                                          bandwidth=__cqa.quantity(_pp.chan_width, 'Hz'),
-                                          bwmode='repBW', beam=_pp.beam, cell=_pp.qcell,
+                                          spw=__spwid, is_representative=_pp.is_representative_source_and_spw,
+                                          bandwidth=__bw, bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
                                           sensitivity=_pp.theoretical_rms)
-        __sensitivity_info = SensitivityInfo(__sensitivity, _pp.is_representative_spw, _pp.stat_freqs, (_cp.is_not_nro()))
+        __sensitivity_info = SensitivityInfo(__sensitivity, _pp.stat_freqs, (_cp.is_not_nro()))
         self._finalize_worker_result(self.inputs.context, _rgp.imager_result, sourcename=_rgp.source_name,
                                      spwlist=_rgp.combined.v_spws, antenna='COMBINED', specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=self.stokes, validsp=_pp.validsps, rms=_pp.rmss,
@@ -1716,28 +1695,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             _tirp : Parameter object of calculate_theoretical_image_rms()
         """
         with casa_tools.MSMDReader(_tirp.infile) as __msmd:
-            __ms_chanwidth = numpy.abs(__msmd.chanwidths(_tirp.spwid).mean())
-            __ms_effbw = __msmd.chaneffbws(_tirp.spwid).mean()
-            __ms_nchan = __msmd.nchan(_tirp.spwid)
-            __nchan_avg = sensitivity_improvement.onlineChannelAveraging(_tirp.infile, _tirp.spwid, __msmd)
-        if _tirp.bandwidth / __ms_chanwidth < 1.1:  # imaging by the original channel
-            _tirp.effBW = __ms_effbw
+            _tirp.effBW = __msmd.chaneffbws(_tirp.spwid).mean()
             LOG.info('Using an MS effective bandwidth, {} kHz'.format(_tirp.effBW * 0.001))
-        else:
-            __image_map_chan = _tirp.bandwidth / __ms_chanwidth
-            _tirp.effBW = __ms_chanwidth * sensitivity_improvement.windowFunction('hanning',
-                                                                                  channelAveraging=__nchan_avg,
-                                                                                  returnValue='EffectiveBW',
-                                                                                  useCAS8534=True,
-                                                                                  spwchan=__ms_nchan,
-                                                                                  nchan=__image_map_chan)
-            LOG.info('Using an adjusted effective bandwidth of image, {} kHz'.format(_tirp.effBW * 0.001))
-            # else: # pre-Cycle 3 alma data
-
-        #    effBW = ms_chanwidth * sensitivity_improvement.windowFunction('hanning',
-        #                                                                  channelAveraging=nchan_avg,
-        #                                                                  returnValue='EffectiveBW')
-        #    LOG.info('Using an estimated effective bandwidth {} kHz'.format(effBW*0.001))
 
     def __loop_initializer_of_theoretical_image_rms(self, _cp: imaging_params.CommonParameters,
                                                     _rgp: imaging_params.ReductionGroupParameters,

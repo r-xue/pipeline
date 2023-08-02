@@ -1294,6 +1294,11 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 result.add_target(target)
 
+        if inputs.intent == 'TARGET' and result.num_targets == 0 and not result.clean_list_info:
+            result.set_info({'msg': 'No data found. No imaging targets were created.',
+                             'intent': inputs.intent,
+                             'specmode': inputs.specmode})
+
         if inputs.intent == 'CHECK':
             if not any(have_targets.values()):
                 info_msg = 'No check source found.'
@@ -1327,8 +1332,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         deconvolver, nterms = None, None
         context = self.inputs.context
 
-        if hasattr(context, 'scal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
-            for sc_target in context.scal_targets:
+        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+            for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
@@ -1351,8 +1356,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
             return drcorrect
 
-        if hasattr(context, 'scal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
-            for sc_target in context.scal_targets:
+        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+            for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:

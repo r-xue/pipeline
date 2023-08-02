@@ -860,12 +860,23 @@ class ImageParamsHeuristics(object):
         """Determine if it's a mosaic or not.
         
         We consider imaging to be a mosaic if there is more than 1 field_id for any ms.
+        field_str_list is a list of strings, one for each ms, containing the field_ids joined by commas.
         """
         is_mosaic = False
         for field_str in field_str_list:
             if ',' in field_str:
                 is_mosaic = True
         return is_mosaic
+
+    def is_mosaic(self, field, intent, vislist=None):
+        """Determines if the given field/intent from a MS list is considered as a mosaic or not."""
+
+        if vislist is None:
+            vislist = self.vislist
+
+        field_str_list = self.field(intent, field, vislist=vislist)
+
+        return self._is_mosaic(field_str_list)
 
     def is_eph_obj(self, field):
 

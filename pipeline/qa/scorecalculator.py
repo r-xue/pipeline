@@ -3,6 +3,9 @@ Created on 9 Jan 2014
 
 @author: sjw
 """
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import collections
 import datetime
 import functools
@@ -11,7 +14,7 @@ import operator
 import os
 import re
 import traceback
-from typing import List
+from typing import List, Tuple, TYPE_CHECKING
 
 import numpy as np
 from scipy import interpolate
@@ -28,6 +31,10 @@ import pipeline.infrastructure.utils as utils
 import pipeline.qa.checksource as checksource
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.infrastructure import casa_tools
+
+if TYPE_CHECKING:
+    from pipeline.hif.tasks.gaincal.common import GaincalResults
+    from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
 
 __all__ = ['score_polintents',                                # ALMA specific
            'score_bands',                                     # ALMA specific
@@ -52,6 +59,10 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
            'score_renorm',                                    # ALMA IF specific
+           'score_polcal_gain_ratio',                         # ALMA IF specific
+           'score_polcal_gain_ratio_rms',                     # ALMA IF specific
+           'score_polcal_leakage',                            # ALMA IF specific
+           'score_polcal_residual_pol',                       # ALMA IF specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -453,6 +464,7 @@ def score_bwswitching(mses):
                           metric_units='MS score based on the number of spws without phase calibrators')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
 
 @log_qa
 def score_bands(mses):
@@ -1979,6 +1991,7 @@ def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_thres
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
+
 @log_qa
 def score_missing_phaseup_snrs(ms, spwids, phsolints):
     """
@@ -2774,7 +2787,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         fitflux = None
         fitflux_err = None
         fitpeak = None
-        score = 0.0
+        score = 0.34
         longmsg = 'Check source fit failed for %s field %s spwid %d' % (msnames, fieldname, spwid)
         shortmsg = 'Check source fit failed'
         metric_score = 'N/A'
@@ -2791,16 +2804,6 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         shortmsg = 'Check source fit successful'
 
         warnings = []
-
-        if refflux is not None:
-            coherence = fitdict['fluxloss']['value'] * 100.0
-            flux_score = max(0.0, 1.0 - fitdict['fluxloss']['value'])
-            flux_metric = fitdict['fluxloss']['value']
-            flux_unit = 'flux loss'
-        else:
-            flux_score = 0.0
-            flux_metric = 'N/A'
-            flux_unit = 'flux loss'
 
         offset_score = 0.0
         offset_metric = 'N/A'
@@ -3318,6 +3321,7 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
+
 def score_renorm(result):
     if result.renorm_applied:
         msg = 'Restore successful with renormalization applied'
@@ -3330,6 +3334,247 @@ def score_renorm(result):
                             metric_score=score,
                             metric_units='')
     return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+@log_qa
+def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: GaincalResults,
+                            threshold: float = 0.1) -> List[pqa.QAScore]:
+    """
+    This QA heuristic inspects the gain ratios in an X/Y gain ratio caltable
+    and creates a score based on how large the deviation from one is.
+
+    Args:
+        session_name: name of session being evaluated.
+        ant_names: dictionary mapping antenna IDs to names.
+        xyratio_result: Gaincal task result object containing the
+            CalApplication for the caltable to analyze.
+        threshold: threshold used to determine whether the gain ratio deviates
+            too much from 1 (resulting in a lowered score).
+    Returns:
+        List of QAScore objects.
+    """
+    scores = []
+    # Score each caltable in result.
+    for calapp in xyratio_result.final:
+        # Retrieve data from caltable.
+        with casa_tools.TableReader(calapp.gaintable) as table:
+            gains = np.squeeze(table.getcol('CPARAM'))
+            spws = table.getcol('SPECTRAL_WINDOW_ID')
+            ants = table.getcol('ANTENNA1')
+
+        # Score each SpW separately.
+        for spwid in sorted(set(spws)):
+            ind_spw = np.where(spws == spwid)[0]
+            ratios = np.abs(gains[0, ind_spw]) / np.abs(gains[1, ind_spw])
+            ind_bad = np.where(np.abs(1 - ratios) > threshold)[0]
+
+            if len(ind_bad) > 0:
+                score = 0.65
+                ant_str = utils.commafy([f"{ant_names[i]} (#{i})" for i in ants[ind_bad]], quotes=False)
+                longmsg = f"Session '{session_name}' has gain ratios deviate from 1 by more than {threshold} for SpW" \
+                          f" {spwid}, antenna(s) {ant_str}"
+                shortmsg = "Large gain ratio deviation"
+                origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio',
+                                      metric_score=score,
+                                      metric_units='gain ratio')
+                scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    # If no large deviations in gain ratio are found, then create a good score.
+    if not scores:
+        score = 1.0
+        longmsg = f"Session '{session_name}' has gain ratios with deviations from 1 <= the threshold of {threshold}" \
+                  f" for all SpWs and all antennas."
+        shortmsg = "Gain ratio"
+        origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio',
+                              metric_score=score,
+                              metric_units='gain ratio')
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    return scores
+
+
+@log_qa
+def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, List], threshold: float = 0.02) \
+        -> pqa.QAScore:
+    """
+    This QA heuristic receives gain ratio RMS corresponding to scan IDs, and
+    scores outliers beyond the threshold.
+
+    Args:
+        session_name: name of session being evaluated.
+        gain_ratio_rms: tuple containing a list of scan IDs and a list of
+            corresponding gain ratio RMS.
+        threshold: threshold used to determine whether the gain ratio RMS is
+            high enough to return a lowered score.
+
+    Returns:
+        QAScore object
+    """
+    # Retrieve the gain ratio RMS and scan IDs.
+    scanids, ratio_rms = gain_ratio_rms
+
+    # Identify outlier gain ratio RMS
+    ind_bad = np.where(np.asarray(ratio_rms) > threshold)[0]
+
+    if len(ind_bad) > 0:
+        score = 0.6
+        longmsg = f"Session '{session_name}' has gain ratio RMS greater than {threshold} in scan(s)" \
+                  f" {utils.commafy([str(s) for s in np.asarray(scanids)[ind_bad]], quotes=False)}."
+        shortmsg = "High gain ratio RMS"
+    else:
+        score = 1.0
+        longmsg = f"Session '{session_name}' has gain ratio RMS <= the threshold of {threshold} for all scans."
+        shortmsg = "Gain ratio RMS"
+
+    origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio_rms',
+                          metric_score=score,
+                          metric_units='gain ratio rms')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
+def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: PolcalWorkerResults, th_poor: float = 0.10,
+                         th_bad: float = 0.15) -> List[pqa.QAScore]:
+    """
+    This heuristic inspects the polarization calibrator leakage (D-terms)
+    solutions caltable and create a score based on how large the deviation from
+    zero is.
+
+    Args:
+        session_name: name of session being evaluated.
+        ant_names: dictionary mapping antenna IDs to names.
+        leakage_result: PolcalWorker task result object containing the
+            CalApplication for the leakage caltable to analyze.
+        th_poor: threshold used to declare that leakage solutions are poor.
+        th_bad: threshold used to declare that leakage solutions are bad.
+    Returns:
+        List of QAScore objects.
+    """
+    scores = []
+    # Score each caltable in result.
+    for calapp in leakage_result.final:
+        # Retrieve data from leakage solutions caltable.
+        with casa_tools.TableReader(calapp.gaintable) as table:
+            # Retrieve unique SpWs and antennas.
+            uniq_spws = sorted(set(table.getcol('SPECTRAL_WINDOW_ID')))
+            uniq_ants = sorted(set(table.getcol('ANTENNA1')))
+
+            # Score each SpW separately.
+            for spwid in uniq_spws:
+                # Retrieve D-terms for current SpW.
+                data = table.query(f"SPECTRAL_WINDOW_ID=={spwid}", columns='CPARAM')
+                dterms = data.getcol('CPARAM')
+
+                # For each antenna, check if the D-terms solutions exceed the
+                # threshold.
+                bad_antids = []
+                poor_antids = []
+                for antid in uniq_ants:
+                    pol1 = dterms[0, :, antid]
+                    pol2 = dterms[1, :, antid]
+
+                    rpol1 = abs(np.real(pol1)) > th_bad
+                    ipol1 = abs(np.imag(pol1)) > th_bad
+                    rpol2 = abs(np.real(pol2)) > th_bad
+                    ipol2 = abs(np.imag(pol2)) > th_bad
+
+                    if rpol1.any() or ipol1.any() or rpol2.any() or ipol2.any():
+                        bad_antids.append(antid)
+                        continue
+
+                    rpol1 = abs(np.real(pol1)) > th_poor
+                    ipol1 = abs(np.imag(pol1)) > th_poor
+                    rpol2 = abs(np.real(pol2)) > th_poor
+                    ipol2 = abs(np.imag(pol2)) > th_poor
+
+                    if rpol1.any() or ipol1.any() or rpol2.any() or ipol2.any():
+                        poor_antids.append(antid)
+
+                if poor_antids:
+                    score = 0.75
+                    longmsg = f"Session '{session_name}' has D-terms solutions that deviate by {th_poor}-{th_bad} for" \
+                              f" SpW {spwid}, antenna(s)" \
+                              f" {utils.commafy([ant_names[i] for i in poor_antids], quotes=False)}."
+                    shortmsg = "Large deviation D-terms solutions"
+                    origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
+                                          metric_score=score,
+                                          metric_units='D-terms solutions deviation')
+                    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+                if bad_antids:
+                    score = 0.55
+                    longmsg = f"Session '{session_name}' has D-terms solutions that deviate by more than {th_bad} for" \
+                              f" SpW {spwid}, antenna(s)" \
+                              f" {utils.commafy([ant_names[i] for i in bad_antids], quotes=False)}."
+                    shortmsg = "Very large deviation D-terms solutions"
+                    origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
+                                          metric_score=score,
+                                          metric_units='D-terms solutions deviation')
+                    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    # If no poor D-terms solutions are found, then create a good score.
+    if not scores:
+        score = 1.0
+        longmsg = f"Session '{session_name}' has D-terms solutions <= the threshold of {th_poor} for all SpWs and" \
+                  f" antennas."
+        shortmsg = "D-terms solutions"
+        origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
+                              metric_score=score,
+                              metric_units='D-terms solutions deviation')
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    return scores
+
+
+@log_qa
+def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: float = 0.001) -> List[pqa.QAScore]:
+    """
+    This heuristic inspects the dictionary returned by CASA's polfromgain and
+    scores the residual polarization in Q and U, compared to a threshold.
+
+    Args:
+        session_name: name of session being evaluated.
+        pfg_result: dictionary of results produced by polfromgain
+        threshold: threshold for residual polarization, above which the score
+            should be lowered.
+    Returns:
+        List of QAScore objects.
+    """
+    scores = []
+
+    # Create score for each field.
+    for field_name, field_result in pfg_result.items():
+        # Check residual polarization for each SpW.
+        bad_spwids = []
+        for spwid, spw_result in field_result.items():
+            # Skip the result for "Average SpW".
+            if 'Ave' in spwid:
+                continue
+
+            # The SpW result is a list of [I, Q, U, V], check whether Q or U
+            # exceed threshold.
+            if abs(spw_result[1]) > threshold or abs(spw_result[2]) > threshold:
+                bad_spwids.append(spwid[3:])
+
+        # Create a score depending on whether any SpW had too high residual
+        # polarization.
+        if bad_spwids:
+            score = 0.5
+            longmsg = f"Session '{session_name}' has residual polarization greater than {threshold} in SpW(s)" \
+                      f" {utils.commafy(bad_spwids, quotes=False)}."
+            shortmsg = "High residual polarization"
+        else:
+            score = 1.0
+            longmsg = f"Session '{session_name}' residual polarization <= the threshold of {threshold}."
+            shortmsg = "Residual polarization"
+        origin = pqa.QAOrigin(metric_name='score_polcal_residual_pol',
+                              metric_score=score,
+                              metric_units='residual polarization')
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    return scores
+
 
 @log_qa
 def score_fluxservice(result):

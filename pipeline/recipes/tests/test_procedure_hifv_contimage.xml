@@ -2,7 +2,7 @@
 This is a test procedure for the SRDP selfcalibration pipeline. 
 
 These steps have been skipped to speed up the test:
-- hif_restoredata
+- hifv_restoredata
 - hif_mstransform
 - hif_findcont
 - cube imaging
@@ -11,10 +11,11 @@ You are expected to have the _targets.ms and cont.data as input.
 -->
 
 <ProcessingProcedure>
-	<ProcedureTitle>test_hifa_selfcal_cont</ProcedureTitle>
+
+    <ProcedureTitle>test_hifv_selfcal_cont</ProcedureTitle>
 
     <ProcessingCommand>
-        <Command xmlns="">hifa_importdata</Command>
+        <Command xmlns="">hifv_importdata</Command>
         <ParameterSet>
             <Parameter>
               <Keyword xmlns="">datacolumns</Keyword>
@@ -22,21 +23,17 @@ You are expected to have the _targets.ms and cont.data as input.
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-    <!-- end of import MS-->
-
 
     <ProcessingCommand>
-        <Command xmlns="">hif_uvcontfit</Command>
+        <Command xmlns="">hif_checkproductsize</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maximsize</Keyword>
+                <Value xmlns="">16384</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_uvcontsub</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>        
-
+    
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
@@ -47,45 +44,37 @@ You are expected to have the _targets.ms and cont.data as input.
             <Parameter>
                 <Keyword xmlns="">datatype</Keyword>
                 <Value xmlns="">regcal</Value>
-            </Parameter>          
+            </Parameter>              
         </ParameterSet>
     </ProcessingCommand>    
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>      
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cube</Value>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">3.0</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">regcal</Value>
-            </Parameter>             
-        </ParameterSet>
-    </ProcessingCommand>    
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>    
 
 
+    <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
+    
     <ProcessingCommand>
         <Command xmlns="">hif_selfcal</Command>
-        <ParameterSet>            
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">field</Keyword>
+                <Value xmlns=""></Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">spw</Keyword>
+                <Value xmlns=""></Value>
+            </Parameter>                     
         </ParameterSet>
     </ProcessingCommand>
-
-    <!-- end of the selfcal section -->
-
+ 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
@@ -96,40 +85,28 @@ You are expected to have the _targets.ms and cont.data as input.
             <Parameter>
                 <Keyword xmlns="">datatype</Keyword>
                 <Value xmlns="">selfcal</Value>
-            </Parameter>   
+            </Parameter>              
         </ParameterSet>
     </ProcessingCommand>    
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>  
-
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cube</Value>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">3.0</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">selfcal</Value>
-            </Parameter>             
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
+        <Command xmlns="">hifv_pbcor</Command>
         <ParameterSet>
         </ParameterSet>
-    </ProcessingCommand>            
-
+    </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifa_exportdata</Command>
+        <Command xmlns="">hifv_exportdata</Command>
         <ParameterSet>
           <Parameter>
             <Keyword xmlns="">imaging_products_only</Keyword>

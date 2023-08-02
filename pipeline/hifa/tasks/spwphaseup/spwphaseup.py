@@ -513,10 +513,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 if spwmap[spwid] == mappedspwid:
                     snr = perspwsnr[i]
                     if snr is None:
-                        LOG.error('SNR not calculated for spw={}. Cannot calculate combined SNR'.format(spwid))
-                        return [], {}
-                    snrlist.append(perspwsnr[i])
+                        continue
+                    snrlist.append(snr)
                     combined_idx.append(i)
+
+            if not snrlist:
+                LOG.error('No SpW with valid SNR values; cannot calculate the combined SNR')
+                return [], {}
 
             # calculate combined SNR from per spw SNR
             combined_snr = numpy.linalg.norm(snrlist)
