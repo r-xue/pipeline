@@ -254,7 +254,6 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
     nx = vdp.VisDependentProperty(default=-1)
     ny = vdp.VisDependentProperty(default=-1)
     org_direction = vdp.VisDependentProperty(default=None)
-    is_freq_axis_ascending = vdp.VisDependentProperty(default=True)
 
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
