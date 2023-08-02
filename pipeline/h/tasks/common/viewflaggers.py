@@ -480,7 +480,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
 
         # Initialize flags
         newflags = []
-        flag_reason = np.zeros(np.shape(flag), np.int)
+        flag_reason = np.zeros(np.shape(flag), int)
 
         # If there is no valid (non-flagged) data, then return early.
         if np.all(flag) and self.inputs.skip_fully_flagged:
@@ -811,7 +811,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 if axis == xtitle.upper().strip():
 
                     # Compute median number flagged
-                    num_flagged = np.zeros([np.shape(data)[1]], np.int)
+                    num_flagged = np.zeros([np.shape(data)[1]], int)
                     for iy in np.arange(len(ydata)):
                         num_flagged[iy] = len(data[:, iy][flag[:, iy]])
                     median_num_flagged = np.median(num_flagged)
@@ -832,8 +832,8 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                             i2flag = i[:, iy][np.logical_not(flag[:, iy])]
                             j2flag = j[:, iy][np.logical_not(flag[:, iy])]
                         else:
-                            i2flag = np.zeros([0], np.int)
-                            j2flag = np.zeros([0], np.int)
+                            i2flag = np.zeros([0], int)
+                            j2flag = np.zeros([0], int)
 
                         # likewise for maxexcessflags
                         if len_flagged > median_num_flagged + maxexcessflags:
@@ -870,7 +870,7 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                 elif axis == ytitle.upper().strip():
 
                     # Compute median number flagged
-                    num_flagged = np.zeros([np.shape(data)[0]], np.int)
+                    num_flagged = np.zeros([np.shape(data)[0]], int)
                     for ix in np.arange(len(xdata)):
                         num_flagged[ix] = len(data[ix, :][flag[ix, :]])
                     median_num_flagged = np.median(num_flagged)
@@ -890,8 +890,8 @@ class MatrixFlagger(basetask.StandardTaskTemplate):
                             i2flag = i[ix, :][np.logical_not(flag[ix, :])]
                             j2flag = j[ix, :][np.logical_not(flag[ix, :])]
                         else:
-                            i2flag = np.zeros([0], np.int)
-                            j2flag = np.zeros([0], np.int)
+                            i2flag = np.zeros([0], int)
+                            j2flag = np.zeros([0], int)
 
                         len_flagged = len(data[ix, :][flag[ix, :]])
                         if len_flagged > median_num_flagged + maxexcessflags:
@@ -2002,7 +2002,7 @@ class VectorFlagger(basetask.StandardTaskTemplate):
 
                 # Convert new channels-to-flag based on difference array to channels-to-flag within
                 # the original array.
-                flag_chan = np.zeros([len(newflag)+1], np.bool)
+                flag_chan = np.zeros([len(newflag)+1], bool)
                 flag_chan[:-1] = newflag
                 flag_chan[1:] = (flag_chan[1:] | newflag)
 
@@ -2074,10 +2074,10 @@ class VectorFlagger(basetask.StandardTaskTemplate):
                 # second, flag all channels if more than nchan_limit
                 # were flagged by the first stage
                 if np.count_nonzero(newflag) >= nchan_limit:
-                    newflag = np.ones(diff.shape, np.bool)
+                    newflag = np.ones(diff.shape, bool)
 
                 # set channels flagged
-                flag_chan = np.zeros([len(newflag)+1], np.bool)
+                flag_chan = np.zeros([len(newflag)+1], bool)
                 flag_chan[:-1] = newflag
                 flag_chan[1:] = np.logical_or(flag_chan[1:], newflag)
 
