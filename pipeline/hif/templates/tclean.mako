@@ -90,7 +90,7 @@ except:
                 </h4>
                 <br>
         %endif
-        %if image_info[0].intent == 'POLARIZATION':
+        %if have_polcal_fit:
             <h2>Polarization Calibrator Fit Results</h2>
                 <table class="table table-striped">
                     <thead>
