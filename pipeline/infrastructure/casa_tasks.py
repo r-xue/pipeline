@@ -53,6 +53,11 @@ def clearcal(*v, **k) -> JobRequest:
 
 
 @register_task
+def concat(*v, **k) -> JobRequest:
+    return JobRequest(casatasks.concat, *v, **k)
+
+
+@register_task
 def delmod(*v, **k) -> JobRequest:
     return JobRequest(casatasks.delmod, *v, **k)
 
@@ -198,6 +203,11 @@ def polcal(*v, **k) -> JobRequest:
 
 
 @register_task
+def polfromgain(*v, **k) -> JobRequest:
+    return JobRequest(casatasks.polfromgain, *v, **k)
+
+
+@register_task
 def setjy(*v, **k) -> JobRequest:
     return JobRequest(casatasks.setjy, *v, **k)
 
@@ -318,7 +328,7 @@ class CasaTasks:
             setattr(self, _fn, self._logged_fn(getattr(sys.modules[__name__], _fn)))
 
     def _logged_fn(self, fn):
-        """Get the wrapper function that can immediantly create and executate JobRequest of a callable."""
+        """Get the wrapper function that can immediately create and execute JobRequest of a callable."""
         if self._executor is None:
             # Executions will be logged in casacalls-.txt
             @functools.wraps(fn)
