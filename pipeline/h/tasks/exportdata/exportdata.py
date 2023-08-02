@@ -317,12 +317,12 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Export calibrator images to FITS
         calimages_list, calimages_fitslist, calimages_fitskeywords = self._export_images(inputs.context, True, inputs.calintents,
-                                                                                         inputs.calimages, inputs.products_dir)
+                                                                                         inputs.calimages, inputs.products_dir, oussid)
         result.calimages=(calimages_list, calimages_fitslist)
 
         # Export science target images to FITS
         targetimages_list, targetimages_fitslist, targetimages_fitskeywords = self._export_images(inputs.context, False, 'TARGET',
-                                                                                                  inputs.targetimages, inputs.products_dir)
+                                                                                                  inputs.targetimages, inputs.products_dir, oussid)
         result.targetimages=(targetimages_list, targetimages_fitslist)
 
         # Export the pipeline manifest file
@@ -1005,7 +1005,7 @@ finally:
 
         return out_manifest_file
 
-    def _export_images(self, context, calimages, calintents, images, products_dir):
+    def _export_images(self, context, calimages, calintents, images, products_dir, ous_name):
         """
         Export the images to FITS files.
         """
@@ -1183,9 +1183,7 @@ finally:
                                 'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
                                 'naxis4', 'ctype4', 'cunit4', 'crpix4', 'crval4', 'cdelt4',
                                 'bmaj', 'bmin', 'bpa', 'robust', 'weight',
-                                'rms', 'effbw', 'level',
-                                'ous', 'ctrfrq', 'obspatt', 'arrays',
-                                'pol', 'modifier']:
+                                'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays', 'modifier']:
                         fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
 
                     if 'nspwnam' in ff[0].header:
@@ -1198,7 +1196,10 @@ finally:
                     # Some names and/or values need to be mapped
                     fits_keywords['imagemin'] = str(ff[0].header.get('datamin', 'N/A'))
                     fits_keywords['imagemax'] = str(ff[0].header.get('datamax', 'N/A'))
+                    fits_keywords['rms'] = str(ff[0].header.get('datarms', 'N/A'))
                     fits_keywords['producttype'] = str(ff[0].header.get('specmode', 'N/A'))
+                    fits_keywords['pl_datatype'] = str(ff[0].header.get('datatype', 'N/A'))
+                    fits_keywords['pol'] = str(ff[0].header.get('stokes', 'N/A'))
                     imagetype = str(ff[0].header['type'])
                     if imagetype == 'flux':
                         fits_keywords['datatype'] = 'pb'
@@ -1212,11 +1213,12 @@ finally:
                         fits_keywords['datatype'] = 'N/A'
 
                     fits_keywords['format'] = 'fits'
+                    fits_keywords['ous'] = ous_name
 
                     ff.close()
                 except Exception as e:
                     LOG.info('Fetching FITS keywords for {} failed: {}'.format(fitsfile, e))
-                    fits_keywords = {}
+                    fits_keywords = dict()
                 fits_keywords_list.append(fits_keywords)
 
         new_cleanlist = copy.deepcopy(cleanlist)
