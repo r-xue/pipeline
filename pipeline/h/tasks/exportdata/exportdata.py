@@ -560,6 +560,18 @@ class ExportData(basetask.StandardTaskTemplate):
             else:
                 targetflags_filelist.append('Undefined')
 
+        # PIPE-1834: look for timetracker json report files
+        timetracker_file_list = utils.glob_ordered('*.timetracker.json')
+        if timetracker_file_list:
+            empty = False
+
+        # PIPE-1802: look for the selfcal/restore resources
+        selfcal_resources_list = []
+        if hasattr(self.inputs.context, 'selfcal_resources') and isinstance(self.inputs.context.selfcal_resources, list):
+            selfcal_resources_list = self.inputs.context.selfcal_resources
+        if selfcal_resources_list:
+            empty = False
+
         if empty:
             return None
 
@@ -598,6 +610,20 @@ class ExportData(basetask.StandardTaskTemplate):
                     LOG.info('Saving auxiliary data product %s in %s', os.path.basename(flags_file), tarfilename)
                 else:
                     LOG.info('Auxiliary data product flagging target templates file does not exist')
+
+            # PIPE-1834: Save timetracker json report files
+            for timetracker_file in timetracker_file_list:
+                if os.path.exists(timetracker_file):
+                    tar.add(timetracker_file, arcname=os.path.basename(timetracker_file))
+                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(timetracker_file), tarfilename)
+                else:
+                    LOG.info('Auxiliary data product timetracker json report file does not exist')
+
+            # PIPE-1802: Save selfcal restore resources
+            for selfcal_resource in selfcal_resources_list:
+                if os.path.exists(selfcal_resource):
+                    tar.add(selfcal_resource, arcname=selfcal_resource)
+                    LOG.info('Saving auxiliary data product %s in %s', selfcal_resource, tarfilename)
 
             tar.close()
 

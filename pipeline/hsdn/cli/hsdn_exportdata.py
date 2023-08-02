@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hsdn_exportdata(pprfile=None,targetimages=None, products_dir=None,
     dryrun=None, acceptresults=None):
 

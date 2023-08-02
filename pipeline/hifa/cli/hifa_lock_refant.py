@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifa_lock_refant(vis=None, dryrun=None, acceptresults=None):
 
     """

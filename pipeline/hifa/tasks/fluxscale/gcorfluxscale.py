@@ -62,6 +62,10 @@ class GcorFluxscaleResults(commonfluxresults.FluxCalibrationResults):
         ms = context.observing_run.get_ms(self.vis)
         ms.derived_fluxes = self.measurements
 
+        # Update the measurement set with the fluxscale derived flux
+        # measurements for later use in polarisation calibration (PIPE-1776).
+        ms.fluxscale_fluxes = self.fluxscale_measurements
+
         # Store these calapps in the context so that they can be plotted in hifa_timegaincal's
         # diagnostic phase vs. time plots. See PIPE-1377 for more information.
         ms.phase_calapps_for_check_sources = self.calapps_for_check_sources
@@ -309,7 +313,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             LOG.info('Applying pre-existing caltables and preliminary phase-up and amplitude caltables.')
             acinputs = applycal.IFApplycalInputs(context=inputs.context, vis=inputs.vis, field=inputs.transfer,
                                                  intent=inputs.transintent, flagsum=False, flagbackup=False)
-            actask = applycal.IFApplycal(acinputs)
+            actask = applycal.SerialIFApplycal(acinputs)
             self._executor.execute(actask)
 
             # Initialize result.
