@@ -50,7 +50,7 @@ class SelfcalResults(basetask.Results):
         scal_targets_ctx = copy.deepcopy(self.targets)
         for target in scal_targets_ctx:
             target.pop('heuristics', None)
-        context.selfcal_targets = self.scal_targets_ctx
+        context.selfcal_targets = scal_targets_ctx
 
         # if selfcal_resources is None, then the selfcal solver is not triggered and no need to register the
         # selfcal resources for auxproducts exporting.
