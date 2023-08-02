@@ -269,7 +269,7 @@ class SpectralWindow(object):
                  spectralspec: str=None,
                  transitions: Optional[numpy.ndarray]=None,
                  sdm_num_bin: Optional[int]=None,
-                 correlation_bits: Optional[int]=None):
+                 correlation_bits: Optional[str]=None):
         """
         Initialize SpectralWindow class.
 
