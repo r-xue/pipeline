@@ -6,14 +6,14 @@
   * `test_hifv_contimage.json`
 
 * SRDP-like procedures:
-    no data restorations; cube imaging created from `hif_makeimlist` rather than `hif_editimlist`
-  * `test_procedure_hifa_cubeimage_selfcal.xml`
-  * `test_procedure_hifv_contimage_selfcal.xml`
+    no data restorations/targetsplit; cube imaging created from `hif_makeimlist` rather than `hif_editimlist`
+  * `test_procedure_hifa_image.xml`
+  * `test_procedure_hifv_contimage.xml`
 
 * Testing procedures for only testing the `hif_selfcal` task
-  * `test_procedure_hifv_selfcal_only.xml`
-  * `test_procedure_hifa_selfcal_only.xml`
+  * `test_procedure_hifv_selfcal.xml`
+  * `test_procedure_hifa_selfcal.xml`
 
 * A standard "calimage" workflow with `hif_selfcal` stage
 
-  * `test_procedure_hifa_calimage_selfcal.xml`
+  * `test_procedure_hifa_calimage.xml`
