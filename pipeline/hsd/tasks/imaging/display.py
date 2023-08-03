@@ -841,13 +841,13 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        is_freq_chan_inverted_image = False
+        is_freq_chan_reversed_image = False
         if isinstance(self.inputs.result, SDImagingResultItem):
-            is_freq_chan_inverted_image = self.inputs.result.frequency_channel_inverted
+            is_freq_chan_reversed_image = self.inputs.result.frequency_channel_reversed
 
         # retrieve line list from reduction group
         # key is antenna and spw id
-        line_list = self.inputs.valid_lines(is_freq_chan_inverted_image)
+        line_list = self.inputs.valid_lines(is_freq_chan_reversed_image)
 
         # 2010/6/9 in the case of non-detection of the lines
         if len(line_list) == 0:
@@ -898,9 +898,9 @@ class SDChannelMapDisplay(SDImageDisplay):
         data = self.data
         mask = self.mask
 
-        # If the frequency channel of the image cube has been inverted to ascending,
+        # If the frequency channel of the image cube has been reversed to ascending,
         # indices of frequency and velocity must have an offset to get a center value of them.
-        if is_freq_chan_inverted_image:
+        if is_freq_chan_reversed_image:
             _offset = 0.5
             _left_edge = self.edge[1]
         else:
@@ -917,12 +917,12 @@ class SDChannelMapDisplay(SDImageDisplay):
             _line_center_shifted = _line_center - _left_edge
 
             # Offset calculation of index(int) from line(float) when the line has a decimal point of 0.5
-            # and frequency channel of the image is inverted;
-            # ex) n=107.5, nchan=128, inverted_n = nchan-1-n = 19.5
+            # and frequency channel of the image is reversed;
+            # ex) n=107.5, nchan=128, reversed_n = nchan-1-n = 19.5
             # when the real numeric cut-edge is 0.5 then the calculation of index 1-0.5 is to be neary 0.5 and not 0.5.
             # So, the cut-edge which has 0.5 + offset 0.5 like int(19.5 + 0.5) must be 19, not 20.
             _cut_edge_offset = 0
-            if is_freq_chan_inverted_image and _line_center_shifted - int(_line_center_shifted) == 0.5:
+            if is_freq_chan_reversed_image and _line_center_shifted - int(_line_center_shifted) == 0.5:
                 _cut_edge_offset = 1
 
             # shift channel according to the edge parameter
@@ -930,7 +930,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             if float(idx_line_center) == _line_center_shifted:
                 velocity_line_center = self.velocity[idx_line_center]
             else:
-                if is_freq_chan_inverted_image:
+                if is_freq_chan_reversed_image:
                     velocity_line_center = 0.5 * (self.velocity[idx_line_center + 1] +
                                                   self.velocity[idx_line_center])
                 else:

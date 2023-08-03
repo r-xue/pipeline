@@ -917,11 +917,11 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                           org_directions=_rgp.tocombine.org_directions,
                                                           specmodes=_rgp.tocombine.specmodes)
         __combine_task = sdcombine.SDImageCombine(__combine_inputs)
-        __freq_chan_inverted = False
+        __freq_chan_reversed = False
         if isinstance(_rgp.imager_result, resultobjects.SDImagingResultItem):
-            __freq_chan_inverted = _rgp.imager_result.frequency_channel_inverted
+            __freq_chan_reversed = _rgp.imager_result.frequency_channel_reversed
         _rgp.imager_result = self._executor.execute(__combine_task)
-        _rgp.imager_result.frequency_channel_inverted = __freq_chan_inverted
+        _rgp.imager_result.frequency_channel_reversed = __freq_chan_reversed
 
     def __estimate_sensitivity(self, _cp: imaging_params.CommonParameters,
                                _rgp: imaging_params.ReductionGroupParameters,
@@ -1146,7 +1146,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         # PIPE-251: detect contamination
         if not basetask.DISABLE_WEBLOG:
             detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'],
-                                                     _rgp.imager_result.frequency_channel_inverted)
+                                                     _rgp.imager_result.frequency_channel_reversed)
 
     def __append_result(self, _cp: imaging_params.CommonParameters, _rgp: imaging_params.ReductionGroupParameters):
         """Append result to RGP.
