@@ -24,6 +24,10 @@ class TcleanQAHandler(pqa.QAPlugin):
 
         qaTool = casa_tools.quanta
 
+        data_selection = pqa.TargetDataSelection(session={context.observing_run.get_ms(result.vis[0]).session},
+                                                 vis=set(result.vis), spw={result.spw}, field={result.sourcename},
+                                                 intent={result.intent}, pol={result.stokes})
+
         # calculate QA score comparing RMS against clean threshold
 
         # Add offset of 0.34 to avoid any red scores
@@ -41,7 +45,7 @@ class TcleanQAHandler(pqa.QAPlugin):
             # Set score messages and origin.
             longmsg = ('{} pbcor image max / non-pbcor image RMS = {:0.2f}'.format(result.sourcename, snr))
             shortmsg = 'snr = {:0.2f}'.format(snr)
-            result.qa.pool[:] = [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg)]
+            result.qa.pool[:] = [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, applies_to=data_selection)]
         else:
             # Check for any cleaning errors and render a minimum score
             if result.error:
@@ -55,7 +59,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                     longmsg = shortmsg = str(result.error)
                 # set the score to the lowest (but still yellow) value
                 result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
-                                                  weblog_location=pqa.WebLogLocation.UNSET))
+                                                  weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
 
             # PIPE-1790: if tclean failed to produce an image, skip any subsequent processing and report QAscore=0.34
             if result.image is None:
@@ -105,7 +109,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                 origin = pqa.QAOrigin(metric_name='N/A', metric_score='N/A', metric_units='N/A')
 
             # Add score to pool
-            result.qa.pool.append(pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+            result.qa.pool.append(pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=data_selection))
 
             # MOM8_FC based score
             if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None:
@@ -118,7 +122,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                     result.qa.pool.append(mom8_fc_score)
                 except Exception as e:
                     LOG.warning('Exception scoring MOM8 FC image result: %s. Setting score to -0.1.' % (e))
-                    result.qa.pool.append(pqa.QAScore(-0.1, longmsg='Exception scoring MOM8 FC image result: %s' % (e), shortmsg='Exception scoring MOM8 FC image result', weblog_location=pqa.WebLogLocation.UNSET))
+                    result.qa.pool.append(pqa.QAScore(-0.1, longmsg='Exception scoring MOM8 FC image result: %s' % (e), shortmsg='Exception scoring MOM8 FC image result', weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
 
             # Check source score
             # Be careful about the source name vs field name issue
@@ -153,7 +157,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                 except Exception as e:
                     result.check_source_fit = {'offset': 'N/A', 'offset_err': 'N/A', 'beams': 'N/A', 'beams_err': 'N/A', 'fitflux': 'N/A', 'fitflux_err': 'N/A', 'fitpeak': 'N/A', 'gfluxscale': 'N/A', 'gfluxscale_err': 'N/A'}
                     LOG.warning('Exception scoring check source fit: %s. Setting score to -0.1.' % (e))
-                    result.qa.pool.append(pqa.QAScore(-0.1, longmsg='Exception scoring check source fit: %s' % (e), shortmsg='Exception scoring check source fit'))
+                    result.qa.pool.append(pqa.QAScore(-0.1, longmsg='Exception scoring check source fit: %s' % (e), shortmsg='Exception scoring check source fit', applies_to=data_selection))
 
             # Polarization calibrators
             if result.intent == 'POLARIZATION' and result.inputs['specmode'] in ('mfs', 'cont') and result.stokes == 'IQUV' and result.imaging_mode == 'ALMA':
@@ -182,7 +186,6 @@ class TcleanQAHandler(pqa.QAPlugin):
                     res_I = job.execute(dry_run=False)
                     if res_I is None or not res_I['converged']:
                         msg = f"Fitting Stokes I for {imagename} (field {result.inputs['field']} spw {result.inputs['spw']}) failed"
-                        LOG.error(msg)
                         error_msgs.append(msg)
 
                     imfit_arg = {'imagename': imagename, 'stokes': 'Q', 'box': '115,115,130,130'}
@@ -190,7 +193,6 @@ class TcleanQAHandler(pqa.QAPlugin):
                     res_Q = job.execute(dry_run=False)
                     if res_Q is None or not res_Q['converged']:
                         msg = f"Fitting Stokes Q for {imagename} (field {result.inputs['field']} spw {result.inputs['spw']}) failed"
-                        LOG.error(msg)
                         error_msgs.append(msg)
 
                     imfit_arg = {'imagename': imagename, 'stokes': 'U', 'box': '110,110,145,145'}
@@ -198,7 +200,6 @@ class TcleanQAHandler(pqa.QAPlugin):
                     res_U = job.execute(dry_run=False)
                     if res_U is None or not res_U['converged']:
                         msg = f"Fitting Stokes U for {imagename} (field {result.inputs['field']} spw {result.inputs['spw']}) failed"
-                        LOG.error(msg)
                         error_msgs.append(msg)
 
                     # Raise exception if any fit failed because one cannot
@@ -238,7 +239,12 @@ class TcleanQAHandler(pqa.QAPlugin):
                                          'pol_angle': qaTool.quantity(pol_angle, 'deg'),
                                          'err_pol_angle': qaTool.quantity(err_pol_angle, 'deg'),
                                          'err_msg': ''}
-                    result.qa.pool.append(pqa.QAScore(1.0, longmsg=f"Stokes fits for field {result.inputs['field']} spw {result.inputs['spw']} succeeded", shortmsg='Stokes fits succeeded'))
+
+                    origin = pqa.QAOrigin(metric_name='Stokes fits',
+                                          metric_score='Fit OK',
+                                          metric_units='N/A')
+                    result.qa.pool.append(pqa.QAScore(1.0, longmsg=f"Stokes fits for field {result.inputs['field']} spw {result.inputs['spw']} succeeded",
+                                          shortmsg='Stokes fits succeeded', origin=origin, applies_to=data_selection))
                 except Exception as e:
                     LOG.error(str(e))
                     result.polcal_fit = {'session': context.observing_run.get_ms(result.vis[0]).session,
@@ -250,7 +256,12 @@ class TcleanQAHandler(pqa.QAPlugin):
                                          'pol_angle': 'N/A',
                                          'err_pol_angle': 'N/A',
                                          'err_msg': str(e)}
-                    result.qa.pool.append(pqa.QAScore(0.34, longmsg=str(e), shortmsg='Fitting Stokes parameter failed'))
+
+                    origin = pqa.QAOrigin(metric_name='Stokes fits',
+                                          metric_score='Fit failed',
+                                          metric_units='N/A')
+                    result.qa.pool.append(pqa.QAScore(0.34, longmsg=str(e), shortmsg='Fitting Stokes parameter failed',
+                                          origin=origin, applies_to=data_selection))
 
 class TcleanListQAHandler(pqa.QAPlugin):
     result_cls = collections.Iterable
