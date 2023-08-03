@@ -1,11 +1,10 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
-def hifa_fluxcalflag(vis=None, field=None, intent=None, spw=None, pipelinemode=None, threshold=None, appendlines=None,
+@utils.cli_wrapper
+def hifa_fluxcalflag(vis=None, field=None, intent=None, spw=None, threshold=None, appendlines=None,
                      linesfiles=None, applyflags=None, dryrun=None, acceptresults=None):
 
     """
@@ -19,8 +18,7 @@ def hifa_fluxcalflag(vis=None, field=None, intent=None, spw=None, pipelinemode=N
     
     Output
     
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -39,16 +37,17 @@ def hifa_fluxcalflag(vis=None, field=None, intent=None, spw=None, pipelinemode=N
                   computed. Defaults to all science spectral windows.
                   
                   example: spw='11,13,15,17'
-    pipelinemode  The pipeline operating mode. In 'automatic' mode the pipeline
-                  determines the values of all context defined pipeline inputs automatically.
-                  In interactive mode the user can set the pipeline context defined
-                  parameters manually. In 'getinputs' mode the user can check the settings of
-                  all pipeline parameters without running the task.
     threshold     If the fraction of an spw occupied by line regions is greater
                   than threshold flag the entire spectral window.
     appendlines   Append user defined line regions to the line dictionary.
-    linesfile     
-    applyflags    
+    linesfile     Read in a file containing lines regions and append it to
+                  the builtin dictionary.
+                  Blank lines and comments beginning with # are skipped
+                  The data is contained in 4 whitespace delimited fields
+                  containing the solar system object field name, e.g. 'Callisto'
+                  the molecular species name, e.g. '13CO' and the starting
+                  and ending frequency in GHz.
+    applyflags    Boolean for whether to apply the generated flag commands. (default True)
     dryrun        Run the commands (True) or generate the commands to be run but
                   do not execute (False).
     acceptresults Add the results of the task to the pipeline context (True) or

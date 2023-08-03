@@ -467,7 +467,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             + '_blparam_stage{stage}.txt'.format(stage=stage_number)
         vis_map = {} # key and value are input and output vis name, respectively
         plot_list = []
-        baseline_quality_stat = {}
+        baseline_quality_stat = []
 #         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, datatable)
 
         # Generate and apply baseline fitting solutions
@@ -477,7 +477,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         deviationmask_list = [deviation_mask[ms.basename] for ms in registry]
         # 21/05/2018 TN temporal workaround
         # I don't know how to use vdp.ModeInputs so directly specify worker task class here
-        worker_cls = worker.HpcCubicSplineBaselineSubtractionWorker
+        worker_cls = worker.CubicSplineBaselineSubtractionWorker
         fitter_inputs = vdp.InputsContainer(worker_cls, context,
                                             vis=vislist, plan=plan,
                                             fit_order=fitorder, switchpoly=switchpoly,
@@ -517,9 +517,8 @@ class SDBaseline(basetask.StandardTaskTemplate):
             if 'plot_list' in result.outcome:
                 plot_list.extend(result.outcome['plot_list'])
             if 'baseline_quality_stat' in result.outcome:
-                baseline_quality_stat.update(result.outcome['baseline_quality_stat'])
-
-
+                baseline_quality_stat.extend(result.outcome['baseline_quality_stat'])
+ 
         outcome = {'baselined': baselined,
                    'vis_map': vis_map,
                    'edge': edge,
@@ -574,7 +573,7 @@ class HeuristicsTask(object):
         """Perform Heuristics and return its result.
 
         Args:
-            dry_run: Set True to enalbe dry-run mode. Defaults to False.
+            dry_run: Set True to enable dry-run mode. Defaults to False.
 
         Returns:
             Heuristics result. Actual contents of return value
