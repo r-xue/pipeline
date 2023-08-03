@@ -70,6 +70,7 @@ class FileNameComponentBuilder(object):
         self._intent = None
         self._iteration = None
         self._line_region = None
+        self._datatype = None
         self._output_dir = None
         self._polarization = None
         self._antenna = None
@@ -100,6 +101,7 @@ class FileNameComponentBuilder(object):
                       self._band,
                       self._specmode,
                       self._line_region,
+                      self._datatype,
                       self._polarization,
                       self._antenna,
                       self._type,
@@ -163,6 +165,10 @@ class FileNameComponentBuilder(object):
             self._method = v
         else:
             self._method = None
+        return self
+
+    def datatype(self, datatype):
+        self._datatype = datatype
         return self
 
     def polarization(self, polarization):
@@ -493,12 +499,6 @@ class CalibrationTable(NamingTemplate):
         """
         return self.extension('dcal')
 
-    def instrumentpol_cal(self):
-        """Set the filename extension as appropriate for a instrument
-        pol calibration.
-        """
-        return self.extension('pcal')
-
     def flux_cal(self):
         """Set the filename extension as appropriate for a flux
         calibration.
@@ -665,6 +665,10 @@ class Image(NamingTemplate):
         self._associations.line_region(start_channel, end_channel)
         return self
 
+    def datatype(self, datatype):
+        self._associations.datatype(datatype)
+        return self
+
     def polarization(self, polarization):
         self._associations.polarization(polarization)
         return self
@@ -807,10 +811,10 @@ class DelayCalibrationTable(CalibrationTable):
         self.delay_cal()
 
 
-class InstrumentPolCalibrationTable(CalibrationTable):
+class PolCalibrationTable(CalibrationTable):
     def __init__(self, other=None):
-        super(InstrumentPolCalibrationTable, self).__init__(other)
-        self.instrumentpol_cal()
+        super().__init__(other)
+        self.polarization_cal()
 
 
 class FluxCalibrationTable(CalibrationTable):

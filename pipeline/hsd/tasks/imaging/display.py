@@ -812,7 +812,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         if numpy.all(unweight_mask == False):
             unweight_ia.close()
             sp_ave = numpy.ma.masked_array(numpy.zeros((self.npol, self.nchan), dtype=numpy.float32),
-                                           mask=numpy.ones((self.npol, self.nchan), dtype=numpy.bool))
+                                           mask=numpy.ones((self.npol, self.nchan), dtype=bool))
             return sp_ave
 
         # average image spectra over map area taking mask into account
@@ -1432,7 +1432,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
             NH = int((self.x_max - self.x_min) // STEPX // NhPanel + 1)
             NV = int((self.y_max - self.y_min) // STEPY // NvPanel + 1)
             # an array with length of total number of spectra to be plotted (initialized by -1)
-            ROWS = numpy.zeros(NH * NV * NhPanel * NvPanel, dtype=numpy.int) - 1
+            ROWS = numpy.zeros(NH * NV * NhPanel * NvPanel, dtype=int) - 1
             # 2010/6/15 GK Change the plotting direction: UpperLeft->UpperRight->OneLineDown repeat...
             for x in range(0, self.nx, STEPX):
                 posx = (self.x_max - x)//STEPX // NhPanel

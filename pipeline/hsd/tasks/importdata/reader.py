@@ -647,7 +647,7 @@ class MetaDataReader(object):
             field_ids = tb.getcol('FIELD_ID')
             getsourcename = numpy.vectorize(lambda x: ms.get_fields(x)[0].source.name, otypes=['str'])
             Tsrc = getsourcename(field_ids)
-            NchanArray = numpy.fromiter((nchan_map[n] for n in Tif), dtype=numpy.int)
+            NchanArray = numpy.fromiter((nchan_map[n] for n in Tif), dtype=int)
 
         ID = len(self.datatable)
         LOG.info('ID=%s' % ID)
@@ -891,21 +891,29 @@ class MetaDataReader(object):
         """
         outref = None
 
+        dirrefs = []
+
         if self.ms.representative_target[0] is not None:
             # if ms has representative target, take reference from that
             LOG.info(
                 'Use direction reference for representative target "{0}".'.format(self.ms.representative_target[0]))
             representative_source_name = self.ms.representative_target[0]
-            dirrefs = numpy.unique([f.mdirection['refer'] for f in self.ms.fields
-                                    if f.source.name == representative_source_name])
-            if len(dirrefs) == 0:
-                raise RuntimeError('Failed to get direction reference for representative source.')
-        else:
-            # if representative target is not given, take reference from one of the targets
-            dirrefs = numpy.unique([f.mdirection['refer'] for f in self.ms.fields if 'TARGET' in f.intents])
+            dirrefs.extend(
+                numpy.unique([f.mdirection['refer'] for f in self.ms.fields
+                             if f.source.name == representative_source_name])
+            )
+
+        if len(dirrefs) == 0:
+            # if representative target is not given, or is not observed,
+            # take reference from one of the targets
+            dirrefs.extend(
+                numpy.unique([f.mdirection['refer'] for f in self.ms.fields if 'TARGET' in f.intents])
+            )
+
             if len(dirrefs) == 0:
                 # no target field exists, something wrong
                 raise RuntimeError('No TARGET field exists.')
+
         if len(dirrefs) == 1:
             outref = dirrefs[0]
         else:

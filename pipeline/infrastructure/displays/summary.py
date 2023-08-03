@@ -226,167 +226,38 @@ class ElVsTimeChart(object):
                            command=str(task))
 
 
-class FieldVsTimeChartInputs(vdp.StandardInputs):
-
-    @vdp.VisDependentProperty
-    def output(self):
-        session_part = self.ms.session
-        ms_part = self.ms.basename
-        output = os.path.join(self.context.report_dir,
-                              'session%s' % session_part,
-                              ms_part, 'field_vs_time.png')
-        return output
-
-    def __init__(self, context, vis=None, output=None):
-        super(FieldVsTimeChartInputs, self).__init__()
-
-        self.context = context
-        self.vis = vis
-
-        self.output = output
-
-
-class FieldVsTimeChart(object):
-    Inputs = FieldVsTimeChartInputs
-
-    # http://matplotlib.org/examples/color/named_colors.html
-    _intent_colours = {'AMPLITUDE': 'green',
-                       'ATMOSPHERE': 'magenta',
-                       'BANDPASS': 'red',
-                       'CHECK': 'purple',
-                       'PHASE': 'cyan',
-                       'POINTING': 'yellow',
-                       'REFERENCE': 'deepskyblue',
-                       'SIDEBAND': 'orange',
-                       'TARGET': 'blue',
-                       'WVR': 'lime',
-                       'POLARIZATION': 'navy',
-                       'POLANGLE': 'mediumslateblue',
-                       'POLLEAKAGE': 'plum',
-                       'UNKNOWN': 'grey',
-                       }
+class ParameterVsTimeChart(object):
+    """
+    Base class for FieldVsTimeChart and IntentVsTimeChart, sharing common logic such as the colour scheme for intents
+    """
 
     # list of intents that shares a same scan but segregated by subscan
     # (To distinguish ON and OFF source subscans in ALMA-TP)
     _subscan_intents = ('TARGET', 'REFERENCE')
 
-    def __init__(self, inputs):
-        self.inputs = inputs
-
-    @casa5style_plot
-    def plot(self):
-        ms = self.inputs.ms
-
-        obs_start = utils.get_epoch_as_datetime(ms.start_time)
-        obs_end = utils.get_epoch_as_datetime(ms.end_time)
-
-        filename = self.inputs.output
-        if os.path.exists(filename):
-            plot = logger.Plot(filename,
-                               x_axis='Time',
-                               y_axis='Field',
-                               parameters={'vis': ms.basename})
-            return plot
-
-        f = plt.figure()
-        plt.clf()
-        plt.axes([0.1, 0.15, 0.8, 0.7])
-        ax = plt.gca()
-
-        nfield = len(ms.fields)
-        for field in ms.fields:
-            ifield = field.id
-            for scan in [scan for scan in ms.scans
-                         if field in scan.fields]:
-                intents_to_plot = self._get_intents_to_plot(field.intents.intersection(scan.intents))
-                num_intents = len(intents_to_plot)
-                assert num_intents > 0, "number of intents to plot is not larger than 0"
-
-                # vertical position to plot
-                y0 = ifield-0.5
-                y1 = ifield+0.5
-
-                height = (y1 - y0) / float(num_intents)
-                ys = y0
-                ye = y0 + height
-                for intent in intents_to_plot:
-                    colour = FieldVsTimeChart._intent_colours[intent]
-                    if intent in FieldVsTimeChart._subscan_intents and \
-                            len(scan.intents.intersection(FieldVsTimeChart._subscan_intents)) > 1:
-                        time_ranges = [tuple(map(utils.get_epoch_as_datetime, o)) \
-                                       for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id) ]
-                    else:
-                        # all 'datetime' objects are in UTC.
-                        start = utils.get_epoch_as_datetime(scan.start_time)
-                        end = utils.get_epoch_as_datetime(scan.end_time)
-                        time_ranges = ((start, end), )
-
-                    for (x0, x1) in time_ranges:
-                        ax.fill([x0, x1, x1, x0],
-                                [ys, ys, ye, ye],
-                                facecolor=colour,
-                                edgecolor=colour)
-                    ys += height
-                    ye += height
-
-        # set the labelling of the time axis
-        self._set_time_axis(figure=f, ax=ax, datemin=obs_start, datemax=obs_end)
-
-        # set FIELD_ID axis ticks etc.
-        if nfield < 11:
-            major_locator = ticker.FixedLocator(np.arange(0, nfield+1))
-            minor_locator = ticker.MultipleLocator(1)
-            ax.yaxis.set_minor_locator(minor_locator)
-        else:
-            major_locator = ticker.FixedLocator(np.arange(0, nfield+1, 400))
-        ax.yaxis.set_major_locator(major_locator)
-        ax.grid(True)
-
-        plt.ylabel('Field ID')
-        major_formatter = ticker.FormatStrFormatter('%d')
-        ax.yaxis.set_major_formatter(major_formatter)
-
-        # plot key
-        self._plot_key()
-
-        plt.savefig(filename)
-        plt.clf()
-        plt.close()
-
-        plot = logger.Plot(filename,
-                           x_axis='Time',
-                           y_axis='Field',
-                           parameters={'vis': ms.basename})
-
-        return plot
-
-    def _plot_key(self):
-        plt.axes([0.1, 0.8, 0.8, 0.2])
-        lims = plt.axis()
-        plt.axis('off')
-
-        x = 0.00
-        size = [0.4, 0.4, 0.6, 0.6]
-        for intent, colour in sorted(self._intent_colours.items(), key=operator.itemgetter(0)):
-            if (intent in self.inputs.ms.intents) or 'UNKNOWN' in intent:
-                plt.gca().fill([x, x+0.05, x+0.05, x], size, facecolor=colour,
-                                 edgecolor=colour)
-                plt.text(x+0.06, 0.4, intent, size=9, va='bottom', rotation=45)
-                x += 0.12
-
-        plt.axis(lims)
-
-    def _get_intents_to_plot(self, user_intents):
-        intents = [intent for intent in sorted(self._intent_colours.keys(), key=operator.itemgetter(0))
-                   if intent in user_intents]
-        if not intents:
-            intents.append('UNKNOWN')
-        return intents
+    # the order of items here corresponds to the order they are shown in IntentVsTime diagram (from bottom to top).
+    _intent_colours = dict([
+        ('TARGET', 'blue'),
+        ('REFERENCE', 'deepskyblue'),
+        ('PHASE', 'cyan'),
+        ('CHECK', '#700070'),  # slightly darker than 'purple'
+        ('BANDPASS', 'orangered'),
+        ('AMPLITUDE', 'green'),
+        ('ATMOSPHERE', 'magenta'),
+        ('POINTING', 'yellow'),
+        ('SIDEBAND', 'orange'),
+        ('WVR', 'lime'),
+        ('DIFFGAIN', 'maroon'),
+        ('POLARIZATION', 'navy'),
+        ('POLANGLE', 'mediumslateblue'),
+        ('POLLEAKAGE', 'plum'),
+        ('UNKNOWN', 'grey'),
+    ])
 
     @staticmethod
     def _set_time_axis(figure, ax, datemin, datemax):
         border = datetime.timedelta(minutes=5)
-        ax.set_xlim(datemin-border, datemax+border)
+        ax.set_xlim(datemin - border, datemax + border)
 
         if datemax - datemin < datetime.timedelta(seconds=7200):
             # scales if observation spans less than 2 hours
@@ -428,6 +299,146 @@ class FieldVsTimeChart(object):
         figure.autofmt_xdate()
 
 
+class FieldVsTimeChartInputs(vdp.StandardInputs):
+
+    @vdp.VisDependentProperty
+    def output(self):
+        session_part = self.ms.session
+        ms_part = self.ms.basename
+        output = os.path.join(self.context.report_dir,
+                              'session%s' % session_part,
+                              ms_part, 'field_vs_time.png')
+        return output
+
+    def __init__(self, context, vis=None, output=None):
+        super(FieldVsTimeChartInputs, self).__init__()
+
+        self.context = context
+        self.vis = vis
+
+        self.output = output
+
+
+class FieldVsTimeChart(ParameterVsTimeChart):
+    Inputs = FieldVsTimeChartInputs
+
+    def __init__(self, inputs):
+        self.inputs = inputs
+
+    @casa5style_plot
+    def plot(self):
+        ms = self.inputs.ms
+
+        obs_start = utils.get_epoch_as_datetime(ms.start_time)
+        obs_end = utils.get_epoch_as_datetime(ms.end_time)
+
+        filename = self.inputs.output
+        if os.path.exists(filename):
+            plot = logger.Plot(filename,
+                               x_axis='Time',
+                               y_axis='Field',
+                               parameters={'vis': ms.basename})
+            return plot
+
+        f = plt.figure()
+        plt.clf()
+        plt.axes([0.1, 0.15, 0.8, 0.7])
+        ax = plt.gca()
+
+        nfield = len(ms.fields)
+        for field in ms.fields:
+            ifield = field.id
+            for scan in [scan for scan in ms.scans
+                         if field in scan.fields]:
+                intents_to_plot = self._get_intents_to_plot(field.intents.intersection(scan.intents))
+                num_intents = len(intents_to_plot)
+                assert num_intents > 0, "number of intents to plot is not larger than 0"
+
+                # vertical position to plot
+                y0 = ifield-0.5
+                y1 = ifield+0.5
+
+                height = (y1 - y0) / float(num_intents)
+                ys = y0
+                ye = y0 + height
+                for intent in intents_to_plot:
+                    colour = self._intent_colours[intent]
+                    if intent in self._subscan_intents and len(scan.intents.intersection(self._subscan_intents)) > 1:
+                        time_ranges = [tuple(map(utils.get_epoch_as_datetime, o)) \
+                                       for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id) ]
+                    else:
+                        # all 'datetime' objects are in UTC.
+                        start = utils.get_epoch_as_datetime(scan.start_time)
+                        end = utils.get_epoch_as_datetime(scan.end_time)
+                        time_ranges = ((start, end), )
+
+                    for (x0, x1) in time_ranges:
+                        ax.fill([x0, x1, x1, x0],
+                                [ys, ys, ye, ye],
+                                facecolor=colour,
+                                edgecolor=colour)
+                    ys += height
+                    ye += height
+
+        # set the labelling of the time axis
+        self._set_time_axis(figure=f, ax=ax, datemin=obs_start, datemax=obs_end)
+
+        # set FIELD_ID axis ticks etc.
+        if nfield < 11:
+            major_locator = ticker.FixedLocator(np.arange(0, nfield+1))
+            minor_locator = ticker.MultipleLocator(1)
+            ax.yaxis.set_minor_locator(minor_locator)
+        else:
+            step = np.ceil(nfield / 10.)  # show at most 10 tick labels
+            major_locator = ticker.IndexLocator(step, 0)
+        ax.yaxis.set_major_locator(major_locator)
+        ax.grid(True)
+
+        plt.ylabel('Field ID')
+        major_formatter = ticker.FormatStrFormatter('%d')
+        ax.yaxis.set_major_formatter(major_formatter)
+
+        # plot key
+        self._plot_key()
+
+        plt.savefig(filename)
+        plt.clf()
+        plt.close()
+
+        plot = logger.Plot(filename,
+                           x_axis='Time',
+                           y_axis='Field',
+                           parameters={'vis': ms.basename})
+
+        return plot
+
+    def _plot_key(self):
+        plt.axes([0.1, 0.8, 0.8, 0.2])
+        lims = plt.axis()
+        plt.axis('off')
+
+        x = 0.00
+        size = [0.4, 0.4, 0.6, 0.6]
+        # show a sorted list of intents occurring in this plot, but move UNKNOWN to the end of the list
+        intents = sorted(self._intent_colours.keys())
+        del intents[intents.index('UNKNOWN')]
+        intents.append('UNKNOWN')
+        for intent in intents:
+            if (intent in self.inputs.ms.intents) or intent == 'UNKNOWN':
+                plt.gca().fill([x, x+0.035, x+0.035, x], size, facecolor=self._intent_colours[intent], edgecolor=None)
+                plt.text(x+0.04, 0.4, intent, size=9, va='bottom', rotation=45)
+                x += 0.10
+
+        plt.axis(lims)
+
+    def _get_intents_to_plot(self, user_intents):
+        intents = [intent for intent in sorted(self._intent_colours.keys(), key=operator.itemgetter(0))
+                   if intent in user_intents]
+        if not intents:
+            intents.append('UNKNOWN')
+        return intents
+
+
 class IntentVsTimeChartInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
@@ -448,24 +459,10 @@ class IntentVsTimeChartInputs(vdp.StandardInputs):
         self.output = output
 
 
-class IntentVsTimeChart(object):
+class IntentVsTimeChart(ParameterVsTimeChart):
     Inputs = IntentVsTimeChartInputs
 
     # http://matplotlib.org/examples/color/named_colors.html
-    _intent_colours = {'AMPLITUDE': ('green', 25),
-                       'ATMOSPHERE': ('magenta', 30),
-                       'BANDPASS': ('red', 20),
-                       'CHECK': ('purple', 15),
-                       'PHASE': ('cyan', 10),
-                       'POINTING': ('yellow', 35),
-                       'REFERENCE': ('deepskyblue', 5),
-                       'SIDEBAND': ('orange', 40),
-                       'TARGET': ('blue', 0),
-                       'WVR': ('lime', 45),
-                       'POLARIZATION': ('navy', 50),
-                       'POLANGLE': ('mediumslateblue', 55),
-                       'POLLEAKAGE': ('plum', 60),
-                       }
 
     # list of intents that shares a same scan but segregated by subscan
     # (To dustinguish ON and OFF source subscans in ALMA-TP)
@@ -488,31 +485,32 @@ class IntentVsTimeChart(object):
         for scan in ms.scans:
             scan_start = utils.get_epoch_as_datetime(scan.start_time)
             scan_end = utils.get_epoch_as_datetime(scan.end_time)
-            for intent in scan.intents:
-                if intent not in IntentVsTimeChart._intent_colours:
+            for scan_y, (intent, colour) in enumerate(self._intent_colours.items()):
+                if intent not in scan.intents:
                     continue
-                (colour, scan_y) = IntentVsTimeChart._intent_colours[intent]
-                if intent in IntentVsTimeChart._subscan_intents and \
-                        len(scan.intents.intersection(FieldVsTimeChart._subscan_intents)) > 1:
-                    time_ranges = [tuple(map(utils.get_epoch_as_datetime, o)) \
+                if intent in self._subscan_intents and \
+                        len(scan.intents.intersection(self._subscan_intents)) > 1:
+                    time_ranges = [tuple(map(utils.get_epoch_as_datetime, o))
                                    for o in get_intent_subscan_time_ranges(ms.name, utils.to_CASA_intent(ms, intent), scan.id) ]
                 else:
                     time_ranges = ((scan_start, scan_end),)
                 for (time_start, time_end) in time_ranges:
                     ax.fill([time_start, time_end, time_end, time_start],
-                            [scan_y, scan_y, scan_y+5, scan_y+5],
+                            [scan_y, scan_y, scan_y+1, scan_y+1],
                             facecolor=colour)
 
-                ax.annotate('%s' % scan.id, (scan_start, scan_y+6))
+                ax.annotate('%s' % scan.id, (scan_start, scan_y+1.2))
 
-        ax.set_ylim(0, 62.5)
-        ax.set_yticks([2.5, 7.5, 12.5, 17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5, 52.5, 57.5, 62.5])
-        ax.set_yticklabels(['SCIENCE', 'REFERENCE', 'PHASE', 'CHECK', 'BANDPASS',
-                            'AMPLITUDE', 'ATMOSPHERE', 'POINTING', 'SIDEBAND',
-                            'WVR', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'])
+        # put intent names on the vertical axis, replacing 'TARGET' with 'SCIENCE', removing 'UNKNOWN', and keeping other names intact
+        intent_colours = self._intent_colours.copy()    # make a copy and then delete one element
+        del intent_colours['UNKNOWN']
+        num_intents = len(intent_colours)
+        ax.set_ylim(0, num_intents+0.5)  # extra space on top for the label
+        ax.set_yticks(np.linspace(0.5, num_intents-0.5, num_intents))
+        ax.set_yticklabels([name.replace('TARGET', 'SCIENCE') for name in intent_colours.keys()])
 
         # set the labelling of the time axis
-        FieldVsTimeChart._set_time_axis(
+        self._set_time_axis(
             figure=fig, ax=ax, datemin=obs_start, datemax=obs_end)
         ax.grid(True)
 
@@ -584,8 +582,8 @@ class MosaicChart(object):
 
         try:
             plotmosaic.plot_mosaic(self.ms, self.source, self.figfile)
-        except:
-            LOG.debug('Could not create mosaic plot')
+        except Exception as e:
+            LOG.warn('Could not create mosaic plot: {}'.format(e))
             return None
 
         return self._get_plot_object()

@@ -401,6 +401,27 @@ def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage
 
     pr.run(ppr='pl-regressiontest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small/PPR.xml')
 
+
+@pytest.mark.fast
+@pytest.mark.alma
+def test_E2E6_1_00010_S__uid___A002_Xd0a588_X2239_regression():
+    """Run ALMA cal+image regression on a 12m moderate-size test dataset in ASDM.
+
+    Recipe name:                procedure_hifa_calimage
+    Dataset:                    E2E6.1.00010.S: uid___A002_Xd0a588_X2239
+    """
+
+    input_dir = 'pl-regressiontest/E2E6.1.00010.S'
+    ref_directory = 'pl-regressiontest/E2E6.1.00010.S'
+
+    pr = PipelineRegression(recipe='procedure_hifa_calimage.xml',
+                            input_dir=input_dir,
+                            visname=['uid___A002_Xd0a588_X2239'],
+                            expectedoutput_dir=ref_directory)
+
+    pr.run()
+
+
 @pytest.mark.fast
 @pytest.mark.alma
 def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
@@ -766,7 +787,7 @@ class TestSlowerRegression:
         ref_directory =  'pl-regressiontest/2019.1.01056.S/'
 
         pr = PipelineRegression(input_dir = test_directory,
-                                visname=['uid___A002_Xe1f219_X6d0b', ' uid___A002_Xe1f219_X7ee8'], 
+                                visname=['uid___A002_Xe1f219_X6d0b', 'uid___A002_Xe1f219_X7ee8'], 
                                 project_id="2019_1_01056_S",
                                 expectedoutput_file=(f'{ref_directory}' + 
                                                 'uid___A002_Xe1f219_X6d0b.casa-6.5.4-2-pipeline-2023.0.0.17.results.txt'))
