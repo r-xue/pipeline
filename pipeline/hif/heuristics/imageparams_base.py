@@ -1981,7 +1981,10 @@ class ImageParamsHeuristics(object):
     def nterms(self, spwspec):
         return None
 
-    def cyclefactor(self, iteration):
+    def tlimit(self, iteration, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None):
+        return 2.0
+
+    def cyclefactor(self, iteration, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None):
         return None
 
     def cycleniter(self, iteration):
