@@ -507,7 +507,7 @@ class SpectralWindowTable(object):
         # Read in information about the SDM_NUM_BIN column for the current ms
         sdm_num_bins = SpectralWindowTable.get_sdm_num_bin_info(ms, msmd)
 
-        # Compute median feed receptor angle.
+        # PIPE-1538: Compute median feed receptor angle.
         receptor_angle_info = SpectralWindowTable.get_receptor_angle(ms)
 
         spws = []
@@ -558,10 +558,10 @@ class SpectralWindowTable(object):
 
             # Extract feed receptor angle for current spw.
             try:
-                angle = receptor_angle_info[i]
+                median_receptor_angle = receptor_angle_info[i]
             except KeyError:
                 LOG.info("No feed info available for MS {} spw id {}".format(_get_ms_basename(ms), i))
-                angle = None
+                median_receptor_angle = None
 
             # If the earlier get_sdm_num_bin_info call returned None, need to set sdm_num_bin value to None for each spw
             if sdm_num_bins is None: 
@@ -571,7 +571,8 @@ class SpectralWindowTable(object):
 
             spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
                                         chan_effective_bws, sideband, baseband, receiver, freq_lo,
-                                        transitions=transitions, sdm_num_bin=sdm_num_bin)
+                                        transitions=transitions, sdm_num_bin=sdm_num_bin,
+                                        median_receptor_angle=median_receptor_angle)
             spws.append(spw)
 
         return spws
@@ -582,6 +583,8 @@ class SpectralWindowTable(object):
         Extract information about the feed receptor angle from the FEED table's
         RECEPTOR_ANGLE column, and compute an average value over all antennas
         for each SpW.
+        Return: a dict in which each MS SpW corresponds to an array of angles,
+        or an empty dict in case of error.
         """
         # Get mapping of ASDM spectral window id to MS spectral window id.
         asdm_to_ms_spw_map = SpectralWindowTable.get_asdm_to_ms_spw_mapping(ms)
@@ -594,26 +597,25 @@ class SpectralWindowTable(object):
         try:
             with casa_tools.TableReader(feed_table) as tb:
                 # Extract the ASDM spw ids column.
-                spwids = sorted(set(tb.getcol('spectralWindowId')))
+                asdm_spwids = sorted(set(tb.getcol('SPECTRAL_WINDOW_ID')))
 
                 # Go through the table row-by-row, and extract info for each
                 # ASDM spwid encountered:
-                for spwid in spwids:
-                    # Assume that ASDM spectral windows are stored as a string
-                    # such as "SpectralWindow_<nn>", where <nn> is the ID integer.
-                    _, asdm_spwid = spwid.split('_')
-
+                for asdm_spwid in asdm_spwids:
                     # Get MS spwid corresponding to the current ASDM spwid.
-                    ms_spwid = asdm_to_ms_spw_map[int(asdm_spwid)]
+                    ms_spwid = asdm_to_ms_spw_map[asdm_spwid]
 
-                    # Compute median feed angle.
+                    # Compute median feed angle, discarding non-linear polarizations.
                     tsel = tb.query(f"SPECTRAL_WINDOW_ID == {ms_spwid}")
                     angle = tsel.getcol('RECEPTOR_ANGLE')
-                    angle_info[ms_spwid] = numpy.degrees(numpy.median(angle, axis=1))
+                    pol = tsel.getcol('POLARIZATION_TYPE')
+                    use = numpy.logical_or(pol == 'X', pol == 'Y')
+                    angle[~use] = numpy.nan
+                    if not numpy.all(numpy.isnan(angle)):
+                        angle_info[ms_spwid] = numpy.degrees(numpy.nanmedian(angle, axis=1))
                     tsel.close()
-        except:
-            LOG.info("Unable to read feed info for MS {}".format(_get_ms_basename(ms)))
-            angle_info = {}
+        except Exception as ex:
+            LOG.info("Unable to read feed info for MS {}: {}".format(_get_ms_basename(ms), ex))
 
         return angle_info
 

@@ -7,7 +7,7 @@ windows, channel frequency information, and channel selection.
 import decimal
 import itertools
 import operator
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import numpy
 
@@ -265,11 +265,13 @@ class SpectralWindow(object):
     def __init__(self, spw_id: int, name: str, spw_type: str, bandwidth: float,
                  ref_freq: dict, mean_freq: float, chan_freqs: numpy.ndarray,
                  chan_widths: numpy.ndarray, chan_effective_bws: numpy.ndarray,
-                 sideband: int, baseband: int, receiver: str,
-                 freq_lo: Optional[List[float]], band: str='Unknown',
-                 spectralspec: str=None,
-                 transitions: Optional[numpy.ndarray]=None,
-                 sdm_num_bin: Optional[int]=None, median_receptor_angle: Optional[numpy.ndarray] = None):
+                 sideband: int, baseband: int,
+                 receiver: Optional[str], freq_lo: Optional[Union[List[float], numpy.ndarray]],
+                 band: str = 'Unknown',
+                 spectralspec: Optional[str] = None,
+                 transitions: Optional[List[str]] = None,
+                 sdm_num_bin: Optional[int] = None,
+                 median_receptor_angle: Optional[numpy.ndarray] = None):
         """
         Initialize SpectralWindow class.
 
@@ -282,16 +284,14 @@ class SpectralWindow(object):
             mean_freq: Mean frequency of spectral window in Hz
             chan_freqs: A list of frequency of each channel in spw in Hz
             chan_widths: A list of channel width of each channel in spw in Hz
-            chan_effective_bws: A list of effective band width of each channel
-                in spw in Hz
+            chan_effective_bws: A list of effective bandwidth of each channel in spw in Hz
             sideband: Side band
             baseband: The baseband
             receiver: Receiver type, e.g., 'TSB'
             freq_lo: A list of LO frequencies in Hz
             band: Frequency band
             spectralspec: SpectralSpec name
-            transition: Spectral transitions recorded associated with spectral
-                window
+            transitions: Spectral transitions recorded associated with spectral window
             sdm_num_bin: Number of bins for online spectral averaging
             median_receptor_angle: Median feed receptor angle.
         """
