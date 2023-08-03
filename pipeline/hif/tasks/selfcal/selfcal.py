@@ -493,7 +493,6 @@ class Selfcal(basetask.StandardTaskTemplate):
                                                          interp=sc_lib[vis]['applycal_interpolate_final'][idx], calwt=False,
                                                          spwmap=spwmap_final[idx], caltype='gaincal')
                             calto = callibrary.CalTo(vis=vis_calto, field=cleantarget['field'], spw=cleantarget['spw_real'][vis])
-                            # applymode=sc_lib[vis]['applycal_mode_final']
                             calapps.append(callibrary.CalApplication(calto, calfrom))
                             vislist.append(vis_calto)
 
@@ -504,7 +503,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         taskqueue_parallel_request = len(vislist) > 1
         with TaskQueue(parallel=taskqueue_parallel_request, executor=self._executor) as tq:
             for vis in vislist:
-                task_args = {'vis': vis, 'applymode': 'calflag', 'intent': 'TARGET'}
+                task_args = {'vis': vis, 'applymode': self.inputs.apply_cal_mode_default, 'intent': 'TARGET'}
                 tq.add_pipelinetask(SerialIFApplycal, task_args, self.inputs.context)
 
         tq_results = tq.get_results()
