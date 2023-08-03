@@ -35,7 +35,7 @@ ImageRow = collections.namedtuple('ImageInfo', (
     'chk_gfluxscale chk_gfluxscale_snr chk_fitflux_gfluxscale_ratio cube_all_cont tclean_command result '
     'model_pos_flux model_neg_flux model_flux_inner_deg nmajordone_total nmajordone_per_iter majorcycle_stat_plot '
     'tab_dict tab_url outmaskratio outmaskratio_label pol_session pol_ratio pol_angle '
-    'poli_abspath poli_thumbnail pola_abspath pola_thumbnail'))
+    'poli_abspath poli_thumbnail pola_abspath pola_thumbnail peak_snr'))
 PolImagePaths = collections.namedtuple('PolImageInfo', ('poli_abspath poli_thumbnail pola_abspath pola_thumbnail'))
 
 
@@ -67,12 +67,16 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         stokes_indices = {'I': 0, 'Q': 1, 'U': 2, 'V': 3}
 
+        have_polcal_fit = False
+
         for r in clean_results:
             if r.empty() or not r.iterations:
                 continue
 
             extension = '.tt0' if r.multiterm else ''
             maxiter = max(r.iterations.keys())
+            if 'image' not in r.iterations[maxiter]:
+                continue   # PIPE-1790: skip the rest if an image was not produced due to some error
 
             vis = ','.join([os.path.basename(v).strip('.ms') for v in r.vis])
             datatype = r.datatype
@@ -81,6 +85,29 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             field = None
             fieldname = None
             intent = None
+
+            # Get the scaled MAD from the non-pbcor image outside of a central radius to caculate the peakSNR for CHECK sources (PIPE-1296)
+            if r.intent == 'CHECK':
+                try:
+                    image_path_non_pbcor = r.iterations[maxiter]['image']
+                    LOG.info('Using %s to calculate the MAD for the peakSNR for the weblog'% image_path_non_pbcor)
+
+                    with casa_tools.ImageReader(image_path_non_pbcor) as image:
+                        # Construct the region for "the image outside of a central radius"
+                        imshape = image.shape()
+                        central_radius = min(20, imshape[0]//5)
+                        central_circle = 'circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, central_radius)
+                        box = 'box[[%dpix, %dpix], [%dpix, %dpix]]' % (0, 0, imshape[0], imshape[1])
+                        everything_but_central_circle = box + "\n - " + central_circle
+
+                        # Calculate image statistics for this region
+                        outside_circle_imstat = image.statistics(region=everything_but_central_circle, robust=True)
+                        scaled_mad = outside_circle_imstat['medabsdevmed'][0]
+                except Exception as e:
+                    msg = "PeakSNR calculation for the tclean weblog failed. Failed to calculate the MAD outside of a central radius. Error: {}".format(str(e))
+                    LOG.error(msg)
+                    LOG.error(traceback.format_exc())
+                    scaled_mad = None
 
             image_path = r.iterations[maxiter]['image'].replace('.image', '.image%s' % extension)
 
@@ -100,8 +127,35 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 stokes_parameters = [stokes_labels[idx] for idx in range(image.shape()[2])]
                 coordsys.done()
 
-            for pol in stokes_parameters:
 
+                # Get the peak of the image outside of a central radius to caculate the peakSNR for CHECK sources (PIPE-1296)
+                if (r.intent == 'CHECK') and (scaled_mad is not None):
+                    try:
+                        LOG.info("Using {} to calculate the peak value for peakSNR for the weblog".format(image_name))
+
+                        # Get the peak value whithin a central radius to calculate the peakSNR.
+                        imshape = image.shape()
+                        central_radius = min(20, imshape[0]//5)
+                        region='circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, central_radius)
+
+                        imstats_within_region = image.statistics(region=region)
+                        imagepeak = imstats_within_region['max'][0]
+
+                        peak_snr = imagepeak/scaled_mad
+                    except Exception as e:
+                        msg = "For {}, peakSNR calculation for the tclean weblog failed. Failed to find the peak value within a central radius. Error: {}".format(image_name, str(e))
+                        LOG.warning(msg)
+                        peak_snr = None
+                else:
+                    peak_snr = None
+
+
+            # cache image statistics while we have them in scope.
+            image_rms = stats.get('rms')[0]
+            image_max = stats.get('max')[0]
+            image_stats[image_path] = display.ImageStats(rms=image_rms, max=image_max)
+
+            for pol in stokes_parameters:
                 if stokes_parameters != ['I']:
                     # Get the right stokes plane's beam and statistics
                     LOG.info('Getting properties of %s for the weblog' % image_path)
@@ -566,6 +620,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # Polarization calibrator fit parameters
                 #
                 if r.polcal_fit is not None:
+                    have_polcal_fit = True
                     pol_session = r.polcal_fit['session']
                     if r.polcal_fit['pol_ratio'] != 'N/A':
                         pol_ratio = f"{qaTool.getvalue(r.polcal_fit['pol_ratio'])[0]:6.2f} +/- {qaTool.getvalue(r.polcal_fit['err_pol_ratio'])[0]:6.2f}%"
@@ -672,6 +727,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     poli_thumbnail=None,
                     pola_abspath=None,
                     pola_thumbnail=None,
+                    peak_snr=peak_snr,
                     result=r
                 )
                 image_rows.append(row)
@@ -772,6 +828,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'plots_dict': plots_dict,
             'image_info': final_rows,
             'dirname': weblog_dir,
+            'have_polcal_fit': have_polcal_fit,
             'chk_fit_info': chk_fit_rows,
             'pol_fit_info': pol_fit_rows,
             'pol_fit_plots': pol_fit_plots
@@ -963,6 +1020,8 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
         image_stats = {}
 
         stokes_indices = {'I': 0, 'Q': 1, 'U': 2, 'V': 3}
+
+        have_polcal_fit = False
 
         for r in clean_results:
 
@@ -1449,6 +1508,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 # Polarization calibrator fit parameters
                 #
                 if r.polcal_fit is not None:
+                    have_polcal_fit = True
                     pol_session = r.polcal_fit['session']
                     if r.polcal_fit['pol_ratio'] != 'N/A':
                         pol_ratio = f"{qaTool.getvalue(r.polcal_fit['pol_ratio'])[0]:6.2f} +/- {qaTool.getvalue(r.polcal_fit['err_pol_ratio'])[0]:6.2f}%"
@@ -1691,6 +1751,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
             'image_info': final_rows,
             'dirname': weblog_dir,
             'chk_fit_info': chk_fit_rows,
+            'have_polcal_fit': have_polcal_fit,
             'pol_fit_info': pol_fit_rows,
             'pol_fit_plots': pol_fit_plots
         })

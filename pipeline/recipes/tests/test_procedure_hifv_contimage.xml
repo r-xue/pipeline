@@ -2,7 +2,7 @@
 This is a test procedure for the SRDP selfcalibration pipeline. 
 
 These steps have been skipped to speed up the test:
-- hif_restoredata
+- hifv_restoredata
 - hif_mstransform
 - hif_findcont
 - cube imaging

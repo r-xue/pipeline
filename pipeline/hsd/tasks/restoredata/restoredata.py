@@ -179,6 +179,6 @@ class SDRestoreData(restoredata.RestoreData):
         # SDApplyCalInputs operates in the scope of a single measurement set.
         # To operate in the scope of multiple MSes we must use an
         # InputsContainer.
-        container = vdp.InputsContainer(applycal.SDApplycal, inputs.context)
-        applycal_task = applycal.SDApplycal(container)
+        container = vdp.InputsContainer(applycal.SerialSDApplycal, inputs.context)
+        applycal_task = applycal.SerialSDApplycal(container)
         return self._executor.execute(applycal_task, merge=True)

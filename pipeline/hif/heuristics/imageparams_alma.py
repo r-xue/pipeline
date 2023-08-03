@@ -411,8 +411,8 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
     def intent(self):
         return 'TARGET'
 
-    def stokes(self, intent: str = '') -> str:
-        if intent == 'POLARIZATION':
+    def stokes(self, intent: str = '', joint_intents: str = '') -> str:
+        if intent == 'POLARIZATION' and joint_intents == 'POLARIZATION':
             return 'IQUV'
         else:
             return 'I'

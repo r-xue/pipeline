@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifv_fixpointing(vis=None, dryrun=None, acceptresults=None):
 
     """
@@ -15,7 +14,6 @@ def hifv_fixpointing(vis=None, dryrun=None, acceptresults=None):
     vis           List of input visibility data
     dryrun        Run the task (False) or display task command (True)
     acceptresults Add the results into the pipeline context
-    [1;42mRETURNS[1;m          void
 
     --------- examples -----------------------------------------------------------
 

@@ -106,7 +106,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
         """Tclean nterms parameter heuristics."""
         return 1
 
-    def stokes(self, intent: str = '') -> str:
+    def stokes(self, intent: str = '', joint_intents: str = '') -> str:
         """Tclean stokes parameter heuristics."""
         return 'IQUV'
 

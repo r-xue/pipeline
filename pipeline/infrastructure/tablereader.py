@@ -75,20 +75,22 @@ class MeasurementSetReader(object):
             antenna1_col = openms.getcol('ANTENNA1')
             antenna2_col = openms.getcol('ANTENNA2')
             data_desc_id_col = openms.getcol('DATA_DESC_ID')
-
-            # get columns and tools needed to create scan times
             time_colkeywords = openms.getcolkeywords('TIME')
-            time_unit = time_colkeywords['QuantumUnits'][0]
-            time_ref = time_colkeywords['MEASINFO']['Ref']    
-            mt = casa_tools.measures
-            qt = casa_tools.quanta
 
-            scans = []
-            statesforscans = msmd.statesforscans()
-            fieldsforscans = msmd.fieldsforscans(asmap=True, arrayid=0, obsid=0)
-            spwsforscans = msmd.spwsforscans()
+        # get columns and tools needed to create scan times
+        time_unit = time_colkeywords['QuantumUnits'][0]
+        time_ref = time_colkeywords['MEASINFO']['Ref']
+        mt = casa_tools.measures
+        qt = casa_tools.quanta
 
-            for scan_id in msmd.scannumbers():
+        # For each Observation ID, retrieve info on scans.
+        scans = []
+        for obs_id in range(msmd.nobservations()):
+            statesforscans = msmd.statesforscans(obsid=obs_id)
+            fieldsforscans = msmd.fieldsforscans(obsid=obs_id, arrayid=0, asmap=True)
+            spwsforscans = msmd.spwsforscans(obsid=obs_id)
+
+            for scan_id in msmd.scannumbers(obsid=obs_id):
                 states = [s for s in ms.states
                           if s.id in statesforscans[str(scan_id)]]
 
@@ -100,7 +102,7 @@ class MeasurementSetReader(object):
                 # by spw
                 # scan_times = msmd.timesforscan(scan_id)
 
-                exposures = {spw_id: msmd.exposuretime(scan=scan_id, spwid=spw_id)
+                exposures = {spw_id: msmd.exposuretime(scan=scan_id, spwid=spw_id, obsid=obs_id)
                              for spw_id in spwsforscans[str(scan_id)]}
 
                 scan_mask = (scan_number_col == scan_id)
@@ -139,7 +141,7 @@ class MeasurementSetReader(object):
 
                 LOG.trace('{0}'.format(scan))
 
-            return scans
+        return scans
 
     @staticmethod
     def add_band_to_spws(ms: domain.MeasurementSet) -> None:
@@ -379,10 +381,7 @@ class MeasurementSetReader(object):
                 else:
                     ms.science_goals['dynamicRange'] = sbinfo.dynamicRange
 
-                if sbinfo.spectralDynamicRangeBandWidth is None:
-                    ms.science_goals['spectralDynamicRangeBandWidth'] = '0.0GHz'
-                else:
-                    ms.science_goals['spectralDynamicRangeBandWidth'] = sbinfo.spectralDynamicRangeBandWidth
+                ms.science_goals['spectralDynamicRangeBandWidth'] = sbinfo.spectralDynamicRangeBandWidth
 
                 ms.science_goals['sbName'] = sbinfo.sbName
             
@@ -996,7 +995,7 @@ class SBSummaryTable(object):
 
                 # Create spectral dynamic range bandwidth goal
                 spectralDynamicRangeBandWidthGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'spectralDynamicRangeBandWidth')
-                if spectralDynamicRangeBandWidthGoal is not None:
+                if spectralDynamicRangeBandWidthGoal not in (None, 'None', 'none'):
                     spectralDynamicRangeBandWidth = qa.quantity(spectralDynamicRangeBandWidthGoal)
                 else:
                     spectralDynamicRangeBandWidth = qa.quantity(0.0)

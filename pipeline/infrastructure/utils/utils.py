@@ -761,9 +761,16 @@ def ensure_products_dir_exists(products_dir):
 
 
 def export_weblog_as_tar(context, products_dir, name_builder, dry_run=False):
+    # Construct filename prefix from oussid and recipe name if available.
+    prefix = context.get_oussid()
+    recipe_name = context.get_recipe_name()
+    if recipe_name:
+        prefix = prefix + '.' + recipe_name
+
     # Construct filename for weblog output tar archive.
     tarfilename = name_builder.weblog(project_structure=context.project_structure,
-                                      ousstatus_entity_id=context.get_oussid())
+                                      ousstatus_entity_id=prefix)
+
     # Save weblog directory to tar archive.
     LOG.info(f"Saving weblog in {tarfilename}")
     if not dry_run:
