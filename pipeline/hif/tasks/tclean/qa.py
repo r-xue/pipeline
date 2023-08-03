@@ -158,9 +158,6 @@ class TcleanQAHandler(pqa.QAPlugin):
             # Polarization calibrators
             if result.intent == 'POLARIZATION' and result.inputs['specmode'] in ('mfs', 'cont') and result.stokes == 'IQUV' and result.imaging_mode == 'ALMA':
                 try:
-                    # Fit I, Q and U image planes
-                    imagename = result.image.replace('.pbcor', '')
-
                     # Calculate POLI/POLA images
                     imstat_arg = {'imagename': result.residual, 'axes': [0, 1]}
                     job = casa_tasks.imstat(**imstat_arg)
@@ -168,6 +165,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                     rms = calstat['rms']
                     prms = np.sqrt(rms[1]**2. + rms[2]**2.)
 
+                    imagename = result.image.replace('.pbcor', '')
                     poli_imagename = imagename.replace('IQUV', 'POLI')
                     immath_arg = {'imagename': imagename, 'outfile': poli_imagename, 'mode': 'poli', 'sigma': '0.0Jy/beam'}
                     job = casa_tasks.immath(**immath_arg)
@@ -177,27 +175,36 @@ class TcleanQAHandler(pqa.QAPlugin):
                     job = casa_tasks.immath(**immath_arg)
                     res = job.execute(dry_run=False)
 
-                    # Fit I, Q and U images
+                    # Try fitting I, Q and U images planes
+                    error_msgs = []
                     imfit_arg = {'imagename': imagename, 'stokes': 'I', 'box': '110,110,145,145'}
                     job = casa_tasks.imfit(**imfit_arg)
                     res_I = job.execute(dry_run=False)
                     if res_I is None or not res_I['converged']:
-                        msg = f'Fitting Stokes I for {imagename} failed'
-                        raise Exception(msg)
+                        msg = f"Fitting Stokes I for {imagename} (field {result.inputs['field']} spw {result.inputs['spw']}) failed"
+                        LOG.error(msg)
+                        error_msgs.append(msg)
 
                     imfit_arg = {'imagename': imagename, 'stokes': 'Q', 'box': '115,115,130,130'}
                     job = casa_tasks.imfit(**imfit_arg)
                     res_Q = job.execute(dry_run=False)
                     if res_Q is None or not res_Q['converged']:
-                        msg = f'Fitting Stokes Q for {imagename} failed'
-                        raise Exception(msg)
+                        msg = f"Fitting Stokes Q for {imagename} (field {result.inputs['field']} spw {result.inputs['spw']}) failed"
+                        LOG.error(msg)
+                        error_msgs.append(msg)
 
                     imfit_arg = {'imagename': imagename, 'stokes': 'U', 'box': '110,110,145,145'}
                     job = casa_tasks.imfit(**imfit_arg)
                     res_U = job.execute(dry_run=False)
                     if res_U is None or not res_U['converged']:
-                        msg = f'Fitting Stokes U for {imagename} failed'
-                        raise Exception(msg)
+                        msg = f"Fitting Stokes U for {imagename} (field {result.inputs['field']} spw {result.inputs['spw']}) failed"
+                        LOG.error(msg)
+                        error_msgs.append(msg)
+
+                    # Raise exception if any fit failed because one cannot
+                    # continue to compute the angle and ratio.
+                    if error_msgs:
+                        raise Exception('; '.join(error_msgs))
 
                     # Extract the flux and error values for each Stokes
                     flux_I = res_I['results']['component0']['flux']['value'][0]
@@ -231,6 +238,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                                          'pol_angle': qaTool.quantity(pol_angle, 'deg'),
                                          'err_pol_angle': qaTool.quantity(err_pol_angle, 'deg'),
                                          'err_msg': ''}
+                    result.qa.pool.append(pqa.QAScore(1.0, longmsg=f"Stokes fits for field {result.inputs['field']} spw {result.inputs['spw']} succeeded", shortmsg='Stokes fits succeeded'))
                 except Exception as e:
                     LOG.error(str(e))
                     result.polcal_fit = {'session': context.observing_run.get_ms(result.vis[0]).session,
@@ -242,6 +250,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                                          'pol_angle': 'N/A',
                                          'err_pol_angle': 'N/A',
                                          'err_msg': str(e)}
+                    result.qa.pool.append(pqa.QAScore(0.34, longmsg=str(e), shortmsg='Fitting Stokes parameter failed'))
 
 class TcleanListQAHandler(pqa.QAPlugin):
     result_cls = collections.Iterable
