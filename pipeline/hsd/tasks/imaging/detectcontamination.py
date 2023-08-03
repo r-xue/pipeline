@@ -53,7 +53,7 @@ def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', is_frequency_chan
     Args:
         naxis3 : a number of pixels along spectral axis
         cube_regrid : data chunk loaded from image cube
-        is_frequency_channel_reversed : True if frequency channels are in reversed  order. False if not.
+        is_frequency_channel_reversed : True if frequency channels are in reversed order. False if not.
 
     Returns:
         RMS map of the part of the cube.
