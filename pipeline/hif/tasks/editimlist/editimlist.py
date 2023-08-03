@@ -631,7 +631,6 @@ class Editimlist(basetask.StandardTaskTemplate):
             flagpct = th.flagpct_spwgroup(results_list=self.inputs.context.results, spw_selection=spw)
 
             flagpct_threshold = 1.0
-            print(imlist_entry_per_spwgroup['spw'], flagpct, spwgroup_reject)
 
             if flagpct is None:
                 LOG.warning('Can not find previous flagging summary for spw=%r, but we will still add it as an imaging target.', spw)
