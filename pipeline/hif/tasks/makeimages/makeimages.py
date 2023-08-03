@@ -468,7 +468,7 @@ def _get_description_map(intent):
         return {}
 
 def _get_sidebar_map(intent):
-    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'AMPLITUDE'):
+    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE'):
         return {
             'mfs': 'cals',
             'cont': 'cals'
