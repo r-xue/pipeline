@@ -1414,37 +1414,38 @@ def score_wvrgcal(ms_name, dataresult):
                 qa_messages.append('Elevated rms value(s)')
             # before making the score check if noisy BP was triggered
             if dataresult.BPnoisy:
-                score = 0.66  # should be yellow to trigger a warning
+                score = 0.66  # downgrade to yellow to trigger a warning
                 qa_messages.append('Atmospheric phases appear unstable')
                 if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
                     # inherit previous reduceBy values
                     score = score - reduceBy
-                # new linear score for yellow trucation
-                score = linear_score(score,0.0,0.66,0.34,0.66)
+                # new linear score for yellow truncation
+                score = linear_score(score, 0.0, 0.66, 0.34, 0.66)
             else:
-                score = linear_score(score,0.0,0.9,0.67,0.9)
+                score = linear_score(score, 0.0, 0.9, 0.67, 0.9)
                 # i.e. inputs will be truncated to between 0.0 and 0.9, linfited to be then between 0.67 and 0.9 - blue
 
     # now for scores < 1.0 
     elif score < 1.0:
-        qa_messages.append('No WVR improvement - Check Phase stability')
+        qa_messages.append('No WVR improvement')  # PIPE-1837 message changed, now below
 
-        ## presuming disc list and rms list are all filled 
+        # presuming disc list and rms list are all filled
         if np.median(disc_list) > disc_max or np.median(rms_list) > rms_max:
             score = 0.33
-            qa_messages.append('Elevated disc/rms value(s)')
+            qa_messages.append('Elevated disc/rms value(s) - Check atmospheric phase stability')
             if len(flagant_list) > 0:
                 reduceBy = len(disc_limit)*0.1
                 qa_messages.append('Flagged antenna(s)')
                 score = score - reduceBy
-            score = linear_score(score,0.0,0.33,0.0,0.33)
+            score = linear_score(score, 0.0, 0.33, 0.0, 0.33)
             # i.e. inputs will be truncated to between 0.0 and 0.33, linfited to be then between 0.0 and 0.33 RED
 
         else:
             score = 0.66
+            reduceBy = 0.0  # initiate due to PIPE-1837 if/else loops 
             if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
                 # now adjust 0.1 per bad entry
-                reduceBy =  len(flagant_list)*0.1
+                reduceBy += len(flagant_list)*0.1
                 reduceBy += len(disc_limit)*0.1
                 reduceBy += len(rms_limit)*0.1
                 score = score - reduceBy
@@ -1455,8 +1456,32 @@ def score_wvrgcal(ms_name, dataresult):
                     qa_messages.append('Elevated disc value(s)')
                 if len(rms_limit) > 0:
                     qa_messages.append('Elevated rms value(s)')
-            score = linear_score(score,0.0,0.66,0.34,0.66)
-            # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
+
+            # PIPE-1837 before final yellow scoring we assess if the 
+            # phase rms from wvrg_qa was 'good' i.e. <1 radian
+            # but only when there are no other WVR soln issues, i.e. 
+            # disc or rms are below the fixed limits - note
+            # message changes explicitly if only BP is 'good' or both BP and Phase
+            # technically the phase can be noisy due to SNR, not atmospheric variations
+            if len(disc_limit) == 0 and len(rms_limit) == 0:
+                # here we would check if initscore > 0.X: "limit' 
+                if dataresult.BPgood:
+                    qa_messages.append('Bandpass ' + ('and Phase ' if dataresult.PHgood else '') +
+                                       'calibrator atmospheric phase stability appears to be good')
+                    score = 0.9 - reduceBy  # still account for flagged antennas
+                    score = linear_score(score, 0.0, 0.9, 0.67, 0.9)
+                else:
+                    # we don't modify from the previous assessment - i.e. data seem ok, no poor rms or disc,
+                    # but the phase RMS is not explicitly reported as good - I suspect some LB and HF might come here
+                    qa_messages.append('Check atmospheric phase stability')
+                    # if disc and rms didn't trigger but phase stability not reported as good - still yellow
+                    score = linear_score(score, 0.0, 0.66, 0.34, 0.66)
+  
+            # Otherwise now we are back to yellow when disc or rms also triggered on any ant and append message now
+            else:
+                qa_messages.append('Check atmospheric phase stability')
+                score = linear_score(score, 0.0, 0.66, 0.34, 0.66)
+                # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
 
     # join the short messages for the QA score (are these stored?? ) 
     qa_mesg = ' - '.join(qa_messages)
