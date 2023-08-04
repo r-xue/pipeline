@@ -465,9 +465,15 @@ class MeasurementSetReader(object):
         with casa_tools.TableReader(ms.name + '/PROCESSOR') as table:
             tb1 = table.query("TYPE=='CORRELATOR'")
             sub_types_col = tb1.getcol('SUB_TYPE')
-            correlator_name = sub_types_col[0]
             tb1.close()
-        return str(correlator_name)
+
+        if len(sub_types_col) > 0:
+            correlator_name = str(sub_types_col[0])
+        else:
+            msg = "No correlator name could be found for {}".format(ms.basename)
+            LOG.info(msg)
+            
+        return correlator_name
 
     @staticmethod
     def get_acs_software_version(ms, msmd) -> Tuple[str, str]:
