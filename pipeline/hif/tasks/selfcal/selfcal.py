@@ -373,7 +373,7 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         # collect the target list
         scal_targets = self._get_scaltargets(scal=True)
-        scal_targets = self._check_mosaic(scal_targets)
+        scal_targets = self._check_scaltargets(scal_targets)
         if not scal_targets:
             return scal_targets
 
@@ -411,24 +411,30 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         for idx, target in enumerate(scal_targets):
             scal_library, solints, bands, _ = tq_results[idx]
+            sc_exception = False
             if scal_library is None:
-                target['sc_exception'] = True
+                sc_exception = True
+            if not sc_exception:
+                try:
+                    target['sc_band'] = bands[0]
+                    target['sc_solints'] = solints[bands[0]]
+                    # note scal_library is keyed by field name without quotes at this moment.
+                    # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
+                    #       utils.fieldname_for_casa() and
+                    #       utils.dequote()
+                    field_name = utils.dequote(target['field'])
+                    target['sc_lib'] = scal_library[field_name][target['sc_band']]
+                    target['field_name'] = field_name
+                    target['sc_rms_scale'] = target['sc_lib']['RMS_final'] / target['sc_lib']['theoretical_sensitivity']
+                    target['sc_success'] = target['sc_lib']['SC_success']
+                except Exception as err:
+                    traceback_msg = traceback.format_exc()
+                    LOG.info(traceback_msg)
+                    sc_exception = True
+            if sc_exception:
                 LOG.error('The self-calibration sequence failed for target=%r spw=%r from the working directory: %s/ .',
                           target['field'], target['spw'], target['sc_workdir'])
-            else:
-                target['sc_exception'] = False
-                target['sc_band'] = bands[0]
-                target['sc_solints'] = solints[bands[0]]
-                # note scal_library is keyed by field name without quotes at this moment.
-                # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
-                #       utils.fieldname_for_casa() and
-                #       utils.dequote()
-                field_name = utils.dequote(target['field'])
-                target['sc_lib'] = scal_library[field_name][target['sc_band']]
-                target['field_name'] = field_name
-                target['sc_rms_scale'] = target['sc_lib']['RMS_final'] / target['sc_lib']['theoretical_sensitivity']
-                target['sc_success'] = target['sc_lib']['SC_success']
-
+            target['sc_exception'] = sc_exception
         return scal_targets
 
     @staticmethod
@@ -493,7 +499,6 @@ class Selfcal(basetask.StandardTaskTemplate):
                                                          interp=sc_lib[vis]['applycal_interpolate_final'][idx], calwt=False,
                                                          spwmap=spwmap_final[idx], caltype='gaincal')
                             calto = callibrary.CalTo(vis=vis_calto, field=cleantarget['field'], spw=cleantarget['spw_real'][vis])
-                            # applymode=sc_lib[vis]['applycal_mode_final']
                             calapps.append(callibrary.CalApplication(calto, calfrom))
                             vislist.append(vis_calto)
 
@@ -504,7 +509,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         taskqueue_parallel_request = len(vislist) > 1
         with TaskQueue(parallel=taskqueue_parallel_request, executor=self._executor) as tq:
             for vis in vislist:
-                task_args = {'vis': vis, 'applymode': 'calflag', 'intent': 'TARGET'}
+                task_args = {'vis': vis, 'applymode': self.inputs.apply_cal_mode_default, 'intent': 'TARGET'}
                 tq.add_pipelinetask(SerialIFApplycal, task_args, self.inputs.context)
 
         tq_results = tq.get_results()
@@ -514,22 +519,27 @@ class Selfcal(basetask.StandardTaskTemplate):
     def analyse(self, results):
         return results
 
-    def _check_mosaic(self, scal_targets):
-        """Check if the mosaic is a mosaic or a single field.
+    def _check_scaltargets(self, scal_targets):
+        """Filter out the sources that the selfcal heuristics should not process.
         
-        This is a workaround for a bug in the selfcal heuristics where it will fail if the mosaic is a single field.
+        PIPE-1447/PIPE-1915: we do not execute selfcal heuristics for mosaic or ephemeris sources.
         """
 
         final_scal_target = []
         for scal_target in scal_targets:
-            is_mosaic = scal_target['heuristics'].is_mosaic(scal_target['field'], scal_target['intent'])
-            if is_mosaic:
+            if scal_target['heuristics'].is_mosaic(scal_target['field'], scal_target['intent']):
                 LOG.warning(
-                    'Selfcal heuristics does not support mosaic. Skipping target {} spw {}.'.format(
-                        scal_target['field'],
-                        scal_target['spw']))
-            else:
-                final_scal_target.append(scal_target)
+                    'The self-calibration heuristics do not fully support mosaic yet. Skipping target=%r spw=%r.',
+                    scal_target['field'],
+                    scal_target['spw'])
+                continue
+            if scal_target['heuristics'].is_eph_obj(scal_target['field']):
+                LOG.warning(
+                    'The self-calibration heuristics do not fully support ephemeris sources yet. Skipping target=%r spw=%r.',
+                    scal_target['field'],
+                    scal_target['spw'])
+                continue
+            final_scal_target.append(scal_target)
 
         return final_scal_target
 
