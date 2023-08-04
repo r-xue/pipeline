@@ -553,7 +553,7 @@ class SpectralWindowTable(object):
             # to be contained within the spw loop
             mean_freq = msmd.meanfreq(i)
             chan_freqs = msmd.chanfreqs(i)
-            chan_widths = msmd.chanwidths(i)            
+            chan_widths = msmd.chanwidths(i)         
             chan_effective_bws = msmd.chaneffbws(i)
             sideband = msmd.sideband(i)
             # BBC_NO column is optional
@@ -602,9 +602,12 @@ class SpectralWindowTable(object):
             else: 
                 sdm_num_bin = sdm_num_bins[i]
 
+            # Fetch and add correlation bits information
+            correlation_bits = msmd.corrbit(i)
+
             spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
                                         chan_effective_bws, sideband, baseband, receiver, freq_lo,
-                                        transitions=transitions, sdm_num_bin=sdm_num_bin,
+                                        transitions=transitions, sdm_num_bin=sdm_num_bin, correlation_bits=correlation_bits,
                                         median_receptor_angle=median_receptor_angle)
             spws.append(spw)
 
