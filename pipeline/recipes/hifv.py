@@ -2,7 +2,11 @@
 
 import traceback
 
-# sys.path.insert (0, os.path.expandvars("$SCIPIPE_HEURISTICS"))
+import pipeline
+from pipeline.infrastructure import casa_tools
+
+# Make pipeline tasks available in local name space
+pipeline.initcli(locals())
 
 # IMPORT_ONLY = 'Import only'
 IMPORT_ONLY = ''
@@ -10,11 +14,6 @@ IMPORT_ONLY = ''
 
 # Run the procedure
 def hifv (vislist, importonly=False, interactive=True):
-    import pipeline
-
-    # Pipeline imports
-    from pipeline.infrastructure import casa_tools
-    pipeline.initcli()
 
     echo_to_screen = interactive
     casa_tools.post_to_log("Beginning VLA pipeline calibration run ...")

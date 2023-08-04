@@ -75,6 +75,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
                   specmode='repBW' produce an LSRK frequency cube at
                            representative channel width
     outframe      velocity frame of output image (LSRK, '' for automatic)
+                  (not implemented)
     hm_imsize     Image X and Y size in pixels or PB level for single fields.
                   The explicit sizes must be even and divisible by 2,3,5,7 only.
                   The default values are derived as follows:
@@ -123,6 +124,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
     uvtaper       uv-taper on outer baselines
     clearlist     Clear any existing target list
     per_eb        Make an image target per EB
+    per_session   Make an image target per session
     calcsb        Force (re-)calculation of sensitivities and beams
     datatype      Data type(s) to image. The default '' selects the best
                   available data type (e.g. selfcal over regcal) with

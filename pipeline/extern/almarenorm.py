@@ -3295,7 +3295,12 @@ class ACreNorm(object):
         tmp_mask[atm_masked] = False
 
         # initial "fit" - Ignoring atm regions
-        f=np.array([np.median(R[tmp_mask])])
+        if len(R[tmp_mask]) == 0:
+            casalog.post('    WARN: No data left in segment after removing atm features.')
+            refit=True
+            return refit
+        else:
+            f=np.array([np.median(R[tmp_mask])])
 
 
         for ifit in range(1,self.nfit):
@@ -3322,7 +3327,7 @@ class ACreNorm(object):
                     refit=False
                 else:
                     if verbose:
-                        casalog.post('\tWARN: More than 50% of the selected data is masked in the fit.')
+                        casalog.post('    WARN: More than 50% of the selected data is masked in the fit.')
                     refit=True
                     # Exit here since we need to refit anyway, no sense in
                     # wasting compute time. There's also a small chance that
@@ -3337,7 +3342,7 @@ class ACreNorm(object):
                     refit=False
                 else:
                     if verbose:
-                        casalog.post('\tWARN: Less than 10% of the selected data is availabe to fit due to atm features.')
+                        casalog.post('    WARN: Less than 10% of the selected data is availabe to fit due to atm features.')
                         refit=True
                         # Exit here since we need to refit because there's 
                         # almost no data left.

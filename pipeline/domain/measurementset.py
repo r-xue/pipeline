@@ -12,6 +12,7 @@ import re
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import conversion
 if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
@@ -66,6 +67,10 @@ class MeasurementSet(object):
         acs_software_build_version: ALMA Common Software build version used to create this MS. (None if not ALMA.)
         phase_calapps_for_check_sources : The phase calapps for the check sources 
             from hifa_gfluxscale
+        phaseup_caltable_for_phase_rms : The bandpass phaseup caltable name from hifa_bandpass
+        fluxscale_fluxes: flux measurements derived by CASA's fluxscale; used
+            in ALMA interferometry polarisation calibration.
+        correlator_name: the name of the correlator, for example: ALMA_ACA, ALMA_BASELINE
     """
 
     def __init__(self, name: str, session: Optional[str] = None):
@@ -140,6 +145,20 @@ class MeasurementSet(object):
         # These calapps are saved off from hifa_gfluxscale and saved here 
         # so they can be added to the Diagnostic Phase Vs Time plots for hifa_timegaincal
         self.phase_calapps_for_check_sources = []
+
+        # Added for ALMA IF to support PIPE-1624
+        # This phaseup caltable name is saved in hifa_bandpass
+        # so it can be used for the phase RMS stability assessment
+        self.phaseup_caltable_for_phase_rms = []
+        
+        # This contains flux measurements derived by CASA's fluxscale as
+        # derived during hifa_gfluxscale. Added for ALMA IF as part of
+        # PIPE-1776 to support polarisation calibration.
+        self.fluxscale_fluxes: Optional[collections.defaultdict] = None
+
+        # This contains the name of the correlator from the PROCESSOR table
+        # Example values: ALMA_ACA, ALMA_BASELINE
+        self.correlator_name: Optional[str] = None
 
     def _calc_filesize(self):
         """
@@ -217,7 +236,10 @@ class MeasurementSet(object):
             if isinstance(spw, str):
                 if spw in ('', '*'):
                     spw = ','.join(str(spw.id) for spw in self.spectral_windows)
-                spw = spw.split(',')
+                if '~' in spw:
+                    spw = conversion.range_to_list(spw)
+                else:
+                    spw = spw.split(',')
             spw = {int(i) for i in spw}
             pool = {scan for scan in pool for scan_spw in scan.spws if scan_spw.id in spw}
             pool = list(pool)
@@ -650,7 +672,7 @@ class MeasurementSet(object):
         """
         Get the ALMA cycle number from the ALMA control software version that this MeasurementSet was acquired with.
 
-        Returns: 
+        Returns:
             int cycle_number or None if not found
         """
         match = re.search(r"CYCLE(\d+)", self.acs_software_build_version)
@@ -1204,6 +1226,29 @@ class MeasurementSet(object):
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')
             return np.median(integration)
+
+    def get_times_on_source_per_field_id(self, field: str, intent: str):
+        """
+        :param field: field name
+        :param intent: field intent
+        returns dictionary of on source times for selected field IDs
+        """
+        field_ids = [field.id for field in self.fields if intent in field.intents]
+        state_ids = [state.id for state in self.states if intent in state.intents]
+        scan_ids = [s.id for s in self.get_scans(field=field, scan_intent=intent)]
+        # Need to select just one cross correlation row between antenna 1 and 2
+        ant1 = self.antennas[0].id
+        ant2 = self.antennas[1].id
+        # Just a single spw since all spws are observed together
+        first_science_spw_dd_id = [self.get_data_description(spw_id).id for spw_id in [s.id for s in self.get_spectral_windows()]][0]
+        times_on_source_per_field_id = dict()
+        for field_id in field_ids:
+            with casa_tools.TableReader(self.name) as table:
+                taql = '(STATE_ID IN %s AND FIELD_ID IN [%s] AND DATA_DESC_ID in [%s] AND SCAN_NUMBER in [%s] AND ANTENNA1=%s AND ANTENNA2=%s)' % (state_ids, field_id, first_science_spw_dd_id, scan_ids, ant1, ant2)
+                with contextlib.closing(table.query(taql)) as subtable:
+                    integration = subtable.getcol('INTERVAL')
+                times_on_source_per_field_id[field_id] = np.sum(integration)
+        return times_on_source_per_field_id
 
     @property
     def reference_antenna(self):

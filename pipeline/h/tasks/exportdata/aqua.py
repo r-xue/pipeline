@@ -794,6 +794,14 @@ def xml_for_sensitivity(d):
     except:
         imagename = 'N/A'
 
+    try:
+        if d['datatype'] is None:
+            datatype = 'N/A'
+        else:
+            datatype = d['datatype']
+    except:
+        datatype = 'N/A'
+
     xml = ElementTree.Element('Sensitivity',
         Array=d['array'],
         BandwidthHz=bandwidth_hz,
@@ -813,7 +821,8 @@ def xml_for_sensitivity(d):
         IsRepresentative=is_representative,
         PbcorImageMinJyPerBeam=pbcor_image_min_jy_per_beam,
         PbcorImageMaxJyPerBeam=pbcor_image_max_jy_per_beam,
-        ImageName=imagename
+        ImageName=imagename,
+        DataType=datatype
       )
 
     return xml

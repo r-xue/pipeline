@@ -156,7 +156,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                     result.qa.pool.append(pqa.QAScore(-0.1, longmsg='Exception scoring check source fit: %s' % (e), shortmsg='Exception scoring check source fit'))
 
             # Polarization calibrators
-            if result.intent == 'POLARIZATION' and result.inputs['specmode'] in ('mfs', 'cont') and result.imaging_mode == 'ALMA':
+            if result.intent == 'POLARIZATION' and result.inputs['specmode'] in ('mfs', 'cont') and result.stokes == 'IQUV' and result.imaging_mode == 'ALMA':
                 try:
                     # Fit I, Q and U image planes
                     imagename = result.image.replace('.pbcor', '')

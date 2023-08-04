@@ -48,7 +48,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     reffreq = vdp.VisDependentProperty(default=None)
     restfreq = vdp.VisDependentProperty(default=None)
-    tlimit = vdp.VisDependentProperty(default=2.0)
+    tlimit = vdp.VisDependentProperty(default=None)
     usepointing = vdp.VisDependentProperty(default=None)
     weighting = vdp.VisDependentProperty(default=None)
     pblimit = vdp.VisDependentProperty(default=None)
@@ -323,7 +323,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Determine deconvolver
         if inputs.deconvolver in (None, ''):
-            inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw, inputs.intent)
+            inputs.deconvolver = self.image_heuristics.deconvolver(inputs.specmode, inputs.spw, inputs.intent, inputs.stokes)
 
         # Determine weighting
         if inputs.weighting in (None, ''):
@@ -381,7 +381,8 @@ class Tclean(cleanbase.CleanBase):
             imsize = self.image_heuristics.imsize(fields=field_ids,
                                                   cell=inputs.cell,
                                                   primary_beam=largest_primary_beam,
-                                                  spwspec=imsize_spwlist)
+                                                  spwspec=imsize_spwlist,
+                                                  intent=inputs.intent)
 
             if inputs.imsize in (None, [], ''):
                 inputs.imsize = imsize
@@ -605,6 +606,12 @@ class Tclean(cleanbase.CleanBase):
         else:
             inputs.spwsel_topo = ['%s' % inputs.spw] * len(inputs.vis)
 
+        if inputs.tlimit:
+            tlimit = inputs.tlimit
+        else:
+            # Initial tlimit for iter0
+            tlimit = self.image_heuristics.tlimit(0, inputs.field, inputs.intent, inputs.specmode, 0.0)
+
         # Determine threshold
         if inputs.hm_cleaning == 'manual':
             threshold = inputs.threshold
@@ -614,7 +621,7 @@ class Tclean(cleanbase.CleanBase):
             if inputs.threshold not in (None, '', 0.0):
                 threshold = inputs.threshold
             else:
-                threshold = '%.3gJy' % (inputs.tlimit * sensitivity)
+                threshold = '%.3gJy' % (tlimit * sensitivity)
         else:
             raise Exception('hm_cleaning mode {} not recognized. '
                             'Threshold not set.'.format(inputs.hm_cleaning))
@@ -938,9 +945,9 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
-            self._update_miscinfo(result.image.replace('.image', '.image' + extension), max(
-                [len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
-                                  pbcor_image_min, pbcor_image_max)
+            self._update_miscinfo(result.image.replace('.image', '.image' + extension),
+                                  max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
+                                  pbcor_image_min, pbcor_image_max, nonpbcor_image_non_cleanmask_rms, inputs.stokes)
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)
@@ -1084,7 +1091,9 @@ class Tclean(cleanbase.CleanBase):
 
         # All continuum
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
-            self._update_miscinfo(result.image.replace('.image', '.image'+extension), max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]), pbcor_image_min, pbcor_image_max)
+            self._update_miscinfo(result.image.replace('.image', '.image'+extension),
+                                  max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
+                                  pbcor_image_min, pbcor_image_max, nonpbcor_image_non_cleanmask_rms, inputs.stokes)
 
             result.set_image_min(pbcor_image_min)
             result.set_image_min_iquv(pbcor_image_min_iquv)
@@ -1102,9 +1111,10 @@ class Tclean(cleanbase.CleanBase):
 
         # Adjust threshold based on the dirty image statistics
         dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
+        tlimit = self.image_heuristics.tlimit(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
         new_threshold, DR_correction_factor, maxEDR_used = \
             self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
-                                                inputs.intent, inputs.tlimit, inputs.drcorrect)
+                                                inputs.intent, tlimit, inputs.drcorrect)
         sequence_manager.threshold = new_threshold
         sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
 
@@ -1160,6 +1170,10 @@ class Tclean(cleanbase.CleanBase):
             nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma, inputs.hm_masking)
             savemodel = self.image_heuristics.savemodel(iteration)
             niter = self.image_heuristics.niter_by_iteration(iteration, inputs.hm_masking, seq_result.niter)
+            if inputs.cyclefactor not in (None, -999):
+                cyclefactor = inputs.cyclefactor
+            else:
+                cyclefactor = self.image_heuristics.cyclefactor(iteration, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
 
             LOG.info('Iteration %s: Clean control parameters' % iteration)
             LOG.info('    Mask %s', new_cleanmask)
@@ -1168,7 +1182,7 @@ class Tclean(cleanbase.CleanBase):
 
             result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=niter, nsigma=nsigma,
                                     threshold=threshold, sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
-                                    result=result)
+                                    result=result, cyclefactor=cyclefactor)
             if result.image is None:
                 if not result.error:
                     result.error = '%s/%s/spw%s clean error: failed to produce an image' % (inputs.field, inputs.intent, inputs.spw)
@@ -1197,9 +1211,8 @@ class Tclean(cleanbase.CleanBase):
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
             self._update_miscinfo(result.image.replace('.image', '.image'+extension),
-                                  max([len(field_ids.split(','))
-                                       for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
-                                  pbcor_image_min, pbcor_image_max)
+                                  max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
+                                  pbcor_image_min, pbcor_image_max, nonpbcor_image_non_cleanmask_rms, inputs.stokes)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,
@@ -1254,7 +1267,7 @@ class Tclean(cleanbase.CleanBase):
         return result
 
     def _do_clean(self, iternum, cleanmask, niter, threshold, sensitivity, result, nsigma=None, savemodel=None, startmodel=None,
-                  calcres=None, calcpsf=None, wbawp=None, parallel=None, clean_imagename=None):
+                  calcres=None, calcpsf=None, wbawp=None, parallel=None, clean_imagename=None, cyclefactor=None):
         """Do basic cleaning."""
         inputs = self.inputs
 
@@ -1273,6 +1286,12 @@ class Tclean(cleanbase.CleanBase):
             imagename = clean_imagename
         else:
             imagename = inputs.imagename
+
+        # Fallback for cases that do not set cyclefactor explicitly like
+        # for PIPE-1782. Alternatively, one would have to pass cyclefactor
+        # for all _do_clean calls.
+        if cyclefactor is None:
+            cyclefactor = inputs.cyclefactor
 
         clean_inputs = cleanbase.CleanBase.Inputs(inputs.context,
                                                   output_dir=inputs.output_dir,
@@ -1298,7 +1317,7 @@ class Tclean(cleanbase.CleanBase):
                                                   deconvolver=inputs.deconvolver,
                                                   nterms=inputs.nterms,
                                                   cycleniter=inputs.cycleniter,
-                                                  cyclefactor=inputs.cyclefactor,
+                                                  cyclefactor=cyclefactor,
                                                   hm_minpsffraction=inputs.hm_minpsffraction,
                                                   hm_maxpsffraction=inputs.hm_maxpsffraction,
                                                   scales=inputs.scales,
@@ -1683,7 +1702,7 @@ class Tclean(cleanbase.CleanBase):
         # Update the result.
         result.set_mom8(maxiter, mom8_name)
 
-    def _update_miscinfo(self, imagename, nfield, datamin, datamax):
+    def _update_miscinfo(self, imagename, nfield, datamin, datamax, datarms, stokes):
 
         # Update metadata
         with casa_tools.ImageReader(imagename) as image:
@@ -1692,5 +1711,7 @@ class Tclean(cleanbase.CleanBase):
             info['nfield'] = nfield
             info['datamin'] = datamin
             info['datamax'] = datamax
+            info['datarms'] = datarms
+            info['stokes'] = stokes
 
             image.setmiscinfo(info)

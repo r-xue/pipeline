@@ -279,7 +279,7 @@ def get_spwmap(source_ms, target_ms):
     # non-science windows and vice versa. Not what we want! This set
     # will be used to filter for the spectral windows we want to
     # consider.
-    science_intents = {'AMPLITUDE', 'BANDPASS', 'PHASE', 'TARGET', 'CHECK'}
+    science_intents = {'AMPLITUDE', 'BANDPASS', 'PHASE', 'TARGET', 'CHECK', 'POLARIZATION'}
 
     # map spw id to spw name for source MS - just for science intents
     id_to_name = {spw.id: spw.name

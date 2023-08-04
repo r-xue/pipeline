@@ -46,6 +46,7 @@ from pipeline.infrastructure import utils
 						<th scope="col" rowspan="2">Correlation Bits</th>
 			            <th scope="col" rowspan="2">Band</th>
 			            <th scope="col" rowspan="2">Band Type</th>
+			            <th scope="col" rowspan="2">Median Feed Receptor Angle (degrees)</th>
 						<%
 						basebandlabel=''
 						if pcontext.project_summary.telescope != 'ALMA':
@@ -85,7 +86,7 @@ from pipeline.infrastructure import utils
 					  <td>${str(spw.bandwidth)}</td>
 					  <td>${', '.join(spw.transitions)}</td>
 					  <td>${spw.num_channels}</td>
-					% if show_online_spec_avg_col.science_windows: 
+                      % if show_online_spec_avg_col.science_windows:
 						% if pcontext.project_summary.telescope == 'ALMA':
 							% if (ms.get_alma_cycle_number() == 2 and spw.sdm_num_bin == 1) or spw.sdm_num_bin is None:
 								<td> ? </td> <!-- A value of sdm_num_bin of 1 for CYCLE 2 datasets may indicate that a default value of 1 was used so use '?' to indicate that the value is unclear. See PIPE: 584-->
@@ -99,7 +100,7 @@ from pipeline.infrastructure import utils
 							<td>${spw.sdm_num_bin}</td>
 							% endif
 						% endif
-					%endif
+					  %endif
 					  <td>${spw.channels[0].getWidth()}</td>
 					  <td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 					  <td>${', '.join(sorted(ms.get_data_description(spw=spw).corr_axis))}</td>
@@ -115,12 +116,19 @@ from pipeline.infrastructure import utils
 					  <td>${spw.band}</td>
                       <%
                       if spw.receiver:
-                          bandtype = "<td>{}</td>".format(spw.receiver)
+                          bandtype = '<td>{}</td>'.format(spw.receiver)
                       else:
-                          bandtype = "<td>Unknown</td>"
+                          bandtype = '<td>Unknown</td>'
                       %>
                       ${bandtype}
-					  <%
+                      <%
+                      if spw.median_receptor_angle is not None:
+                          recep_angle = '<td>' + ', '.join(map('{:.1f}'.format, spw.median_receptor_angle)) + '</td>'
+                      else:
+                          recep_angle = '<td>N/A</td>'
+                      %>
+                      ${recep_angle}
+                      <%
 						basebanditem=''
 						if pcontext.project_summary.telescope != 'ALMA':
 						    try:
@@ -165,6 +173,7 @@ from pipeline.infrastructure import utils
 						<th scope="col" rowspan="2">Correlation Bits</th>
 			            <th scope="col" rowspan="2">Band</th>
 			            <th scope="col" rowspan="2">Band Type</th>
+			            <th scope="col" rowspan="2">Median Feed Receptor Angle (degrees)</th>
 						<%
 						     basebandlabel=''
 						     if pcontext.project_summary.telescope != 'ALMA':
@@ -201,9 +210,8 @@ from pipeline.infrastructure import utils
 						<td>${str(spw.centre_frequency)}</td>
 						<td>${str(spw.max_frequency)}</td>
 						<td>${str(spw.bandwidth)}</td>
-					        <td>${','.join(spw.transitions)}</td>
+					    <td>${','.join(spw.transitions)}</td>
 						<td>${spw.num_channels}</td>
-						
 						% if show_online_spec_avg_col.all_windows: 
 							% if pcontext.project_summary.telescope == 'ALMA':
 								% if (ms.get_alma_cycle_number() == 2 and spw.sdm_num_bin == 1) or spw.sdm_num_bin is None: 
@@ -242,11 +250,18 @@ from pipeline.infrastructure import utils
 						<td>${spw.band}</td>
                         <%
                         if spw.receiver:
-                            bandtype = "<td>{}</td>".format(spw.receiver)
+                            bandtype = '<td>{}</td>'.format(spw.receiver)
                         else:
-                            bandtype = "<td>Unknown</td>"
+                            bandtype = '<td>Unknown</td>'
                         %>
                         ${bandtype}
+                        <%
+                        if spw.median_receptor_angle is not None:
+                            recep_angle = '<td>' + ', '.join(map('{:.1f}'.format, spw.median_receptor_angle)) + '</td>'
+                        else:
+                            recep_angle = '<td>N/A</td>'
+                        %>
+                        ${recep_angle}
 						<%
 						    basebanditem=''
 						    if pcontext.project_summary.telescope != 'ALMA':

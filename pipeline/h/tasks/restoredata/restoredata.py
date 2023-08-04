@@ -561,8 +561,9 @@ class RestoreData(basetask.StandardTaskTemplate):
             with tarfile.open(tarfilename, 'r:gz') as tar:
                 tarmembers = tar.getmembers()
 
-                # Loop over the visibilities associated with that session
-                for vis in vislist:
+                # Retrieve any caltable associated with either session name or
+                # the measurement sets associated with this session.
+                for vis in vislist + [session]:
                     LOG.info('Restoring caltables for %s from %s'
                              '' % (os.path.basename(vis), tarfilename))
                     extractlist = []
