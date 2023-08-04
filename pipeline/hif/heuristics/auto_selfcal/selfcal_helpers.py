@@ -107,7 +107,7 @@ def fetch_scan_times(vislist, targets):
     if np.mean(n_spws) != np.max(n_spws):
         LOG.warning('Inconsistent number of spws in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
     if np.max(min_spws) != np.min(min_spws):
-        LOG.warning('Inconsistent minimum spw in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
+        LOG.warning('Inconsistent minimum spwid in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
     spwslist = np.unique(spwslist).astype(int)
     spws_set = np.unique(spws_set, axis=0)
     return scantimesdict, integrationsdict, integrationtimesdict, integrationtimes, np.max(n_spws), np.min(min_spws), spwslist, spws_set
@@ -135,9 +135,13 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
         msmd.open(vis)
         for target in targets:
             scansforfield = msmd.scansforfield(target)
-            scansforspw = msmd.scansforspw(band_properties[vis][band]['spwarray'][0])
-            scansdict[vis][target] = list(set(scansforfield) & set(scansforspw))
-            scansdict[vis][target].sort()
+            # scansforspw = msmd.scansforspw(band_properties[vis][band]['spwarray'][0])
+            # scansdict[vis][target] = list(set(scansforfield) & set(scansforspw))
+            # scansdict[vis][target].sort()
+            # only valid because we are assuming vislist is a single band/field
+            scansforfield = msmd.scansforfield(target)
+            scansdict[vis][target] = list(set(scansforfield))
+            scansdict[vis][target].sort()            
         for target in targets:
             mosaic_field[target] = {}
             mosaic_field[target]['field_ids'] = []
@@ -178,7 +182,7 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
         if np.mean(n_spws) != np.max(n_spws):
             LOG.warning('Inconsistent number of spws in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
         if np.max(min_spws) != np.min(min_spws):
-            LOG.warning('Inconsistent minimum spw in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
+            LOG.warning('Inconsistent minimum spwid in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
         spwslist = np.unique(spwslist).astype(int)
     else:
         return scantimesdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, integrationtimes, -99, -99, spwslist, mosaic_field
@@ -1012,16 +1016,21 @@ def get_ALMA_bands(vislist, spwstring, spwarray):
         raise RuntimeError('meanfreq is ouside the allowed range in get_ALMA_bands()')
     bands = [band]
     for vis in vislist:
-        observed_bands[vis] = {}
-        observed_bands[vis]['bands'] = [band]
-        for band in bands:
-            observed_bands[vis][band] = {}
-            observed_bands[vis][band]['spwarray'] = spwarray
-            observed_bands[vis][band]['spwstring'] = spwstring+''
-            observed_bands[vis][band]['meanfreq'] = meanfreq
-            observed_bands[vis][band]['maxfreq'] = maxfreq
-            observed_bands[vis][band]['minfreq'] = minfreq
-            observed_bands[vis][band]['fracbw'] = fracbw
+        with casa_tools.MSMDReader(vis) as msmd:
+            observed_bands[vis] = {}
+            observed_bands[vis]['bands'] = [band]
+            for band in bands:
+                # reject spws that do not exist in the MS.
+                observed_bands[vis][band] = {}
+                is_vis_spwid = [bool(msmd.fieldsforspw(spwid)) for spwid in spwarray]
+                vis_spwarray = np.extract(is_vis_spwid, spwarray)
+                vis_spwstring = ','.join(str(spwid) for spwid in vis_spwarray.tolist())
+                observed_bands[vis][band]['spwarray'] = vis_spwarray
+                observed_bands[vis][band]['spwstring'] = vis_spwstring
+                observed_bands[vis][band]['meanfreq'] = meanfreq
+                observed_bands[vis][band]['maxfreq'] = maxfreq
+                observed_bands[vis][band]['minfreq'] = minfreq
+                observed_bands[vis][band]['fracbw'] = fracbw
     get_max_uvdist(vislist, observed_bands[vislist[0]]['bands'].copy(), observed_bands)
     return bands, observed_bands
 
