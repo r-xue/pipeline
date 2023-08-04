@@ -690,8 +690,7 @@ class SelfcalHeuristics(object):
                             nfrms_multiplier=nfsnr_modifier,
                             resume=resume)
 
-                        # Check that a mask was actually created, because if not the model will be empty and gaincal will do bad things and the
-                        # code will break.
+                        # Check if a mask was actually created: if not, the model will be empty and gaincal will fail.
                         if not checkmask(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0'):
                             selfcal_library[target][band]['Stop_Reason'] = 'Empty model for solint '+solint
                             break  # breakout of loop because the model is empty and gaincal will therefore fail
