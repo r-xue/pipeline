@@ -319,7 +319,7 @@ class MeasurementSetReader(object):
         LOG.info('Analysing {0}'.format(ms_file))
         ms = domain.MeasurementSet(ms_file)
 
-        # populate ms properties with results of table readers 
+        # populate ms properties with results of table readers
         with casa_tools.MSMDReader(ms_file) as msmd:
             LOG.info('Populating ms.antenna_array...')
             ms.antenna_array = AntennaTable.get_antenna_array(msmd)
@@ -335,6 +335,9 @@ class MeasurementSetReader(object):
             ms.data_descriptions = RetrieveByIndexContainer(DataDescriptionTable.get_descriptions(msmd, ms))
             LOG.info('Populating ms.polarizations...')
             ms.polarizations = PolarizationTable.get_polarizations(msmd)
+            LOG.info('Populating ms.correlator_name...')
+            ms.correlator_name = MeasurementSetReader._get_correlator_name(ms)
+
             # For now the SBSummary table is ALMA specific
             if 'ALMA' in msmd.observatorynames():
                 sbinfo = SBSummaryTable.get_sbsummary_info(ms, msmd.observatorynames())
@@ -446,6 +449,36 @@ class MeasurementSetReader(object):
             data = ms.range([column])
             return list(data.values())[0]
 
+    @staticmethod
+    def _get_correlator_name(ms: domain.MeasurementSet) -> str:
+        """
+        Get correlator name information from the PROCESSOR table in the MS. 
+        
+        The name is set to the value of the SUB_TYPE for the first row with
+        CORRELATOR for its TYPE value. 
+
+        :param ms: the measurements set to get the correlator name for
+        :return: the correlator name
+        """
+        correlator_name = None
+        try:
+            with casa_tools.TableReader(ms.name + '/PROCESSOR') as table:
+                tb1 = table.query("TYPE=='CORRELATOR'")
+                sub_types_col = tb1.getcol('SUB_TYPE')
+                tb1.close()
+
+            if len(sub_types_col) > 0:
+                correlator_name = str(sub_types_col[0])
+            else:
+                msg = "No correlator name could be found for {}".format(ms.basename)
+                LOG.warning(msg)
+
+        except Exception as e:
+            correlator_name = None
+            msg = "Error while populating correlator name for {}, error: {}".format(ms.basename, str(e))
+            LOG.warning(msg)
+            
+        return correlator_name
 
     @staticmethod
     def get_acs_software_version(ms, msmd) -> Tuple[str, str]:

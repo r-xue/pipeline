@@ -70,6 +70,7 @@ class MeasurementSet(object):
         phaseup_caltable_for_phase_rms : The bandpass phaseup caltable name from hifa_bandpass
         fluxscale_fluxes: flux measurements derived by CASA's fluxscale; used
             in ALMA interferometry polarisation calibration.
+        correlator_name: the name of the correlator, for example: ALMA_ACA, ALMA_BASELINE
     """
 
     def __init__(self, name: str, session: Optional[str] = None):
@@ -154,6 +155,10 @@ class MeasurementSet(object):
         # derived during hifa_gfluxscale. Added for ALMA IF as part of
         # PIPE-1776 to support polarisation calibration.
         self.fluxscale_fluxes: Optional[collections.defaultdict] = None
+
+        # This contains the name of the correlator from the PROCESSOR table
+        # Example values: ALMA_ACA, ALMA_BASELINE
+        self.correlator_name: Optional[str] = None
 
     def _calc_filesize(self):
         """
