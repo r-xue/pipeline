@@ -139,7 +139,6 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
             # scansdict[vis][target] = list(set(scansforfield) & set(scansforspw))
             # scansdict[vis][target].sort()
             # only valid because we are assuming vislist is a single band/field
-            scansforfield = msmd.scansforfield(target)
             scansdict[vis][target] = list(set(scansforfield))
             scansdict[vis][target].sort()            
         for target in targets:
@@ -469,7 +468,7 @@ def estimate_near_field_SNR(imagename, las=None, maskname=None, verbose=True):
         return np.float64(-99.0), np.float64(-99.0)
     goodMask = checkmask(maskImage)
     if not goodMask:
-        LOG.info('checkmask')
+        LOG.info('The mask file %s is empty.', maskImage)
         return np.float64(-99.0), np.float64(-99.0)
     residualImage = imagename.replace('image', 'residual')
 
