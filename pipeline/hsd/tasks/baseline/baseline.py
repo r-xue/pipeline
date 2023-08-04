@@ -529,6 +529,26 @@ class SDBaseline(basetask.StandardTaskTemplate):
                                     success=True,
                                     outcome=outcome)
 
+        # count number of spectral lines of baselined MS
+        lines_list = []
+        group_id_list = []
+        spw_id_list = []
+        field_id_list = []
+        reduction_group = self.inputs.context.observing_run.ms_reduction_group
+        baselined = outcome['baselined']
+        for b in baselined:
+            reduction_group_id = b['group_id']
+            members = b['members']
+            group_desc = reduction_group[reduction_group_id]
+            spw_id = numpy.fromiter((group_desc[m].spw_id for m in members), dtype=numpy.int32)  # b['spw']
+            field_id = numpy.fromiter((group_desc[m].field_id for m in members), dtype=numpy.int32)  # b['field']
+            lines = b['lines']
+            lines_list.append(lines)
+            group_id_list.append(reduction_group_id)
+            spw_id_list.append(spw_id)
+            field_id_list.append(field_id)
+        maskline.sd_line_detection_for_ms(group_id_list, field_id_list, spw_id_list, lines_list)
+
         return results
 
     def analyse(self, result: SDBaselineResults) -> SDBaselineResults:

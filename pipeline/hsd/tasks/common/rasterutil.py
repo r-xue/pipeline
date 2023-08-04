@@ -388,9 +388,8 @@ def flag_raster_map(datatable: DataTableImpl) -> List[int]:
         # is triggered.
         try:
             raster_gap = rasterscan.find_raster_gap(metadata.ra, metadata.dec, dtrow_list)
-        except rasterscan.RasterScanHeuristicsFailure as e:  ###
-#        except rasterscan.RasterScanHeuristicsFailure:
-            LOG.warn('{} This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.'.format(e))  ###
+        except rasterscan.RasterScanHeuristicsFailure as e:
+            LOG.warn('{} This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.'.format(e))
             # exclude combination of (field_id, spw_id, antenna_id) held by key
             # from the subsequent analysis
             continue

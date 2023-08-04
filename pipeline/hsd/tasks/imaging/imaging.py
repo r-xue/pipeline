@@ -1792,6 +1792,8 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
         except Exception:
             LOG.warning('Could not find gaps between raster scans. No result is produced.')
             return None
+    except Exception as e:
+        LOG.warning('{}'.format(e))
 
     cqa = casa_tools.quanta
     idx_all = numpy.concatenate(dtrow_list)

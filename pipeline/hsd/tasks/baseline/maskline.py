@@ -320,6 +320,22 @@ class MaskLine(basetask.StandardTaskTemplate):
         Do nothing.
 
         Returns:
-            MaskLineResutls instance
+            MaskLineResults instance
         """
         return result
+
+
+def sd_line_detection_for_ms(group_id_list: List, field_id_list: List, spw_id_list: List, lines_list: List) -> None:
+    detected_spw = []
+
+    for group_id, field_id, spw_id, lines in zip(group_id_list, field_id_list, spw_id_list, lines_list):
+        if any([l[2] for l in lines]):
+            LOG.trace('detected lines exist at group_id %s field_id %s spw_id %s' % (group_id, field_id, spw_id))
+            unique_spw_id = set(spw_id)
+            if len(unique_spw_id) == 1:
+                detected_spw.append(unique_spw_id.pop())
+            else:
+                detected_spw.append(-1)
+
+    if len(detected_spw) == 0:
+        LOG.attention('No spectral lines are detected.')

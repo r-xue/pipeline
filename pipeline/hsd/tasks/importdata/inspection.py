@@ -70,10 +70,7 @@ class SDInspection(object):
         LOG.debug('register meta data to DataTable')
         table_name = self.table_name
         worker = reader.MetaDataReader(context=self.context, ms=self.ms, table_name=table_name)
-        msglist = []
-        data = worker.generate_flagdict_for_invalid_pointing_data()
-        invalid_pointing_data = data[0]
-        msglist = data[1]
+        invalid_pointing_data, msglist = worker.generate_flagdict_for_invalid_pointing_data()
         LOG.debug('table_name=%s' % table_name)
 
         dry_run = not os.path.exists(self.ms.name)
