@@ -3,6 +3,7 @@ import sys
 from . import utils
 
 
+@utils.cli_wrapper
 def h_tsyscal(vis=None, caltable=None, chantol=None, dryrun=None, acceptresults=None):
 
     """

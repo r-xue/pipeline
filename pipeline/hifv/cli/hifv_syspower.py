@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, apply=None, do_not_apply=None,
                   dryrun=None, acceptresults=None):
 

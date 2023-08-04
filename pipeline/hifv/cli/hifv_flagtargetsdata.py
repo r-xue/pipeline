@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=None, dryrun=None,
                          acceptresults=None):
 
@@ -27,7 +26,6 @@ def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=
                   run but do not execute (True).
     acceptresults Add the results of the task to the pipeline context (True)
                   or reject them (False).
-    [1;42mRETURNS[1;m          void
 
     --------- examples -----------------------------------------------------------
 

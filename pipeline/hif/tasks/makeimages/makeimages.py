@@ -209,10 +209,13 @@ class MakeImages(basetask.StandardTaskTemplate):
         return False
 
     def _get_image_rms_as_sensitivity(self, result, target, heuristics):
+        if not result.image:
+            return None
+
         extension = 'tt0.' if result.multiterm else '' # Needed when nterms=2, see PIPE-1361
         # the tt0 needs to be inserted before the ending ".pbcor" in the image name
         index = result.image.find('pbcor')
-        imname = result.image[:index] + extension + result.image[index:] 
+        imname = result.image[:index] + extension + result.image[index:]
 
         if not os.path.exists(imname):
             return None
@@ -259,7 +262,8 @@ class MakeImages(basetask.StandardTaskTemplate):
                            sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'),
                            pbcor_image_min=cqa.quantity(result.image_min, 'Jy/beam'),
                            pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'),
-                           imagename=result.image.replace('.pbcor', ''))
+                           imagename=result.image.replace('.pbcor', ''),
+                           datatype=result.datatype)
 
 
 class CleanTaskFactory(object):
@@ -383,7 +387,7 @@ class CleanTaskFactory(object):
         if inputs.hm_masking in (None, ''):
             if 'TARGET' in task_args['intent']:
                 task_args['hm_masking'] = 'auto'
-            elif 'POLARIZATION' in task_args['intent']:
+            elif task_args['intent'] == 'POLARIZATION' and task_args['stokes'] == 'IQUV':
                 task_args['hm_masking'] = 'centralregion'
             else:
                 task_args['hm_masking'] = 'auto'

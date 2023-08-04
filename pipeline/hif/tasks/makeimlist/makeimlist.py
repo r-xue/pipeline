@@ -648,8 +648,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         # Need to record if there are targets for a vislist
         have_targets = {}
 
-        max_num_targets = 0
-
+        expected_num_targets = 0
         for selected_datatype_str, selected_datatype_info in zip(selected_datatypes_str, selected_datatypes_info):
             for band in band_spws:
                 if band != None:
@@ -730,12 +729,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                         if vislist_for_field != []:
                             vislist_field_spw_combinations[field_intent[0]]['vislist'] = vislist_for_field
                             vislist_field_spw_combinations[field_intent[0]]['spwids'] = sorted(list(spwids_for_field), key=int)
-
-                            # Add number of expected clean targets
-                            if inputs.specmode == 'cont':
-                                max_num_targets += 1
-                            else:
-                                max_num_targets += len(spwids_for_field)
 
                     # Save original vislist_field_spw_combinations dictionary to be able to generate
                     # proper messages if the vis list changes when falling back to a different data
@@ -960,10 +953,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     # selected spectral windows. In continuum spectral mode pass the spw list string
                                     # to imsize heuristics (used only for VLA), otherwise pass None to disable the feature.
                                     imsize_spwlist = filtered_spwlist_local if inputs.specmode == 'cont' else None
-                                    himsize = self.heuristics.imsize(
+                                    h_imsize = self.heuristics.imsize(
                                         fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
                                         sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'],
-                                        spwspec=imsize_spwlist, intent=field_intent[1])
+                                        spwspec=imsize_spwlist, intent=field_intent[1], joint_intents=inputs.intent)
                                     if field_intent[1] in [
                                             'PHASE',
                                             'BANDPASS',
@@ -974,8 +967,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                             'POLANGLE',
                                             'POLLEAKAGE'
                                             ]:
-                                        himsize = [min(npix, inputs.calmaxpix) for npix in himsize]
-                                    imsizes[(field_intent[0], spwspec)] = himsize
+                                        h_imsize = [min(npix, inputs.calmaxpix) for npix in h_imsize]
+                                    imsizes[(field_intent[0], spwspec)] = h_imsize
                                     if imsizes[(field_intent[0], spwspec)][0] > max_x_size:
                                         max_x_size = imsizes[(field_intent[0], spwspec)][0]
                                     if imsizes[(field_intent[0], spwspec)][1] > max_y_size:
@@ -1132,6 +1125,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 local_selected_datatype_str = global_datatype_str
                                 local_selected_datatype_info = global_datatype_info
 
+                            expected_num_targets += 1
+
                             # PIPE-1710: add a suffix to image file name depending on datatype
                             if local_selected_datatype_str.lower().startswith('regcal'):
                                 datatype_suffix = 'regcal'
@@ -1223,8 +1218,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                             else:
                                 nbin = -1
 
-                            # Get stokes value
-                            stokes = self.heuristics.stokes(field_intent[1])
+                            # Get stokes value. Note that the full list of intents
+                            # (inputs.intent) is used to decide whether to do IQUV
+                            # for ALMA as PIPE-1829 asked for Stokes I only if other
+                            # calibration intents are done together with POLARIZATION.
+                            stokes = self.heuristics.stokes(field_intent[1], inputs.intent)
 
                             if spwspec_ok and (field_intent[0], spwspec) in imsizes and ('invalid' not in cells[spwspec]):
                                 LOG.debug(
@@ -1294,6 +1292,11 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 result.add_target(target)
 
+        if inputs.intent == 'TARGET' and result.num_targets == 0 and not result.clean_list_info:
+            result.set_info({'msg': 'No data found. No imaging targets were created.',
+                             'intent': inputs.intent,
+                             'specmode': inputs.specmode})
+
         if inputs.intent == 'CHECK':
             if not any(have_targets.values()):
                 info_msg = 'No check source found.'
@@ -1307,7 +1310,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode})
 
         # Record total number of expected clean targets
-        result.set_max_num_targets(max_num_targets)
+        result.set_expected_num_targets(expected_num_targets)
 
         # Pass contfile and linefile names to context (via resultobjects)
         # for hif_findcont and hif_makeimages
@@ -1327,8 +1330,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         deconvolver, nterms = None, None
         context = self.inputs.context
 
-        if hasattr(context, 'scal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
-            for sc_target in context.scal_targets:
+        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+            for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
@@ -1351,8 +1354,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
             return drcorrect
 
-        if hasattr(context, 'scal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
-            for sc_target in context.scal_targets:
+        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+            for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw_sel.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:

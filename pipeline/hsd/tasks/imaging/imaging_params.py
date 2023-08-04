@@ -292,8 +292,7 @@ class PostProcessParameters(Parameters):
         self.imagename = None                      # str: Image name
         self.image_rms = None                      # float: Image statistics
         self.include_channel_range = None          # List[int]: List of channel ranges to calculate image statistics
-        self.is_representative_source_spw = None   # bool: Flag of representative source spw
-        self.is_representative_spw = None          # bool: Flag of representative spw
+        self.is_representative_source_and_spw = None  # bool: Flag of representative source spw and representative spw
         self.nx = None                             # numpy.int64: X of image shape
         self.ny = None                             # numpy.int64: Y of image shape
         self.org_direction = None                  # Direction: a direction of origin for ephemeris object

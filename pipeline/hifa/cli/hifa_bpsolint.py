@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None,
                   minphaseupints=None, evenbpints=None, bpsnr=None, minbpsnr=None,
                   minbpnchan=None, hm_nantennas=None, maxfracflagged=None,

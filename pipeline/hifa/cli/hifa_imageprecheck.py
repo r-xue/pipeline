@@ -1,10 +1,9 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifa_imageprecheck(vis=None, calcsb=None, parallel=None, dryrun=None, acceptresults=None):
 
     """

@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None, exportcalprods=None,
     pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None,
     gainmap=None, dryrun=None, acceptresults=None):
