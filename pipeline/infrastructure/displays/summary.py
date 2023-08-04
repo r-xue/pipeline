@@ -2,7 +2,7 @@ import datetime
 import math
 import operator
 import os
-from typing import Optional, TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING, Tuple
 
 import matplotlib.dates as dates
 import matplotlib.figure as figure
@@ -1088,7 +1088,7 @@ class SpwIdVsFreqChartInputs(vdp.StandardInputs):
                               ms_part, 'spwid_vs_freq.png')
         return output
 
-    def __init__(self, context: 'Context', vis: Optional[str]) -> None:
+    def __init__(self, context: 'Context', vis: str) -> None:
         """Construct SpwIdVsFreqChartInputs instance.
 
         Args:
@@ -1107,7 +1107,7 @@ class SpwIdVsFreqChart(object):
 
     Inputs = SpwIdVsFreqChartInputs
 
-    def __init__(self, inputs, context) -> None:
+    def __init__(self, inputs: SpwIdVsFreqChartInputs, context: 'Context') -> None:
         """Construct SpwIdVsFreqChart instance.
 
         Args:
@@ -1167,9 +1167,9 @@ class SpwIdVsFreqChart(object):
                 shift = len(list_all_spwids)
                 list_indices = [list_spwids.index(spwid)+shift for spwid in list_spwids]
                 start = len(list_all_spwids)
+                end = start + len(list_spwids)
                 list_all_spwids.extend(list_spwids)
                 list_all_indices.extend(list_indices)
-                end = len(list_all_spwids)
                 fmins = list_fmin[start:end]
                 bws = list_bw[start:end]
                 ax.barh(list_indices, bws, height=0.4, left=fmins)
