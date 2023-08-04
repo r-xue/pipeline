@@ -246,7 +246,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                     result.qa.pool.append(pqa.QAScore(1.0, longmsg=f"Stokes fits for field {result.inputs['field']} spw {result.inputs['spw']} succeeded",
                                           shortmsg='Stokes fits succeeded', origin=origin, applies_to=data_selection))
                 except Exception as e:
-                    LOG.error(str(e))
+                    LOG.warn(str(e))
                     result.polcal_fit = {'session': context.observing_run.get_ms(result.vis[0]).session,
                                          'converged': False,
                                          'flux_pol_intens': 'N/A',
