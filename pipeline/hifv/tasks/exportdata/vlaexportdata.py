@@ -124,7 +124,7 @@ class VLAExportData(exportdata.ExportData):
         # Update the manifest
         if auxfproducts is not None or pipe_aqua_reportfile is not None:
             manifest_file = os.path.join(self.inputs.products_dir, results.manifest)
-            self._add_to_manifest(manifest_file, auxfproducts, False, [], pipe_aqua_reportfile)
+            self._add_to_manifest(manifest_file, auxfproducts, False, [], pipe_aqua_reportfile, oussid)
 
         return results
 
