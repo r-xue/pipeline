@@ -940,11 +940,12 @@ class SelfcalHeuristics(object):
                         # copy mask for use in post-selfcal SNR measurement
 
                         post_SNR, post_RMS = estimate_SNR(
-                            sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0', las=selfcal_library[target][band]['LAS'])
+                            sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0')
 
                         if self.telescope != 'ACA':
                             post_SNR_NF, post_RMS_NF = estimate_near_field_SNR(
-                                sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0')
+                                sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '_post.image.tt0',
+                                las=selfcal_library[target][band]['LAS'])
                         else:
                             post_SNR_NF, post_RMS_NF = post_SNR, post_RMS
                         if selfcal_library[target][band]['nterms'] < 2:
@@ -1170,8 +1171,8 @@ class SelfcalHeuristics(object):
                     LOG.info('Generating final per-SPW images for '+target+' in '+band)
                     for spw in spwlist:
                         # omit DR modifiers here since we should have increased DR significantly
-                        if os.path.exists(sani_target+'_'+band+'_final.image.tt0'):
-                            self.cts.rmtree(sani_target+'_'+band+'_final.image.tt0')
+                        if os.path.exists(sani_target + '_' + band + '_' + spw + '_final.image.tt0'):
+                            self.cts.rmtree(sani_target + '_' + band + '_' + spw + '_final.image.tt0')
                         if self.telescope == 'ALMA' or self.telescope == 'ACA':
                             sensitivity = get_sensitivity(
                                 vislist, selfcal_library[target][band], target,
