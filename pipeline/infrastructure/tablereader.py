@@ -471,12 +471,12 @@ class MeasurementSetReader(object):
                 correlator_name = str(sub_types_col[0])
             else:
                 msg = "No correlator name could be found for {}".format(ms.basename)
-                LOG.info(msg)
-                
+                LOG.warning(msg)
+
         except Exception as e:
             correlator_name = None
             msg = "Error while populating correlator name for {}, error: {}".format(ms.basename, str(e))
-            LOG.info(msg)
+            LOG.warning(msg)
             
         return correlator_name
 
