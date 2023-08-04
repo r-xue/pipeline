@@ -15,7 +15,6 @@ from typing import Tuple
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.utils as utils
-from pipeline.domain.measurementset import MeasurementSet
 from . import casa_tools
 from . import logging
 
@@ -451,7 +450,7 @@ class MeasurementSetReader(object):
             return list(data.values())[0]
 
     @staticmethod
-    def _get_correlator_name(ms: MeasurementSet) -> str:
+    def _get_correlator_name(ms: domain.MeasurementSet) -> str:
         """
         Get correlator name information from the PROCESSOR table in the MS. 
         
@@ -462,15 +461,21 @@ class MeasurementSetReader(object):
         :return: the correlator name
         """
         correlator_name = None
-        with casa_tools.TableReader(ms.name + '/PROCESSOR') as table:
-            tb1 = table.query("TYPE=='CORRELATOR'")
-            sub_types_col = tb1.getcol('SUB_TYPE')
-            tb1.close()
+        try:
+            with casa_tools.TableReader(ms.name + '/PROCESSOR') as table:
+                tb1 = table.query("TYPE=='CORRELATOR'")
+                sub_types_col = tb1.getcol('SUB_TYPE')
+                tb1.close()
 
-        if len(sub_types_col) > 0:
-            correlator_name = str(sub_types_col[0])
-        else:
-            msg = "No correlator name could be found for {}".format(ms.basename)
+            if len(sub_types_col) > 0:
+                correlator_name = str(sub_types_col[0])
+            else:
+                msg = "No correlator name could be found for {}".format(ms.basename)
+                LOG.info(msg)
+                
+        except Exception as e:
+            correlator_name = None
+            msg = "Error while populating correlator name for {}, error: {}".format(ms.basename, str(e))
             LOG.info(msg)
             
         return correlator_name
