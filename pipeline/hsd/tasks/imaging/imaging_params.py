@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
 class ObservedList(list):
     """Class inherit list to observe its behavior.
-    
+
     This class intends to observe/output list stuff for debugging more easier.
     If you want to search a needle in a haystack, please uncomment out @debugwrapper()."""
 
@@ -73,7 +73,7 @@ class ObservedList(list):
 
 class Parameters:
     """Abstract class of Parameter object.
-    
+
     Note: _immutable_parameters is the list which is set some parameter names of a class inherit Parameter.
     All parameters in _immutable_parameters are set immutable by freeze().
     """
@@ -293,7 +293,9 @@ class PostProcessParameters(Parameters):
         self.cs = None                             # coordsys: Coordsys object
         self.faxis = None                          # int: Spectral axis which is found
         self.imagename = None                      # str: Image name
-        self.image_rms = None                      # float: Image statistics
+        self.image_rms = None                      # float: Image statistics (rms)
+        self.image_max = None                      # float: Image statistics (maximum value)
+        self.image_min = None                      # float: Image statistics (minimum value)
         self.include_channel_range = None          # List[int]: List of channel ranges to calculate image statistics
         self.is_representative_source_and_spw = None  # bool: Flag of representative source spw and representative spw
         self.nx = None                             # numpy.int64: X of image shape
