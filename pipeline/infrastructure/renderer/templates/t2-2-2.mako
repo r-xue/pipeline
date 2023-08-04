@@ -43,9 +43,7 @@ from pipeline.infrastructure import utils
 						%>
 			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Correlator Axis</th>
-						% if not utils.contains_single_dish(pcontext):
-				            <th scope="col" rowspan="2">Correlation Bits</th>
-			            % endif
+						<th scope="col" rowspan="2">Correlation Bits</th>
 			            <th scope="col" rowspan="2">Band</th>
 			            <th scope="col" rowspan="2">Band Type</th>
 						<%
@@ -105,13 +103,15 @@ from pipeline.infrastructure import utils
 					  <td>${spw.channels[0].getWidth()}</td>
 					  <td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 					  <td>${', '.join(sorted(ms.get_data_description(spw=spw).corr_axis))}</td>
-					  % if not utils.contains_single_dish(pcontext):
-						% if spw.correlation_bits:
-	                        <td>${spw.correlation_bits}</td>
+						% if utils.contains_single_dish(pcontext) and (pcontext.project_summary.telescope == 'ALMA'):
+								<td>BITS_3x3</td>
 						% else:
-							<td>Unknown</td>
+							% if spw.correlation_bits:
+								<td>${spw.correlation_bits}</td>
+							% else:
+								<td>Unknown</td>
+							% endif
 						% endif
-					  % endif
 					  <td>${spw.band}</td>
                       <%
                       if spw.receiver:
@@ -162,9 +162,7 @@ from pipeline.infrastructure import utils
 						%>
 			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 						<th scope="col" rowspan="2">Correlator Axis</th>
-						% if not utils.contains_single_dish(pcontext):
-				            <th scope="col" rowspan="2">Correlation Bits</th>
-			            % endif
+						<th scope="col" rowspan="2">Correlation Bits</th>
 			            <th scope="col" rowspan="2">Band</th>
 			            <th scope="col" rowspan="2">Band Type</th>
 						<%
@@ -232,7 +230,9 @@ from pipeline.infrastructure import utils
 								polarizations = ', '.join(sorted(dd.corr_axis))
 						%>
 						<td>${polarizations}</td>
-						% if not utils.contains_single_dish(pcontext):
+						% if utils.contains_single_dish(pcontext) and (pcontext.project_summary.telescope == 'ALMA'):
+								<td>BITS_3x3</td>
+						% else:
 							% if spw.correlation_bits:
 								<td>${spw.correlation_bits}</td>
 							% else:
