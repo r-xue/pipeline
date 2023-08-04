@@ -945,9 +945,9 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
-            self._update_miscinfo(result.image.replace('.image', '.image' + extension), max(
-                [len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
-                                  pbcor_image_min, pbcor_image_max)
+            self._update_miscinfo(result.image.replace('.image', '.image' + extension),
+                                  max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
+                                  pbcor_image_min, pbcor_image_max, nonpbcor_image_non_cleanmask_rms, inputs.stokes)
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)
@@ -1091,7 +1091,9 @@ class Tclean(cleanbase.CleanBase):
 
         # All continuum
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
-            self._update_miscinfo(result.image.replace('.image', '.image'+extension), max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]), pbcor_image_min, pbcor_image_max)
+            self._update_miscinfo(result.image.replace('.image', '.image'+extension),
+                                  max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
+                                  pbcor_image_min, pbcor_image_max, nonpbcor_image_non_cleanmask_rms, inputs.stokes)
 
             result.set_image_min(pbcor_image_min)
             result.set_image_min_iquv(pbcor_image_min_iquv)
@@ -1209,9 +1211,8 @@ class Tclean(cleanbase.CleanBase):
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
             self._update_miscinfo(result.image.replace('.image', '.image'+extension),
-                                  max([len(field_ids.split(','))
-                                       for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
-                                  pbcor_image_min, pbcor_image_max)
+                                  max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
+                                  pbcor_image_min, pbcor_image_max, nonpbcor_image_non_cleanmask_rms, inputs.stokes)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,
@@ -1701,7 +1702,7 @@ class Tclean(cleanbase.CleanBase):
         # Update the result.
         result.set_mom8(maxiter, mom8_name)
 
-    def _update_miscinfo(self, imagename, nfield, datamin, datamax):
+    def _update_miscinfo(self, imagename, nfield, datamin, datamax, datarms, stokes):
 
         # Update metadata
         with casa_tools.ImageReader(imagename) as image:
@@ -1710,5 +1711,7 @@ class Tclean(cleanbase.CleanBase):
             info['nfield'] = nfield
             info['datamin'] = datamin
             info['datamax'] = datamax
+            info['datarms'] = datarms
+            info['stokes'] = stokes
 
             image.setmiscinfo(info)
