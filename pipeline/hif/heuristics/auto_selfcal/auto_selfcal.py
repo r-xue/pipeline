@@ -457,12 +457,12 @@ class SelfcalHeuristics(object):
                                 nterms=1, field=self.field, spw=spws_per_vis, uvrange=selfcal_library[target][band]
                                 ['uvrange'],
                                 obstype=selfcal_library[target][band]['obstype'])
-                        dirty_SNR, dirty_RMS = estimate_SNR(sani_target+'_'+band+'_'+spw+'_dirty.image.tt0')
+                        dirty_per_spw_SNR, dirty_per_spw_RMS = estimate_SNR(sani_target+'_'+band+'_'+spw+'_dirty.image.tt0')
                         if self.telescope != 'ACA':
                             dirty_per_spw_NF_SNR, dirty_per_spw_NF_RMS = estimate_near_field_SNR(
                                 sani_target+'_'+band+'_'+spw+'_dirty.image.tt0', las=selfcal_library[target][band]['LAS'])
                         else:
-                            dirty_per_spw_NF_SNR, dirty_per_spw_NF_RMS = per_spw_SNR, per_spw_RMS
+                            dirty_per_spw_NF_SNR, dirty_per_spw_NF_RMS = dirty_per_spw_SNR, dirty_per_spw_RMS
                         if not os.path.exists(sani_target+'_'+band+'_'+spw+'_initial.image.tt0'):
                             if self.telescope == 'ALMA' or self.telescope == 'ACA':
                                 sensitivity = get_sensitivity(
@@ -471,7 +471,7 @@ class SelfcalHeuristics(object):
                                     imsize=imsize[0],
                                     cellsize=cellsize[0])
                                 sensitivity, sens_bw = self.get_sensitivity(spw=spw)
-                                dr_mod = get_dr_correction(self.telescope, dirty_SNR*dirty_RMS, sensitivity, vislist)
+                                dr_mod = get_dr_correction(self.telescope, dirty_per_spw_SNR*dirty_per_spw_RMS, sensitivity, vislist)
                                 LOG.info(f'DR modifier: {dr_mod}  SPW: {spw}')
                                 sensitivity = sensitivity*dr_mod
                                 if ((band == 'Band_9') or (band == 'Band_10')) and dr_mod != 1.0:   # adjust for DSB noise increase
