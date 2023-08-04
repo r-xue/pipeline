@@ -411,14 +411,14 @@ class SelfcalHeuristics(object):
                 maxspws = 0
                 maxspwvis = ''
                 for vis in vislist:
-                    if selfcal_library[target][band][vis]['n_spws'] >= maxspws:
+                    if selfcal_library[target][band][vis]['n_spws'] > maxspws:
                         maxspws = selfcal_library[target][band][vis]['n_spws']
                         maxspwvis = vis+''
                     selfcal_library[target][band][vis]['spwlist'] = selfcal_library[target][band][vis]['spws'].split(',')
                 spwlist = selfcal_library[target][band][maxspwvis]['spwlist']
 
                 spw_bandwidths, spw_effective_bandwidths = get_spw_bandwidth(
-                    vis, selfcal_library[target][band][maxspwvis]['spwsarray'], target)
+                    maxspwvis, selfcal_library[target][band][maxspwvis]['spwsarray'], target)
 
                 selfcal_library[target][band]['total_bandwidth'] = 0.0
                 selfcal_library[target][band]['total_effective_bandwidth'] = 0.0
