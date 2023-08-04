@@ -1,28 +1,28 @@
-<!--
-This is a test procedure for the SRDP selfcalibration pipeline. 
-
-These steps have been skipped to speed up the test:
-- hifa_restoredata
-- hif_mstransform
-- hif_findcont
-- cube imaging
-
-You are expected to have the _targets.ms and cont.data as input.
--->
-
 <ProcessingProcedure>
-	<ProcedureTitle>test_hifa_image</ProcedureTitle>
+
+    <ProcedureTitle>hifa_image_selfcal</ProcedureTitle>
 
     <ProcessingCommand>
-        <Command xmlns="">hifa_importdata</Command>
+        <Command xmlns="">hifa_restoredata</Command>
         <ParameterSet>
-            <Parameter>
-              <Keyword xmlns="">datacolumns</Keyword>
-              <Value xmlns="">{'data':'regcal_contline_science'}</Value>
-            </Parameter>
+          <Parameter>
+            <Keyword xmlns="">copytoraw</Keyword>
+            <Value xmlns="">False</Value>
+          </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-    <!-- end of import MS-->
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_mstransform</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_flagtargets</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_imageprecheck</Command>
@@ -49,10 +49,32 @@ You are expected to have the _targets.ms and cont.data as input.
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">mfs</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_findcont</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hif_uvcontsub</Command>
         <ParameterSet>
         </ParameterSet>
-    </ProcessingCommand>        
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
@@ -61,18 +83,14 @@ You are expected to have the _targets.ms and cont.data as input.
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">regcal</Value>
-            </Parameter>          
         </ParameterSet>
-    </ProcessingCommand>    
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
         </ParameterSet>
-    </ProcessingCommand>      
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
@@ -81,27 +99,36 @@ You are expected to have the _targets.ms and cont.data as input.
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cube</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">regcal</Value>
-            </Parameter>             
         </ParameterSet>
-    </ProcessingCommand>    
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
         </ParameterSet>
-    </ProcessingCommand>    
+    </ProcessingCommand>
 
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">repBW</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hif_selfcal</Command>
-        <ParameterSet>            
+        <ParameterSet>             
         </ParameterSet>
     </ProcessingCommand>
-
-    <!-- end of the selfcal section -->
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
@@ -113,7 +140,7 @@ You are expected to have the _targets.ms and cont.data as input.
             <Parameter>
                 <Keyword xmlns="">datatype</Keyword>
                 <Value xmlns="">selfcal</Value>
-            </Parameter>   
+            </Parameter>               
         </ParameterSet>
     </ProcessingCommand>    
 
@@ -121,9 +148,8 @@ You are expected to have the _targets.ms and cont.data as input.
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
         </ParameterSet>
-    </ProcessingCommand>  
-
-
+    </ProcessingCommand>          
+    
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
@@ -134,7 +160,27 @@ You are expected to have the _targets.ms and cont.data as input.
             <Parameter>
                 <Keyword xmlns="">datatype</Keyword>
                 <Value xmlns="">selfcal</Value>
-            </Parameter>             
+            </Parameter>               
+        </ParameterSet>
+    </ProcessingCommand>      
+    
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">repBW</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
+            </Parameter>               
         </ParameterSet>
     </ProcessingCommand>
 
@@ -142,8 +188,7 @@ You are expected to have the _targets.ms and cont.data as input.
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
         </ParameterSet>
-    </ProcessingCommand>            
-
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_exportdata</Command>
@@ -153,6 +198,6 @@ You are expected to have the _targets.ms and cont.data as input.
             <Value xmlns="">True</Value>
           </Parameter>
         </ParameterSet>
-    </ProcessingCommand>    
+    </ProcessingCommand>
 
 </ProcessingProcedure>

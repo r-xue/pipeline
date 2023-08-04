@@ -123,7 +123,7 @@ class UVcontSub(basetask.StandardTaskTemplate):
 
         # Collect datacolumn, fields, spws and fit specifications
         fields = dict()
-        spws = dict()
+        real_spws = dict()
         fitspec = nested_dict()
         # Keep list of actual field/intent/spw combinations in hif_makeimlist
         # order for weblog. Avoid saving the full list in the results object
@@ -132,6 +132,10 @@ class UVcontSub(basetask.StandardTaskTemplate):
         topo_freq_fitorder_dict = nested_dict()
         for imaging_target in imlist:
             datacolumn = imaging_target['datacolumn']
+
+            # Using virtual spws for task parameter and tclean heuristics calls.
+            # Need to specify real spws for uvcontsub2021.
+            real_spw = str(inputs.context.observing_run.virtual2real_spw_id(imaging_target['spw'], inputs.ms))
 
             minimal_tclean_inputs = MinimalTcleanHeuristicsInputsGenerator(imaging_target['vis'],
                                                                            imaging_target['field'],
@@ -142,31 +146,31 @@ class UVcontSub(basetask.StandardTaskTemplate):
                                                                            imaging_target['specmode'])
 
             fields[minimal_tclean_inputs.field] = True
-            spws[minimal_tclean_inputs.spw] = True
+            real_spws[real_spw] = True
             field_intent_spw_list.append({'field': imaging_target['field'],
                                           'intent': imaging_target['intent'],
-                                          'spw': imaging_target['spw']})
+                                          'spw': real_spw})
 
             # Convert the cont.dat frequency ranges to TOPO
             (_, _, spw_topo_freq_param_dict, _, _, _, _) = imaging_target['heuristics'].calc_topo_ranges(minimal_tclean_inputs)
 
             field_ids = imaging_target['heuristics'].field(minimal_tclean_inputs.intent, minimal_tclean_inputs.field)[0]
 
-            fitspec[field_ids][minimal_tclean_inputs.spw]['chan'] = spw_topo_freq_param_dict[minimal_tclean_inputs.vis[0]][minimal_tclean_inputs.spw]
+            fitspec[field_ids][real_spw]['chan'] = spw_topo_freq_param_dict[minimal_tclean_inputs.vis[0]][minimal_tclean_inputs.spw]
 
             # Collect frequency ranges for weblog
-            topo_freq_fitorder_dict[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]['freq'] = spw_topo_freq_param_dict[minimal_tclean_inputs.vis[0]][minimal_tclean_inputs.spw]
+            topo_freq_fitorder_dict[minimal_tclean_inputs.field][real_spw]['freq'] = spw_topo_freq_param_dict[minimal_tclean_inputs.vis[0]][minimal_tclean_inputs.spw]
 
             # Default fit order
-            fitspec[field_ids][minimal_tclean_inputs.spw]['fitorder'] = 1
+            fitspec[field_ids][real_spw]['fitorder'] = 1
 
             # Check for any user specified fit order.
             if minimal_tclean_inputs.field in fitorder:
                 if minimal_tclean_inputs.spw in fitorder[minimal_tclean_inputs.field]:
-                    fitspec[field_ids][minimal_tclean_inputs.spw]['fitorder'] = fitorder[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]
+                    fitspec[field_ids][real_spw]['fitorder'] = fitorder[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]
 
             # Collect fit order for weblog
-            topo_freq_fitorder_dict[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]['fitorder'] = fitspec[field_ids][minimal_tclean_inputs.spw]['fitorder']
+            topo_freq_fitorder_dict[minimal_tclean_inputs.field][real_spw]['fitorder'] = fitspec[field_ids][real_spw]['fitorder']
 
         result = UVcontSubResults()
         result.field_intent_spw_list = field_intent_spw_list
@@ -188,7 +192,7 @@ class UVcontSub(basetask.StandardTaskTemplate):
                           'intent': utils.to_CASA_intent(inputs.ms, intent),
                           'fitspec': fitspec.as_plain_dict(),
                           'field': ','.join(fields.keys()),
-                          'spw': ','.join(spws.keys())}
+                          'spw': ','.join(real_spws.keys())}
         uvcontsub_job = casa_tasks.uvcontsub(**uvcontsub_args)
         try:
             casa_uvcontsub_result = self._executor.execute(uvcontsub_job)

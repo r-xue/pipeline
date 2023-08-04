@@ -80,7 +80,9 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
     # Initial flag settings
     PHnoisy = False
     BPnoisy = False
-
+    BPgood = False
+    PHgood = False
+    
     for k, v in wvr_results.items():
         result.vis = v.filename
 
@@ -120,11 +122,22 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
         # wider data required - after tarball??
 
         perhi = np.percentile(wvr_data[data_flag==False], 80)
+        perhi_nowvr = np.percentile(nowvr_data[data_flag==False], 80)
         bpmax = np.max(wvr_data[data_flag==False])
         if v.intent == 'PHASE' and perhi > PHlim:
              PHnoisy = True
         elif v.intent == 'BANDPASS' and perhi > (BPlim-5.) and bpmax > BPlim:
              BPnoisy = True
+
+        # PIPE-1837
+        # simply add a bool again for 'good' phase rms
+        # define this as <1 radian over all the data averaged
+        # here just return the values for both, do logic for score elsewhere
+        LOG.info('phase rms is : '+str(perhi))
+        if v.intent == 'PHASE' and perhi_nowvr < 57.1:
+            PHgood = True
+        elif v.intent == 'BANDPASS' and perhi_nowvr < 57.1:
+            BPgood = True
 
         ############################
 
@@ -136,7 +149,7 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
 
         result.addview(improvement_result.description, improvement_result)
 
-    return PHnoisy, BPnoisy
+    return PHnoisy, BPnoisy, PHgood, BPgood
 
 
 def calculate_phase_rms(context, gaintable, qa_intent):

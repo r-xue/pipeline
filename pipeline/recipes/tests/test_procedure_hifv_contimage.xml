@@ -12,7 +12,7 @@ You are expected to have the _targets.ms and cont.data as input.
 
 <ProcessingProcedure>
 
-    <ProcedureTitle>test_hifv_selfcal_cont</ProcedureTitle>
+    <ProcedureTitle>test_hifv_contimage</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>

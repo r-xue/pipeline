@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifa_calimage</ProcedureTitle>
+    <ProcedureTitle>hifa_calimage_selfcal</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
