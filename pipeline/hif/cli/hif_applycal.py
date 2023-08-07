@@ -4,8 +4,8 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, applymode=None, calwt=None, flagbackup=None,
-                 flagsum=None, flagdetailedsum=None, parallel=None, dryrun=None, acceptresults=None):
+def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, parang=None, applymode=None, calwt=None,
+                 flagbackup=None, flagsum=None, flagdetailedsum=None, parallel=None, dryrun=None, acceptresults=None):
 
     """
     hif_applycal ---- Apply the calibration(s) to the data
@@ -43,6 +43,7 @@ def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, appl
                     example: '17', '11, 15'
     antenna         The selection of antennas to which the calibration will be applied.
                     Defaults to all antennas. Not currently supported.
+    parang          Apply parallactic angle correction
     applymode       Calibration apply mode
                     'calflag': calibrate data and apply flags from solutions
                     'calflagstrict': (default) same as above except flag spws for which calibration is
