@@ -1204,7 +1204,7 @@ class SpwIdVsFreqChart(object):
             ax_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
             ax_atm.set_ylim(0, 1.05)
             ax_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
-            ax_atm.yaxis.set_major_formatter(plt.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
+            ax_atm.yaxis.set_major_formatter(ticker.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
             ax_atm.yaxis.tick_right()
             antid = 0
             if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
@@ -1215,8 +1215,6 @@ class SpwIdVsFreqChart(object):
                 ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=4, linestyle='-')
 
         fig.savefig(filename)
-        fig.clear()
-        del fig
         return self._get_plot_object()
 
     def _get_figfile(self) -> str:
