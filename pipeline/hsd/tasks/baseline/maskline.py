@@ -326,6 +326,14 @@ class MaskLine(basetask.StandardTaskTemplate):
 
 
 def sd_line_detection_for_ms(group_id_list: List, field_id_list: List, spw_id_list: List, lines_list: List) -> None:
+    """Count number of detected lines to show an attention or not.
+
+    Args:
+        group_id_list: list of group id taken from result.outcome
+        field_id_list: list of field id taken from result.outcome
+        spw_id_list: list of spw id taken from result.outcome
+        lines_list: list of line taken from result.outcome
+    """
     detected_spw = []
 
     for group_id, field_id, spw_id, lines in zip(group_id_list, field_id_list, spw_id_list, lines_list):
