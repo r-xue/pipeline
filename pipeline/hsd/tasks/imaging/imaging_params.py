@@ -7,7 +7,6 @@ import numpy
 
 from casatools import coordsys
 from pipeline.hsd.tasks.common import utils as sdutils
-from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils.debugwrapper import debugwrapper
 
@@ -15,11 +14,9 @@ if TYPE_CHECKING:
     from collections import namedtuple
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResults
     from pipeline.infrastructure import Context
-    from pipeline.infrastructure.callibrary import IntervalCalState
     from pipeline.domain.datatable import DataTableImpl
     from pipeline.domain import MeasurementSet
     from pipeline.domain.singledish import MSReductionGroupDesc
-    Direction = NewType('Direction', Dict[str, Union[str, float]])
     RasterInfo = NewType('RasterInfo', namedtuple('RasterInfo', 'center_ra center_dec width'
                                                                 'height scan_angle row_separation row_duration'))
     ImageGroup = Dict[str, List[Union['MeasurementSet', int,
