@@ -1,5 +1,6 @@
 """Set of base classes and utility functions for display modules."""
 import abc
+import copy
 import datetime
 import itertools
 import math
@@ -20,6 +21,7 @@ import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.infrastructure import casa_tools
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.infrastructure.renderer.logger import Plot
+from pipeline.infrastructure.utils import absolute_path
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -548,6 +550,36 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         else:
             v = None
         return v
+
+    def valid_lines(self, is_freq_chan_reversed_image: bool=False) -> List[List[int]]:
+        """Return list of chnnel ranges of valid spectral lines."""
+        group_desc = self.reduction_group
+        ant_index = self.antennaid_list
+        spwid_list = self.spwid_list
+        msid_list = self.msid_list
+        fieldid_list = self.fieldid_list
+
+        line_list = []
+
+        msobj_list = self.context.observing_run.measurement_sets
+        msname_list = [absolute_path(msobj.name) for msobj in msobj_list]
+        for g in group_desc:
+            found = False
+            for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
+                group_msid = msname_list.index(absolute_path(g.ms.name))
+                if group_msid == msid and g.antenna_id == ant and \
+                   g.field_id == fid and g.spw_id == spw:
+                    found = True
+                    break
+            if found:
+                for ll in copy.deepcopy(g.channelmap_range):
+                    if ll not in line_list and ll[2] is True:
+                        line_list.append(ll)
+        if is_freq_chan_reversed_image:
+            _right_edge = float(self.image.nchan - 1)
+            for ll in line_list:
+                ll[0] = _right_edge - ll[0]
+        return line_list
 
 
 class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
