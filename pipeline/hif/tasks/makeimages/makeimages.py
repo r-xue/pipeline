@@ -317,6 +317,8 @@ class CleanTaskFactory(object):
         # bug is fixed.
         if target['intent'] == 'POLARIZATION' and target['stokes'] == 'IQUV':
             is_tier0_job = False
+            if is_mpi_ready:
+                LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV polarization calibrator imaging (PIPE-1923).')
 
         parallel_wanted = mpihelpers.parse_mpi_input_parameter(self.__inputs.parallel)
 
