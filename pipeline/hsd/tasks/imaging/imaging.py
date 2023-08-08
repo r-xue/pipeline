@@ -5,7 +5,7 @@ import functools
 import math
 import os
 from numbers import Number
-from typing import TYPE_CHECKING, Dict, List, NewType, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import numpy
 from scipy import interpolate
@@ -23,7 +23,7 @@ from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
-from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy ,rasterutil
+from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy, rasterutil, sdtyping
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.hsd.tasks.imaging import (detectcontamination, gridding,
                                         imaging_params, resultobjects,
@@ -34,7 +34,6 @@ if TYPE_CHECKING:
     from casatools import coordsys
     from pipeline.infrastructure import Context
     from resultobjects import SDImagingResults
-    Direction = NewType('Direction', Dict[str, Union[str, float]])
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -128,7 +127,7 @@ class SDImagingInputs(vdp.StandardInputs):
 
     def __init__(self, context: 'Context', mode: Optional[str]=None, restfreq: Optional[str]=None,
                  infiles: Optional[List[str]]=None, field: Optional[str]=None, spw: Optional[str]=None,
-                 org_direction: Optional['Direction']=None):
+                 org_direction: Optional['sdtyping.Direction']=None):
         """Initialize an object.
 
         Args:
@@ -971,7 +970,11 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                           org_directions=_rgp.tocombine.org_directions,
                                                           specmodes=_rgp.tocombine.specmodes)
         __combine_task = sdcombine.SDImageCombine(__combine_inputs)
+        __freq_chan_reversed = False
+        if isinstance(_rgp.imager_result, resultobjects.SDImagingResultItem):
+            __freq_chan_reversed = _rgp.imager_result.frequency_channel_reversed
         _rgp.imager_result = self._executor.execute(__combine_task)
+        _rgp.imager_result.frequency_channel_reversed = __freq_chan_reversed
 
     def __set_representative_flag(self,
                                   _rgp: imaging_params.ReductionGroupParameters,
@@ -1177,9 +1180,10 @@ class SDImaging(basetask.StandardTaskTemplate):
         Args:
             _rgp : Reduction group parameter object of prepare()
         """
+        # PIPE-251: detect contamination
         if not basetask.DISABLE_WEBLOG:
-            # PIPE-251: detect contamination
-            detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'])
+            detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'],
+                                                     _rgp.imager_result.frequency_channel_reversed)
 
     def __append_result(self, _cp: imaging_params.CommonParameters, _rgp: imaging_params.ReductionGroupParameters):
         """Append result to RGP.
