@@ -1,5 +1,4 @@
 """QA score calculation for baseline subtraction task."""
-import numpy
 import os
 from typing import TYPE_CHECKING, List, Optional, Union
 
@@ -30,7 +29,6 @@ class SDBaselineQAHandler(pqa.QAPlugin):
 
         QA scoring is performed based on the following metric:
 
-            - Line detection: Whether or not any astronomical lines are detected
             - Flatness of spectral baseline
 
         Scores and associated metrics are attached to the results instance.
@@ -41,7 +39,7 @@ class SDBaselineQAHandler(pqa.QAPlugin):
         """
         scores = []
         for qstat in result.outcome['baseline_quality_stat']:
-            scores.append(qacalc.score_sd_baseline_quality(qstat.vis, qstat.field, qstat.ant, 
+            scores.append(qacalc.score_sd_baseline_quality(qstat.vis, qstat.field, qstat.ant,
                                                            qstat.spw, qstat.pol, qstat.stat))
         result.qa.pool.extend(scores)
 
