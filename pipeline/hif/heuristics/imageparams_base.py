@@ -906,23 +906,6 @@ class ImageParamsHeuristics(object):
         msname = self.vislist[0]
         ms = self.observing_run.get_ms(name=msname)
 
-        # PIPE-1886
-        # Make a check for B2B in PL2023 so that
-        # we can correctly remove 'None' SPW that are
-        # passed after mstransform to make _targets
-
-        # need to get all ms's because the current _target
-        # one will not trigger B2B itself as it only has the
-        # TARGET intent and High Freq SPWs, so need to 'check'
-        # all MSs read in (i.e the calibrated one - should
-        # be index [0], to see if B2B data was what came in
-        isb2b=False
-        mslist = self.observing_run.measurement_sets
-        for msisb2b in mslist:
-            if msisb2b.get_diffgain_mode() == 'B2B':
-                isb2b=True
-                break
-
         spw_frequency_ranges = []
         for spwid in local_spwids:
             real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
