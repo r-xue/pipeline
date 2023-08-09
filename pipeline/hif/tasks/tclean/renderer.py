@@ -1645,6 +1645,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     poli_thumbnail = None,
                     pola_abspath = None,
                     pola_thumbnail = None,
+                    peak_snr=None,
                     result=r
                 )
                 image_rows.append(row)
