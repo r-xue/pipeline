@@ -4,8 +4,8 @@ from . import utils
 
 
 @utils.cli_wrapper
-def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, applymode=None, flagbackup=None, flagsum=None,
-               flagdetailedsum=None, parallel=None, dryrun=None, acceptresults=None):
+def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, parang=None, applymode=None, flagbackup=None,
+               flagsum=None, flagdetailedsum=None, parallel=None, dryrun=None, acceptresults=None):
 
     """
     h_applycal ---- Apply the calibration(s) to the data
@@ -43,6 +43,7 @@ def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, applym
                     example: '17', '11, 15'
     antenna         The selection of antennas to which the calibration will be applied.
                     Defaults to all antennas. Not currently supported.
+    parang          Apply parallactic angle correction
     applymode       Calibration apply mode
                     'calflag': calibrate data and apply flags from solutions
                     'calflagstrict': (default) same as above except flag spws for which calibration is
