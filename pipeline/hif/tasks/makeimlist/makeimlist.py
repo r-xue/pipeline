@@ -1051,6 +1051,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                                                 valid_field_spwspec_combination = True
                                                 actual_spwids.append(spwid)
                             if not valid_field_spwspec_combination:
+                                # PIPE-1900: Counting flagged spws as expected imaging target.
+                                # Note that this is done without checking the available data
+                                # type since the code below would need an spw. Only a very
+                                # simple check for selfcal is done because this data type
+                                # would definitely not exist for a flagged spw.
+                                if 'SELFCAL' not in selected_datatype_str:
+                                    expected_num_targets += 1
                                 continue
 
                             # For 'cont' mode we still need to restrict the virtual spw ID list to just
