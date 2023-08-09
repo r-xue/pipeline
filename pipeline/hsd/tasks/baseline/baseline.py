@@ -463,6 +463,10 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         # - end of the loop over reduction group
 
+        # Show an attention if no spectral lines are detected.
+        reduction_group = self.inputs.context.observing_run.ms_reduction_group
+        self.show_attention(reduction_group, baselined)
+
         blparam_file = lambda ms: ms.basename.rstrip('/') \
             + '_blparam_stage{stage}.txt'.format(stage=stage_number)
         vis_map = {} # key and value are input and output vis name, respectively
@@ -528,6 +532,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         results = SDBaselineResults(task=self.__class__,
                                     success=True,
                                     outcome=outcome)
+
         return results
 
     def analyse(self, result: SDBaselineResults) -> SDBaselineResults:
@@ -550,13 +555,20 @@ class SDBaseline(basetask.StandardTaskTemplate):
             new_ms.set_data_column(DataType.BASELINED, 'DATA')
             result.out_mses.append(new_ms)
 
-        # Show an attention if no spectral lines are detected.
+        return result
+
+    def show_attention(self, reduction_group: dict, baselined: List[dict]) -> None:
+        """Show an attention if no spectral lines are detected.
+
+        Args:
+            reduction_group: dictionary containing information of reduction group
+            baselined: list of dictionary containing information of line detection
+                       and maskline.
+        """
         lines_list = []
         group_id_list = []
         spw_id_list = []
         field_id_list = []
-        reduction_group = self.inputs.context.observing_run.ms_reduction_group
-        baselined = result.outcome['baselined']
         for b in baselined:
             reduction_group_id = b['group_id']
             members = b['members']
@@ -568,9 +580,20 @@ class SDBaseline(basetask.StandardTaskTemplate):
             group_id_list.append(reduction_group_id)
             spw_id_list.append(spw_id)
             field_id_list.append(field_id)
-        show_attention(group_id_list, field_id_list, spw_id_list, lines_list)
 
-        return result
+        detected_spw = []
+
+        for group_id, field_id, spw_id, lines in zip(group_id_list, field_id_list, spw_id_list, lines_list):
+            if any([l[2] for l in lines]):
+                LOG.trace('detected lines exist at group_id %s field_id %s spw_id %s' % (group_id, field_id, spw_id))
+                unique_spw_id = set(spw_id)
+                if len(unique_spw_id) == 1:
+                    detected_spw.append(unique_spw_id.pop())
+                else:
+                    detected_spw.append(-1)
+
+        if len(detected_spw) == 0:
+            LOG.attention('No spectral lines are detected.')
 
 
 class HeuristicsTask(object):
@@ -732,27 +755,3 @@ def test_deviation_mask_heuristic(spw: Optional[int] = None) -> None:
                             print('     serial mask: {0}'.format(smask))
                             print('   parallel mask: {0}'.format(pmask))
                             print('   {0}'.format(smask == pmask))
-
-
-def show_attention(group_id_list: List, field_id_list: List, spw_id_list: List, lines_list: List) -> None:
-    """Show an attention if no spectral lines are detected.
-
-    Args:
-        group_id_list: list of group id taken from result.outcome
-        field_id_list: list of field id taken from result.outcome
-        spw_id_list: list of spw id taken from result.outcome
-        lines_list: list of line taken from result.outcome
-    """
-    detected_spw = []
-
-    for group_id, field_id, spw_id, lines in zip(group_id_list, field_id_list, spw_id_list, lines_list):
-        if any([l[2] for l in lines]):
-            LOG.trace('detected lines exist at group_id %s field_id %s spw_id %s' % (group_id, field_id, spw_id))
-            unique_spw_id = set(spw_id)
-            if len(unique_spw_id) == 1:
-                detected_spw.append(unique_spw_id.pop())
-            else:
-                detected_spw.append(-1)
-
-    if len(detected_spw) == 0:
-        LOG.attention('No spectral lines are detected.')
