@@ -35,7 +35,7 @@ import os
 import shutil
 import sys
 import tarfile
-import tempfile
+import uuid
 
 import astropy.io.fits as apfits
 
@@ -1315,44 +1315,45 @@ finally:
         shutil.copy(aqua_file, out_aqua_file)
 
         # put aqua report into html directory, so it can be linked to the weblog
-        aqua_html_path = f'{context.report_dir}/{aqua_file}'
+        aqua_html_path = os.path.join(context.report_dir, aqua_file)
         LOG.info(f'Copying AQUA report {aqua_file} to {aqua_html_path}')
         shutil.copy(aqua_file, context.report_dir)
 
         products_weblog_tarball = os.path.join(context.products_dir, weblog_filename)
 
-        with tarfile.open(products_weblog_tarball, "r:gz") as tar:
+        if os.path.isfile(products_weblog_tarball) and tarfile.is_tarfile(products_weblog_tarball):
 
-            # Extract all the files from the old tarball except the file to be replaced
-            files_to_keep = []
-            aqua_html_path_in_tarball = None
-            for member in tar.getmembers():
-                if aqua_file in member.name:
-                    aqua_html_path_in_tarball = member
-                else:
-                    files_to_keep.append(member)
+            with tarfile.open(products_weblog_tarball, "r:gz") as tar:
 
-            with tempfile.NamedTemporaryFile(prefix='updated_weblog_', delete=False, dir=context.output_dir) as temp_weblog_tarball:
-                LOG.debug(f'Created {temp_weblog_tarball.name}')
+                files_to_keep = []
+                aqua_html_path_in_tarball = None
+                for member in tar.getmembers():
+                    if aqua_file in member.name:
+                        aqua_html_path_in_tarball = member
+                    else:
+                        files_to_keep.append(member)
+
+                temp_weblog_tarball = str(uuid.uuid4())
+                LOG.debug(f'Created a temp tarball file: {temp_weblog_tarball}')
 
                 # Create a new tarball with the updated aqua file, keeping all others the same
-                with tarfile.open(temp_weblog_tarball.name, "w:gz") as new_tar:
+                with tarfile.open(temp_weblog_tarball, "w:gz") as new_tar:
+
+                    # Add all the existing files (excluding the aqua report XML) from the old tarball to the new tarball
                     for member in files_to_keep:
-                        # Add all the existing files from the old tarball to the new tarball
                         new_tar.addfile(member, tar.extractfile(member))
 
-                    # If an aqua file was already in the weblog tarball, then update it.
+                    # If an aqua file was already in the old weblog tarball, then add it under the same relative path/name.
                     # Else, add it into the weblog tarball.
-                    if aqua_html_path_in_tarball:
-                        LOG.info(f'Replacing {products_weblog_tarball} with contents of {temp_weblog_tarball.name}')
+                    if aqua_html_path_in_tarball is not None:
+                        LOG.debug(f'Updating {aqua_html_path_in_tarball.name} in contents of {temp_weblog_tarball}')
                         new_tar.add(aqua_file, arcname=aqua_html_path_in_tarball.name)
                     else:
-                        LOG.info(f'Adding {aqua_html_path} to contents of weblog tarball')
-                        LOG.debug(f'Adding {aqua_html_path} to contents of {temp_weblog_tarball.name}')
+                        LOG.debug(f'Adding {aqua_html_path} to contents of {temp_weblog_tarball}')
                         new_tar.add(f'{aqua_html_path}')
 
-            LOG.info(f'Adding/updating aqua report in {products_weblog_tarball}')
-            LOG.debug(f'Moving {temp_weblog_tarball.name} to {products_weblog_tarball}')
-            shutil.move(temp_weblog_tarball.name, products_weblog_tarball)
+            LOG.info(f'Adding/updating the AQUA report in {products_weblog_tarball}')
+            LOG.debug(f'Moving {temp_weblog_tarball} to {products_weblog_tarball}')
+            shutil.move(temp_weblog_tarball, products_weblog_tarball)
 
         return os.path.basename(out_aqua_file)
