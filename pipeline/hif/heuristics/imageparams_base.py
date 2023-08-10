@@ -906,34 +906,22 @@ class ImageParamsHeuristics(object):
         msname = self.vislist[0]
         ms = self.observing_run.get_ms(name=msname)
 
-        # PIPE-1886
-        # Make a check for B2B in PL2023 so that
-        # we can correctly remove 'None' SPW that are 
-        # passed after mstransform to make _targets
-        
-        # need to get all ms's because the current _target
-        # one will not trigger B2B itself as it only has the
-        # TARGET intent and High Freq SPWs, so need to 'check'
-        # all MSs read in (i.e the calibrated one - should 
-        # be index [0], to see if B2B data was what came in
-        isb2b=False
-        mslist = self.observing_run.measurement_sets
-        for msisb2b in mslist:
-            if msisb2b.get_diffgain_mode() == 'B2B':
-                isb2b=True
-                break
-
         spw_frequency_ranges = []
         for spwid in local_spwids:
             real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
             # PIPE-1886
             # real_spwid can be NONE when the original B2B dataset read in
-            # with low and high freq spectral specs has all SPW in the 
+            # with low and high freq spectral specs has all SPW in the
             # list passed to this function (cont_spw_ids, from function
-            # representative_target, BELOW) 
-            # if it is a None and we do have B2B data, use continue to 
+            # representative_target, BELOW)
+            # if it is a None and we do have B2B data, use continue to
             # ignore this spw which doesnt exist in the _target MS
-            if real_spwid is None and isb2b:
+
+            # PIPE-1935 reported the same error for cases of fully
+            # flagged spws where the new hif_uvcontsub skipped the
+            # spw in the subsequent MSes. Thus this patch should
+            # be applied to all cases, not just B2B.
+            if real_spwid is None:
                 continue
 
             spw = ms.get_spectral_window(real_spwid)

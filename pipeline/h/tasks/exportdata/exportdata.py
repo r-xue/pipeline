@@ -1332,7 +1332,7 @@ finally:
                 else:
                     files_to_keep.append(member)
 
-            with tempfile.NamedTemporaryFile(prefix='updated_weblog_', delete=False) as temp_weblog_tarball:
+            with tempfile.NamedTemporaryFile(prefix='updated_weblog_', delete=False, dir=context.output_dir) as temp_weblog_tarball:
                 LOG.debug(f'Created {temp_weblog_tarball.name}')
 
                 # Create a new tarball with the updated aqua file, keeping all others the same
