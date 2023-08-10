@@ -1339,11 +1339,11 @@ finally:
                 # because 1) it might create a large temp file in /tmp on the computing node; 2) it will create a file
                 # without the group read/write permission.
 
-                temp_weblog_tarball = str(uuid.uuid4())
-                LOG.debug(f'Created a temp tarball file: {temp_weblog_tarball}')
-
                 # Create a new tarball with the updated aqua file, keeping all others the same
+                temp_weblog_tarball = str(uuid.uuid4())
                 with tarfile.open(temp_weblog_tarball, "w:gz") as new_tar:
+
+                    LOG.debug(f'Created a temp tarball file: {temp_weblog_tarball}')
 
                     # Add all the existing files (excluding the aqua report XML) from the old tarball to the new tarball
                     for member in files_to_keep:
