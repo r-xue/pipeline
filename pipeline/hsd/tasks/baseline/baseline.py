@@ -4,7 +4,7 @@ import os
 
 import numpy
 
-from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Type, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -13,6 +13,7 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain import DataType
+from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.hsd.heuristics import MaskDeviationHeuristic
 from pipeline.infrastructure import task_registry
 from . import maskline
@@ -25,6 +26,7 @@ from ..common import utils
 from .typing import LineWindow
 
 if TYPE_CHECKING:
+    from numbers import Integral
     from pipeline.infrastructure.api import Heuristic
     from pipeline.infrastructure.launcher import Context
 
@@ -186,7 +188,7 @@ class SDBaselineResults(common.SingleDishResults):
         super(SDBaselineResults, self).__init__(task, success, outcome)
         self.out_mses = []
 
-    #@utils.profiler
+    # @utils.profiler
     def merge_with_context(self, context: 'Context') -> None:
         """Merge result instance into context.
 
@@ -350,15 +352,15 @@ class SDBaseline(basetask.StandardTaskTemplate):
                 # scan for org_direction and find the first one in group
                 msobj = context.observing_run.get_ms(m.ms.basename)
                 field_id = m.field_id
-                fields = msobj.get_fields( field_id = field_id )
+                fields = msobj.get_fields(field_id=field_id)
                 source_name = fields[0].source.name
                 if source_name not in org_directions_dict:
                     if fields[0].source.is_eph_obj or fields[0].source.is_known_eph_obj:
                         org_direction = fields[0].source.org_direction
                     else:
                         org_direction = None
-                    org_directions_dict.update( {source_name:org_direction} )
-                    LOG.info( "registered org_direction[{}]={}".format( source_name, org_direction ) )
+                    org_directions_dict.update({source_name: org_direction})
+                    LOG.info("registered org_direction[{}]={}".format(source_name, org_direction))
 
             # skip channel averaged spw
             nchan = group_desc.nchan
@@ -390,7 +392,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             LOG.info('Members to be processed:')
             for (gms, gfield, gant, gspw) in utils.iterate_group_member(group_desc, member_list):
                 LOG.info('\tMS "%s" Field ID %s Antenna ID %s Spw ID %s',
-                          gms.basename, gfield, gant, gspw)
+                         gms.basename, gfield, gant, gspw)
 
             # Deviation Mask
             # NOTE: deviation mask is evaluated per ms per field per spw
@@ -444,7 +446,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             detected_lines = maskline_result.outcome['detected_lines']
             channelmap_range = maskline_result.outcome['channelmap_range']
             cluster_info = maskline_result.outcome['cluster_info']
-            flag_digits  = maskline_result.outcome['flag_digits']
+            flag_digits = maskline_result.outcome['flag_digits']
 
             # register ids to per MS id collection
             for i in member_list:
@@ -459,7 +461,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                               'channelmap_range': channelmap_range,
                               'clusters': cluster_info,
                               'flag_digits': flag_digits,
-                              'org_direction': org_direction })
+                              'org_direction': org_direction})
 
         # - end of the loop over reduction group
 
@@ -469,7 +471,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         blparam_file = lambda ms: ms.basename.rstrip('/') \
             + '_blparam_stage{stage}.txt'.format(stage=stage_number)
-        vis_map = {} # key and value are input and output vis name, respectively
+        vis_map = {}  # key and value are input and output vis name, respectively
         plot_list = []
         baseline_quality_stat = []
 #         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, datatable)
@@ -522,7 +524,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
                 plot_list.extend(result.outcome['plot_list'])
             if 'baseline_quality_stat' in result.outcome:
                 baseline_quality_stat.extend(result.outcome['baseline_quality_stat'])
- 
+
         outcome = {'baselined': baselined,
                    'vis_map': vis_map,
                    'edge': edge,
@@ -557,7 +559,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         return result
 
-    def show_attention(self, reduction_group: dict, baselined: List[dict]) -> None:
+    def show_attention(self, reduction_group: Dict[int, MSReductionGroupDesc], baselined: List[Dict[str, Optional[Union[int, numpy.ndarray, List[List['Integral']], List[List[Union[float, Optional[LineWindow], bool]]], Dict[str, Union[str, List[List[int]], numpy.ndarray, List[List[Union[int, bool]]], float]], Dict[str, int]]]]]) -> None:
         """Show an attention if no spectral lines are detected.
 
         Args:
@@ -606,10 +608,10 @@ class HeuristicsTask(object):
             heuristics_cls: Heuristic class to run
         """
         self.heuristics = heuristics_cls()
-        #print(args, kwargs)
+        # print(args, kwargs)
         self.args = args
         self.kwargs = kwargs
-        #print(self.args, self.kwargs)
+        # print(self.args, self.kwargs)
 
     def execute(self, dry_run: bool = False) -> Any:
         """Perform Heuristics and return its result.
@@ -707,10 +709,10 @@ def deviation_mask_heuristic(
     Returns:
         Name of the MS and the task instance for mpihelpers framework.
     """
-    #parallel_wanted = mpihelpers.parse_mpi_input_parameter(parallel)
+    # parallel_wanted = mpihelpers.parse_mpi_input_parameter(parallel)
     mytask = DeviationMaskHeuristicsTask(MaskDeviationHeuristic, vis=vis, field_list=field_list,
-                            antenna_list=antenna_list, spw_list=spw_list, consider_flag=consider_flag)
-    #if parallel_wanted:
+                                         antenna_list=antenna_list, spw_list=spw_list, consider_flag=consider_flag)
+    # if parallel_wanted:
     if False:
         task = mpihelpers.AsyncTask(mytask)
     else:
