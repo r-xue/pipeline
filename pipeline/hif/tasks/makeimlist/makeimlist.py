@@ -775,7 +775,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                                     # type since the code below would need an spw. Only a very
                                                     # simple check for selfcal is done because this data type
                                                     # would definitely not exist for a flagged spw.
-                                                    if 'SELFCAL' not in selected_datatype_str and inputs.specmode != 'cont':
+                                                    if inputs.specmode != 'cont':
                                                         expected_num_targets += 1
                                                 # Aggregated value per vislist (replace with lookup pattern later)
                                                 if str(observed_spwid) not in valid_data[str(vislist)][field_intent]:
