@@ -1333,6 +1333,12 @@ finally:
                     else:
                         files_to_keep.append(member)
 
+                # PIPE-1942: we create a temp tarball file under a random UUID name, add/update the latest AUQA report XML
+                # and all other existing weblog content into it, and overwrite the old weblog tarball with this new one.
+                # We do this because tarfile does not support updating files in place. We also avoid using Python/tempfile
+                # because 1) it might create a large temp file in /tmp on the computing node; 2) it will create a file
+                # without the group read/write permission.
+
                 temp_weblog_tarball = str(uuid.uuid4())
                 LOG.debug(f'Created a temp tarball file: {temp_weblog_tarball}')
 
