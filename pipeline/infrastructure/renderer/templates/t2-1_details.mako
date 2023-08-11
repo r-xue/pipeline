@@ -111,6 +111,14 @@ import os
 					<td>${science_bands}</td>
 				</tr>
 				${vla_basebands}
+				<tr> 
+					<th>Correlator Name</th>
+					% if ms.correlator_name is not None:
+						<td>${ms.correlator_name}</td>
+					% else: 
+						<td>N/A</td>
+					% endif 
+				</tr>
 			</tbody>
 		</table>
 	</div>

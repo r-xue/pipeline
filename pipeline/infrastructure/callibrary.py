@@ -99,7 +99,7 @@ class CalApplication(object):
 
             else:
                 LOG.warning('Could not access {}. Using heuristics to determine caltable type'
-                            ''.format(os.path.gaintable))
+                            ''.format(os.path.basename(gaintable)))
                 if 'tsys' in gaintable:
                     viscal = 'B TSYS'
                 elif 'bcal' in gaintable:
@@ -1685,7 +1685,7 @@ def trim(tree, ranges):
     for begin, end in ranges:
         # locate Intervals overlapping the range, not just those completely
         # contained within the range
-        overlapping = tree.search(begin, end, strict=False)
+        overlapping = tree.overlap(begin, end)
 
         # truncate the Intervals to the range boundaries
         truncated = {intervaltree.Interval(max(iv.begin, begin),
