@@ -1250,7 +1250,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     filtered_vislist = [v for v in domain_filtered_vislist if valid_data[v][field_intent][str(adjusted_spwspec)]]
 
                                 # Save the filtered vislist
-                                target_heuristics.vislist = filtered_vislist
+                                if target_heuristics.vislist != filtered_vislist:
+                                    LOG.warn(f'''Modifying vis list from {target_heuristics.vislist} to {filtered_vislist}''')
+                                    target_heuristics.vislist = filtered_vislist
 
                                 # Get list of antenna IDs
                                 antenna_ids = target_heuristics.antenna_ids(inputs.intent)
