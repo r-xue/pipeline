@@ -1,12 +1,15 @@
-# the casa packages versions are not specified here therefore the latest version from PyPI is used.
-casatools
-casatasks
-casadata
-casaplotms
-casaviewer
-casampi
-almatasks
-casashell
-# bdsf-1.10.1-cp38-cp38-manylinux_2_12_x86_64.manylinux2010_x86_64.whl # localbuild
-sphinx-astrorefs # not available from conda-forge
-                 # https://github.com/jobovy/sphinx-astrorefs
+# The dependency versions are not specified, so the CASA shipped-in modules could get upgraded accidentally.
+# nbsphinx requires 'pandoc' (e.g. from macports or apt, not 'pandoc' from PyPI) to work properly.
+
+sphinx_rtd_theme
+
+sphinxcontrib-bibtex
+sphinx-astrorefs
+sphinx-copybutton
+nbsphinx 
+
+commonmark
+recommonmark
+future
+#ipympl
+#nodejs

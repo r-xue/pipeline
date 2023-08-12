@@ -2,13 +2,13 @@
 # 
 # setup:
 #
-#   install mambaforge: the recommended minimal conda installer
-#     https://github.com/conda-forge/miniforge#mambaforge
+#   * Install mambaforge: recommend to use the minimal mambaforge installer
+#       https://github.com/conda-forge/miniforge#mambaforge
 #  
-#   step-by-step to reproduce the Pipeline/CASA environment
-#     $ mamba env create -f docs/pipeline_docs.yaml
-#     $ mamba activate pipeline
-#     $ pip install -r docs/requirements_docs.txt
+#   * step-by-step to reproduce the Pipeline/CASA6 docs building environment
+#       $ mamba env create -f docs/pipeline_docs.yaml
+#       $ mamba activate pipeline_docs
+#       $ pip install -r docs/requirements_docs.txt
 #
 #   update:
 #     $ # conda update -n pipeline --all
@@ -19,27 +19,28 @@
 #
 ############################################################################
 
-name: pipeline
+name: pipeline_docs
 
 channels:
   - conda-forge
   - defaults
 
 dependencies:
-  # core
-  - python=3.8 # the casa packages wheels are not available for Python 3.9 yet, therefore 
-               # Python 3.8 is used.
+  - conda-ecosystem-user-package-isolation # prevent new enviromentes picking up ~/.local
+  - python=3.8
   - ipython
   - pip
   - numpy
-  - matplotlib
   - scipy
+  - matplotlib  
   - certifi
   - protobuf=3.20 # casatplotms requires ver<=3.20 at this moment
-  # extra/optional
   - astropy
-  - pympler
+  - intervaltree
+  - pypubsub
+  - cachetools
   - jupyterlab
+  - wheel
   - future
   - johnnydep
   - line_profiler
@@ -53,8 +54,7 @@ dependencies:
   - pycodestyle
   - pytest-cov
   - pytest-pep8
-  # build docs
-  - mako # required because we would like to run create_docs.py outside of the Pipeline/extern setup.
+  - mako
   - sphinx
   - sphinxcontrib-bibtex
   - sphinx-copybutton
@@ -64,4 +64,20 @@ dependencies:
   - recommonmark
   - ipympl
   - nodejs 
-  - pandoc # nbsphinx requires 'pandoc' (from macports/homebrew or apt, but not 'pandoc' from PyPI) to work properly.
+  - pandoc # nbsphinx requires 'pandoc' (available from macports/homebrew or apt, not 'pandoc' from PyPI)
+  - pip:
+    - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple 
+    - casatools
+    - casatasks
+    - casadata
+    - casaplotms
+    - casaviewer
+    - casampi
+    - almatasks
+    - casashell
+    - csscompressor == 0.9.5
+    - logutils == 0.3.5    
+    - ps_mem == 3.14 
+    - bdsf == 1.10.2
+    - sphinx-astrorefs # https://github.com/jobovy/sphinx-astrorefs
+
