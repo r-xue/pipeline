@@ -1,1 +1,1 @@
-This directory includes a revised copy of the markdown files from pipeline/doc (a snapshot from 7563f03a5a7)
+This directory includes a copy of the markdown files from pipeline/doc.
