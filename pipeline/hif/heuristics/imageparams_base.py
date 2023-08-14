@@ -88,6 +88,16 @@ class ImageParamsHeuristics(object):
             spwidsclean = list(map(int, spwidsclean))
             self.spwids.update(spwidsclean)
 
+    def get_ref_msname(self, spwid):
+        """
+        Get the first MS name that contains data for the given spw ID.
+        """
+        for msname in self.vislist:
+            real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(msname))
+            if real_spwid is not None:
+                return msname
+        raise Exception(f'Vis list {self.vislist} does not contain any MS with data for spw {spwid}')
+
     def primary_beam_size(self, spwid, intent):
 
         '''Calculate primary beam size in arcsec.'''
@@ -105,12 +115,11 @@ class ImageParamsHeuristics(object):
                     diameters.append(antenna.diameter)
         smallest_diameter = np.min(np.array(diameters))
 
-        # get spw info from first vis set, assume spws uniform
-        # across datasets
-        msname = self.vislist[0]
+        msname = self.get_ref_msname(spwid)
         real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(msname))
         ms = self.observing_run.get_ms(name=msname)
         spw = ms.get_spectral_window(real_spwid)
+
         ref_frequency = float(
             spw.ref_frequency.to_units(measures.FrequencyUnits.HERTZ))
 
@@ -173,11 +182,9 @@ class ImageParamsHeuristics(object):
                     pass
             merged_line_ranges_GHz = [r for r in utils.merge_ranges(line_ranges_GHz)]
 
-            # get source and spw info from first vis set, assume spws uniform
-            # across datasets
-            msname = self.vislist[0]
-            ms = self.observing_run.get_ms(name=msname)
             for spwid in self.spwids:
+                msname = self.get_ref_msname(spwid)
+                ms = self.observing_run.get_ms(name=msname)
                 real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(msname))
                 spw = ms.get_spectral_window(real_spwid)
                 # assemble continuum spw selection
@@ -328,6 +335,8 @@ class ImageParamsHeuristics(object):
         spwids = set(map(int, spwids))
 
         # Select only the highest frequency spw to get the smallest beam
+        # NOTE: If this code gets reactivated, one will need to use
+        # "ref_ms = self.get_ref_msname(spwid)" within the loop
         # ref_ms = self.observing_run.get_ms(self.vislist[0])
         # max_freq = 0.0
         # max_freq_spwid = -1
@@ -429,7 +438,7 @@ class ImageParamsHeuristics(object):
 
                     if not valid_data[(field, intent)]:
                         # no point carrying on for this field/intent
-                        LOG.debug('No data for field %s' % (field))
+                        LOG.error('No data for field %s' % (field))
                         utils.set_nested_dict(local_known_beams,
                                               (field, intent, ','.join(map(str, sorted(spwids))), 'beam'),
                                               'invalid')
@@ -572,7 +581,7 @@ class ImageParamsHeuristics(object):
             spwids = list(set(map(int, spwids)))
 
             # Use the first spw for the time being. TBD if this needs to be improved.
-            msname = self.vislist[0]
+            msname = self.get_ref_msname(spwids[0])
             real_spwid = self.observing_run.virtual2real_spw_id(spwids[0], self.observing_run.get_ms(msname))
             ms = self.observing_run.get_ms(name=msname)
             spw = ms.get_spectral_window(real_spwid)
@@ -903,11 +912,11 @@ class ImageParamsHeuristics(object):
         else:
             local_spwids = spwids
 
-        msname = self.vislist[0]
-        ms = self.observing_run.get_ms(name=msname)
 
         spw_frequency_ranges = []
         for spwid in local_spwids:
+            msname = self.get_ref_msname(spwid)
+            ms = self.observing_run.get_ms(name=msname)
             real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
             # PIPE-1886
             # real_spwid can be NONE when the original B2B dataset read in
@@ -921,6 +930,13 @@ class ImageParamsHeuristics(object):
             # flagged spws where the new hif_uvcontsub skipped the
             # spw in the subsequent MSes. Thus this patch should
             # be applied to all cases, not just B2B.
+
+            # PIPE-1947 uncovered a wider problem of subsets of vis lists
+            # not containing data for a given spw ID. The new get_ref_msname
+            # method will throw an exception if there is no MS available,
+            # so one should never have the following case, but as it is
+            # close to finishing PL2023, we leave this statement for the
+            # time being.
             if real_spwid is None:
                 continue
 
@@ -1140,7 +1156,7 @@ class ImageParamsHeuristics(object):
         return imagename
 
     def width(self, spwid):
-        msname = self.vislist[0]
+        msname = self.get_ref_msname(spwid)
         real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(msname))
         ms = self.observing_run.get_ms(name=msname)
         spw = ms.get_spectral_window(real_spwid)
@@ -1160,7 +1176,7 @@ class ImageParamsHeuristics(object):
         return width
 
     def ncorr(self, spwid):
-        msname = self.vislist[0]
+        msname = self.get_ref_msname(spwid)
         real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(msname))
         ms = self.observing_run.get_ms(name=msname)
         spw = ms.get_spectral_window(real_spwid)
@@ -1243,9 +1259,9 @@ class ImageParamsHeuristics(object):
         abs_max_frequency = 0.0
         min_freq_spwid = -1
         max_freq_spwid = -1
-        msname = self.vislist[0]
-        ms = self.observing_run.get_ms(name=msname)
         for spwid in spwspec.split(','):
+            msname = self.get_ref_msname(spwid)
+            ms = self.observing_run.get_ms(name=msname)
             real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(msname))
             spw = ms.get_spectral_window(real_spwid)
             min_frequency = float(spw.min_frequency.to_units(measures.FrequencyUnits.HERTZ))
@@ -1327,9 +1343,9 @@ class ImageParamsHeuristics(object):
 
         aggregate_lsrk_bw = '0.0GHz'
 
-        msname = self.vislist[0]
-        ms = self.observing_run.get_ms(name=msname)
         for spwid in inputs.spw.split(','):
+            msname = self.get_ref_msname(spwid)
+            ms = self.observing_run.get_ms(name=msname)
             real_spwid = self.observing_run.virtual2real_spw_id(spwid, self.observing_run.get_ms(msname))
             spw_info = ms.get_spectral_window(real_spwid)
 

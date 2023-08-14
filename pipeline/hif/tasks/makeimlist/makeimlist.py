@@ -809,12 +809,13 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                     # Select only the lowest / highest frequency spw to get the smallest (for cell size)
                     # and largest beam (for imsize)
-                    ref_ms = inputs.context.observing_run.get_ms(vislist[0])
                     min_freq = 1e15
                     max_freq = 0.0
                     min_freq_spwid = -1
                     max_freq_spwid = -1
                     for spwid in filtered_spwlist:
+                        ref_msname = self.heuristics.get_ref_msname(spwid)
+                        ref_ms = inputs.context.observing_run.get_ms(ref_msname)
                         real_spwid = inputs.context.observing_run.virtual2real_spw_id(spwid, ref_ms)
                         spwid_centre_freq = ref_ms.get_spectral_window(real_spwid).centre_frequency.to_units(measures.FrequencyUnits.HERTZ)
                         if spwid_centre_freq < min_freq:
