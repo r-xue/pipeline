@@ -7,6 +7,10 @@ casaviewer
 casampi
 almatasks
 casashell
+urllib3<2.0
+recommonmark
+nbsphinx
+sphinx-rtd-theme
 # bdsf-1.10.1-cp38-cp38-manylinux_2_12_x86_64.manylinux2010_x86_64.whl # localbuild
 sphinx-astrorefs # not available from conda-forge
                  # https://github.com/jobovy/sphinx-astrorefs
