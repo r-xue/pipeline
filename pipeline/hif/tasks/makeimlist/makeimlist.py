@@ -700,6 +700,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                         for vis in vislist:
                             ms_domain_obj = inputs.context.observing_run.get_ms(vis)
                             # Get the real spw IDs for this MS
+                            # TODO: This is missing spws that got removed in hif_uvcontsub.
+                            #       Need to involve the full spwlist from above.
                             ms_science_spwids = [s.id for s in ms_domain_obj.get_spectral_windows()]
                             if field_intent[0] in [f.name for f in ms_domain_obj.fields]:
                                 try:
@@ -784,13 +786,16 @@ class MakeImList(basetask.StandardTaskTemplate):
                     # Collapse cont spws
                     if inputs.specmode == 'cont':
                         filtered_spwlist_local = [','.join(filtered_spwlist)]
+                        # PIPE-1900: Count missing cont target.
+                        if len(filtered_spwlist) == 0:
+                            expected_num_targets += 1
                     else:
                         filtered_spwlist_local = filtered_spwlist
+                        # PIPE-1900: Counting flagged spws as expected imaging targets.
+                        expected_num_targets = expected_num_targets + len(list(map(str, observed_spwids_list))) - len(filtered_spwlist)
 
                     if filtered_spwlist_local == [] or filtered_spwlist_local == ['']:
                         LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
-                        # PIPE-1900: Counting flagged spws as expected imaging target.
-                        expected_num_targets += 1
                         continue
 
                     # Parse hm_cell to get optional pixperbeam setting
