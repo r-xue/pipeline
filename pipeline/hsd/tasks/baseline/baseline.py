@@ -3,7 +3,6 @@ import collections
 import os
 
 import numpy
-
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Type, Union
 
 import pipeline.infrastructure as infrastructure
@@ -12,6 +11,7 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
+from numbers import Integral
 from pipeline.domain import DataType
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.hsd.heuristics import MaskDeviationHeuristic
@@ -26,7 +26,6 @@ from ..common import utils
 from .typing import LineWindow
 
 if TYPE_CHECKING:
-    from numbers import Integral
     from pipeline.infrastructure.api import Heuristic
     from pipeline.infrastructure.launcher import Context
 
@@ -467,7 +466,8 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         # Show an attention if no spectral lines are detected.
         reduction_group = self.inputs.context.observing_run.ms_reduction_group
-        self.show_attention(reduction_group, baselined)
+        baselined_selected = [(b['group_id'], b['members'], b['lines']) for b in baselined]
+        self.show_attention(reduction_group, baselined_selected)
 
         blparam_file = lambda ms: ms.basename.rstrip('/') \
             + '_blparam_stage{stage}.txt'.format(stage=stage_number)
@@ -559,25 +559,25 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         return result
 
-    def show_attention(self, reduction_group: Dict[int, MSReductionGroupDesc], baselined: List[Dict[str, Optional[Union[int, numpy.ndarray, List[List['Integral']], List[List[Union[float, Optional[LineWindow], bool]]], Dict[str, Union[str, List[List[int]], numpy.ndarray, List[List[Union[int, bool]]], float]], Dict[str, int]]]]]) -> None:
+    def show_attention(self, reduction_group: Dict[int, MSReductionGroupDesc], baselined_selected: List[Tuple[int, numpy.ndarray, List[List[Union[float, bool]]]]]) -> None:
         """Show an attention if no spectral lines are detected.
 
         Args:
             reduction_group: dictionary containing information of reduction group
-            baselined: list of dictionary containing information of line detection
+            baselined_selected: list of tuple containing information of line detection
                        and maskline.
         """
         lines_list = []
         group_id_list = []
         spw_id_list = []
         field_id_list = []
-        for b in baselined:
-            reduction_group_id = b['group_id']
-            members = b['members']
+        for b in baselined_selected:
+            reduction_group_id = b[0]
+            members = b[1]
             group_desc = reduction_group[reduction_group_id]
             spw_id = numpy.fromiter((group_desc[m].spw_id for m in members), dtype=numpy.int32)  # b['spw']
             field_id = numpy.fromiter((group_desc[m].field_id for m in members), dtype=numpy.int32)  # b['field']
-            lines = b['lines']
+            lines = b[2]
             lines_list.append(lines)
             group_id_list.append(reduction_group_id)
             spw_id_list.append(spw_id)
