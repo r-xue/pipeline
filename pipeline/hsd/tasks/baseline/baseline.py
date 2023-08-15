@@ -466,8 +466,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         # Show an attention if no spectral lines are detected.
         reduction_group = self.inputs.context.observing_run.ms_reduction_group
-        baselined_selected = [(b['group_id'], b['members'], b['lines']) for b in baselined]
-        self.show_attention(reduction_group, baselined_selected)
+        self.show_attention(reduction_group, [(b['group_id'], b['members'], b['lines']) for b in baselined])
 
         blparam_file = lambda ms: ms.basename.rstrip('/') \
             + '_blparam_stage{stage}.txt'.format(stage=stage_number)
@@ -559,25 +558,23 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         return result
 
-    def show_attention(self, reduction_group: Dict[int, MSReductionGroupDesc], baselined_selected: List[Tuple[int, numpy.ndarray, List[List[Union[float, bool]]]]]) -> None:
+    def show_attention(self, reduction_group: Dict[int, MSReductionGroupDesc], baselined: List[Tuple[int, numpy.ndarray, List[List[Union[float, bool]]]]]) -> None:
         """Show an attention if no spectral lines are detected.
 
         Args:
             reduction_group: dictionary containing information of reduction group
-            baselined_selected: list of tuple containing information of line detection
+            baselined: list of tuple containing information of line detection
                        and maskline.
         """
         lines_list = []
         group_id_list = []
         spw_id_list = []
         field_id_list = []
-        for b in baselined_selected:
-            reduction_group_id = b[0]
-            members = b[1]
+        for b in baselined:
+            (reduction_group_id, members, lines) = b
             group_desc = reduction_group[reduction_group_id]
             spw_id = numpy.fromiter((group_desc[m].spw_id for m in members), dtype=numpy.int32)  # b['spw']
             field_id = numpy.fromiter((group_desc[m].field_id for m in members), dtype=numpy.int32)  # b['field']
-            lines = b[2]
             lines_list.append(lines)
             group_id_list.append(reduction_group_id)
             spw_id_list.append(spw_id)
