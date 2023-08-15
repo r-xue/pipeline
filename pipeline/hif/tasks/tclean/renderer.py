@@ -90,7 +90,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if r.intent == 'CHECK':
                 try:
                     image_path_non_pbcor = r.iterations[maxiter]['image']
-                    LOG.info('Using %s to calculate the MAD for the peakSNR for the weblog'% image_path_non_pbcor)
+                    LOG.info('Using %s to calculate the MAD for the peakSNR for the weblog' % image_path_non_pbcor)
 
                     with casa_tools.ImageReader(image_path_non_pbcor) as image:
                         # Construct the region for "the image outside of a central radius"
@@ -102,7 +102,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
                         # Calculate image statistics for this region
                         outside_circle_imstat = image.statistics(region=everything_but_central_circle, robust=True)
-                        scaled_mad = outside_circle_imstat['medabsdevmed'][0]
+                        scaled_mad = outside_circle_imstat['medabsdevmed'][0] * 1.4826
                 except Exception as e:
                     msg = "PeakSNR calculation for the tclean weblog failed. Failed to calculate the MAD outside of a central radius. Error: {}".format(str(e))
                     LOG.error(msg)
@@ -128,7 +128,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 coordsys.done()
 
 
-                # Get the peak of the image outside of a central radius to caculate the peakSNR for CHECK sources (PIPE-1296)
+                # Get the peak of the image outside of a central radius to calculate the peakSNR for CHECK sources (PIPE-1296)
                 if (r.intent == 'CHECK') and (scaled_mad is not None):
                     try:
                         LOG.info("Using {} to calculate the peak value for peakSNR for the weblog".format(image_name))
@@ -136,7 +136,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         # Get the peak value whithin a central radius to calculate the peakSNR.
                         imshape = image.shape()
                         central_radius = min(20, imshape[0]//5)
-                        region='circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, central_radius)
+                        region = 'circle[[%dpix , %dpix], %dpix ]' % (imshape[0] // 2, imshape[1] // 2, central_radius)
 
                         imstats_within_region = image.statistics(region=region)
                         imagepeak = imstats_within_region['max'][0]
