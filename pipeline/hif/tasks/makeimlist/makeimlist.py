@@ -814,16 +814,19 @@ class MakeImList(basetask.StandardTaskTemplate):
                     min_freq_spwid = -1
                     max_freq_spwid = -1
                     for spwid in filtered_spwlist:
-                        ref_msname = self.heuristics.get_ref_msname(spwid)
-                        ref_ms = inputs.context.observing_run.get_ms(ref_msname)
-                        real_spwid = inputs.context.observing_run.virtual2real_spw_id(spwid, ref_ms)
-                        spwid_centre_freq = ref_ms.get_spectral_window(real_spwid).centre_frequency.to_units(measures.FrequencyUnits.HERTZ)
-                        if spwid_centre_freq < min_freq:
-                            min_freq = spwid_centre_freq
-                            min_freq_spwid = spwid
-                        if spwid_centre_freq > max_freq:
-                            max_freq = spwid_centre_freq
-                            max_freq_spwid = spwid
+                        try:
+                            ref_msname = self.heuristics.get_ref_msname(spwid)
+                            ref_ms = inputs.context.observing_run.get_ms(ref_msname)
+                            real_spwid = inputs.context.observing_run.virtual2real_spw_id(spwid, ref_ms)
+                            spwid_centre_freq = ref_ms.get_spectral_window(real_spwid).centre_frequency.to_units(measures.FrequencyUnits.HERTZ)
+                            if spwid_centre_freq < min_freq:
+                                min_freq = spwid_centre_freq
+                                min_freq_spwid = spwid
+                            if spwid_centre_freq > max_freq:
+                                max_freq = spwid_centre_freq
+                                max_freq_spwid = spwid
+                        except Exception as e:
+                            LOG.error(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
 
                     if min_freq_spwid == -1 or max_freq_spwid == -1:
                         LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(filtered_spwlist_local)))
