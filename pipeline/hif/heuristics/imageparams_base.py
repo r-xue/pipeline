@@ -457,7 +457,7 @@ class ImageParamsHeuristics(object):
                         # Now get better estimate from makePSF
                         tmp_psf_filename = str(uuid.uuid4())
 
-                        gridder = self.gridder(intent, field)
+                        gridder = self.gridder(intent, field, spwspec=spwspec)
                         mosweight = self.mosweight(intent, field)
                         field_ids = self.field(intent, field, vislist=valid_vis_list)
                         # Get single field imsize
@@ -650,18 +650,13 @@ class ImageParamsHeuristics(object):
 
         return valid_data
 
-    def gridder(self, intent, field):
-        # the field heuristic which decides whether this is a mosaic or not
-        # and sets self._mosaic (a bit convoluted...)
-        self.field(intent, field)
+    def gridder(self, intent, field, spwspec=None):
+        """Determine the gridder to use for the given intent and field."""
 
-        # also need to use mosaic gridder when gridding antennas with different
-        # diameters
-        if self._mosaic or (len(self.antenna_diameters()) > 1):
-            # Setting this here because it is used in other places in the heuristics
-            # TODO: this is flaky since it requires "gridder" to be called before
-            #       other methods using self._mosaic
-            self._mosaic = True
+        field_str_list = self.field(intent, field)
+
+        # use mosaic gridder for mosaic imaging and/or het.array data
+        if self._is_mosaic(field_str_list) or len(self.antenna_diameters()) > 1:
             return 'mosaic'
         else:
             return 'standard'
@@ -728,13 +723,16 @@ class ImageParamsHeuristics(object):
         # Set the maximum separation to 200 microarcsec and test via
         # a tolerance rather than an equality.
         max_separation = cqa.quantity('200uarcsec')
-        if not self._mosaic:
-            max_separation_uarcsec =  cqa.getvalue(cqa.convert(max_separation, 'uarcsec'))[0] # in micro arcsec
+
+        is_mos_or_het = self._is_mosaic(fields) or len(self.antenna_diameters()) > 1
+        if not is_mos_or_het:
+            max_separation_uarcsec = cqa.getvalue(cqa.convert(max_separation, 'uarcsec'))[0]  # in micro arcsec
             for mdirection in mdirections:
                 separation = cme.separation(mdirection, mdirections[0])
                 if cqa.gt(separation, max_separation):
                     separation_arcsec = cqa.getvalue(cqa.convert(separation, 'arcsec'))[0]
-                    LOG.warning('The separation between %s field centers across EBs is %f arcseconds (larger than the limit of %.1f microarcseconds). This is only normal for an ephemeris source or a source with a large proper motion or parallax.' % (field_names[0], separation_arcsec, max_separation_uarcsec))
+                    LOG.warning('The separation between %s field centers across EBs is %f arcseconds (larger than the limit of %.1f microarcseconds). This is only normal for an ephemeris source or a source with a large proper motion or parallax.' % (
+                        field_names[0], separation_arcsec, max_separation_uarcsec))
             mdirections = [mdirections[0]]
 
         # it should be easy to calculate some 'average' direction
@@ -823,8 +821,7 @@ class ImageParamsHeuristics(object):
         if vislist is None:
             vislist = self.vislist
 
-        result = []
-        nfields_list = []
+        field_str_list = []
 
         for vis in vislist:
             ms = self.observing_run.get_ms(name=vis)
@@ -854,16 +851,32 @@ class ImageParamsHeuristics(object):
                     field_list = [fld.id for fld in fields if
                                   fld.id in field_list and re_intent in fld.intents]
 
-            nfields_list.append(len([fld.id for fld in fields if fld.id in field_list and re_intent in fld.intents]))
-
             field_string = ','.join(str(fld_id) for fld_id in field_list)
-            result.append(field_string)
+            field_str_list.append(field_string)
 
-        # this will be a mosaic if there is more than 1 field_id for any
-        # measurement set
-        self._mosaic = (np.array(nfields_list) > 1).any()
+        return field_str_list
+    
+    def _is_mosaic(self, field_str_list):
+        """Determine if it's a mosaic or not.
+        
+        We consider imaging to be a mosaic if there is more than 1 field_id for any ms.
+        field_str_list is a list of strings, one for each ms, containing the field_ids joined by commas.
+        """
+        is_mosaic = False
+        for field_str in field_str_list:
+            if ',' in field_str:
+                is_mosaic = True
+        return is_mosaic
 
-        return result
+    def is_mosaic(self, field, intent, vislist=None):
+        """Determines if the given field/intent from a MS list is considered as a mosaic or not."""
+
+        if vislist is None:
+            vislist = self.vislist
+
+        field_str_list = self.field(intent, field, vislist=vislist)
+
+        return self._is_mosaic(field_str_list)
 
     def is_eph_obj(self, field):
 
@@ -896,6 +909,21 @@ class ImageParamsHeuristics(object):
         spw_frequency_ranges = []
         for spwid in local_spwids:
             real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
+            # PIPE-1886
+            # real_spwid can be NONE when the original B2B dataset read in
+            # with low and high freq spectral specs has all SPW in the
+            # list passed to this function (cont_spw_ids, from function
+            # representative_target, BELOW)
+            # if it is a None and we do have B2B data, use continue to
+            # ignore this spw which doesnt exist in the _target MS
+
+            # PIPE-1935 reported the same error for cases of fully
+            # flagged spws where the new hif_uvcontsub skipped the
+            # spw in the subsequent MSes. Thus this patch should
+            # be applied to all cases, not just B2B.
+            if real_spwid is None:
+                continue
+
             spw = ms.get_spectral_window(real_spwid)
             min_frequency_Hz = float(spw.min_frequency.convert_to(measures.FrequencyUnits.HERTZ).value)
             max_frequency_Hz = float(spw.max_frequency.convert_to(measures.FrequencyUnits.HERTZ).value)
@@ -987,7 +1015,7 @@ class ImageParamsHeuristics(object):
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
-               centreonly=False, vislist=None, spwspec=None):
+               centreonly=False, vislist=None, spwspec=None, intent: str = '', joint_intents: str = ''):
         """
         Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
         is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
@@ -1003,8 +1031,18 @@ class ImageParamsHeuristics(object):
             in the context.
         :param spwspec: ID list of spectral windows used to create image product. List or string containing comma
             separated spw IDs list. Not used in the base method.
+        :param intent: field/source intent
+        :param joint_intents: stage intents
         :return: two element list of pixel count along x and y image axes.
         """
+
+        # For the time being PIPE-1829 asks for a fixed imsize
+        # for polarization calibrators. The subsequent image
+        # analysis depends on the exact numbers. The IQUV imaging
+        # and analysis is only performed if the stage asks for
+        # polarization intent only.
+        if intent == 'POLARIZATION' and joint_intents == 'POLARIZATION':
+            return [256, 256]
 
         if vislist is None:
             vislist = self.vislist
@@ -1036,7 +1074,9 @@ class ImageParamsHeuristics(object):
         # border of 0.75 (0.825) * beam radius (radius is to
         # first null) wide
         nfields = int(np.median([len(field_ids.split(',')) for field_ids in fields]))
-        if self._mosaic and nfields <= 3:
+        is_mos_or_het = self._is_mosaic(fields) or len(self.antenna_diameters()) > 1
+
+        if is_mos_or_het and nfields <= 3:
             # PIPE-209 asks for a slightly larger size for small (2-3 field) mosaics.
             nxpix = int((1.65 * beam_radius_v + xspread) / cellx_v)
             nypix = int((1.65 * beam_radius_v + yspread) / celly_v)
@@ -1044,7 +1084,7 @@ class ImageParamsHeuristics(object):
             nxpix = int((1.5 * beam_radius_v + xspread) / cellx_v)
             nypix = int((1.5 * beam_radius_v + yspread) / celly_v)
 
-        if (not self._mosaic) and (sfpblimit is not None):
+        if (not is_mos_or_het) and (sfpblimit is not None):
             beam_fwhp = 1.12 / 1.22 * beam_radius_v
             nxpix = int(utils.round_half_up(1.1 * beam_fwhp * math.sqrt(-math.log(sfpblimit) / math.log(2.)) / cellx_v))
             nypix = int(utils.round_half_up(1.1 * beam_fwhp * math.sqrt(-math.log(sfpblimit) / math.log(2.)) / celly_v))
@@ -1178,7 +1218,10 @@ class ImageParamsHeuristics(object):
 
         return pblimit_image, pblimit_cleanmask
 
-    def deconvolver(self, specmode, spwspec):
+    def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
+        if intent == 'POLARIZATION' and stokes == 'IQUV':
+            return 'clarkstokes'
+
         if (specmode == 'cont'):
             fr_bandwidth = self.get_fractional_bandwidth(spwspec)
             if (fr_bandwidth > 0.1):
@@ -1912,6 +1955,20 @@ class ImageParamsHeuristics(object):
 
         return new_niter
 
+    def calc_percentile_baseline_length(self, percentile):
+        """Calculate percentile baseline length for the vis list used in this heuristics instance."""
+
+        min_diameter = 1.e9
+        percentileBaselineLengths = []
+        for msname in self.vislist:
+            ms_do = self.observing_run.get_ms(msname)
+            min_diameter = min(min_diameter, min([antenna.diameter for antenna in ms_do.antennas]))
+            percentileBaselineLengths.append(
+                np.percentile([float(baseline.length.to_units(measures.DistanceUnits.METRE))
+                               for baseline in ms_do.antenna_array.baselines], percentile))
+
+        return np.median(percentileBaselineLengths), min_diameter
+
     def niter_by_iteration(self, iteration, hm_masking, niter):
         """Tclean niter heuristic at each iteration."""
         return niter
@@ -1939,7 +1996,10 @@ class ImageParamsHeuristics(object):
     def nterms(self, spwspec):
         return None
 
-    def cyclefactor(self, iteration):
+    def tlimit(self, iteration, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None):
+        return 2.0
+
+    def cyclefactor(self, iteration, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None):
         return None
 
     def cycleniter(self, iteration):
@@ -2094,7 +2154,7 @@ class ImageParamsHeuristics(object):
 
         return None
 
-    def stokes(self):
+    def stokes(self, intent: str = '', joint_intents: str = '') -> str:
         return 'I'
 
     def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None, results_list=None, clean_no_mask=None):
@@ -2103,10 +2163,13 @@ class ImageParamsHeuristics(object):
     def specmode(self):
         return 'mfs'
 
+    def intent(self) -> str:
+        return 'TARGET'
+
     def datacolumn(self):
         return None
 
-    def wprojplanes(self):
+    def wprojplanes(self, gridder=None, spwspec=None):
         return None
 
     def rotatepastep(self):

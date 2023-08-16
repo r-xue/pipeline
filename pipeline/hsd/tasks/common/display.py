@@ -1,6 +1,7 @@
 """Set of base classes and utility functions for display modules."""
 import abc
 import collections
+import copy
 import datetime
 import enum
 import itertools
@@ -579,7 +580,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         """Return file name of the contamination plot."""
         return self.imagename.rstrip('/') + '.contamination.png'
 
-    def valid_lines(self) -> List[List[int]]:
+    def valid_lines(self, is_freq_chan_reversed_image: bool=False) -> List[List[int]]:
         """Return list of chnnel ranges of valid spectral lines."""
         group_desc = self.reduction_group
         ant_index = self.antennaid_list
@@ -600,9 +601,13 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
                     found = True
                     break
             if found:
-                for ll in g.channelmap_range:
+                for ll in copy.deepcopy(g.channelmap_range):
                     if ll not in line_list and ll[2] is True:
                         line_list.append(ll)
+        if is_freq_chan_reversed_image:
+            _right_edge = float(self.image.nchan - 1)
+            for ll in line_list:
+                ll[0] = _right_edge - ll[0]
         return line_list
 
     def create_channel_mask(self, channel_selection: ChannelSelection) -> str:
@@ -704,6 +709,7 @@ def invert_range_list(range_list: List[List[int]], nchan: int) -> List[List[int]
     inverted = [list(x) for x in idx.reshape(len(idx) // 2, 2)]
 
     return inverted
+
 
 class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
     """Base plotter class for single-dish calibration tasks."""
