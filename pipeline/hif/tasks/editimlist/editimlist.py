@@ -485,9 +485,11 @@ class Editimlist(basetask.StandardTaskTemplate):
                 dist = (mosaic_side_arcsec / 2.) + float(buffer_arcsec)
                 dist_arcsec = str(dist) + 'arcsec'
                 LOG.info("{k} = {v}".format(k='dist_arcsec', v=dist_arcsec))
+                # PIPE-1948: we restrict the selection field name to beginning with '0', '1', '2' (sci fields named after their coordinates), 
+                # or 'T' (e.g. the NCP field 'T32t02.NCP')
                 found_fields = th.find_fields(distance=dist_arcsec,
                                               phase_center=imlist_entry['phasecenter'],
-                                              matchregex=['^0', '^1', '^2'])
+                                              matchregex=['^0', '^1', '^2', '^T'])
                 if found_fields:
                     imlist_entry['field'] = ','.join(str(x) for x in found_fields)  # field ids, not names
 
