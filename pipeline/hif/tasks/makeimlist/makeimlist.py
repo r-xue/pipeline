@@ -831,7 +831,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 max_freq = spwid_centre_freq
                                 max_freq_spwid = spwid
                         except Exception as e:
-                            LOG.error(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                            LOG.warn(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
 
                     if min_freq_spwid == -1 or max_freq_spwid == -1:
                         LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(filtered_spwlist_local)))
