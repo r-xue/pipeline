@@ -700,6 +700,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                         for vis in vislist:
                             ms_domain_obj = inputs.context.observing_run.get_ms(vis)
                             # Get the real spw IDs for this MS
+                            # TODO: This is missing spws that got removed in hif_uvcontsub.
+                            #       Need to involve the full spwlist from above.
                             ms_science_spwids = [s.id for s in ms_domain_obj.get_spectral_windows()]
                             if field_intent[0] in [f.name for f in ms_domain_obj.fields]:
                                 try:
@@ -770,13 +772,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                                                 if not valid_data[vis][field_intent][str(observed_spwid)] and vis in observed_vis_list:
                                                     LOG.warning('Data for EB {}, field {}, spw {} is completely flagged.'.format(
                                                         os.path.basename(vis), field_intent[0], observed_spwid))
-                                                    # PIPE-1900: Counting flagged spws as expected imaging target.
-                                                    # Note that this is done without checking the available data
-                                                    # type since the code below would need an spw. Only a very
-                                                    # simple check for selfcal is done because this data type
-                                                    # would definitely not exist for a flagged spw.
-                                                    if inputs.specmode != 'cont':
-                                                        expected_num_targets += 1
                                                 # Aggregated value per vislist (replace with lookup pattern later)
                                                 if str(observed_spwid) not in valid_data[str(vislist)][field_intent]:
                                                     valid_data[str(vislist)][field_intent][str(observed_spwid)] = valid_data[vis][field_intent][str(observed_spwid)]
@@ -791,8 +786,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                     # Collapse cont spws
                     if inputs.specmode == 'cont':
                         filtered_spwlist_local = [','.join(filtered_spwlist)]
+                        # PIPE-1900: Count missing cont target.
+                        if len(filtered_spwlist) == 0:
+                            expected_num_targets += 1
                     else:
                         filtered_spwlist_local = filtered_spwlist
+                        # PIPE-1900: Counting flagged spws as expected imaging targets.
+                        expected_num_targets = expected_num_targets + len(list(map(str, observed_spwids_list))) - len(filtered_spwlist)
 
                     if filtered_spwlist_local == [] or filtered_spwlist_local == ['']:
                         LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
@@ -814,20 +814,24 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                     # Select only the lowest / highest frequency spw to get the smallest (for cell size)
                     # and largest beam (for imsize)
-                    ref_ms = inputs.context.observing_run.get_ms(vislist[0])
                     min_freq = 1e15
                     max_freq = 0.0
                     min_freq_spwid = -1
                     max_freq_spwid = -1
                     for spwid in filtered_spwlist:
-                        real_spwid = inputs.context.observing_run.virtual2real_spw_id(spwid, ref_ms)
-                        spwid_centre_freq = ref_ms.get_spectral_window(real_spwid).centre_frequency.to_units(measures.FrequencyUnits.HERTZ)
-                        if spwid_centre_freq < min_freq:
-                            min_freq = spwid_centre_freq
-                            min_freq_spwid = spwid
-                        if spwid_centre_freq > max_freq:
-                            max_freq = spwid_centre_freq
-                            max_freq_spwid = spwid
+                        try:
+                            ref_msname = self.heuristics.get_ref_msname(spwid)
+                            ref_ms = inputs.context.observing_run.get_ms(ref_msname)
+                            real_spwid = inputs.context.observing_run.virtual2real_spw_id(spwid, ref_ms)
+                            spwid_centre_freq = ref_ms.get_spectral_window(real_spwid).centre_frequency.to_units(measures.FrequencyUnits.HERTZ)
+                            if spwid_centre_freq < min_freq:
+                                min_freq = spwid_centre_freq
+                                min_freq_spwid = spwid
+                            if spwid_centre_freq > max_freq:
+                                max_freq = spwid_centre_freq
+                                max_freq_spwid = spwid
+                        except Exception as e:
+                            LOG.warn(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
 
                     if min_freq_spwid == -1 or max_freq_spwid == -1:
                         LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(filtered_spwlist_local)))
@@ -1250,7 +1254,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     filtered_vislist = [v for v in domain_filtered_vislist if valid_data[v][field_intent][str(adjusted_spwspec)]]
 
                                 # Save the filtered vislist
-                                target_heuristics.vislist = filtered_vislist
+                                if target_heuristics.vislist != filtered_vislist:
+                                    LOG.warn(f'''Modifying vis list from {target_heuristics.vislist} to {filtered_vislist}''')
+                                    target_heuristics.vislist = filtered_vislist
 
                                 # Get list of antenna IDs
                                 antenna_ids = target_heuristics.antenna_ids(inputs.intent)
