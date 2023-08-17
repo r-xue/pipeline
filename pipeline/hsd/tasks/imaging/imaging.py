@@ -21,6 +21,7 @@ from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
 from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy, rasterutil, sdtyping
@@ -1837,9 +1838,9 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
-    except Exception:
-        LOG.warning('Failed to detect gaps between raster scans. Fall back to time domain analysis. '
-                    'Result might not be correct.')
+    except Exception as e:
+        if isinstance(e, RasterScanHeuristicsFailure):
+            LOG.warning('{}'.format(e))
         try:
             dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
             se_small = [(v[0], v[-1]) for v in dtrow_list]
