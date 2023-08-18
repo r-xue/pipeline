@@ -88,8 +88,6 @@ def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, over
     results = h_importdata(vis=['uid___A002_X30a93d_X43e.ms'], dryrun=True)
     results = h_importdata(vis=['uid___A002_X30a93d_X43e.ms'])
 
-    --------- examples -----------------------------------------------------------
-
     """
 
     ##########################################################################

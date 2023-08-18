@@ -1,3 +1,5 @@
+"""Pipeline software package
+"""
 import atexit
 import http.server
 import os
