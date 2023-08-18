@@ -2,6 +2,10 @@
 
 .. automodule:: {{ fullname }}
 
+{% block modules %}
+{% if modules %}
+.. rubric:: Pipeline Modules
+
 .. autosummary::
    :toctree:
    :recursive:
