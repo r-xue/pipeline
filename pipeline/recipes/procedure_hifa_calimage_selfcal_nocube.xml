@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifa_calimage_selfcal</ProcedureTitle>
+    <ProcedureTitle>hifa_calimage_selfcal_nocube</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
@@ -326,26 +326,6 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">selfcal</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cube</Value>
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">datatype</Keyword>

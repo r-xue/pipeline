@@ -1,3 +1,5 @@
+""" Command-line interface tasks for generic interferometric 
+"""
 from .hif_analyzealpha import hif_analyzealpha
 from .hif_antpos import hif_antpos
 from .hif_applycal import hif_applycal

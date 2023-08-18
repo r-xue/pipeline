@@ -770,6 +770,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                                                 if not valid_data[vis][field_intent][str(observed_spwid)] and vis in observed_vis_list:
                                                     LOG.warning('Data for EB {}, field {}, spw {} is completely flagged.'.format(
                                                         os.path.basename(vis), field_intent[0], observed_spwid))
+                                                    # PIPE-1900: Counting flagged spws as expected imaging target.
+                                                    # Note that this is done without checking the available data
+                                                    # type since the code below would need an spw. Only a very
+                                                    # simple check for selfcal is done because this data type
+                                                    # would definitely not exist for a flagged spw.
+                                                    if inputs.specmode != 'cont':
+                                                        expected_num_targets += 1
                                                 # Aggregated value per vislist (replace with lookup pattern later)
                                                 if str(observed_spwid) not in valid_data[str(vislist)][field_intent]:
                                                     valid_data[str(vislist)][field_intent][str(observed_spwid)] = valid_data[vis][field_intent][str(observed_spwid)]
