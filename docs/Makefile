@@ -1,6 +1,11 @@
 # You can set these variables from the command line.
-SPHINXOPTS    = -v -j auto
-SPHINXBUILD   = ${casa_dir}/bin/python3 -msphinx
+
+# if you use CASA interpreter, set env:pythonbin first, e.g,
+#	export pythonbin=${casa_dir}/bin/python3
+PYTHON := $(if $(pythonbin),$(pythonbin),python3)
+
+SPHINXOPTS    = -v -j 12
+SPHINXBUILD   = ${PYTHON} -msphinx
 SPHINXPROJ    = pipeline_docs
 SOURCEDIR     = source
 BUILDDIR      = _build
@@ -30,7 +35,7 @@ apidoc:
 
 taskdocs:
 	@rm -rf ./source/_taskdocs
-	@${casa_dir}/bin/python3 source/create_docs/create_docs.py --outdir source/_taskdocs --inputdir ../
+	@${PYTHON} source/create_docs/create_docs.py --outdir source/_taskdocs --inputdir ../
 
 
 # for CI docs build (no ipynb copying)

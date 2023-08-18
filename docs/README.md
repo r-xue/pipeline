@@ -16,4 +16,6 @@
   ${casa_dir}/bin/python3 setup.py buildmytasks -i -j 10
   ```
 
-  before building docs.
+  before building docs, install the Pipeline first.
+
+pip install --use-pep517 -e .

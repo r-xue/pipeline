@@ -8,14 +8,9 @@
 #   * step-by-step to reproduce the Pipeline/CASA6 docs building environment
 #       $ mamba env create -f docs/pipeline_docs.yaml
 #       $ mamba activate pipeline_docs
-#       $ pip install -r docs/requirements_docs.txt
 #
 #   update:
-#     $ # conda update -n pipeline --all
 #     $ mamba env update -f pipeline_docs.yaml
-#
-# execute:
-#     $ xvfb-run -a python run_pipeline.py
 #
 ############################################################################
 
