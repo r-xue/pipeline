@@ -10,3 +10,16 @@ from .hsd_k2jycal import hsd_k2jycal
 from .hsd_restoredata import hsd_restoredata
 from .hsd_skycal import hsd_skycal
 from .hsd_tsysflag import hsd_tsysflag
+
+__all__ = ['hsd_applycal',
+           'hsd_atmcor',
+           'hsd_baseline',
+           'hsd_blflag',
+           'hsd_exportdata',
+           'hsd_flagdata',
+           'hsd_imaging',
+           'hsd_importdata',
+           'hsd_k2jycal',
+           'hsd_restoredata',
+           'hsd_skycal',
+           'hsd_tsysflag']

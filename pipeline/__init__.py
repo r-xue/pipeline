@@ -184,3 +184,4 @@ log_host_environment()
 # FINALLY import executeppr. Do so as late as possible in pipeline module
 # because executeppr make use of a part of pipeline module.
 from .infrastructure import executeppr
+from . import cli

@@ -21,3 +21,27 @@ from .hif_setjy import hif_setjy
 from .hif_setmodels import hif_setmodels
 from .hif_transformimagedata import hif_transformimagedata
 from .hif_uvcontsub import hif_uvcontsub
+
+__all__ = ['hif_analyzealpha',
+           'hif_antpos',
+           'hif_applycal',
+           'hif_bandpass',
+           'hif_checkproductsize',
+           'hif_correctedampflag',
+           'hif_editimlist',
+           'hif_findcont',
+           'hif_gaincal',
+           'hif_lowgainflag',
+           'hif_makecutoutimages',
+           'hif_makeimages',
+           'hif_makeimlist',
+           'hif_makermsimages',
+           'hif_mstransform',
+           'hif_polarization',
+           'hif_rawflagchans',
+           'hif_refant',
+           'hif_selfcal',
+           'hif_setjy',
+           'hif_setmodels',
+           'hif_transformimagedata',
+           'hif_uvcontsub']
