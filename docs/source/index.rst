@@ -24,7 +24,7 @@ Pipeline Documentation
 
 .. toctree::
    :maxdepth: 2
-   :captions: Notebook (from Jupyter Notebooks)
+   :caption: Notebook (from Jupyter Notebooks)
 
    test
 
@@ -34,12 +34,19 @@ Pipeline Documentation
 
    tasks
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Pipeline Tasks (New)
+
+   pipeline_tasks/pipeline_tasks.rst
+   pipeline_tasks/pipeline_new_tasks.rst
+
 .. autosummary::
    :toctree: _autosummary
    :caption: API Reference (from sphinx-autosummary)
-   :recursive:
+   :recursive: 
    
-   pipeline    
+   pipeline  
 
 
 Indices and tables
