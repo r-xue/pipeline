@@ -840,7 +840,7 @@ class PhaseStabilityHeuristics(object):
         """
 
         # Overlap in elements
-        over = np.int(np.round(over / diffTime))
+        over = int(np.round(over / diffTime))
         
         # Use nan versions of numpy functions as some elements of 'phase' might be np.nan to indicate that it was flagged
         std_hold = []
@@ -873,7 +873,7 @@ class PhaseStabilityHeuristics(object):
         :returns: array of averaged phases
         :rtype: array
         """
-        over = np.int(np.round(over / diffTime))
+        over = int(np.round(over / diffTime))
         # Make an int for using elements
         # There will be slight but minimal inaccuracies due to long timegaps in the data
         if over > 1.0:
