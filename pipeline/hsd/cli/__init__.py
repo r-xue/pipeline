@@ -1,3 +1,5 @@
+"""ALMA Single Dish Tasks
+"""
 from .hsd_applycal import hsd_applycal
 from .hsd_atmcor import hsd_atmcor
 from .hsd_baseline import hsd_baseline
