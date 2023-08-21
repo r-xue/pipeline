@@ -6,6 +6,7 @@ PYTHON := $(if $(pythonbin),$(pythonbin),python3)
 
 SPHINXOPTS    = -v -j 12
 SPHINXBUILD   = ${PYTHON} -msphinx
+#SPHINXOPTS    = -v -j auto -b coverage
 SPHINXPROJ    = pipeline_docs
 SOURCEDIR     = source
 BUILDDIR      = _build
@@ -33,9 +34,15 @@ apidoc:
 	@rm -rf ./source/_apidoc 
 	@sphinx-apidoc -o ./source/_apidoc/ ../pipeline ../pipeline/recipes/*.py ../pipeline/run*pipeline.py
 
+
+taskapidoc: 
+	@rm -rf ./source/_apidoc 
+	@sphinx-apidoc -o ./source/_apidoc/ ../pipeline ../pipeline/recipes/*.py ../pipeline/run*pipeline.py ../pipeline/domain/*.py ../pipeline/extern/*.py ../pipeline/infrastructure/*.py ../pipeline/qa/*.py ../pipeline/h*/heuristics/*.py ../pipeline/h*/tasks/*.py ../pipeline/h*/templates/*.py ../pipeline/h*/environment/*.py
+
+
 taskdocs:
-	@rm -rf ./source/_taskdocs
-	@${PYTHON} source/create_docs/create_docs.py --outdir source/_taskdocs --inputdir ../
+	@rm -rf ./source/pipeline-tasks/h*/*.rst
+	@${PYTHON} ./source/pipeline_tasks/create_docs.py 
 
 
 # for CI docs build (no ipynb copying)

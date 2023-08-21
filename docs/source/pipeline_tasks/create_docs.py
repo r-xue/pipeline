@@ -42,7 +42,8 @@ def write_out(pdict, rst_file="pipeline_new_tasks.rst"):
     task_template = Template(filename=os.path.join(script_path, 'pipeline_tasks.mako'))
 
     # Write the information from into a rst file that can be rendered by sphinx as html/pdf/etc.
-    with open(rst_file, 'w') as fd:
+    rst_file_full_path = os.path.join(script_path, rst_file)
+    with open(rst_file_full_path, 'w') as fd:
         rst_text = task_template.render(plversion=2023, pdict=pdict, task_groups=task_groups)
         fd.writelines(rst_text)
 
@@ -55,7 +56,8 @@ def write_tasks_out(pdict):
     for entry in pdict:
         for task in pdict[entry]:
             rst_file = "{}/{}_task.rst".format(entry, task.name)
-            with open(rst_file, 'w') as fd:
+            rst_file_full_path = os.path.join(script_path, rst_file)
+            with open(rst_file_full_path, 'w') as fd:
                 rst_text = task_template.render(category=entry, name=task.name, description=task.description, parameters=task.parameters, examples=task.examples)
                 fd.writelines(rst_text)
 
@@ -92,8 +94,8 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
         examples = second_split[1]
 
         return short, long, default, output, examples, parameters
-    except: 
-        print("??? FAILURE ???")
+    except Exception as e: 
+        print("FAILED to PARSE DOCSTRING. Error: {}".format(e))
         print("Failing docstring: {}".format(docstring))
         return short, long, default, output, examples, parameters
 

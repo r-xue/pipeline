@@ -38,12 +38,6 @@ Pipeline Documentation
 
 .. toctree::
    :maxdepth: 2
-   :caption: Task Docs (rst enerated from Joe's script)
-
-   tasks
-
-.. toctree::
-   :maxdepth: 2
    :caption: Pipeline Tasks (New)
 
    pipeline_tasks/pipeline_tasks.rst
