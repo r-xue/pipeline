@@ -65,7 +65,7 @@ def write_tasks_out(pdict):
 # TODO: Pull out excess whitespace
 def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
     """ Does its best to parse the docstring for each python task.
-        Example of docstring-format that this will parse: 
+        Example of docstring-format that this will parse:
         #FIXME: add
     """
     parameter_delimiter = "--------- parameter descriptions ---------------------------------------------"
@@ -82,16 +82,24 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
     try:
         beginning_half, end_half = docstring.split(parameter_delimiter)
 
+        index = 0
+
         lines = beginning_half.split("\n")
-        if (len(lines) > 1):
+        if len(lines) > 1:
             short = lines[1].split(" ---- ")
             if len(short) > 1:
-                short = short[1]
+                if short[1] != '':
+                    short = short[1]
+                    index = 2
+                else:
+                    # hifa_wvrgcal and hifa_wvrgcal flag have longer short descriptions that
+                    # extend onto the next line
+                    short = lines[2].strip() + "\n" + lines[3].strip()
+                    index = 4
 
-        long = beginning_half[2:]
-
-        # Better format long description: 
-        long_split = long.split('\n')[1:]
+        long = beginning_half
+        # Better format long description:
+        long_split = long.split('\n')[index:]
         long_split_stripped = [line.strip() for line in long_split]
         long = "\n".join(long_split_stripped).strip("\n")
 

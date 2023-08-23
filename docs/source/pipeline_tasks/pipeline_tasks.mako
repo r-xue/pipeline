@@ -13,9 +13,18 @@ ${len(pdict[category])} tasks available.
 
     * - task name
       - description
-% for task in pdict[category]: 
+% for task in pdict[category]:
     * - ${task[0]}
+% if len(task[1].split("\n")) > 1:
+      - | ${task[1].split("\n")[0].strip()}
+    % for line in task[1].split("\n")[1:]:
+      % if line:
+        | ${line.strip()}
+      % endif
+    % endfor
+% else: 
       - ${task[1]}
+% endif 
 % endfor 
 
 .. toctree::
