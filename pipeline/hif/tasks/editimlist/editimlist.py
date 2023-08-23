@@ -626,13 +626,16 @@ class Editimlist(basetask.StandardTaskTemplate):
         result.vlass_flag_stats = vlass_flag_stats
 
         for idx, spw in enumerate(imlist_entry['spw']):
+
             imlist_entry_per_spwgroup = copy.deepcopy(imlist_entry)
             imlist_entry_per_spwgroup['spw'] = spw
             imlist_entry_per_spwgroup['imagename'] = imlist_entry['imagename'] + \
                 '.spw' + spw.replace('~', '-').replace(',', '_')
             imlist_entry_per_spwgroup['reffreq'] = th.meanfreq_spwgroup(spw)
+            # flagpct within the 1de^2 box
+            imlist_entry_per_spwgroup['flagpct'] = vlass_flag_stats['flagpct_spwgroup'][idx]
+            # flagpct over the entire mosaic
             flagpct = th.flagpct_spwgroup(results_list=self.inputs.context.results, spw_selection=spw)
-
             flagpct_threshold = 1.0
 
             if flagpct is None:
@@ -705,6 +708,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         vlass_flag_stats['scan_list'] = scan_list
         vlass_flag_stats['fname_list'] = fname_list
         vlass_flag_stats['flagpct_field_spwgroup'] = n_flagged_field_spwgroup/n_total_field_spwgroup
+        vlass_flag_stats['flagpct_spwgroup'] = np.sum(n_flagged_field_spwgroup, axis=0)/np.sum(n_total_field_spwgroup, axis=0)
         vlass_flag_stats['nfield_above_flagpct'] = nfield_above_flagpct
         vlass_flag_stats['spw_reject_flagpct'] = self.inputs.spw_reject_flagpct
 
