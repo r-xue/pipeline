@@ -586,7 +586,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         try:
             if imlist_entry['field']:
                 if result.img_mode == 'VLASS-SE-CUBE':
-                    result = self._add_vlasscube_targets(result, imlist_entry, th)
+                    result = self._add_vlasscube_targets(result, imlist_entry)
                 else:
                     result.add_target(imlist_entry)
             else:
@@ -606,7 +606,7 @@ class Editimlist(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _add_vlasscube_targets(self, result, imlist_entry, th):
+    def _add_vlasscube_targets(self, result, imlist_entry):
         """Add multiple clean targtes for the VLASS-SE-CUBE mode.
         
         For the "coarse cube" mode, we perform the following operations:
@@ -620,6 +620,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         result.targets_reffreq = []
         result.targets_spw = []
         result.targets_imagename = []
+        th = imlist_entry['heuristics']
 
         vlass_flag_stats, spwgroup_reject = self._vlass_plane_rejection(imlist_entry)
         result.vlass_flag_stats = vlass_flag_stats
@@ -658,11 +659,21 @@ class Editimlist(basetask.StandardTaskTemplate):
         """Decide whether to reject a spw group based on the number of high-flagging-percentage fields."""
 
         vis_name = self.inputs.vis[-1]
+
         msobj = self.inputs.context.observing_run.get_ms(vis_name)
         job = casa_tasks.flagdata(vis=vis_name, mode='summary', fieldcnt=True)
         flag_stats = self._executor.execute(job)
 
-        fid_list = [int(id_str) for id_str in imlist_entry['field'].split(',')]
+        # PIPE-1800: for plane-rejection, we restrict the flagging stats evaluation within the
+        # 1deg^2 box based on the cutout layout.
+        mosaic_side_arcsec = 3600  # 1 degree
+        dist = (mosaic_side_arcsec / 2.)
+        dist_arcsec = str(dist) + 'arcsec'
+        # note: find_fields returns field ids (list of int), not names
+        fid_list = imlist_entry['heuristics'].find_fields(distance=dist_arcsec,
+                                                          phase_center=imlist_entry['phasecenter'],
+                                                          matchregex=['^0', '^1', '^2', '^T'])
+
         field_objs = msobj.get_fields(field_id=fid_list)
         n_spwgroup = len(imlist_entry['spw'])
         n_flagged_field_spwgroup = np.zeros((len(field_objs), n_spwgroup))
@@ -694,5 +705,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         vlass_flag_stats['scan_list'] = scan_list
         vlass_flag_stats['fname_list'] = fname_list
         vlass_flag_stats['flagpct_field_spwgroup'] = n_flagged_field_spwgroup/n_total_field_spwgroup
+        vlass_flag_stats['nfield_above_flagpct'] = nfield_above_flagpct
+        vlass_flag_stats['spw_reject_flagpct'] = self.inputs.spw_reject_flagpct
 
         return vlass_flag_stats, spwgroup_reject

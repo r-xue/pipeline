@@ -1,9 +1,8 @@
 import os
 
-import matplotlib as mpl
-import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -30,7 +29,9 @@ class VlassFlagSummary(object):
         vlass_flag_stats = self.result.vlass_flag_stats
 
         spwgroup_list = vlass_flag_stats['spwgroup_list']
+        spw_reject_flagpct = vlass_flag_stats['spw_reject_flagpct']
         scan_list = vlass_flag_stats['scan_list']
+        nfield_above_flagpct = vlass_flag_stats['nfield_above_flagpct']
         fname_list = vlass_flag_stats['fname_list']
         flagpct_field_spwgroup = vlass_flag_stats['flagpct_field_spwgroup']
 
@@ -50,19 +51,16 @@ class VlassFlagSummary(object):
 
         try:
 
-            cmap = mpl.colors.ListedColormap(['green', 'blue', 'red'])
-            norm = mpl.colors.BoundaryNorm([-1, 0.7, 0.9, 1.2], cmap.N)
-
             fig, ax = plt.subplots(figsize=(10, 10))
 
-            ax.imshow(flagpct_field_spwgroup, origin='lower', aspect='auto',
-                      cmap=cmap, norm=norm,
-                      extent=(-0.5, n_spwgroup-0.5, -0.5, n_field-0.5))
+            im = ax.imshow(flagpct_field_spwgroup*100., origin='lower', aspect='auto',
+                           extent=(-0.5, n_spwgroup-0.5, -0.5, n_field-0.5))
 
             ax.set_xticks(np.arange(n_spwgroup))
-            ax.set_xticklabels(spwgroup_list)
+            xticklabels = [f'{spwgroup}\n(n={nfield_above_flagpct[idx]})' for idx, spwgroup in enumerate(spwgroup_list)]
+            ax.set_xticklabels(xticklabels)
 
-            ax.set_xlabel('Spw Selection')
+            ax.set_xlabel(f'Spw Selection\nn_field (flagpct<{spw_reject_flagpct*100}%)')
             ax.set_ylabel('VLASS Image Row: 1st field name')
             ax.tick_params(which='minor', bottom=False, left=False)
 
@@ -73,12 +71,11 @@ class VlassFlagSummary(object):
             ax.set_yticklabels(scan_label, rotation=45, ma='left', va='center', rotation_mode="anchor")
 
             ax.grid(which='minor', axis='both', color='white', linestyle='-', linewidth=2)
-
             ax.set_title('Flagged fraction')
 
-            lg_colors = {'<70%': 'green', '70%<flagged<90%': 'blue', '>90%': 'red'}
-            lg_patch = [mpatches.Patch(color=lg_colors[lg_label], label=lg_label) for lg_label in lg_colors]
-            ax.legend(handles=lg_patch, bbox_to_anchor=(0.5, -0.1), loc='upper center', ncol=len(lg_patch))
+            cax = make_axes_locatable(ax).append_axes("right", size="5%", pad=0.05)
+            cba = plt.colorbar(im, cax=cax)
+            cba.set_label('percent flagged [%]')
 
             fig.tight_layout()
             fig.savefig(figfile, bbox_inches='tight')
