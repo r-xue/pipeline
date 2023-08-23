@@ -41,7 +41,7 @@ taskapidoc:
 
 
 taskdocs:
-	@rm -rf ./source/pipeline-tasks/h*/*.rst
+	@rm -rf ./source/pipeline_tasks/h*/*.rst
 	@${PYTHON} ./source/pipeline_tasks/create_docs.py 
 
 
@@ -54,6 +54,5 @@ docs:
 	@rm -rf casa-*.log source/casa-*.log	
 
 pdf:
-	@make apidoc
 	@rm -rf latex/*
 	@make latexpdf

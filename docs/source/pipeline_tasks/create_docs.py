@@ -36,7 +36,7 @@ pdict = {"h": [],
 
 
 def write_out(pdict, rst_file="pipeline_new_tasks.rst"):
-    """Creates rst file for the "landing page" for the tasks. 
+    """Creates reST file for the "landing page" for the tasks. 
     """
     script_path = os.path.dirname(os.path.realpath(__file__))
     task_template = Template(filename=os.path.join(script_path, 'pipeline_tasks.mako'))
@@ -49,7 +49,7 @@ def write_out(pdict, rst_file="pipeline_new_tasks.rst"):
 
 
 def write_tasks_out(pdict):
-    """Creates rst files for each task.
+    """Creates reST files for each task.
     """
     script_path = os.path.dirname(os.path.realpath(__file__))
     task_template = Template(filename=os.path.join(script_path, 'individual_task.mako'))
@@ -63,9 +63,10 @@ def write_tasks_out(pdict):
 
 
 # TODO: Pull out excess whitespace
-# TODO: Try to parse parameters?
 def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
     """ Does its best to parse the docstring for each python task.
+        Example of docstring-format that this will parse: 
+        #FIXME: add
     """
     parameter_delimiter = "--------- parameter descriptions ---------------------------------------------"
     examples_delimiter = "--------- examples -----------------------------------------------------------"
@@ -76,6 +77,7 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
     output = ""
     examples = ""
     parameters = ""
+    parameters_dict = {}
 
     try:
         beginning_half, end_half = docstring.split(parameter_delimiter)
@@ -87,20 +89,53 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
                 short = short[1]
 
         long = beginning_half[2:]
-      
+
+        # Better format long description: 
+        long_split = long.split('\n')[1:]
+        long_split_stripped = [line.strip() for line in long_split]
+        long = "\n".join(long_split_stripped).strip("\n")
+
         second_split = end_half.split(examples_delimiter)
 
         parameters = second_split[0]
-        examples = second_split[1]
+        # Better format parameters:
 
-        return short, long, default, output, examples, parameters
+        # FIXME: This is still a "rough draft" that needs updating, verifying, and formatting.
+        parms_split = parameters.split("\n")
+
+        parameters_dict = {}  # format is {'param': 'description'}
+        current_parm_desc = None
+        parameter_name = ""
+        for line in parms_split:
+            if len(line) > 4:
+                if not line[4].isspace():
+                    if current_parm_desc is not None:
+                        parameters_dict[parameter_name] = current_parm_desc
+                    parameter_name = line.split()[0]
+                    index = line.find(parameter_name)
+                    description_line_one = line[index+len(parameter_name):].strip()
+                    current_parm_desc = description_line_one
+                else:
+                    if current_parm_desc is not None:
+                        new_line = line.strip()
+                        # Don't add totally empty lines:
+                        if not new_line.isspace():
+                            current_parm_desc = current_parm_desc + " " + new_line + "\n"
+
+        examples = second_split[1]
+        # Better format examples:
+        examples = "\n".join([line.strip() for line in examples.split("\n")]).strip("\n")
+
+        print(parameters_dict)
+        return short, long, default, output, examples, parameters_dict
+    
     except Exception as e: 
         print("FAILED to PARSE DOCSTRING. Error: {}".format(e))
         print("Failing docstring: {}".format(docstring))
-        return short, long, default, output, examples, parameters
+        return short, long, default, output, examples, parameters_dict
 
 
-def create_docs(): 
+def create_docs():
     """ Walks through the pipeline and creates documentation for each pipeline task.
     """
     for name, obj in inspect.getmembers(pipeline):
@@ -112,11 +147,13 @@ def create_docs():
                             docstring = obj3.__doc__
                             short, long, default, output, examples, parameters = docstring_parse(docstring)
                             pdict[name].append(Task(name3, short, long, parameters, examples))
+
     # Write out "landing page"
     write_out(pdict)
 
     # Write individual task pages
     write_tasks_out(pdict)
+
 
 if __name__ == "__main__":
     create_docs()

@@ -153,7 +153,7 @@ latex_elements = {
     #
     'preamble': r'''
   \usepackage{hyperref}
-  \setcounter{tocdepth}{3}
+  \setcounter{tocdepth}{1}
 ''',
 
     # Latex figure (float) alignment
@@ -173,7 +173,7 @@ latex_use_modindex = True
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    ('latex', 'pipeline.tex',
+    ('pipeline_tasks/pipeline_new_tasks', 'pipeline.tex',
      'Pipeline Documentation',
      'pipeline team', 'manual'),
 ]
