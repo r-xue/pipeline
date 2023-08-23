@@ -153,6 +153,7 @@ latex_elements = {
     #
     'preamble': r'''
   \usepackage{hyperref}
+  \usepackage{longtable}
   \setcounter{tocdepth}{1}
 ''',
 

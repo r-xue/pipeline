@@ -13,6 +13,7 @@ Parameter List
 .. list-table::
     :widths: 25 50
     :header-rows: 1
+    :class: longtable
 
     * - parameter name
       - description
