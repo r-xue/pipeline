@@ -126,7 +126,6 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
         # Better format examples:
         examples = "\n".join([line.strip() for line in examples.split("\n")]).strip("\n")
 
-        print(parameters_dict)
         return short, long, default, output, examples, parameters_dict
     
     except Exception as e: 

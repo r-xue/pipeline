@@ -1,11 +1,13 @@
 ${name}
 ${"="*len(name)}
 
+% if description: 
 Task description
 -----------------
 ${description}
+% endif
 
-
+% if parameters: 
 Parameter List 
 -------------
 .. list-table::
@@ -18,10 +20,16 @@ Parameter List
     * - ${parameter.strip()}
       - | ${parameters[parameter].split("\n")[0].strip()}
     % for line in parameters[parameter].split("\n")[1:]:
+      % if line:
         | ${line.strip()}
+      % endif
     % endfor
 % endfor 
+% endif
 
+
+% if examples:
 Examples 
 --------
 ${examples}
+% endif

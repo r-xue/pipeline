@@ -11,8 +11,10 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
                 dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
                 dryrun=None, acceptresults=None):
-    """hif_selfcal ----- Determine and apply self-calibration with the science target data
+    """
+    hif_selfcal  ---- Determine and apply self-calibration with the science target data
     
+    Determine and apply self-calibration with the science target data
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -77,7 +79,8 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
     inf_EB_gaincal_combine  change gain solution combination parameters for the inf_EB solution interval. 
                             if True, the gaincal combine parameter will be set to 'scan,spw'; if False,
                             the gaincal combine parameter will be set to 'scan'.
-                            default=False                  
+                            default=False              
+    --------- examples -----------------------------------------------------------    
     """
 
     #                                                                        #
