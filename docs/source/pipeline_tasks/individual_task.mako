@@ -20,8 +20,11 @@ Parameter List
 % for parameter in parameters: 
     * - ${parameter.strip()}
       - | ${parameters[parameter].split("\n")[0].strip()}
-    % for line in parameters[parameter].split("\n")[1:]:
-      % if line:
+    % for i, line in enumerate(parameters[parameter].split("\n")[1:]):
+      % if i == 35 and line: 
+    * - 
+      - | ${line.strip()}
+      % elif line:
         | ${line.strip()}
       % endif
     % endfor
