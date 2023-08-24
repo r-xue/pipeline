@@ -108,7 +108,7 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
         parameters = second_split[0]
         # Better format parameters:
 
-        # FIXME: This is still a "rough draft" that needs updating, verifying, and formatting.
+        # FIXME: This is still a "rough draft" that needs updating and verifying
         parms_split = parameters.split("\n")
 
         parameters_dict = {}  # format is {'param': 'description'}
@@ -129,6 +129,10 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
                         # Don't add totally empty lines:
                         if not new_line.isspace():
                             current_parm_desc = current_parm_desc + " " + new_line + "\n"
+
+        # Add the information for the last parameter
+        if parameter_name != "" and current_parm_desc is not None:
+            parameters_dict[parameter_name] = current_parm_desc
 
         examples = second_split[1]
         # Better format examples:
