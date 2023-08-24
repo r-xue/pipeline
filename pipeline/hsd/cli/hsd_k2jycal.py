@@ -42,7 +42,8 @@ def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
                       #OBJECT=Uranus
                       #FLUXJY=yy,zz,aa
                       #FLUXFREQ=YY,ZZ,AA
-                      #sessionID,ObservationStartDate(UTC),ObservationEndDate(UTC),Antenna,BandCenter(MHz),BandWidth(MHz),POL,Factor
+                      #sessionID,ObservationStartDate(UTC),ObservationEndDate(UTC),
+                      Antenna,BandCenter(MHz),BandWidth(MHz),POL,Factor
                       1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM02,86243.0,500.0,I,10.0
                       1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM02,86243.0,1000.0,I,30.0
                       1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM03,86243.0,500.0,I,50.0

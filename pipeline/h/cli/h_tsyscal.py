@@ -12,9 +12,6 @@ def h_tsyscal(vis=None, caltable=None, chantol=None, dryrun=None, acceptresults=
     
     Derive the Tsys calibration for list of ALMA MeasurementSets.
     
-    Issues
-    
-    
     Output:
     
     results -- The results object for the pipeline task is returned.

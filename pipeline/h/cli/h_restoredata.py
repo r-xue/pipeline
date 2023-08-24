@@ -11,9 +11,6 @@ def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, raw
     h_restoredata ---- Restore flags and calibration state from a pipeline run
 
     
-    The h_restoredata task restores flagged and calibrated MeasurementSets from
-    archived ASDMs and pipeline flagging and calibration date products.
-    
     The h_restoredata restores flagged and calibrated data from archived ASDMs and
     pipeline flagging and calibration data products. Pending archive retrieval
     support h_restoredata assumes that the required products are available in the
@@ -22,24 +19,24 @@ def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, raw
     h_restoredata assumes that the following entities are available in the
     rawdata_dir directory:
     
-    o the ASDMs to be restored
-    o for each ASDM in the input list:
-    o a compressed tar file of the final flagversions file, e.g.,
+    - the ASDMs to be restored
+    - for each ASDM in the input list:
+    - a compressed tar file of the final flagversions file, e.g.,
     uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
-    o a text file containing the applycal instructions, e.g.,
+    - a text file containing the applycal instructions, e.g.,
     uid___A002_X30a93d_X43e.ms.calapply.txt
-    o a compressed tar file containing the caltables for the parent
+    - a compressed tar file containing the caltables for the parent
     session, e.g., uid___A001_X74_X29.session_3.caltables.tar.gz
     
     h_restore data performs the following operations:
     
-    o imports the ASDM(s)
-    o removes the default MS.flagversions directory created by the filler
-    o restores the final MS.flagversions directory stored by the pipeline
-    o restores the final set of pipeline flags to the MS
-    o restores the final calibration state of the MS
-    o restores the final calibration tables for each MS
-    o applies the calibration tables to each MS
+    - imports the ASDM(s)
+    - removes the default MS.flagversions directory created by the filler
+    - restores the final MS.flagversions directory stored by the pipeline
+    - restores the final set of pipeline flags to the MS
+    - restores the final calibration state of the MS
+    - restores the final calibration tables for each MS
+    - applies the calibration tables to each MS
     
     When importing the ASDM and converting it to a Measurement Set (MS), if the
     output MS already exists in the output directory, then the importasdm
