@@ -8,7 +8,7 @@ def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, 
                   bpsnr=None, minbpsnr=None, minbpnchan=None, hm_nantennas=None, maxfracflagged=None, dryrun=None,
                   acceptresults=None):
     """
-    hifa_bpsolint --- Compute optimal bandpass calibration solution intervals
+    hifa_bpsolint ---- Compute optimal bandpass calibration solution intervals
 
     The optimal bandpass phaseup time and frequency solution intervals required
     to achieve the required signal-to-noise ratio is estimated based on nominal
