@@ -20,29 +20,29 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
     
     hifa_spwphaseup performs two functions:
     
-    o determines the spectral window mapping or combination mode, for each phase and
+    - determines the spectral window mapping or combination mode, for each phase and
     check source, to use when solving for phase as a function of time (gfluxscale
     and timegaincal), and when applying those solutions to targets.
     
-    o computes the per spectral window phase offset table that will be applied to the
+    - computes the per spectral window phase offset table that will be applied to the
     data to remove mean phase differences between the spectral windows
     
     If hm_spwmapmode = 'auto' the spectral window map is computed for each spectralSpec
     and each source with phase or check intent, using the following algorithm:
     
-    o estimate the per spectral window (spw) per scan signal to noise ratio for each
+    - estimate the per spectral window (spw) per scan signal to noise ratio for each
     phase and check source based on catalog flux densities, Tsys, number of
     antennas, and integration scan time
     
-    o if the signal to noise of all spws is greater than 'phasesnr', then
+    - if the signal to noise of all spws is greater than 'phasesnr', then
     hm_spwmapmode='default' mapping is used in which each spw is used
     to calibrate itself.
     
-    o if the signal to noise of only some spws are greater than the value of
+    - if the signal to noise of only some spws are greater than the value of
     'phasesnr', then each lower-SNR spw is mapped to the highest SNR
     one in the same spectralSpec
     
-    o if all spws have low SNR, or SNR cannot be computed for any reason,
+    - if all spws have low SNR, or SNR cannot be computed for any reason,
     for example there is no flux information, then hm_spwmapmode='combine'
     
     
@@ -55,14 +55,14 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
     If hm_spwmapmode = 'simple', a mapping from narrow science to wider science
     spectral windows is computed using the following algorithm:
     
-    o construct a list of the bandwidths of all the science spectral windows
-    o determine the maximum bandwidth in this list maxbandwidth
-    o for each science spectral window  with bandwidth less than maxbandwidth
-    o construct a list of spectral windows with bandwidths greater than
+    - construct a list of the bandwidths of all the science spectral windows
+    - determine the maximum bandwidth in this list maxbandwidth
+    - for each science spectral window  with bandwidth less than maxbandwidth
+    - construct a list of spectral windows with bandwidths greater than
     minfracmaxbw * maxbandwidth
-    o select the spectral window in this list whose band center most closely
+    - select the spectral window in this list whose band center most closely
     matches the band center of the narrow spectral window
-    o preferentially match within the same baseband if samebb is True
+    - preferentially match within the same baseband if samebb is True
     
     If hm_spwmapmode = 'default' the spw mapping is assumed to be one to one.
     

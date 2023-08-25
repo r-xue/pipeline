@@ -20,15 +20,15 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     
     The hifv_flagdata task performs basic flagging operations on a list of measurements including:
     
-    o autocorrelation data flagging
-    o shadowed antenna data flagging
-    o scan based flagging
-    o edge channel flagging
-    o baseband edge flagging
-    o applying online flags
-    o applying a flagging template
-    o quack, shadow, and basebands
-    o Antenna not-on-source (ANOS)
+    - autocorrelation data flagging
+    - shadowed antenna data flagging
+    - scan based flagging
+    - edge channel flagging
+    - baseband edge flagging
+    - applying online flags
+    - applying a flagging template
+    - quack, shadow, and basebands
+    - Antenna not-on-source (ANOS)
 
     --------- parameter descriptions ---------------------------------------------
 

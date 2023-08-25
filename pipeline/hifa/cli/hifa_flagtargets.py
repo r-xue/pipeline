@@ -24,11 +24,8 @@ def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None
     The hifa_flagtargets task performs basic flagging operations on a list of
     measurements including:
     
-    o applying a flagging template
+    - applying a flagging template
     
-    
-    Issues
-
     --------- parameter descriptions ---------------------------------------------
 
     vis           The list of input MeasurementSets. Defaults to the list 

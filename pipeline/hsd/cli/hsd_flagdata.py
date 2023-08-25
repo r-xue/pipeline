@@ -18,11 +18,11 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     The hsd_flagdata data performs basic flagging operations on a list of
     MeasurementSets including:
 
-    o applying online flags
-    o applying a flagging template
-    o shadowed antenna data flagging
-    o scan-based flagging by intent or scan number
-    o edge channel flagging
+    - applying online flags
+    - applying a flagging template
+    - shadowed antenna data flagging
+    - scan-based flagging by intent or scan number
+    - edge channel flagging
 
     Output:
 

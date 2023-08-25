@@ -23,8 +23,6 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
 
     results -- The results object for the pipeline task is returned.
 
-    Issues
-
     --------- parameter descriptions ---------------------------------------------
 
     vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets

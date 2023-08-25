@@ -19,24 +19,24 @@ def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None,
     The hifa_flagdata data performs basic flagging operations on a list of
     measurements including:
     
-    o applying online flags
-    o applying a flagging template
-    o partial polarization flagging
-    o autocorrelation data flagging
-    o shadowed antenna data flagging
-    o scan-based flagging by intent or scan number
-    o edge channel flagging, as needed
-    o low atmospheric transmission flagging
+    - applying online flags
+    - applying a flagging template
+    - partial polarization flagging
+    - autocorrelation data flagging
+    - shadowed antenna data flagging
+    - scan-based flagging by intent or scan number
+    - edge channel flagging, as needed
+    - low atmospheric transmission flagging
     
     About the spectral window edge channel flagging:
     
-    o For TDM spectral windows, a number of edge channels are always flagged,
+    - For TDM spectral windows, a number of edge channels are always flagged,
     according to the fracspw and fracspwfps parameters (the latter operates only
     on spectral windows with 62, 124, or 248 channels). With the default setting
     of fracspw, the number of channels flagged on each edge is 2, 4, or 8 for 64,
     128, or 256-channel spectral windows, respectively.
     
-    o For most FDM spectral windows, no edge flagging is done. The only exceptions
+    - For most FDM spectral windows, no edge flagging is done. The only exceptions
     are ACA spectral windows that encroach too close to the baseband edge.
     Channels that lie closer to the baseband edge than the following values are
     flagged: 62.5, 40, 20, 10, and 5 MHz for spectral windows with bandwidths of

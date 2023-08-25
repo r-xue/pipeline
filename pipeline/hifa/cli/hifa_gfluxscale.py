@@ -17,22 +17,22 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
     
     Flux values are determined by:
     
-    o computing phase only solutions for all the science spectral windows
+    - computing phase only solutions for all the science spectral windows
     using the calibrator data selected by the 'reference' and 'refintent'
     parameters and the 'transfer' and 'transintent' parameters, the value
     of the 'phaseupsolint' parameter, and any spw combination determined
     in hifa_spwphaseup.
     
-    o computing complex amplitude only solutions for all the science spectral
+    - computing complex amplitude only solutions for all the science spectral
     windows using calibrator data selected with 'reference' and 'refintent'
     parameters and the 'transfer' and 'transintent' parameters, the value
     of the 'solint' parameter.
     
-    o transferring the flux scale from the reference calibrators to the transfer
+    - transferring the flux scale from the reference calibrators to the transfer
     calibrators using refspwmap for windows without data in the reference
     calibrators
     
-    o inserting the computed flux density values into the MODEL_DATA column
+    - inserting the computed flux density values into the MODEL_DATA column
     
     Resolved calibrators are handled via antenna selection either automatically,
     hm_resolvedcals='automatic' or manually, hm_resolvedcals='manual'. In

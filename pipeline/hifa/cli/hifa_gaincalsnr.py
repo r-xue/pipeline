@@ -13,41 +13,41 @@ def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, phasesnr=None, 
     
     The gaincal solution signal to noise is determined as follows:
     
-    o For each data set the list of source(s) to use for the per scan gaincal
+    - For each data set the list of source(s) to use for the per scan gaincal
     solution signal to noise estimation is compiled based on the values of the
     field, intent, and spw parameters.
     
-    o Source fluxes are determined for each spw and source combination.
-    o Fluxes in Jy are derived from the pipeline context.
-    o Pipeline context fluxes are derived from the online flux calibrator
+    - Source fluxes are determined for each spw and source combination.
+    - Fluxes in Jy are derived from the pipeline context.
+    - Pipeline context fluxes are derived from the online flux calibrator
     catalog, the ASDM, or the user via the flux.csv file.
-    o If no fluxes are available the task terminates.
+    - If no fluxes are available the task terminates.
     
-    o Atmospheric calibration and observations scans are determined for each spw
+    - Atmospheric calibration and observations scans are determined for each spw
     and source combination.
-    o If intent is set to 'PHASE' are there are no atmospheric scans
+    - If intent is set to 'PHASE' are there are no atmospheric scans
     associated with the 'PHASE' calibrator, 'TARGET' atmospheric scans
     will be used instead.
-    o If atmospheric scans cannot be associated with any of the spw and
+    - If atmospheric scans cannot be associated with any of the spw and
     source combinations the task terminates.
     
-    o Science spws are mapped to atmospheric spws for each science spw and
+    - Science spws are mapped to atmospheric spws for each science spw and
     source combinations.
-    o If mappings cannot be determined for any of the spws the task
+    - If mappings cannot be determined for any of the spws the task
     terminates.
     
-    o The median Tsys value for each atmospheric spw and source combination is
+    - The median Tsys value for each atmospheric spw and source combination is
     determined from the SYSCAL table. Medians are computed first by channel,
     then by antenna, in order to reduce sensitivity to deviant values.
     
-    o The science spw parameters, exposure time(s), and integration time(s) are
+    - The science spw parameters, exposure time(s), and integration time(s) are
     determined.
     
-    o The per scan sensitivity and signal to noise estimates are computed per
+    - The per scan sensitivity and signal to noise estimates are computed per
     science spectral window. Nominal Tsys and sensitivity values per receiver
     band provide by the ALMA project are used for this estimate.
     
-    o The QA score is based on how many signal to noise estimates greater than the
+    - The QA score is based on how many signal to noise estimates greater than the
     requested signal to noise ratio can be computed.
     
     
@@ -91,7 +91,7 @@ def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, phasesnr=None, 
                    example: maxfracflagged=0.80
     dryrun         Run the commands (True) or generate the commands to be run but
                    do not execute (False).
-    acceptresults  ults of the task to the pipeline context (True) or
+    acceptresults  Accept results of the task to the pipeline context (True) or
                    reject them (False).
 
     --------- examples -----------------------------------------------------------

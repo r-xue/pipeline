@@ -82,6 +82,7 @@ def hsd_skycal(calmode=None, fraction=None, noff=None,
 
 
     1. Generate caltables for all data managed by context.
+    
     default(hsd_skycal)
     hsd_skycal()
 

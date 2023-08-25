@@ -17,13 +17,13 @@ def hsd_exportdata(pprfile=None,targetimages=None, products_dir=None,
     
     The current version of the task exports the following products
     
-    o a FITS image for each selected science target source image
-    o a tar file per ASDM containing the final flags version and blparam
-    o a tar file containing the file web log
+    - a FITS image for each selected science target source image
+    - a tar file per ASDM containing the final flags version and blparam
+    - a tar file containing the file web log
     
     TBD
-    o a file containing the line feature table(frequency, width, spatial distribution)
-    o a file containing the list of identified transitions from line catalogs
+    - a file containing the line feature table(frequency, width, spatial distribution)
+    - a file containing the list of identified transitions from line catalogs
     
     Output:
     

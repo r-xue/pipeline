@@ -20,16 +20,16 @@ def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportms
     
     The current version of the task exports the following products
     
-    o an XML file containing the pipeline processing request
-    o a tar file per ASDM / MS containing the final flags version
-    o a text file per ASDM / MS containing the final calibration apply list
-    o a FITS image for each selected calibrator source image
-    o a FITS image for each selected science target source image
-    o a tar file per session containing the caltables for that session
-    o a tar file containing the file web log
-    o a text file containing the final list of CASA commands
-    o an XML "manifest" file listing the products
-    o an XML "aquareport" file listing the QA scores and sub-scores, image sensitivities, and other numerical information
+    - an XML file containing the pipeline processing request
+    - a tar file per ASDM / MS containing the final flags version
+    - a text file per ASDM / MS containing the final calibration apply list
+    - a FITS image for each selected calibrator source image
+    - a FITS image for each selected science target source image
+    - a tar file per session containing the caltables for that session
+    - a tar file containing the file web log
+    - a text file containing the final list of CASA commands
+    - an XML "manifest" file listing the products
+    - an XML "aquareport" file listing the QA scores and sub-scores, image sensitivities, and other numerical information
     
     Output
     

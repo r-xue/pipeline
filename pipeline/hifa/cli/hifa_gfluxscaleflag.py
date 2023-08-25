@@ -74,7 +74,7 @@ def hifa_gfluxscaleflag(
                    antennas within individual timestamps.
     tmantint       Threshold for maximum fraction of timestamps that are allowed to
                    contain outliers.
-    tmint          eshold for maximum fraction of "outlier timestamps" over
+    tmint          Threshold for maximum fraction of "outlier timestamps" over
                    "total timestamps" that a baseline may be a part of.
     tmbl           Initial threshold for maximum fraction of "bad baselines" over "all
                    baselines" that an antenna may be a part of.

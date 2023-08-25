@@ -29,7 +29,7 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
                   when 'auto' is provided. List input should not contain 'auto'.
 
                   Default: 'auto'
-    dtem_dh       temperature gradient [K/km], e.g. -5.6. ("" = Tool default)
+    dtem_dh       Temperature gradient [K/km], e.g. -5.6. ("" = Tool default)
 
                   The value is directly passed to initialization method for ATM model.
                   Float and string types are acceptable. Float value is interpreted as
@@ -38,7 +38,7 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
                   trigger heuristics to choose best model from the provided value.
 
                   Default: '' (tool default, -5.6K/km, is used)
-    h0            scale height for water [km], e.g. 2.0. ("" = Tool default)
+    h0            Scale height for water [km], e.g. 2.0. ("" = Tool default)
 
                   The value is directly passed to initialization method for ATM model.
                   Float and string types are acceptable. Float value is interpreted as

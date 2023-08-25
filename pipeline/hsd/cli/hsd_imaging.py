@@ -23,7 +23,7 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None,
 
     --------- parameter descriptions ---------------------------------------------
 
-    mode          imaging mode controls imaging parameters in the task.
+    mode          Imaging mode controls imaging parameters in the task.
                   Accepts either "line" (spectral line imaging) or "ampcal"
                   (image settings for amplitude calibrator)
     restfreq      Rest frequency
