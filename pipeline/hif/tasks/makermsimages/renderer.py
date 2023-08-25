@@ -14,8 +14,8 @@ class T2_4MDetailsMakermsimagesRenderer(basetemplates.T2_4MDetailsDefaultRendere
     def __init__(self, uri='makermsimages.mako',
                  description='Produce rms images',
                  always_rerender=False):
-        super(T2_4MDetailsMakermsimagesRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri,
+                                                                description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
         weblog_dir = os.path.join(context.report_dir,
@@ -28,13 +28,13 @@ class T2_4MDetailsMakermsimagesRenderer(basetemplates.T2_4MDetailsDefaultRendere
         # Get results info
         info_dict = {}
 
-        # Holds a mapping of image name to image stats. This information is used to scale the MOM8 images.
-        image_stats = {}
 
         rmsplots = {}
 
         for r in results:
             rmsimagenames = r.rmsimagenames
+            for sci_im in r.rmsimagelist:
+                info_dict[sci_im['metadata']['spw']] = sci_im['metadata'].get('keep', True)
 
             for rmsimagename in rmsimagenames:
                 image_path = rmsimagename
@@ -63,10 +63,10 @@ class T2_4MDetailsMakermsimagesRenderer(basetemplates.T2_4MDetailsDefaultRendere
             ms = os.path.basename(r.inputs['vis'])
             rmsplots[ms] = plots
 
-        ctx.update({'rmsplots'     : rmsplots,
-                    'info_dict' : info_dict,
-                    'dirname'   : weblog_dir,
-                    'plotter'   : plotter})
+        ctx.update({'rmsplots': rmsplots,
+                    'info_dict': info_dict,
+                    'dirname': weblog_dir,
+                    'plotter': plotter})
 
 
 class T2_4MDetailsMakermsimagesVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -86,7 +86,7 @@ class T2_4MDetailsMakermsimagesVlassCubeRenderer(basetemplates.T2_4MDetailsDefau
 
         # Get results info
         info_dict = {}
-        
+
         for r in results:
             rmsimagenames = r.rmsimagenames
 
