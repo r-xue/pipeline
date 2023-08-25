@@ -29,7 +29,7 @@ class VlassFlagSummary(object):
         vlass_flag_stats = self.result.vlass_flag_stats
 
         spwgroup_list = vlass_flag_stats['spwgroup_list']
-        spw_reject_flagpct = vlass_flag_stats['spw_reject_flagpct']
+        flagpct_tresh = vlass_flag_stats['flagpct_thresh']
         scan_list = vlass_flag_stats['scan_list']
         nfield_above_flagpct = vlass_flag_stats['nfield_above_flagpct']
         fname_list = vlass_flag_stats['fname_list']
@@ -57,10 +57,10 @@ class VlassFlagSummary(object):
                            extent=(-0.5, n_spwgroup-0.5, -0.5, n_field-0.5))
 
             ax.set_xticks(np.arange(n_spwgroup))
-            xticklabels = [f'{spwgroup}\n(n={nfield_above_flagpct[idx]})' for idx, spwgroup in enumerate(spwgroup_list)]
+            xticklabels = [f'{spwgroup}\n n={nfield_above_flagpct[idx]}' for idx, spwgroup in enumerate(spwgroup_list)]
             ax.set_xticklabels(xticklabels)
 
-            ax.set_xlabel(f'Spw Selection\nn_field (flagpct<{spw_reject_flagpct*100}%)')
+            ax.set_xlabel(f'Spw Selection\n n_field (flagpct>{flagpct_tresh*100}%)')
             ax.set_ylabel('VLASS Image Row: 1st field name')
             ax.tick_params(which='minor', bottom=False, left=False)
 
