@@ -7,6 +7,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.pipelineqa as pqa
 from pipeline.domain import DataType
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.infrastructure import casa_tools, exceptions, task_registry
@@ -279,6 +280,10 @@ class MakeImages(basetask.StandardTaskTemplate):
                 target_spw = result.targets[idx]['spw']
                 if target_spw in plane_keep_dict:
                     tclean_result.imaging_metadata['keep'] = plane_keep_dict[target_spw]
+                    if not tclean_result.imaging_metadata['keep']:
+                        tclean_result.qa.pool[:] = [pqa.QAScore(0.5, longmsg='VLASS-SE-CUBE plane rejection is applied.',
+                                                                shortmsg='VLASS-SE-CUBE plane rejection is applied.')]
+                self._vlass_cube_set_miscinfo(tclean_result)
 
         # attched the metadata w.r.t the plane rejection for the plane rejection plot.
         result.metadata['vlass_cube_metadata'] = {'bmajor_list': np.array(bmajor_list),
@@ -293,6 +298,19 @@ class MakeImages(basetask.StandardTaskTemplate):
                                                   'plane_keep': plane_keep}
 
         return result
+
+    def _vlass_cube_set_miscinfo(self, tclean_result):
+        """Add the VLASS cube plane rejection header keyword."""
+
+        imagename = tclean_result.image
+        reject = not tclean_result.imaging_metadata['keep']
+        imlist = utils.glob_ordered(imagename.replace('.image', '.*'))
+        for name in imlist:
+            with casa_tools.ImageReader(name) as image:
+                info = image.miscinfo()
+                info['reject'] = reject
+                LOG.info('mark the image %s as reject=%r', name, reject)
+                image.setmiscinfo(info)
 
     def _is_target_for_sensitivity(self, clean_result, heuristics):
         """
