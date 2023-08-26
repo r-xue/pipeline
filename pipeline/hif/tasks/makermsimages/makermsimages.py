@@ -39,6 +39,7 @@ class MakermsimagesResults(basetask.Results):
                     spwlist=rmsitem['spwlist'], specmode=rmsitem['specmode'],
                     sourcetype=rmsitem['sourcetype'],
                     multiterm=rmsitem['multiterm'],
+                    metadata=rmsitem['metadata'],
                     imageplot=rmsitem['imageplot'])
                 if 'TARGET' in rmsitem['sourcetype']:
                     context.rmsimlist.add_item(imageitem)

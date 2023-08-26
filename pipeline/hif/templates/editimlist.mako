@@ -9,7 +9,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <%block name="title">Edit image list</%block>
 
-%if isinstance(vlass_flagsummary_plots_html,str):
+%if vlass_flagsummary_plots_html is not None:
     <h2>VLASS Flagging Summary</h2>
     ${vlass_flagsummary_plots_html}
 %endif

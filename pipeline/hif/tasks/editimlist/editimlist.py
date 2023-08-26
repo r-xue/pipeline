@@ -615,7 +615,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         
         For the "coarse cube" mode, we perform the following operations:
             - loop over individual spw groups
-            - generate conresponsding clean targetusing a modified copy of the base CleanTarget object template
+            - generate conresponsding clean target using a modified copy of the base CleanTarget object template
             - aggregate clean targets list after the VLASS-SE-CUBE plane rejection criteria is applied.
         note: the initial 'spw' from the base CleanTarget object template, i.e., imlist_entry['spw'], is expected to be a list here.
         For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.        

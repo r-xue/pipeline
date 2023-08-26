@@ -56,6 +56,7 @@ class MakecutoutimagesResults(basetask.Results):
                     spwlist=subitem['spwlist'], specmode=subitem['specmode'],
                     sourcetype=subitem['sourcetype'],
                     multiterm=subitem['multiterm'],
+                    metadata=subitem['metadata'],
                     imageplot=subitem['imageplot'])
                 if 'TARGET' in subitem['sourcetype']:
                     context.subimlist.add_item(imageitem)
