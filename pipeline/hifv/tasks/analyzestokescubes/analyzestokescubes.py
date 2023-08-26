@@ -1,12 +1,11 @@
 import collections
+import copy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import task_registry, casa_tools
 import pipeline.infrastructure.utils as utils
-
-import copy
+import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure import casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -39,7 +38,8 @@ class AnalyzestokescubesInputs(vdp.StandardInputs):
 @task_registry.set_casa_commands_comment('Add your task description for inclusion in casa_commands.log')
 class Analyzestokescubes(basetask.StandardTaskTemplate):
     Inputs = AnalyzestokescubesInputs
-
+    is_multi_vis_task = True
+    
     def prepare(self):
 
         LOG.info("Analyzestokescubes is running.")
@@ -49,7 +49,7 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
         # initialize the stats container
         stats = collections.OrderedDict()
         roi_stats_default = {'stokesi': [], 'stokesq': [], 'stokesu': [], 'stokesv': [], 'stokesi_rms': [],
-                             'spw': [], 'rms': [], 'reffreq': [], 'beamarea': [],
+                             'spw': [], 'keep': [], 'rms': [], 'reffreq': [], 'beamarea': [],
                              'xy': None, 'world': None}
         roi_list = ['peak_stokesi', 'peak_linpolint']
 
@@ -94,6 +94,7 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
                             stokesi_rms = image.statistics(robust=False, region=rg, axes=[0, 1])['mean'][0]
 
                             stats[roi_name]['spw'].append(imageitem['spwlist'])
+                            stats[roi_name]['keep'].append(imageitem['metadata'].get('keep', True))
                             stats[roi_name]['stokesi'].append(stokesi_mean)
                             stats[roi_name]['stokesq'].append(stokesq_mean)
                             stats[roi_name]['stokesu'].append(stokesu_mean)

@@ -1,10 +1,10 @@
 import os
-import numpy as np
 
 import matplotlib.pyplot as plt
+import numpy as np
+from astropy.modeling import fitting, models
 from matplotlib.pyplot import cm
 from matplotlib.ticker import ScalarFormatter
-from astropy.modeling import models, fitting
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger

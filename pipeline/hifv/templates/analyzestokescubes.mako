@@ -25,7 +25,10 @@ def fmt_model(amplitude,alpha):
 def fmt_spw(roi_stats,idx):
     reffreq=roi_stats['reffreq'][idx]
     spwstr=roi_stats['spw'][idx]
+    keep=roi_stats['keep'][idx]
     label=spwstr+' / ' +f'{reffreq/1e9:.3f}'
+    if not keep:
+        label+=' <a style="color:red">rejected</a>'
     return label
 
 def diff2shade(pct):
