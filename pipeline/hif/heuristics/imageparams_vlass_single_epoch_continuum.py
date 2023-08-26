@@ -97,11 +97,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def nmajor(self, iteration: int) -> int:
         """Tclean nmajor parameter heuristics."""
-        if iteration == 0:
-            return None
-        else:
-            # TODO: need the empeheric default value for nmajor from PIPE-1745
-            return None
+        return None
 
     def scales(self, iteration: Union[int, None] = None) -> Union[list, None]:
         """Tclean scales parameter heuristics."""
