@@ -196,7 +196,7 @@ $(function () {
                 cell_style.append('border-bottom: '+border_line)          
             cell_style='style="{}"'.format(('; ').join(cell_style))
             cell_title=''                    
-            reject_desc=is_rejected(info_dict.get(stats_per_spw['virtspw'],False))
+            reject_desc=is_rejected(info_dict.get(stats_per_spw['virtspw'],True))
             %> 
 
             <td ${cell_style}><b>${stats_per_spw['virtspw']} ${reject_desc}</b></td>

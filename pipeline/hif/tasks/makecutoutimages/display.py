@@ -2,16 +2,15 @@ import collections
 import os
 
 import matplotlib.pyplot as plt
-
 import numpy as np
 from matplotlib.pyplot import cm
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils.compatibility as compatibility
 from pipeline.h.tasks.common.displays import sky
 from pipeline.h.tasks.common.displays.imhist import ImageHistDisplay
 from pipeline.infrastructure import casa_tools
-import pipeline.infrastructure.renderer.logger as logger
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 
 LOG = infrastructure.get_logger(__name__)
