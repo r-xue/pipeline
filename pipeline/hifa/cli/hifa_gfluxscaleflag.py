@@ -4,13 +4,9 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_gfluxscaleflag(
-        vis=None, intent=None,
-        phaseupsolint=None, solint=None, minsnr=None, refant=None,
-        antnegsig=None, antpossig=None, tmantint=None, tmint=None, tmbl=None,
-        antblnegsig=None, antblpossig=None, relaxed_factor=None, niter=None,
-        dryrun=None, acceptresults=None):
-
+def hifa_gfluxscaleflag(vis=None, intent=None, phaseupsolint=None, solint=None, minsnr=None, refant=None,
+                        antnegsig=None, antpossig=None, tmantint=None, tmint=None, tmbl=None, antblnegsig=None,
+                        antblpossig=None, relaxed_factor=None, niter=None, dryrun=None, acceptresults=None):
     """
     hifa_gfluxscaleflag ---- Flag the phase, pol, flux calibrators
 
@@ -37,75 +33,104 @@ def hifa_gfluxscaleflag(
     is the standard data flagging score, which depends on the fraction of data
     flagged.
     
-    
-    Output
-    
-    results -- The results object for the pipeline task is returned.
+    Output:
+        results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
-    vis            The list of input MeasurementSets. Defaults to the list of
+    vis
+                   The list of input MeasurementSets. Defaults to the list of
                    MeasurementSets specified in the pipeline context.
                    
-                   example: vis=['M51.ms']
-    intent         A string containing a comma delimited list of intents against
+                   Example: vis=['M51.ms']
+    intent
+                   A string containing a comma delimited list of intents against
                    which the selected fields are matched. If undefined (default), it
                    will select all data with the AMPLITUDE, PHASE, and CHECK intents,
                    except for one case: if one of the AMPLITUDE intent fields was also
                    used for BANDPASS, then this task will select only data with PHASE
                    and CHECK intents.
                    
-                   example: intent='*PHASE*'
-    phaseupsolint  The phase correction solution interval in CASA syntax.
+                   Example: intent='*PHASE*'
+    phaseupsolint
+                   The phase correction solution interval in CASA syntax.
                    
-                   example: phaseupsolint='300s'
-    solint         Time and channel solution intervals in CASA syntax.
+                   Example: phaseupsolint='300s'
+    solint
+                   Time and channel solution intervals in CASA syntax.
                    
-                   example: solint='inf,10ch', solint='inf'
-    minsnr         Solutions below this SNR are rejected.
-    refant         Reference antenna names. Defaults to the value(s) stored in the
+                   Example: solint='inf,10ch', solint='inf'
+    minsnr
+                   Solutions below this SNR are rejected.
+    refant
+                   Reference antenna names. Defaults to the value(s) stored in the
                    pipeline context. If undefined in the pipeline context defaults to
                    the CASA reference antenna naming scheme.
                    
-                   example: refant='DV01', refant='DV06,DV07'
-    antnegsig      Lower sigma threshold for identifying outliers as a result of bad
-                   antennas within individual timestamps.
-    antpossig      Upper sigma threshold for identifying outliers as a result of bad
-                   antennas within individual timestamps.
-    tmantint       Threshold for maximum fraction of timestamps that are allowed to
+                   Example: refant='DV01', refant='DV06,DV07'
+    antnegsig
+                   Lower sigma threshold for identifying outliers as a result of
+                   bad antennas within individual timestamps.
+
+                   Example: antnegsig=4.0
+    antpossig
+                   Upper sigma threshold for identifying outliers as a result of
+                   bad antennas within individual timestamps.
+
+                   Example: antpossig=4.6
+    tmantint
+                   Threshold for maximum fraction of timestamps that are allowed to
                    contain outliers.
-    tmint          Threshold for maximum fraction of "outlier timestamps" over
+
+                   Example: tmantint=0.063
+    tmint
+                   Threshold for maximum fraction of "outlier timestamps" over
                    "total timestamps" that a baseline may be a part of.
-    tmbl           Initial threshold for maximum fraction of "bad baselines" over "all
+
+                   Example: tmint=0.085
+    tmbl
+                   Initial threshold for maximum fraction of "bad baselines" over "all
                    baselines" that an antenna may be a part of.
-    antblnegsig    Lower sigma threshold for identifying outliers as a result of
+
+                   Example: tmbl=0.175
+    antblnegsig
+                   Lower sigma threshold for identifying outliers as a result of
                    "bad baselines" and/or "bad antennas" within baselines, across all
                    timestamps.
-    antblpossig    threshold for identifying outliers as a result of
+
+                   Example: antblnegsig=3.4
+    antblpossig
+                   Threshold for identifying outliers as a result of
                    "bad baselines" and/or "bad antennas" within baselines, across all
                    timestamps.
-    relaxed_factor Relaxed value to set the threshold scaling factor to under
+
+                   Example: antblpossig=3.2
+    relaxed_factor
+                   Relaxed value to set the threshold scaling factor to under
                    certain conditions (see task description).
-    niter          Maximum number of times to iterate on evaluation of flagging
+
+                   Example: relaxed_factor=2.0
+    niter
+                   Maximum number of times to iterate on evaluation of flagging
                    heuristics. If an iteration results in no new flags, then subsequent
                    iterations are skipped.
-    dryrun         Run the commands (True) or generate the commands to be run but
+
+                   Example: niter=2
+    dryrun
+                   Run the commands (True) or generate the commands to be run but
                    do not execute (False).
-    acceptresults  Add the results of the task to the pipeline context (True) or
+    acceptresults
+                   Add the results of the task to the pipeline context (True) or
                    reject them (False).
 
     --------- examples -----------------------------------------------------------
 
-    
     1. run with recommended settings to create flux scale calibration with flagging
     using recommended thresholds:
     
-    hifa_gfluxscaleflag()
-
+    >>> hifa_gfluxscaleflag()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

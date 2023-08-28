@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
                      bdfflags=None, ocorr_mode=None, asis=None, dryrun=None, acceptresults=None):
-
     """
     hifa_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run
 
@@ -20,17 +19,17 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     are available in the rawdata_dir in the format produced by the
     hifa_exportdata task.
     
-    hifa_restoredata assumes that the following entities are available in the raw
-    data directory:
+    hifa_restoredata assumes that the following entities are available in the
+    raw data directory:
     
     - the ASDMs to be restored
     - for each ASDM in the input list:
     - a compressed tar file of the final flagversions file, e.g.
-    uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
+      uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
     - a text file containing the applycal instructions, e.g.
-    uid___A002_X30a93d_X43e.ms.calapply.txt
+      uid___A002_X30a93d_X43e.ms.calapply.txt
     - a compressed tar file containing the caltables for the parent session,
-    e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
+      e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
     
     hifa_restoredata performs the following operations:
     
@@ -47,60 +46,67 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     conversion step is skipped, and instead the existing MS will be imported.
     
     Output:
-    
-    results -- The results object for the pipeline task is returned.
+        results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of raw visibility data files to be restored. 
+    vis
+                  List of raw visibility data files to be restored.
                   Assumed to be in the directory specified by rawdata_dir.
-                  example: vis=['uid___A002_X30a93d_X43e']
-    session       List of sessions one per visibility file.
+
+                  Example: vis=['uid___A002_X30a93d_X43e']
+    session
+                  List of sessions one per visibility file.
                   
-                  example: session=['session_3']
-    products_dir  Name of the data products directory to copy calibration
+                  Example: session=['session_3']
+    products_dir
+                  Name of the data products directory to copy calibration
                   products from. The parameter is effective only when 
-                  copytoraw = True.  When copytoraw = False, calibration
+                  copytoraw = True. When ``copytoraw`` = False, calibration
                   products in rawdata_dir will be used.
                   
-                  example: products_dir='myproductspath'
-    copytoraw     Copy calibration and flagging tables from products_dir to
+                  Example: products_dir='myproductspath'
+    copytoraw
+                  Copy calibration and flagging tables from products_dir to
                   rawdata_dir directory.
                   
-                  example: copytoraw=False
-    rawdata_dir   Name of the rawdata subdirectory.
+                  Example: copytoraw=False
+    rawdata_dir
+                  Name of the rawdata subdirectory.
                   
-                  example: rawdata_dir='myrawdatapath'
-    lazy          Use the lazy filler option.
+                  Example: rawdata_dir='myrawdatapath'
+    lazy
+                  Use the lazy filler option.
                   
-                  example: lazy=True
-    bdfflags      Set the BDF flags.
+                  Example: lazy=True
+    bdfflags
+                  Set the BDF flags.
                   
-                  example: bdfflags=False
-    ocorr_mode    Set ocorr_mode.
+                  Example: bdfflags=False
+    ocorr_mode
+                  Set ocorr_mode.
                   
-                  example: ocorr_mode='ca'
-    asis          Creates verbatim copies of the ASDM tables in the output MS.
-                  The value given to this option must be a list of table names separated by space characters.
+                  Example: ocorr_mode='ca'
+    asis
+                  Creates verbatim copies of the ASDM tables in the output MS.
+                  The value given to this option must be a string containing a
+                  list of table names separated by whitespace characters.
                   
-                  example: asis='Source Receiver'
-    dryrun        Run the commands (False) or generate the commands to be
+                  Example: asis='Source Receiver'
+    dryrun
+                  Run the commands (False) or generate the commands to be
                   run but do not execute (True).
-    acceptresults Add the results of the task to the pipeline context (True)
+    acceptresults
+                  Add the results of the task to the pipeline context (True)
                   or reject them (False).
 
     --------- examples -----------------------------------------------------------
 
-    
     1. Restore the pipeline results for a single ASDM in a single session:
     
-    hifa_restoredata(vis=['uid___A002_X30a93d_X43e'], session=['session_1'],
-    ocorr_mode='ca')
-
+    >>> hifa_restoredata(vis=['uid___A002_X30a93d_X43e'], session=['session_1'], ocorr_mode='ca')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

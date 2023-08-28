@@ -76,7 +76,6 @@ def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, 
       line.
 
     Output:
-
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
