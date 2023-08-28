@@ -29,11 +29,8 @@ class T2_4MDetailsMakermsimagesRenderer(basetemplates.T2_4MDetailsDefaultRendere
         rmsplots = {}
 
         result = results[0]
-        rmsimagenames = result.rmsimagenames
-        for sci_im in result.rmsimagelist:
-            info_dict[sci_im['metadata']['spw']] = sci_im['metadata'].get('keep', True)
 
-        for rmsimagename in rmsimagenames:
+        for rmsimagename in result.rmsimagenames:
             image_path = rmsimagename
             LOG.info('Getting properties of %s for the weblog.' % (image_path))
 

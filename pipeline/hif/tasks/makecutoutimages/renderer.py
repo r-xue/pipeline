@@ -35,12 +35,8 @@ class T2_4MDetailsMakecutoutimagesRenderer(basetemplates.T2_4MDetailsDefaultRend
         subplots = {}
 
         for r in results:
-            subimagenames = r.subimagenames
 
-            for sci_im in r.subimagelist:
-                info_dict[sci_im['metadata']['spw']] = sci_im['metadata'].get('keep', True)
-
-            for subimagename in subimagenames:
+            for subimagename in r.subimagenames:
                 image_path = subimagename
                 LOG.info('Getting properties of %s for the weblog.' % (image_path))
 
@@ -99,12 +95,11 @@ class T2_4MDetailsMakecutoutimagesVlassCubeRenderer(basetemplates.T2_4MDetailsDe
         rms_plots = {}
 
         result = results[0]
-        subimagenames = result.subimagenames
 
         for sci_im in result.subimagelist:
             info_dict[sci_im['metadata']['spw']] = sci_im['metadata'].get('keep', True)
 
-        for subimagename in subimagenames:
+        for subimagename in result.subimagenames:
             image_path = subimagename
             LOG.info('Getting properties of %s for the weblog.' % (image_path))
 
