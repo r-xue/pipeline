@@ -28,44 +28,38 @@ class T2_4MDetailsMakecutoutimagesRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         # Get results info
         info_dict = {}
-
-        # Holds a mapping of image name to image stats. This information is used to scale the MOM8 images.
-        image_stats = {}
-
         subplots = {}
 
-        for r in results:
+        result = results[0]
 
-            for subimagename in r.subimagenames:
-                image_path = subimagename
-                LOG.info('Getting properties of %s for the weblog.' % (image_path))
+        for subimagename in result.subimagenames:
+            image_path = subimagename
+            LOG.info('Getting properties of %s for the weblog.' % (image_path))
 
-                with casa_tools.ImageReader(image_path) as image:
-                    info = image.miscinfo()
-                    spw = info.get('virtspw', None)
-                    field = ''
-                    #if 'field' in info:
-                    #    field = '%s (%s)' % (info['field'], r.intent)
+            with casa_tools.ImageReader(image_path) as image:
+                info = image.miscinfo()
+                spw = info.get('virtspw', None)
+                field = ''
+                coordsys = image.coordsys()
+                coord_names = np.array(coordsys.names())
+                coord_refs = coordsys.referencevalue(format='s')
+                coordsys.done()
+                pol = coord_refs['string'][coord_names == 'Stokes'][0]
+                info_dict[(field, spw, pol, 'image name')] = image.name(strippath=True)
 
-                    coordsys = image.coordsys()
-                    coord_names = np.array(coordsys.names())
-                    coord_refs = coordsys.referencevalue(format='s')
-                    coordsys.done()
-                    pol = coord_refs['string'][coord_names == 'Stokes'][0]
-                    info_dict[(field, spw, pol, 'image name')] = image.name(strippath=True)
+        image_size = result.image_size
+        # Make the plots of the rms images
+        plotter = display.CutoutimagesSummary(context, result)
+        plots = plotter.plot()
+        # PIPE-631: Weblog thumbnails are sorted according 'isalpha' parameter.
+        for p in plots:
+            if ".alpha" in p.basename:
+                p.parameters['isalpha'] = 1
+            else:
+                p.parameters['isalpha'] = 0
 
-            image_size = r.image_size
-            # Make the plots of the rms images
-            plotter = display.CutoutimagesSummary(context, r)
-            plots = plotter.plot()
-            # PIPE-631: Weblog thumbnails are sorted according 'isalpha' parameter.
-            for p in plots:
-                if ".alpha" in p.basename:
-                    p.parameters['isalpha'] = 1
-                else:
-                    p.parameters['isalpha'] = 0
-            ms = os.path.basename(r.inputs['vis'])
-            subplots[ms] = plots
+        mslist_str = '<br>'.join([os.path.basename(vis) for vis in result.inputs['vis']])
+        subplots[mslist_str] = plots
 
         ctx.update({'subplots': subplots,
                     'info_dict': info_dict,
