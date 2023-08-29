@@ -18,7 +18,6 @@ from .hifa_polcal import hifa_polcal
 from .hifa_polcalflag import hifa_polcalflag
 from .hifa_renorm import hifa_renorm
 from .hifa_restoredata import hifa_restoredata
-from .hifa_session_bandpass import hifa_session_bandpass
 from .hifa_session_refant import hifa_session_refant
 from .hifa_spwphaseup import hifa_spwphaseup
 from .hifa_targetflag import hifa_targetflag
@@ -45,7 +44,6 @@ __all__ = ['hifa_antpos',
            'hifa_polcalflag',
            'hifa_renorm',
            'hifa_restoredata',
-           'hifa_session_bandpass',
            'hifa_session_refant',
            'hifa_spwphaseup',
            'hifa_targetflag',
