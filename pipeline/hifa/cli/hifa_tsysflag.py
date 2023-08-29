@@ -14,16 +14,12 @@ def hifa_tsysflag(vis=None, caltable=None,
                   metric_order=None, normalize_tsys=None, filetemplate=None,
                   dryrun=None, acceptresults=None):
     """
-    hifa_tsysflag ---- Flag deviant system temperatures for ALMA interferometry measurements. This
-    is done by running a sequence of flagging subtasks, each looking for a
-    different type of possible error.
+    hifa_tsysflag ---- Flag deviant system temperatures for ALMA interferometry measurements.
 
-    
-    Flag deviant system temperatures for ALMA interferometry measurements.
-    
-    Flag all deviant system temperature measurements in the system temperature
-    calibration table by running a sequence of flagging tests, each designed
-    to look for a different type of error.
+
+    This task flags all deviant system temperature measurements in the system
+    temperature calibration table by running a sequence of flagging tests, each
+    designed to look for a different type of possible error.
     
     If a file with manual Tsys flags is provided with the ``filetemplate``
     parameter, then these flags are applied prior to the evaluation of the
@@ -50,6 +46,7 @@ def hifa_tsysflag(vis=None, caltable=None,
        in all timestamps exceeds a threshold.
     
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
