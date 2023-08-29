@@ -46,6 +46,7 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     conversion step is skipped, and instead the existing MS will be imported.
     
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

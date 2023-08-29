@@ -50,6 +50,10 @@ def hifa_wvrgcalflag(vis=None, caltable=None, offsetstable=None, hm_toffset=None
     wvr calibration file for merging into the context and use in the
     subsequent reduction.
 
+    Output:
+
+        results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis

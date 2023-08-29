@@ -55,6 +55,7 @@ def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, phasesnr=None, 
       the requested signal-to-noise ratio can be computed.
 
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

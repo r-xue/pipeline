@@ -33,6 +33,7 @@ def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstabl
     h_export_calstate and h_import_calstate tasks.
 
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

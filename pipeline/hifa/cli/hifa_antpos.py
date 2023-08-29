@@ -40,6 +40,7 @@ def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=N
     observing system provides an antenna position determination service.
 
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

@@ -42,6 +42,10 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
     Note that the flux corrected calibration table computed internally is
     not currently used in later pipeline apply calibration steps.
 
+    Output:
+
+        results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis

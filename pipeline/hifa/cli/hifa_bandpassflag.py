@@ -28,6 +28,7 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
     or displayed.
     
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

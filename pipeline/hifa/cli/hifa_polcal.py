@@ -11,6 +11,10 @@ def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None, dryr
     Derive the instrumental polarization calibrations for ALMA using the
     polarization calibrators.
 
+    Output:
+
+        results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis

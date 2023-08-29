@@ -14,6 +14,7 @@ def hifa_session_refant(vis=None, phase_threshold=None, dryrun=None, acceptresul
     antenna (per session) that is to be used by any subsequent pipeline stages.
     
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

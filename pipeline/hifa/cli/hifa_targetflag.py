@@ -27,6 +27,10 @@ def hifa_targetflag(vis=None, dryrun=None, acceptresults=None):
     Also, to avoid confusion in mosaics and single field surveys, the amp vs. uv distance
     plots only show field IDs with new flags.
 
+    Output:
+
+        results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis

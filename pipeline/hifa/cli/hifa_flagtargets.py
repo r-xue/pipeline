@@ -15,6 +15,7 @@ def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None
     - applying a flagging template
 
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

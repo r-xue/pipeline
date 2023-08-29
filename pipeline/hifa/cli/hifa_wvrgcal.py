@@ -22,6 +22,10 @@ def hifa_wvrgcal(vis=None, caltable=None, offsetstable=None, hm_toffset=None, to
     ``accept_threshold`` then the wvr gain table is not accepted into the
     context for subsequent use.
 
+    Output:
+
+        results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis

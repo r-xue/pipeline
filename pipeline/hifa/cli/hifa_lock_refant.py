@@ -17,6 +17,10 @@ def hifa_lock_refant(vis=None, dryrun=None, acceptresults=None):
 
     The refant list can be unlocked with the hifa_unlock_refant task.
 
+    Output:
+
+        results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis

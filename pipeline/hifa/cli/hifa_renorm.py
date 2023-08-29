@@ -17,6 +17,7 @@ def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None,
     correction heuristics used in this task, please see the Pipeline User Guide.
 
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

@@ -20,6 +20,7 @@ def hifa_imageprecheck(vis=None, calcsb=None, parallel=None, dryrun=None, accept
     automatically. See the User's guide for further details.
 
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

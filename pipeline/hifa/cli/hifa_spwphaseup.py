@@ -80,6 +80,7 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
     QA score, with thresholds at ``phasesnr`` *0.75 (blue), *0.5 (yellow) and *0.33 (red).
 
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

@@ -44,6 +44,7 @@ def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None, scan=Non
       62.5 MHz on each side), and thus no warning is generated.
     
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

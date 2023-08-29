@@ -22,6 +22,7 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
     reference antennas.
     
     Output:
+
         results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------

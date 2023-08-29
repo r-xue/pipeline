@@ -12,6 +12,10 @@ def hifa_polcalflag(vis=None, dryrun=None, acceptresults=None):
     This task flags corrected visibility outliers in the polarization calibrator
     data using the hif_correctedampflag heuristics.
 
+    Output:
+
+        results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis
