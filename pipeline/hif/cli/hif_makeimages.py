@@ -84,12 +84,11 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
 
     --------- examples -----------------------------------------------------------
 
-    Compute clean results for all imaging targets defined in a previous hif_makeimlist
-    or hif_editimlist call:
+    1. Compute clean results for all imaging targets defined in a previous hif_makeimlist or hif_editimlist call:
 
     hif_makeimages()
 
-    Compute clean results overriding automatic masking choice:
+    2. Compute clean results overriding automatic masking choice:
 
     hif_makeimages(hm_masking='centralregion')
 

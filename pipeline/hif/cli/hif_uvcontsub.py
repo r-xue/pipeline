@@ -45,19 +45,19 @@ def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None, dr
 
     --------- examples -----------------------------------------------------------
 
-    Fit and subtract continuum for all science targets and spws
+    1. Fit and subtract continuum for all science targets and spws
 
     hif_uvcontsub()
 
-    Fit and subtract continuum only for a subsect of fields
+    2. Fit and subtract continuum only for a subsect of fields
 
     hif_uvcontsub(field='3C279,M82'
 
-    Fit and subtract continuum only for a subsect of spws
+    3. Fit and subtract continuum only for a subsect of spws
 
     hif_uvcontsub(spw='11,13')
 
-    Override automatic fit order choice
+    4. Override automatic fit order choice
 
     hif_uvcontsub(fitorder={'3C279': {'15': 1, '17': 2}, 'M82': {'13': 2}})
 

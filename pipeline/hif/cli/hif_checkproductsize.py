@@ -10,25 +10,25 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
     """
     hif_checkproductsize ---- Check imaging product size
 
-    
+
     Check interferometry imaging product size and try to mitigate to maximum
     allowed values. The task implements a mitigation cascade computing the largest
     cube size and tries to reduce it below a given limit by adjusting the nbins,
     hm_imsize and hm_cell parameters. If this step succeeds, it also checks the
     overall imaging product size and if necessary reduces the number of fields to
     be imaged.
-    
+
     Alternatively, if maximsize is set, the image product pixel count is
     mitigated by trying to adjust hm_cell parameter. If the pixel count is still
     greater than maximsize at hm_cell of 4ppb, then this value is kept and
     the image field is truncated around the phase center by forcing hm_imsize
     = maximsize.
-    
+
     Note that mitigation for image pixel count and for the product size currently
     are mutually exclusive, with maximsize taking precedence if set.
-    
+
     Output:
-    
+
     results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
@@ -36,7 +36,7 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
     vis            The list of input MeasurementSets. Defaults to the list of
                    MeasurementSets specified in the h_init or hif_importdata task.
                    \'\': use all MeasurementSets in the context
-                   
+
                    Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     maxcubesize    Maximum allowed cube size in gigabytes (mitigation goal)
                    -1: automatic from performance parameters
@@ -60,7 +60,13 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
 
     --------- examples -----------------------------------------------------------
 
-    
+    1. Basic call to check the product sizes using internal defaults
+
+    hif_checkproductsize()
+
+    2. Typical ALMA call
+
+    hif_checkproductsize(maxcubesize=40.0, maxcubelimit=60.0, maxproductsize=350.0)
 
 
     """

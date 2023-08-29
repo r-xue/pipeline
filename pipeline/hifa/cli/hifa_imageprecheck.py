@@ -8,7 +8,7 @@ def hifa_imageprecheck(vis=None, calcsb=None, parallel=None, dryrun=None, accept
     """
     hifa_imageprecheck ---- Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.
 
-    
+
     In this task, the representative source and the spw containing the representative
     frequency selected by the PI in the OT are used to calculate the synthesized beam
     and to make sensitivity estimates for the aggregate bandwidth and representative
@@ -18,7 +18,7 @@ def hifa_imageprecheck(vis=None, calcsb=None, parallel=None, dryrun=None, accept
     (e.g. pre-Cycle 5 data does not have this information available). The best Briggs
     robust parameter to achieve the PI's desired angular resolution is chosen
     automatically. See the User's guide for further details.
-    
+
     Output:
         results -- The results object for the pipeline task is returned.
 
@@ -28,7 +28,7 @@ def hifa_imageprecheck(vis=None, calcsb=None, parallel=None, dryrun=None, accept
                   The list of input MeasurementSets. Defaults to the list of
                   MeasurementSets specified in the h_init or hif_importdata task.
                   '': use all MeasurementSets in the context.
-                  
+
                   Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     calcsb
                   Force (re-)calculation of sensitivities and beams; defaults to

@@ -9,11 +9,11 @@ def h_tsyscal(vis=None, caltable=None, chantol=None, dryrun=None, acceptresults=
     """
     h_tsyscal ---- Derive a Tsys calibration table
 
-    
+
     Derive the Tsys calibration for list of ALMA MeasurementSets.
-    
+
     Output:
-    
+
     results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
@@ -30,6 +30,11 @@ def h_tsyscal(vis=None, caltable=None, chantol=None, dryrun=None, acceptresults=
                   reject them (False).
 
     --------- examples -----------------------------------------------------------
+
+    1. Standard call
+
+    h_tsyscal()
+
     """
 
     ##########################################################################
