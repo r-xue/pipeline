@@ -100,7 +100,7 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
         long = beginning_half
         # Better format long description:
         long_split = long.split('\n')[index:]
-        long_split_stripped = [line.strip() for line in long_split]
+        long_split_stripped = [line[4:] for line in long_split]
         long = "\n".join(long_split_stripped).strip("\n")
 
         second_split = end_half.split(examples_delimiter)
@@ -134,9 +134,9 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
         if parameter_name != "" and current_parm_desc is not None:
             parameters_dict[parameter_name] = current_parm_desc
 
-        examples = second_split[1]
+        examples = second_split[1].strip()
         # Better format examples:
-        examples = "\n".join([line.strip() for line in examples.split("\n")]).strip("\n")
+        examples = "\n".join([line[4:] for line in examples.split("\n")]).strip("\n")
 
         return short, long, default, output, examples, parameters_dict
     
@@ -146,9 +146,13 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
         return short, long, default, output, examples, parameters_dict
 
 
-def create_docs():
+def create_docs(missing_report=False):
     """ Walks through the pipeline and creates documentation for each pipeline task.
     """
+    missing_example = []
+    missing_description = []
+    missing_parameters = []
+
     for name, obj in inspect.getmembers(pipeline):
         if name in task_groups.keys():
             for name2, obj2 in inspect.getmembers(obj):
@@ -157,7 +161,30 @@ def create_docs():
                         if '__' not in name3 and name3 is not None and name3[0] == 'h':
                             docstring = obj3.__doc__
                             short, long, default, output, examples, parameters = docstring_parse(docstring)
+                            if not examples:
+                                missing_example.append(name3)
+                            if not long:
+                                missing_description.append(name3)
+                            if not parameters:
+                                missing_parameters.append(name3)
                             pdict[name].append(Task(name3, short, long, parameters, examples))
+
+    if missing_report:
+        print("The following tasks are missing examples:")
+        for name in missing_example:
+            print(name)
+        print("\n")
+
+        print("The following tasks are missing descriptons:")
+        for name in missing_description:
+            print(name)
+
+        print("\n")
+
+        print("The following tasks are missing parameters:")
+        for name in missing_parameters:
+            print(name)
+            print("\n")
 
     # Write out "landing page"
     write_out(pdict)

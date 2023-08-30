@@ -54,5 +54,6 @@ docs:
 	@rm -rf casa-*.log source/casa-*.log	
 
 pdf:
+	@make taskdocs
 	@rm -rf latex/*
 	@make latexpdf
