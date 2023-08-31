@@ -29,7 +29,6 @@ def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None,
     --------- examples -----------------------------------------------------------
 
     
-    Examples
     
     1. Basic analyzealpha task
     

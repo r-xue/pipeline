@@ -24,9 +24,7 @@ def hifv_tecmaps(vis=None, dryrun=None, acceptresults=None):
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Examples
     
     1. Basic tecmaps task
     

@@ -28,13 +28,6 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
     reference antennas.
     
     
-    Issues
-    
-    The specified minsnr parameter is currently applied to the bandpass
-    solution computation but not the 'phaseup' computation. Some noisy
-    solutions in the phaseup may not be properly rejected.
-    
-    
     Output
     
     results -- The results object for the pipeline task is returned.
@@ -109,7 +102,12 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
     hif_refant()
     hif_bandpass()
 
-
+    --------- issues -----------------------------------------------------------
+    
+    The specified minsnr parameter is currently applied to the bandpass
+    solution computation but not the 'phaseup' computation. Some noisy
+    solutions in the phaseup may not be properly rejected.
+    
     """
 
 

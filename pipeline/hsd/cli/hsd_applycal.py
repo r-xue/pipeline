@@ -68,8 +68,7 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
 
     hsd_applycal (intent='TARGET')
 
-
-    Issues
+    --------- issues -----------------------------------------------------------
 
     There is some discussion about the appropriate values of calwt. Given
     properly scaled data, the correct value should be the CASA default of True.

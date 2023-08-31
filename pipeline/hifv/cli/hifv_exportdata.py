@@ -28,20 +28,6 @@ def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportms
     - a text file containing the final list of CASA commands
     
     
-    Issues
-    
-    Support for merging the calibration state information into the pipeline
-    context / results structure and retrieving it still needs to be added.
-    
-    Support for merging the clean results into the pipeline context / results
-    structure and retrieving it still needs to be added.
-    
-    Support for creating the final pipeline results entity still needs to
-    be added.
-    
-    Session information is not currently handled by the pipeline context.
-    By default all ASDMs are combined into one session.
-    
     Output:
     
     results -- The results object for the pipeline task is returned.
@@ -99,7 +85,20 @@ def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportms
     !mkdir ../products
     hifv_exportdata (products_dir='../products', calintents='*PHASE*')
 
-
+    --------- issues -----------------------------------------------------------
+    
+    Support for merging the calibration state information into the pipeline
+    context / results structure and retrieving it still needs to be added.
+    
+    Support for merging the clean results into the pipeline context / results
+    structure and retrieving it still needs to be added.
+    
+    Support for creating the final pipeline results entity still needs to
+    be added.
+    
+    Session information is not currently handled by the pipeline context.
+    By default all ASDMs are combined into one session.
+    
     """
 
 

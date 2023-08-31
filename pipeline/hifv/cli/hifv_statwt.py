@@ -12,6 +12,11 @@ def hifv_statwt(vis=None, datacolumn=None, overwrite_modelcol=None,
 
     Compute statistical weights and write them to measurement set
 
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+    
     --------- parameter descriptions ---------------------------------------------
 
     vis                List of visibility data files. These may be ASDMs, tar files of ASDMs,
@@ -32,14 +37,7 @@ def hifv_statwt(vis=None, datacolumn=None, overwrite_modelcol=None,
                        reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Statistical weighting of the visibilities:
     

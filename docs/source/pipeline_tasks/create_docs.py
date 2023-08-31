@@ -70,6 +70,7 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
     """
     parameter_delimiter = "--------- parameter descriptions ---------------------------------------------"
     examples_delimiter = "--------- examples -----------------------------------------------------------"
+    issues_delimiter = "--------- issues -----------------------------------------------------------"
 
     short = ""
     long = ""
@@ -134,8 +135,12 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
         if parameter_name != "" and current_parm_desc is not None:
             parameters_dict[parameter_name] = current_parm_desc
 
-        examples = second_split[1].strip()
-        # Better format examples:
+        examples = second_split[1].strip("\n")
+
+        if issues_delimiter in examples:
+            temp_split = examples.split(issues_delimiter)
+            examples = temp_split[0]
+
         examples = "\n".join([line[4:] for line in examples.split("\n")]).strip("\n")
 
         return short, long, default, output, examples, parameters_dict

@@ -35,11 +35,6 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
     visibilities for imaging.
     
     
-    Issues
-    
-    The hm_antpos 'online' option will be implemented when the observing system
-    provides an antenna position determination service.
-    
     Output
     
     results -- The results object for the pipeline task is returned.
@@ -83,7 +78,11 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
     
     hif_antpos(hm_antpos='file', antposfile='myantposfile.csv')
 
-
+    --------- issues -----------------------------------------------------------
+    
+    The hm_antpos 'online' option will be implemented when the observing system
+    provides an antenna position determination service.
+    
     """
 
 

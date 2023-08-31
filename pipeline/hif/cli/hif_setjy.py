@@ -16,11 +16,6 @@ def hif_setjy(vis=None, field=None, intent=None, spw=None, model=None,
     Fills the model column with the model visibilities.
     
     
-    Issues
-    
-    Support for the setjy spix parameter needs to be added.
-    
-    
     Output
     
     results -- The results object for the pipeline task is returned.
@@ -94,6 +89,9 @@ def hif_setjy(vis=None, field=None, intent=None, spw=None, model=None,
     
     hif_setjy()
 
+    --------- issues -----------------------------------------------------------
+    
+    Support for the setjy spix parameter needs to be added.
 
     """
 

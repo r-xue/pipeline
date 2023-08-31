@@ -14,6 +14,12 @@ def hifv_solint(vis=None, dryrun=None, acceptresults=None, limit_short_solint=No
     The hifv_solint task determines different solution intervals. Note that the short solint value is switched to 'int' when
     the minimum solution interval corresponds to one integration.
 
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+    
+    
     --------- parameter descriptions ---------------------------------------------
 
     vis                List of visibility data files. These may be ASDMs, tar files of ASDMs,
@@ -31,14 +37,7 @@ def hifv_solint(vis=None, dryrun=None, acceptresults=None, limit_short_solint=No
                        Example:  refantignore='ea02,ea03'
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Determines different solution intervals:
     

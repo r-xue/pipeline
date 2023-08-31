@@ -8,7 +8,12 @@ def hifv_testBPdcals(vis=None, dryrun=None, acceptresults=None, weakbp=None, ref
 
     """
     hifv_testBPdcals ---- Runs initial delay and bandpass calibration to setup for RFI flagging
-
+    
+    Runs initial delay and bandpass calibration to setup for RFI flagging
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
     --------- parameter descriptions ---------------------------------------------
 
     vis                  List of visibility data files. These may be ASDMs, tar files of ASDMs,
@@ -25,15 +30,7 @@ def hifv_testBPdcals(vis=None, dryrun=None, acceptresults=None, weakbp=None, ref
     doflagundernspwlimit If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.
 
     --------- examples -----------------------------------------------------------
-
     
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Initial delay calibration to set up heuristic flagging.
     

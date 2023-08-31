@@ -59,7 +59,6 @@ def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, over
     --------- examples -----------------------------------------------------------
 
     
-    Examples
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context"
     

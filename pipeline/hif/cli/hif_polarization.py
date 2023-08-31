@@ -8,15 +8,7 @@ def hif_polarization(vis=None, dryrun=None, acceptresults=None):
 
     """
     hif_polarization ---- Base polarization task
-
-    --------- parameter descriptions ---------------------------------------------
-
-    vis           List of input visibility data
-    dryrun        Run the task (False) or display task command (True)
-    acceptresults Add the results into the pipeline context
-
-    --------- examples -----------------------------------------------------------
-
+    
     
     The hif_polarization task
     
@@ -40,8 +32,14 @@ def hif_polarization(vis=None, dryrun=None, acceptresults=None):
     
     results -- The results object for the pipeline task is returned.
     
+    --------- parameter descriptions ---------------------------------------------
+
+    vis           List of input visibility data
+    dryrun        Run the task (False) or display task command (True)
+    acceptresults Add the results into the pipeline context
+
+    --------- examples -----------------------------------------------------------
     
-    Examples
     
     1. Basic polarization task
     

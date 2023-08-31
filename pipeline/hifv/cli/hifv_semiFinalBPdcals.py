@@ -9,6 +9,12 @@ def hifv_semiFinalBPdcals(vis=None, dryrun=None, acceptresults=None, weakbp=None
     """
     hifv_semiFinalBPdcals ---- Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging
 
+    Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging
+
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
@@ -23,14 +29,7 @@ def hifv_semiFinalBPdcals(vis=None, dryrun=None, acceptresults=None, weakbp=None
     refantignore  String list of antennas to ignore
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Heuristic flagging
     

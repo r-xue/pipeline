@@ -8,15 +8,6 @@ def hifv_fixpointing(vis=None, dryrun=None, acceptresults=None):
 
     """
     hifv_fixpointing ---- Base fixpointing task
-
-    --------- parameter descriptions ---------------------------------------------
-
-    vis           List of input visibility data
-    dryrun        Run the task (False) or display task command (True)
-    acceptresults Add the results into the pipeline context
-
-    --------- examples -----------------------------------------------------------
-
     
     The hifv_fixpointing task
     
@@ -39,9 +30,15 @@ def hifv_fixpointing(vis=None, dryrun=None, acceptresults=None):
     Output:
     
     results -- The results object for the pipeline task is returned.
+
+    --------- parameter descriptions ---------------------------------------------
+
+    vis           List of input visibility data
+    dryrun        Run the task (False) or display task command (True)
+    acceptresults Add the results into the pipeline context
+
+    --------- examples -----------------------------------------------------------
     
-    
-    Examples
     
     1. Basic fixpointing task
     

@@ -9,6 +9,12 @@ def hifv_flagcal(vis=None, caltable=None, clipminmax=None, dryrun=None, acceptre
     """
     hifv_flagcal ---- Flagcal task
 
+    Flagcal task
+
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of input visibility data
@@ -20,14 +26,7 @@ def hifv_flagcal(vis=None, caltable=None, clipminmax=None, dryrun=None, acceptre
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Flag existing caltable
     

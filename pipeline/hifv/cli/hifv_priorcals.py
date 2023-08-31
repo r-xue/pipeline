@@ -9,7 +9,12 @@ def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, swpo
 
     """
     hifv_priorcals ---- Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.
+    
+    Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.
 
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
     --------- parameter descriptions ---------------------------------------------
 
     vis                  List of visibility data files. These may be ASDMs, tar files of ASDMs,
@@ -25,15 +30,7 @@ def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, swpo
                          reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Run gaincurves, opacities, requantizer gains and antenna position corrections.
     

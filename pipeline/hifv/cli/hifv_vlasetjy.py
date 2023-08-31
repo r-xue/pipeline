@@ -10,6 +10,15 @@ def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffi
     """
     hifv_vlasetjy ---- Sets flux density scale and fills calibrator model to measurement set
 
+    The hifv_vlasetjy task does an initial run of setjy on the vis
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+    
+    standard -- Flux density standard
+    default: ''
+
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
@@ -32,19 +41,7 @@ def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffi
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    The hifv_vlasetjy task does an initial run of setjy on the vis
-    
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    standard -- Flux density standard
-    default: ''
-    
-    Examples
     
     1. Initial run of setjy:
     

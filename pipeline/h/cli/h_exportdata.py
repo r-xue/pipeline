@@ -27,21 +27,6 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
     - a tar file containing the file web log
     - a text file containing the final list of CASA commands
     
-    
-    Issues
-    
-    Support for merging the calibration state information into the pipeline
-    context / results structure and retrieving it still needs to be added.
-    
-    Support for merging the clean results into the pipeline context / results
-    structure and retrieving it still needs to be added.
-    
-    Support for creating the final pipeline results entity still needs to
-    be added.
-    
-    Session information is not currently handled by the pipeline context.
-    By default all ASDMs are combined into one session.
-    
     Returns
     
     The results object for the pipeline task is returned.
@@ -79,7 +64,6 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
     --------- examples -----------------------------------------------------------
 
     
-    Examples
     
     1. Export the pipeline results for a single session to the data products
     directory
@@ -93,7 +77,20 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
     !mkdir ../products
     hif_exportdata (products_dir='../products', calintents='*PHASE*')
 
+    --------- issues -----------------------------------------------------------
 
+    Support for merging the calibration state information into the pipeline
+    context / results structure and retrieving it still needs to be added.
+    
+    Support for merging the clean results into the pipeline context / results
+    structure and retrieving it still needs to be added.
+    
+    Support for creating the final pipeline results entity still needs to
+    be added.
+    
+    Session information is not currently handled by the pipeline context.
+    By default all ASDMs are combined into one session.
+    
     """
 
     ##########################################################################

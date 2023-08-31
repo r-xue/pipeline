@@ -8,7 +8,13 @@ def hifv_rqcal(vis=None, caltable=None, dryrun=None, acceptresults=None):
 
     """
     hifv_rqcal ---- Runs gencal in rq mode
+    
+    Runs gencal in rq mode
 
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+    
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of input visibility data
@@ -19,14 +25,7 @@ def hifv_rqcal(vis=None, caltable=None, dryrun=None, acceptresults=None):
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     

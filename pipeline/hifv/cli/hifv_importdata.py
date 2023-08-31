@@ -12,6 +12,10 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
 
     The hifv_importdata task loads the specified visibility data into the pipeline
     context unpacking and / or converting it as necessary.
+        
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -71,14 +75,7 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     

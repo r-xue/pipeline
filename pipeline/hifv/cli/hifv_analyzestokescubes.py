@@ -10,17 +10,6 @@ def hifv_analyzestokescubes(vis=None, dryrun=None, acceptresults=None):
     hifv_analyzestokescubes ---- Characterize stokes IQUV flux densities as a function of frequency for VLASS coarse cube images
 
     Characterize stokes IQUV flux densities as a function of frequency for VLASS coarse cube images
-
-    --------- parameter descriptions ---------------------------------------------
-
-    vis           List of input visibility data
-    dryrun        Run the task (False) or display task command (True)
-    acceptresults Add the results into the pipeline context
-
-    --------- examples -----------------------------------------------------------
-
-    
-    The hifv_analyzestokescubes task
     
     Keyword arguments:
     
@@ -41,9 +30,15 @@ def hifv_analyzestokescubes(vis=None, dryrun=None, acceptresults=None):
     Output:
     
     results -- The results object for the pipeline task is returned.
+
+    --------- parameter descriptions ---------------------------------------------
+
+    vis           List of input visibility data
+    dryrun        Run the task (False) or display task command (True)
+    acceptresults Add the results into the pipeline context
+
+    --------- examples -----------------------------------------------------------
     
-    
-    Examples
     
     1. Basic analyzestokescubes task
     

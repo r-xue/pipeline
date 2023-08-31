@@ -10,6 +10,10 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_model
     """
     hifv_checkflag ---- Run RFI flagging using flagdata in various modes
 
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis                List of visibility data files. These may be ASDMs, tar files of ASDMs,
@@ -53,15 +57,7 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_model
                        reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Run RFLAG with associated heuristics in the VLA CASA pipeline.
     

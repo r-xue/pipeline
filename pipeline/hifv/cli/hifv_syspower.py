@@ -10,6 +10,12 @@ def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, apply=None, 
     """
     hifv_syspower ---- Determine amount of gain compression affecting VLA data below Ku-band
 
+    Determine amount of gain compression affecting VLA data below Ku-band
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+    
     --------- parameter descriptions ---------------------------------------------
 
     vis              List of input visibility data
@@ -28,14 +34,7 @@ def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, apply=None, 
                      reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Basic syspower task
     

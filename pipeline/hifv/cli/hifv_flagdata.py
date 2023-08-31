@@ -29,7 +29,11 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     - applying a flagging template
     - quack, shadow, and basebands
     - Antenna not-on-source (ANOS)
-
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+    
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
@@ -66,13 +70,7 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    Examples
     
     1. Do basic flagging on a MeasurementSet
     

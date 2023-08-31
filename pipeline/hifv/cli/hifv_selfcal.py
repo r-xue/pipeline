@@ -41,9 +41,7 @@ def hifv_selfcal(vis=None, dryrun=None, acceptresults=None, refantignore=None,
     overwrite_modelcol Always write the model column, even if it already exists
 
     --------- examples -----------------------------------------------------------
-
     
-    Examples
     
     1. Basic selfcal task
     

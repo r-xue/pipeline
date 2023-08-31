@@ -20,7 +20,6 @@ def h_import_calstate(filename):
     --------- examples -----------------------------------------------------------
 
     
-    Example
     
     1. Import a calibration state from disk.
     

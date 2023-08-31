@@ -8,6 +8,12 @@ def hifv_targetflag(vis=None, dryrun=None, acceptresults=None, intents=None):
 
     """
     hifv_targetflag ---- Targetflag
+    
+    Targetflag
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -22,14 +28,7 @@ def hifv_targetflag(vis=None, dryrun=None, acceptresults=None, intents=None):
     intents       List of intents of scans to be flagged
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Run rflag on both the science targets and calibrators:
     

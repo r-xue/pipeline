@@ -21,14 +21,17 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     data directory
     
     - the ASDMs to be restored
-    - for each ASDM in the input list
-    - a compressed tar file of the final flagversions file, e.g.
-    uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
-    - a text file containing the applycal instructions, e.g.
-    uid___A002_X30a93d_X43e.ms.calapply.txt
-    - a compressed tar file containing the caltables for the parent session,
-    e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
-    
+    - for each ASDM in the input list:
+
+        - a compressed tar file of the final flagversions file, e.g.
+          uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
+          
+        - a text file containing the applycal instructions, e.g.
+          uid___A002_X30a93d_X43e.ms.calapply.txt
+          
+        - a compressed tar file containing the caltables for the parent session,
+          e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
+          
     hifv_restoredata performs the following operations
     
     - imports the ASDM(s))
@@ -72,9 +75,7 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Examples
     
     1. Restore the pipeline results for a single ASDM in a single session
     

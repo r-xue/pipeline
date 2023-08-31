@@ -12,6 +12,10 @@ def hifv_fluxboot(vis=None, caltable=None, fitorder=None, dryrun=None, acceptres
 
     Determine flux density bootstrapping for gain calibrators relative to flux calibrator.
 
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
@@ -33,14 +37,7 @@ def hifv_fluxboot(vis=None, caltable=None, fitorder=None, dryrun=None, acceptres
                   Example:  refantignore='ea02,ea03'
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. VLA CASA pipeline flux density bootstrapping.
     

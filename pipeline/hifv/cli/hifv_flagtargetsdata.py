@@ -11,26 +11,6 @@ def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=
     hifv_flagtargetsdata ---- Apply a flagtemplate to target data prior to running imaging pipeline tasks
 
     Apply a flagtemplate to target data prior to running imaging pipeline tasks
-
-    --------- parameter descriptions ---------------------------------------------
-
-    vis           The list of input MeasurementSets. Defaults to the list
-                  of MeasurementSets defined in the pipeline context.
-    template      Apply flagging templates.
-    filetemplate  The name of a text file that contains the flagging
-                  template for issues with the science target data etc.
-                  If the template flags files is undefined a name of the
-                  form 'msname_flagtargetstemplate.txt' is assumed.
-    flagbackup    Back up any pre-existing flags.
-    dryrun        Run the commands (False) or generate the commands to be
-                  run but do not execute (True).
-    acceptresults Add the results of the task to the pipeline context (True)
-                  or reject them (False).
-
-    --------- examples -----------------------------------------------------------
-
-    
-    The hifv_flagtargetsdata task
     
     Keyword arguments:
     
@@ -51,9 +31,24 @@ def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=
     Output:
     
     results -- The results object for the pipeline task is returned.
+
+    --------- parameter descriptions ---------------------------------------------
+
+    vis           The list of input MeasurementSets. Defaults to the list
+                  of MeasurementSets defined in the pipeline context.
+    template      Apply flagging templates.
+    filetemplate  The name of a text file that contains the flagging
+                  template for issues with the science target data etc.
+                  If the template flags files is undefined a name of the
+                  form 'msname_flagtargetstemplate.txt' is assumed.
+    flagbackup    Back up any pre-existing flags.
+    dryrun        Run the commands (False) or generate the commands to be
+                  run but do not execute (True).
+    acceptresults Add the results of the task to the pipeline context (True)
+                  or reject them (False).
+
+    --------- examples -----------------------------------------------------------
     
-    
-    Examples
     
     1. Basic flagtargetsdata task
     

@@ -11,6 +11,13 @@ def hifv_hanning(vis=None, dryrun=None, acceptresults=None):
 
     The hifv_hanning task will hanning smooth a VLA dataset
 
+    
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+    
+    
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
@@ -23,15 +30,7 @@ def hifv_hanning(vis=None, dryrun=None, acceptresults=None):
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Run the task to execute hanning smoothing on a VLA CASA pipeline loaded MeasurementSet.
     

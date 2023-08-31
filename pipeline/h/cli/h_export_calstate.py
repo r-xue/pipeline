@@ -20,11 +20,6 @@ def h_export_calstate(filename=None, state=None):
     call) or the applied calibration state (calibrations that were previously
     applied to the MeasurementSet using hif_applycal). The default is to export
     the active calibration state.
-    
-    Issues
-    
-    If run several times in one pipeline session does the automatic export
-    file naming scheme, overwrite previous versions?
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -34,7 +29,6 @@ def h_export_calstate(filename=None, state=None):
     --------- examples -----------------------------------------------------------
 
     
-    Example
     
     1. Save the calibration state.
     
@@ -48,6 +42,10 @@ def h_export_calstate(filename=None, state=None):
     
     h_export_calstate(filename='applied.calstate', state='applied')
 
+    --------- issues -----------------------------------------------------------
+        
+    If run several times in one pipeline session does the automatic export
+    file naming scheme, overwrite previous versions?
 
     """
 
