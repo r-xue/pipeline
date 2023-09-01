@@ -70,7 +70,7 @@ class ALMARestoreData(restoredata.RestoreData):
 
         # Determine whether any caltable-to-be-applied was created by
         # hifa_polcal.
-        found = any('hifa_polcal' in calfrom.gaintable for _, calfroms in calstate.merged().items()
+        found = any('.hifa_polcal.' in calfrom.gaintable for _, calfroms in calstate.merged().items()
                     for calfrom in calfroms)
 
         return found
