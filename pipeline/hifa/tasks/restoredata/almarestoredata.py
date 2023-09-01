@@ -48,7 +48,7 @@ class ALMARestoreData(restoredata.RestoreData):
         try:
             hifa_polcal_found = self._check_for_hifa_polcal_tables(container)
             if hifa_polcal_found:
-                LOG.info("Found hifa_polcal produced caltables to be applied: will call applycal with parang=True.")
+                LOG.info("Found hifa_polcal produced caltable(s) to be applied: will call applycal with parang=True.")
                 container.parang = True
         except:
             LOG.info("Unable to determine if any hifa_polcal produced caltable(s) are to be applied; will not modify"
@@ -58,19 +58,24 @@ class ALMARestoreData(restoredata.RestoreData):
         applycal_task = applycal.SerialApplycal(container)
         return self._executor.execute(applycal_task, merge=True)
 
-    def _check_for_hifa_polcal_tables(self, inputs):
+    def _check_for_hifa_polcal_tables(self, inputs_container):
         """
         Utility method to determine whether a hifa_polcal produced caltable
         is present in the context callibrary.
         """
-        # Get the target data selection for this task as a CalTo object and
-        # retrieve corresponding CalState.
-        calto = callibrary.get_calto_from_inputs(inputs)
-        calstate = self.inputs.context.callibrary.get_calstate(calto)
+        # Perform check for each set of inputs (i.e. per MS).
+        hifa_polcal_found = False
+        for inputs in inputs_container:
+            # Get the target data selection for this task as a CalTo object and
+            # retrieve corresponding CalState.
+            calto = callibrary.get_calto_from_inputs(inputs)
+            calstate = self.inputs.context.callibrary.get_calstate(calto)
 
-        # Determine whether any caltable-to-be-applied was created by
-        # hifa_polcal.
-        found = any('.hifa_polcal.' in calfrom.gaintable for _, calfroms in calstate.merged().items()
-                    for calfrom in calfroms)
+            # Determine whether any caltable-to-be-applied was created by
+            # hifa_polcal.
+            if any('.hifa_polcal.' in calfrom.gaintable for _, calfroms in calstate.merged().items()
+                   for calfrom in calfroms):
+                hifa_polcal_found = True
+                break
 
-        return found
+        return hifa_polcal_found
