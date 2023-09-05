@@ -53,7 +53,7 @@ def hifv_vlassmasking(vis=None, vlass_ql_database=None, maskingmode=None, catalo
     
     1. Basic vlassmasking task
     
-    hifv_vlassmasking()
+    >>> hifv_vlassmasking()
 
 
     """

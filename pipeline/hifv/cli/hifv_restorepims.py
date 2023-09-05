@@ -44,7 +44,7 @@ def hifv_restorepims(vis=None, reimaging_resources=None, dryrun=None, acceptresu
     
     1. Basic restorepims task
     
-    hifv_restorepims()
+    >>> hifv_restorepims()
 
 
     """

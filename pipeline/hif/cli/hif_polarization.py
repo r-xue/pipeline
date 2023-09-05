@@ -43,7 +43,7 @@ def hif_polarization(vis=None, dryrun=None, acceptresults=None):
     
     1. Basic polarization task
     
-    hif_polarization()
+    >>> hif_polarization()
 
 
     """

@@ -32,15 +32,15 @@ def h_export_calstate(filename=None, state=None):
     
     1. Save the calibration state.
     
-    h_export_calstate()
+    >>> h_export_calstate()
     
     2. Save the active calibration state with a custom filename
     
-    h_export_calstate(filename='afterbandpass.calstate')
+    >>> h_export_calstate(filename='afterbandpass.calstate')
     
     3. Save the applied calibration state with a custom filename
     
-    h_export_calstate(filename='applied.calstate', state='applied')
+    >>> h_export_calstate(filename='applied.calstate', state='applied')
 
     --------- issues -----------------------------------------------------------
         

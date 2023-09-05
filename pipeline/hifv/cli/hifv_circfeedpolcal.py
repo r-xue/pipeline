@@ -38,7 +38,7 @@ def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_
     
     1. Basic circfeedpolcal task
     
-    hifv_circfeedpolcal()
+    >>> hifv_circfeedpolcal()
 
 
     """

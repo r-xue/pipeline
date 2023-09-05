@@ -34,7 +34,7 @@ def hifv_hanning(vis=None, dryrun=None, acceptresults=None):
     
     1. Run the task to execute hanning smoothing on a VLA CASA pipeline loaded MeasurementSet.
     
-    hifv_hanning()
+    >>> hifv_hanning()
 
 
     """

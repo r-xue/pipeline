@@ -33,7 +33,7 @@ def hifv_semiFinalBPdcals(vis=None, dryrun=None, acceptresults=None, weakbp=None
     
     1. Heuristic flagging
     
-    hifv_semiFinalBPdcals()
+    >>> hifv_semiFinalBPdcals()
 
 
     """

@@ -115,7 +115,7 @@ def hsdn_restoredata(vis=None, caltable=None, reffile=None,
     
     1. Restore the pipeline results for a single ASDM in a single session
     
-    hsdn_restoredata (vis=['mg2-20181016165248-190320.ms'], reffile='nroscalefactor.csv')
+    >>> hsdn_restoredata (vis=['mg2-20181016165248-190320.ms'], reffile='nroscalefactor.csv')
 
 
     """

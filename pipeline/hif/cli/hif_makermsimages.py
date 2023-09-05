@@ -32,7 +32,7 @@ def hif_makermsimages(vis=None, dryrun=None, acceptresults=None):
     
     1. Basic makermsimages task
     
-    hif_makermsimages()
+    >>> hif_makermsimages()
 
 
     """

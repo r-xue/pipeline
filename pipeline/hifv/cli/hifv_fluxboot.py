@@ -41,7 +41,7 @@ def hifv_fluxboot(vis=None, caltable=None, fitorder=None, dryrun=None, acceptres
     
     1. VLA CASA pipeline flux density bootstrapping.
     
-    hifv_fluxboot()
+    >>> hifv_fluxboot()
 
 
     """

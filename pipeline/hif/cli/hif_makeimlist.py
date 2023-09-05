@@ -158,17 +158,17 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
     1. Make a list of science target images to be cleaned, one image per science
     spw.
 
-    hif_makeimlist()
+    >>> hif_makeimlist()
 
     2. Make a list of PHASE and BANDPASS calibrator targets to be imaged,
     one image per science spw.
 
-    hif_makeimlist(intent='PHASE,BANDPASS')
+    >>> hif_makeimlist(intent='PHASE,BANDPASS')
 
     3. Make a list of PHASE calibrator images observed in spw 1, images limited to
     50 pixels on a side.
 
-    hif_makeimlist(intent='PHASE',spw='1',calmaxpix=50)
+    >>> hif_makeimlist(intent='PHASE',spw='1',calmaxpix=50)
 
 
     """

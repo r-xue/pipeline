@@ -61,7 +61,7 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_model
     
     1. Run RFLAG with associated heuristics in the VLA CASA pipeline.
     
-    hifv_checkflag()
+    >>> hifv_checkflag()
 
 
     """

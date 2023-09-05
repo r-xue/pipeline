@@ -61,7 +61,7 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
 
     1. Perform continuum frequency range detection for all science targets and spws:
 
-    hif_findcont()
+    >>> hif_findcont()
 
 
     """

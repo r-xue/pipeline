@@ -101,7 +101,7 @@ def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, raw
     
     1. Restore the pipeline results for a single ASDM in a single session
     
-    h_restoredata (vis=['uid___A002_X30a93d_X43e'], session=['session_1'], ocorr_mode='ca')
+    >>> h_restoredata (vis=['uid___A002_X30a93d_X43e'], session=['session_1'], ocorr_mode='ca')
 
 
     """

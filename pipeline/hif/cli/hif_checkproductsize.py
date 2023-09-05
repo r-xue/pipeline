@@ -62,11 +62,11 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
 
     1. Basic call to check the product sizes using internal defaults
 
-    hif_checkproductsize()
+    >>> hif_checkproductsize()
 
     2. Typical ALMA call
 
-    hif_checkproductsize(maxcubesize=40.0, maxcubelimit=60.0, maxproductsize=350.0)
+    >>> hif_checkproductsize(maxcubesize=40.0, maxcubelimit=60.0, maxproductsize=350.0)
 
 
     """

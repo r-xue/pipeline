@@ -30,7 +30,7 @@ def hifv_gaincurves(vis=None, caltable=None, dryrun=None, acceptresults=None):
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     
-    hifv_gaincurves()
+    >>> hifv_gaincurves()
     
     
     

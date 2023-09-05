@@ -80,32 +80,31 @@ def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context:
     
-    hsdn_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e',
-    '../rawdata/uid_A002_x30a93d_X44e'])
+    >>> hsdn_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e', '../rawdata/uid_A002_x30a93d_X44e'])
     
     2. Load an MS in the current directory into the context:
     
-    hsdn_importdata (vis=[uid___A002_X30a93d_X43e.ms])
+    >>> hsdn_importdata (vis=[uid___A002_X30a93d_X43e.ms])
     
     3. Load a tarred ASDM in ../rawdata into the context:
     
-    hsdn_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
+    >>> hsdn_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
     
     4. Import a list of MeasurementSets:
     
-    myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
-    hsdn_importdata(vis=myvislist)
+    >>> myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
+    >>> hsdn_importdata(vis=myvislist)
     
     5. Load an ASDM but check the results before accepting them into the context:
     
-    results = hsdn_importdata(vis=['uid___A002_X30a93d_X43e.ms'],
+    >>> results = hsdn_importdata(vis=['uid___A002_X30a93d_X43e.ms'],
                               acceptresults=False)
-    results.accept()
+    >>> results.accept()
     
     6. Run in dryrun mode before running for real:
 
-    results = hsdn_importdata(vis=['uid___A002_X30a93d_X43e.ms'], dryrun=True)
-    results = hsdn_importdata(vis=['uid___A002_X30a93d_X43e.ms'])
+    >>> results = hsdn_importdata(vis=['uid___A002_X30a93d_X43e.ms'], dryrun=True)
+    >>> results = hsdn_importdata(vis=['uid___A002_X30a93d_X43e.ms'])
 
 
     """

@@ -29,7 +29,7 @@ def hifv_rqcal(vis=None, caltable=None, dryrun=None, acceptresults=None):
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     
-    hifv_rqcal()
+    >>> hifv_rqcal()
 
 
     """

@@ -34,7 +34,7 @@ def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, swpo
     
     1. Run gaincurves, opacities, requantizer gains and antenna position corrections.
     
-    hifv_priorcals()
+    >>> hifv_priorcals()
 
 
     """

@@ -28,7 +28,7 @@ def hifv_tecmaps(vis=None, dryrun=None, acceptresults=None):
     
     1. Basic tecmaps task
     
-    hifv_tecmaps()
+    >>> hifv_tecmaps()
 
 
     """

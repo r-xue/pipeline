@@ -79,7 +79,7 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     
     1. Restore the pipeline results for a single ASDM in a single session
     
-    hifv_restoredata (vis=['myVLAsdm'], session=['session_1'], ocorr_mode='ca')
+    >>> hifv_restoredata (vis=['myVLAsdm'], session=['session_1'], ocorr_mode='ca')
 
 
     """

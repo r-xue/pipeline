@@ -72,7 +72,7 @@ def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, para
 
     1. Apply the calibration to the target data
 
-    hif_applycal (intent='TARGET')
+    >>> hif_applycal (intent='TARGET')
 
 
     """

@@ -32,7 +32,7 @@ def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None,
     
     1. Basic analyzealpha task
     
-    hif_analyzealpha()
+    >>> hif_analyzealpha()
 
 
     """

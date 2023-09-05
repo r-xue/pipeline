@@ -28,7 +28,7 @@ def hifv_opcal(vis=None, caltable=None, dryrun=None, acceptresults=None):
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     
-    hifv_opcal()
+    >>> hifv_opcal()
 
 
     """

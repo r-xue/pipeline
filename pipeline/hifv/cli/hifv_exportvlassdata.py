@@ -28,7 +28,7 @@ def hifv_exportvlassdata(vis=None, dryrun=None, acceptresults=None):
     
     1. Basic exportvlassdata task
     
-    hifv_exportvlassdata()
+    >>> hifv_exportvlassdata()
 
 
     """

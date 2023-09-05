@@ -66,7 +66,7 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
 
     1. Compute the references antennas to be used for bandpass and gain calibration.
 
-    hif_refant()
+    >>> hif_refant()
 
 
     """

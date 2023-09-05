@@ -69,13 +69,13 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
     directory
     
     !mkdir ../products
-    hif_exportdata (products_dir='../products')
+    >>> hif_exportdata (products_dir='../products')
     
     2. Export the pipeline results to the data products directory specify that
     only the gain calibrator images be saved.
     
     !mkdir ../products
-    hif_exportdata (products_dir='../products', calintents='*PHASE*')
+    >>> hif_exportdata (products_dir='../products', calintents='*PHASE*')
 
     --------- issues -----------------------------------------------------------
 

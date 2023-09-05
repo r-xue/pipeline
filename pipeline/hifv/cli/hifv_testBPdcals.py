@@ -34,7 +34,7 @@ def hifv_testBPdcals(vis=None, dryrun=None, acceptresults=None, weakbp=None, ref
     
     1. Initial delay calibration to set up heuristic flagging.
     
-    hifv_testBPdcals()
+    >>> hifv_testBPdcals()
 
 
     """

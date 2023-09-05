@@ -109,12 +109,12 @@ def hsd_tsysflag(vis=None, caltable=None,
     
     1. Flag Tsys measurements using currently recommended tests:
     
-    hsd_tsysflag()
+    >>> hsd_tsysflag()
     
     2. Flag Tsys measurements using all recommended tests apart from that
     using the 'fieldshape' metric:
     
-    hsd_tsysflag(flag_fieldshape=False)
+    >>> hsd_tsysflag(flag_fieldshape=False)
 
 
     """

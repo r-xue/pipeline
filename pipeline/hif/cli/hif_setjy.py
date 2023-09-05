@@ -87,7 +87,7 @@ def hif_setjy(vis=None, field=None, intent=None, spw=None, model=None,
     
     1. Set the model flux densities for all the amplitude calibrators:
     
-    hif_setjy()
+    >>> hif_setjy()
 
     --------- issues -----------------------------------------------------------
     

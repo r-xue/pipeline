@@ -38,7 +38,7 @@ def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, apply=None, 
     
     1. Basic syspower task
     
-    hifv_syspower()
+    >>> hifv_syspower()
 
 
     """

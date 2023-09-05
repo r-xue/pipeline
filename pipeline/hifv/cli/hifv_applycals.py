@@ -65,7 +65,7 @@ def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, ap
     
     1. Run the final applycals stage of the VLA CASA pipeline.
     
-    hifv_applycals()
+    >>> hifv_applycals()
 
     --------- issues -----------------------------------------------------------
 

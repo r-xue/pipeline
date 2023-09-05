@@ -84,7 +84,7 @@ def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
     
     1. Compute the Kevin to Jy calibration tables for a list of MeasurementSets:
     
-    hsd_k2jycal()
+    >>> hsd_k2jycal()
 
 
     """

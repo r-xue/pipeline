@@ -66,7 +66,7 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
 
     1. Apply the calibration to the target data
 
-    hsd_applycal (intent='TARGET')
+    >>> hsd_applycal (intent='TARGET')
 
     --------- issues -----------------------------------------------------------
 

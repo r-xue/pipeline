@@ -73,7 +73,7 @@ def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, trans
     
     1. Set model fluxes for the flux, bandpass, phase, and check sources.
     
-    hif_setmodels()
+    >>> hif_setmodels()
 
 
     """

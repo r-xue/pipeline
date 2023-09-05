@@ -45,7 +45,7 @@ def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffi
     
     1. Initial run of setjy:
     
-    hifv_vlasetjy()
+    >>> hifv_vlasetjy()
 
 
     """

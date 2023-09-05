@@ -71,7 +71,7 @@ def hif_correctedampflag(
     
     Run default flagging on bandpass calibrator with recommended settings:
     
-    hif_correctedampflag()
+    >>> hif_correctedampflag()
 
 
     """

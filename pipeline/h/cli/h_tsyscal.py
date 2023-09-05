@@ -33,7 +33,7 @@ def h_tsyscal(vis=None, caltable=None, chantol=None, dryrun=None, acceptresults=
 
     1. Standard call
 
-    h_tsyscal()
+    >>> h_tsyscal()
 
     """
 

@@ -29,7 +29,7 @@ def hifv_pbcor(vis=None, dryrun=None, acceptresults=None):
     
     1. Basic pbcor task
     
-    hifv_pbcor()
+    >>> hifv_pbcor()
 
 
     """

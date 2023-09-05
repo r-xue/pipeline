@@ -45,11 +45,11 @@ def hifv_selfcal(vis=None, dryrun=None, acceptresults=None, refantignore=None,
     
     1. Basic selfcal task
     
-    hifv_selfcal()
+    >>> hifv_selfcal()
     
     2. VLASS-SE selfcal usage
     
-    hifv_selfcal(selfcalmode='VLASS-SE', combine='field,spw')
+    >>> hifv_selfcal(selfcalmode='VLASS-SE', combine='field,spw')
 
 
     """

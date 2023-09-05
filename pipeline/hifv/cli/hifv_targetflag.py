@@ -32,7 +32,7 @@ def hifv_targetflag(vis=None, dryrun=None, acceptresults=None, intents=None):
     
     1. Run rflag on both the science targets and calibrators:
     
-    hifv_targetflag()
+    >>> hifv_targetflag()
 
 
     """

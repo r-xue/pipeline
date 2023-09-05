@@ -105,7 +105,7 @@ def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None, ante
     Compute standard per scan gain solutions that will be used to calibrate
     the target:
     
-    hif_gaincal()
+    >>> hif_gaincal()
 
 
     """

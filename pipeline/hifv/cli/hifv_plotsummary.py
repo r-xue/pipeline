@@ -28,7 +28,7 @@ def hifv_plotsummary(vis=None, dryrun=None, acceptresults=None):
     
     1. Execute the pipeline plotting task.
     
-    hifv_plotsummary()
+    >>> hifv_plotsummary()
 
 
     """

@@ -95,12 +95,12 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
     1. Compute a channel bandpass for all visibility files in the pipeline
     context using the CASA reference antenna determination scheme:
     
-    hif_bandpass()
+    >>> hif_bandpass()
     
     2. Same as the above but precompute a prioritized reference antenna list:
     
-    hif_refant()
-    hif_bandpass()
+    >>> hif_refant()
+    >>> hif_bandpass()
 
     --------- issues -----------------------------------------------------------
     

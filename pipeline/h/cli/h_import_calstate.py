@@ -23,7 +23,7 @@ def h_import_calstate(filename):
     
     1. Import a calibration state from disk.
     
-    h_import_calstate(filename='aftergaincal.calstate')
+    >>> h_import_calstate(filename='aftergaincal.calstate')
 
 
     """

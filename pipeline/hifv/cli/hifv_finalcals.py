@@ -33,7 +33,7 @@ def hifv_finalcals(vis=None, dryrun=None, acceptresults=None, weakbp=None, refan
     
     1. Create the final calibration tables to be applied to the data in the VLA CASA pipeline.
     
-    hifv_finalcals()
+    >>> hifv_finalcals()
 
 
     """

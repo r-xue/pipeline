@@ -42,7 +42,7 @@ def hifv_analyzestokescubes(vis=None, dryrun=None, acceptresults=None):
     
     1. Basic analyzestokescubes task
     
-    hifv_analyzestokescubes()
+    >>> hifv_analyzestokescubes()
 
 
     """

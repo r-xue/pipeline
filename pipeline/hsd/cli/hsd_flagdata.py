@@ -81,12 +81,12 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
 
     1. Do basic flagging on a MeasurementSet
 
-    hsd_flagdata()
+    >>> hsd_flagdata()
 
     2. Do basic flagging on a MeasurementSet flagging additional scans selected
     by number as well.
 
-    hsd_flagdata(scannumber='13,18')
+    >>> hsd_flagdata(scannumber='13,18')
 
 
     """

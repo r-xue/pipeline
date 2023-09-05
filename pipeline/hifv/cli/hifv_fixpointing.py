@@ -42,7 +42,7 @@ def hifv_fixpointing(vis=None, dryrun=None, acceptresults=None):
     
     1. Basic fixpointing task
     
-    hifv_fixpointing()
+    >>> hifv_fixpointing()
 
 
     """

@@ -41,7 +41,7 @@ def hifv_solint(vis=None, dryrun=None, acceptresults=None, limit_short_solint=No
     
     1. Determines different solution intervals:
     
-    hifv_solint()
+    >>> hifv_solint()
 
 
     """

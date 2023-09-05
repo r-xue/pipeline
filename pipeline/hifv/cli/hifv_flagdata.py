@@ -74,12 +74,12 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     
     1. Do basic flagging on a MeasurementSet
     
-    hifv_flagdata()
+    >>> hifv_flagdata()
     
     2. Do basic flagging on a MeasurementSet as well as flag pointing and
     atmosphere data
     
-    hifv_flagdata(scan=True intent='*BANDPASS*')
+    >>> hifv_flagdata(scan=True intent='*BANDPASS*')
 
 
     """

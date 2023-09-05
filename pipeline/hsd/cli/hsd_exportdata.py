@@ -49,8 +49,8 @@ def hsd_exportdata(pprfile=None,targetimages=None, products_dir=None,
     1. Export the pipeline results for a single session to the data products
     directory
     
-    !mkdir ../products
-    hsd_exportdata (products_dir='../products')
+    >>> !mkdir ../products
+    >>> hsd_exportdata (products_dir='../products')
 
 
     """

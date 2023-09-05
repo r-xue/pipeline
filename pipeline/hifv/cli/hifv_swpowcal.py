@@ -30,7 +30,7 @@ def hifv_swpowcal(vis=None, caltable=None, spw=None, dryrun=None, acceptresults=
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     
-    hifv_swpowcal()
+    >>> hifv_swpowcal()
 
 
     """

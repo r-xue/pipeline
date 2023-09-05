@@ -52,7 +52,7 @@ def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=
     
     1. Basic flagtargetsdata task
     
-    hifv_flagtargetsdata()
+    >>> hifv_flagtargetsdata()
 
 
     """

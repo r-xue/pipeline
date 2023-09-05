@@ -30,7 +30,7 @@ def hifv_flagcal(vis=None, caltable=None, clipminmax=None, dryrun=None, acceptre
     
     1. Flag existing caltable
     
-    hifv_flagcal()
+    >>> hifv_flagcal()
 
 
     """
