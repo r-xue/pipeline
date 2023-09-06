@@ -11,6 +11,17 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
     """
     hsd_atmcor ---- Apply offline ATM correction to the data.
 
+    The hsd_sdatmcor task provides the capability of offline correction of
+    residual atmospheric features in the calibrated single-dish spectra
+    originated from incomplete calibration mainly due to a difference of
+    elevation angles between ON_SOURCE and OFF_SOURCE measurements.
+
+    Optimal atmospheric model is automatically determined by default
+    (atmtype = 'auto'). You may specify desired atmospheric model by giving
+    either single integer (apply to all EBs) or a list of integers (models
+    per EB) to atmtype parameter. Please see parameter description for the
+    meanings of integer values.
+
     --------- parameter descriptions ---------------------------------------------
 
     atmtype       Type of atmospheric transmission model represented as an integer.
