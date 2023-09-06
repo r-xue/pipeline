@@ -15,10 +15,7 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     """
     hifv_flagdata ---- Do basic deterministic flagging of a list of MeasurementSets
 
-    The hifv_flagdata task performs basic flagging operations on a list of
-    MeasurementSets.
-    
-    The hifv_flagdata task performs basic flagging operations on a list of measurements including:
+    The hifv_flagdata task performs basic flagging operations on a list of MeasurementSets including:
     
     - autocorrelation data flagging
     - shadowed antenna data flagging
