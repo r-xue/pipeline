@@ -2,11 +2,9 @@ from . import utils
 
 
 def h_export_calstate(filename=None, state=None):
-
     """
     h_export_calstate ---- Save the pipeline calibration state to disk
 
-    
     h_export_calstate saves the current pipeline calibration state to disk
     in the form of a set of equivalent applycal calls.
     
@@ -23,22 +21,24 @@ def h_export_calstate(filename=None, state=None):
 
     --------- parameter descriptions ---------------------------------------------
 
-    filename Name for saved calibration state
-    state    The calibration state to export
+    filename
+                Name for saved calibration state.
+    state
+                The calibration state to export. If undefined, the active
+                calibration state will be exported. If set to 'applied', the
+                applied calibration state will be exported instead.
 
     --------- examples -----------------------------------------------------------
 
-    
-    
-    1. Save the calibration state.
+    1. Save the calibration state:
     
     >>> h_export_calstate()
     
-    2. Save the active calibration state with a custom filename
+    2. Save the active calibration state with a custom filename:
     
     >>> h_export_calstate(filename='afterbandpass.calstate')
     
-    3. Save the applied calibration state with a custom filename
+    3. Save the applied calibration state with a custom filename:
     
     >>> h_export_calstate(filename='applied.calstate', state='applied')
 
@@ -46,9 +46,7 @@ def h_export_calstate(filename=None, state=None):
         
     If run several times in one pipeline session does the automatic export
     file naming scheme, overwrite previous versions?
-
     """
-
     context = utils.get_context()
     if state == 'applied':
         context.callibrary.export_applied(filename)
