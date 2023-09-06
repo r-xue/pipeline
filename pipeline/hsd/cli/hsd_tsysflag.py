@@ -33,23 +33,23 @@ def hsd_tsysflag(vis=None, caltable=None,
     
     The tests are:
     
-    1. Flag Tsys spectra with high median values
+      1. Flag Tsys spectra with high median values
     
-    2. Flag Tsys spectra with high median derivatives. This is meant to spot
-    spectra that are 'ringing'.
+      2. Flag Tsys spectra with high median derivatives. This is meant to spot
+        spectra that are 'ringing'.
     
-    3. Flag the edge channels of the Tsys spectra in each SpW.
+      3. Flag the edge channels of the Tsys spectra in each SpW.
     
-    4. Flag Tsys spectra whose shape is different from that associated with
-    the BANDPASS intent.
+      4. Flag Tsys spectra whose shape is different from that associated with
+        the BANDPASS intent.
     
-    5. Flag 'birdies'.
+      5. Flag 'birdies'.
     
-    6. Flag the Tsys spectra of all antennas in a timestamp and spw if
-    proportion of antennas already flagged in this timestamp and spw exceeds
-    a threshold, and flag Tsys spectra for all antennas and all timestamps
-    in a spw, if proportion of antennas that are already entirely flagged
-    in all timestamps exceeds a threshold.
+      6. Flag the Tsys spectra of all antennas in a timestamp and spw if
+        proportion of antennas already flagged in this timestamp and spw exceeds
+        a threshold, and flag Tsys spectra for all antennas and all timestamps
+        in a spw, if proportion of antennas that are already entirely flagged
+        in all timestamps exceeds a threshold.
     
     
     Output

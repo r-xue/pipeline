@@ -32,10 +32,10 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     two spectral windows (0 and 1) and hsd_baseline is executed
     separately for each spw as below,
 
-    hsd_baseline(spw='0')
-    hsd_baseline(spw='1')
-    hsd_blflag()
-    hsd_imaging()
+    >>> hsd_baseline(spw='0')
+    >>> hsd_baseline(spw='1')
+    >>> hsd_blflag()
+    >>> hsd_imaging()
 
     Since the second run of hsd_baseline overwrites the result for
     spw 0 with the data before baseline subtraction, this will not
@@ -43,12 +43,12 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     case is to process each spw to the imaging stage separately,
     which looks like as follows:
 
-    hsd_baseline(spw='0')
-    hsd_blflag(spw='0')
-    hsd_imaging(spw='0'))
-    hsd_baseline(spw='1')
-    hsd_blflag(spw='1')
-    hsd_imaging(spw='1')
+    >>> hsd_baseline(spw='0')
+    >>> hsd_blflag(spw='0')
+    >>> hsd_imaging(spw='0'))
+    >>> hsd_baseline(spw='1')
+    >>> hsd_blflag(spw='1')
+    >>> hsd_imaging(spw='1')
 
     Output:
     results -- The results object for the pipeline task is returned.
