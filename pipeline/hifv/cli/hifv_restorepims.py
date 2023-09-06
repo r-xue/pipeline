@@ -11,22 +11,6 @@ def hifv_restorepims(vis=None, reimaging_resources=None, dryrun=None, acceptresu
 
     Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.
     
-    Keyword arguments:
-    
-    vis -- List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
-    MSs, or tar files of MSs, If ASDM files are specified, they will be
-    converted  to MS format.
-    default: []
-    example: vis=['X227.ms', 'asdms.tar.gz']
-
-    dryrun -- Run the commands (True) or generate the commands to be run but
-    do not execute (False).
-    default: True
-    
-    acceptresults -- Add the results of the task to the pipeline context (True) or
-    reject them (False).
-    default: True
-    
     Output:
     
     results -- The results object for the pipeline task is returned.
@@ -36,9 +20,16 @@ def hifv_restorepims(vis=None, reimaging_resources=None, dryrun=None, acceptresu
 
     vis                 List of input visibility data
     reimaging_resources file path of reimaging_resources.tgz from the SE imaging product
-    dryrun              Run the task (False) or display task command (True)
-    acceptresults       Add the results into the pipeline context
+    dryrun              Run the commands (True) or generate the commands to be run but
+                        do not execute (False).
 
+                        default: True
+
+    acceptresults       Add the results of the task to the pipeline context (True) or
+                        reject them (False).
+
+                        default: True
+                        
     --------- examples -----------------------------------------------------------
     
     

@@ -11,31 +11,29 @@ def hifv_fixpointing(vis=None, dryrun=None, acceptresults=None):
     
     The hifv_fixpointing task
     
-    Keyword arguments:
-
-    vis -- List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
-    MSs, or tar files of MSs, If ASDM files are specified, they will be
-    converted  to MS format.
-    default: []
-    example: vis=['X227.ms', 'asdms.tar.gz']
-
-    dryrun -- Run the commands (True) or generate the commands to be run but
-                do not execute (False).
-                default: True
-    
-    acceptresults -- Add the results of the task to the pipeline context (True) or
-                reject them (False).
-                default: True
-    
     Output:
     
     results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of input visibility data
-    dryrun        Run the task (False) or display task command (True)
-    acceptresults Add the results into the pipeline context
+    vis           List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
+                  MSs, or tar files of MSs, If ASDM files are specified, they will be
+                  converted  to MS format.
+
+                  default: []
+
+                  example: vis=['X227.ms', 'asdms.tar.gz']
+
+    dryrun        Run the commands (True) or generate the commands to be run but
+                  do not execute (False).
+
+                  default: True
+
+    acceptresults Add the results of the task to the pipeline context (True) or
+                  reject them (False).
+                  
+                  default: True
 
     --------- examples -----------------------------------------------------------
     

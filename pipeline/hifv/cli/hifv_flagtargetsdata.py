@@ -12,22 +12,6 @@ def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=
 
     Apply a flagtemplate to target data prior to running imaging pipeline tasks
     
-    Keyword arguments:
-    
-    vis -- List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
-    MSs, or tar files of MSs, If ASDM files are specified, they will be
-    converted  to MS format.
-    default: []
-    example: vis=['X227.ms', 'asdms.tar.gz']
-
-    dryrun -- Run the commands (True) or generate the commands to be run but
-    do not execute (False).
-    default: True
-    
-    acceptresults -- Add the results of the task to the pipeline context (True) or
-    reject them (False).
-    default: True
-    
     Output:
     
     results -- The results object for the pipeline task is returned.
@@ -44,8 +28,13 @@ def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=
     flagbackup    Back up any pre-existing flags.
     dryrun        Run the commands (False) or generate the commands to be
                   run but do not execute (True).
-    acceptresults Add the results of the task to the pipeline context (True)
-                  or reject them (False).
+
+                  default: True
+
+    acceptresults Add the results of the task to the pipeline context (True) or
+                  reject them (False).
+                  
+                  default: True
 
     --------- examples -----------------------------------------------------------
     
