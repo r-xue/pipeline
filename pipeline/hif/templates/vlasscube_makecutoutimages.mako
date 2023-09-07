@@ -396,5 +396,7 @@ $(function () {
 
         <%def name="caption_title(plot)">
             Spw: ${plot.parameters['virtspw']} Stokes: ${plot.parameters['stokes']} Type: ${plot.parameters['type']}
+            <br>
+            ${is_rejected(info_dict.get(plot.parameters['virtspw'],True))}             
         </%def>
 </%self:plot_group>
