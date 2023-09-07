@@ -59,7 +59,7 @@ class MakeImagesInputs(vdp.StandardInputs):
             vlass_plane_reject_dict.update(unprocessed)
         if isinstance(unprocessed, bool):
             vlass_plane_reject_dict['apply'] = unprocessed
-        LOG.info("convert the task input of 'vlass_plane_reject' from %r to %r.", unprocessed, vlass_plane_reject_dict)
+        LOG.debug("convert the task input of 'vlass_plane_reject' from %r to %r.", unprocessed, vlass_plane_reject_dict)
         return vlass_plane_reject_dict
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
