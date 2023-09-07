@@ -39,7 +39,7 @@ class AnalyzestokescubesInputs(vdp.StandardInputs):
 class Analyzestokescubes(basetask.StandardTaskTemplate):
     Inputs = AnalyzestokescubesInputs
     is_multi_vis_task = True
-    
+
     def prepare(self):
 
         LOG.info("Analyzestokescubes is running.")
