@@ -31,20 +31,21 @@ Todo:
 
 """
 import ast
-import os
 import copy
+import os
+
 import numpy as np
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.basetask as basetask
-from pipeline.infrastructure import casa_tasks
+import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.infrastructure.utils import utils
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimlist.cleantarget import CleanTarget
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.infrastructure.utils import utils
+
 from .resultobjects import EditimlistResult
 
 LOG = infrastructure.get_logger(__name__)
@@ -144,7 +145,7 @@ class EditimlistInputs(vdp.StandardInputs):
             vlass_plane_reject_dict.update(unprocessed)
         if isinstance(unprocessed, bool):
             vlass_plane_reject_dict['apply'] = unprocessed
-        LOG.info("convert the task input of vlass_plane_reject from %r to %r.", unprocessed, vlass_plane_reject_dict)
+        LOG.debug("convert the task input of vlass_plane_reject from %r to %r.", unprocessed, vlass_plane_reject_dict)
         return vlass_plane_reject_dict
 
     @vdp.VisDependentProperty
@@ -361,7 +362,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['phasecenter'] = inpdict['phasecenter']
 
         iph = imageparams_factory.ImageParamsHeuristicsFactory()
-        
+
         # note: heuristics.imageparams_base expects 'spw' to be a selection string.
         # For VLASS-SE-CUBE, 'spw' is the representational string of spw group list, e.g. spw="['1,2','3,4,5']"
         th = imlist_entry['heuristics'] = iph.getHeuristics(vislist=inp.vis, spw=str(imlist_entry['spw']),
@@ -418,8 +419,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         LOG.info('RADIUS')
         LOG.info(repr(inpdict['search_radius_arcsec']))
         LOG.info('default={d}'.format(d=not inpdict['search_radius_arcsec']
-                                        and not isinstance(inpdict['search_radius_arcsec'], float)
-                                        and not isinstance(inpdict['search_radius_arcsec'], int)))
+                                      and not isinstance(inpdict['search_radius_arcsec'], float)
+                                      and not isinstance(inpdict['search_radius_arcsec'], int)))
         buffer_arcsec = th.buffer_radius() \
             if (not inpdict['search_radius_arcsec']
                 and not isinstance(inpdict['search_radius_arcsec'], float)
@@ -459,8 +460,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         # ---------------------------------------------------------------------------------- set imsize (VLA)
         if img_mode == 'VLA' and imlist_entry['specmode'] == 'cont':
             imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
-                                               primary_beam=largest_primary_beam,
-                                               spwspec=imlist_entry['spw'], intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
+                                               primary_beam=largest_primary_beam, spwspec=imlist_entry['spw'],
+                                               intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
         # ------------------------------
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']
@@ -489,7 +490,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                 dist = (mosaic_side_arcsec / 2.) + float(buffer_arcsec)
                 dist_arcsec = str(dist) + 'arcsec'
                 LOG.info("{k} = {v}".format(k='dist_arcsec', v=dist_arcsec))
-                # PIPE-1948: we restrict the selection field name to beginning with '0', '1', '2' (sci fields named after their coordinates), 
+                # PIPE-1948: we restrict the selection field name to beginning with '0', '1', '2' (sci fields named after their coordinates),
                 # or 'T' (e.g. the NCP field 'T32t02.NCP')
                 found_fields = th.find_fields(distance=dist_arcsec,
                                               phase_center=imlist_entry['phasecenter'],
@@ -564,7 +565,8 @@ class Editimlist(basetask.StandardTaskTemplate):
             if imlist_entry['datatype'].lower().startswith('regcal'):
                 datatype_suffix = 'regcal'
 
-        imlist_entry['gridder'] = th.gridder(imlist_entry['intent'], imlist_entry['field']) if not inpdict['gridder'] else inpdict['gridder']
+        imlist_entry['gridder'] = th.gridder(imlist_entry['intent'], imlist_entry['field']
+                                             ) if not inpdict['gridder'] else inpdict['gridder']
         imlist_entry['imagename'] = th.imagename(intent=imlist_entry['intent'], field=imlist_entry['field'],
                                                  spwspec=imlist_entry['spw'], specmode=imlist_entry['specmode'],
                                                  band=None, datatype=datatype_suffix) if not inpdict['imagename'] else inpdict['imagename']
@@ -632,7 +634,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         result.targets_imagename = []
         th = imlist_entry['heuristics']
 
-        vlass_flag_stats, spwgroup_reject = self._vlass_plane_rejection(imlist_entry)
+        vlass_flag_stats = self._vlass_plane_rejection(imlist_entry)
         result.vlass_flag_stats = vlass_flag_stats
 
         for idx, spw in enumerate(imlist_entry['spw']):
@@ -655,7 +657,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                     LOG.warning('VLASS Data for spw=%r is %.2f%% flagged, and we will skip it as an imaging target.', spw, flagpct*100)
                     continue
 
-            if spwgroup_reject[idx]:
+            if vlass_flag_stats['spwgroup_reject'][idx]:
                 LOG.warning(
                     'VLASS Data for spw=%r meets the plane rejection ceritera: nfield>=%i with flagpct>=%.2f%%.',
                     spw, self.inputs.vlass_plane_reject['nfield_thresh'], self.inputs.vlass_plane_reject['flagpct_thresh'] * 100)
@@ -722,5 +724,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         vlass_flag_stats['flagpct_spwgroup'] = np.sum(n_flagged_field_spwgroup, axis=0)/np.sum(n_total_field_spwgroup, axis=0)
         vlass_flag_stats['nfield_above_flagpct'] = nfield_above_flagpct
         vlass_flag_stats['flagpct_thresh'] = self.inputs.vlass_plane_reject['flagpct_thresh']
+        vlass_flag_stats['nfield_thresh'] = self.inputs.vlass_plane_reject['nfield_thresh']
+        vlass_flag_stats['spwgroup_reject'] = spwgroup_reject
 
-        return vlass_flag_stats, spwgroup_reject
+        return vlass_flag_stats
