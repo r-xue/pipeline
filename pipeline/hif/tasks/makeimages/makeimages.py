@@ -203,13 +203,12 @@ class MakeImages(basetask.StandardTaskTemplate):
     def _add_vlass_se_cube_metadata(self, result):
         """Attach extra imaging metadata to Tclean results for the VLASS Coarse Cube imaging."""
 
-
         vlass_plane_reject_keys_allowed = ['apply', 'exclude_spw', 'flagpct_thresh', 'beamdev_thresh']
         self.inputs.vlass_plane_reject
 
         for k in self.inputs.vlass_plane_reject:
             if k not in vlass_plane_reject_keys_allowed:
-                LOG.warning("The key %r in the 'vlass_plane_reject' task input dictionary.", k)        
+                LOG.warning("The key %r in the 'vlass_plane_reject' task input dictionary.", k)
 
         beamdev_thresh = self.inputs.vlass_plane_reject['beamdev_thresh']
         flagpct_thresh = self.inputs.vlass_plane_reject['flagpct_thresh']
@@ -220,12 +219,12 @@ class MakeImages(basetask.StandardTaskTemplate):
         freq_list = []
         spwgroup_list = []
         flagpct_list = []
-        ref_idx=None
-        plane_keep=None
+        ref_idx = None
+        plane_keep = None
 
         # loop over all Tclean results to attach the imaging metadata
         # The imaging metadata will be entiredly merged into context.scimlist and context.calimlist
-        # as the ImageItem instance 'metadata' attribute. 
+        # as the ImageItem instance 'metadata' attribute.
         for idx, tclean_result in enumerate(result.results):
             target = result.targets[idx]
             imaging_metadata = {'keep': False,

@@ -1710,10 +1710,6 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
             'plots_dict': plots_dict,
             'image_info': final_rows,
             'dirname': weblog_dir,
-            'chk_fit_info': chk_fit_rows,
-            'have_polcal_fit': have_polcal_fit,
-            'pol_fit_info': pol_fit_rows,
-            'pol_fit_plots': pol_fit_plots,
             'vlass_cubesummary_plots_html': vlass_cubesummary_plots_html,
             'plane_keep_dict': plane_keep_dict
         })

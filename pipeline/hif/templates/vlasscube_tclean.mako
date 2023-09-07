@@ -19,7 +19,7 @@ def is_rejected(spw,plane_keep_dict):
     plane_keep_dict[spw]
     desc=''
     if not plane_keep_dict[spw]:
-        desc = '<a style="color:red">(rejected)</a>'
+        desc = ' <a style="color:red">(rejected)</a>'
     return desc
 %>
 <%inherit file="t2-4m_details-base.mako"/>
@@ -153,7 +153,7 @@ except:
             %>
             <tr>
                 
-                <td rowspan="6">${row.spw.replace(',',', ')}</td>
+                <td rowspan="6">${row.spw.replace(',',', ')}${is_rejected(row.spw,plane_keep_dict)}</td>
                 
                 <th>${row.frequency_label}</th>
                 <td>${row.frequency}</td> 
