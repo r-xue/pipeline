@@ -279,9 +279,6 @@ class MakeImages(basetask.StandardTaskTemplate):
                 target_spw = result.targets[idx]['spw']
                 if target_spw in plane_keep_dict:
                     tclean_result.imaging_metadata['keep'] = plane_keep_dict[target_spw]
-                    if not tclean_result.imaging_metadata['keep']:
-                        tclean_result.qa.pool[:] = [pqa.QAScore(0.5, longmsg='VLASS-SE-CUBE plane rejection is applied.',
-                                                                shortmsg='VLASS-SE-CUBE plane rejection is applied.')]
                 self._vlass_cube_set_miscinfo(tclean_result)
 
         # attched the metadata w.r.t the plane rejection for the plane rejection plot.
