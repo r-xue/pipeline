@@ -18,10 +18,8 @@ def hifv_fluxboot(vis=None, caltable=None, fitorder=None, dryrun=None, acceptres
 
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                  MSes, or tar files of MSes, If ASDM files are specified, they will be
-                  converted  to MS format.
-                  example: vis=['X227.ms', 'asdms.tar.gz']
+    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                  specified in the h_init or hifv_importdata task.
     caltable      String name of the flagged caltable
     fitorder      Polynomial order of the spectral fitting for valid flux densities
                   with multiple spws.  The default value of -1 means that the heuristics determine the fit order based on

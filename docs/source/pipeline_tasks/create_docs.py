@@ -1,11 +1,20 @@
 # Started from jmaster's create_docs.py.
 # Modified by kberry to work with post-removal of the task interface.
-from collections import namedtuple
-from mako.template import Template
 
 import inspect
 import os
+import sys
+from collections import namedtuple
 from typing import Tuple
+
+from mako.template import Template
+
+if os.getenv('pipeline_dir') is not None:
+    # Use the env variable "pipeline_dir" to look for the Pipeline source code.
+    sys.path.insert(0, os.path.abspath(pipeline_dir))
+else:
+    # Use the ancestry path if "pipeline_dir" is not set.
+    sys.path.insert(0, os.path.abspath('../../pipeline'))
 
 import pipeline
 import pipeline.h.cli  # Needed for some reason?
@@ -57,8 +66,12 @@ def write_tasks_out(pdict):
         for task in pdict[entry]:
             rst_file = "{}/{}_task.rst".format(entry, task.name)
             rst_file_full_path = os.path.join(script_path, rst_file)
+            rst_file_dir = os.path.dirname(rst_file_full_path)
+            if not os.path.exists(rst_file_dir):
+                os.makedirs(rst_file_dir)
             with open(rst_file_full_path, 'w') as fd:
-                rst_text = task_template.render(category=entry, name=task.name, description=task.description, parameters=task.parameters, examples=task.examples)
+                rst_text = task_template.render(category=entry, name=task.name, description=task.description,
+                                                parameters=task.parameters, examples=task.examples)
                 fd.writelines(rst_text)
 
 

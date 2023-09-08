@@ -17,13 +17,8 @@ def hifv_fixpointing(vis=None, dryrun=None, acceptresults=None):
 
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
-                  MSs, or tar files of MSs, If ASDM files are specified, they will be
-                  converted  to MS format.
-
-                  default: []
-
-                  example: vis=['X227.ms', 'asdms.tar.gz']
+    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                  specified in the h_init or hifv_importdata task.
 
     dryrun        Run the commands (True) or generate the commands to be run but
                   do not execute (False).

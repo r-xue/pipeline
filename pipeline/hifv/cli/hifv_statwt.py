@@ -19,10 +19,8 @@ def hifv_statwt(vis=None, datacolumn=None, overwrite_modelcol=None,
     
     --------- parameter descriptions ---------------------------------------------
 
-    vis                List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                       MSes, or tar files of MSes, If ASDM files are specified, they will be
-                       converted  to MS format.
-                       example: vis=['X227.ms', 'asdms.tar.gz']
+    vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                       specified in the h_init or hifv_importdata task.
     datacolumn         Data column used to compute weights. Supported values are
                        "data", "corrected", "residual", and "residual_data"
                        (case insensitive, minimum match supported).
