@@ -15,7 +15,7 @@ def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, over
     The h_importdata task loads the specified visibility data into the pipeline
     context unpacking and / or converting it as necessary.
     
-    If the 'overwrite' input parameter is set to False and the task is
+    If the ``overwrite`` input parameter is set to False and the task is
     asked to convert an input ASDM input to an MS, then when the output
     MS already exists in the output directory, the importasdm
     conversion step is skipped, and the existing MS will be imported

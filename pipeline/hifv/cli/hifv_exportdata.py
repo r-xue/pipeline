@@ -63,7 +63,7 @@ def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportms
                           example: targetimages=['NGC3256.band3', 'NGC3256.band6']
     products_dir          Name of the data products subdirectory. Defaults to './'
                           example: '../products'
-    gainmap               The value of gainmap parameter in hifv_restoredata task put in
+    gainmap               The value of ``gainmap`` parameter in hifv_restoredata task put in
                           casa_piperestorescript.py
     dryrun                Run the task (False) or display task command (True).
     acceptresults         Add the results of the task to the pipeline context (True) or

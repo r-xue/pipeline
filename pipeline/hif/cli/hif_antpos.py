@@ -73,7 +73,7 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
     
     2. Correct the position of antennas for all the visibility files in a single
     pipeline run using antenna positions files on disk. These files are assumed
-    to conform to a default naming scheme if 'antposfile' is unspecified by the
+    to conform to a default naming scheme if ``antposfile`` is unspecified by the
     user:
     
     >>> hif_antpos(hm_antpos='file', antposfile='myantposfile.csv')

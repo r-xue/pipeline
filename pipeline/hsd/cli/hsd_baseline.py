@@ -125,7 +125,7 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                         None is allowed as a value of dictionary input to indicate that
                         no line detection/validation is required even if manually specified
                         line window does not exist. When None is given as a value and if
-                        linewindowmode is 'replace', line detection/validation is not performed
+                        ``linewindowmode`` is 'replace', line detection/validation is not performed
                         for the corresponding spw. For example, suppose the following parameters
                         are given for the data with four science spws, 17, 19, 21, and 23.
                             linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}
@@ -151,7 +151,7 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                         In case if no linewindow nor line detection/validation
                         are necessary, you should set linewindowmode to 'replace'
                         and specify None as a value of the linewindow dictionary
-                        for the spw to apply. See parameter description of linewindow
+                        for the spw to apply. See parameter description of ``linewindow``
                         for detail.
 
     edge                Number of edge channels to be dropped from baseline

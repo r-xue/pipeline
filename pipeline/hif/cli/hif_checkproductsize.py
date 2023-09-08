@@ -13,16 +13,16 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
 
     Check interferometry imaging product size and try to mitigate to maximum
     allowed values. The task implements a mitigation cascade computing the largest
-    cube size and tries to reduce it below a given limit by adjusting the nbins,
-    hm_imsize and hm_cell parameters. If this step succeeds, it also checks the
+    cube size and tries to reduce it below a given limit by adjusting the ``nbins``,
+    ``hm_imsize`` and ``hm_cell`` parameters. If this step succeeds, it also checks the
     overall imaging product size and if necessary reduces the number of fields to
     be imaged.
 
-    Alternatively, if maximsize is set, the image product pixel count is
-    mitigated by trying to adjust hm_cell parameter. If the pixel count is still
-    greater than maximsize at hm_cell of 4ppb, then this value is kept and
-    the image field is truncated around the phase center by forcing hm_imsize
-    = maximsize.
+    Alternatively, if ``maximsize`` is set, the image product pixel count is
+    mitigated by trying to adjust ``hm_cell`` parameter. If the pixel count is still
+    greater than ``maximsize`` at ``hm_cell`` of 4ppb, then this value is kept and
+    the image field is truncated around the phase center by forcing ``hm_imsize``
+    = ``maximsize``.
 
     Note that mitigation for image pixel count and for the product size currently
     are mutually exclusive, with maximsize taking precedence if set.
@@ -48,9 +48,9 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
                    -1: automatic from performance parameters
     maximsize      Maximum allowed image count size (mitigation goal and hard
                    maximum).
-                   Parameter maximsize must be even and divisible by 2,3,5,7 only.
-                   Note that maximsize is disabled by default and cannot be set at
-                   the same time as maxcubesize, maxcubelimit and maxproductsize!
+                   Parameter ``maximsize`` must be even and divisible by 2,3,5,7 only.
+                   Note that ``maximsize`` is disabled by default and cannot be set at
+                   the same time as ``maxcubesize``, ``maxcubelimit`` and ``maxproductsize``!
                    -1: disables mitigation for this parameter
     calcsb         Force (re-)calculation of sensitivities and beams
     parallel       Use MPI cluster where possible

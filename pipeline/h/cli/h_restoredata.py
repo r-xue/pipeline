@@ -21,6 +21,7 @@ def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, raw
     
     - the ASDMs to be restored
     - for each ASDM in the input list:
+    
         - a compressed tar file of the final flagversions file, e.g.,
           uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
         - a text file containing the applycal instructions, e.g.,
