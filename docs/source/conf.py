@@ -86,7 +86,9 @@ copyright = u'2020–{0}, '.format(datetime.utcnow().year) + author
 # The full version, including alpha/beta/rc tags.
 #release = pipeline.__version__
 
-pipeline_version = pipeline.environment.pipeline_revision.split('-')[0]
+#TODO: update to dynamic pipeline version after this is released
+# pipeline_version = pipeline.environment.pipeline_revision.split('-')[0]
+pipeline_version = '2023.1.0.0'
 version = pipeline_version
 release = pipeline_version
 
@@ -177,7 +179,7 @@ latex_use_modindex = True
 # [howto, manual, or own class]).
 latex_documents = [
     ('pipeline_tasks/pipeline_new_tasks', 'pipeline.tex',
-     'Pipeline Documentation',
+     'Pipeline Reference Manual',
      'pipeline team', 'manual'),
 ]
 
