@@ -63,10 +63,13 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
     --------- examples -----------------------------------------------------------
 
 
-
     1. Apply the calibration to the target data
 
     >>> hsd_applycal (intent='TARGET')
+
+    2. Specify fields and spectral windows
+
+    >>> hsd_applycal(field='3C279, M82', spw='17', intent='TARGET')
 
     --------- issues -----------------------------------------------------------
 

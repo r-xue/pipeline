@@ -43,8 +43,13 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None,
 
     --------- examples -----------------------------------------------------------
 
+    1. Generate images with default settings and context
     
+    >>> hsd_imaging()
 
+    2. Generate images with amplitude calibrator and specific parameters
+    
+    >>> hsd_imaging(mode='ampcal', field='*Sgr*,M100', spw='17,19')
 
     """
 
