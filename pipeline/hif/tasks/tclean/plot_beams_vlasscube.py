@@ -45,7 +45,7 @@ def plot_beams_vlasscube(vlass_cube_metadata, figfile='beams_vlasscube.png', log
     xticklabels = []
     for idx, spwgroup in enumerate(spwgroup_list):
         if not plane_keep[idx]:
-            reject_str = ' (rejected)'
+            reject_str = ' (r)'
         else:
             reject_str = ''
         xticklabels.append(f'{spwgroup}{reject_str}')

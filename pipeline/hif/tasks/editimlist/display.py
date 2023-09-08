@@ -62,7 +62,7 @@ class VlassFlagSummary(object):
             xticklabels = []
             for idx, spwgroup in enumerate(spwgroup_list):
                 if spwgroup_reject[idx]:
-                    reject_str = ' (rejected)'
+                    reject_str = ' (r)'
                 else:
                     reject_str = ''
                 xticklabels.append(f'{spwgroup}{reject_str}\n n={nfield_above_flagpct[idx]}')
