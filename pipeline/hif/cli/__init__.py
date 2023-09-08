@@ -15,7 +15,6 @@ from .hif_makeimages import hif_makeimages
 from .hif_makeimlist import hif_makeimlist
 from .hif_makermsimages import hif_makermsimages
 from .hif_mstransform import hif_mstransform
-from .hif_polarization import hif_polarization
 from .hif_rawflagchans import hif_rawflagchans
 from .hif_refant import hif_refant
 from .hif_selfcal import hif_selfcal
@@ -39,7 +38,6 @@ __all__ = ['hif_analyzealpha',
            'hif_makeimlist',
            'hif_makermsimages',
            'hif_mstransform',
-           'hif_polarization',
            'hif_rawflagchans',
            'hif_refant',
            'hif_selfcal',
