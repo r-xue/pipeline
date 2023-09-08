@@ -44,6 +44,7 @@ except ImportError as error:
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.autosectionlabel',
               'sphinx.ext.autosummary',
 #              'sphinx.ext.coverage',
               'sphinx.ext.imgconverter',
@@ -155,6 +156,7 @@ latex_elements = {
   \usepackage{hyperref}
   \usepackage{longtable}
   \setcounter{tocdepth}{1}
+  \protected\def\sphinxcode#1{\textcolor{red}{\texttt{#1}}}
 ''',
 
     # Latex figure (float) alignment
@@ -255,8 +257,6 @@ def setup(app):
     app.add_css_file('custom_theme.css')
 
 # astrorefs
-
-
 bibtex_bibfiles = ['references/pipeline.bib']
 bibtex_encoding = "utf-8"
 astrorefs_resolve_aas_macros = True
