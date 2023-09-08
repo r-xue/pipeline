@@ -82,8 +82,13 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
 
     --------- examples -----------------------------------------------------------
 
+    1. Basic usage
 
+    >>> hsd_atmcor()
 
+    2. Specify atmospheric model and data selection
+
+    >>> hsd_atmcor(atmtype=1, antenna='PM03,PM04', field='*Sgr*,M100')
 
     """
 

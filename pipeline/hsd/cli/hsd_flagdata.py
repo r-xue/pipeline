@@ -78,7 +78,6 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
 
     --------- examples -----------------------------------------------------------
 
-
     1. Do basic flagging on a MeasurementSet
 
     >>> hsd_flagdata()
@@ -87,7 +86,6 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     by number as well.
 
     >>> hsd_flagdata(scannumber='13,18')
-
 
     """
 

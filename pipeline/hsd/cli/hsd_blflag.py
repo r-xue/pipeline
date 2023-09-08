@@ -99,8 +99,9 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
 
     --------- examples -----------------------------------------------------------
 
+    1. flagging with all rules
 
-
+    >>> hsd_blflag()
 
     """
 
