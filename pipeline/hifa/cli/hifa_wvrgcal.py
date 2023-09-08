@@ -50,16 +50,16 @@ def hifa_wvrgcal(vis=None, caltable=None, offsetstable=None, hm_toffset=None, to
 
                        Example: offsetstable=['ngc5921.cloud_offsets']
     hm_toffset
-                       If 'manual', set the 'toffset' parameter to the user-specified value.
-                       If 'automatic', set the 'toffset' parameter according to the
+                       If 'manual', set the ``toffset`` parameter to the user-specified value.
+                       If 'automatic', set the ``toffset`` parameter according to the
                        date of the MeasurementSet; toffset=-1 if before 2013-01-21T00:00:00
                        toffset=0 otherwise.
     toffset
                        Time offset (sec) between interferometric and WVR data.
     segsource
                        If True calculate new atmospheric phase correction coefficients
-                       for each source, subject to the constraints of the 'tie' parameter.
-                       'segsource' is forced to be True if the 'tie' parameter is set to a
+                       for each source, subject to the constraints of the ``tie`` parameter.
+                       'segsource' is forced to be True if the ``tie`` parameter is set to a
                        non-empty value by the user or by the automatic heuristic.
     sourceflag
                        Flag the WVR data for these source(s) as bad and do not
@@ -94,8 +94,8 @@ def hifa_wvrgcal(vis=None, caltable=None, offsetstable=None, hm_toffset=None, to
                        
                        Example: ['DV03','DA05','PM02']
     hm_smooth
-                       If 'manual' set the 'smooth' parameter to the user-specified value.
-                       If 'automatic', run the wvrgcal task with the range of 'smooth' parameters
+                       If 'manual' set the ``smooth`` parameter to the user-specified value.
+                       If 'automatic', run the wvrgcal task with the range of ``smooth`` parameters
                        required to match the integration time of the wvr data to that of the
                        interferometric data in each spectral window.
     smooth

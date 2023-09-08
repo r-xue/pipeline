@@ -17,9 +17,6 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
     
     Previous calibration can be applied on the fly.
     
-    
-    Description
-    
     hif_bandpass computes a bandpass solution for every specified science
     spectral window. By default a 'phaseup' pre-calibration is performed
     and applied on the fly to the data, before the bandpass is computed.

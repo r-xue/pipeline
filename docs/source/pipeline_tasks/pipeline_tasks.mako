@@ -14,7 +14,7 @@ ${len(pdict[category])} tasks available.
     * - task name
       - description
 % for task in pdict[category]:
-    * - ${task[0]}
+    * - :ref:`${task[0]}`
 % if len(task[1].split("\n")) > 1:
       - | ${task[1].split("\n")[0].strip()}
     % for line in task[1].split("\n")[1:]:

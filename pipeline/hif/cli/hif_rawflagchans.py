@@ -34,18 +34,18 @@ def hif_rawflagchans(vis=None, spw=None, intent=None,
     
     Three flagging methods are available:
     
-    If parameter flag_hilo is set True then outliers from the median
+    If parameter ``flag_hilo`` is set True then outliers from the median
     of each flagging view will be flagged.
     
-    If parameter flag_bad_quadrant is set True then a simple 2 part
+    If parameter ``flag_bad_quadrant`` is set True then a simple 2 part
     test is used to check for bad antenna quadrants and/or bad baseline
     quadrants. Here a 'quadrant' is defined simply as one quarter of the
     channel axis. The first part of the test is to note as 'suspect' those
-    points further from the view median than fbq_hilo_limit * MAD.
+    points further from the view median than ``fbq_hilo_limit`` * MAD.
     The second part is to flag entire antenna/quadrants if their
-    fraction of suspect points exceeds fbq_antenna_frac_limit.
+    fraction of suspect points exceeds ``fbq_antenna_frac_limit``.
     Failing that, entire baseline/quadrants may be flagged if their
-    fraction of suspect points exceeds fbq_baseline_frac_limit.
+    fraction of suspect points exceeds ``fbq_baseline_frac_limit``.
     Suspect points are not flagged unless as part of a bad antenna or
     baseline quadrant.
     

@@ -8,7 +8,7 @@ def h_export_calstate(filename=None, state=None):
     h_export_calstate saves the current pipeline calibration state to disk
     in the form of a set of equivalent applycal calls.
     
-    If filename is not given, h_export_calstate saves the calibration state to
+    If ``filename`` is not given, h_export_calstate saves the calibration state to
     disk with a filename based on the pipeline context creation time, using the
     extension '.calstate'
     
