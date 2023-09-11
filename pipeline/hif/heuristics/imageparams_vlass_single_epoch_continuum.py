@@ -113,7 +113,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         if self.vlass_stage == 3:
             return ''
         else:
-            # PIPE-1679: the previous default value of '3arcsec' has been changed to '3/(pi/(4ln(2)))arcsec' 
+            # PIPE-1679: the previous default value of '3arcsec' has been changed to '3/(pi/(4ln(2)))arcsec'
             # since CASA ver>=6.5.3 to maintain the beam size consistency due to the math correction from CAS-13260.
             return ['2.6476arcsec']
 
@@ -133,7 +133,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
                 result_meta = result.read()
                 if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
                         'hifv_vlassmasking'):
-                    mask_list = [r.combinedmask for r in result_meta][0]
+                    mask_list = result_meta.combinedmask[0]
 
         # Add 'pb' string as a placeholder for cleaning without mask (pbmask only, see PIPE-977). This should
         # always stand at the last place in the mask list.
@@ -364,7 +364,6 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return 5.0
 
     def get_autobox_params(self, iteration: int, intent: str, specmode: str, robust: float) -> tuple:
-
         """Default auto-boxing parameters."""
 
         sidelobethreshold = None
@@ -598,7 +597,6 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
         return [12500, 12500]
 
     def mosweight(self, intent, field) -> bool:
-
         """tclean flag to use mosaic weighting."""
 
         # Currently only ALMA has decided to use this flag (CAS-11840). So

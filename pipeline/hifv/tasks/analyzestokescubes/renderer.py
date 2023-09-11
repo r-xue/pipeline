@@ -51,7 +51,7 @@ class T2_4MDetailsAnalyzestokesCubeRenderer(basetemplates.T2_4MDetailsDefaultRen
                     result_meta = result
                     if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
                             'hif_makecutoutimages'):
-                        r_makecutoutimages_copy = copy.deepcopy(result_meta[0])
+                        r_makecutoutimages_copy = copy.deepcopy(result_meta)
             r_makecutoutimages_copy.stage_number = result.stage_number
             plotter = VlassCubeCutoutRmsSummary(context, r_makecutoutimages_copy)
             rmsplots = {'Rms Summary Plot': plotter.plot(improp_list=[('rms', 'Median')])}
