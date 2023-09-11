@@ -11,6 +11,7 @@ def hif_editimlist(imagename=None,
                    conjbeams=None,
                    cyclefactor=None,
                    cycleniter=None,
+                   nmajor=None,
                    datatype=None,
                    datacolumn=None,
                    deconvolver=None,
@@ -72,6 +73,7 @@ def hif_editimlist(imagename=None,
     conjbeams            Use conjugate frequency in tclean for wideband A-terms.
     cyclefactor          Controls the depth of clean in minor cycles based on PSF.
     cycleniter           Controls max number of minor cycle iterations in a single major cycle.
+    nmajor               Controls the maximum number of major cycles to evaluate.
     datatype             Data type(s) to image. The default '' selects the best
                          available data type (e.g. selfcal over regcal) with
                          an automatic fallback to the next available data type.
