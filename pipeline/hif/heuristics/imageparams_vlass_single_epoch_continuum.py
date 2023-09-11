@@ -133,7 +133,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
                 result_meta = result.read()
                 if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
                         'hifv_vlassmasking'):
-                    mask_list = result_meta.combinedmask[0]
+                    mask_list = result_meta.combinedmask
 
         # Add 'pb' string as a placeholder for cleaning without mask (pbmask only, see PIPE-977). This should
         # always stand at the last place in the mask list.

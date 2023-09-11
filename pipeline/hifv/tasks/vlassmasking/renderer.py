@@ -28,8 +28,8 @@ class T2_4MDetailsVlassmaskingRenderer(basetemplates.T2_4MDetailsDefaultRenderer
 
         plotter = display.MaskSummary(context, result)
         plots = plotter.plot()
-        ms = os.path.basename(result.inputs['vis'])
-        summary_plots[ms] = plots
+        mslist_str = '<br>'.join([os.path.basename(vis) for vis in result.inputs['vis']])
+        summary_plots[mslist_str] = plots
 
         # Number of islands found
         # try:
