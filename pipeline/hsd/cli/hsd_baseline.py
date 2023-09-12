@@ -213,9 +213,16 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
 
     >>> hsd_baseline(antenna='PM03', spw='17,19')
 
-    2. Using pre-defined line windows and edge channels
-    
-    >>> hsd_baseline(linewindow=[[100, 200], [1200, 1400]], edge=[10, 10])
+    2. Using pre-defined line windows without automatic line detection
+       and edge channels
+
+    >>> hsd_baseline(linewindow=[[100, 200], [1200, 1400]],
+                     linewindowmode='replace', edge=[10, 10])
+
+    3. Using per spw pre-defined line windows with automatic line detection
+
+    >>> hsd_baseline(linewindow={19: [[390, 550]], 23: [[100, 200], [1200, 1400]]},
+                     linewindowmode='merge')
 
     """
 
