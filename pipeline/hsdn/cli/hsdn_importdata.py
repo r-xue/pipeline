@@ -101,12 +101,6 @@ def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None
                               acceptresults=False)
     >>> results.accept()
     
-    6. Run in dryrun mode before running for real:
-
-    >>> results = hsdn_importdata(vis=['uid___A002_X30a93d_X43e.ms'], dryrun=True)
-    >>> results = hsdn_importdata(vis=['uid___A002_X30a93d_X43e.ms'])
-
-
     """
 
 

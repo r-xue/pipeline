@@ -99,11 +99,7 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
     >>> results = hifv_importdata (vis=['uid___A002_X30a93d_X43e.ms'], acceptresults=False)
     >>> results.accept()
     
-    6. Run in  dryrun mode before running for real
-    >>> results = hifv_importdata (vis=['uid___A002_X30a93d_X43e.ms'], dryrun=True)
-    >>> results = hifv_importdata (vis=['uid___A002_X30a93d_X43e.ms'])
-    
-    7. Run with explicit setting of data column types:
+    6. Run with explicit setting of data column types:
     
     >>> hifv_importdata(vis=['uid___A002_X30a93d_X43e_targets.ms'], datacolumns={'data': 'regcal_contline'})
     >>> hifv_importdata(vis=['uid___A002_X30a93d_X43e_targets_line.ms'], datacolumns={'data': 'regcal_line', 'corrected': 'selfcal_line'})

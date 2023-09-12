@@ -17,13 +17,6 @@ else:
     sys.path.insert(0, os.path.abspath('../../pipeline'))
 
 import pipeline
-import pipeline.h.cli  # Needed for some reason?
-import pipeline.hif.cli
-import pipeline.hifa.cli
-import pipeline.hifas.cli
-import pipeline.hifv.cli
-import pipeline.hsd.cli
-import pipeline.hsdn.cli
 
 Task = namedtuple('Task', 'name short description parameters examples')
 
@@ -34,6 +27,10 @@ task_groups = {"h": "Generic",
                "hifv": "Interferometry VLA",
                "hsd": "Single Dish",
                "hsdn": "Nobeyama"}
+
+# Tasks to exclude from the reference manual 
+# hifv tasks confirmed by John Tobin via email 20230911
+tasks_to_exclude = ['hifv_targetflag', 'hifv_gaincurves', 'hifv_opcal', 'hifv_rqcal', 'hifv_swpowcal', 'hifv_tecmaps']
 
 pdict = {"h": [],
          "hif": [],
@@ -87,8 +84,6 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
 
     short = ""
     long = ""
-    default = ""
-    output = ""
     examples = ""
     parameters = ""
     parameters_dict = {}
@@ -148,6 +143,10 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
         if parameter_name != "" and current_parm_desc is not None:
             parameters_dict[parameter_name] = current_parm_desc
 
+        # Remove "dryrun" from dict as it is not wanted in the Reference Manual
+        if "dryrun" in parameters_dict:
+            del parameters_dict["dryrun"]
+
         examples = second_split[1].strip("\n")
 
         if issues_delimiter in examples:
@@ -156,17 +155,23 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
 
         examples = "\n".join([line[4:] for line in examples.split("\n")]).strip("\n")
 
-        return short, long, default, output, examples, parameters_dict
+        return short, long, examples, parameters_dict
     
     except Exception as e: 
         print("FAILED to PARSE DOCSTRING. Error: {}".format(e))
         print("Failing docstring: {}".format(docstring))
-        return short, long, default, output, examples, parameters_dict
+        return short, long, examples, parameters_dict
 
 
-def create_docs(missing_report=False):
-    """ Walks through the pipeline and creates documentation for each pipeline task.
+def create_docs(missing_report=True):
+    """ 
+    Walks through the pipeline and creates documentation for each pipeline task.
+    
+    Optionally generates and outputs lists of tasks with missing examples, parameters, and 
+    longer descriptions. 
     """
+
+    # Lists of cli PL tasks that are missing various pieces: 
     missing_example = []
     missing_description = []
     missing_parameters = []
@@ -175,17 +180,22 @@ def create_docs(missing_report=False):
         if name in task_groups.keys():
             for name2, obj2 in inspect.getmembers(obj):
                 if 'cli' in name2:
-                    for name3, obj3 in inspect.getmembers(obj2):
-                        if '__' not in name3 and name3 is not None and name3[0] == 'h':
-                            docstring = obj3.__doc__
-                            short, long, default, output, examples, parameters = docstring_parse(docstring)
+                    for task_name, task_func in inspect.getmembers(obj2):
+                        if '__' not in task_name and task_name is not None and task_name[0] == 'h':
+                            docstring = task_func.__doc__
+                            short, long, examples, parameters = docstring_parse(docstring)
+
                             if not examples:
-                                missing_example.append(name3)
+                                missing_example.append(task_name)
                             if not long:
-                                missing_description.append(name3)
+                                missing_description.append(task_name)
                             if not parameters:
-                                missing_parameters.append(name3)
-                            pdict[name].append(Task(name3, short, long, parameters, examples))
+                                missing_parameters.append(task_name)
+
+                            if task_name not in tasks_to_exclude:
+                                pdict[name].append(Task(task_name, short, long, parameters, examples))
+                            else:
+                                print("Excluding task: {}".format(task_name))
 
     if missing_report:
         print("The following tasks are missing examples:")
@@ -209,7 +219,6 @@ def create_docs(missing_report=False):
 
     # Write individual task pages
     write_tasks_out(pdict)
-
 
 if __name__ == "__main__":
     create_docs()
