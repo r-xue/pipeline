@@ -1,6 +1,7 @@
 # Started from jmaster's create_docs.py.
 # Modified by kberry to work with post-removal of the task interface.
 
+import argparse
 import inspect
 import os
 import sys
@@ -8,15 +9,6 @@ from collections import namedtuple
 from typing import Tuple
 
 from mako.template import Template
-
-if os.getenv('pipeline_dir') is not None:
-    # Use the env variable "pipeline_dir" to look for the Pipeline source code.
-    sys.path.insert(0, os.path.abspath(pipeline_dir))
-else:
-    # Use the ancestry path if "pipeline_dir" is not set.
-    sys.path.insert(0, os.path.abspath('../../pipeline'))
-
-import pipeline
 
 Task = namedtuple('Task', 'name short description parameters examples')
 
@@ -28,7 +20,7 @@ task_groups = {"h": "Generic",
                "hsd": "Single Dish",
                "hsdn": "Nobeyama"}
 
-# Tasks to exclude from the reference manual 
+# Tasks to exclude from the reference manual
 # hifv tasks confirmed by John Tobin via email 20230911
 tasks_to_exclude = ['hifv_targetflag', 'hifv_gaincurves', 'hifv_opcal', 'hifv_rqcal', 'hifv_swpowcal', 'hifv_tecmaps']
 
@@ -41,31 +33,41 @@ pdict = {"h": [],
          "hsdn": []}
 
 
-def write_out(pdict, rst_file="pipeline_new_tasks.rst"):
-    """Creates reST file for the "landing page" for the tasks. 
+def check_dirs(filename):
+    """pre-check/create the ancestry directories of a given file path."""
+    filedir = os.path.dirname(filename)
+    if not os.path.exists(filedir):
+        os.makedirs(filedir)
+
+
+def write_out(pdict, rst_file="pipeline_new_tasks.rst", outdir=None):
+    """Creates reST file for the "landing page" for the tasks.
     """
     script_path = os.path.dirname(os.path.realpath(__file__))
     task_template = Template(filename=os.path.join(script_path, 'pipeline_tasks.mako'))
 
     # Write the information from into a rst file that can be rendered by sphinx as html/pdf/etc.
-    rst_file_full_path = os.path.join(script_path, rst_file)
+
+    output_dir = script_path if outdir is None else outdir
+    rst_file_full_path = os.path.join(output_dir, rst_file)
+    check_dirs(rst_file_full_path)
     with open(rst_file_full_path, 'w') as fd:
         rst_text = task_template.render(plversion=2023, pdict=pdict, task_groups=task_groups)
         fd.writelines(rst_text)
 
 
-def write_tasks_out(pdict):
+def write_tasks_out(pdict, outdir=None):
     """Creates reST files for each task.
     """
     script_path = os.path.dirname(os.path.realpath(__file__))
     task_template = Template(filename=os.path.join(script_path, 'individual_task.mako'))
+
+    output_dir = script_path if outdir is None else outdir
     for entry in pdict:
         for task in pdict[entry]:
             rst_file = "{}/{}_task.rst".format(entry, task.name)
-            rst_file_full_path = os.path.join(script_path, rst_file)
-            rst_file_dir = os.path.dirname(rst_file_full_path)
-            if not os.path.exists(rst_file_dir):
-                os.makedirs(rst_file_dir)
+            rst_file_full_path = os.path.join(output_dir, rst_file)
+            check_dirs(rst_file_full_path)
             with open(rst_file_full_path, 'w') as fd:
                 rst_text = task_template.render(category=entry, name=task.name, description=task.description,
                                                 parameters=task.parameters, examples=task.examples)
@@ -156,22 +158,26 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
         examples = "\n".join([line[4:] for line in examples.split("\n")]).strip("\n")
 
         return short, long, examples, parameters_dict
-    
-    except Exception as e: 
+
+    except Exception as e:
         print("FAILED to PARSE DOCSTRING. Error: {}".format(e))
         print("Failing docstring: {}".format(docstring))
         return short, long, examples, parameters_dict
 
 
-def create_docs(missing_report=True):
-    """ 
+def create_docs(missing_report=True, outdir=None, srcdir=None):
+    """
     Walks through the pipeline and creates documentation for each pipeline task.
-    
-    Optionally generates and outputs lists of tasks with missing examples, parameters, and 
-    longer descriptions. 
+
+    Optionally generates and outputs lists of tasks with missing examples, parameters, and
+    longer descriptions.
     """
 
-    # Lists of cli PL tasks that are missing various pieces: 
+    if srcdir is not None and os.path.exists(srcdir):
+        sys.path.insert(0, srcdir)
+        import pipeline
+
+    # Lists of cli PL tasks that are missing various pieces:
     missing_example = []
     missing_description = []
     missing_parameters = []
@@ -215,10 +221,34 @@ def create_docs(missing_report=True):
             print("\n")
 
     # Write out "landing page"
-    write_out(pdict)
+    write_out(pdict, outdir=outdir)
 
     # Write individual task pages
-    write_tasks_out(pdict)
+    write_tasks_out(pdict, outdir=outdir)
+
+
+def cli_command():
+    """CLI interface of create_docs.py.
+    
+    try `python create_docs.py --help`
+    """
+
+    # insert the pipeline source directory in case it's not visual to the in-use interpreter.
+    if os.getenv('pipeline_dir') is not None:
+        # use the env variable "pipeline_dir" to look for the Pipeline source code.
+        pipeline_src = os.path.abspath(pipeline_dir)
+    else:
+        # use the ancestry path if "pipeline_dir" is not set.
+        pipeline_src = os.path.abspath('../../pipeline')
+
+    parser = argparse.ArgumentParser(description='Generate Pipeline task .RST files')
+    parser.add_argument('--outdir', '-o', type=str, default=None, help='Output path of the RST files/subdirectories')
+    parser.add_argument('--srcdir', '-s', type=str, default=pipeline_src, help='Path of the Pipeline source code')
+
+    args = parser.parse_args()
+
+    create_docs(missing_report=True, outdir=args.outdir, srcdir=args.srcdir)
+
 
 if __name__ == "__main__":
-    create_docs()
+    cli_command()
