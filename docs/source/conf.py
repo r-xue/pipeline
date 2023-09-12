@@ -228,7 +228,9 @@ napoleon_use_ivar = True
 
 verbatimwrapslines = False
 html_show_sourcelink = True
-autosummary_generate = True
+# Temporarily disable autosummary so that links to individual pipeline tasks works as expected for the 
+# reference manual
+autosummary_generate = False
 autosummary_generate_overwrite = False
 autosummary_imported_members = True
 #autosummary_ignore_module_all = False
