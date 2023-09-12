@@ -179,7 +179,7 @@ latex_use_modindex = True
 # [howto, manual, or own class]).
 latex_documents = [
     ('pipeline_tasks/pipeline_new_tasks', 'pipeline.tex',
-     'Pipeline Reference Manual',
+     'Pipeline Tasks Reference Manual',
      'pipeline team', 'manual'),
 ]
 
