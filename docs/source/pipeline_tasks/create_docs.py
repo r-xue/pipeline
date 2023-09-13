@@ -146,8 +146,10 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
             parameters_dict[parameter_name] = current_parm_desc
 
         # Remove "dryrun" from dict as it is not wanted in the Reference Manual
-        if "dryrun" in parameters_dict:
-            del parameters_dict["dryrun"]
+        exclude_parameters = ["dryrun", "acceptresults"]
+        for parm_to_exclude in exclude_parameters:
+            if parm_to_exclude in parameters_dict:
+                del parameters_dict[parm_to_exclude]
 
         examples = second_split[1].strip("\n")
 

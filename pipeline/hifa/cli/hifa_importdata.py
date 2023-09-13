@@ -124,13 +124,8 @@ def hifa_importdata(vis=None, session=None, asis=None, process_caldevice=None, o
     
     >>> myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
     >>> hifa_importdata(vis=myvislist)
-    
-    5. Load an ASDM but check the results before accepting them into the context.
-    
-    >>> results = hifa_importdata(vis=['uid___A002_X30a93d_X43e.ms'], acceptresults=False)
-    >>> results.accept()
-    
-    6. Run with explicit setting of data column types:
+ 
+    5. Run with explicit setting of data column types:
     
     >>> hifa_importdata(vis=['uid___A002_X30a93d_X43e_targets.ms'], datacolumns={'data': 'regcal_contline'})
     >>> hifa_importdata(vis=['uid___A002_X30a93d_X43e_targets_line.ms'], datacolumns={'data': 'regcal_line', 'corrected': 'selfcal_line'})

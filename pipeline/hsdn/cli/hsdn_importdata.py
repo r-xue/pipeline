@@ -95,12 +95,6 @@ def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None
     >>> myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
     >>> hsdn_importdata(vis=myvislist)
     
-    5. Load an ASDM but check the results before accepting them into the context:
-    
-    >>> results = hsdn_importdata(vis=['uid___A002_X30a93d_X43e.ms'],
-                              acceptresults=False)
-    >>> results.accept()
-    
     """
 
 
