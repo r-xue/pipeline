@@ -490,11 +490,18 @@ class Editimlist(basetask.StandardTaskTemplate):
                 dist = (mosaic_side_arcsec / 2.) + float(buffer_arcsec)
                 dist_arcsec = str(dist) + 'arcsec'
                 LOG.info("{k} = {v}".format(k='dist_arcsec', v=dist_arcsec))
-                # PIPE-1948: we restrict the selection field name to beginning with '0', '1', '2' (sci fields named after their coordinates),
-                # or 'T' (e.g. the NCP field 'T32t02.NCP')
-                found_fields = th.find_fields(distance=dist_arcsec,
-                                              phase_center=imlist_entry['phasecenter'],
-                                              matchregex=['^0', '^1', '^2', '^T'])
+
+                # PIPE-1948/PIPE-2004: we updated the field select algorithm for VLASS-PL2023.
+                # * restrict field intents to 'TARGET'
+                # * restrict field names to beginning with '0', '1', '2', or 'T' (e.g. the NCP field 'T32t02.NCP')
+                # * use spherical sky offsets to select fields based on positions.
+                found_fields = th.select_fields(offsets=dist_arcsec,
+                                                intent='TARGET',
+                                                phasecenter=imlist_entry['phasecenter'],
+                                                name='0*,1*,2*,T*')
+                # for the existing VLASS workflow, only one MS is used, though this might change in the future.
+                found_fields = found_fields[0]
+
                 if found_fields:
                     imlist_entry['field'] = ','.join(str(x) for x in found_fields)  # field ids, not names
 
@@ -684,10 +691,13 @@ class Editimlist(basetask.StandardTaskTemplate):
         mosaic_side_arcsec = 3600  # 1 degree
         dist = (mosaic_side_arcsec / 2.)
         dist_arcsec = str(dist) + 'arcsec'
-        # note: find_fields returns field ids (list of int), not names
-        fid_list = imlist_entry['heuristics'].find_fields(distance=dist_arcsec,
-                                                          phase_center=imlist_entry['phasecenter'],
-                                                          matchregex=['^0', '^1', '^2', '^T'])
+
+        fid_list = imlist_entry['heuristics'].select_fields(offsets=dist_arcsec,
+                                                            intent='TARGET',
+                                                            phasecenter=imlist_entry['phasecenter'],
+                                                            name='0*,1*,2*,T*')
+        # for the existing VLASS workflow, only one MS is used, though this might change in the future.
+        fid_list = fid_list[0]
 
         field_objs = msobj.get_fields(field_id=fid_list)
         n_spwgroup = len(imlist_entry['spw'])

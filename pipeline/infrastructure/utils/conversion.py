@@ -20,6 +20,7 @@ import astropy.units as u
 import cachetools
 import numpy as np
 import pyparsing
+from astropy.coordinates import SkyCoord
 
 from .. import casa_tools, logging
 
@@ -46,6 +47,7 @@ class LoggingLRUCache(cachetools.LRUCache):
     tens of milliseconds. Hence, we want to be notified when the cache size
     limit is hit.
     """
+
     def __init__(self, name: str, *args, **kwargs):
         self.name = name
         super().__init__(*args, **kwargs)
@@ -706,3 +708,51 @@ def record_to_quantity(record: Union[Dict, List[Dict], Tuple[Dict]]) -> Union[u.
         return quantities
 
     return record['value']*u.Unit(record['unit'])
+
+
+def phasecenter_to_skycoord(phasecenter):
+    """Convert a CASA-style coordinate string to an Astropy SkyCoord object."""
+
+    phasecenter_list = phasecenter.split()
+    if len(phasecenter_list) == 2:
+        ra = phasecenter_list[0]
+        dec = phasecenter_list[1]
+        refcode = 'icrs'
+    elif len(phasecenter_list) == 3:
+        ra = phasecenter_list[1]
+        dec = phasecenter_list[2]
+        refcode = phasecenter_list[0]
+    else:
+        LOG.error('cannot parse the phasecenter string %s', phasecenter)
+        return
+
+    dec = dec.replace('.', ':', 2)
+    frame = refcode_to_skyframe(refcode)
+    coord = SkyCoord(ra, dec, unit=(u.hourangle, u.deg), frame=frame)
+
+    return coord
+
+
+def refcode_to_skyframe(refcode):
+    """Conver a CASA coordsysy refcode to an Astropy SkyCoord frame name.
+    
+    Limitations:
+    
+    Currently, it only handles the common cases, e.g. J2000, B1950, ICRS
+    
+    To get a list of built-in astropy.coordinates frame names:
+        from astropy.coordinates import frame_transform_graph
+        print(frame_transform_graph.get_name())
+    To get a list of CASA csys reference code:
+        csys = cs.newcoordsys(direction=True)
+        clist = csys.referencecode('dir', True)
+    
+    """
+
+    frame = refcode.lower()
+    if frame == 'j2000':
+        frame = 'fk5'
+    if frame == 'b1950':
+        frame = 'fk4'
+
+    return frame
