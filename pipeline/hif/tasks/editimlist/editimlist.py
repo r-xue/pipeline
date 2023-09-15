@@ -448,7 +448,13 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['width'] = inpdict['width']
 
         # for VLASS phasecenter is required user input (not determined by heuristics)
-        imlist_entry['phasecenter'] = th.phasecenter(fieldids) if not inpdict['phasecenter'] else inpdict['phasecenter']
+        if inpdict['phasecenter']:
+            imlist_entry['phasecenter'] = inpdict['phasecenter']
+            imlist_entry['psf_phasecenter'] = inpdict['phasecenter']
+        else:
+            phasecenter, psf_phasecenter = th.phasecenter(fieldids)
+            imlist_entry['phasecenter'] = phasecenter
+            imlist_entry['psf_phasecenter'] = psf_phasecenter
 
         # set the field name list in the image list target
         if fieldnames:

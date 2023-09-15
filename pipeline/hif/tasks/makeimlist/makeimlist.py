@@ -918,22 +918,32 @@ class MakeImList(basetask.StandardTaskTemplate):
                         for spwspec in all_spw_keys:
                             cells[spwspec] = cell
 
+                    # get primary beams
+                    largest_primary_beams = {}
+                    for spwspec in min_freq_spwlist:
+                        if list(field_intent_list) != []:
+                            largest_primary_beams[spwspec] = self.heuristics.largest_primary_beam_size(spwspec=spwspec, intent=list(field_intent_list)[0][1])
+                        else:
+                            largest_primary_beams[spwspec] = self.heuristics.largest_primary_beam_size(spwspec=spwspec, intent='TARGET')
+
                     # if phase center not set then use heuristic code to calculate the
                     # centers for each field
                     phasecenter = inputs.phasecenter
+                    psf_phasecenter = inputs.psf_phasecenter
                     phasecenters = {}
+                    psf_phasecenters = {}
                     if phasecenter == '':
                         for field_intent in field_intent_list:
                             try:
                                 field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
-                                phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
+                                phasecenters[field_intent[0]], psf_phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'], primary_beam=largest_primary_beams[min_freq_spwlist[0]], shift_to_nearest_field=True)
                             except Exception as e:
                                 # problem defining center
                                 LOG.warning(e)
-                                pass
                     else:
                         for field_intent in field_intent_list:
                             phasecenters[field_intent[0]] = phasecenter
+                            psf_phasecenters[field_intent[0]] = psf_phasecenter
 
                     # if imsize not set then use heuristic code to calculate the
                     # centers for each field/spwspec
@@ -945,14 +955,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                         sfpblimit = 0.2
                     imsizes = {}
                     if imsize == []:
-                        # get primary beams
-                        largest_primary_beams = {}
-                        for spwspec in min_freq_spwlist:
-                            if list(field_intent_list) != []:
-                                largest_primary_beams[spwspec] = self.heuristics.largest_primary_beam_size(spwspec=spwspec, intent=list(field_intent_list)[0][1])
-                            else:
-                                largest_primary_beams[spwspec] = self.heuristics.largest_primary_beam_size(spwspec=spwspec, intent='TARGET')
-
                         for field_intent in field_intent_list:
                             max_x_size = 1
                             max_y_size = 1
@@ -1279,6 +1281,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     cell=cells[spwspec],
                                     imsize=imsizes[(field_intent[0], spwspec)],
                                     phasecenter=phasecenters[field_intent[0]],
+                                    psf_phasecenter=psf_phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
                                     gridder=target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec),
                                     imagename=imagename,
