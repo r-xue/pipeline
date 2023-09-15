@@ -48,7 +48,7 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
                    which the selected fields are matched. Set to intent='' by default, which
                    means the task will select all data with the BANDPASS intent.
                    
-                   Example: intent=`'*PHASE*'`
+                   Example: intent='`*PHASE*`'
     field
                    The list of field names or field ids for which bandpasses are
                    computed. Set to field='' by default, which means the task

@@ -33,7 +33,7 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None,
                   example: vis=['uid___A002_X85c183_X36f.ms', 
                                 'uid___A002_X85c183_X60b.ms']
     field         Data selection by field names or ids.
-                  example: "*Sgr*,M100"
+                  example: "`*Sgr*,M100`"
     spw           Data selection by spw ids.
                   example: "3,4" (generate images for spw 3 and 4)
     dryrun        Run the commands (True) or generate the commands to be 

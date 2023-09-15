@@ -48,7 +48,7 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
                   which the selected fields are matched.  Defaults to all data
                   with bandpass intent.
                   
-                  Example: intent=`'*PHASE*'`
+                  Example: intent='`*PHASE*`'
     spw           The list of spectral windows and channels for which bandpasses
                   are computed. Defaults to all science spectral windows.
                   

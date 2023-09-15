@@ -84,7 +84,7 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
                   example: 'PM03,PM04'
                            '' (all antennas)
     field         Data selection by field names or ids.
-                  example: '*Sgr*,M100'
+                  example: '`*Sgr*,M100`'
                            '' (all fields)
     spw           Data selection by spw ids.
                   example: '3,4' (spw 3 and 4)

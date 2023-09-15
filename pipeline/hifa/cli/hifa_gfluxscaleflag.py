@@ -52,7 +52,7 @@ def hifa_gfluxscaleflag(vis=None, intent=None, phaseupsolint=None, solint=None, 
                    used for BANDPASS, then this task will select only data with PHASE
                    and CHECK intents.
                    
-                   Example: intent=`'*PHASE*'`
+                   Example: intent='`*PHASE*`'
     phaseupsolint
                    The phase correction solution interval in CASA syntax.
                    

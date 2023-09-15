@@ -69,7 +69,7 @@ def hif_rawflagchans(vis=None, spw=None, intent=None,
                             with deviant gains. The default is blank, which causes the task to select
                             the 'BANDPASS' intent.
                             
-                            example: intent=`'*BANDPASS*'`
+                            example: intent='`*BANDPASS*`'
     flag_hilo               True to flag channel/baseline data further from the view
                             median than fhl_limit * MAD.
     fhl_limit               If flag_hilo is True then flag channel/baseline data

@@ -41,7 +41,7 @@ def hif_correctedampflag(
                    which the selected fields are matched. If undefined (default),
                    it will select all data with the BANDPASS intent.
                    
-                   Example: intent=`'*PHASE*'`
+                   Example: intent='`*PHASE*`'
     field          The list of field names or field ids for which bandpasses are
                    computed. If undefined (default), it will select all fields.
                    

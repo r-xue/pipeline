@@ -47,7 +47,7 @@ def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None, ante
     intent        A string containing a comma delimited list of intents against
                   which the selected fields are matched. Defaults to `*PHASE*`.
                   
-                  Examples: intent='', intent=`'*AMP*,*PHASE*'`
+                  Examples: intent='', intent='`*AMP*,*PHASE*`'
     spw           The list of spectral windows and channels for which gain
                   solutions are computed. Defaults to all science spectral
                   windows.
