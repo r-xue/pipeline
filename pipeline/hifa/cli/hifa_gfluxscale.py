@@ -62,7 +62,7 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
     transfer
                     A string containing a comma delimited list of field names
                     defining the transfer calibrators. Defaults to field names with
-                    intent '*PHASE*'.
+                    intent `'*PHASE*'`.
                     
                     Example: transfer='J1328+041,J1206+30'
     refintent

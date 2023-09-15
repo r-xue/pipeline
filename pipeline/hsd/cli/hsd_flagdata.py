@@ -40,7 +40,7 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     intents          A string containing a comma delimited list of intents against
                      which the scans to be flagged are matched.
 
-                     example: '*BANDPASS*'
+                     example: `'*BANDPASS*'`
     edgespw          Flag the edge spectral window channels.
     fracspw          Fraction of the baseline correlator TDM edge channels to be flagged.
     fracspwfps       Fraction of the ACS correlator TDM edge channels to be flagged.

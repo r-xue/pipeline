@@ -25,14 +25,14 @@ def hif_setjy(vis=None, field=None, intent=None, spw=None, model=None,
     vis           The list of input MeasurementSets. Defaults to the list of
                   MeasurementSets defined in the pipeline context.
     field         The list of field names or field ids for which the models are
-                  to be set. Defaults to all fields with intent '*AMPLITUDE*'.
+                  to be set. Defaults to all fields with intent `'*AMPLITUDE*'`.
                   
                   example: field='3C279', field='3C279, M82'
     intent        A string containing a comma delimited list of intents against
                   which the selected fields are matched. Defaults to all data
                   with amplitude intent.
                   
-                  example: intent='*AMPLITUDE*'
+                  example: intent=`'*AMPLITUDE*'`
     spw           The list of spectral windows and channels for which bandpasses are
                   computed. Defaults to all science spectral windows.
                   

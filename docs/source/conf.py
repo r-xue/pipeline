@@ -88,7 +88,7 @@ copyright = u'2020–{0}, '.format(datetime.utcnow().year) + author
 
 #TODO: update to dynamic pipeline version after this is released
 # pipeline_version = pipeline.environment.pipeline_revision.split('-')[0]
-pipeline_version = '2023.1.0.0'
+pipeline_version = '2023.1.0'
 version = pipeline_version
 release = pipeline_version
 

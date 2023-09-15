@@ -13,7 +13,7 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
 
     Apply the calibration to the data.
 
-    hif_applycal applies the precomputed calibration tables stored in the pipeline
+    hsd_applycal applies the precomputed calibration tables stored in the pipeline
     context to the set of visibility files using predetermined field and
     spectral window maps and default values for the interpolation schemes.
 
@@ -35,7 +35,7 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
     intent        A string containing the list of intents against which the
                   selected fields will be matched. Defaults to all supported intents
                   in the pipeline context.
-                  example: '*TARGET*'
+                  example: `'*TARGET*'`
     spw           The list of spectral windows and channels to which the calibration
                   will be applied. Defaults to all science windows in the pipeline context.
                   example: '17', '11, 15'

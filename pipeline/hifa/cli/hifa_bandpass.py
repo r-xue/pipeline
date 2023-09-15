@@ -49,7 +49,7 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
                         intent='' by default, which means the task will select
                         all data with the BANDPASS intent.
                         
-                        Example: intent='*PHASE*'
+                        Example: intent=`'*PHASE*'`
     spw
                         The list of spectral windows and channels for which
                         bandpasses are computed. Set to spw='' by default, which

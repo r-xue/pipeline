@@ -45,7 +45,7 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     baseband      Flag 20MHz of each edge of basebands
     intents       A string containing a comma delimited list of intents against
                   which the scans to be flagged are matched.
-                  example: '*BANDPASS*'
+                  example: `'*BANDPASS*'`
     edgespw       Fraction of the baseline correlator TDM edge channels to be flagged.
     fracspw       Fraction of baseline correlator edge channels to be flagged
     online        Apply the online flags

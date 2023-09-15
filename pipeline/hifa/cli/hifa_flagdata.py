@@ -72,7 +72,7 @@ def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None, scan=Non
                        A string containing a comma delimited list of intents against
                        which the scans to be flagged are matched.
                        
-                       Example: intents='*BANDPASS*'
+                       Example: intents=`'*BANDPASS*'`
     edgespw
                        Flag the edge spectral window channels.
     fracspw
