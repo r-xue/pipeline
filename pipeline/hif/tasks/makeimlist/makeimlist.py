@@ -30,6 +30,7 @@ class MakeImListInputs(vdp.StandardInputs):
     nchan = vdp.VisDependentProperty(default=-1)
     outframe = vdp.VisDependentProperty(default='LSRK')
     phasecenter = vdp.VisDependentProperty(default='')
+    psf_phasecenter = vdp.VisDependentProperty(default='')
     start = vdp.VisDependentProperty(default='')
     uvrange = vdp.VisDependentProperty(default='')
     width = vdp.VisDependentProperty(default='')
@@ -180,7 +181,7 @@ class MakeImListInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
-                 hm_cell=None, calmaxpix=None, phasecenter=None, nchan=None, start=None, width=None, nbins=None,
+                 hm_cell=None, calmaxpix=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, nbins=None,
                  robust=None, uvtaper=None, clearlist=None, per_eb=None, per_session=None, calcsb=None, datatype=None,
                  datacolumn=None, parallel=None, known_synthesized_beams=None, scal=False):
         self.context = context
@@ -200,6 +201,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.hm_cell = hm_cell
         self.calmaxpix = calmaxpix
         self.phasecenter = phasecenter
+        self.psf_phasecenter = psf_phasecenter
         self.nchan = nchan
         self.start = start
         self.width = width
@@ -936,7 +938,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         for field_intent in field_intent_list:
                             try:
                                 field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
-                                phasecenters[field_intent[0]], psf_phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'], primary_beam=largest_primary_beams[min_freq_spwlist[0]], shift_to_nearest_field=True)
+                                phasecenters[field_intent[0]], psf_phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'], intent=field_intent[1], primary_beam=largest_primary_beams[min_freq_spwlist[0]], shift_to_nearest_field=True)
                             except Exception as e:
                                 # problem defining center
                                 LOG.warning(e)

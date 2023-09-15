@@ -497,7 +497,7 @@ class ImageParamsHeuristics(object):
                             phasecenter = 'TRACKFIELD'
                         else:
                             _, phasecenter = self.phasecenter(field_ids, vislist=valid_vis_list, shift_to_nearest_field=shift,
-                                                                  primary_beam=largest_primary_beam_size, intent=intent)
+                                                              primary_beam=largest_primary_beam_size, intent=intent)
                         do_parallel = mpihelpers.parse_mpi_input_parameter(parallel)
                         paramList = ImagerParameters(msname=valid_vis_list,
                                                      scan=valid_scanids_list,
@@ -834,9 +834,9 @@ class ImageParamsHeuristics(object):
                             'nearest field w/o a primary beam distance check.')
 
         if centreonly:
-            return phasecenter, psf_phase_center
+            return phase_center, psf_phase_center
         else:
-            return phasecenter, psf_phase_center, xspread, yspread
+            return phase_center, psf_phase_center, xspread, yspread
 
     def field(self, intent, field, exclude_intent=None, vislist=None):
 
