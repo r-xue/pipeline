@@ -4,13 +4,12 @@ import os
 import numpy as np
 from casatasks import imsmooth
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
+from pipeline import infrastructure
 from pipeline.hifv.heuristics.vip_helper_functions import (edit_pybdsf_islands,
                                                            mask_from_catalog,
                                                            run_bdsf)
-from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+from pipeline.infrastructure import (basetask, casa_tasks, casa_tools,
+                                     task_registry, vdp)
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -379,8 +378,6 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                             fitsimage=fitsimage)
         runtask = self._executor.execute(export_task)
 
-        # subprocess.call(['/users/jmarvil/scripts/run_bdsf.py',
-        #                  imagename_base+'iter1b.image.smooth5.fits'],env={'PYTHONPATH':''})
         bdsf_result = run_bdsf(infile=fitsimage)
 
         # Return the catalogue fits file name

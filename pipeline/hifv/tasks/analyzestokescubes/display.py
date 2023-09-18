@@ -121,7 +121,7 @@ class VlassCubeFluxSummary(object):
 
                 y = np.array(roi_stats['stokesi'])*1e3
                 weights = np.zeros(y.size)
-                print(roi_stats['keep'])
+
                 idx_keep = np.where(roi_stats['keep'])
                 weights[idx_keep] = 1.0
                 x = np.array(roi_stats['reffreq'])/1e9
