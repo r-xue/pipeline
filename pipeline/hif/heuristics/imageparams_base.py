@@ -904,7 +904,7 @@ class ImageParamsHeuristics(object):
 
         for vis in self.vislist:
             ms = self.observing_run.get_ms(name=vis)
-            fields = ms.fields
+            fields = list(ms.fields)
             select = np.full(len(fields), True)
 
             if isinstance(intent, str) and intent not in ('', '*'):
@@ -918,14 +918,14 @@ class ImageParamsHeuristics(object):
             if isinstance(phasecenter, str):
 
                 coord_phasecenter = phasecenter_to_skycoord(phasecenter)
-                frame = refcode_to_skyframe(fields[0].mdirection['refer'])
+                frame = refcode_to_skyframe(fields[0].frame)
                 coord_phasecenter = coord_phasecenter.transform_to(frame)
 
                 coords = SkyCoord(
-                    [field.mdirection['m0']['value'] for field in fields],
-                    [field.mdirection['m1']['value'] for field in fields],
+                    [field.longitude['value'] for field in fields],
+                    [field.latitude['value'] for field in fields],
                     frame=frame,
-                    unit=(fields[0].mdirection['m0']['unit'], fields[0].mdirection['m1']['unit']))
+                    unit=(fields[0].longitude['unit'], fields[0].latitude['unit']))
                 dra, ddec = coord_phasecenter.spherical_offsets_to(coords)
                 if not isinstance(offsets, (list, tuple)):
                     offsets_limit = (offsets, offsets)
