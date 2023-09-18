@@ -707,7 +707,7 @@ def record_to_quantity(record: Union[Dict, List[Dict], Tuple[Dict]]) -> Union[u.
             return tuple(quantities)
         return quantities
 
-    return record['value']*u.Unit(record['unit'])
+    return record['value'] * u.Unit(record['unit'])
 
 
 def phasecenter_to_skycoord(phasecenter):
