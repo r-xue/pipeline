@@ -387,7 +387,7 @@ class Polcal(basetask.StandardTaskTemplate):
     def _run_applycal(self, vis: str, parang: bool = False):
         acinputs = applycal.IFApplycalInputs(context=self.inputs.context, vis=vis, intent=self.inputs.intent,
                                              parang=parang, flagsum=False, flagbackup=False, flagdetailedsum=False)
-        actask = applycal.IFApplycal(acinputs)
+        actask = applycal.SerialIFApplycal(acinputs)
         self._executor.execute(actask)
 
     def _create_session_ms(self, session_name: str, vislist: List[str]) -> Tuple[str, dict]:

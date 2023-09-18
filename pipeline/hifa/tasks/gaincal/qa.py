@@ -139,11 +139,13 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     S = np.ma.std(selection, ddof=1)
                                     MaxOff = np.ma.max(np.ma.abs(selection))
                                 else:
-                                    # no data for the given pol/ant/spw combination exists;
-                                    # in this case the second test (standard deviation) will show a score 0.85,
-                                    # and the other two tests will appear normal (score 1.0),
-                                    # but in the end the lowest score will be displayed anyway
-                                    M = S = MaxOff = np.nan
+                                    # PIPE-1707: no data for the given pol/ant/spw combination exists - skip further evaluation
+                                    LOG.info(f'No data to evaluate phase offsets for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name}')
+                                    for key in ['QA1', 'QA2', 'QA3']:
+                                        subscores[gaintable][spw_id][ant_id][pol_id][key] = pqa.QAScore(score=1.0,
+                                            longmsg='No data', shortmsg='No data', vis=ms.basename, origin=pqa.QAOrigin(
+                                            metric_name='Number of solutions', metric_score=N, metric_units='N/A'))
+                                    continue
 
                                 # Mean test
                                 QA1_score = 1.0

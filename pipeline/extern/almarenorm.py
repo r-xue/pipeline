@@ -208,7 +208,7 @@ class ACreNorm(object):
 
         # Version
 
-        self.RNversion='v1.6-2023/07/25-PLWG'
+        self.RNversion='v1.6.1-2023/08/09-PLWG'
 
         self.msname=msname
         casalog.post('Opening ms: '+str(self.msname))
@@ -1125,7 +1125,7 @@ class ACreNorm(object):
 
             fthresh : float
                 This is the threshold above which to show an alarm trigger in
-                casalog.post statements and logs as "***". Stands for "fractional
+                print statements and logs as "***". Stands for "fractional
                 alarm" threshold.
                 Default: 0.01   (i.e. 1%)
 
@@ -1134,7 +1134,7 @@ class ACreNorm(object):
             -----
 
             verbose : boolean
-                casalog.post additional messages to the terminal that normally only go
+                Print additional messages to the terminal that normally only go
                 into the log file along with some "debug" type statements.
                 Default: False
         
@@ -1411,13 +1411,13 @@ class ACreNorm(object):
                 if usePhaseAC:
                     # just pick up the full list of phase cal scans
                     # later work out which one we get the AC from within the loop over the target scans
-                    casalog.post('Will use PHASE calibrator AutoCorr for comparions')
+                    casalog.post('Will use PHASE calibrator AutoCorr for comparisons')
                     Phscan=self.getPhscan(ispw,verbose)
                     # still need Bandpass scan for any ATM plots - these are only for illustration
                     Bscan=self.getBscan(ispw,verbose)
                 else:
                     # discern the B scan(s) which will be used - otherwise for using the phase AC we get it later
-                    casalog.post('Will use BANDPASS source AutoCorr for comparions') 
+                    casalog.post('Will use BANDPASS source AutoCorr for comparisons') 
                     Bscan=self.getBscan(ispw,verbose)
                     # and get corr- and ant-dep B, time-averaged 
                     B=self.getACdata(Bscan,ispw,None,True)
@@ -1700,7 +1700,7 @@ class ACreNorm(object):
                                                 for icor in range(nCor):
                                                     # Edits N in place! just does the fit to get zero baseline. 
                                                     # This is calcuating the ReNorm scaling per ant !!!
-                                                    if checkLineForest:
+                                                    if checkLineForest and nseg_tmp>1:
                                                         redo = self.calcReNorm1(
                                                                 N_tmp[icor,lochan:hichan,iant],
                                                                 checkFit=True,
@@ -1727,8 +1727,7 @@ class ACreNorm(object):
                                                                 verbose=False
                                                                 )
                                                     if redo:
-                                                        casalog.post('More than 50% of segment masked in fit, likely due to ' \
-                                                                + 'wide line or line forest. Widening segment and retrying fit.')
+                                                        casalog.post('    Widening segment and retrying fit.')
                                                         break
                                                 if redo:
                                                     break
@@ -2943,7 +2942,7 @@ class ACreNorm(object):
                         atm_gammas += atm_gammas_SB
 
                     # Report found lines, if any.
-                    # PL requested that statistics of ATM lines be casalog.posted out 
+                    # PL requested that statistics of ATM lines be printed out 
                     # with this function.
                     #
                     # Output is:
@@ -3291,11 +3290,16 @@ class ACreNorm(object):
         # Find where ATM was masked
         atm_masked = np.where(R==1.0)[0]
         
-        tmp_mask = mask
-        tmp_mask[atm_masked] = False
+        atm_mask = mask
+        atm_mask[atm_masked] = False
 
         # initial "fit" - Ignoring atm regions
-        f=np.array([np.median(R[tmp_mask])])
+        if len(R[atm_mask]) == 0:
+            casalog.post('    WARN: No data left in segment after removing atm features.')
+            refit=True
+            return refit
+        else:
+            f=np.array([np.median(R[atm_mask])])
 
 
         for ifit in range(1,self.nfit):
@@ -3310,24 +3314,27 @@ class ACreNorm(object):
             #thresh=abs(R0.min()/2.0)
 
             # thresh is 2x median deviation (~1.33 sigma) 
-            thresh=np.median(np.absolute(R0))*2.0
+            # need to ignore regions of the spectrum with atm features
+            thresh=np.median(np.absolute(R0[atm_mask]))*2.0
             
-            # mask within thresh
+            # mask outside thresh
             mask[:]=True
             mask[R0<-thresh]=False
             mask[R0>thresh]=False
-
-            if checkFit:
-                if sum(mask)/len(mask) > 0.5:
-                    refit=False
-                else:
-                    if verbose:
-                        casalog.post('\tWARN: More than 50% of the selected data is masked in the fit.')
-                    refit=True
-                    # Exit here since we need to refit anyway, no sense in
-                    # wasting compute time. There's also a small chance that
-                    # the entire segment is masked from an atm feature.
-                    return refit
+            
+            # This was meant to check for line forest like data but ultimately
+            # just fails when there is an atm feature and noisy data
+            #if checkFit:
+            #    if sum(mask)/len(mask) > 0.5:
+            #        refit=False
+            #    else:
+            #        if verbose:
+            #            casalog.post('    WARN: More than 50% of the selected data is masked in the fit.')
+            #        refit=True
+            #        # Exit here since we need to refit anyway, no sense in
+            #        # wasting compute time. There's also a small chance that
+            #        # the entire segment is masked from an atm feature.
+            #        return refit
 
             # ignore ATM masked regions
             mask[atm_masked]=False
@@ -3337,7 +3344,8 @@ class ACreNorm(object):
                     refit=False
                 else:
                     if verbose:
-                        casalog.post('\tWARN: Less than 10% of the selected data is availabe to fit due to atm features.')
+                        casalog.post('    WARN: Less than 10% of the selected data is available ' \
+                                +'to fit likely due to atm and/or science line features.')
                         refit=True
                         # Exit here since we need to refit because there's 
                         # almost no data left.
@@ -3577,7 +3585,7 @@ class ACreNorm(object):
                 Default: True
 
             verbose : boolean : OPTIONAL
-                If set to True, produce additional casalog.post statement output.
+                If set to True, produce additional output.
                 Default: False
 
         Outputs:
@@ -3678,7 +3686,7 @@ class ACreNorm(object):
                         if Rcomp[spl]>thresharr[jcor][spl]
                         ]
 
-                # store a casalog.post statement for plot - can be later overwritten
+                # store a print statement for plot - can be later overwritten
                 plttxt[jcor]=' **** Replace flagged channels with that from median spectrum **** ' 
                 if len(lineOut[jcor])>0:
                     if verbose:
@@ -4642,7 +4650,7 @@ class ACreNorm(object):
 
                     >>> iterable = [1, 10, 11, 12, 20, 30, 31, 32, 33, 40]
                     >>> for group in consecutive_groups(iterable):
-                    ...     casalog.post(list(group))
+                    ...     print(list(group))
                     [1]
                     [10, 11, 12]
                     [20]
@@ -4656,7 +4664,7 @@ class ACreNorm(object):
                     >>> iterable = 'abcdfgilmnop'
                     >>> ordering = ascii_lowercase.index
                     >>> for group in consecutive_groups(iterable, ordering):
-                    ...     casalog.post(list(group))
+                    ...     print(list(group))
                     ['a', 'b', 'c', 'd']
                     ['f', 'g']
                     ['i']
@@ -5551,6 +5559,3 @@ class ACreNorm(object):
         fWidthSB = chansepSB*len(fSB)
 
         return fSB, chansepSB, fCenterSB, fWidthSB
-
-
-        

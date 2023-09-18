@@ -1,26 +1,22 @@
-<!--
-This is a test procedure for the SRDP selfcalibration pipeline. 
-
-These steps have been skipped to speed up the test:
-- hifv_restoredata
-- hif_mstransform
-- hif_findcont
-- cube imaging
-
-You are expected to have the _targets.ms and cont.data as input.
--->
-
 <ProcessingProcedure>
 
-    <ProcedureTitle>test_hifv_contimage</ProcedureTitle>
+    <ProcedureTitle>hifv_contimage_selfcal</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
         <ParameterSet>
-            <Parameter>
-              <Keyword xmlns="">datacolumns</Keyword>
-              <Value xmlns="">{'data':'regcal_contline_science'}</Value>
-            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_flagtargetsdata</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_mstransform</Command>
+        <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -33,7 +29,7 @@ You are expected to have the _targets.ms and cont.data as input.
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
@@ -44,9 +40,9 @@ You are expected to have the _targets.ms and cont.data as input.
             <Parameter>
                 <Keyword xmlns="">datatype</Keyword>
                 <Value xmlns="">regcal</Value>
-            </Parameter>              
+            </Parameter>
         </ParameterSet>
-    </ProcessingCommand>    
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
@@ -56,25 +52,14 @@ You are expected to have the _targets.ms and cont.data as input.
                 <Value xmlns="">3.0</Value>
             </Parameter>
         </ParameterSet>
-    </ProcessingCommand>    
+    </ProcessingCommand>
 
-
-    <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
-    
     <ProcessingCommand>
         <Command xmlns="">hif_selfcal</Command>
         <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">field</Keyword>
-                <Value xmlns=""></Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">spw</Keyword>
-                <Value xmlns=""></Value>
-            </Parameter>                     
         </ParameterSet>
     </ProcessingCommand>
- 
+
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
@@ -85,9 +70,9 @@ You are expected to have the _targets.ms and cont.data as input.
             <Parameter>
                 <Keyword xmlns="">datatype</Keyword>
                 <Value xmlns="">selfcal</Value>
-            </Parameter>              
+            </Parameter>
         </ParameterSet>
-    </ProcessingCommand>    
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
@@ -113,6 +98,6 @@ You are expected to have the _targets.ms and cont.data as input.
             <Value xmlns="">True</Value>
           </Parameter>
         </ParameterSet>
-    </ProcessingCommand>    
+    </ProcessingCommand>
 
 </ProcessingProcedure>

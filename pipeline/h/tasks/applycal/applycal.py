@@ -76,6 +76,7 @@ class ApplycalInputs(vdp.StandardInputs):
     flagdetailedsum = vdp.VisDependentProperty(default=False)
     flagsum = vdp.VisDependentProperty(default=True)
     intent = vdp.VisDependentProperty(default='TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK')
+    parang = vdp.VisDependentProperty(default=False)
 
     @vdp.VisDependentProperty
     def spw(self):

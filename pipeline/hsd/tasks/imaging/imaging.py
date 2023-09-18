@@ -1,10 +1,11 @@
 """Imaging stage."""
 
 import collections
+import functools
 import math
 import os
 from numbers import Number
-from typing import TYPE_CHECKING, Dict, List, NewType, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import numpy
 from scipy import interpolate
@@ -20,9 +21,10 @@ from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
-from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy ,rasterutil
+from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy, rasterutil, sdtyping
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.hsd.tasks.imaging import (detectcontamination, gridding,
                                         imaging_params, resultobjects,
@@ -33,7 +35,6 @@ if TYPE_CHECKING:
     from casatools import coordsys
     from pipeline.infrastructure import Context
     from resultobjects import SDImagingResults
-    Direction = NewType('Direction', Dict[str, Union[str, float]])
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -110,9 +111,24 @@ class SDImagingInputs(vdp.StandardInputs):
     def is_ampcal(self) -> bool:
         return self.mode.upper() == 'AMPCAL'
 
+    # TODO: Replace the decorator with @functools.cached_property
+    #       when we completely get rid of python 3.6 support
+    @property
+    @functools.lru_cache(1)
+    def datatype(self) -> DataType:
+        """Return datatype enum corresponding to dataset returned by vis/infiles attribute."""
+        # TODO: It would be ideal to integrate datatype stuff into vdp.
+        #       Since this is urgent fix for PIPE-1480, it is better for now
+        #       to confine the change into single file to avoid unexpected
+        #       side effect.
+        _, _datatype = self.context.observing_run.get_measurement_sets_of_type(
+            self.processing_data_type, msonly=False
+        )
+        return _datatype
+
     def __init__(self, context: 'Context', mode: Optional[str]=None, restfreq: Optional[str]=None,
                  infiles: Optional[List[str]]=None, field: Optional[str]=None, spw: Optional[str]=None,
-                 org_direction: Optional['Direction']=None):
+                 org_direction: Optional['sdtyping.Direction']=None):
         """Initialize an object.
 
         Args:
@@ -248,6 +264,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                                 specmode: str,
                                 imagemode: str,
                                 stokes: str,
+                                datatype: DataType,
+                                datamin: Optional[float],
+                                datamax: Optional[float],
+                                datarms: Optional[float],
                                 validsp: List[List[int]],
                                 rms: List[List[float]],
                                 edge: List[int],
@@ -270,6 +290,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             specmode           : Specmode for tsdimaging
             imagemode          : Image mode
             stokes             : Stokes parameter
+            datatype           : Datatype enum
+            datamin            : Minimum value of the image
+            datamax            : Maximum value of the image
+            datarms            : Rms of the image
             validsp            : # of combined spectra
             rms                : Rms values
             edge               : Edge channels
@@ -321,12 +345,33 @@ class SDImaging(basetask.StandardTaskTemplate):
                                      virtspw=virtspw,
                                      field=image_item.sourcename,
                                      nfield=1,
+                                     datatype=datatype.name,
                                      type='singledish',
                                      iter=1,  # nominal
                                      intent=sourcetype,
                                      specmode=specmode,
                                      is_per_eb=False,
                                      context=context)
+
+        # update miscinfo
+        # TODO: Eventually, the following code together with
+        #       Tclean.update_miscinfo should be merged into
+        #       imageheader.set_miscinfo.
+        with casa_tools.ImageReader(imagename) as image:
+            info = image.miscinfo()
+
+            if datamin:
+                info['datamin'] = datamin
+
+            if datamax:
+                info['datamax'] = datamax
+
+            if datarms:
+                info['datarms'] = datarms
+
+            info['stokes'] = stokes
+
+            image.setmiscinfo(info)
 
         # finally replace task attribute with the top-level one
         result.task = cls
@@ -768,7 +813,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _cp.infiles]
         self._finalize_worker_result(self.inputs.context, _rgp.imager_result, sourcename=_rgp.source_name,
                                      spwlist=_rgp.v_spwids, antenna=_rgp.ant_name, specmode=_rgp.specmode,
-                                     imagemode=_cp.imagemode, stokes=self.stokes, validsp=_rgp.validsps,
+                                     imagemode=_cp.imagemode, stokes=self.stokes,
+                                     datatype=self.inputs.datatype, datamin=None, datamax=None, datarms=None,
+                                     validsp=_rgp.validsps,
                                      rms=_rgp.rmss, edge=_cp.edge, reduction_group_id=_rgp.group_id,
                                      file_index=__file_index, assoc_antennas=_rgp.antids, assoc_fields=_rgp.fieldids,
                                      assoc_spws=_rgp.v_spwids)
@@ -790,7 +837,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _cp.infiles]
         self._finalize_worker_result(self.inputs.context, _rgp.imager_result_nro, sourcename=_rgp.source_name,
                                      spwlist=_rgp.v_spwids, antenna=_rgp.ant_name, specmode=_rgp.specmode,
-                                     imagemode=_cp.imagemode, stokes=_rgp.stokes_list[1], validsp=_rgp.validsps,
+                                     imagemode=_cp.imagemode, stokes=_rgp.stokes_list[1],
+                                     datatype=self.inputs.datatype, datamin=None, datamax=None, datarms=None,
+                                     validsp=_rgp.validsps,
                                      rms=_rgp.rmss, edge=_cp.edge, reduction_group_id=_rgp.group_id,
                                      file_index=__file_index, assoc_antennas=_rgp.antids, assoc_fields=_rgp.fieldids,
                                      assoc_spws=_rgp.v_spwids)
@@ -902,6 +951,10 @@ class SDImaging(basetask.StandardTaskTemplate):
                 LOG.warning('Could not get image statistics. Potentially no valid pixel in region of interest.')
                 _pp.image_rms = -1.0
 
+            for __stat_name in ['max', 'min']:
+                __val = __statval.get(__stat_name, [])
+                setattr(_pp, f'image_{__stat_name}', __val[0] if __val else -1.0)
+
         # Theoretical RMS
         LOG.info('Calculating theoretical RMS of image, {}'.format(_pp.imagename))
         _pp.theoretical_rms = self.calculate_theoretical_image_rms(_cp, _rgp, _pp)
@@ -918,7 +971,11 @@ class SDImaging(basetask.StandardTaskTemplate):
                                                           org_directions=_rgp.tocombine.org_directions,
                                                           specmodes=_rgp.tocombine.specmodes)
         __combine_task = sdcombine.SDImageCombine(__combine_inputs)
+        __freq_chan_reversed = False
+        if isinstance(_rgp.imager_result, resultobjects.SDImagingResultItem):
+            __freq_chan_reversed = _rgp.imager_result.frequency_channel_reversed
         _rgp.imager_result = self._executor.execute(__combine_task)
+        _rgp.imager_result.frequency_channel_reversed = __freq_chan_reversed
 
     def __set_representative_flag(self,
                                   _rgp: imaging_params.ReductionGroupParameters,
@@ -978,7 +1035,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                                     spw=__spwid, is_representative=_pp.is_representative_source_and_spw,
                                     bandwidth=__bw, bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
                                     sensitivity=__cqa.quantity(_pp.image_rms, _pp.brightnessunit),
-                                    effective_bw=__effective_bw, imagename=_rgp.imagename)
+                                    effective_bw=__effective_bw, imagename=_rgp.imagename,
+                                    datatype=self.inputs.datatype.name)
         __theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=_rgp.source_name,
                                           spw=__spwid, is_representative=_pp.is_representative_source_and_spw,
                                           bandwidth=__bw, bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
@@ -986,7 +1044,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         __sensitivity_info = SensitivityInfo(__sensitivity, _pp.stat_freqs, (_cp.is_not_nro()))
         self._finalize_worker_result(self.inputs.context, _rgp.imager_result, sourcename=_rgp.source_name,
                                      spwlist=_rgp.combined.v_spws, antenna='COMBINED', specmode=_rgp.specmode,
-                                     imagemode=_cp.imagemode, stokes=self.stokes, validsp=_pp.validsps, rms=_pp.rmss,
+                                     imagemode=_cp.imagemode, stokes=self.stokes,
+                                     datatype=self.inputs.datatype, datamin=_pp.image_min, datamax=_pp.image_max,
+                                     datarms=_pp.image_rms, validsp=_pp.validsps, rms=_pp.rmss,
                                      edge=_cp.edge, reduction_group_id=_rgp.group_id, file_index=__file_index,
                                      assoc_antennas=_rgp.combined.antids, assoc_fields=_rgp.combined.fieldids,
                                      assoc_spws=_rgp.combined.v_spws, sensitivity_info=__sensitivity_info,
@@ -1025,7 +1085,9 @@ class SDImaging(basetask.StandardTaskTemplate):
             __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _rgp.combined.infiles]
             self._finalize_worker_result(self.inputs.context, _rgp.imager_result, sourcename=_rgp.source_name,
                                          spwlist=_rgp.combined.v_spws, antenna='COMBINED', specmode=_rgp.specmode,
-                                         imagemode=_cp.imagemode, stokes=_rgp.stokes_list[1], validsp=_pp.validsps,
+                                         imagemode=_cp.imagemode, stokes=_rgp.stokes_list[1],
+                                         datatype=self.inputs.datatype, datamin=_pp.image_min, datamax=_pp.image_max,
+                                         datarms=_pp.image_rms, validsp=_pp.validsps,
                                          rms=_pp.rmss, edge=_cp.edge, reduction_group_id=_rgp.group_id,
                                          file_index=__file_index, assoc_antennas=_rgp.combined.antids,
                                          assoc_fields=_rgp.combined.fieldids, assoc_spws=_rgp.combined.v_spws)
@@ -1051,7 +1113,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         Args:
             _rgp : Reduction group parameter object of prepare()
-        
+
         Returns:
             A boolean flag of determination whether the loop should be skipped or not.
         """
@@ -1119,9 +1181,10 @@ class SDImaging(basetask.StandardTaskTemplate):
         Args:
             _rgp : Reduction group parameter object of prepare()
         """
+        # PIPE-251: detect contamination
         if not basetask.DISABLE_WEBLOG:
-            # PIPE-251: detect contamination
-            detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'])
+            detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'],
+                                                     _rgp.imager_result.frequency_channel_reversed)
 
     def __append_result(self, _cp: imaging_params.CommonParameters, _rgp: imaging_params.ReductionGroupParameters):
         """Append result to RGP.
@@ -1512,7 +1575,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         Returns:
             False if it cannot get Tsub On/Off values by some error.
-        
+
         Raises:
             BaseException : raises when it cannot find a sky caltable applied.
         """
@@ -1568,7 +1631,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         Returns:
             Jy/K value or failure flag
-        
+
         Raises:
             BaseException : raises when it cannot find a Jy/K caltable applied.
         """
@@ -1775,9 +1838,9 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
-    except Exception:
-        LOG.warning('Failed to detect gaps between raster scans. Fall back to time domain analysis. '
-                    'Result might not be correct.')
+    except Exception as e:
+        if isinstance(e, RasterScanHeuristicsFailure):
+            LOG.warning('{}'.format(e))
         try:
             dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
             se_small = [(v[0], v[-1]) for v in dtrow_list]

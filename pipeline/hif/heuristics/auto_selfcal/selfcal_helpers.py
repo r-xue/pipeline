@@ -107,7 +107,7 @@ def fetch_scan_times(vislist, targets):
     if np.mean(n_spws) != np.max(n_spws):
         LOG.warning('Inconsistent number of spws in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
     if np.max(min_spws) != np.min(min_spws):
-        LOG.warning('Inconsistent minimum spw in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
+        LOG.warning('Inconsistent minimum spwid in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
     spwslist = np.unique(spwslist).astype(int)
     spws_set = np.unique(spws_set, axis=0)
     return scantimesdict, integrationsdict, integrationtimesdict, integrationtimes, np.max(n_spws), np.min(min_spws), spwslist, spws_set
@@ -135,9 +135,12 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
         msmd.open(vis)
         for target in targets:
             scansforfield = msmd.scansforfield(target)
-            scansforspw = msmd.scansforspw(band_properties[vis][band]['spwarray'][0])
-            scansdict[vis][target] = list(set(scansforfield) & set(scansforspw))
-            scansdict[vis][target].sort()
+            # scansforspw = msmd.scansforspw(band_properties[vis][band]['spwarray'][0])
+            # scansdict[vis][target] = list(set(scansforfield) & set(scansforspw))
+            # scansdict[vis][target].sort()
+            # only valid because we are assuming vislist is a single band/field
+            scansdict[vis][target] = list(set(scansforfield))
+            scansdict[vis][target].sort()            
         for target in targets:
             mosaic_field[target] = {}
             mosaic_field[target]['field_ids'] = []
@@ -178,7 +181,7 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
         if np.mean(n_spws) != np.max(n_spws):
             LOG.warning('Inconsistent number of spws in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
         if np.max(min_spws) != np.min(min_spws):
-            LOG.warning('Inconsistent minimum spw in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
+            LOG.warning('Inconsistent minimum spwid in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
         spwslist = np.unique(spwslist).astype(int)
     else:
         return scantimesdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, integrationtimes, -99, -99, spwslist, mosaic_field
@@ -442,11 +445,12 @@ def estimate_SNR(imagename, maskname=None, verbose=True):
     return SNR, rms
 
 
-def estimate_near_field_SNR(imagename, maskname=None, verbose=True):
+def estimate_near_field_SNR(imagename, las=None, maskname=None, verbose=True):
     MADtoRMS = 1.4826
 
     temp_list = ['temp.mask', 'temp.residual', 'temp.border.mask', 'temp.smooth.ceiling.mask',
-                 'temp.smooth.mask', 'temp.nearfield.mask', 'temp.big.smooth.ceiling.mask', 'temp.big.smooth.mask']
+                 'temp.smooth.mask', 'temp.nearfield.mask', 'temp.big.smooth.ceiling.mask',
+                 'temp.nearfield.prepb.mask', 'temp.big.smooth.mask', 'temp.beam.extent.image']
 
     with casa_tools.ImageReader(imagename) as image:
         bm = image.restoringbeam(polarization=0)
@@ -464,7 +468,7 @@ def estimate_near_field_SNR(imagename, maskname=None, verbose=True):
         return np.float64(-99.0), np.float64(-99.0)
     goodMask = checkmask(maskImage)
     if not goodMask:
-        LOG.info('checkmask')
+        LOG.info('The mask file %s is empty.', maskImage)
         return np.float64(-99.0), np.float64(-99.0)
     residualImage = imagename.replace('image', 'residual')
 
@@ -475,32 +479,57 @@ def estimate_near_field_SNR(imagename, maskname=None, verbose=True):
     os.system('cp -r '+residualImage + ' temp.residual')
     residualImage = 'temp.residual'
 
-    cts.imsmooth(imagename='temp.mask', kernel='gauss', major=str(beammajor*3.0)+'arcsec',
-                 minor=str(beammajor*3.0)+'arcsec', pa='0deg', outfile='temp.smooth.mask')
-    cts.immath(imagename=['temp.smooth.mask'], expr='iif(IM0 > 0.1,1.0,0.0)', outfile='temp.smooth.ceiling.mask')
-    cts.imsmooth(imagename='temp.smooth.ceiling.mask', kernel='gauss', major=str(beammajor * 5.0) + 'arcsec',
-                 minor=str(beammajor * 5.0) + 'arcsec', pa='0deg', outfile='temp.big.smooth.mask')
-    cts.immath(imagename=['temp.big.smooth.mask'], expr='iif(IM0 > 0.1,1.0,0.0)', outfile='temp.big.smooth.ceiling.mask')
-    # cts.immath(imagename=['temp.smooth.ceiling.mask','temp.mask'],expr='((IM0-IM1)-1.0)*-1.0',outfile='temp.border.mask')
+    cts.imsmooth(imagename='temp.mask', kernel='gauss', major=str(beammajor*1.0)+'arcsec',
+                 minor=str(beammajor*1.0)+'arcsec', pa='0deg', outfile='temp.smooth.mask')
+    cts.immath(imagename=['temp.smooth.mask'], expr='iif(IM0 > 0.1*max(IM0),1.0,0.0)', outfile='temp.smooth.ceiling.mask')
+
+    # Check the extent of the beam as well.
+    psfImage = maskImage.replace('mask', 'psf')+'.tt0'
+    pbImage = imagename.replace('image', 'pb')
+
+    cts.immath(imagename=[psfImage, pbImage], mode="evalexpr", expr="iif(IM0 > 0.1,1/IM1,0.0)",
+               outfile="temp.beam.extent.image")
+
+    centerpos = cts.imhead(psfImage, mode="get", hdkey="maxpixpos")
+    maxpos = cts.imhead("temp.beam.extent.image", mode="get", hdkey="maxpixpos")
+    center_coords = cts.imval(psfImage, box=str(centerpos[0])+","+str(centerpos[1]))["coords"]
+    max_coords = cts.imval(psfImage, box=str(maxpos[0])+","+str(maxpos[1]))["coords"]
+
+    beam_extent_size = ((center_coords - max_coords)**2)[0:2].sum()**0.5 * 360*60*60/(2*np.pi)
+
+    # use the maximum of the three possibilities as the outer extent of the mask.
+    LOG.info("beammajor*5 = %f, LAS = %f, beam_extent = %f", beammajor*5, 5*las, beam_extent_size)
+    outer_major = max(beammajor*5, beam_extent_size, 5*las if las is not None else 0.)
+
+    cts.imsmooth(imagename='temp.smooth.ceiling.mask', kernel='gauss', major=str(outer_major)+'arcsec',
+                 minor=str(outer_major)+'arcsec', pa='0deg', outfile='temp.big.smooth.mask')
+
+    cts.immath(imagename=['temp.big.smooth.mask'], expr='iif(IM0 > 0.01*max(IM0),1.0,0.0)',
+               outfile='temp.big.smooth.ceiling.mask')
     cts.immath(imagename=['temp.big.smooth.ceiling.mask', 'temp.smooth.ceiling.mask'],
-               expr='((IM0-IM1)-1.0)*-1.0', outfile='temp.nearfield.mask')
+               expr='((IM0-IM1)-1.0)*-1.0', outfile='temp.nearfield.prepb.mask')
+    cts.immath(imagename=['temp.nearfield.prepb.mask', imagename.replace("image", "pb")],
+               expr='iif(VALUE(IM1) > 0.1,IM0,1.0)', outfile='temp.nearfield.mask')
     maskImage = 'temp.nearfield.mask'
-
-    with casa_tools.ImageReader(residualImage) as image:
-        image.calcmask("'"+maskImage+"'"+" <0.5"+"&& mask("+residualImage+")", name='madpbmask0')
-        mask0Stats = image.statistics(robust=True, axes=[0, 1])
-        image.maskhandler(op='set', name='madpbmask0')
-
-    rms = mask0Stats['medabsdevmed'][0] * MADtoRMS
-    peak_intensity = image_stats['max'][0]
-    SNR = peak_intensity/rms
-    if verbose:
-        LOG.info("#%s" % imagename)
-        LOG.info("#Beam %.3f arcsec x %.3f arcsec (%.2f deg)" % (beammajor, beamminor, beampa))
-        LOG.info("#Peak intensity of source: %.2f mJy/beam" % (peak_intensity*1000,))
-        LOG.info("#Near Field rms: %.2e mJy/beam" % (rms*1000,))
-        LOG.info("#Peak Near Field SNR: %.2f" % (SNR,))
-
+    mask_stats = cts.imstat(maskImage)
+    if mask_stats['min'][0] == 1:
+        LOG.info('checkmask')
+        SNR, rms = np.float64(-99.0), np.float64(-99.0)
+    else:
+        with casa_tools.ImageReader(residualImage) as image:
+            image.calcmask("'"+maskImage+"'"+" <0.5"+"&& mask("+residualImage+")", name='madpbmask0')
+            mask0Stats = image.statistics(robust=True, axes=[0, 1])
+            image.maskhandler(op='set', name='madpbmask0')
+        rms = mask0Stats['medabsdevmed'][0] * MADtoRMS
+        peak_intensity = image_stats['max'][0]
+        SNR = peak_intensity/rms
+        if verbose:
+            LOG.info("#%s" % imagename)
+            LOG.info("#Beam %.3f arcsec x %.3f arcsec (%.2f deg)" % (beammajor, beamminor, beampa))
+            LOG.info("#Peak intensity of source: %.2f mJy/beam" % (peak_intensity*1000,))
+            LOG.info("#Near Field rms: %.2e mJy/beam" % (rms*1000,))
+            LOG.info("#Peak Near Field SNR: %.2f" % (SNR,))
+    os.system('cp -r '+maskImage+' '+imagename.replace('image', 'nearfield.mask').replace('.tt0', ''))
     for temp in temp_list:
         shutil.rmtree(temp, ignore_errors=True)
 
@@ -986,16 +1015,21 @@ def get_ALMA_bands(vislist, spwstring, spwarray):
         raise RuntimeError('meanfreq is ouside the allowed range in get_ALMA_bands()')
     bands = [band]
     for vis in vislist:
-        observed_bands[vis] = {}
-        observed_bands[vis]['bands'] = [band]
-        for band in bands:
-            observed_bands[vis][band] = {}
-            observed_bands[vis][band]['spwarray'] = spwarray
-            observed_bands[vis][band]['spwstring'] = spwstring+''
-            observed_bands[vis][band]['meanfreq'] = meanfreq
-            observed_bands[vis][band]['maxfreq'] = maxfreq
-            observed_bands[vis][band]['minfreq'] = minfreq
-            observed_bands[vis][band]['fracbw'] = fracbw
+        with casa_tools.MSMDReader(vis) as msmd:
+            observed_bands[vis] = {}
+            observed_bands[vis]['bands'] = [band]
+            for band in bands:
+                # reject spws that do not exist in the MS.
+                observed_bands[vis][band] = {}
+                is_vis_spwid = [bool(msmd.fieldsforspw(spwid)) for spwid in spwarray]
+                vis_spwarray = np.extract(is_vis_spwid, spwarray)
+                vis_spwstring = ','.join(str(spwid) for spwid in vis_spwarray.tolist())
+                observed_bands[vis][band]['spwarray'] = vis_spwarray
+                observed_bands[vis][band]['spwstring'] = vis_spwstring
+                observed_bands[vis][band]['meanfreq'] = meanfreq
+                observed_bands[vis][band]['maxfreq'] = maxfreq
+                observed_bands[vis][band]['minfreq'] = minfreq
+                observed_bands[vis][band]['fracbw'] = fracbw
     get_max_uvdist(vislist, observed_bands[vislist[0]]['bands'].copy(), observed_bands)
     return bands, observed_bands
 
@@ -1149,14 +1183,18 @@ def get_max_uvdist(vislist, bands, band_properties):
             baselines = get_baseline_dist(vis)
             all_baselines = np.append(all_baselines, baselines)
         max_baseline = np.max(all_baselines)
+        min_baseline = np.min(all_baselines)
+        baseline_5 = np.percentile(all_baselines, 5.0)
         baseline_75 = np.percentile(all_baselines, 75.0)
         baseline_median = np.percentile(all_baselines, 50.0)
         for vis in vislist:
-            meanlam = 3.0e8/band_properties[vis][band]['meanfreq']
             max_uv_dist = max_baseline  # leave maxuv in meters like the other uv entries /meanlam/1000.0
+            min_uv_dist = min_baseline
             band_properties[vis][band]['maxuv'] = max_uv_dist
+            band_properties[vis][band]['minuv'] = min_uv_dist
             band_properties[vis][band]['75thpct_uv'] = baseline_75
             band_properties[vis][band]['median_uv'] = baseline_median
+            band_properties[vis][band]['LAS'] = 0.6 / (1000*baseline_5) * 180./np.pi * 3600.
 
 
 def get_uv_range(band, band_properties, vislist):
@@ -1259,6 +1297,8 @@ def importdata(vislist, all_targets, telescope):
                 band_properties[vis]['bands'].remove(band)
                 LOG.info('Removing '+band+' bands from list due to no observations')
             bands_to_remove.append(band)
+
+        loopcount = 0
         for vis in vislist:
             for target in all_targets:
                 check_target = len(integrationsdict[band][vis][target])
@@ -1268,8 +1308,9 @@ def importdata(vislist, all_targets, telescope):
                     scantimesdict[band][vis].pop(target)
                     scanstartsdict[band][vis].pop(target)
                     scanendsdict[band][vis].pop(target)
-
-                    mosaic_field_dict[band].pop(target)
+                    if loopcount == 0:
+                        mosaic_field_dict[band].pop(target)
+            loopcount += 1
     if len(bands_to_remove) > 0:
         for delband in bands_to_remove:
             bands.remove(delband)

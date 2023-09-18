@@ -1,10 +1,14 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifa_calimage_selfcal</ProcedureTitle>
+    <ProcedureTitle>hifa_polcalimage_totalintensity</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">minparang</Keyword>
+                <Value xmlns="">60.0</Value>
+            </Parameter>
             <Parameter>
                 <Keyword xmlns="">dbservice</Keyword>
                 <Value xmlns="">True</Value>
@@ -97,6 +101,44 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifa_polcalflag</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_session_refant</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_lock_refant</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_bandpass</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">unregister_existing</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_spwphaseup</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">unregister_existing</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifa_gfluxscale</Command>
         <ParameterSet>
         </ParameterSet>
@@ -125,7 +167,7 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">intent</Keyword>
-                <Value xmlns="">PHASE,BANDPASS,AMPLITUDE</Value>
+                <Value xmlns="">PHASE,BANDPASS,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -284,92 +326,6 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">repBW</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_selfcal</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">mfs</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">selfcal</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cont</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">selfcal</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cube</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">selfcal</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">repBW</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">selfcal</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
