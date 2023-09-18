@@ -52,7 +52,7 @@ def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None, ante
                   solutions are computed. Defaults to all science spectral
                   windows.
                   
-                  Examples: spw='3C279', spw='3C279, M82'
+                  Examples: spw='21', spw='21, 23'
     antenna       Set of data selection antenna ids
     hm_gaintype   The type of gain calibration. The options are 'gtype' and
                   'gspline' for CASA gain types = 'G' and 'GSPLINE' respectively.

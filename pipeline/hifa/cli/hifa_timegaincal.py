@@ -79,7 +79,7 @@ def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstabl
                      The list of spectral windows and channels for which gain solutions are
                      computed. Defaults to all science spectral windows.
                      
-                     Example: spw='3C279', spw='3C279, M82'
+                     Example: spw='11', spw='11, 13'
     antenna
                      The selection of antennas for which gains are computed. Defaults to all.
     calsolint
