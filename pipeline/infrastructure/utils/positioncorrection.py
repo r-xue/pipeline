@@ -105,9 +105,10 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             header['cunit2'] = 'deg'
 
             # Update history, "Position correction..." message should remain the last record in list.
-            messages = [
-                f"Uncorrected CRVAL1 = {header['crval1']:.12E} deg", f"Uncorrected CRVAL2 = {header['crval2']:.12E} deg",
-                f'Position correction ({-offset_arcsec*np.sin(pa_rad):.3E}/cos(CRVAL2), {-offset_arcsec*np.cos(pa_rad):.3E}) arcsec applied.']
+            messages = ['Uncorrected CRVAL1 = {:.12E} deg'.format(casa_tools.quanta.convert(ra_head, 'deg')['value']),
+                        'Uncorrected CRVAL2 = {:.12E} deg'.format(casa_tools.quanta.convert(dec_head, 'deg')['value']),
+                        'Position correction ({:.3E}/cos(CRVAL2), {:.3E}) arcsec applied'.format(
+                            -offset_arcsec*np.sin(pa_rad), -offset_arcsec*np.cos(pa_rad))]
             for m in messages:
                 header.add_history(m)
 
