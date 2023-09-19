@@ -58,18 +58,18 @@ def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstabl
                      The list of output calibration phase tables for the
                      calibration targets. Defaults to the standard pipeline naming convention.
                      
-                     Example: calphasetable=['M82.gcal', 'M82B.gcal']
+                     Example: calphasetable=['M82.gpcal', 'M82B.gpcal']
     targetphasetable
                      The list of output phase calibration tables for the science
                      targets. Defaults to the standard pipeline naming convention.
                      
-                     Example: targetphasetable=['M82.gcal', 'M82B.gcal']
+                     Example: targetphasetable=['M82.gpcal', 'M82B.gpcal']
     amptable
                      The list of output calibration amplitude tables for the
                      calibration and science targets.
                      Defaults to the standard pipeline naming convention.
                      
-                     Example: amptable=['M82.gcal', 'M82B.gcal']
+                     Example: amptable=['M82.gacal', 'M82B.gacal']
     field
                      The list of field names or field ids for which gain solutions are to
                      be computed. Defaults to all fields with the standard intent.

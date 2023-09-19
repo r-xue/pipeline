@@ -205,7 +205,7 @@ def hifa_wvrgcalflag(vis=None, caltable=None, offsetstable=None, hm_toffset=None
     fhi_limit
                          Flag figure of merit values higher than limit * MAD.
     fhi_minsample
-                         Minimum number of samples for valid MAD estimate
+                         Minimum number of samples for valid MAD estimate.
     ants_with_wvr_thresh
                          This threshold sets the minimum fraction of antennas
                          that should have WVR data for WVR calibration and flagging to proceed; the
