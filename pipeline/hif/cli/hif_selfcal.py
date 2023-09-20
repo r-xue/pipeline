@@ -81,6 +81,19 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                             the gaincal combine parameter will be set to 'scan'.
                             default=False              
     --------- examples -----------------------------------------------------------    
+
+    1. Run self-calibration and apply solutions to all science targets and spws
+    
+    >>> hif_setjy()
+
+    2. Run self-calibration and apply solutions to a single science target
+
+    >>> hif_selfcal(field="3C279")
+
+    3. Run self-calibration with a more relaxed allowed fractional change in the beam size for a solution interval to be successful
+
+    >>> hif_selfcal(delta_beam_thresh=0.15)
+    
     """
 
     #                                                                        #
