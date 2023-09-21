@@ -29,6 +29,7 @@ total_keys = {
     'POLANGLE'     : 'Polarization angle',
     'POLLEAKAGE'   : 'Polarization leakage',
 	'CHECK'		   : 'Check',
+	'DIFFGAIN'     : 'Diffgain',
 }
 
 def template_agent_header1(agent):
@@ -66,7 +67,7 @@ def total_for_mses(mses, row):
 		for agent in flags[ms].keys():
 			fs = flags[ms][agent][row]
 			flagged += fs.flagged
-	if total is 0:
+	if total == 0:
 		return 'N/A'
 	else:
 		return '%0.3f%%' % (100.0 * flagged / total)
@@ -82,7 +83,7 @@ def total_for_agent(agent, row, mses=flags.keys()):
 		else:
 			# agent was not activated for this MS.
 			total += flags[ms]['before'][row].total
-	if total is 0:
+	if total == 0:
 		return 'N/A'
 	else:
 		return '%0.3f%%' % (100.0 * flagged / total)

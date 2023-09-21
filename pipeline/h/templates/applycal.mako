@@ -87,7 +87,7 @@ def total_for_mses(mses, row):
 		for agent in flags[ms].keys():
 			fs = flags[ms][agent][row]
 			flagged += fs.flagged
-	if total is 0:
+	if total == 0:
 		return 'N/A'
 	else:
 		return '%0.3f%%' % (100.0 * flagged / total)
@@ -103,7 +103,7 @@ def total_for_agent(agent, row, mses=flags.keys()):
 		else:
 			# agent was not activated for this MS.
 			total += flags[ms]['before'][row].total
-	if total is 0:
+	if total == 0:
 		return 'N/A'
 	else:
 		return '%0.3f%%' % (100.0 * flagged / total)
@@ -606,7 +606,7 @@ def format_spwmap(spwmap, scispws):
 		Science target: calibrated amplitude vs frequency
 	</%def>
 
-	<%def name="preamble()">
+	<%def name="ms_preamble(ms)">
 	% if uv_max[ms].value > 0.0:
         <p>Calibrated amplitude vs frequency plots for the each measurement
             set's representative source. For mosaics, the representative field is

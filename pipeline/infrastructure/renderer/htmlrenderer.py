@@ -43,7 +43,7 @@ def get_task_description(result_obj, context, include_stage=True):
     if not isinstance(result_obj, (list, basetask.ResultsList)):
         return get_task_description([result_obj, ], context)
 
-    if len(result_obj) is 0:
+    if len(result_obj) == 0:
         msg = 'Cannot get description for zero-length results list'
         LOG.error(msg)
         return msg
@@ -153,7 +153,7 @@ def get_task_name(result_obj, include_stage=True):
         if not isinstance(result_obj, (list, basetask.ResultsList)):
             return get_task_name([result_obj, ])
 
-        if len(result_obj) is 0:
+        if len(result_obj) == 0:
             msg = 'Cannot get task name for zero-length results list'
             LOG.error(msg)
             return msg
@@ -196,7 +196,7 @@ def get_stage_number(result_obj):
     if not isinstance(result_obj, collections.Iterable):
         return get_stage_number([result_obj, ])
 
-    if len(result_obj) is 0:
+    if len(result_obj) == 0:
         msg = 'Cannot get stage number for zero-length results list'
         LOG.error(msg)
         return msg
@@ -482,6 +482,7 @@ class T1_1Renderer(RendererBase):
             'project_uids': project_uids,
             'schedblock_uids': schedblock_uids,
             'execblock_uids': execblock_uids,
+            'number_of_execblocks': len(context.observing_run.execblock_ids),
             'ous_uid': context.project_structure.ous_entity_id,
             'ousstatus_entity_id': context.project_structure.ousstatus_entity_id,
             'ppr_uid': None,
@@ -638,8 +639,9 @@ class T1_3MRenderer(RendererBase):
                         for field in resultitem.flagsummary:
                             # Get the field intents, but only for those that
                             # the pipeline processes. This can be an empty
-                            # list (PIPE-394: POINTING, WVR intents).
-                            intents_list = [f.intents for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET')
+                            # list (PIPE-394: POINTING, WVR intents; PIPE-1806: DIFFGAIN).
+                            intents_list = [f.intents for f in ms.get_fields(
+                                intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET,DIFFGAIN')
                                             if field in f.name]
                             if len(intents_list) == 0:
                                 continue
@@ -775,6 +777,10 @@ class T2_1DetailsRenderer(object):
         task = summary.FieldVsTimeChart(inputs)
         field_vs_time = task.plot()
 
+        inputs = summary.SpwIdVsFreqChart.Inputs(context, vis=ms.basename)
+        task = summary.SpwIdVsFreqChart(inputs, context)
+        spwid_vs_freq = task.plot()
+
         science_spws = ms.get_spectral_windows(science_windows_only=True)
         all_bands = sorted({spw.band for spw in ms.get_all_spectral_windows()})
         science_bands = sorted({spw.band for spw in science_spws})
@@ -802,10 +808,6 @@ class T2_1DetailsRenderer(object):
             time_on_science = utils.total_time_on_target_on_source(ms, is_single_dish_data)
         else:
             time_on_science = utils.total_time_on_source(science_scans)
-
-#         dirname = os.path.join(context.report_dir, 
-#                                'session%s' % ms.session,
-#                                ms.basename)
 
         task = summary.WeatherChart(context, ms)
         weather_plot = task.plot()
@@ -886,6 +888,7 @@ class T2_1DetailsRenderer(object):
             'time_on_science' : utils.format_timedelta(time_on_science),
             'intent_vs_time'  : intent_vs_time,
             'field_vs_time'   : field_vs_time,
+            'spwid_vs_freq'   : spwid_vs_freq,
             'dirname'         : dirname,
             'weather_plot'    : weather_plot,
             'pwv_plot'        : pwv_plot,
@@ -2031,7 +2034,7 @@ def get_results_by_time(context, resultslist):
     # as this is a ResultsList with important properties attached, results
     # should be sorted in place.
     if hasattr(resultslist, 'sort'):
-        if len(resultslist) is not 1:
+        if len(resultslist) != 1:
             try:
                 # sort the list of results by the MS start time
                 resultslist.sort(key=lambda r: get_ms_start_time_for_result(context, r))

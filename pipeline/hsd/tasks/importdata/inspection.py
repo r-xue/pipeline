@@ -25,17 +25,22 @@ LOG = infrastructure.get_logger(__name__)
 class SDInspection(object):
     """Inspection class for hsd_importdata."""
 
-    def __init__(self, context: Context, table_name: str, ms: Optional[MeasurementSet]=None):
+    def __init__(self, context: Context, table_name: str, ms: Optional[MeasurementSet]=None, hm_rasterscan: str = 'time'):
         """Initialise SDInspection class.
 
         Args:
             context: pipeline context
             table_name: path to DataTable corresponding to ms
             ms: MeasurementSet object for inspection
+            hm_rasterscan: Heuristics method for raster scan analysis (default: 'time')
         """
         self.context = context
         self.table_name = table_name
         self.ms = ms
+        self.hm_rasterscan = hm_rasterscan.lower()
+
+        if self.hm_rasterscan not in ['time', 'direction']:
+            raise ValueError("hm_rasterscan must be either 'time' or 'direction'")
 
     def execute(self, dry_run: bool = True) -> Tuple[Dict[int, MSReductionGroupDesc], Dict[str, Union[str, Dict]]]:
         """Execute inspection process.
@@ -65,6 +70,7 @@ class SDInspection(object):
         LOG.debug('register meta data to DataTable')
         table_name = self.table_name
         worker = reader.MetaDataReader(context=self.context, ms=self.ms, table_name=table_name)
+        invalid_pointing_data, msglist = worker.generate_flagdict_for_invalid_pointing_data()
         LOG.debug('table_name=%s' % table_name)
 
         dry_run = not os.path.exists(self.ms.name)
@@ -147,7 +153,7 @@ class SDInspection(object):
         if is_alma and is_raster:
             worker.generate_flagcmd()
 
-        return reduction_group, org_directions
+        return reduction_group, org_directions, msglist
 
 #     def _inspect_reduction_group(self):
 #         reduction_group = {}
@@ -413,7 +419,7 @@ class SDInspection(object):
                     #
 
                     raster_heuristic_ok = False
-                    if pattern == 'RASTER':
+                    if pattern == 'RASTER' and self.hm_rasterscan == 'direction':
                         LOG.info('Performing RasterScanHeuristics for raster scan pattern')
                         try:
                             sra_sel = numpy.take(offset_ra, id_list)
@@ -421,14 +427,13 @@ class SDInspection(object):
                             merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
                             raster_heuristic_ok = True
                         except RasterScanHeuristicsFailure as e:
-                            LOG.warn('RasterScanHeuristics failed with the following error. ' +
-                                     'Falling back to time domain grouping.\nOriginal Exception:\n{}'.format(e))
+                            LOG.warn('{} This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.'.format(e))
                             raster_heuristic_ok = False
 
-                    if pattern != 'RASTER' or raster_heuristic_ok is False:
+                    if pattern != 'RASTER' or self.hm_rasterscan == 'time' or raster_heuristic_ok is False:
                         # new GroupByTime with translation
                         time_diff = time_sel[1:] - time_sel[:-1]
-                        update_time = (last_time is None or 
+                        update_time = (last_time is None or
                                        len(time_diff) != len(last_time) or
                                        not all(time_diff == last_time))
                         if update_time:

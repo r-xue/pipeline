@@ -63,6 +63,7 @@ import inspect
 import numbers
 import os
 import pprint
+from inspect import signature
 
 from pipeline.domain import DataType
 
@@ -377,11 +378,8 @@ class InputsContainer(object):
                 # user intends for the class to use the default mode. Inspect
                 # the constructor to find what that value is.
                 constructor = task_cls.Inputs.__init__
-                code = constructor.__code__
-                argcount = code.co_argcount
-                argnames = code.co_varnames[:argcount]
-                fn_defaults = constructor.__defaults__ or list()
-                argdefs = dict(zip(argnames[-len(fn_defaults):], fn_defaults))
+                argdefs = {name: param.default for name, param in signature(
+                    constructor).parameters.items() if param.default is not param.empty}
 
                 # user intends for the class to use the default mode. Inspect
                 # the constructor to find what that value is
@@ -442,7 +440,7 @@ class InputsContainer(object):
 # Note that the imaging_preferred flag has been removed as part of the work for PIPE-1062, PIPE-1112 and PIPE-1222.
 #                 imaging_preferred = issubclass(self._task_cls.Inputs, api.ImagingMeasurementSetsPreferred)
 #                 ms_pool = self._context.observing_run.get_measurement_sets(imaging_preferred=imaging_preferred)
-                
+
             named_args[self._scope_attr] = [ms.name for ms in ms_pool]
             LOG.debug('MS to be processed: {}'.format(named_args[self._scope_attr]))
 
@@ -516,11 +514,18 @@ class InputsContainer(object):
         # compare self against that.
         casa_tasks = [m.casa_task for m in task_registry.task_map if m.pipeline_class.Inputs == self._task_cls.Inputs]
 
-        if len(casa_tasks) is not 1:
+        if len(casa_tasks) != 1:
             return
 
         # map Python Inputs arguments back to their CASA equivalent
-        remapped = argmapper.inputs_to_casa(self._task_cls, self._initargs)
+        try:
+            remapped = argmapper.inputs_to_casa(self._task_cls, self._initargs)
+        except KeyError:
+            # When Inputs class is shared among top-level task and underlying
+            # worker task, argmapper.inputs_to_casa can throw KeyError.
+            # Typically, it happens when Inputs class is shared among HPC
+            # task and its serial worker class.
+            return
 
         # CAS-6299. Extra request from Liz:
         #
@@ -541,10 +546,6 @@ class InputsContainer(object):
         task_args = ['%s=%r' % (k, v) for k, v in remapped.items()
                      if k not in ['self', 'context']
                      and v is not None]
-
-        # work around CASA problem with globals when no arguments are specified
-        if not task_args:
-            task_args = ['pipelinemode="automatic"']
 
         casa_call = '%s(%s)' % (casa_tasks[0], ', '.join(task_args))
 
@@ -715,7 +716,7 @@ class StandardInputs(api.Inputs, metaclass=PipelineInputsMeta):
 
     # - standard non-vis-dependent properties --------------------------------
     processing_data_type = [DataType.RAW]
-    
+
     @property
     def context(self):
         """
@@ -1028,9 +1029,9 @@ def format_value_list(val):
     # return single values where possible, which is when only one value
     # is present because the inputs covers one ms or because the values
     # for each ms are all the same.
-    if len(val) is 0:
+    if len(val) == 0:
         return val
-    elif len(val) is 1:
+    elif len(val) == 1:
         return val[0]
     else:
         if all_unique(val):

@@ -205,10 +205,12 @@ def get_suboptimal_badge(result):
 def get_command_markup(ctx, command):
     if not command:
         return ''
-    stripped = command.replace('%s/' % ctx.report_dir, '')
-    stripped = stripped.replace('%s/' % ctx.output_dir, '')
-    escaped = html.escape(stripped, True).replace('\'', '&#39;')
-    return escaped
+    # PIPE-1839: avoid removing '/' symbols if not part of a non-empty directory path
+    if ctx.report_dir:
+        command = command.replace('%s/' % ctx.report_dir, '')
+    if ctx.output_dir:
+        command = command.replace('%s/' % ctx.output_dir, '')
+    return html.escape(command, True).replace('\'', '&#39;')
 
 
 def format_shortmsg(pqascore):
@@ -420,7 +422,7 @@ def percent_flagged(flagsummary: Any) -> str:
     flagged = flagsummary.flagged
     total = flagsummary.total
 
-    if total is 0:
+    if total == 0:
         return 'N/A'
     else:
         return '%0.3f%%' % (100.0 * flagged / total)

@@ -5,7 +5,6 @@ import os
 import shutil
 import tarfile
 import re
-import glob
 import traceback
 
 import numpy as np
@@ -110,7 +109,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 raise
 
         # Initialize the standard ous is string.
-        oussid = self.get_oussid(inputs.context)
+        oussid = inputs.context.get_oussid()
 
         # Define the results object
         result = ExportvlassdataResults()
@@ -169,13 +168,13 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     image_bundle.extend([pbcor_image_name, rms_image_name])
 
                     # No FITS file created
-                    tt0_initial_models = glob.glob('*iter1.model.tt0*')
+                    tt0_initial_models = utils.glob_ordered('*iter1.model.tt0*')
                     tt0_initial_models.sort(key=natural_keys)
                     tt0_initial_model_name = tt0_initial_models[0]
                     # tt0_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt0')
                     # tt0_initial_model_name = tt0_initial_model_name.replace('s13', 's5')
 
-                    tt1_initial_models = glob.glob('*iter1.model.tt1*')
+                    tt1_initial_models = utils.glob_ordered('*iter1.model.tt1*')
                     tt1_initial_models.sort(key=natural_keys)
                     tt1_initial_model_name = tt1_initial_models[0]
                     # tt1_initial_model_name = imageitem['imagename'].replace('iter3.image.subim', 'iter1.model.tt1')
@@ -200,13 +199,13 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Add masks for PIPE-1038
         self.masks = []
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
-            QLmasks = glob.glob('*.QLcatmask-tier1.mask')
+            QLmasks = utils.glob_ordered('*.QLcatmask-tier1.mask')
             QLmasks.sort(key=natural_keys)
             QLmask = QLmasks[-1]
-            secondmasks = glob.glob('*.secondmask.mask')
+            secondmasks = utils.glob_ordered('*.secondmask.mask')
             secondmasks.sort(key=natural_keys)
             secondmask = secondmasks[-1]
-            finalmasks = glob.glob('*.combined-tier2.mask')
+            finalmasks = utils.glob_ordered('*.combined-tier2.mask')
             finalmasks.sort(key=natural_keys)
             finalmask = finalmasks[-1]
 
@@ -304,7 +303,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         with casa_tools.ImageReader(imagename) as image:
 
             # We checked the kernel size and position correction offeset again the below tolerenaces but
-            # the results won't affect the smooth/regrid executation.
+            # the results won't affect the smooth/regrid execution.
             pstol = pixdiag_arcsec*0.2  # the tolerance for considering the convolution kernel as a point-source
             sptol = pixdiag_arcsec*0.1  # the tolerance to consider regridding less meaningful
 
@@ -356,23 +355,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
     def analyse(self, results):
         return results
-
-    def get_oussid(self, context):
-        """
-        Determine the ous prefix
-        """
-
-        # Get the parent ous ousstatus name. This is the sanitized ous
-        # status uid
-        ps = context.project_structure
-        if ps is None:
-            oussid = 'unknown'
-        elif ps.ousstatus_entity_id == 'unknown':
-            oussid = 'unknown'
-        else:
-            oussid = ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
-
-        return oussid
 
     def get_recipename(self, context):
         """
@@ -499,23 +481,23 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         pipemanifest.add_procedure_name(ouss, context.project_structure.recipe_name)
 
         if stdfproducts.ppr_file:
-            pipemanifest.add_pprfile(ouss, os.path.basename(stdfproducts.ppr_file))
+            pipemanifest.add_pprfile(ouss, os.path.basename(stdfproducts.ppr_file), oussid)
 
         # Add the flagging and calibration products
         for session_name in sessiondict:
             session = pipemanifest.set_session(ouss, session_name)
-            pipemanifest.add_caltables(session, sessiondict[session_name][1])
+            pipemanifest.add_caltables(session, sessiondict[session_name][1], session_name)
             for vis_name in sessiondict[session_name][0]:
-                pipemanifest.add_asdm(session, vis_name, visdict[vis_name][0], visdict[vis_name][1])
+                pipemanifest.add_asdm(session, vis_name, visdict[vis_name][0], visdict[vis_name][1], oussid)
 
         # Add a tar file of the web log
-        pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file))
+        pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file), oussid)
 
         # Add the processing log independently of the web log
-        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file))
+        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file), oussid)
 
         # Add the processing script independently of the web log
-        pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript))
+        pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript), oussid)
 
         # Add the calibrator images
         pipemanifest.add_images(ouss, calimages, 'calibrator')
