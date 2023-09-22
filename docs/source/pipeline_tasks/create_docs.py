@@ -22,7 +22,22 @@ task_groups = {"h": "Generic",
 
 # Tasks to exclude from the reference manual
 # hifv tasks confirmed by John Tobin via email 20230911
-tasks_to_exclude = ['hifv_targetflag', 'hifv_gaincurves', 'hifv_opcal', 'hifv_rqcal', 'hifv_swpowcal', 'hifv_tecmaps']
+# h tasks requested by Remy via email 20230921
+tasks_to_exclude = ['h_applycal',
+                    'h_export_calstate',
+                    'h_exportdata',
+                    'h_import_calstate',
+                    'h_importdata',
+                    'h_mssplit',
+                    'h_restoredata',
+                    'h_show_calstate',
+                    'h_tsyscal',
+                    'hifv_targetflag',
+                    'hifv_gaincurves',
+                    'hifv_opcal',
+                    'hifv_rqcal',
+                    'hifv_swpowcal',
+                    'hifv_tecmaps']
 
 pdict = {"h": [],
          "hif": [],
