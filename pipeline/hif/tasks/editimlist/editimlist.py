@@ -494,11 +494,13 @@ class Editimlist(basetask.StandardTaskTemplate):
                 # PIPE-1948/PIPE-2004: we updated the field select algorithm for VLASS-PL2023.
                 # * restrict field intents to 'TARGET'
                 # * restrict field names to beginning with '0', '1', '2', or 'T' (e.g. the NCP field 'T32t02.NCP')
+                #   note: we also consider rge double quote possibility because field names might be protected in
+                #   the name strings of Field domain objects.
                 # * use spherical sky offsets to select fields based on positions.
                 found_fields = th.select_fields(offsets=dist_arcsec,
                                                 intent='TARGET',
                                                 phasecenter=imlist_entry['phasecenter'],
-                                                name='0*,1*,2*,T*')
+                                                name='0*,"0*,1*,"1*,2*,"2*,T*,"T*')
                 # for the existing VLASS workflow, only one MS is used, though this might change in the future.
                 found_fields = found_fields[0]
 
@@ -695,7 +697,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         fid_list = imlist_entry['heuristics'].select_fields(offsets=dist_arcsec,
                                                             intent='TARGET',
                                                             phasecenter=imlist_entry['phasecenter'],
-                                                            name='0*,1*,2*,T*')
+                                                            name='0*,"0*,1*,"1*,2*,"2*,T*,"T*')
         # for the existing VLASS workflow, only one MS is used, though this might change in the future.
         fid_list = fid_list[0]
 
