@@ -63,20 +63,7 @@ class RenormInputs(vdp.StandardInputs):
     atm_auto_exclude = vdp.VisDependentProperty(default=False)
     bwthreshspw = vdp.VisDependentProperty(default={})
 
-    @property
-    def parallel(self):
-        return self._parallel
-
-    @parallel.setter
-    def parallel(self, value):
-        if value is None:
-            value = 'automatic'
-        else:
-            allowed = ('true', 'false', 'automatic', True, False)
-            if value not in allowed:
-                m = ', '.join(('{!r}'.format(i) for i in allowed))
-                raise ValueError('Value not in allowed value set ({!s}): {!r}'.format(m, value))
-        self._parallel = value
+    parallel = sessionutils.parallel_inputs_impl()
 
     def __init__(self, context, vis=None, apply=None, threshold=None, correctATM=None, spw=None,
                  excludechan=None, atm_auto_exclude=None, bwthreshspw=None, parallel=None):
