@@ -10,9 +10,6 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
     """
     hsd_restoredata ---- Restore flagged and calibration single dish data from a pipeline run
 
-    The hsd_restoredata task restores flagged and calibrated MeasurementSets
-    from archived ASDMs and pipeline flagging and calibration date products.
-    
     The hsd_restoredata task restores flagged and calibrated data from archived
     ASDMs and pipeline flagging and calibration data products. Pending archive
     retrieval support hsd_restoredata assumes that the required products

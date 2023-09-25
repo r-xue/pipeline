@@ -52,7 +52,7 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
                         unavailable in one or more tables
                     'calonly': calibrate data only, flags from solutions NOT applied
     calwt         Calibrate the weights as well as the data.
-    flagbackup    Backup the flags before the applyBackup the flags before the apply.
+    flagbackup    Backup the flags before the apply.
     parallel      Execute using CASA HPC functionality, if available.
                   options: 'automatic', 'true', 'false', True, False
                   default: None (equivalent to 'automatic')

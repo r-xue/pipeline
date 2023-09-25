@@ -18,14 +18,8 @@ def hsd_tsysflag(vis=None, caltable=None,
     hsd_tsysflag ---- Flag deviant system temperature measurements
 
     
-    Flag deviant system temperatures for single dish measurements. This is done by running a
-    sequence of flagging subtasks, each looking for a different type of possible error.
-    
-    Flag deviant system temperatures for single dish measurements.
-    
-    Flag all deviant system temperature measurements in the system temperature
-    calibration table by running a sequence of flagging tests, each designed
-    to look for a different type of error.
+    Flag deviant system temperature measurements for single dish measurements. This is done by running a
+    sequence of flagging sub-tasks (tests), each looking for a different type of possible error.
     
     If a file with manual Tsys flags is provided with the 'filetemplate'
     parameter, then these flags are applied prior to the evaluation of the

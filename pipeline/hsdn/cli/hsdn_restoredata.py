@@ -11,10 +11,6 @@ def hsdn_restoredata(vis=None, caltable=None, reffile=None,
     """
     hsdn_restoredata ---- Restore flagged and calibration single dish data from a pipeline run
 
-    
-    The hsdn_restoredata task restores flagged and calibrated MeasurementSets
-    from archived ASDMs and pipeline flagging and calibration date products.
-
     The hsdn_restoredata task restores flagged and calibrated data from archived
     ASDMs and pipeline flagging and calibration data products. Pending archive
     retrieval support hsdn_restoredata assumes that the required products

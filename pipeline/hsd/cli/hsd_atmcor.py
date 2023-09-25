@@ -11,7 +11,7 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
     """
     hsd_atmcor ---- Apply offline ATM correction to the data.
 
-    The hsd_sdatmcor task provides the capability of offline correction of
+    The hsd_atmcor task provides the capability of offline correction of
     residual atmospheric features in the calibrated single-dish spectra
     originated from incomplete calibration mainly due to a difference of
     elevation angles between ON_SOURCE and OFF_SOURCE measurements.

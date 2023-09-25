@@ -21,10 +21,6 @@ def hsd_exportdata(pprfile=None,targetimages=None, products_dir=None,
     - a tar file per ASDM containing the final flags version and blparam
     - a tar file containing the file web log
     
-    TBD
-    - a file containing the line feature table(frequency, width, spatial distribution)
-    - a file containing the list of identified transitions from line catalogs
-    
     Output:
     
     results -- The results object for the pipeline task is returned.
