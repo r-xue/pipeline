@@ -43,7 +43,7 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
     child_cls = None
 
     def handle(self, context, result):
-        # Check for the presense of polarization intents
+        # Check for the presence of polarization intents
         recipe_name = context.project_structure.recipe_name
         polcal_scores = _check_polintents(recipe_name, result.mses)
 
