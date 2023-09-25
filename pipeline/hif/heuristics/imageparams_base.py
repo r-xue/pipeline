@@ -803,7 +803,8 @@ class ImageParamsHeuristics(object):
         phase_center = '%s %s %s' % (ref, m0, m1)
         psf_phase_center = phase_center
 
-        # if the image center is outside of the mosaic pointings, shift to the nearest field
+        # If the image center is outside of the mosaic pointings, calculate a PSF phase center
+        # pointing to the nearest field. Both the actual and the PSF phase centers are returned.
         if shift_to_nearest_field:
             nearest_field_to_center = self.center_field_ids(vislist, field_names[0], intent, phase_center)[0]
             ms = self.observing_run.get_ms(name=vislist[0])
