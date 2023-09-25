@@ -33,8 +33,7 @@ from pipeline.infrastructure.renderer.templates import resources
 from . import qaadapter, rendererutils, weblog
 from .. import eventbus
 from .. import pipelineqa
-from ..eventbus import WebLogStageRenderingStartedEvent, WebLogStageRenderingCompleteEvent, \
-    WebLogStageRenderingAbnormalExitEvent
+from ..eventbus import WebLogStageRenderingCompleteEvent, WebLogStageRenderingAbnormalExitEvent
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -1657,13 +1656,10 @@ class T2_4MDetailsRenderer(object):
         # .. get the file object to which we'll render the result
         with cls.get_file(context, result, root) as fileobj:
             # .. and write the renderer's interpretation of this result to
-            # the file object  
+            # the file object
             try:
                 LOG.trace('Writing %s output to %s', renderer.__class__.__name__,
                           path)
-
-                event = WebLogStageRenderingStartedEvent(context_name=context.name, stage_number=result.stage_number)
-                eventbus.send_message(event)
 
                 fileobj.write(renderer.render(context, result))
 
