@@ -1790,8 +1790,7 @@ def group_by_root(context, task_results):
 
 
 class WebLogGenerator(object):
-    renderers = [T1_1Renderer,         # OUS splash page
-                 T1_2Renderer,         # observation summary
+    renderers = [T1_2Renderer,         # observation summary
                  T1_3MRenderer,        # by topic page
                  T2_1Renderer,         # session tree
                  T2_1DetailsRenderer,  # session details
@@ -1799,20 +1798,26 @@ class WebLogGenerator(object):
                  T2_2_2Renderer,       # spectral setup
                  T2_2_3Renderer,       # antenna setup
                  T2_2_4Renderer,       # sky setup
-#                 T2_2_5Renderer,       # weather
+                 # T2_2_5Renderer,     # weather
                  T2_2_6Renderer,       # scans
                  T2_2_7Renderer,       # telescope pointing (single dish specific)
                  T2_3_1MRenderer,      # data set topic
                  T2_3_2MRenderer,      # calibration topic
                  T2_3_3MRenderer,      # flagging topic
-        # disable unused line finding topic for July 2014 release
-        # T2_3_4MRenderer,             # line finding topic
+                 # disable unused line finding topic for July 2014 release
+                 # T2_3_4MRenderer,    # line finding topic
                  T2_3_5MRenderer,      # imaging topic
                  T2_3_6MRenderer,      # miscellaneous topic
                  T2_4MRenderer,        # task tree
-                 T2_4MDetailsRenderer, # task details
-        # some summary renderers are placed last for access to scores
-                 T1_4MRenderer]        # task summary
+                 T2_4MDetailsRenderer,  # task details
+                 # PIPE-2014: place T1_4MRender (task summary) after other renderers for access to scores.
+                 # In addition, this guarantees that the weblog rendering duration of the last stage (T2_4MDetailsRenderer)
+                 # will be correctly reflected in the task duration.
+                 T1_4MRenderer,         # task summary
+                 # PIPE-2014: render the splash page last so the execution duration
+                 # timing includes most renderer calls.
+                 T1_1Renderer,         # OUS splash page
+                 ]
 
     @staticmethod
     def copy_resources(context):
