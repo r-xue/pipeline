@@ -15,6 +15,8 @@ from typing import Any, Dict, List
 import mako
 import numpy
 import pkg_resources
+import shelve
+from contextlib import closing
 
 import pipeline as pipeline
 from pipeline.domain.measurementset import MeasurementSet
@@ -691,17 +693,23 @@ class T1_4MRenderer(RendererBase):
         for result in context.results:
             scores[result.stage_number] = result.qa.representative
 
-        ## Obtain time duration of tasks by the difference of start times successive tasks.
-        ## The end time of the last task is tentatively defined as the time of current time.
-        timestamps = [ r.timestamps.start for r in context.results ]
-        # tentative task end time stamp for the last stage
-        timestamps.append(datetime.datetime.utcnow())
-        task_duration = []
-        for i in range(len(context.results)):
-            # task execution duration
-            dt = timestamps[i+1] - timestamps[i]
-            # remove unnecessary precision for execution duration
-            task_duration.append(datetime.timedelta(days=dt.days, seconds=dt.seconds))
+        # PIPE-2014: obtain the task time duration from the timetracker event database.
+        db_path = os.path.join(context.output_dir, f'{context.name}.timetracker')
+        r = {}
+        with closing(shelve.DbfilenameShelf(db_path)) as db:
+            for k, stages in db.items():
+                r[k] = {}
+                for e in stages.values():
+                    if e.end == e.start and k == 'results':
+                        # the end time of the last task (open-ended) is tentatively defined
+                        # as the current time.
+                        dt = datetime.datetime.now()-e.start
+                    else:
+                        dt = e.end - e.start
+                    r[k][e.stage] = datetime.timedelta(days=dt.days, seconds=dt.seconds)
+        task_duration = [r['tasks'][r_stage] for r_stage in r['tasks']]
+        # the 'results' field in the timetrack db include the cost of QA and weblog.
+        result_duration = [r['results'][r_stage] for r_stage in r['tasks']]
 
         # copy PPR for weblog
         pprfile = context.project_structure.ppr_file
@@ -710,10 +718,11 @@ class T1_4MRenderer(RendererBase):
                                      os.path.basename(pprfile))
             shutil.copy(pprfile, dest_path)
 
-        return {'pcontext' : context,
-                'results'  : context.results,
-                'scores'   : scores,
-                'task_duration': task_duration}
+        return {'pcontext': context,
+                'results': context.results,
+                'scores': scores,
+                'task_duration': task_duration,
+                'result_duration': result_duration}
 
 
 class T2_1Renderer(RendererBase):
