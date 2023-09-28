@@ -159,6 +159,25 @@ latex_elements = {
   \usepackage{longtable}
   \setcounter{tocdepth}{1}
   \protected\def\sphinxcode#1{\textcolor{red}{\texttt{#1}}}
+  \makeatletter
+  \renewcommand{\sphinxtableofcontents}{%
+    \pagenumbering{roman}%
+    \begingroup
+      \parskip \z@skip
+      \sphinxtableofcontentshook
+      \tableofcontents
+    \endgroup
+    \begin{sphinxadmonition}{note}{Note:}
+      \sphinxAtStartPar
+      The \sphinxcode{dryrun} and \sphinxcode{acceptresults} parameters for each task are no longer supported 
+      and may be removed in a future release. As such, they are excluded
+      from this manual.
+    \end{sphinxadmonition}
+    % before resetting page counter, let's do the right thing.
+    \if@openright\cleardoublepage\else\clearpage\fi
+    \pagenumbering{arabic}% 
+    \makeatother
+   }
 ''',
 
     # Latex figure (float) alignment
