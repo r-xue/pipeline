@@ -10,25 +10,31 @@ import pydoc
 import re
 import shutil
 import sys
-from typing import List
+from typing import Any, Dict, List
 
 import mako
 import numpy
 import pkg_resources
 
 import pipeline as pipeline
+from pipeline.domain.measurementset import MeasurementSet
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.displays.summary as summary
+from pipeline.infrastructure.launcher import Context
 import pipeline.infrastructure.logging as logging
 from pipeline import environment
-from pipeline.infrastructure import task_registry, utils
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
 from pipeline.infrastructure.renderer.templates import resources
 from . import qaadapter, rendererutils, weblog
+from .. import eventbus
 from .. import pipelineqa
+from ..eventbus import WebLogStageRenderingStartedEvent, WebLogStageRenderingCompleteEvent, \
+    WebLogStageRenderingAbnormalExitEvent
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -37,7 +43,7 @@ def get_task_description(result_obj, context, include_stage=True):
     if not isinstance(result_obj, (list, basetask.ResultsList)):
         return get_task_description([result_obj, ], context)
 
-    if len(result_obj) is 0:
+    if len(result_obj) == 0:
         msg = 'Cannot get description for zero-length results list'
         LOG.error(msg)
         return msg
@@ -147,7 +153,7 @@ def get_task_name(result_obj, include_stage=True):
         if not isinstance(result_obj, (list, basetask.ResultsList)):
             return get_task_name([result_obj, ])
 
-        if len(result_obj) is 0:
+        if len(result_obj) == 0:
             msg = 'Cannot get task name for zero-length results list'
             LOG.error(msg)
             return msg
@@ -190,7 +196,7 @@ def get_stage_number(result_obj):
     if not isinstance(result_obj, collections.Iterable):
         return get_stage_number([result_obj, ])
 
-    if len(result_obj) is 0:
+    if len(result_obj) == 0:
         msg = 'Cannot get stage number for zero-length results list'
         LOG.error(msg)
         return msg
@@ -251,7 +257,7 @@ class Session(object):
                 return cmp(t1[0], t2[0])
             elif t1[1] != t2[1]:
                 # natural sort so that session9 comes before session10
-                name_sorted = sorted((t1[1], t2[1]), key=utils.natural_sort)
+                name_sorted = utils.natural_sort((t1[1], t2[1]))
                 return -1 if name_sorted[0] == t1[1] else 1
             else:
                 return 0
@@ -309,7 +315,7 @@ class T1_1Renderer(RendererBase):
     TableRow = collections.namedtuple(
                 'Tablerow', 
                 'ousstatus_entity_id schedblock_id schedblock_name session '
-                'execblock_id ms href filesize ' 
+                'execblock_id ms acs_software_version acs_software_build_version href filesize ' 
                 'receivers '
                 'num_antennas beamsize_min beamsize_max '
                 'time_start time_end time_on_source '
@@ -343,6 +349,12 @@ class T1_1Renderer(RendererBase):
         # pipeline execution start, end and duration
         exec_start = context.results[0].timestamps.start
         exec_end = context.results[-1].timestamps.end
+        # IERS information (PIPE-734)
+        iers_eop_2000_version = environment.iers_info.info["versions"]["IERSeop2000"]
+        iers_predict_version = environment.iers_info.info["versions"]["IERSpredict"]
+        iers_eop_2000_last_date = environment.iers_info.info["IERSeop2000_last"]
+        iers_predict_last_date = environment.iers_info.info["IERSpredict_last"]
+        iers_info = environment.iers_info
         # remove unnecessary precision for execution duration
         dt = exec_end - exec_start
         exec_duration = datetime.timedelta(days=dt.days, seconds=dt.seconds)
@@ -368,7 +380,7 @@ class T1_1Renderer(RendererBase):
         # Observation Summary (formerly the T1-2 page)
         ms_summary_rows = []
         for ms in get_mses_by_time(context):
-            link = 'sidebar_%s' % re.sub('[^a-zA-Z0-9]', '_', ms.basename)
+            link = 'sidebar_%s' % re.sub(r'[^a-zA-Z0-9]', '_', ms.basename)
             href = os.path.join('t2-1.html?sidebar=%s' % link)
 
             num_antennas = len(ms.antennas)
@@ -377,10 +389,9 @@ class T1_1Renderer(RendererBase):
             time_end = utils.get_epoch_as_datetime(ms.end_time)
 
             target_scans = [s for s in ms.scans if 'TARGET' in s.intents]
-            if scan_has_intent(target_scans, 'REFERENCE'):
-                # target scans have OFF-source integrations. Need to do harder way.
-                autocorr_only = is_singledish_ms(context)
-                time_on_source =  utils.total_time_on_target_on_source(ms, autocorr_only)
+            is_single_dish_data = is_singledish_ms(context)
+            if scan_has_intent(target_scans, 'REFERENCE') or is_single_dish_data:
+                time_on_source = utils.total_time_on_target_on_source(ms, is_single_dish_data)
             else:
                 time_on_source = utils.total_time_on_source(target_scans)
             time_on_source = utils.format_timedelta(time_on_source)
@@ -433,6 +444,8 @@ class T1_1Renderer(RendererBase):
                                             session=ms.session,
                                             execblock_id=ms.execblock_id,
                                             ms=ms.basename,
+                                            acs_software_version = ms.acs_software_version,             # None for VLA
+                                            acs_software_build_version = ms.acs_software_build_version, # None for VLA
                                             href=href,
                                             filesize=ms.filesize,
                                             receivers=receivers,
@@ -457,6 +470,11 @@ class T1_1Renderer(RendererBase):
             'pipeline_doclink': pipeline_doclink,
             'obs_start': obs_start_fmt,
             'obs_end': obs_end_fmt,
+            'iers_eop_2000_version': iers_eop_2000_version,
+            'iers_eop_2000_last_date': iers_eop_2000_last_date,
+            'iers_predict_version': iers_predict_version,
+            'iers_predict_last_date': iers_predict_last_date,
+            'iers_info': iers_info,
             'array_names': utils.commafy(array_names),
             'exec_start': exec_start_fmt,
             'exec_end': exec_end_fmt,
@@ -464,6 +482,7 @@ class T1_1Renderer(RendererBase):
             'project_uids': project_uids,
             'schedblock_uids': schedblock_uids,
             'execblock_uids': execblock_uids,
+            'number_of_execblocks': len(context.observing_run.execblock_ids),
             'ous_uid': context.project_structure.ous_entity_id,
             'ousstatus_entity_id': context.project_structure.ousstatus_entity_id,
             'ppr_uid': None,
@@ -599,19 +618,19 @@ class T1_3MRenderer(RendererBase):
             scores[result.stage_number] = result.qa.representative
             results_list = get_results_by_time(context, result)
 
-            qa_errors = filter_qascores(results_list, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
-            tablerows.extend(qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
-
-            qa_warnings = filter_qascores(results_list, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
-            tablerows.extend(qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
-
             error_msgs = utils.get_logrecords(results_list, logging.ERROR)
             tablerows.extend(logrecords_to_tablerows(error_msgs, results_list, 'Error'))
 
             warning_msgs = utils.get_logrecords(results_list, logging.WARNING)
             tablerows.extend(logrecords_to_tablerows(warning_msgs, results_list, 'Warning'))
 
-            if 'applycal' in get_task_description(result, context):
+        # Update flag table (search from the last to the first task)
+        flag_update_tasks = ['applycal', 'hsd_blflag']
+        for result in context.results[-1::-1]:
+            task_description = get_task_description(result, context)
+            update_flag_table = any([t in task_description for t in flag_update_tasks])
+            if update_flag_table:
+                LOG.debug('Updating flagging summary table by results in {}'.format(task_description))
                 try:
                     for resultitem in result:
                         vis = os.path.basename(resultitem.inputs['vis'])
@@ -620,12 +639,13 @@ class T1_3MRenderer(RendererBase):
                         for field in resultitem.flagsummary:
                             # Get the field intents, but only for those that
                             # the pipeline processes. This can be an empty
-                            # list (PIPE-394: POINTING, WVR intents).
-                            intents_list = [f.intents for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET')
+                            # list (PIPE-394: POINTING, WVR intents; PIPE-1806: DIFFGAIN).
+                            intents_list = [f.intents for f in ms.get_fields(
+                                intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET,DIFFGAIN')
                                             if field in f.name]
                             if len(intents_list) == 0:
                                 continue
-                            intents = ','.join(intents_list[0])
+                            intents = ','.join(sorted(intents_list[0]))
 
                             flagsummary = resultitem.flagsummary[field]
 
@@ -645,6 +665,7 @@ class T1_3MRenderer(RendererBase):
                             flagtable['Source name: '+ field + ', Intents: ' + intents] = fieldtable
 
                         flagtables[ms.basename] = flagtable
+                    break
 
                 except:
                     LOG.debug('No flag summary table available yet from applycal')
@@ -756,6 +777,10 @@ class T2_1DetailsRenderer(object):
         task = summary.FieldVsTimeChart(inputs)
         field_vs_time = task.plot()
 
+        inputs = summary.SpwIdVsFreqChart.Inputs(context, vis=ms.basename)
+        task = summary.SpwIdVsFreqChart(inputs, context)
+        spwid_vs_freq = task.plot()
+
         science_spws = ms.get_spectral_windows(science_windows_only=True)
         all_bands = sorted({spw.band for spw in ms.get_all_spectral_windows()})
         science_bands = sorted({spw.band for spw in science_spws})
@@ -769,22 +794,20 @@ class T2_1DetailsRenderer(object):
 
         num_antennas = len(ms.antennas)
         num_baselines = int(num_antennas * (num_antennas-1) / 2)
+        ant_diam_counter = collections.Counter([a.diameter for a in ms.antennas])
+        ant_diam = ["{:d} of {:d} m".format(n_ant, int(diam)) for diam, n_ant in ant_diam_counter.items()]
 
         time_start = utils.get_epoch_as_datetime(ms.start_time)
         time_end = utils.get_epoch_as_datetime(ms.end_time)
 
         time_on_source = utils.total_time_on_source(ms.scans) 
         science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
-        if scan_has_intent(science_scans, 'REFERENCE'):
-            # target scans have OFF-source integrations. Need to do harder way.
-            autocorr_only = is_singledish_ms(context)
-            time_on_science =  utils.total_time_on_target_on_source(ms, autocorr_only)
+        is_single_dish_data = is_singledish_ms(context)
+        if scan_has_intent(science_scans, 'REFERENCE') or is_single_dish_data:
+            # target scans have OFF-source integrations or Single Dish Data. Need to do harder way.
+            time_on_science = utils.total_time_on_target_on_source(ms, is_single_dish_data)
         else:
             time_on_science = utils.total_time_on_source(science_scans)
-
-#         dirname = os.path.join(context.report_dir, 
-#                                'session%s' % ms.session,
-#                                ms.basename)
 
         task = summary.WeatherChart(context, ms)
         weather_plot = task.plot()
@@ -808,19 +831,12 @@ class T2_1DetailsRenderer(object):
         vla_basebands = ''
 
         if context.project_summary.telescope not in ('ALMA', 'NRO'):
-        # All VLA basebands
+            # All VLA basebands
 
             vla_basebands = []
-
-            banddict = collections.defaultdict(lambda: collections.defaultdict(list))
-
-            for spw in ms.get_spectral_windows():
-                try:
-                    band = spw.name.split('#')[0].split('_')[1]
-                    baseband = spw.name.split('#')[1]
-                    banddict[band][baseband].append({str(spw.id): (spw.min_frequency, spw.max_frequency)})
-                except:
-                    LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
+            banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
+            if len(banddict) == 0:
+                LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
 
             for band in banddict:
                 for baseband in banddict[band]:
@@ -829,12 +845,13 @@ class T2_1DetailsRenderer(object):
                     maxfreqs = []
                     for spwitem in banddict[band][baseband]:
                         # TODO: review if this relies on order of keys.
-                        spws.append(list(spwitem.keys())[0])
+                        spws.append(str([*spwitem][0]))
                         minfreqs.append(spwitem[list(spwitem.keys())[0]][0])
                         maxfreqs.append(spwitem[list(spwitem.keys())[0]][1])
                     bbandminfreq = min(minfreqs)
                     bbandmaxfreq = max(maxfreqs)
-                    vla_basebands.append(band+': '+baseband+':  '+ str(bbandminfreq)+ ' to '+ str(bbandmaxfreq)+':   ['+','.join(spws)+']   ')
+                    vla_basebands.append(band+': '+baseband+':  ' + str(bbandminfreq) + ' to ' +
+                                         str(bbandmaxfreq)+':   ['+','.join(spws)+']   ')
 
             vla_basebands = '<tr><th>VLA Bands: Basebands:  Freq range: [spws]</th><td>'+'<br>'.join(vla_basebands)+'</td></tr>'
 
@@ -847,11 +864,9 @@ class T2_1DetailsRenderer(object):
             target = list(field_strategy.keys())[0]
             reference = field_strategy[target]
             LOG.debug('target field id %s / reference field id %s' % (target, reference))
-            task = pointing.SingleDishPointingChart(context, ms, antenna,
-                                                    target_field_id=target,
-                                                    reference_field_id=reference,
-                                                    target_only=True)
-            pointing_plot = task.plot()
+            task = pointing.SingleDishPointingChart(context, ms)
+            pointing_plot = task.plot(antenna=antenna, target_field_id=target,
+                                      reference_field_id=reference, target_only=True)
         else:
             pointing_plot = None
 
@@ -865,6 +880,7 @@ class T2_1DetailsRenderer(object):
             'baseline_min'    : baseline_min,
             'baseline_max'    : baseline_max,
             'num_antennas'    : num_antennas,
+            'ant_diameters'   : utils.commafy(ant_diam, quotes=False),
             'num_baselines'   : num_baselines,
             'time_start'      : utils.format_datetime(time_start),
             'time_end'        : utils.format_datetime(time_end),
@@ -872,6 +888,7 @@ class T2_1DetailsRenderer(object):
             'time_on_science' : utils.format_timedelta(time_on_science),
             'intent_vs_time'  : intent_vs_time,
             'field_vs_time'   : field_vs_time,
+            'spwid_vs_freq'   : spwid_vs_freq,
             'dirname'         : dirname,
             'weather_plot'    : weather_plot,
             'pwv_plot'        : pwv_plot,
@@ -977,8 +994,34 @@ class T2_2_2Renderer(T2_2_XRendererBase):
 
     @staticmethod
     def get_display_context(context, ms):
-        return {'pcontext' : context,
-                'ms'       : ms}
+        """Determine whether to show the Online Spec. Avg. column on the Spectral Setup Details page."""
+
+        ShowColumn = collections.namedtuple('ShowColumn', 'science_windows all_windows')
+        show_online_spec_avg_col = ShowColumn(science_windows=False, all_windows=False)
+
+        if None not in [spw.sdm_num_bin for spw in ms.get_spectral_windows()]:
+            # PIPE-1572: when None exists in spw.sdm_num_bin, the MS is likely imported by older
+            # CASA/importasdm versions (ver<=5.6.0). We won't modifiy the initialzed setup, which does
+            # not display the Online Spec. Avg. column.
+            if ms.antenna_array.name == 'ALMA':
+                # PIPE-584: Always show the column for ALMA. If it's cycle 2 data, display a '?' in the table.
+                show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
+            elif 'VLA' in ms.antenna_array.name:
+                # PIPE-584: For VLA, only display the column if sdm_num_bin > 1 is present for at least one
+                # entry. It is possible for this to differ between the "Science Windows" and the "All Windows" tabs.
+                sdm_num_bins = [spw for spw in ms.get_spectral_windows() if spw.sdm_num_bin > 1]
+                if len(sdm_num_bins) >= 1:
+                    science_sdm_num_bins = [spw for spw in ms.get_spectral_windows(
+                        science_windows_only=True) if spw.sdm_num_bin > 1]
+                    if len(science_sdm_num_bins) >= 1:
+                        show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
+                    else:
+                        show_online_spec_avg_col = ShowColumn(science_windows=False, all_windows=True)
+
+        return {'pcontext': context,
+                'ms': ms,
+                'show_online_spec_avg_col': show_online_spec_avg_col
+                }
 
 
 class T2_2_3Renderer(T2_2_XRendererBase):
@@ -1034,6 +1077,9 @@ class T2_2_4Renderer(T2_2_XRendererBase):
         task = summary.AzElChart(context, ms)
         azel_plot = task.plot()
 
+        task = summary.SunTrackChart(context, ms)
+        suntrack_plot = task.plot()
+
         task = summary.ElVsTimeChart(context, ms)
         el_vs_time_plot = task.plot()
 
@@ -1050,6 +1096,7 @@ class T2_2_4Renderer(T2_2_XRendererBase):
         return {'pcontext': context,
                 'ms': ms,
                 'azel_plot': azel_plot,
+                'suntrack_plot': suntrack_plot,
                 'el_vs_time_plot': el_vs_time_plot,
                 'plot_uv': plot_uv,
                 'dirname': dirname}
@@ -1133,30 +1180,34 @@ class T2_2_7Renderer(T2_2_XRendererBase):
             super(T2_2_7Renderer, cls).render(context)
 
     @staticmethod
-    def get_display_context(context, ms):
+    def get_display_context(context:Context, ms: MeasurementSet) -> Dict[str, Any]:
+        """Get display context and plots points
+
+        Args:
+            context (Context): pipeline context state object
+            ms (MeasurementSet): an object of Measurement Set
+
+        Returns:
+            Dict[str, Any]: display context
+        """
         target_pointings = []
         whole_pointings = []
         offset_pointings = []
+        task = pointing.SingleDishPointingChart(context, ms)
         if is_singledish_ms(context):
             for antenna in ms.antennas:
                 for target, reference in ms.calibration_strategy['field_strategy'].items():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
                     # pointing pattern without OFF-SOURCE intents
-                    task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                            target_field_id=target,
-                                                            reference_field_id=reference,
-                                                            target_only=True)
-                    plotres = task.plot()
+                    plotres = task.plot(antenna=antenna, target_field_id=target,
+                                        reference_field_id=reference, target_only=True)
                     # for missing antenna, spw, field combinations
                     if plotres is None: continue
                     target_pointings.append(plotres)
 
                     # pointing pattern with OFF-SOURCE intents
-                    task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                            target_field_id=target,
-                                                            reference_field_id=reference,
-                                                            target_only=False)
-                    plotres = task.plot()
+                    plotres = task.plot(antenna=antenna, target_field_id=target,
+                                        reference_field_id=reference, target_only=False)
                     if plotres is not None:
                         whole_pointings.append(plotres)
 
@@ -1165,12 +1216,8 @@ class T2_2_7Renderer(T2_2_XRendererBase):
                     source_name = target_field.source.name
                     if target_field.source.is_eph_obj or target_field.source.is_known_eph_obj:
                         LOG.info('generating offset pointing plot for {}'.format(source_name))
-                        task = pointing.SingleDishPointingChart(context, ms, antenna, 
-                                                                target_field_id=target,
-                                                                reference_field_id=reference, 
-                                                                target_only=True,
-                                                                ofs_coord=True)
-                        plotres = task.plot()
+                        plotres = task.plot(antenna=antenna, target_field_id=target, reference_field_id=reference,
+                                            target_only=True, ofs_coord=True)
                         if plotres is not None:
                             LOG.info('Adding offset pointing plot for {} (antenna {})'.format(source_name, antenna.name))
                             offset_pointings.append(plotres)
@@ -1207,12 +1254,6 @@ class T2_3_XMBaseRenderer(RendererBase):
 
             # CAS-11344: present results ordered by stage number
             for results_list in sorted(list_of_results_lists, key=operator.attrgetter('stage_number')):
-                qa_errors = filter_qascores(results_list, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
-                tablerows.extend(qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
-
-                qa_warnings = filter_qascores(results_list, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
-                tablerows.extend(qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
-
                 error_msgs = utils.get_logrecords(results_list, logging.ERROR)
                 tablerows.extend(logrecords_to_tablerows(error_msgs, results_list, 'Error'))
 
@@ -1424,7 +1465,7 @@ class T2_4MDetailsDefaultRenderer(object):
 
             obj, _ = pydoc.resolve(taskname, forceload=0)
             page = pydoc.render_doc(obj)
-            return '<pre>%s</pre>' % re.sub('\x08.', '', page)
+            return '<pre>%s</pre>' % re.sub(r'\x08.', '', page)
         except Exception:
             return None
 
@@ -1620,11 +1661,22 @@ class T2_4MDetailsRenderer(object):
             try:
                 LOG.trace('Writing %s output to %s', renderer.__class__.__name__,
                           path)
+
+                event = WebLogStageRenderingStartedEvent(context_name=context.name, stage_number=result.stage_number)
+                eventbus.send_message(event)
+
                 fileobj.write(renderer.render(context, result))
+
+                event = WebLogStageRenderingCompleteEvent(context_name=context.name, stage_number=result.stage_number)
+                eventbus.send_message(event)
+
             except:
                 LOG.warning('Template generation failed for %s', cls.__name__)
                 LOG.debug(mako.exceptions.text_error_template().render())
                 fileobj.write(mako.exceptions.html_error_template().render().decode(sys.stdout.encoding))
+
+                event = WebLogStageRenderingAbnormalExitEvent(context_name=context.name, stage_number=result.stage_number)
+                eventbus.send_message(event)
 
 
 def wrap_in_resultslist(task_result):
@@ -1856,7 +1908,7 @@ class LogCopier(object):
         # web log. This is Python 2.6 so we can't define the context managers
         # on the same line
         with open(output_file, 'a') as weblog:
-            with open(casatools.log.logfile(), 'r') as casalog:
+            with open(casa_tools.log.logfile(), 'r') as casalog:
                 to_append = [entry for entry in casalog 
                              if entry not in existing_entries]
             weblog.writelines(to_append)
@@ -1982,7 +2034,7 @@ def get_results_by_time(context, resultslist):
     # as this is a ResultsList with important properties attached, results
     # should be sorted in place.
     if hasattr(resultslist, 'sort'):
-        if len(resultslist) is not 1:
+        if len(resultslist) != 1:
             try:
                 # sort the list of results by the MS start time
                 resultslist.sort(key=lambda r: get_ms_start_time_for_result(context, r))
@@ -2007,7 +2059,7 @@ def get_ms_attr_for_result(context, vis, accessor):
 
 
 def compute_az_el_to_field(field, epoch, observatory):
-    me = casatools.measures
+    me = casa_tools.measures
 
     me.doframe(epoch)
     me.doframe(me.observatory(observatory))

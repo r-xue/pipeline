@@ -1,7 +1,8 @@
-import os
+import certifi
 import collections
 import datetime
 import decimal
+import os
 import ssl
 import urllib
 from xml.dom import minidom
@@ -48,11 +49,14 @@ def get_setjy_results(mses):
     tables XML for backup values and store the values in the context
     """
     results = []
+    qastatus = []
     for ms in mses:
         result = commonfluxresults.FluxCalibrationResults(ms.name)
         science_spw_ids = {spw.id for spw in ms.get_spectral_windows()}
 
-        for source, measurements in read_fluxes_db(ms).items():
+        fluxdb_results, qacodes = read_fluxes_db(ms)
+
+        for source, measurements in fluxdb_results.items():
             m = [m for m in measurements if int(m.spw_id) in science_spw_ids]
 
             # import flux values for all fields and intents so that we can
@@ -62,8 +66,10 @@ def get_setjy_results(mses):
                 result.measurements[field.id].extend(m)
 
         results.append(result)
+        if qacodes:
+            qastatus.extend(qacodes)
 
-    return results
+    return results, qastatus
 
 
 def read_fluxes_db(ms):
@@ -75,9 +81,11 @@ def read_fluxes_db(ms):
 
     if not xml_measurements:
         # Source.xml could not be read or parsed. Fall back to catalogue query
-        return flux_nosourcexml(ms)
+        return flux_nosourcexml(ms), None
 
-    return add_catalogue_fluxes(xml_measurements, ms)
+    results, qacodes = add_catalogue_fluxes(xml_measurements, ms)
+
+    return results, qacodes
 
 
 def flux_nosourcexml(ms):
@@ -120,39 +128,45 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     """
 
     url = buildurl(service_url, obs_time, frequency, sourcename)
-    LOG.debug('Querying {!s}'.format(url))
+    LOG.info('Attempting query {!s}'.format(url))
 
-    # ignore HTTPS certificate
-    ssl_context = ssl._create_unverified_context()
+    ssl_context = ssl.create_default_context(cafile=certifi.where())
 
     try:
         response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
     except IOError:
-        LOG.warn('Problem contacting flux service at: <a href="{!s}">{!s}</a>'.format(url, url))
+        LOG.warning('Problem contacting flux service at: <a href="{!s}">{!s}</a>'.format(url, url))
         raise
 
     try:
         dom = minidom.parse(response)
     except ExpatError:
-        LOG.warn('Could not parse source catalogue response')
+        LOG.warning('Could not parse source catalogue response')
         raise
 
     rowdict = {}
     for node in dom.getElementsByTagName('TR'):
         row = node.getElementsByTagName('TD')
+        rl = len(row)
         rowdict['statuscode'] = row[0].childNodes[0].nodeValue
-        rowdict['sourcename'] = row[1].childNodes[0].nodeValue
-        rowdict['dbfrequency'] = row[2].childNodes[0].nodeValue
-        rowdict['date'] = row[3].childNodes[0].nodeValue
-        rowdict['fluxdensity'] = row[4].childNodes[0].nodeValue
-        rowdict['fluxdensityerror'] = row[5].childNodes[0].nodeValue
-        rowdict['spectralindex'] = row[6].childNodes[0].nodeValue
-        rowdict['spectralindexerror'] = row[7].childNodes[0].nodeValue
-        rowdict['dataconditions'] = row[8].childNodes[0].nodeValue
-        # rowdict['notms'] = row[9].childNodes[0].nodeValue
-        rowdict['ageOfNearestMonitorPoint'] = row[9].childNodes[0].nodeValue
-        # rowdict['verbose'] = row[10].childNodes[0].nodeValue
-        rowdict['version'] = row[11].childNodes[0].nodeValue
+        if rl == 13:
+            try:
+                rowdict['clarification'] = row[1].childNodes[0].nodeValue
+            except IndexError:
+                rowdict['clarification'] = None
+        else:
+            rowdict['clarification'] = None
+        rowdict['sourcename'] = row[rl-11].childNodes[0].nodeValue
+        rowdict['dbfrequency'] = row[rl-10].childNodes[0].nodeValue
+        rowdict['date'] = row[rl-9].childNodes[0].nodeValue
+        rowdict['fluxdensity'] = row[rl-8].childNodes[0].nodeValue
+        rowdict['fluxdensityerror'] = row[rl-7].childNodes[0].nodeValue
+        rowdict['spectralindex'] = row[rl-6].childNodes[0].nodeValue
+        rowdict['spectralindexerror'] = row[rl-5].childNodes[0].nodeValue
+        rowdict['dataconditions'] = row[rl-4].childNodes[0].nodeValue
+        rowdict['ageOfNearestMonitorPoint'] = row[rl-3].childNodes[0].nodeValue
+        # rowdict['verbose'] = row[rl-2].childNodes[0].nodeValue
+        rowdict['version'] = row[rl-1].childNodes[0].nodeValue
         rowdict['url'] = url
 
     return rowdict
@@ -163,7 +177,7 @@ def buildparams(name, date, frequency):
     Inputs are all strings with the format:
     NAME=3c279&DATE=04-Apr-2014&FREQUENCY=231.435E9&WEIGHTED=true&RESULT=1
     """
-    params = dict(NAME=name, DATE=date, FREQUENCY=frequency, WEIGHTED='true', RESULT=1)
+    params = dict(NAME=name, DATE=date, FREQUENCY=frequency, WEIGHTED='true', RESULT=1, VERBOSE=1)
     return urllib.parse.urlencode(params)
 
 
@@ -185,31 +199,31 @@ def query_online_catalogue(flux_url, ms, spw, source):
     freq_hz = str(spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ))
     obs_time = utils.get_epoch_as_datetime(ms.start_time)
 
-    LOG.info("SOURCE NAME: "+str(source_name)+"  SPW: "+str(spw.id))
+    LOG.info("Input source name: "+str(source_name)+"    Input SPW: "+str(spw.id))
 
     utcnow = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     try:
         fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
     except Exception as e:
         # error contacting service
-        return flux_url, '0.0', '0', None, None
+        return flux_url, '0.0', '0', None, None, None
 
     try:
         cat_fd = float(fluxdict['fluxdensity'])
         cat_spix = float(fluxdict['spectralindex'])
     except Exception as e:
         # could not convert 'null' to number. Bad catalogue value.
-        return flux_url, '0.0', '0', None, None
+        return flux_url, '0.0', fluxdict['statuscode'], None, fluxdict['clarification'], None
 
     valid_catalogue_val = cat_fd > 0.0 and cat_spix != -1000
     if not valid_catalogue_val:
-        return flux_url, '0.0', '0', None, None
+        return flux_url, '0.0', fluxdict['statuscode'], None, fluxdict['clarification'], None
 
     final_I = measures.FluxDensity(cat_fd, measures.FluxDensityUnits.JANSKY)
     final_spix = decimal.Decimal('%0.3f' % cat_spix)
     age_n_m_p = fluxdict['ageOfNearestMonitorPoint']
 
-    return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'],\
+    return fluxdict['url'], fluxdict['version'], fluxdict['statuscode'], fluxdict['dataconditions'], fluxdict['clarification'], \
            domain.FluxMeasurement(spw.id, final_I, spix=final_spix, origin=ORIGIN_DB, queried_at=utcnow, age=age_n_m_p)
 
 
@@ -226,27 +240,31 @@ def add_catalogue_fluxes(measurements, ms):
     # 'https://2019jul.asa-test.alma.cl/sc/flux'
     flux_url = FLUX_SERVICE_URL
     try:
+        LOG.info("Test query...")
         fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
     except IOError:
         # error contacting service
-        # LOG.warn("Could not contact the primary flux service at {!s}".format(flux_url))
+        # LOG.warning("Could not contact the primary flux service at {!s}".format(flux_url))
         flux_url = backup_url
         contact_fail = True
     except ExpatError:
         # error parsing the XML table
-        LOG.warn("Table parsing issue.")
-        LOG.warn("Could not contact the primary flux service at {!s}".format(flux_url))
+        LOG.warning("Table parsing issue.")
+        LOG.warning("Could not contact the primary flux service at {!s}".format(flux_url))
         flux_url = backup_url
         contact_fail = True
 
     if contact_fail:
         try:
             # Try the backup URL at JAO
-            LOG.warn("Switching to backup url at: {!s}".format(flux_url))
+            LOG.warning("Switching to backup url at: {!s}".format(flux_url))
+            LOG.info("Test query...")
             fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
         except IOError:
             # LOG.error("Could not contact the backup flux service URL.")
             return results
+
+    qacodes = []   # Dictionaries will be added here for codes and warning messages from the sources catalog
 
     # Continue with required queries
     for source, xml_measurements in measurements.items():
@@ -258,7 +276,7 @@ def add_catalogue_fluxes(measurements, ms):
             if spw not in science_windows:
                 continue
 
-            url, version, status_code, data_conditions, catalogue_measurement = query_online_catalogue(flux_url, ms, spw, source)
+            url, version, status_code, data_conditions, clarification, catalogue_measurement = query_online_catalogue(flux_url, ms, spw, source)
 
             if catalogue_measurement:
                 # Catalogue doesn't return Q,U,V so adopt Q,U,V from XML
@@ -283,12 +301,16 @@ def add_catalogue_fluxes(measurements, ms):
                 spix = 'N/A'
                 age = 'N/A'
 
-            log_result(source, spw, xml_measurement.I, catalogue_I, spix, age, url, version, status_code, data_conditions)
+            if clarification or int(status_code) > 1:
+                qacodes.append({'source': source, 'status_code': status_code, 'clarification': clarification})
 
-    return results
+            log_result(source, spw, xml_measurement.I, catalogue_I, spix, age, url, version,
+                       status_code, data_conditions, clarification)
+
+    return results, qacodes
 
 
-def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status_code, data_conditions):
+def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status_code, data_conditions, clarification):
 
     codedict = {}
     codedict[0] = "Grid cal flux estimation heuristic used"
@@ -305,11 +327,19 @@ def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status
     LOG.info('         Online catalog Spectral Index: {!s}'.format(spix))
     LOG.info('         ageOfNearestMonitorPoint: {!s}'.format(age))
     LOG.info('         {!s}'.format(codedict[int(status_code)]))
-    LOG.info('         Number of measurements = {!s}'.format(str(data_conditions)[0]))
-    LOG.info('         Dual-band data? {!s}'.format(decision[str(data_conditions)[1]]))
-    LOG.info('         Measurements bracketed in time? {!s}'.format(decision[str(data_conditions)[2]]))
+    if data_conditions:
+        LOG.info('         Number of measurements = {!s}'.format(str(data_conditions)[0]))
+        LOG.info('         Dual-band data? {!s}'.format(decision[str(data_conditions)[1]]))
+        LOG.info('         Measurements bracketed in time? {!s}'.format(decision[str(data_conditions)[2]]))
+    else:
+        LOG.info('         Number of measurements = {!s}'.format('N/A'))
+        LOG.info('         Dual-band data? {!s}'.format('N/A'))
+        LOG.info('         Measurements bracketed in time? {!s}'.format('N/A'))
+
     LOG.info('         URL: {!s}'.format(url))
     LOG.info('         Version: {!s}'.format(version))
+    if clarification:
+        LOG.info('         WARNING message returned: {!s}'.format(clarification))
     if catalogue_I == 'N/A':
-        LOG.warn('         **No flux returned from the flux catalogue service.**')
+        LOG.warning('         **No flux returned from the flux catalogue service.**')
     LOG.info("---------------------------------------------")

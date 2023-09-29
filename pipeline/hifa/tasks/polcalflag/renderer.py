@@ -14,8 +14,6 @@ from pipeline.infrastructure import basetask
 
 LOG = logging.get_logger(__name__)
 
-FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
-
 
 class T2_4MDetailsPolcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     """
@@ -51,6 +49,7 @@ class T2_4MDetailsPolcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Get diagnostic plots.
         #
         time_plots = get_plot_dicts(pipeline_context, results, 'time')
+        uvdist_plots = get_plot_dicts(pipeline_context, results, 'uvdist')
 
         #
         # Check for updated reference antenna lists.
@@ -66,6 +65,7 @@ class T2_4MDetailsPolcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Update the mako context.
         mako_context.update({
             'time_plots': time_plots,
+            'uvdist_plots': uvdist_plots,
             'updated_refants': updated_refants
         })
         

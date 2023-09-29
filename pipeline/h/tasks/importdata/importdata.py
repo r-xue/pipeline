@@ -2,14 +2,19 @@ import contextlib
 import os
 import shutil
 import tarfile
+import collections
+from typing import List, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain.datatype import DataType
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline import environment
 from . import fluxes
 
 __all__ = [
@@ -22,10 +27,10 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class ImportDataInputs(vdp.StandardInputs):
-    asimaging = vdp.VisDependentProperty(default=False)
     asis = vdp.VisDependentProperty(default='')
     bdfflags = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='automatic')
+    datacolumns = vdp.VisDependentProperty(default={})
     lazy = vdp.VisDependentProperty(default=False)
     nocopy = vdp.VisDependentProperty(default=False)
     ocorr_mode = vdp.VisDependentProperty(default='ca')
@@ -36,17 +41,17 @@ class ImportDataInputs(vdp.StandardInputs):
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, save_flagonline=None, bdfflags=None, lazy=None, createmms=None,
-                 ocorr_mode=None, asimaging=None):
-        super(ImportDataInputs, self).__init__()
+                 ocorr_mode=None, datacolumns=None):
+        super().__init__()
 
         self.context = context
         self.vis = vis
         self.output_dir = output_dir
 
-        self.asimaging = asimaging
         self.asis = asis
         self.bdfflags = bdfflags
         self.createmms = createmms
+        self.datacolumns = datacolumns
         self.lazy = lazy
         self.nocopy = nocopy
         self.ocorr_mode = ocorr_mode
@@ -125,6 +130,8 @@ class ImportData(basetask.StandardTaskTemplate):
 
     def prepare(self, **parameters):
         inputs = self.inputs
+        abs_output_dir = os.path.abspath(inputs.output_dir)
+
         vis = inputs.vis
 
         if vis is None:
@@ -147,17 +154,14 @@ class ImportData(basetask.StandardTaskTemplate):
             with contextlib.closing(tarfile.open(vis)) as tar:
                 filenames = tar.getnames()
 
-                (to_import, to_convert) = self._analyse_filenames(filenames,
-                                                                  vis)
+                (to_import, to_convert) = self._analyse_filenames(filenames, vis)
 
-                to_convert = [os.path.join(inputs.output_dir, asdm)
-                              for asdm in to_convert]
-                to_import = [os.path.join(inputs.output_dir, ms)
-                             for ms in to_import]
+                to_convert = [os.path.join(abs_output_dir, asdm) for asdm in to_convert]
+                to_import = [os.path.join(abs_output_dir, ms) for ms in to_import]
 
                 if not self._executor._dry_run:
-                    LOG.info('Extracting %s to %s' % (vis, inputs.output_dir))
-                    tar.extractall(path=inputs.output_dir)
+                    LOG.info('Extracting %s to %s', vis, abs_output_dir)
+                    tar.extractall(path=abs_output_dir)
 
         # Assume that if vis is not a tar, it's a directory ready to be
         # imported, or in the case of an ASDM, converted then imported.
@@ -165,33 +169,30 @@ class ImportData(basetask.StandardTaskTemplate):
             # get a list of all the files in the given directory
             filenames = [os.path.join(vis, f) for f in os.listdir(vis)]
 
-            (to_import, to_convert) = self._analyse_filenames(filenames,
-                                                              vis)
+            (to_import, to_convert) = self._analyse_filenames(filenames, vis)
 
             if not to_import and not to_convert:
                 raise TypeError('{!s} is of unhandled type'.format(vis))
 
             # convert all paths to absolute paths for the next sequence
-            to_import = list(map(os.path.abspath, to_import))
+            to_import = [os.path.abspath(f) for f in to_import]
 
             # if the file is not in the working directory, copy it across,
             # replacing the filename with the relocated filename
             to_copy = {f for f in to_import
-                       if f.find(inputs.output_dir) != 0
+                       if f.find(abs_output_dir) != 0
                        and inputs.nocopy is False}
             for src in to_copy:
-                dst = os.path.join(os.path.abspath(inputs.output_dir),
-                                   os.path.basename(src))
+                dst = os.path.join(abs_output_dir, os.path.basename(src))
                 to_import.remove(src)
                 to_import.append(dst)
 
                 if os.path.exists(dst):
-                    LOG.warning('%s already in %s. Will import existing data.'
-                                '' % (os.path.basename(src), inputs.output_dir))
+                    LOG.warning('{} already in {}. Will import existing data.'.format(os.path.basename(src), abs_output_dir))
                     continue
 
                 if not self._executor._dry_run:
-                    LOG.info('Copying %s to %s' % (src, inputs.output_dir))
+                    LOG.info('Copying %s to %s', src, inputs.output_dir)
                     shutil.copytree(src, dst)
 
         # launch an import job for each ASDM we need to convert
@@ -199,7 +200,7 @@ class ImportData(basetask.StandardTaskTemplate):
             self._do_importasdm(asdm)
 
         # calculate the filenames of the resultant measurement sets
-        asdms = [os.path.join(inputs.output_dir, f) for f in to_convert]
+        asdms = [os.path.join(abs_output_dir, f) for f in to_convert]
 
         # Now everything is in MS format, create a list of the MSes to import
         converted_asdms = [self._asdm_to_vis_filename(asdm) for asdm in asdms]
@@ -216,25 +217,111 @@ class ImportData(basetask.StandardTaskTemplate):
 
         ms_reader = tablereader.ObservingRunReader
 
-        to_import = [os.path.abspath(f) for f in to_import]
-        observing_run = ms_reader.get_observing_run(to_import)
-        for ms in observing_run.measurement_sets:
-            LOG.debug('Setting session to %s for %s' % (inputs.session,
-                                                        ms.basename))
-            if inputs.asimaging:
-                LOG.info('Importing %s as an imaging measurement set' % (ms.basename))
-                ms.is_imaging_ms = True
+        rel_to_import = [os.path.relpath(f, abs_output_dir) for f in to_import]
 
-            ms.session = inputs.session
+        observing_run = ms_reader.get_observing_run(rel_to_import)
+        available_data_types = [v.name for v in DataType]
+        short_data_types = list(set([v.replace('_ALL', '').replace('_SCIENCE', '') for v in available_data_types if v.endswith('_ALL') or v.endswith('_SCIENCE')]))
+        data_type_entry = collections.namedtuple('DataTypeEntry', ('str_data_type enum_data_type'))
+        for ms in observing_run.measurement_sets:
+            LOG.debug(f'Setting session to {inputs.session} for {ms.basename}')
 
             ms_origin = 'ASDM' if ms.name in converted_asdm_abspaths else 'MS'
+
+            datacolumn_name = get_datacolumn_name(ms.name)
+            if datacolumn_name is None:
+                msg = 'No data column found in {}'.format(ms.basename)
+                LOG.error(msg)
+                raise IOError(msg)
+
+            correcteddatacolumn_name = get_correcteddatacolumn_name(ms.name)
+
+            if inputs.datacolumns in (None, {}):
+                data_types = {'DATA': data_type_entry('RAW', DataType.RAW)}
+                if correcteddatacolumn_name is not None:
+                    # Default to standard calibrated IF MS if the corrected data column is present
+                    data_types['CORRECTED'] = data_type_entry('REGCAL_CONTLINE_ALL', DataType.REGCAL_CONTLINE_ALL)
+            else:
+                data_types = {}
+
+                # Check inputs and parse any short data types
+                if 'DATA' not in [k.upper() for k in inputs.datacolumns.keys()]:
+                    msg = 'Must specify at least the data type for the DATA column'
+                    LOG.error(msg)
+                    raise ValueError(msg)
+
+                for k, v in inputs.datacolumns.items():
+                    if k.upper() not in ('DATA', 'CORRECTED'):
+                        msg = f'Column name {k.upper()} is unknown. Only DATA and CORRECTED are supported.'
+                        LOG.error(msg)
+                        raise ValueError(msg)
+
+                    if v.upper() in short_data_types:
+                        if ms.intents == {'TARGET'}:
+                            data_types[k.upper()] = data_type_entry(f'{v.upper()}_SCIENCE', DataType[f'{v.upper()}_SCIENCE'])
+                        else:
+                            data_types[k.upper()] = data_type_entry(f'{v.upper()}_ALL', DataType[f'{v.upper()}_ALL'])
+                    elif v.upper() in available_data_types:
+                        data_types[k.upper()] = data_type_entry(f'{v.upper()}', DataType[f'{v.upper()}'])
+                    else:
+                        msg = f'No such data type {v.upper()}'
+                        LOG.error(msg)
+                        raise ValueError(msg)
+
+                if len(data_types) == 0:
+                    msg = 'Must specify data type for at least one column'
+                    LOG.error(msg)
+                    raise ValueError(msg)
+                if len(data_types) == 1:
+                    if ms_origin == 'ASDM' and 'DATA' in data_types and data_types['DATA'].str_data_type != 'RAW':
+                        msg = 'Data type for ASDMs can only be "RAW"'
+                        LOG.error(msg)
+                        raise ValueError(msg)
+                elif len(data_types) == 2:
+                    if ms_origin == 'ASDM':
+                        msg = 'ASDMs only have a single raw data column'
+                        LOG.error(msg)
+                        raise ValueError(msg)
+                    if correcteddatacolumn_name is None:
+                        msg = 'Only one data column detected'
+                        LOG.error(msg)
+                        raise ValueError(msg)
+                else:
+                    msg = 'Maximum number of configurable data types is 2 (DATA and CORRECTED columns)'
+                    LOG.error(msg)
+                    raise ValueError(msg)
+
+            # Set data_type for DATA and CORRECTED_DATA columns if specified
+            if 'DATA' in data_types:
+                LOG.info(f'Setting data type for data column of {ms.basename} to {data_types["DATA"].str_data_type}')
+                ms.set_data_column(data_types['DATA'].enum_data_type, datacolumn_name)
+
+            if 'CORRECTED' in data_types:
+                ms.set_data_column(data_types['CORRECTED'].enum_data_type, correcteddatacolumn_name)
+                LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED"].str_data_type}')
+
+            # PIPE-1575: correct invalid coordinate system name in Cycle 2 and earlier datasets
+            for field in ms.fields:
+                if field._mdirection['refer'] in ['J2000', 'j2000']:
+                    LOG.info(f'{ms.basename}: changing coords from J2000 to ICRS for field {field.name}')
+                    field._mdirection['refer'] = 'ICRS'
+            for source in ms.sources:
+                if source._direction['refer'] in ['J2000', 'j2000']:
+                    LOG.info(f'{ms.basename}: changing coords from J2000 to ICRS for source {source.name}')
+                    source._direction['refer'] = 'ICRS'
+
+            ms.session = inputs.session
             results.origin[ms.basename] = ms_origin
 
-        fluxservice, combined_results = self._get_fluxes(inputs.context, observing_run)
+        # Log IERS tables information (PIPE-734)
+        LOG.info(environment.iers_info)
+
+        fluxservice, combined_results, qastatus = self._get_fluxes(inputs.context, observing_run)
 
         results.mses.extend(observing_run.measurement_sets)
         results.setjy_results = combined_results
         results.fluxservice = fluxservice
+        results.qastatus = qastatus
 
         return results
 
@@ -261,7 +348,8 @@ class ImportData(basetask.StandardTaskTemplate):
         combined_results = fluxes.import_flux(context.output_dir, observing_run)
 
         # Flux service not used, return None by default
-        return None, combined_results
+        # QA flux service messaging, return None by default
+        return None, combined_results, None
 
     def _analyse_filenames(self, filenames, vis):
         to_import = set()
@@ -289,26 +377,47 @@ class ImportData(basetask.StandardTaskTemplate):
 
     def _do_importasdm(self, asdm):
         inputs = self.inputs
-        vis = self._asdm_to_vis_filename(asdm)
-        outfile = os.path.join(inputs.output_dir,
-                               os.path.basename(asdm) + '.flagonline.txt')
 
         if inputs.save_flagonline:
             # Create the standard calibration flagging template file
             template_flagsfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagtemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the calibration pipeline')
+
             # Create the standard Tsys calibration flagging template file.
             template_flagsfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagtsystemplate.txt')
             self._make_template_flagfile(template_flagsfile,
                                          'User Tsys flagging commands file for the calibration pipeline')
+
             # Create the imaging targets file
             template_flagsfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagtargetstemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')
 
-        createmms = mpihelpers.parse_mpi_input_parameter(inputs.createmms)
+        # PIPE-1200: if the output MS already exists on disk and overwrite is
+        # set to False, then skip the remaining steps of calling CASA's
+        # importasdm (to avoid Exception) and copying over XML files, and
+        # return early.
+        vis = self._asdm_to_vis_filename(asdm)
+        if os.path.exists(vis) and not inputs.overwrite:
+            LOG.info(f"Skipping call to CASA 'importasdm' for ASDM {asdm}"
+                     f" because output MS {os.path.basename(vis)} already"
+                     f" exists in output directory"
+                     f" {os.path.abspath(inputs.output_dir)}, and the input"
+                     f" parameter 'overwrite' is set to False. Will import the"
+                     f" existing MS data into the pipeline instead.")
+            return
 
+        # Derive input parameters for importasdm.
+        # Set filename for saving flag commands.
+        outfile = os.path.join(inputs.output_dir, os.path.basename(asdm) + '.flagonline.txt')
+        # Decide whether to create an MMS based on requested mode and whether
+        # MPI is available.
+        createmms = mpihelpers.parse_mpi_input_parameter(inputs.createmms)
+        # Set choice of whether to use pointing correction; try to retrieve
+        # from inputs (e.g. set by hsd pipeline), but otherwise default to
+        # False.
         with_pointing_correction = getattr(inputs, 'with_pointing_correction', False)
 
+        # Create importasdm task.
         task = casa_tasks.importasdm(asdm=asdm,
                                      vis=vis,
                                      savecmds=inputs.save_flagonline,
@@ -321,15 +430,18 @@ class ImportData(basetask.StandardTaskTemplate):
                                      with_pointing_correction=with_pointing_correction,
                                      ocorr_mode=inputs.ocorr_mode,
                                      createmms=createmms)
+        try:
+            self._executor.execute(task)
+        except Exception as ee:
+            LOG.warning(f"Caught importasdm exception: {ee}")
 
-        self._executor.execute(task)
-
+        # Copy across extra files from ASDM to MS.
         for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml']:
             asdm_source = os.path.join(asdm, xml_filename)
             if os.path.exists(asdm_source):
                 vis_source = os.path.join(vis, xml_filename)
-                LOG.info('Copying %s from ASDM to measurement set', xml_filename)
-                LOG.trace('Copying %s: %s to %s', xml_filename, asdm_source, vis_source)
+                LOG.info(f'Copying {xml_filename} from ASDM to measurement set')
+                LOG.trace(f'Copying {xml_filename}: {asdm_source} to {vis_source}')
                 shutil.copyfile(asdm_source, vis_source)
 
     def _make_template_flagfile(self, outfile, titlestr):
@@ -340,6 +452,49 @@ class ImportData(basetask.StandardTaskTemplate):
             template_text = FLAGGING_TEMPLATE_HEADER.replace('___TITLESTR___', titlestr)
             with open(outfile, 'w') as f:
                 f.writelines(template_text)
+
+def get_datacolumn_name(msname: str) -> Optional[str]:
+    """
+    Return a name of data column in MeasurementSet (MS).
+
+    Args:
+        msname: A path of MS
+
+    Returns:
+        Search for 'DATA' and 'FLOAT_DATA' columns in MS and returns the first
+        matching column in MS. Returns None if no match is found.
+    """
+    return search_columns(msname, ['DATA', 'FLOAT_DATA'])
+
+def get_correcteddatacolumn_name(msname: str) -> Optional[str]:
+    """
+    Return name of corrected data column in MeasurementSet (MS).
+
+    Args:
+        msname: A path of MS
+
+    Returns:
+        Search for 'CORRECTED_DATA' column in MS and return the name.
+        Returns None if no match is found.
+    """
+    return search_columns(msname, ['CORRECTED_DATA'])
+
+def search_columns(msname: str, search_cols: List[str]) -> Optional[str]:
+    """
+    Args:
+        search_cols: List of column names to search for
+
+    Returns:
+        Search for columns in MS and return the first matching name.
+        Returns None if no match is found.
+    """
+    with casa_tools.TableReader(msname) as tb:
+        tb_cols = tb.colnames()
+        for col in search_cols:
+            if col in tb_cols:
+                return col
+    return None
+
 
 
 FLAGGING_TEMPLATE_HEADER = '''#

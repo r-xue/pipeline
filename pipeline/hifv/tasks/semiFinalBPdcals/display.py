@@ -4,9 +4,9 @@ import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -120,7 +120,7 @@ class DelaysPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -134,7 +134,7 @@ class DelaysPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -164,7 +164,7 @@ class semifinalphaseGainPerAntennaChart(object):
 
         times = []
         for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
-            with casatools.TableReader(bpdgain_touse) as tb:
+            with casa_tools.TableReader(bpdgain_touse) as tb:
                 times.extend(tb.getcol('TIME'))
         mintime = np.min(times)
         maxtime = np.max(times)
@@ -204,7 +204,7 @@ class semifinalphaseGainPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -219,7 +219,7 @@ class semifinalphaseGainPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -251,7 +251,7 @@ class semifinalbpSolAmpPerAntennaChart(object):
 
         for bandname, bpcaltablename in self.result.bpcaltable.items():
 
-            with casatools.TableReader(self.result.bpcaltable[bandname]) as tb:
+            with casa_tools.TableReader(self.result.bpcaltable[bandname]) as tb:
                 dataVarCol = tb.getvarcol('CPARAM')
                 flagVarCol = tb.getvarcol('FLAG')
 
@@ -305,7 +305,7 @@ class semifinalbpSolAmpPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -319,7 +319,7 @@ class semifinalbpSolAmpPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -351,7 +351,7 @@ class semifinalbpSolPhasePerAntennaChart(object):
 
         for bandname, bpcaltablename in self.result.bpcaltable.items():
 
-            with casatools.TableReader(self.result.bpcaltable[bandname]) as tb:
+            with casa_tools.TableReader(self.result.bpcaltable[bandname]) as tb:
                 dataVarCol = tb.getvarcol('CPARAM')
                 flagVarCol = tb.getvarcol('FLAG')
 
@@ -406,7 +406,7 @@ class semifinalbpSolPhasePerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except:
-                        LOG.warn("Unable to plot " + filename)
+                        LOG.warning("Unable to plot " + filename)
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -420,7 +420,7 @@ class semifinalbpSolPhasePerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except:
-                    LOG.warn("Unable to add plot to stack")
+                    LOG.warning("Unable to add plot to stack")
                     plots.append(None)
 
             # Get BPcal.b to close...

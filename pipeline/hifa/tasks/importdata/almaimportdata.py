@@ -1,3 +1,4 @@
+import certifi
 import os
 import ssl
 import urllib
@@ -31,7 +32,7 @@ except Exception as e:
 
 
 class ALMAImportDataInputs(importdata.ImportDataInputs):
-    asis = vdp.VisDependentProperty(default='Antenna CalAtmosphere CalPointing CalWVR ExecBlock Receiver SBSummary Source Station')
+    asis = vdp.VisDependentProperty(default='Annotation Antenna CalAtmosphere CalPointing CalWVR ExecBlock Receiver SBSummary Source Station')
     dbservice = vdp.VisDependentProperty(default=False)
     createmms = vdp.VisDependentProperty(default='false')
     # sets threshold for polcal parallactic angle coverage. See PIPE-597
@@ -39,12 +40,12 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, dbservice=None,
-                 createmms=None, ocorr_mode=None, asimaging=None, minparang=None):
+                 createmms=None, ocorr_mode=None, datacolumns=None, minparang=None):
         super(ALMAImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                    process_caldevice=process_caldevice, session=session,
                                                    overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
                                                    save_flagonline=save_flagonline, createmms=createmms,
-                                                   ocorr_mode=ocorr_mode, asimaging=asimaging)
+                                                   ocorr_mode=ocorr_mode, datacolumns=datacolumns)
         self.dbservice = dbservice
         self.minparang = minparang
 
@@ -69,7 +70,7 @@ class ALMAImportData(importdata.ImportData):
         # get the flux measurements from Source.xml for each MS
 
         if self.inputs.dbservice:
-            testquery = '?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=1&NAME=J1427-4206'
+            testquery = '?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=1&NAME=J1427-4206&VERBOSE=1'
             # Test for service response
             baseurl = FLUX_SERVICE_URL
             url = baseurl + testquery
@@ -77,34 +78,36 @@ class ALMAImportData(importdata.ImportData):
                 url = ''
 
             try:
-                # ignore HTTPS certificate
-                ssl_context = ssl._create_unverified_context()
+                ssl_context = ssl.create_default_context(cafile=certifi.where())
+                LOG.info('Attempting test query at: {!s}'.format(url))
                 response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
-                xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
+                xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                 fluxservice = 'FIRSTURL'
             except Exception as e:
                 try:
-                    LOG.warn('Unable to execute initial test query with primary flux service.')
-                    # ignore HTTPS certificate
-                    ssl_context = ssl._create_unverified_context()
+                    LOG.warning('Unable to execute initial test query with primary flux service.')
+                    ssl_context = ssl.create_default_context(cafile=certifi.where())
                     baseurl = FLUX_SERVICE_URL_BACKUP
                     url = baseurl + testquery
                     if baseurl == '':
                         url = ''
+                    LOG.info('Attempting test query at backup: {!s}'.format(url))
                     response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
-                    xml_results = dbfluxes.get_setjy_results(observing_run.measurement_sets)
+                    xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice='BACKUPURL'
                 except Exception as e2:
                     if url == '':
                         msg = 'Backup URL not defined for test query...'
                     else:
                         msg = 'Unable to execute backup test query with flux service.'
-                    LOG.warn(msg+'\nProceeding without using the online flux catalog service.')
+                    LOG.warning(msg+'\nProceeding without using the online flux catalog service.')
                     xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice = 'FAIL'
+                    qastatus = None
         else:
             xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
             fluxservice = None
+            qastatus = None
         # write/append them to flux.csv
 
         # Cycle 1 hack for exporting the field intents to the CSV file:
@@ -120,4 +123,4 @@ class ALMAImportData(importdata.ImportData):
         # re-read from flux.csv, which will include any user-coded values
         combined_results = fluxes.import_flux(context.output_dir, observing_run)
 
-        return fluxservice, combined_results
+        return fluxservice, combined_results, qastatus

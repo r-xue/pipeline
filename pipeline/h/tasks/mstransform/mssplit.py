@@ -5,6 +5,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType, MeasurementSet
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
@@ -119,12 +120,50 @@ class MsSplit(basetask.StandardTaskTemplate):
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
+            ms.origin_ms = self.inputs.ms.origin_ms
+            self._set_data_column_to_ms(ms)
 
         # Note there will be only 1 MS in the temporary observing run structure
         result.ms = observing_run.measurement_sets[0]
 
         return result
 
+    def _set_data_column_to_ms(self, msobj: MeasurementSet):
+        """
+        Set data_column to input MeasurementSet domain object.
+
+        This method sets data_column information of output MS depending on
+        intent and datacolumn selection of the Inputs class.
+
+        Args:
+            msobj: MS domain object to set data_column information.
+        """
+        datacolumn = self.inputs.datacolumn
+        in_column = datacolumn.upper() if datacolumn != 'corrected' else 'CORRECTED_DATA'
+        LOG.debug('in_column = %s' % in_column)
+        #if self.inputs.replace and not os.path.exists(msobj.origin_ms):
+        #    # Replace RAW column if original MS was replaced.
+        #    data_type = DataType.RAW
+        #el
+
+        data_type = None
+        if self.inputs.intent == 'TARGET':
+            data_type = DataType.REGCAL_CONTLINE_SCIENCE
+        else:
+            for t, c in self.inputs.ms.data_column.items():
+                if c == in_column:
+                    data_type = t
+                    LOG.debug(f'Identified data type {data_type}')
+                    break
+
+        if data_type is None:
+            data_type = DataType.RAW
+            LOG.warning(
+                f'The datatype of the requested datacolumn is unknown, and a fallback value of {data_type} is used.')
+
+        out_column = in_column if datacolumn != 'corrected' else 'DATA'
+        LOG.info(f'Setting {data_type} to {out_column}')
+        msobj.set_data_column(data_type, out_column)
 
 class MsSplitResults(basetask.Results):
     def __init__(self, vis, outputvis):

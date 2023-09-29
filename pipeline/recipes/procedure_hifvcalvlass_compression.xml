@@ -86,7 +86,11 @@
         <Command xmlns="">hifv_priorcals</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">tecmaps</Keyword>
+                <Keyword xmlns="">show_tec_maps</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">apply_tec_correction</Keyword>
                 <Value xmlns="">False</Value>
             </Parameter>
             <Parameter>
@@ -149,7 +153,7 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_fluxboot2</Command>
+        <Command xmlns="">hifv_fluxboot</Command>
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">fitorder</Keyword>
@@ -215,6 +219,12 @@
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_fixpointing</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>    
 
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>

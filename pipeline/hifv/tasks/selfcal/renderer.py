@@ -1,21 +1,14 @@
-import collections
 import contextlib
-import itertools
-import operator
 import os
 
-import pipeline.domain.measures as measures
-import pipeline.infrastructure
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.weblog as weblog
-import pipeline.infrastructure.utils as utils
+
 from . import display as selfcaldisplay
 
 LOG = logging.get_logger(__name__)
-
-FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
 class VLASubPlotRenderer(object):
@@ -96,7 +89,11 @@ class T2_4MDetailsselfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # plotter = selfcaldisplay.selfcalSummaryChart(context, result)
             # plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
-            summary_plots[ms] = None
+            if 'VLASS-SE' in result.inputs['selfcalmode']:
+                plots = [selfcaldisplay.selfcalSolutionNumPerFieldChart(context, result).plot()]
+            else:
+                plots = []
+            summary_plots[ms] = [p for p in plots if p is not None]
 
             # generate selfcal phase gain cal solution plots and JSON file
             plotter = selfcaldisplay.selfcalphaseGainPerAntennaChart(context, result)
@@ -104,7 +101,8 @@ class T2_4MDetailsselfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'selfcal_plots.mako', 'selfcalphasegaincal')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path,
+                                          'selfcal_plots.mako', 'selfcalphasegaincal')
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 selfcalphasegaincal_subpages[ms] = renderer.filename

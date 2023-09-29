@@ -3,23 +3,21 @@ import collections
 import functools
 import operator
 import re
-from datetime import timedelta
 from decimal import Decimal
 from math import sqrt
 
 import numpy
 
-import pipeline.domain.spectralwindow as spectralwindow
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 from pipeline.domain.measures import FluxDensity, FluxDensityUnits, Frequency, FrequencyUnits
 from pipeline.h.tasks.common import commonfluxresults
-from pipeline.h.tasks.common.displays.common import CaltableWrapperFactory
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_ANALYSIS_UTILS, ORIGIN_XML
+from pipeline.hifa.heuristics.snr import ALMA_BANDS, ALMA_SENSITIVITIES, ALMA_TSYS
 from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
+from pipeline.infrastructure import casa_tools
 from . import gcorfluxscale
 
 LOG = infrastructure.get_logger(__name__)
@@ -27,18 +25,11 @@ LOG = infrastructure.get_logger(__name__)
 COLSHAPE_FORMAT = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
 
 # Defines some characteristic values for each ALMA receiver band.
+# sensitivity = mJy (for 16*12m antennas, 1 minute, 8 GHz, 2pol)
 BandInfo = collections.namedtuple('BandInfo', 'name number nominal_tsys sensitivity')
-BAND_INFOS = [
-    # sensitivity = mJy (for 16*12m antennas, 1 minute, 8 GHz, 2pol)
-    BandInfo(name='ALMA Band 3', number=3, nominal_tsys=75.0, sensitivity=FluxDensity(0.20, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 4', number=4, nominal_tsys=86.0, sensitivity=FluxDensity(0.24, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 5', number=5, nominal_tsys=120.0, sensitivity=FluxDensity(0.37, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 6', number=6, nominal_tsys=90.0, sensitivity=FluxDensity(0.27, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 7', number=7, nominal_tsys=150.0, sensitivity=FluxDensity(0.50, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 8', number=8, nominal_tsys=387.0, sensitivity=FluxDensity(1.29, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 9', number=9, nominal_tsys=1200.0, sensitivity=FluxDensity(5.32, FluxDensityUnits.MILLIJANSKY)),
-    BandInfo(name='ALMA Band 10', number=10, nominal_tsys=1515.0, sensitivity=FluxDensity(8.85, FluxDensityUnits.MILLIJANSKY))
-]
+BAND_INFOS = [BandInfo(name=ALMA_BANDS[i], number=i+1, nominal_tsys=ALMA_TSYS[i],
+                       sensitivity=FluxDensity(ALMA_SENSITIVITIES[i], FluxDensityUnits.MILLIJANSKY))
+              for i in range(len(ALMA_BANDS))]
 
 # External flux providers
 EXTERNAL_SOURCES = (ORIGIN_ANALYSIS_UTILS, ORIGIN_DB, ORIGIN_XML)
@@ -121,7 +112,7 @@ def score_kspw(context, result):
 
     # identify the caltable for this measurement set
     for caltable_path in context.callibrary.active.get_caltable(caltypes='tsys'):
-        with casatools.TableReader(caltable_path) as table:
+        with casa_tools.TableReader(caltable_path) as table:
             msname = table.getkeyword('MSName')
         if msname in vis:
             break
@@ -220,7 +211,7 @@ def score_kspw(context, result):
             LOG.warning('Cannot calculate internal spw-spw consistency for {} ({}): no catalogue measurement for '
                         'highest SNR spw ({})'.format(msg_fieldname, msg_intents, highest_snr_measurement.spw_id))
             continue
-        assert (len(catalogue_fluxes) is 1)
+        assert (len(catalogue_fluxes) == 1)
         catalogue_flux = catalogue_fluxes[0]
 
         # r_snr = ratio of derived flux to catalogue flux for highest SNR spw
@@ -234,11 +225,11 @@ def score_kspw(context, result):
         for m in other_measurements:
             catalogue_fluxes = [f for f in field.flux_densities
                                 if f.origin in EXTERNAL_SOURCES
-                                and f.spw_id == highest_snr_measurement.spw_id]
+                                and f.spw_id == m.spw_id]
             if not catalogue_fluxes:
                 LOG.info('No catalogue measurement for {} ({}) spw {}'.format(msg_fieldname, msg_intents, m.spw_id))
                 continue
-            assert (len(catalogue_fluxes) is 1)
+            assert (len(catalogue_fluxes) == 1)
             catalogue_flux = catalogue_fluxes[0]
             r_spw = m.I.to_units(FluxDensityUnits.JANSKY) / catalogue_flux.I.to_units(FluxDensityUnits.JANSKY)
             k_spw = r_spw / r_snr
@@ -310,7 +301,7 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
     # compute the median length of a "solint='inf', combine=''" scan. In
     # principle, this should be the time weighted by percentage of unflagged
     # data. Also, the method below will include sub-scan latency.
-    time_on_source = {spw: median([scan.exposure_time(spw.id) for scan in scans[spw]], start=timedelta())
+    time_on_source = {spw: numpy.median([scan.exposure_time(spw.id) for scan in scans[spw]])
                       for spw in all_gaincal_spws}
 
     spw_to_flux_density = {spw_id: FluxDensity(flux_jy, FluxDensityUnits.JANSKY) for spw_id, _, flux_jy in flux}
@@ -326,14 +317,40 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
     }
 
     wrapper = CaltableWrapperFactory.from_caltable(tsysTable)
+
     # keys: CALIBRATE_PHASE spws, values: corresponding Tsys values
+    get_snr_info = False  # Flag value to get SNR info or not
     median_tsys = {}
     for phase_spw, tsys_scans in phase_spw_to_tsys_scans.items():
         # If there are multiple scans for an spw, then simply use the Tsys of the first scan
         first_tsys_scan = min(tsys_scans, key=operator.attrgetter('id'))
         tsys_spw = phase_spw_to_tsys_spw[phase_spw]
         scan_data = wrapper.filter(spw=tsys_spw.id, scan=first_tsys_scan.id)
-        median_tsys[phase_spw.id] = numpy.ma.median(scan_data['FPARAM'])
+        if numpy.all(scan_data['FPARAM'].mask):  # Assign NaN if everything is masked
+            median_tsys[phase_spw.id] = numpy.NaN
+            get_snr_info = True
+        else:
+            median_tsys[phase_spw.id] = numpy.ma.median(scan_data['FPARAM'])
+
+    # PIPE-1208: If any scan is fully masked, attempt to retrieve the info on
+    # estimated SNRs that was derived during hifa_spwphaseup.
+    snr_info = None
+    if get_snr_info:
+        # Check if a SpW mapping was registered for current field and intent.
+        spwmap = ms.spwmaps.get((intent, field.name), None)
+        if spwmap:
+            # If a direct match exists, then use the corresponding SNR info.
+            snr_info = spwmap.snr_info
+        else:
+            # Otherwise, retrieve SNR info from the first SpW mapping that
+            # matches the current intent.
+            for (spwmap_intent, _), spwmap in ms.spwmaps.items():
+                if spwmap_intent == intent:
+                    snr_info = spwmap.snr_info
+                    break
+        # Report if the retrieval of SNR info from hifa_spwphaseup failed.
+        if snr_info is None:
+            LOG.error(f"{ms.basename}: Estimated SNR from hifa_spwphaseup could not be retrieved.")
 
     # 6) compute the expected channel-averaged SNR
     # TODO Ask Todd if this is an error or a confusingly-named variable
@@ -378,13 +395,32 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
         aggregate_bandwidth_sensitivity = band_info.sensitivity * Decimal(factor)
 
         snr_per_spw = spw_to_flux_density[spw.id] / sensitivity
-        mydict[spw.id]['snr'] = snr_per_spw
+        # PIPE-1208: Use the estimated SNR from hifa_spwphaseup if the data is fully masked
+        if numpy.isnan(median_tsys.get(spw.id)):
+            if snr_info is not None and str(spw.id) in snr_info:
+                snr_value = snr_info[str(spw.id)]
+                mydict[spw.id]['snr'] = Decimal(snr_value)
+                mydict[spw.id]['snr_aggregate'] = Decimal(
+                    snr_value * sqrt(
+                        min([aggregate_bandwidth, max_effective_bandwidth_per_baseband * num_basebands]) /
+                        min([spw.bandwidth, max_effective_bandwidth_per_baseband]))
+                )
+                LOG.info(f"{ms.basename}: for SpW {spw.id} SNR extracted from hifa_spwphaseup ({snr_value:.1f}).")
+            else:
+                snr_value = 0.0
+                mydict[spw.id]['snr'] = Decimal('0.0')
+                mydict[spw.id]['snr_aggregate'] = Decimal('0.0')
+                LOG.error(f"{ms.basename}: for SpW {spw.id} SNR could not be extracted from hifa_spwphaseup, SNR set to"
+                          f" 0.")
+        else:
+            snr_value = snr_per_spw
+            mydict[spw.id]['snr'] = snr_per_spw
+            mydict[spw.id]['snr_aggregate'] = spw_to_flux_density[spw.id] / aggregate_bandwidth_sensitivity
         mydict[spw.id]['meanFreq'] = spw.mean_frequency
         mydict[spw.id]['medianTsys'] = median_tsys[spw.id]
         mydict[spw.id]['Tsys_spw'] = phase_spw_to_tsys_spw[spw].id
         mydict[spw.id]['bandwidth'] = spw.bandwidth
         mydict[spw.id]['bandwidth_effective'] = min([spw.bandwidth, max_effective_bandwidth_per_baseband])
-        mydict[spw.id]['snr_aggregate'] = spw_to_flux_density[spw.id] / aggregate_bandwidth_sensitivity
         mydict[spw.id]['calibrator_flux_density'] = spw_to_flux_density[spw.id]
         mydict[spw.id]['solint_inf_seconds'] = time_on_source[spw].total_seconds()
         mydict['aggregate_bandwidth'] = min([aggregate_bandwidth, max_effective_bandwidth_per_baseband * num_basebands])
@@ -395,7 +431,15 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
             widest_spw_bandwidth_factor = sqrt(eight_ghz / widest_spw.bandwidth)
             factor = relative_tsys * time_factor * array_size_factor * area_factor * widest_spw_bandwidth_factor * polarization_factor
             widest_spw_bandwidth_sensitivity = band_info.sensitivity * Decimal(factor)
-            mydict[spw.id]['snr_widest_spw'] = spw_to_flux_density[spw.id] / widest_spw_bandwidth_sensitivity
+            if numpy.isnan(median_tsys.get(spw.id)):
+                mydict[spw.id]['snr_widest_spw'] = Decimal(
+                    snr_value * sqrt(
+                        min([widest_spw.bandwidth, max_effective_bandwidth_per_baseband]) /
+                        min([spw.bandwidth, max_effective_bandwidth_per_baseband])
+                    )
+                )
+            else:
+                mydict[spw.id]['snr_widest_spw'] = spw_to_flux_density[spw.id] / widest_spw_bandwidth_sensitivity
             mydict[spw.id]['widest_spw_bandwidth'] = widest_spw.bandwidth
         else:
             mydict[spw.id]['snr_widest_spw'] = 0
@@ -404,7 +448,7 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
         calspw = bandwidth_switching[spw]
         if mydict[calspw.id]['snr'] >= required_snr:
             mydict[calspw.id]['status'] = 'normal_bw_switching' if spw != calspw else 'normal'
-            msg = ('spw {} ({}) calibrated by spw {} has sufficient S/N: {}'
+            msg = ('spw {} ({}) calibrated by spw {} has sufficient S/N: {:.1f}'
                    ''.format(spw.id, spw.bandwidth, calspw.id, mydict[calspw.id]['snr']))
         elif mydict[calspw.id]['snr_widest_spw'] >= required_snr:
             mydict[calspw.id]['status'] = 'spwmap'
@@ -471,38 +515,6 @@ def frequency_min_max_after_aliasing(spw):
         return spw.min_frequency, spw.max_frequency
 
 
-def median(data, start):
-    num_elements = len(data)
-    even = True if num_elements % 2 == 0 else False
-
-    if even:
-        slice_start = (num_elements // 2) - 1
-        slice_end = (num_elements // 2) + 1
-        med = sum(data[slice_start:slice_end], start) / 2
-    else:
-        med = data[num_elements // 2]
-
-    return med
-
-
-def median_channel_width(spw):
-    channel_widths = spw.channels.chan_widths
-
-    if isinstance(channel_widths, spectralwindow.ArithmeticProgression):
-        median_width = abs(channel_widths.start)
-    else:
-        # FIXME: function call is missing parameter
-        median_width = median(channel_widths)
-
-    return Frequency(median_width, FrequencyUnits.HERTZ)
-
-
-def median_scan_duration(scans):
-    durations = [scan.time_on_source for scan in scans]
-    # FIXME: function call is missing parameter
-    return median(durations)
-
-
 class CaltableWrapperFactory(object):
     @staticmethod
     def from_caltable(filename):
@@ -511,7 +523,7 @@ class CaltableWrapperFactory(object):
 
     @staticmethod
     def create_param_wrapper(path):
-        with casatools.TableReader(path) as tb:
+        with casa_tools.TableReader(path) as tb:
             colnames = tb.colnames()
             scalar_cols = [c for c in colnames if tb.isscalarcol(c)]
             var_cols = [c for c in colnames if tb.isvarcol(c)]
@@ -572,7 +584,7 @@ class CaltableWrapperFactory(object):
 # get_dtype function below.
 CASA_DATA_TYPES = {
     'int': numpy.int32,
-    'boolean': numpy.bool,
+    'boolean': bool,
     'float': numpy.float64,
     'double': numpy.float64,
     'complex': numpy.complex128
@@ -593,6 +605,10 @@ def get_dtype(tb, col):
         return col, CASA_DATA_TYPES[col_dtype]
 
     elif tb.isvarcol(col):
+        # PIPE-1323: pre-check if the first row of this column is an empty cell, a scenario in which
+        # the RuntimeError exception and a CASA 'SEVERE' message will be triggered.
+        if not tb.iscelldefined(col, 0):
+            return None
         try:
             shapes_string = tb.getcolshapestring(col)
         except RuntimeError:

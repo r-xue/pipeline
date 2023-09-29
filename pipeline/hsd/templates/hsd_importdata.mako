@@ -7,6 +7,13 @@ import os
 <%block name="title">${importdata.title()}</%block>
 
 <%
+def get_imported_ms():
+	"""Return a list of imported MS domain objects."""
+	ms_list = []
+	for importdata_result in result:
+		ms_list.extend(importdata_result.mses)
+	return ms_list
+
 def get_spwmap(ms):
     dotsysspwmap = ms.calibration_strategy['tsys']
     tsys_strategy = ms.calibration_strategy['tsys_strategy']
@@ -27,11 +34,11 @@ def get_spwmap(ms):
     return spwmap
   
 spwmap = {}
-for ms in pcontext.observing_run.measurement_sets:
+for ms in get_imported_ms():
     spwmap[ms.basename] = get_spwmap(ms)
     
 fieldmap = {}
-for ms in pcontext.observing_run.measurement_sets:
+for ms in get_imported_ms():
     map_as_name = dict([(ms.fields[i].name, ms.fields[j].name) for i, j in ms.calibration_strategy['field_strategy'].items()])
     fieldmap[ms.basename] = map_as_name
     
@@ -114,7 +121,7 @@ and mapping information on reference and target fields.</p>
         </tr>
     </thead>
     <tbody>
-    % for ms in pcontext.observing_run.measurement_sets:
+    % for ms in get_imported_ms():
         <%
             content = contents[ms.basename]
             num_content = len(content)

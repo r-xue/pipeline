@@ -5,10 +5,8 @@ import pipeline.infrastructure.renderer.rendererutils as rendererutils
 
 navbar_active='By Topic'
 
-tablerow_css_classes = {'QA Error'   : 'error',
-						'QA Warning' : 'warning',
-						'Error'      : 'error',
-						'Warning'    : 'warning'}
+tablerow_css_classes = {'Error'      : 'error',
+			'Warning'    : 'warning'}
 
 def get_tablerow_class(row):
 	return tablerow_css_classes.get(row.type, '')

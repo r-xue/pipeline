@@ -1,16 +1,17 @@
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import task_registry
+from pipeline.domain import DataType
+from pipeline.infrastructure import casa_tasks, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class PbcorResults(basetask.Results):
-    def __init__(self, pbcorimagenames=[]):
+    def __init__(self, pbcorimagenames={}, multitermlist=[]):
         super(PbcorResults, self).__init__()
-        self.pbcorimagenames = pbcorimagenames[:]
+        self.pbcorimagenames = pbcorimagenames
+        self.multitermlist = multitermlist
 
     def __repr__(self):
         # return 'PbcorResults:\n\t{0}'.format(
@@ -19,6 +20,9 @@ class PbcorResults(basetask.Results):
 
 
 class PbcorInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     def __init__(self, context, vis=None):
         super(PbcorInputs, self).__init__()
         self.context = context
@@ -29,46 +33,54 @@ class PbcorInputs(vdp.StandardInputs):
 class Pbcor(basetask.StandardTaskTemplate):
     Inputs = PbcorInputs
 
+    is_multi_vis_task = True
+
     def prepare(self):
 
-        imlist = self.inputs.context.sciimlist.get_imlist()
-        pbcor_list = []
-        for image in imlist:
-            imgname = image['imagename']
-            outname = imgname + '.pbcor'
-            pbname = imgname[:imgname.rfind('.image')] + '.pb'
+        sci_imlist = self.inputs.context.sciimlist.get_imlist()
+        pbcor_dict = {}
 
-            impbcor_imgname = imgname
-            if image['multiterm']:
-                outname += '.tt0'
-                pbname += '.tt0'
-                impbcor_imgname += '.tt0'
+        # by default, only .tt0 is processed
+        multiterm_ext_list = ['.tt0']
 
-            task = casa_tasks.impbcor(imagename=impbcor_imgname, pbimage=pbname,
-                                      outfile=outname, mode='divide', cutoff=-1.0, stretch=False)
-            self._executor.execute(task)
-            pbcor_list.append(outname)
+        # PIPE-1048/1074 (for the VLASS-SE-CONT mode):
+        #   hifv_pbcor will only pbcorrect final products, including both tt0 and tt1 images.
+        try:
+            if self.inputs.context.imaging_mode.startswith('VLASS-SE-CONT'):
+                sci_imlist = [sci_imlist[-1]]
+                multiterm_ext_list = ['.tt0', '.tt1']
+        except Exception:
+            pass
 
-            pbcor_list.append(pbname)
+        term_ext_list = ['']
+        for sci_im in sci_imlist:
 
-            outname = imgname+'.residual.pbcor'
-            impbcor_imagename = imgname[:imgname.rfind('.image')] + '.residual'
+            imgname = sci_im['imagename']
+            basename = imgname[:imgname.rfind('.image')]
+            pbname = basename + '.pb'
 
-            if image['multiterm']:
-                outname += '.tt0'
-                impbcor_imagename += '.tt0'
+            pbcor_images = []
+            term_ext_list = multiterm_ext_list if sci_im['multiterm'] else ['']
 
-            task = casa_tasks.impbcor(imagename=impbcor_imagename, pbimage=pbname,
-                                      outfile=outname, mode='divide', cutoff=-1.0, stretch=False)
-            self._executor.execute(task)
-            pbcor_list.append(outname)
+            for term_ext in term_ext_list:
 
-            LOG.info("PBCOR image names: " + ','.join(pbcor_list))
+                pb_term_ext = '' if term_ext == '' else '.tt0'
+                task = casa_tasks.impbcor(imagename=basename+'.image'+term_ext, pbimage=pbname+pb_term_ext,
+                                          outfile=basename+'.image.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
+                self._executor.execute(task)
+                pbcor_images.append(basename+'.image.pbcor'+term_ext)
 
-        return PbcorResults(pbcorimagenames=pbcor_list)
+                task = casa_tasks.impbcor(imagename=basename + '.residual'+term_ext, pbimage=pbname+pb_term_ext,
+                                          outfile=basename + '.image.residual.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
+                self._executor.execute(task)
+                pbcor_images.append(basename + '.image.residual.pbcor'+term_ext)
+
+            pbcor_images.append(pbname+pb_term_ext)
+
+            LOG.info("PBCOR image names: " + ','.join(pbcor_images))
+            pbcor_dict[basename] = pbcor_images
+
+        return PbcorResults(pbcorimagenames=pbcor_dict, multitermlist=term_ext_list)
 
     def analyse(self, results):
         return results
-
-
-

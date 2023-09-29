@@ -7,13 +7,13 @@ import numpy as np
 import pipeline.domain as domain
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import commonfluxresults
-from pipeline.hifv.heuristics import find_EVLA_band
+from pipeline.infrastructure.tablereader import find_EVLA_band
 from pipeline.hifv.heuristics import standard as standard
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 # Paper
@@ -29,30 +29,30 @@ def find_standards(positions):
     """
     # set the max separation as ~1'
     MAX_SEPARATION = 60*2.0e-5
-    position_3C48 = casatools.measures.direction('j2000', '1h37m41.299', '33d9m35.133')
+    position_3C48 = casa_tools.measures.direction('j2000', '1h37m41.299', '33d9m35.133')
     fields_3C48 = []
-    position_3C138 = casatools.measures.direction('j2000', '5h21m9.886', '16d38m22.051')
+    position_3C138 = casa_tools.measures.direction('j2000', '5h21m9.886', '16d38m22.051')
     fields_3C138 = []
-    position_3C147 = casatools.measures.direction('j2000', '5h42m36.138', '49d51m7.234')
+    position_3C147 = casa_tools.measures.direction('j2000', '5h42m36.138', '49d51m7.234')
     fields_3C147 = []
-    position_3C286 = casatools.measures.direction('j2000', '13h31m8.288', '30d30m32.959')
+    position_3C286 = casa_tools.measures.direction('j2000', '13h31m8.288', '30d30m32.959')
     fields_3C286 = []
 
     for ii in range(0, len(positions)):
-        position = casatools.measures.direction('j2000', str(positions[ii][0])+'rad', str(positions[ii][1])+'rad')
-        separation = casatools.measures.separation(position, position_3C48)['value'] * math.pi/180.0
+        position = casa_tools.measures.direction('j2000', str(positions[ii][0]) + 'rad', str(positions[ii][1]) + 'rad')
+        separation = casa_tools.measures.separation(position, position_3C48)['value'] * math.pi / 180.0
         if (separation < MAX_SEPARATION):
             fields_3C48.append(ii)
         else:
-            separation = casatools.measures.separation(position, position_3C138)['value'] * math.pi/180.0
+            separation = casa_tools.measures.separation(position, position_3C138)['value'] * math.pi / 180.0
             if (separation < MAX_SEPARATION):
                 fields_3C138.append(ii)
             else:
-                separation = casatools.measures.separation(position, position_3C147)['value'] * math.pi/180.0
+                separation = casa_tools.measures.separation(position, position_3C147)['value'] * math.pi / 180.0
                 if (separation < MAX_SEPARATION):
                     fields_3C147.append(ii)
                 else:
-                    separation = casatools.measures.separation(position, position_3C286)['value'] * math.pi/180.0
+                    separation = casa_tools.measures.separation(position, position_3C286)['value'] * math.pi / 180.0
                     if (separation < MAX_SEPARATION):
                         fields_3C286.append(ii)
 
@@ -66,7 +66,7 @@ def standard_sources(vis):
        the original EVLA scripted pipeline
     """
 
-    with casatools.TableReader(vis+'/FIELD') as table:
+    with casa_tools.TableReader(vis + '/FIELD') as table:
         field_positions = table.getcol('PHASE_DIR')
 
     positions = []
@@ -117,7 +117,7 @@ class VLASetjyInputs(vdp.StandardInputs):
         # hard-coded as the default value in the task interface return the
         # default tuple which is composed of the reference frequency, the
         # Stokes fluxdensity and the spectral index
-        if self.fluxdensity is not -1:
+        if self.fluxdensity != -1:
             return (self.reffreq, self.fluxdensity, self.spix)
 
         # There is no ms object.
@@ -214,12 +214,11 @@ class VLASetjyInputs(vdp.StandardInputs):
                               'calibrator')
                     flux = (reffreq, -1, 0.0)
 
-                flux_by_spw.append(flux[0] if len(flux) is 1 else flux)
+                flux_by_spw.append(flux[0] if len(flux) == 1 else flux)
 
-            field_flux.append(flux_by_spw[0] if len(flux_by_spw) is 1
-                              else flux_by_spw)
+            field_flux.append(flux_by_spw[0] if len(flux_by_spw) == 1 else flux_by_spw)
 
-        return field_flux[0] if len(field_flux) is 1 else field_flux
+        return field_flux[0] if len(field_flux) == 1 else field_flux
 
     @vdp.VisDependentProperty
     def reffile(self):
@@ -245,13 +244,13 @@ class VLASetjyInputs(vdp.StandardInputs):
         for field in utils.safe_split(self.field):
             if str(field).isdigit():
                 matching_fields = self.ms.get_fields(field)
-                assert len(matching_fields) is 1
+                assert len(matching_fields) == 1
                 field_names.append(matching_fields[0].name)
             else:
                 field_names.append(field)
 
         standards = [heu_standard(field) for field in field_names]
-        return standards[0] if len(standards) is 1 else standards
+        return standards[0] if len(standards) == 1 else standards
 
     def __init__(self, context, output_dir=None, vis=None, field=None, intent=None, spw=None, model=None,
                  scalebychan=None, fluxdensity=None, spix=None, reffreq=None, standard=None,
@@ -337,7 +336,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
         # bands = spw2band.values()
 
         # Look in spectral window domain object as this information already exists!
-        with casatools.TableReader(self.inputs.vis+'/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
             channels = table.getcol('NUM_CHAN')
             originalBBClist = table.getcol('BBC_NO')
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')
@@ -379,7 +378,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
                                  + " spw "+str(spw.id) + " using " + model_image)
 
                         if self.inputs.model:
-                            LOG.warn("Model override input.  Using {!s}".format(self.inputs.model))
+                            LOG.warning("Model override input.  Using {!s}".format(self.inputs.model))
                             model_image = self.inputs.model
 
                         task_args = {'vis'            : inputs.vis,
@@ -400,7 +399,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
                         # results so that user-provided calibrator fluxes are
                         # committed back to the domain objects
 
-                        if inputs.refspectra[1] is not -1:
+                        if inputs.refspectra[1] != -1:
                             try:
                                 (I, Q, U, V) = inputs.refspectra[1]
                                 flux = domain.FluxMeasurement(spw_id=spw.id, I=I, Q=Q, U=U, V=V, origin=ORIGIN)
@@ -415,8 +414,8 @@ class VLASetjy(basetask.StandardTaskTemplate):
                         try:
                             setjy_dicts.append(self._executor.execute(job))
                         except:
-                            LOG.warn("SetJy issue with field id=" + str(job.kw['field'])
-                                     + " and spw=" + str(job.kw['spw']))
+                            LOG.warning("SetJy issue with field id=" + str(job.kw['field'])
+                                        + " and spw=" + str(job.kw['spw']))
 
         spw_seen = set()
         for setjy_dict in setjy_dicts:

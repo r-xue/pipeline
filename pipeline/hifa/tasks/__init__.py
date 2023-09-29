@@ -13,6 +13,7 @@ from .gfluxscaleflag import Gfluxscaleflag
 from .imageprecheck import ImagePreCheck
 from .importdata import ALMAImportData
 from .lock_refant import LockRefAnt
+from .polcal import Polcal
 from .polcalflag import Polcalflag
 from .restoredata import ALMARestoreData
 from .sessionrefant import SessionRefAnt
@@ -22,5 +23,6 @@ from .tsysflag import Tsysflag as ALMATsysflag
 from .unlock_refant import UnlockRefAnt
 from .wvrgcal import Wvrgcal
 from .wvrgcalflag import Wvrgcalflag
+from .renorm import Renorm
 # required to load ALMA-specific QA
 from . import applycal

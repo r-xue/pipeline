@@ -1,15 +1,17 @@
 import html
 import itertools
 import os
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.pipelineqa import QAScore, WebLogLocation
+
+from typing import Any
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -21,16 +23,16 @@ SCORE_THRESHOLD_SUBOPTIMAL = 0.9
 def printTsysFlags(tsystable, htmlreport):
     """Method that implements a version of printTsysFlags by Todd Hunter.
     """
-    with casatools.TableReader(tsystable) as mytb:
+    with casa_tools.TableReader(tsystable) as mytb:
         spws = mytb.getcol("SPECTRAL_WINDOW_ID")
 
-    with casatools.TableReader(tsystable+"/ANTENNA") as mytb:
+    with casa_tools.TableReader(tsystable+"/ANTENNA") as mytb:
         ant_names = mytb.getcol("NAME")
 
     with open(htmlreport, 'w') as stream:
         stream.write('<html>')
 
-        with casatools.TableReader(tsystable) as mytb:
+        with casa_tools.TableReader(tsystable) as mytb:
             for iant in range(len(ant_names)):
                 for spw in np.unique(spws):
 
@@ -144,6 +146,8 @@ def get_symbol_badge(result):
         symbol = '<span class="glyphicon glyphicon-remove-sign alert-danger transparent-bg" aria-hidden="true"></span>'
     elif get_warnings_badge(result):
         symbol = '<span class="glyphicon glyphicon-exclamation-sign alert-warning transparent-bg" aria-hidden="true"></span>'
+    elif get_attentions_badge(result):
+        symbol = '<span class="glyphicon glyphicon-exclamation-sign alert-attention transparent-bg" aria-hidden="true"></span>'
     elif get_suboptimal_badge(result):
         symbol = '<span class="glyphicon glyphicon-question-sign alert-info transparent-bg" aria-hidden="true"></span>'
     else:
@@ -156,6 +160,15 @@ def get_failures_badge(result):
     n = len(failure_tracebacks)
     if n > 0:
         return '<span class="badge alert-important pull-right">%s</span>' % n
+    else:
+        return ''
+
+
+def get_attentions_badge(result):
+    attention_logrecords = utils.get_logrecords(result, logging.ATTENTION)
+    l = len(attention_logrecords)
+    if l > 0:
+        return '<span class="badge alert-attention pull-right">%s</span>' % l
     else:
         return ''
 
@@ -192,10 +205,12 @@ def get_suboptimal_badge(result):
 def get_command_markup(ctx, command):
     if not command:
         return ''
-    stripped = command.replace('%s/' % ctx.report_dir, '')
-    stripped = stripped.replace('%s/' % ctx.output_dir, '')
-    escaped = html.escape(stripped, True).replace('\'', '&#39;')
-    return escaped
+    # PIPE-1839: avoid removing '/' symbols if not part of a non-empty directory path
+    if ctx.report_dir:
+        command = command.replace('%s/' % ctx.report_dir, '')
+    if ctx.output_dir:
+        command = command.replace('%s/' % ctx.output_dir, '')
+    return html.escape(command, True).replace('\'', '&#39;')
 
 
 def format_shortmsg(pqascore):
@@ -217,7 +232,7 @@ def sort_row_by(row, axes):
         return g
 
     # create a parameter getter for each axis
-    accessors = [f(axis) for axis in axes.split(',')]
+    accessors = [f(axis.strip()) for axis in axes.split(',')]
 
     # sort plots in row, using a generated tuple (p1, p2, p3, ...) for
     # secondary sort
@@ -238,11 +253,11 @@ def group_plots(data, axes):
     return _build_rows([], data, keyfuncs)
 
 
-def _build_rows(rows, data, keyfuncs):
+def _build_rows(rows, data, keyfuncs, axis: str=''):
     # if this is a leaf, i.e., we are in the lowest level grouping and there's
     # nothing further to group by, add a new row
     if not keyfuncs:
-        rows.append(data)
+        rows.append((data, axis))
         return
 
     # otherwise, this is not the final sorting axis and so proceed to group
@@ -253,7 +268,7 @@ def _build_rows(rows, data, keyfuncs):
         # convert to list so we don't exhaust the generator
         items_with_value = list(items_with_value_generator)
         # ... , creating sub-groups for each group as we go
-        _build_rows(rows, items_with_value, keyfuncs[1:])
+        _build_rows(rows, items_with_value, keyfuncs[1:], axis=group_value)
 
     return rows
 
@@ -264,13 +279,13 @@ def sanitize_data_selection_string(text):
     return sanitized_text
 
 
-def num_lines(abspath):
+def num_lines(path):
     """
-    Report number of non-empty non-comment lines in a file specified by
-    abspath. If the file does not exist, report N/A.
+    Report number of non-empty non-comment lines in a file specified by the
+    path argument. If the file does not exist, report N/A.
     """
-    if os.path.exists(abspath):
-        return sum(1 for line in open(abspath) if line.strip() and not line.startswith('#'))
+    if os.path.exists(path):
+        return sum(1 for line in open(path) if line.strip() and not line.startswith('#'))
     else:
         return 'N/A'
 
@@ -300,35 +315,56 @@ def get_notification_trs(result, alerts_info, alerts_success):
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
     all_scores: List[QAScore] = result.qa.pool
-    banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
+    # PIPE-1481 potentially asks for the removal of banner QA notification.
+    # Thus disabling these for now.
+    #banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
+    banner_scores = []
 
     notifications = []
+    most_severe_render_class = None
 
     if banner_scores:
         for qa_score in scores_in_range(banner_scores, -0.1, SCORE_THRESHOLD_ERROR):
             n = format_notification('danger alert-danger', 'QA', qa_score.longmsg, 'glyphicon glyphicon-remove-sign')
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'danger alert-danger'
         for qa_score in scores_in_range(banner_scores, SCORE_THRESHOLD_ERROR, SCORE_THRESHOLD_WARNING):
             n = format_notification('warning alert-warning', 'QA', qa_score.longmsg, 'glyphicon glyphicon-exclamation-sign')
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'warning alert-warning'
 
     for logrecord in utils.get_logrecords(result, logging.ERROR):
         n = format_notification('danger alert-danger', 'Error!', logrecord.msg)
         notifications.append(n)
+        if most_severe_render_class is None:
+            most_severe_render_class = 'danger alert-danger'
     for logrecord in utils.get_logrecords(result, logging.WARNING):
         n = format_notification('warning alert-warning', 'Warning!', logrecord.msg)
         notifications.append(n)
+        if most_severe_render_class is None:
+            most_severe_render_class = 'warning alert-warning'
+    for logrecord in utils.get_logrecords(result, logging.ATTENTION):
+        n = format_notification('attention alert-attention', 'Attention!', logrecord.msg)
+        notifications.append(n)
+        if most_severe_render_class is None:
+            most_severe_render_class = 'attention alert-attention'
 
     if alerts_info:
         for msg in alerts_info:
             n = format_notification('info alert-info', '', msg)
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'info alert-info'
     if alerts_success:
         for msg in alerts_success:
             n = format_notification('success alert-success', '', msg)
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'success alert-success'
 
-    return notifications
+    return notifications, most_severe_render_class
 
 
 def format_notification(tr_class, alert, msg, icon_class=None):
@@ -337,3 +373,92 @@ def format_notification(tr_class, alert, msg, icon_class=None):
     else:
         icon = ''
     return '<tr class="%s"><td>%s<strong>%s</strong> %s</td></tr>' % (tr_class, icon, alert, msg)
+
+
+def get_relative_url(report_dir: str, stage_dir: str, subpage_dir: str,
+                     allow_nonexistent: bool = True) -> Union[str, None]:
+    """
+    Return url to weblog subpage relative to the weblog root path, based on
+    provided report dir, stage dir, and subpage dir. Check for and remove
+    common path elements and handle either all relative paths, or all absolute
+    paths.
+
+    If allow_nonexistent (default: True) is set to False, return None when the
+    constructed path does not exist.
+    """
+    # Check whether weblog stage path contains common path
+    # with report dir, and if so, determine actual relative path.
+    stage_cpath = os.path.commonpath([report_dir, stage_dir])
+    if stage_cpath:
+        stage_relpath = os.path.relpath(stage_dir, stage_cpath)
+    else:
+        stage_relpath = stage_dir
+
+    # Check whether subpage path contains common path with the
+    # report + weblog stage path, and if so, determine actual
+    # relative path.
+    subpage_cpath = os.path.commonpath([os.path.join(report_dir, stage_relpath), subpage_dir])
+    if subpage_cpath:
+        subpage_relpath = os.path.relpath(subpage_dir, subpage_cpath)
+    else:
+        subpage_relpath = subpage_dir
+
+    # Combine paths.
+    report_abspath = os.path.abspath(report_dir)
+    subpage_abspath = os.path.join(report_abspath, stage_relpath, subpage_relpath)
+
+    # Return relative url if path exists.
+    if os.path.exists(subpage_abspath) or allow_nonexistent:
+        return os.path.relpath(subpage_abspath, report_abspath)
+    else:
+        return None
+
+
+def percent_flagged(flagsummary: Any) -> str:
+    """
+    Method to output flagging percentages neatly.
+    """
+
+    flagged = flagsummary.flagged
+    total = flagsummary.total
+
+    if total == 0:
+        return 'N/A'
+    else:
+        return '%0.3f%%' % (100.0 * flagged / total)
+
+
+_types = {
+    'before': 'Calibrated data before flagging',
+    'after': 'Calibrated data after flagging'
+}
+
+def plot_type(plot: Any) -> str:
+    """
+    Output plot type.
+    """
+
+    return _types[plot.parameters['type']]
+
+
+def summarise_fields(fields: str) -> str:
+    """
+    Output field summary string. List all fields if up to 10,
+    else first 3 fields and last field.
+
+    Args:
+        fields: comma separated list of field names
+
+    Returns:
+        Summary string
+    """
+
+    field_list = utils.numeric_sort(fields.split(','))
+
+    max_fields = 10
+    num_fields = len(field_list)
+    if num_fields <= max_fields:
+        return ', '.join([str(f) for f in field_list])
+
+    field_str = f'{field_list[0]}, {field_list[1]}, {field_list[2]}, ..., {field_list[-1]}'
+    return field_str

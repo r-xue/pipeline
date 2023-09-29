@@ -2,14 +2,15 @@ import copy
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hifa.heuristics import imageprecheck
 from pipeline.hif.heuristics import imageparams_factory
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -95,6 +96,9 @@ class ImagePreCheckResults(basetask.Results):
 
 
 class ImagePreCheckInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     calcsb = vdp.VisDependentProperty(default=False)
     parallel = vdp.VisDependentProperty(default='automatic')
     def __init__(self, context, vis=None, calcsb=None, parallel=None):
@@ -106,7 +110,7 @@ class ImagePreCheckInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(ImagePreCheckInputs)
+#api.ImagingMeasurementSetsPreferred.register(ImagePreCheckInputs)
 
 
 @task_registry.set_equivalent_casa_task('hifa_imageprecheck')
@@ -120,7 +124,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         inputs = self.inputs
         context = self.inputs.context
 
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
 
         calcsb = inputs.calcsb
         parallel = inputs.parallel
@@ -215,7 +219,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                     return ImagePreCheckResults(error=True, error_msg='Invalid beam')
 
                 cells[(robust, str(default_uvtaper), 'repBW')] = image_heuristics.cell(beams[(robust, str(default_uvtaper), 'repBW')])
-                imsizes[(robust, str(default_uvtaper), 'repBW')] = image_heuristics.imsize(field_ids, cells[(robust, str(default_uvtaper), 'repBW')], primary_beam_size, centreonly=False)
+                imsizes[(robust, str(default_uvtaper), 'repBW')] = image_heuristics.imsize(field_ids, cells[(robust, str(default_uvtaper), 'repBW')], primary_beam_size, centreonly=False, intent='TARGET')
 
                 try:
                     sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = \
@@ -225,8 +229,10 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                     calcsb = False
                     sensitivities.append(Sensitivity(
                         array=array,
+                        intent='TARGET',
                         field=repr_field,
                         spw=str(repr_spw),
+                        is_representative=True,
                         bandwidth=cqa.quantity(sens_bw, 'Hz'),
                         bwmode='repBW',
                         beam=beams[(robust, str(default_uvtaper), 'repBW')],
@@ -238,8 +244,10 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                 except:
                     sensitivities.append(Sensitivity(
                         array=array,
+                        intent='TARGET',
                         field=repr_field,
                         spw=str(repr_spw),
+                        is_representative=True,
                         bandwidth=cqa.quantity(0.0, 'Hz'),
                         bwmode='repBW',
                         beam=beams[(robust, str(default_uvtaper), 'repBW')],
@@ -261,7 +269,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                 return ImagePreCheckResults(error=True, error_msg='Invalid beam')
 
             cells[(robust, str(default_uvtaper), 'aggBW')] = image_heuristics.cell(beams[(robust, str(default_uvtaper), 'aggBW')])
-            imsizes[(robust, str(default_uvtaper), 'aggBW')] = image_heuristics.imsize(field_ids, cells[(robust, str(default_uvtaper), 'aggBW')], primary_beam_size, centreonly=False)
+            imsizes[(robust, str(default_uvtaper), 'aggBW')] = image_heuristics.imsize(field_ids, cells[(robust, str(default_uvtaper), 'aggBW')], primary_beam_size, centreonly=False, intent='TARGET')
 
             # Calculate full cont sensitivity (no frequency ranges excluded)
             try:
@@ -281,8 +289,10 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
                     sensitivities.append(Sensitivity(
                         array=array,
+                        intent='TARGET',
                         field=repr_field,
                         spw=cont_spw,
+                        is_representative=True,
                         bandwidth=_bandwidth,
                         bwmode=cont_sens_bw_mode,
                         beam=beams[(robust, str(default_uvtaper), 'aggBW')],
@@ -295,8 +305,10 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                 for _ in cont_sens_bw_modes:
                     sensitivities.append(Sensitivity(
                         array=array,
+                        intent='TARGET',
                         field=repr_field,
                         spw=cont_spw,
+                        is_representative=True,
                         bandwidth=cqa.quantity(0.0, 'Hz'),
                         bwmode='aggBW',
                         beam=beams[(robust, str(default_uvtaper), 'aggBW')],
@@ -361,15 +373,17 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                         return ImagePreCheckResults(error=True, error_msg='Invalid beam')
 
                     cells[(hm_robust, str(hm_uvtaper), 'repBW')] = image_heuristics.cell(beams[(hm_robust, str(hm_uvtaper), 'repBW')])
-                    imsizes[(hm_robust, str(hm_uvtaper), 'repBW')] = image_heuristics.imsize(field_ids, cells[(hm_robust, str(hm_uvtaper), 'repBW')], primary_beam_size, centreonly=False)
+                    imsizes[(hm_robust, str(hm_uvtaper), 'repBW')] = image_heuristics.imsize(field_ids, cells[(hm_robust, str(hm_uvtaper), 'repBW')], primary_beam_size, centreonly=False, intent='TARGET')
                     if reprBW_mode in ['nbin', 'repr_spw']:
                         try:
                             sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = \
                                 image_heuristics.calc_sensitivities(inputs.vis, repr_field, 'TARGET', str(repr_spw), nbin, {}, 'cube', gridder, cells[(hm_robust, str(hm_uvtaper), 'repBW')], imsizes[(hm_robust, str(hm_uvtaper), 'repBW')], 'briggs', hm_robust, hm_uvtaper, True, known_per_spw_cont_sensitivities_all_chan, calcsb)
                             sensitivities.append(Sensitivity(
                                 array=array,
+                                intent='TARGET',
                                 field=repr_field,
                                 spw=str(repr_spw),
+                                is_representative=True,
                                 bandwidth=cqa.quantity(sens_bw, 'Hz'),
                                 bwmode='repBW',
                                 beam=beams[(hm_robust, str(hm_uvtaper), 'repBW')],
@@ -381,8 +395,10 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                         except Exception as e:
                             sensitivities.append(Sensitivity(
                                 array=array,
+                                intent='TARGET',
                                 field=repr_field,
                                 spw=str(repr_spw),
+                                is_representative=True,
                                 bandwidth=cqa.quantity(0.0, 'Hz'),
                                 bwmode='repBW',
                                 beam=beams[(hm_robust, str(hm_uvtaper), 'repBW')],
@@ -401,7 +417,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                         return ImagePreCheckResults(error=True, error_msg='Invalid beam')
 
                     cells[(hm_robust, str(hm_uvtaper), 'aggBW')] = image_heuristics.cell(beams[(hm_robust, str(hm_uvtaper), 'aggBW')])
-                    imsizes[(hm_robust, str(hm_uvtaper), 'aggBW')] = image_heuristics.imsize(field_ids, cells[(hm_robust, str(hm_uvtaper), 'aggBW')], primary_beam_size, centreonly=False)
+                    imsizes[(hm_robust, str(hm_uvtaper), 'aggBW')] = image_heuristics.imsize(field_ids, cells[(hm_robust, str(hm_uvtaper), 'aggBW')], primary_beam_size, centreonly=False, intent='TARGET')
                     try:
                         sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = \
                             image_heuristics.calc_sensitivities(inputs.vis, repr_field, 'TARGET', cont_spw, -1, {}, 'cont', gridder, cells[(hm_robust, str(hm_uvtaper), 'aggBW')], imsizes[(hm_robust, str(hm_uvtaper), 'aggBW')], 'briggs', hm_robust, hm_uvtaper, True, known_per_spw_cont_sensitivities_all_chan, calcsb)
@@ -416,8 +432,10 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                         for cont_sens_bw_mode in cont_sens_bw_modes:
                             sensitivities.append(Sensitivity(
                                 array=array,
+                                intent='TARGET',
                                 field=repr_field,
                                 spw=str(repr_spw),
+                                is_representative=True,
                                 bandwidth=_bandwidth,
                                 bwmode=cont_sens_bw_mode,
                                 beam=beams[(hm_robust, str(hm_uvtaper), 'aggBW')],
@@ -430,8 +448,10 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                         for _ in cont_sens_bw_modes:
                             sensitivities.append(Sensitivity(
                                 array=array,
+                                intent='TARGET',
                                 field=repr_field,
                                 spw=str(repr_spw),
+                                is_representative=True,
                                 bandwidth=cqa.quantity(0.0, 'Hz'),
                                 bwmode='repBW',
                                 beam=beams[(hm_robust, str(hm_uvtaper), 'aggBW')],

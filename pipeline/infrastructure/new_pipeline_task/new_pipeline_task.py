@@ -12,11 +12,19 @@ import shutil
 import sys
 import tempfile
 
+try:
+    from mako.template import Template
+except ImportError as e:
+    import pipeline.extern
+    from mako.template import Template
 
 class NewTask():
 
     def __init__(self):
-        self.repository_path = os.environ['SCIPIPE_HEURISTICS']
+        try:
+            self.repository_path = os.path.abspath(os.path.expanduser(os.environ['SCIPIPE_HEURISTICS']))
+        except KeyError as e:
+            self.repository_path = None
 
     def parse_command_line(self, argv):
 
@@ -26,19 +34,25 @@ class NewTask():
                 script_args = argv[idx + 1:]
 
         parser = argparse.ArgumentParser(prog="new_pipeline_task", add_help=False)
-        parser.add_argument('--package', help="Pipeline package.  One of 'h', 'hif', 'hifa', 'hifas', 'hifv', or 'hsd'.",
-                            type=str, choices=['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd'], required=True)
+        parser.add_argument('--package', help="Pipeline package.  One of 'h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd', 'hsdn'.",
+                            type=str, choices=['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd', 'hsdn'], required=True)
         parser.add_argument('--task', help='New task name', type=str, required=True)
         parser.add_argument('--module',
                             help="Optional module name.  e.g. if task is 'foo' "
                                  "and module is 'bar' then 'tasks/foo/bar.py' is created",
                             type=str, default='', required=False)
+        parser.add_argument('--prefix',
+                            help="Optional repository path when the shell env variable 'SCIPIPE_HEURISTICS' is not available.",
+                            type=str, default=None, required=False)   
 
         try:
             args = parser.parse_args(script_args)
         except:
             parser.print_help()
             return '', '', ''
+
+        if self.repository_path is None and args.prefix is not None:
+            self.repository_path = os.path.abspath(os.path.expanduser(args.prefix))
 
         area = args.package
         task_name = args.task
@@ -81,8 +95,7 @@ class NewTask():
         # -----------------------------------------------------------------------------
         module_file = '{tdir}/{task}.py'.format(tdir=task_dir, task=module_name)
         init_file = '{tdir}/__init__.py'.format(tdir=task_dir)
-        cli_file = '{cdir}/private/task_{area}_{task}.py'.format(cdir=cli_dir, area=area, task=task_name)
-        cli_xml = '{cdir}/{area}_{task}.xml'.format(cdir=cli_dir, area=area, task=task_name)
+        cli_file = '{cdir}/{area}_{task}.py'.format(cdir=cli_dir, area=area, task=task_name)
         weblog_mako = '{repo}/pipeline/{area}/templates/{task}.mako'.format(repo=self.repository_path, area=area, task=task_name)
 
         # -----------------------------------------------------------------------------
@@ -92,8 +105,6 @@ class NewTask():
                                             'pipeline_task_module.mako'.format(repo=self.repository_path))
         cli_template = Template(filename='{repo}/pipeline/infrastructure/new_pipeline_task/'
                                          'pipeline_cli_module.mako'.format(repo=self.repository_path))
-        cli_xml_template = Template(filename='{repo}/pipeline/infrastructure/new_pipeline_task/'
-                                             'pipeline_cli_xml.mako'.format(repo=self.repository_path))
         init_template = Template(filename='{repo}/pipeline/infrastructure/new_pipeline_task/'
                                           'pipeline_task_init.mako'.format(repo=self.repository_path))
 
@@ -112,10 +123,6 @@ class NewTask():
         print('\tCreating {f}'.format(f=cli_file))
         with open(cli_file, 'w+') as fd:
             fd.writelines(cli_template.render(package=area, taskname=task_name))
-
-        print('\tCreating {f}'.format(f=cli_xml))
-        with open(cli_xml, 'w+') as fd:
-            fd.writelines(cli_xml_template.render(package=area, taskname=task_name))
 
         # print('\tCreating {f}'.format(f=weblog_mako))
         # with open(weblog_mako, 'w+') as fd:
@@ -210,7 +217,7 @@ class NewTask():
         shutil.copy(temp_mako.name, weblog_mako)
         os.unlink(temp_mako.name)
 
-        print('\n\tNow use runsetup to make the new pipeline task visible within CASA.\n')
+        print("\n\tNow use 'python3 setup.py install' to make the new pipeline task visible within CASA.\n")
 
 
 if __name__ == '__main__':

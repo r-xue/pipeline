@@ -4,6 +4,7 @@ Created on 11 Sep 2014
 @author: sjw
 """
 import collections
+import operator
 import os
 import shutil
 
@@ -93,7 +94,7 @@ def make_flux_table(context, results):
                                   'stage%s' % single_result.stage_number)
 
         # measurements will be empty if fluxscale derivation failed
-        if len(single_result.measurements) is 0:
+        if len(single_result.measurements) == 0:
             continue
 
         # copy flux.csv file across to weblog directory
@@ -107,12 +108,12 @@ def make_flux_table(context, results):
             LOG.trace('Copying %s to %s' % (fluxcsv_filename, weblog_dir))
             shutil.copy(fluxcsv_filename, weblog_dir)
 
-        for field_arg, measurements in single_result.measurements.items():
+        for field_arg in sorted(single_result.measurements, key=lambda f: ms_for_result.get_fields(f)[0].id):
             field = ms_for_result.get_fields(field_arg)[0]
-            intents = " ".join(field.intents.intersection({'AMPLITUDE', 'BANDPASS', 'CHECK', 'PHASE'}))
+            intents = " ".join(sorted(field.intents.intersection({'AMPLITUDE', 'BANDPASS', 'CHECK', 'PHASE'})))
             field_cell = '%s (#%s) %s' % (field.name, field.id, intents)
 
-            for measurement in sorted(measurements, key=lambda m: int(m.spw_id)):
+            for measurement in sorted(single_result.measurements[field_arg], key=operator.attrgetter('spw_id')):
                 fluxes = collections.defaultdict(lambda: 'N/A')
                 for item in ['I', 'Q', 'U', 'V', 'spix']:
                     try:                        

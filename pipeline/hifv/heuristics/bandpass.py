@@ -2,32 +2,32 @@ import os
 
 import numpy as np
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from . import uvrange
 
 LOG = infrastructure.get_logger(__name__)
 
 
 def removeRows(caltable, spwids):
-    tb = casatools.table()
-    tb.open(caltable, nomodify=False)
-    for spwid in spwids:
-        subtb = tb.query('SPECTRAL_WINDOW_ID == '+str(spwid))
-        flaggedrows = subtb.rownumbers()
-        if len(flaggedrows) > 0: tb.removerows(flaggedrows)
-        subtb.close()
-    tb.flush()
-    tb.close()
+    """Remove rows from specified spwid from a CASA caltable."""
 
-    tb.open(caltable + '/SPECTRAL_WINDOW', nomodify=False)
-    for spwid in spwids:
-        temparray = tb.getcol('FLAG_ROW')
-        temparray[spwid] = True
-        tb.putcol('FLAG_ROW', temparray)
-    tb.close()
+    with casa_tools.TableReader(caltable, nomodify=False) as tb:
+        for spwid in spwids:
+            subtb = tb.query('SPECTRAL_WINDOW_ID == '+str(spwid))
+            flaggedrows = subtb.rownumbers()
+            if len(flaggedrows) > 0:
+                LOG.debug('removing rows from table '+caltable+' for spw='+str(spwid))
+                tb.removerows(flaggedrows)
+            subtb.close()
+
+    with casa_tools.TableReader(caltable+'/SPECTRAL_WINDOW', nomodify=False) as tb:
+        for spwid in spwids:
+            temparray = tb.getcol('FLAG_ROW')
+            temparray[spwid] = True
+            tb.putcol('FLAG_ROW', temparray)
 
 
 def computeChanFlag(vis, caltable, context):
@@ -35,7 +35,7 @@ def computeChanFlag(vis, caltable, context):
     m = context.observing_run.get_ms(vis)
     channels = m.get_vla_numchan()
 
-    with casatools.TableReader(caltable) as table:
+    with casa_tools.TableReader(caltable) as table:
         spwVarCol = table.getvarcol('SPECTRAL_WINDOW_ID')
         dataVarCol = table.getvarcol('CPARAM')
         flagVarCol = table.getvarcol('FLAG')
@@ -70,12 +70,12 @@ def computeChanFlag(vis, caltable, context):
             '''
             try:
                 if ((rangeA[0][0] == 0 and rangeA[0][1] == len(flagArr[0])-1) or (rangeB[0][0] == 0 and rangeB[0][1] == len(flagArr[1])-1)):
-                    LOG.warn("channel pre-averaging bandpass calibration heuristic could not recover solutions for spw="+str(spwArr[0]))
+                    LOG.warning("channel pre-averaging bandpass calibration heuristic could not recover solutions for spw="+str(spwArr[0]))
                     print rangeA, rangeB
                     spwids.append(spwArr[0])
                     largechunk = True
             except:
-                LOG.warn("Problem with using channel pre-averaging bandpass calibration heuristic - check CASA log")
+                LOG.warning("Problem with using channel pre-averaging bandpass calibration heuristic - check CASA log")
             '''
 
             # Determine contiguous lengths of failed solutions for both polarizations, but ignoring edge flagging
@@ -253,9 +253,9 @@ def weakbp(vis, caltable, context=None, RefAntOutput=None, ktypecaltable=None,
             preavgnchan = channels[spw]/float(cpa)
             LOG.debug("CPA: " + str(cpa) + "   NCHAN: "+str(preavgnchan)+"    NCHAN/32: "+str(preavgnchan/32.0))
             if cpa > preavgnchan/32.0:
-                LOG.warn("Limiting pre-averaging to maximum 1/32 fractional bandwidth for spw="+str(spw)
-                         + ". Interpolation in applycal will need to extend over greater " +
-                         "than 1/32 fractional bandwidth, which may fail to capture significant bandpass structure.")
+                LOG.warning("Limiting pre-averaging to maximum 1/32 fractional bandwidth for spw="+str(spw)
+                            + ". Interpolation in applycal will need to extend over greater " +
+                            "than 1/32 fractional bandwidth, which may fail to capture significant bandpass structure.")
                 largechunk = False  # This will break the while loop and move onto applycal
         cpa = cpa * 2
 

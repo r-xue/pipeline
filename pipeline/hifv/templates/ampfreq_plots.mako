@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer import rendererutils
 %>
 
 <div class="page-header">
@@ -10,9 +11,8 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 % for ms in ampfreq_subpages.keys():
     <h4>Plots:  <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, ampfreq_subpages[ms]), pcontext.report_dir)}">Amp vs. Frequency plots </a>
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, ampfreq_subpages[ms])}">Amp vs. Frequency plots </a>
     </h4>
-
 %endfor
 
 <br>

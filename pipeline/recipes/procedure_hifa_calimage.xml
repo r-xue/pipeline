@@ -5,6 +5,10 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">dbservice</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -171,7 +175,21 @@
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">maxproductsize</Keyword>
-                <Value xmlns="">350.0</Value>
+                <Value xmlns="">500.0</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_renorm</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">apply</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">atm_auto_exclude</Keyword>
+                <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -212,12 +230,6 @@
 
     <ProcessingCommand>
         <Command xmlns="">hif_findcont</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_uvcontfit</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>

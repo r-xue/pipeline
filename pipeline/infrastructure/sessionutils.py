@@ -1,11 +1,15 @@
 import abc
 import collections
+import datetime
 import itertools
 import os
 import tempfile
+import traceback
+from inspect import signature
 
 from pipeline.infrastructure import basetask
 from pipeline.infrastructure import exceptions
+from pipeline.infrastructure import logging
 from . import mpihelpers
 from . import utils
 from . import vdp
@@ -20,6 +24,8 @@ __all__ = [
     'VDPTaskFactory',
     'VisResultTuple'
 ]
+
+LOG = logging.get_logger(__file__)
 
 # VisResultTuple is a data structure used by VDPTaskFactor to group
 # inputs and results.
@@ -55,7 +61,7 @@ def as_list(o):
     return o if isinstance(o, list) else [o]
 
 
-def group_into_sessions(context, all_results):
+def group_into_sessions(context, all_results, measurement_sets=None):
     """
     Return results grouped into lists by session.
 
@@ -63,14 +69,20 @@ def group_into_sessions(context, all_results):
     :type context: Context
     :param all_results: result to be grouped
     :type all_results: list
+    :param measurement_sets: additional measurementset list (optional)
+    :type measurement_sets: list
     :return: dict of sessions to results for that session
     :rtype: dict {session name: [result, result, ...]
     """
-    session_map = {ms.basename: ms.session
-                   for ms in context.observing_run.measurement_sets}
+    ms_set = set(context.observing_run.measurement_sets)
+
+    if measurement_sets:
+        ms_set.update(measurement_sets)
+
+    session_map = {ms.basename: ms.session for ms in ms_set}
 
     ms_start_times = {ms.basename: utils.get_epoch_as_datetime(ms.start_time)
-                      for ms in context.observing_run.measurement_sets}
+                      for ms in ms_set}
 
     def get_session(r):
         basename = os.path.basename(r[0])
@@ -78,7 +90,7 @@ def group_into_sessions(context, all_results):
 
     def get_start_time(r):
         basename = os.path.basename(r[0])
-        return ms_start_times.get(basename, None)
+        return ms_start_times.get(basename, datetime.datetime.utcfromtimestamp(0))
 
     results_by_session = sorted(all_results, key=get_session)
     return {session_id: sorted(results_for_session, key=get_start_time)
@@ -227,9 +239,7 @@ class VDPTaskFactory(object):
 
 def remove_unexpected_args(fn, fn_args):
     # get the argument names for the function
-    code = fn.__code__
-    arg_count = code.co_argcount
-    arg_names = code.co_varnames[:arg_count]
+    arg_names = list(signature(fn).parameters)
 
     # identify arguments that are not expected by the function
     unexpected = [k for k in fn_args if k not in arg_names]
@@ -259,7 +269,6 @@ def get_spwmap(source_ms, target_ms):
     :type source_ms: domain.MeasurementSet
     :param target_ms: the MS to map spws to
     :type target_ms: domain.MeasurementSet
-    :param spws: the spw argument to convert
     :return: dict of integer spw IDs
     """
     # spw names are not guaranteed to be unique. They seem to be unique
@@ -270,7 +279,7 @@ def get_spwmap(source_ms, target_ms):
     # non-science windows and vice versa. Not what we want! This set
     # will be used to filter for the spectral windows we want to
     # consider.
-    science_intents = {'AMPLITUDE', 'BANDPASS', 'PHASE', 'TARGET', 'CHECK'}
+    science_intents = {'AMPLITUDE', 'BANDPASS', 'PHASE', 'TARGET', 'CHECK', 'POLARIZATION'}
 
     # map spw id to spw name for source MS - just for science intents
     id_to_name = {spw.id: spw.name
@@ -339,8 +348,25 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
     def __init__(self, inputs):
         super(ParallelTemplate, self).__init__(inputs)
 
-    def get_result_for_exception(self, vis, result):
-        raise NotImplementedError
+    @basetask.result_finaliser
+    def get_result_for_exception(self, vis: str, exception: Exception) -> basetask.FailedTaskResults:
+        """Generate FailedTaskResults with exception raised.
+
+        This provides default implementation of exception handling.
+
+        Args:
+            vis: List of input visibility data
+            exception: Exception occurred
+
+        Return:
+            a results object with exception raised
+        """
+        LOG.error('Error processing {!s}'.format(os.path.basename(vis)))
+        LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
+        tb = traceback.format_exc()
+        if tb.startswith('None'):
+            tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
+        return basetask.FailedTaskResults(self.__class__, exception, tb)
 
     def prepare(self):
         inputs = self.inputs
@@ -357,6 +383,16 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
             for (vis, (task_args, task)) in task_queue:
                 try:
                     worker_result = task.get_result()
+
+                    # for importdata/restoredata tasks, input and output vis
+                    # can be different. sessionutils seems to require vis to
+                    # be output vis
+                    if isinstance(worker_result, collections.Iterable):
+                        result = worker_result[0]
+                    else:
+                        result = worker_result
+                    if hasattr(result, 'mses'):
+                        vis = result.mses[0].name
                 except exceptions.PipelineException as e:
                     assessed.append((vis, task_args, e))
                 else:
@@ -369,7 +405,18 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
         final_result = basetask.ResultsList()
 
         context = self.inputs.context
-        session_groups = group_into_sessions(context, assessed)
+
+        # if results are generated by importdata task,
+        # retrieve measurementset domain objects from the results
+        mses = []
+        for _, _, vis_result in assessed:
+            if isinstance(vis_result, collections.Iterable):
+                for r in vis_result:
+                    mses.extend(getattr(r, 'mses', []))
+            else:
+                mses.extend(getattr(vis_result, 'mses', []))
+
+        session_groups = group_into_sessions(context, assessed, measurement_sets=mses)
         for session_id, session_results in session_groups.items():
             for vis, task_args, vis_result in session_results:
                 if isinstance(vis_result, Exception):

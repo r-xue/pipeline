@@ -6,7 +6,7 @@ import numpy
 
 from casatasks.private import simutil
 
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
 from . import measures
 
 Baseline = collections.namedtuple('Baseline', 'antenna1 antenna2 length')
@@ -62,7 +62,7 @@ class AntennaArray(object):
         if datum == 'ITRF':
             return self.__position
 
-        qa = casatools.quanta       
+        qa = casa_tools.quanta
         longitude = qa.convert(self.longitude, 'rad')
         latitude = qa.convert(self.latitude, 'rad')
         elevation = qa.convert(self.elevation, 'm')
@@ -83,7 +83,7 @@ class AntennaArray(object):
 
     @property
     def baselines(self):
-        qa = casatools.quanta
+        qa = casa_tools.quanta
 
         def diff(ant1, ant2, attr):
             v1 = qa.getvalue(ant1.offset[attr])[0]
@@ -99,7 +99,7 @@ class AntennaArray(object):
                                               measures.DistanceUnits.METRE)
             baselines.append(Baseline(ant1, ant2, domain_length))
 
-        if len(baselines) is 0:
+        if len(baselines) == 0:
             zero_length = measures.Distance(0.0,
                                             measures.DistanceUnits.METRE)
             baselines.append(Baseline(self.antennas[0], self.antennas[0], zero_length))
@@ -110,7 +110,7 @@ class AntennaArray(object):
         """
         Get the offset of the given antenna from the centre of the array.
         """
-#         qa = casatools.quanta       
+#         qa = casa_tools.quanta
 #         longitude = qa.convert(self.longitude, 'rad')
 #         latitude = qa.convert(self.latitude, 'rad')
 #         elevation = qa.convert(self.elevation, 'm')
@@ -180,7 +180,7 @@ class AntennaArray(object):
     def median_direction(self):
         """The median center direction for the array."""
         # construct lists of the longitude and latitude of each antenna.. 
-        qt = casatools.quanta
+        qt = casa_tools.quanta
         longs = [qt.getvalue(antenna.longitude) for antenna in self.antennas]
         lats = [qt.getvalue(antenna.latitude) for antenna in self.antennas]
 
@@ -191,11 +191,10 @@ class AntennaArray(object):
         # Construct and return a CASA direction using these median values. As
         # antenna positions are given in radians, the units of the median
         # direction is set to radians too.  
-        mt = casatools.measures
+        mt = casa_tools.measures
         return mt.direction(v0=qt.quantity(med_lon, 'rad'), 
                             v1=qt.quantity(med_lat, 'rad'))
 
     def __str__(self):
         names = ', '.join([antenna.name for antenna in self.antennas])
         return 'AntennaArray({0})'.format(names)
-

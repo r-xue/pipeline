@@ -146,7 +146,7 @@ f.close()
 
 import xml.dom.minidom as minidom
 from copy import copy
-
+import ast
 
 class _XmlObject:
     """
@@ -261,6 +261,7 @@ def _createLists(xmlObject, mapNameSpaces, nameSpaceMapping, skipChars):
 
 
 def castType(value):
+
     try:
         value = int(value)
     except ValueError:
@@ -272,6 +273,19 @@ def castType(value):
                 value = False
             elif value.lower() == 'true':
                 value = True
+
+    # PIPE-585: workaround if the value string is intended to represent a list or tuple
+    # Added dict after detecting issues in PIPE-1428.
+    if isinstance(value, str):
+        try:
+            pyobj = ast.literal_eval(value)
+            if (isinstance(pyobj, list) and value.strip()[0] == '[') or \
+               (isinstance(pyobj, tuple) and value.strip()[0] == '(') or \
+               (isinstance(pyobj, dict) and value.strip()[0] == '{'):
+                value = pyobj
+        except (ValueError, SyntaxError):
+            pass
+
     return value
 
 
@@ -300,7 +314,7 @@ class XmlObject(minidom.Document):
             raise XmlObjectifierError('No XML string or filename specified')
         dom.documentElement.normalize()
         for attr in dir(dom):
-            if '__' not in attr:
+            if '__' not in attr and attr not in ('async', 'async_'):
                 try:
                     setattr(self, attr, getattr(dom, attr))
                 except:
@@ -372,9 +386,3 @@ class XmlObjectifierError(Exception):
     def __str__(self):
         return repr(self.msg)
 
-
-# APEX specific main to load the MBFITS XML definition.
-if __name__ == '__main__':
-    import interactive
-    myXmlObject = XmlObject(fileName='../../idl/MBFits.xml')
-    scanStructure = myXmlObject.Scan()

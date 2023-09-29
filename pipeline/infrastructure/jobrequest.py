@@ -1,16 +1,19 @@
 import copy
+import functools
 import itertools
 import operator
 import os
 import platform
 import re
 import sys
+import types
+from inspect import signature
 
 import almatasks
 import casaplotms
 import casatasks
 
-from . import logging
+from . import logging, utils
 
 LOG = logging.get_logger(__name__)
 
@@ -89,17 +92,17 @@ def alphasort(argument):
             idxs = list(map(operator.itemgetter(1), g))
             start_idx = idxs[0]
             end_idx = idxs[-1] + 1
-            value[start_idx:end_idx] = sorted(value[start_idx:end_idx], key=natural_sort)
+            value[start_idx:end_idx] = utils.natural_sort(value[start_idx:end_idx])
 
     else:
         for attr_name, separator in attrs_and_separators.items():
             if name == attr_name and isinstance(value, str) and separator in value:
-                value = separator.join(sorted(value.split(separator), key=natural_sort))
+                value = separator.join(utils.natural_sort(value.split(separator)))
 
     return FunctionArg(name, value)
 
 
-_uuid_regex = re.compile('[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}', re.I)
+_uuid_regex = re.compile(r'[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}', re.I)
 
 
 def UUID_to_underscore(argument):
@@ -131,10 +134,29 @@ def truncate_paths(arg):
                         'fluxtable', 'infile', 'infiles', 'mask', 'imagename', 'fitsimage', 'outputvis'):
         return arg
 
+    # PIPE-639: 'inpfile' is an argument for CASA's flagdata task, and it can
+    # contain either a path name, a list of path names, or a list of flagging
+    # commands. Attempting to get the basename of a flagging command can cause
+    # it to become malformed. Treat 'inpfile' as a special case, where we only
+    # return the basename if the provided string(s) resolves as a path to an
+    # existing file. We cannot apply this rule to all arguments, as some
+    # arguments specify output files that may not exist yet.
+    func = basename_if_isfile if arg.name == 'inpfile' else os.path.basename
+
     # wrap value in a tuple so that strings can be interpreted by
     # the recursive map function
-    basename_value = _recur_map(os.path.basename, (arg.value,))[0]
+    basename_value = _recur_map(func, (arg.value,))[0]
     return FunctionArg(arg.name, basename_value)
+
+
+def basename_if_isfile(arg: str) -> str:
+    """
+    Test whether input string resolves to an existing file: if so, return the
+    basename of the file path, otherwise return the input string unmodified.
+    """
+    if os.path.isfile(arg):
+        return os.path.basename(arg)
+    return arg
 
 
 def _recur_map(fn, data):
@@ -169,9 +191,8 @@ class JobRequest(object):
 
         # get the argument names and default argument values for the given
         # function
-        code = fn.__code__
-        argcount = code.co_argcount
-        argnames = code.co_varnames[:argcount]
+        argnames = list(signature(fn).parameters)
+        argcount = len(argnames)
         fn_defaults = fn.__defaults__ or list()
         argdefs = dict(zip(argnames[-len(fn_defaults):], fn_defaults))
 
@@ -189,7 +210,7 @@ class JobRequest(object):
         self._positional = [FunctionArg(name, arg) for name, arg in zip(argnames, args)]
         self._defaulted = [FunctionArg(name, argdefs[name])
                            for name in argnames[len(args):]
-                           if name not in kw and name is not 'self']
+                           if name not in kw and name != 'self']
         self._keyword = [FunctionArg(name, kw[name]) for name in argnames if name in kw]
         self._nameless = [NamelessArg(a) for a in args[argcount:]]
 
@@ -279,34 +300,49 @@ class JobRequest(object):
         return hash(tuple(frozenset(new_o.items())))
 
 
-def natural_sort(s, _nsre=re.compile('([0-9]+)')):
-    return [int(text) if text.isdigit() else text.lower()
-            for text in re.split(_nsre, s)]
-
-
 def get_fn_name(fn):
-    """
-    Return a tuple stating the name of the function and whether the function
-    is a CASA task.
+    """Return a tuple stating the name of the callable and whether it's a CASA task.
 
     :param fn: the function to inspect
     :return: (function name, bool) tuple
-    """
-    module = fn.__module__
-    if isinstance(module, object):
 
-        #
-        # PIPE-697: uvcontfit and copytree commands now appear erroneously as
-        # casaplotms in casa_commands.log
-        #
-        # The pipeline has a handful of shutil file operations wrapped up in
-        # JobRequests and exposed on the casatasks module so that they can be
-        # called and logged in the same manner as CASA operations. The check
-        # below distinguishes CASA tasks/functions from non-CASA code.
-        #
-        for m in (almatasks, casatasks, casaplotms):
-            for k, v in m.__dict__.items():
-                if v == fn:
-                    return k, True
+    Pipeline has a handful of shutil file operations wrapped up in
+    JobRequests and exposed on the casa_tasks module so that they can be
+    called and logged in the same manner as CASA task operations. The check
+    below distinguishes CASA tasks from non-CASA code.
+
+    Note: as of CASA ver6.5, all genuine CASA tasks are callable class instances, rather than Python functions.
+    """
+
+    for m in (almatasks, casatasks, casaplotms):
+        for k in m.__all__:
+            v = getattr(m, k)
+            if v == fn and not isinstance(fn, types.FunctionType):
+                return k, True
 
     return fn.__name__, False
+
+
+def jobrequest_generator(func):
+    """Construct a JobRequest generator for a callable.
+    
+    This can be used as a decorator to create a JobRequest generator for any callables so they can be
+    called and logged via JobRequests.
+    
+    functools.wraps is used to preserve the original function's name and docstring.
+    The return typing of the wrapped function is specified as JobRequest.
+    
+    Note that the returned JobRequest creator function can NOT be transmitted via MPI messages (e.g. in 
+    the case of Tier0JobRquest) because serializing wrapped functions that are only visible in a local
+    scope is not supported by Python/pickle.
+    """
+    if not callable(func):
+        raise TypeError('fn must be a callable.')
+
+    @functools.wraps(func)
+    def job_generator(*args, **kwargs) -> JobRequest:
+        """Generate a JobRequest for the given callable."""
+        return JobRequest(func, *args, **kwargs)
+    job_generator.__name__, _ = get_fn_name(func)
+
+    return job_generator

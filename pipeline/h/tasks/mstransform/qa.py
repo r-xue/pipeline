@@ -17,17 +17,17 @@ class MsSplitQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
 
-        # Check for existance of the the target MS.
-        score1 = self._targetms_exists(os.path.dirname(result.outputvis), os.path.basename(result.outputvis))
+        # Check for existance of the science targets cont+line MS.
+        score1 = self._targets_ms_exists(os.path.dirname(result.outputvis), os.path.basename(result.outputvis))
         scores = [score1]
 
         result.qa.pool.extend(scores)
 
-    def _targetms_exists(self, output_dir, target_ms):
+    def _targets_ms_exists(self, output_dir, targets_ms):
         """
-        Check for the existence of the target MS
+        Check for the existence of the science targets cont+line MS
         """
-        return qacalc.score_path_exists(output_dir, target_ms, 'science target ms')
+        return qacalc.score_path_exists(output_dir, targets_ms, 'science targets cont+line ms')
 
 
 class MsSplitListQAHandler(pqa.QAPlugin):
@@ -44,5 +44,5 @@ class MsSplitListQAHandler(pqa.QAPlugin):
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
         mses = [r.inputs['vis'] for r in result]
-        longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses, quotes=False, conjunction='or')
+        longmsg = 'No missing science targets cont+line MS(s) for %s' % utils.commafy(mses, quotes=False, conjunction='or')
         result.qa.all_unity_longmsg = longmsg

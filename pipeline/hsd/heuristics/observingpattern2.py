@@ -1,10 +1,8 @@
-import numpy
-
-import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.api as api
 import math
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.api as api
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -36,5 +34,3 @@ class ObservingPattern2(api.Heuristic):
         else: ret = 'MULTI-POINT'
         LOG.info('Pattern is %s' % (ret))
         return ret
-
-

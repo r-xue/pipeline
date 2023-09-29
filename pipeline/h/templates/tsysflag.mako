@@ -9,14 +9,14 @@ def get_td_for_percent_flagged(flagsummary, step):
     flagged = flagsummary.flagged
     total = flagsummary.total
 
-    if total is 0:
+    if total == 0:
         return '<td>N/A</td>'
 
     pflagged = (100.0 * flagged / total)
     if step == 'before' and pflagged > 1.0:
-        return '<td class="warning">{:.1f}%</td>'.format(pflagged)
+        return '<td class="warning">{:.3f}%</td>'.format(pflagged)
 
-    return '<td>{:.1f}%</td>'.format(pflagged)
+    return '<td>{:.3f}%</td>'.format(pflagged)
 
 comp_descriptions = {'nmedian'    : 'Flag T<sub>sys</sub> spectra with high median values.',
                  	 'derivative' : 'Flag T<sub>sys</sub> spectra with high median derivative (ringing).',
@@ -110,14 +110,14 @@ def flagcmd_file_data(caltable, flagcmd_file):
 		</tr>
 	</thead>
 	<tbody>
-%for vis in updated_refants:
+        % for vis in updated_refants:
 		<tr>
 			<td>${os.path.basename(vis)}</td>
 			## insert spaces in refant list to allow browser to break string
 			## if it wants
 			<td>${updated_refants[vis].replace(',', ', ')}</td>
 		</tr>
-%endfor
+        % endfor
 	</tbody>
 </table>
 % endif
@@ -168,11 +168,11 @@ def flagcmd_file_data(caltable, flagcmd_file):
 		<tr>
 			<td>${ms}</td>
 			% for step in components:
-			% if flags[ms].get(step) is None:
-			<td><span class="glyphicon glyphicon-remove"></span></td>
-      		% else:
-      		<td><span class="glyphicon glyphicon-ok"></span></td>
-      		% endif
+			  % if flags[ms].get(step) is None:
+			    <td><span class="glyphicon glyphicon-remove"></span></td>
+      		  % else:
+      		    <td><span class="glyphicon glyphicon-ok"></span></td>
+      		  % endif
   			% endfor
 		</tr>
 	% endfor
@@ -208,15 +208,15 @@ def flagcmd_file_data(caltable, flagcmd_file):
 		</tr>
 	</thead>
 	<tbody>
-		% for k in ['TOTAL', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'TARGET']:
+		% for intent in flag_table_intents:
 		<tr>
-			<th>${k}</th>               
+			<th>${intent}</th>
 			% for step in ['before'] + components + ['after']:
-			% if flags[ms].get(step) is not None:
-				${get_td_for_percent_flagged(flags[ms][step]['Summary'][k], step)}
-			% else:
+			  % if flags[ms].get(step):
+				${get_td_for_percent_flagged(flags[ms][step]['Summary'][intent], step)}
+			  % else:
 				<td>N/A</td>
-			% endif
+			  % endif
 			% endfor
 		</tr>
 		% endfor
@@ -296,7 +296,7 @@ def flagcmd_file_data(caltable, flagcmd_file):
 	        <td><a class="replace-pre" href="${relpath_reports[0]}" 
                    data-title="Flagging Commands">Flag commands file</a></td>
             <td>${rendererutils.num_lines(os.path.join(pcontext.report_dir, relpath_reports[0]))}</td>
-	        <td><a class="replace-pre"
+	        <td><a class="replace-pre" no-escape-html="true"
                    href="${relpath_reports[1]}" data-title="Flagging report">
                    Flagging report</a></td>
 	    </tr>

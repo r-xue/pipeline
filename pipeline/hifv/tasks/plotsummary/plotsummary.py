@@ -3,12 +3,16 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class PlotSummaryInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     def __init__(self, context, vis=None):
         self.context = context
         self.vis = vis

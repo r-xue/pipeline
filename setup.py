@@ -5,6 +5,7 @@ import os
 import shutil
 import subprocess
 import sys
+import textwrap
 
 import setuptools
 from setuptools.command.build_py import build_py
@@ -176,72 +177,6 @@ class MinifyCSSCommand(distutils.cmd.Command):
             f.write('\n')
 
 
-class BuildMyTasksCommand(distutils.cmd.Command):
-    description = 'Generate the CASA CLI bindings'
-    user_options = [('inplace', 'i', 'Generate CLI bindings in src directory')]
-    boolean_options = ['inplace']
-
-    def __init__(self, dist):
-        distutils.cmd.Command.__init__(self, dist)
-
-    def initialize_options(self):
-        """Set default values for options."""
-        self.inplace = None
-
-    def finalize_options(self):
-        # get the path to this file
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-
-        if self.inplace:
-            self.build_path = dir_path
-        else:
-            # get the path to the build directory
-            build_py_cmd = self.get_finalized_command('build_py')
-            self.build_path = os.path.join(dir_path, build_py_cmd.build_lib)
-
-    def run(self):
-        for d in PIPELINE_PACKAGES:
-            cli_dir = os.path.join('pipeline', d, 'cli')
-            cli_module = '.'.join(['pipeline', d, 'cli'])
-            src_dir = os.path.join(self.build_path, cli_dir)
-            if not os.path.exists(src_dir):
-                continue
-
-            cli_init_py = os.path.join(src_dir, '__init__.py')
-            # Remove old init module to avoid incompatible code and duplication
-            if os.path.exists(cli_init_py):
-                os.remove(cli_init_py)
-
-            gotasks_dir = os.path.join(src_dir, 'gotasks')
-            gotasks_init_py = os.path.join(gotasks_dir, '__init__.py')
-            # Remove old init module to avoid incompatible code and duplication
-            if os.path.exists(gotasks_init_py):
-                os.remove(gotasks_init_py)
-
-            for xml_file in [f for f in os.listdir(src_dir) if f.endswith('.xml')]:
-                self.announce('Building task from XML: {}'.format(xml_file), level=distutils.log.INFO)
-                subprocess.check_output([
-                    'buildmytasks',
-                    '--module',
-                    cli_module,
-                    xml_file
-                ], cwd=src_dir)
-
-                root, _ = os.path.splitext(xml_file)
-                import_statement = 'from .{} import {}'.format(root, root)
-                with open(cli_init_py, 'a+', encoding=ENCODING) as init_file:
-                    import_exists = any(import_statement in line for line in init_file)
-                    if not import_exists:
-                        init_file.seek(0, os.SEEK_END)
-                        init_file.write('{}\n'.format(import_statement))
-
-                with open(gotasks_init_py, 'a+', encoding=ENCODING) as init_file:
-                    import_exists = any(import_statement in line for line in init_file)
-                    if not import_exists:
-                        init_file.seek(0, os.SEEK_END)
-                        init_file.write('{}\n'.format(import_statement))
-
-
 class VersionCommand(distutils.cmd.Command):
     description = 'Generate the version file'
     user_options = [('inplace', 'i', 'Generate the version file in src directory')]
@@ -298,7 +233,7 @@ def _get_git_version():
             dirty="+" + out.split(" ")[2].strip() # "+" denotes local version identifier as described in PEP440
             version = version + dirty
         return version
-    else: 
+    else:
         # Retrieve info about current commit.
         try:
             # Set version to latest tag, number of commits since tag, and latest
@@ -326,7 +261,6 @@ class PipelineBuildPyCommand(build_py):
         build_py.run(self)
         self.run_command('minify_css')
         self.run_command('minify_js')
-        self.run_command('buildmytasks')
         self.run_command('version')
 
 
@@ -348,7 +282,6 @@ setuptools.setup(
     version=_get_git_version(),
     description='CASA pipeline',
     cmdclass={
-        'buildmytasks': BuildMyTasksCommand,
         'build_py': PipelineBuildPyCommand,
         'minify_js': MinifyJSCommand,
         'minify_css': MinifyCSSCommand,
@@ -381,6 +314,7 @@ setuptools.setup(
                        '*.txt',
                        '*.woff',
                        '*.woff2',
-                       '*.xml']},
+                       '*.xml',
+                       'version']},
     zip_safe=False
 )

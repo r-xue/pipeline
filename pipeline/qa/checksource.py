@@ -1,7 +1,7 @@
 import collections
 
+from pipeline.infrastructure import casa_tools
 
-import pipeline.infrastructure.casatools as casatools
 
 # Compute the separation of the image source from the
 # reference direction and the fraction of flux lost
@@ -21,8 +21,8 @@ def checkimage (imagename, rms, refdirection, refflux):
     if not fitdict:
         return {}
 
-    me = casatools.measures
-    qa = casatools.quanta
+    me = casa_tools.measures
+    qa = casa_tools.quanta
 
     # Compare the reference direction to the fitted direction. Compute the angular separation in
     # arcseconds and the ratio of the separation to the estimate of the synthesized beams
@@ -69,7 +69,7 @@ def fitimage (imagename, rms, fitradius=15):
     '''
 
     # Open the image analysis tool
-    with casatools.ImageReader(imagename) as image:
+    with casa_tools.ImageReader(imagename) as image:
 
         # Construct the regions string
         #    This is a circle centered at the center of the image with a radius of 15 pixels
@@ -95,13 +95,13 @@ def fitimage (imagename, rms, fitradius=15):
         return {}
 
     # Check validity of fit
-    if not fitresults:
+    if ((not fitresults) or ('results' not in fitresults)) or ('component0' not in fitresults['results']):
         return {}
 
     fitdict = collections.OrderedDict()
 
-    qa = casatools.quanta
-    me = casatools.measures
+    qa = casa_tools.quanta
+    me = casa_tools.measures
 
     # Get the fitted position
     ra  = fitresults['results']['component0']['shape']['direction']['m0']

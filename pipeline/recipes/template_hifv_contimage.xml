@@ -13,6 +13,12 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifv_flagtargetsdata</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+        
+    <ProcessingCommand>
         <Command xmlns="">hifv_statwt</Command>
         <ParameterSet/>
     </ProcessingCommand>
@@ -48,6 +54,10 @@
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">regcal</Value>
+            </Parameter>              
         </ParameterSet>
     </ProcessingCommand>
 
@@ -55,15 +65,53 @@
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">hm_masking</Keyword>
-                <Value xmlns="">none</Value>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">3.0</Value>
             </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    {{#selfcal}}
+    <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
+    
+    <ProcessingCommand>
+        <Command xmlns="">hif_selfcal</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cont</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
+            </Parameter>              
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">hm_cyclefactor</Keyword>
                 <Value xmlns="">3.0</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
+
+    <!-- end of the selfcal section -->
+    {{/selfcal}}    
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_pbcor</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>    
 
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>

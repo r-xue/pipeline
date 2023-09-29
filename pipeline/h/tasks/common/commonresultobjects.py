@@ -57,28 +57,28 @@ class ResultBase(object):
                   ('SpW', self.spw),
                   ('Pol', self.pol),
                   ('Ant', self.ant),
+                  ('Scan', self.scan),
                   ('Time', tstring)]
         return ' '.join('%s:%s' % (k) for k in fields if k[1] is not None)
 
 
 class ImageResult(ResultBase):
-    def __init__(self, filename, data, datatype, axes, flag=None, nodata=None,
-                 intent=None, field_id=None, field_name=None, spw=None,
-                 pol=None, ant=None, units=None, time=None):
+    def __init__(self, filename, data, datatype, axes, flag=None, nodata=None, intent=None, field_id=None,
+                 field_name=None, spw=None, pol=None, ant=None, units=None, scan=None, time=None):
         self.filename = filename
         self.data = data.copy()
         self.axes = axes
 
-        self.flag_reason_plane = np.zeros(np.shape(data), np.int)
+        self.flag_reason_plane = np.zeros(np.shape(data), int)
         self.flag_reason_key = {}
 
         if flag is None:
-            self.flag = np.zeros(np.shape(self.data), np.bool)
+            self.flag = np.zeros(np.shape(self.data), bool)
         else:
             self.flag = flag.copy()
 
         if nodata is None:
-            self.nodata = np.zeros(np.shape(self.data), np.bool)
+            self.nodata = np.zeros(np.shape(self.data), bool)
         else:
             self.nodata = nodata.copy()
 
@@ -90,6 +90,7 @@ class ImageResult(ResultBase):
         self.pol = pol
         self.ant = ant
         self.units = units
+        self.scan = scan
         self.time = time
 
         self.children = {}
@@ -104,15 +105,13 @@ class ImageResult(ResultBase):
 
 
 class SpectrumResult(ResultBase):
-    def __init__(self, data, datatype, data_mad=None, axis=None, flag=None,
-                 nodata=None, noisychannels=None, filename=None,
-                 intent=None, field_id=None, field_name=None, spw=None,
-                 pol=None, ant=None,
-                 units=None, time=None, normalise=False):
+    def __init__(self, data, datatype, data_mad=None, axis=None, flag=None, nodata=None, noisychannels=None,
+                 filename=None, intent=None, field_id=None, field_name=None, spw=None, pol=None, ant=None, units=None,
+                 scan=None, time=None, normalise=False):
         self.filename = filename
 
         if flag is None:
-            self.flag = np.zeros(np.shape(data), np.bool)
+            self.flag = np.zeros(np.shape(data), bool)
         else:
             self.flag = flag.copy()
 
@@ -142,12 +141,12 @@ class SpectrumResult(ResultBase):
             self.axis = axis
 
         if nodata is None:
-            self.nodata = np.zeros(np.shape(self.data), np.bool)
+            self.nodata = np.zeros(np.shape(self.data), bool)
         else:
             self.nodata = nodata.copy()
 
         if noisychannels is None:
-            self.noisychannels = np.zeros(np.shape(self.data), np.bool)
+            self.noisychannels = np.zeros(np.shape(self.data), bool)
         else:
             self.noisychannels = np.array(noisychannels)
 
@@ -158,6 +157,7 @@ class SpectrumResult(ResultBase):
         self._field_name = field_name
         self.pol = pol
         self.spw = spw
+        self.scan = scan
         self.time = time
         self.units = units
 

@@ -8,6 +8,25 @@ import os
 
 <%block name="title">Single-Dish Sky Calibration</%block>
 
+<%
+def get_mses():
+	"""Return a list of MS domain objects"""
+	return [pcontext.observing_run.get_ms(name=r.inputs['vis']) for r in result]
+
+
+def get_original_field_name(field_name, vis):
+    ms = pcontext.observing_run.get_ms(vis)
+    field_generator = (f for f in ms.fields if f.clean_name == field_name)
+    field = next(field_generator)
+
+    # strip leading and trailing double quotes that could be
+    # added by the filed domain object when field name contains
+    # some special characters
+    original_name = field.name.strip('"')
+
+    return original_name
+%>
+
 <p>This task generates a sky calibration table, a collection of OFF spectra for single dish data calibration.</p>
 
 <h2>Contents</h2>
@@ -51,7 +70,7 @@ import os
 		  	<td>${application['spw']}</td>
 		  	<td>${application['gaintable']}</td>
 		</tr>
-% endfor		
+% endfor
 	</tbody>
 </table>
 
@@ -85,36 +104,37 @@ import os
 % endif
 
 <h2 id="ampfreqplots" class="jumptarget">Amp vs. Frequency Plots</h2>
-% for ms in pcontext.observing_run.measurement_sets:
-    <% 
-        vis = ms.basename 
+% for ms in get_mses():
+    <%
+        vis = ms.basename
         subpage = os.path.join(dirname, amp_vs_freq_subpages[vis])
     %>
     <h4><a class="replace" href="${subpage}" data-vis="${vis}">${vis}</a></h4>
     % for plot in summary_amp_vs_freq[vis]:
         % if os.path.exists(plot.thumbnail):
-            <% 
+            <%
                 img_path = os.path.relpath(plot.abspath, pcontext.report_dir)
                 thumbnail_path = os.path.relpath(plot.thumbnail, pcontext.report_dir)
                 spw = plot.parameters['spw']
-                field = plot.parameters['field']
+                clean_field_name = plot.parameters['field']
+                original_field_name = get_original_field_name(clean_field_name, vis)
             %>
  	        <div class="col-md-3">
 	            <div class="thumbnail">
 	                <a href="${img_path}" data-fancybox="thumbs">
 	                    <img class="lazyload"
                              data-src="${thumbnail_path}"
-	                         title="Sky level summary for Field ${field}, Spw ${spw}">
+	                         title="Sky level summary for Field ${original_field_name}, Spw ${spw}">
 	                </a>
 	                <div class="caption">
 	                    <h4>
-	                        <a href="${subpage}" class="replace" 
-	                           data-vis="${vis}" data-field="${field}" data-spw="${spw}">
-	                           Field ${field} Spw ${spw}
+	                        <a href="${subpage}" class="replace"
+	                           data-vis="${vis}" data-field="${clean_field_name}" data-spw="${spw}">
+	                           Field ${original_field_name} Spw ${spw}
 	                        </a>
 	                    </h4>
-	
-	                    <p>Plot of sky level vs frequency for field ${field}, spw ${spw}.</p>
+
+	                    <p>Plot of sky level vs frequency for field ${original_field_name}, spw ${spw}.</p>
 	                </div>
 	            </div>
 	        </div>
@@ -124,36 +144,37 @@ import os
 % endfor
 
 <h2 id="amptimeplots" class="jumptarget">Amp vs. Time Plots</h2>
-% for ms in pcontext.observing_run.measurement_sets:
-    <% 
-        vis = ms.basename 
+% for ms in get_mses():
+    <%
+        vis = ms.basename
         subpage = os.path.join(dirname, amp_vs_time_subpages[vis])
     %>
     <h4><a class="replace" href="${subpage}" data-vis="${vis}">${vis}</a></h4>
     % for plot in summary_amp_vs_time[vis]:
         % if os.path.exists(plot.thumbnail):
-            <% 
+            <%
                 img_path = os.path.relpath(plot.abspath, pcontext.report_dir)
                 thumbnail_path = os.path.relpath(plot.thumbnail, pcontext.report_dir)
                 spw = plot.parameters['spw']
-                field = plot.parameters['field']
+                clean_field_name = plot.parameters['field']
+                original_field_name = get_original_field_name(clean_field_name, vis)
             %>
  	        <div class="col-md-3">
 	            <div class="thumbnail">
 	                <a href="${img_path}" data-fancybox="thumbs">
 	                    <img class="lazyload"
                              data-src="${thumbnail_path}"
-	                         title="Sky level summary for Field ${field}, Spw ${spw}">
+	                         title="Sky level summary for Field ${original_field_name}, Spw ${spw}">
 	                </a>
 	                <div class="caption">
 	                    <h4>
-	                        <a href="${subpage}" class="replace" 
-	                           data-vis="${vis}" data-field="${field}" data-spw="${spw}">
-	                           Field ${field} Spw ${spw}
+	                        <a href="${subpage}" class="replace"
+	                           data-vis="${vis}" data-field="${clean_field_name}" data-spw="${spw}">
+	                           Field ${original_field_name} Spw ${spw}
 	                        </a>
 	                    </h4>
-	
-	                    <p>Plot of sky level vs time for field ${field}, spw ${spw}.</p>
+
+	                    <p>Plot of sky level vs time for field ${original_field_name}, spw ${spw}.</p>
 	                </div>
 	            </div>
 	        </div>
@@ -163,37 +184,38 @@ import os
 % endfor
 
 <h2 id="intervaltimeplots" class="jumptarget">Interval vs. Time Plots</h2>
-% for ms in pcontext.observing_run.measurement_sets:
-    <% 
-        vis = ms.basename 
+% for ms in get_mses():
+    <%
+        vis = ms.basename
         subpage = os.path.join(dirname, interval_vs_time_subpages[vis])
     %>
     <h4><a class="replace" href="${subpage}" data-vis="${vis}">${vis}</a></h4>
     % for plot in summary_interval_vs_time[vis]:
         % if os.path.exists(plot.thumbnail):
-            <% 
+            <%
                 img_path = os.path.relpath(plot.abspath, pcontext.report_dir)
                 thumbnail_path = os.path.relpath(plot.thumbnail, pcontext.report_dir)
                 spw = plot.parameters['spw']
                 ant = plot.parameters['ant']
-                field = plot.parameters['field']
+                clean_field_name = plot.parameters['field']
+                original_field_name = get_original_field_name(clean_field_name, vis)
             %>
  	        <div class="col-md-3">
 	            <div class="thumbnail">
 	                <a href="${img_path}" data-fancybox="thumbs">
 	                    <img class="lazyload"
                              data-src="${thumbnail_path}"
-	                         title="Interval Ratio (off-source/on-source) summary for Field ${field}, Ant ${ant}, SPW ${spw}">
+	                         title="Interval Ratio (off-source/on-source) summary for Field ${original_field_name}, Ant ${ant}, SPW ${spw}">
 	                </a>
 	                <div class="caption">
 	                    <h4>
-	                        <a href="${subpage}" class="replace" 
-	                           data-vis="${vis}" data-field="${field}" data-ant="${ant}" data-spw="${spw}">
-	                           Field ${field} Antenna ${ant} SPW ${spw}
+	                        <a href="${subpage}" class="replace"
+	                           data-vis="${vis}" data-field="${clean_field_name}" data-ant="${ant}" data-spw="${spw}">
+	                           Field ${original_field_name} Antenna ${ant} SPW ${spw}
 	                        </a>
 	                    </h4>
-	
-	                    <p>Plot of interval ratio (off-source/on-source) vs time for field ${field}, antenna ${ant}, spw ${spw}.</p>
+
+	                    <p>Plot of interval ratio (off-source/on-source) vs time for field ${original_field_name}, antenna ${ant}, spw ${spw}.</p>
 	                </div>
 	            </div>
 	        </div>
@@ -203,7 +225,7 @@ import os
 % endfor
 
 <h2 id="eldiffplots" class="jumptarget">Elevation Difference vs. Time Plots</h2>
-% for ms in pcontext.observing_run.measurement_sets:
+% for ms in get_mses():
     <%
         vis = ms.basename
         subpage = os.path.join(dirname, elev_diff_subpages[vis])
@@ -214,24 +236,25 @@ import os
             <%
                 img_path = os.path.relpath(plot.abspath, pcontext.report_dir)
                 thumbnail_path = os.path.relpath(plot.thumbnail, pcontext.report_dir)
-                field = plot.parameters['field']
+                clean_field_name = plot.parameters['field']
+                original_field_name = get_original_field_name(clean_field_name, vis)
             %>
             <div class="col-md-3">
                 <div class="thumbnail">
                     <a href="${img_path}" data-fancybox="thumbs">
                         <img class="lazyload"
                              data-src="${thumbnail_path}"
-                             title="Elevation difference for Field ${field}">
+                             title="Elevation difference for Field ${original_field_name}">
                     </a>
                     <div class="caption">
                         <h4>
                             <a href="${subpage}" class="replace"
-                               data-vis="${vis}" data-field="${field}">
-                               Field ${field}
+                               data-vis="${vis}" data-field="${clean_field_name}">
+                               Field ${original_field_name}
                             </a>
                         </h4>
-                        
-                        <p>Plot of elevation difference vs time for field ${field}.</p>
+
+                        <p>Plot of elevation difference vs time for field ${original_field_name}.</p>
                     </div>
                 </div>
             </div>

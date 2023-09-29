@@ -3,7 +3,7 @@ from functools import reduce
 
 import matplotlib
 import matplotlib.gridspec as gridspec
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -43,7 +43,7 @@ class PhaseOffsetPlotHelper(object):
         return self.colour_map[state][pol]
 
     def get_figfile(self, spw, antennas):
-        if len(antennas) is 1:
+        if len(antennas) == 1:
             antenna = '.ant%s' % antennas[0].name
         else:
             antenna = ''
@@ -62,8 +62,8 @@ class PhaseOffsetPlotHelper(object):
         else:
             text = 'All Antennas'
 
-        pyplot.text(0.5, 0.89, '%s' % text, color='k',
-                    transform=fig.transFigure, ha='center', size=9)
+        plt.text(0.5, 0.89, '%s' % text, color='k',
+                 transform=fig.transFigure, ha='center', size=9)
 
 
 class PhaseOffsetPlot(object):
@@ -153,7 +153,7 @@ class PhaseOffsetPlot(object):
 
         autoscale_yaxis_range = [-200, 200]
 
-        fig = pyplot.figure()
+        fig = plt.figure()
 
         # size subplots proportional to the scan time
         integration_times = [int(s.time_on_source.total_seconds()) for s in scans]        
@@ -188,10 +188,10 @@ class PhaseOffsetPlot(object):
         axes[-1].spines['right'].set_visible(True)
         axes[0].set_ylabel('Deviation from Scan Median Phase (degrees)' % scan.id, size=10)
 
-        pyplot.subplots_adjust(wspace=0.0)
+        plt.subplots_adjust(wspace=0.0)
 
         plothelper = self._plothelper
-        flag_annotate = len(antennas) is 1
+        flag_annotate = len(antennas) == 1
         for scan_idx, scan in enumerate(scans):
             for antenna in antennas:    
                 axis = axes[scan_idx]
@@ -238,14 +238,14 @@ class PhaseOffsetPlot(object):
                                  if dd.spw.id == spw.id]
                     # discard WVR and other strange data descriptions
                     corr_axes = {x for x in corr_axes if x not in [(), ('I',)]}
-                    assert len(corr_axes) is 1, ('Data descriptions have different '
+                    assert len(corr_axes) == 1, ('Data descriptions have different '
                                                  'corr axes for scan %s. Got %s'
                                                  '' % (scan.id, corr_axes))
                     # go from set(('XX', 'YY')) to the ('XX', 'YY')
                     corr_axes = corr_axes.pop()
 
                     for corr_idx, corr_axis in enumerate(corr_axes):
-                        if len(data.time) is 0:
+                        if len(data.time) == 0:
                             LOG.info('No data to plot for antenna %s scan %s corr %s' %
                                      (antenna.name, scan.id, corr_axis))
                             continue
@@ -293,17 +293,17 @@ class PhaseOffsetPlot(object):
         axes[-1].legend(plots, legends, prop={'size':10}, numpoints=1,
                         loc='upper center', bbox_to_anchor=(0.5, 0.07),
                         frameon=False, ncol=len(legends),
-                        bbox_transform=pyplot.gcf().transFigure)
+                        bbox_transform=plt.gcf().transFigure)
 
         spw_msg = 'SPW %s Correlation%s' % (spw.id, 
                 utils.commafy(corr_axes, quotes=False, multi_prefix='s'))
-        pyplot.text(0.0, 1.013, spw_msg, color='k', 
-                    transform=axes[0].transAxes, size=9)
-        pyplot.text(0.5, 0.945, '%s (%s)' % (scan_fields, scan_intents), 
-                    color='k', transform=fig.transFigure, ha='center', size=10)
+        plt.text(0.0, 1.013, spw_msg, color='k',
+                 transform=axes[0].transAxes, size=9)
+        plt.text(0.5, 0.945, '%s (%s)' % (scan_fields, scan_intents),
+                 color='k', transform=fig.transFigure, ha='center', size=10)
         plothelper.label_antenna(fig, antennas)
-        pyplot.text(0.5, 0.07, 'Scan', color='k', transform=fig.transFigure,
-                    ha='center', size=10)
+        plt.text(0.5, 0.07, 'Scan', color='k', transform=fig.transFigure,
+                 ha='center', size=10)
 
         scan_ids = [str(s.id) for s in scans]
         max_scans_for_msg = 8
@@ -317,12 +317,12 @@ class PhaseOffsetPlot(object):
         else:
             scan_txt = utils.commafy(scan_ids, multi_prefix='s', 
                                      quotes=False, separator=',')
-        pyplot.text(1.0, 1.013, 'Scan%s' % scan_txt, color='k', ha='right', 
-                    transform=axes[-1].transAxes, size=9)
+        plt.text(1.0, 1.013, 'Scan%s' % scan_txt, color='k', ha='right',
+                 transform=axes[-1].transAxes, size=9)
 
         figfile = plothelper.get_figfile(spw, antennas)
-        pyplot.savefig(figfile)
-        pyplot.close()
+        plt.savefig(figfile)
+        plt.close()
 
     def get_plot_wrapper(self, spw, scans, antennas):
         plothelper = self._plothelper
@@ -337,7 +337,7 @@ class PhaseOffsetPlot(object):
                                           'spw': spw.id,
                                           'ant': antenna_names})
 
-        if plothelper.plot_per_antenna and len(antennas) is 1:
+        if plothelper.plot_per_antenna and len(antennas) == 1:
             wrapper.qa_score = self._score_retriever.get_score(spw, antennas[0])
 
         if not os.path.exists(figfile):

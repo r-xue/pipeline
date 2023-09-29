@@ -111,6 +111,14 @@ import os
 					<td>${science_bands}</td>
 				</tr>
 				${vla_basebands}
+				<tr> 
+					<th>Correlator Name</th>
+					% if ms.correlator_name is not None:
+						<td>${ms.correlator_name}</td>
+					% else: 
+						<td>N/A</td>
+					% endif 
+				</tr>
 			</tbody>
 		</table>
 	</div>
@@ -137,9 +145,39 @@ import os
 					<th>Number of Antennas</th>
 					<td>${num_antennas}</td>
 				</tr>
+                <tr>
+					<th>Antenna Diameters</th>
+					<td>${ant_diameters}</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
+
+        <div class="col-md-6">
+            % if spwid_vs_freq is None or not os.path.exists(spwid_vs_freq.thumbnail):
+                <div class="col-md-6">
+                </div>
+            % else:
+	         <a href="${os.path.relpath(spwid_vs_freq.abspath, pcontext.report_dir)}" data-fancybox>
+		     <h3>SpW ID vs Frequency</h3>
+        	 </a>
+	         <div class="col-md-6">
+		     <div class="thumbnail">
+		         <a href="${os.path.relpath(spwid_vs_freq.abspath, pcontext.report_dir)}"
+			            data-fancybox>
+			   	 <img class="lazyload"
+		          data-src="${os.path.relpath(spwid_vs_freq.thumbnail, pcontext.report_dir)}"
+			        		  title="SpW ID vs Frequency Details for ${ms.basename}"
+				        	  alt="SpW ID vs Frequency Details for ${ms.basename}" />
+        		 </a>
+	        	 <div class="caption">
+		             <h4>SpW ID vs Frequency plot</h4>
+			 </div>
+        	     </div>
+	         </div>
+            % endif
+        </div>
+
 	<div class="col-md-6">
 		<a class="replace" href='${os.path.join(dirname, "t2-2-4.html")}'><h3>Sky Setup</h3></a>
 		<table class="table table-condensed" summary="Sky Setup Summary">
@@ -156,8 +194,6 @@ import os
 		</table>
 	</div>
 </div>
-
-
 
 <div class="row">        
 	<div class="col-md-6">

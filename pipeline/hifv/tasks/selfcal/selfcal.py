@@ -4,8 +4,10 @@ import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks, task_registry
-import pipeline.infrastructure.casatools as casatools
+from pipeline.domain import DataType
+from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import task_registry
 from pipeline.hifv.heuristics import set_add_model_column_parameters
 
 LOG = infrastructure.get_logger(__name__)
@@ -29,11 +31,23 @@ class SelfcalResults(basetask.Results):
 
 
 class SelfcalInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     refantignore = vdp.VisDependentProperty(default='')
     combine = vdp.VisDependentProperty(default='spw,field')
     selfcalmode = vdp.VisDependentProperty(default='VLASS')
     overwrite_modelcol = vdp.VisDependentProperty(default=False)
     refantmode = 'strict'
+
+    @selfcalmode.postprocess
+    def selfcalmode(self, unprocessed):
+        if unprocessed not in ['VLASS', 'VLASS-SE']:
+            LOG.warning('Unkown selfcalmode \'%s\' was set. Known modes are [\'VLASS\',\'VLASS-SE\']. '
+                        'Continuing in \'VLASS\' mode.' % unprocessed)
+            return 'VLASS'
+        else:
+            return unprocessed
 
     def __init__(self, context, vis=None, refantignore=None, combine=None, selfcalmode=None, refantmode=None,
                  overwrite_modelcol=None):
@@ -84,7 +98,7 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     def _check_for_modelcolumn(self):
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        with casatools.TableReader(ms.name) as table:
+        with casa_tools.TableReader(ms.name) as table:
             if 'MODEL_DATA' not in table.colnames() or self.inputs.overwrite_modelcol:
                 LOG.info('Writing model data to {}'.format(ms.basename))
                 imaging_parameters = set_add_model_column_parameters(self.inputs.context)
@@ -100,6 +114,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         spwsobjlist = m.get_spectral_windows(science_windows_only=True)
         spws = ','.join([str(spw.id) for spw in spwsobjlist])
 
+        # VLASS mode
         casa_task_args = {'vis': self.inputs.vis,
                           'caltable': self.caltable,
                           'spw': spws,
@@ -113,6 +128,9 @@ class Selfcal(basetask.StandardTaskTemplate):
                           'calmode': 'p',
                           'parang': False,
                           'append': False}
+        # VLASS-SE mode
+        if self.inputs.selfcalmode == 'VLASS-SE':
+            casa_task_args['minsnr'] = 5.0
 
         job = casa_tasks.gaincal(**casa_task_args)
 
@@ -125,14 +143,19 @@ class Selfcal(basetask.StandardTaskTemplate):
         spwsobjlist = m.get_spectral_windows(science_windows_only=True)
         spws = [int(spw.id) for spw in spwsobjlist]
         numspws = len(m.get_spectral_windows(science_windows_only=False))
-        lowestscispwid = str(min(spws))  # PIPE-101
+        lowestscispwid = min(spws)  # PIPE-101, PIPE-1042: spwmap parameter in applycal must be a list of integers
 
+        # VLASS mode
         applycal_task_args = {'vis': self.inputs.vis,
                               'gaintable': self.caltable,
                               'interp': ['nearestPD'],
-                              'spwmap': [numspws*[lowestscispwid]],
+                              'spwmap': [numspws * [lowestscispwid]],
                               'parang': False,
                               'applymode': 'calonly'}
+        # VLASS-SE mode
+        if self.inputs.selfcalmode == 'VLASS-SE':
+            applycal_task_args['calwt'] = False
+            applycal_task_args['interp'] = ['nearest']
 
         job = casa_tasks.applycal(**applycal_task_args)
 

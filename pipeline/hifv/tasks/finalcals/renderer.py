@@ -11,24 +11,24 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.weblog as weblog
 import pipeline.infrastructure.utils as utils
-from pipeline.h.tasks.common.displays import applycal as applycal
+import pipeline.h.tasks.common.flagging_renderer_utils as flagutils
+from pipeline.h.tasks.common.displays import applycal
 from . import display as finalcalsdisplay
 
 LOG = logging.get_logger(__name__)
-
-FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
 class VLASubPlotRenderer(object):
     #template = 'testdelays_plots.html'
 
-    def __init__(self, context, result, plots, json_path, template, filename_prefix):
+    def __init__(self, context, result, plots, json_path, template, filename_prefix, bandlist):
         self.context = context
         self.result = result
         self.plots = plots
         self.ms = os.path.basename(self.result.inputs['vis'])
         self.template = template
         self.filename_prefix = filename_prefix
+        self.bandlist = bandlist
 
         self.summary_plots = {}
         self.finaldelay_subpages = {}
@@ -68,7 +68,8 @@ class VLASubPlotRenderer(object):
                 'bpsolphaseshort_subpages': self.bpsolphaseshort_subpages,
                 'finalamptimecal_subpages': self.finalamptimecal_subpages,
                 'finalampfreqcal_subpages': self.finalampfreqcal_subpages,
-                'finalphasegaincal_subpages': self.finalphasegaincal_subpages}
+                'finalphasegaincal_subpages': self.finalphasegaincal_subpages,
+                'bandlist': self.bandlist}
 
     @property
     def dirname(self):
@@ -120,7 +121,20 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         finalampfreqcal_subpages = {}
         finalphasegaincal_subpages = {}
 
+        band2spw = collections.defaultdict(list)
+
         for result in results:
+
+            m = context.observing_run.get_ms(result.inputs['vis'])
+            spw2band = m.get_vla_spw2band()
+            spwobjlist = m.get_spectral_windows(science_windows_only=True)
+            listspws = [spw.id for spw in spwobjlist]
+            for spw, band in spw2band.items():
+                if spw in listspws:  # Science intents only
+                    band2spw[band].append(str(spw))
+
+            bandlist = [band for band in band2spw.keys()]
+            # LOG.info("BAND LIST: " + ','.join(bandlist))
 
             # plotter = finalcalsdisplay.finalcalsSummaryChart(context, result)
             # plots = plotter.plot()
@@ -133,7 +147,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finaldelays')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finaldelays', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 finaldelay_subpages[ms] = renderer.filename
@@ -144,7 +158,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'phasegain')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'phasegain', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 phasegain_subpages[ms] = renderer.filename
@@ -155,7 +169,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'bpsolamp')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'bpsolamp', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 bpsolamp_subpages[ms] = renderer.filename
@@ -166,7 +180,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'bpsolphase')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'bpsolphase', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 bpsolphase_subpages[ms] = renderer.filename
@@ -177,7 +191,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'bpsolphaseshort')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'bpsolphaseshort', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 bpsolphaseshort_subpages[ms] = renderer.filename
@@ -188,7 +202,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finalamptimecal')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finalamptimecal', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 finalamptimecal_subpages[ms] = renderer.filename
@@ -199,7 +213,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finalampfreqcal')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finalampfreqcal', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 finalampfreqcal_subpages[ms] = renderer.filename
@@ -210,7 +224,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finalphasegaincal')
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finalphasegaincal', bandlist)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 finalphasegaincal_subpages[ms] = renderer.filename
@@ -230,7 +244,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 
 class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='applycal.mako', 
+    def __init__(self, uri='applycals.mako', 
                  description='Apply calibrations from context',
                  always_rerender=False):
         super(T2_4MDetailsVLAApplycalRenderer, self).__init__(
@@ -244,7 +258,7 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         for r in result:
             try:
                 flag_totals = utils.dict_merge(flag_totals,
-                                               self.flags_for_result(r, context))
+                                               flagutils.flags_for_result(r, context))
             except:
                 LOG.info("No flagging summaries.")
 
@@ -324,7 +338,7 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             for field in plotfields:
                 plots = self.science_plots_for_result(context,
                                                       result,
-                                                      applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                                      applycal.AmpVsFrequencyPerBasebandSummaryChart,
                                                       [field.id],
                                                       uv_range, correlation=correlation)
                 amp_vs_freq_summary_plots[vis][field.id] = plots
@@ -349,7 +363,7 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             for source_id, brightest_field in brightest_fields.items()[0:len(brightest_fields.items()):Nplots]:
                 plots = self.science_plots_for_result(context,
                                                       result, 
-                                                      applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                                      applycal.AmpVsFrequencyPerBasebandSummaryChart,
                                                       [brightest_field.id],
                                                       uv_range, correlation=correlation)
                 amp_vs_freq_summary_plots[vis][source_id] = plots
@@ -379,7 +393,7 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 # detail pages; we don't create plots per spw or antenna
                 self.science_plots_for_result(context,
                                               result,
-                                              applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                              applycal.AmpVsFrequencyPerBasebandSummaryChart,
                                               fields,
                                               uv_range,
                                               ApplycalAmpVsFreqSciencePlotRenderer, correlation=correlation)
@@ -465,7 +479,7 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
 
             # give the sole science target name if there's only one science target
             # in this ms.
-            if len(fields) is 1:
+            if len(fields) == 1:
                 LOG.info('Only one %s target for Source #%s. Bypassing '
                          'brightest target selection.', intent, source_id)
                 result[source_id] = fields[0]
@@ -615,80 +629,6 @@ class T2_4MDetailsVLAApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         if no_amp_soln and not no_phase_soln:
             return ' (phase only)'
         return ''
-
-    def flags_for_result(self, result, context):
-        ms = context.observing_run.get_ms(result.inputs['vis'])
-        summaries = result.summaries
-
-        by_intent = self.flags_by_intent(ms, summaries)
-        by_spw = self.flags_by_science_spws(ms, summaries)
-
-        return {ms.basename : utils.dict_merge(by_intent, by_spw)}
-
-    def flags_by_intent(self, ms, summaries):
-        # create a dictionary of scans per observing intent, eg. 'PHASE':[1,2,7]
-        intent_scans = {}
-        for intent in ('BANDPASS', 'PHASE', 'AMPLITUDE', 'TARGET'):
-            # convert IDs to strings as they're used as summary dictionary keys
-            intent_scans[intent] = [str(s.id) for s in ms.scans
-                                    if intent in s.intents]
-
-        # while we're looping, get the total flagged by looking in all scans 
-        intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
-
-        total = collections.defaultdict(dict)
-
-        previous_summary = None
-        for summary in summaries:
-
-            for intent, scan_ids in intent_scans.items():
-                flagcount = 0
-                totalcount = 0
-
-                for i in scan_ids:
-                    # workaround for KeyError exception when summary
-                    # dictionary doesn't contain the scan
-                    if i not in summary['scan']:
-                        continue
-
-                    flagcount += int(summary['scan'][i]['flagged'])
-                    totalcount += int(summary['scan'][i]['total'])
-
-                    if previous_summary:
-                        flagcount -= int(previous_summary['scan'][i]['flagged'])
-
-                ft = FlagTotal(flagcount, totalcount)
-                total[summary['name']][intent] = ft
-
-            previous_summary = summary
-
-        return total 
-
-    def flags_by_science_spws(self, ms, summaries):
-        science_spws = ms.get_spectral_windows(science_windows_only=True)
-
-        total = collections.defaultdict(dict)
-
-        previous_summary = None
-        for summary in summaries:
-
-            flagcount = 0
-            totalcount = 0
-
-            for spw in science_spws:
-                spw_id = str(spw.id)
-                flagcount += int(summary['spw'][spw_id]['flagged'])
-                totalcount += int(summary['spw'][spw_id]['total'])
-
-                if previous_summary:
-                    flagcount -= int(previous_summary['spw'][spw_id]['flagged'])
-
-            ft = FlagTotal(flagcount, totalcount)
-            total[summary['name']]['SCIENCE SPWS'] = ft
-
-            previous_summary = summary
-
-        return total
 
 
 class ApplycalAmpVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):

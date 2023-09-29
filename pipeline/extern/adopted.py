@@ -3,12 +3,12 @@ import xml.dom.minidom as minidom
 
 import numpy as np
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
-qa = casatools.quanta
+qa = casa_tools.quanta
 
 
 def getMedianPWV(vis='.', myTimes=[0, 999999999999], asdm='', verbose=False):
@@ -29,7 +29,7 @@ def getMedianPWV(vis='.', myTimes=[0, 999999999999], asdm='', verbose=False):
     For further help and examples, see https://safe.nrao.edu/wiki/bin/view/ALMA/GetMedianPWV
     -- Todd Hunter
     """
-    tb = casatools.table
+    tb = casa_tools.table
 
     pwvmean = 0
     success = False
@@ -163,7 +163,7 @@ def readPWVFromASDM_CALATMOSPHERE(vis):
         else:
             print("Could not find measurement set")
             return
-    mytb = casatools.table
+    mytb = casa_tools.table
     mytb.open("%s/ASDM_CALATMOSPHERE" % vis)
     pwvtime = mytb.getcol('startValidTime')  # mjdsec
     antenna = mytb.getcol('antennaName')
@@ -302,7 +302,7 @@ def getMJD():
     Returns the current MJD.  See also getCurrentMJDSec().
     -Todd
     """
-    myme = casatools.measures
+    myme = casa_tools.measures
     mjd = myme.epoch('utc', 'today')['m0']['value']
     myme.done()
     return mjd

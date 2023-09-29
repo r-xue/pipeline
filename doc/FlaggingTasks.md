@@ -7,7 +7,7 @@ common flagging framework, and an in-depth explanation of individual flagging ta
 
 ## Summary current pipeline tasks
 
-Status as of March 2020:
+Status as of May 2021:
 
 The following pipeline tasks make use of the flagging framework and are part of (at least) one of the standard pipeline recipes:
 - hif_rawflagchans: flags raw data in MS.
@@ -19,8 +19,10 @@ The following pipeline tasks perform flagging but do not make use of the common 
 - hif_correctedampflag: Flag corrected - model amplitudes based on calibrators.
 - hifa_bandpassflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the bandpass calibrator.
 - hifa_gfluxscaleflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the phase and flux calibrators.
+- hifa_polcalflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the polarisation calibrators.
 - hifa_targetflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the target source.
-- hifa_flagdata: performs basic deterministic flagging on MS (e.g. shadowed antennas, online flags, autocorrelations, etc)
+- hifa_flagdata: performs basic deterministic flagging on MS (e.g. shadowed antennas, online flags, autocorrelations, etc).
+- hifa_flagtargets: performs deterministic flagging on science target MS (input template file).
 - hifa_fluxcalflag: locates and flags line regions in solar-system flux calibrators.
 
 
@@ -101,7 +103,7 @@ This task first creates a phased-up bandpass caltable, then a gain phase caltabl
 
 **View generation**
 
-A separate view is created for spw. Each view is a matrix with axes "time" vs. "antenna". Each point in the matrix is the absolute gain amplitude for that antenna/timestamp.
+A separate view is created for spw. Each view is a matrix with axes "scan" vs. "antenna". Each point in the matrix is the absolute gain amplitude for that antenna/scan.
 
 **View flagging**
 
@@ -184,7 +186,7 @@ In the current standard pipeline, all six metrics are active, and evaluated in t
    **View flagging**
 
    The views are evaluated against the "sharps" vector flagging rule, which flags each view in two passes:
-   1. flag all channels whose absolute difference in value to the following channel exceeds a threshold "fb_sharps_limit" (default: 0.05)
+   1. flag all channels whose absolute difference in value to the following channel exceeds a threshold "fb_sharps_limit" (default: 0.15)
    2. around each newly flagged channel, flag neighbouring channels until their channel-to-channel difference falls below 2 times the median channel-to-channel difference (this is intended to flag the wings of sharp features)
     
    A single flagging command is generated for all channels newly identified as "birdies".

@@ -1,12 +1,14 @@
-import glob
 import os
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
+from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+import pipeline.infrastructure.mpihelpers as mpihelpers
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -48,6 +50,9 @@ class MakermsimagesResults(basetask.Results):
 
 
 class MakermsimagesInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     def __init__(self, context, vis=None):
         super(MakermsimagesInputs, self).__init__()
         # set the properties to the values given as input arguments
@@ -66,24 +71,63 @@ class Makermsimages(basetask.StandardTaskTemplate):
         imagenames = []
         for imageitem in imlist:
             if imageitem['multiterm']:
-                imagenames.extend(glob.glob(imageitem['imagename'] + '.pbcor.tt0'))
+                imagenames.extend(utils.glob_ordered(imageitem['imagename'] + '.pbcor.tt0'))
+                imagenames.extend(utils.glob_ordered(imageitem['imagename'] + '.pbcor.tt1'))
             else:
-                imagenames.extend(glob.glob(imageitem['imagename'] + '.pbcor'))
+                imagenames.extend(utils.glob_ordered(imageitem['imagename'] + '.pbcor'))
 
+        tier0_imdev_enabled = True
         rmsimagenames = []
+        queued_job_rmsimagename = []
+
         for imagename in imagenames:
-            if not os.path.exists(imagename + '.rms') and 'residual' not in imagename:
-                rmsimagename = imagename + '.rms'
-                LOG.info("Imagename: " + rmsimagename)
-                _ = self._do_imdev(imagename)
+            rmsimagename = imagename + '.rms'
+            if not os.path.exists(rmsimagename) and 'residual' not in imagename:
+                LOG.info(f"Generating RMS image {rmsimagename} from {imagename}")
+                job_to_execute = casa_tasks.imdev(**self._get_imdev_args(imagename))
+                if tier0_imdev_enabled and mpihelpers.is_mpi_ready():
+                    executable = mpihelpers.Tier0JobRequest(
+                        casa_tasks.imdev, job_to_execute.kw, executor=self._executor)
+                    queued_job = mpihelpers.AsyncTask(executable)
+                else:
+                    queued_job = mpihelpers.SyncTask(job_to_execute, self._executor)
+                queued_job_rmsimagename.append((queued_job, rmsimagename))
+
+        for queue_job, rmsimagename in queued_job_rmsimagename:
+            queue_job.get_result()
+            if os.path.exists(rmsimagename):
                 rmsimagenames.append(rmsimagename)
 
-        LOG.info("RMS image names:" + ','.join(rmsimagenames))
+        LOG.info("RMS image list: " + ','.join(rmsimagenames))
 
         return MakermsimagesResults(rmsimagelist=imlist, rmsimagenames=rmsimagenames)
 
     def analyse(self, results):
         return results
+
+    def _get_imdev_args(self, imagename):
+        """Get default CASA/imdev parameters."""
+        imdevparams = {'imagename': imagename,
+                       'outfile': imagename + '.rms',
+                       'region': "",
+                       'box': "",
+                       'chans': "",
+                       'stokes': "",
+                       'mask': "",
+                       'overwrite': True,
+                       'stretch': False,
+                       'grid': [10, 10],
+                       'anchor': "ref",
+                       'xlength': "60arcsec",
+                       'ylength': "60arcsec",
+                       'interp': "cubic",
+                       'stattype': "xmadm",
+                       'statalg': "chauvenet",
+                       'zscore': -1,
+                       'maxiter': -1
+                       }
+
+        return imdevparams
 
     def _do_imdev(self, imagename):
 

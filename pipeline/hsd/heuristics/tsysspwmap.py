@@ -47,6 +47,6 @@ def best_spwmap(scores):
         LOG.debug('science spw %s: best_spw %s (score %s)' % (spw, best_spw, best_score))
 
         if best_score < 1.0:
-            LOG.warn('spw %s: Tsys spw %s doesn\'t cover whole frequnecy range (only %s%% overlap)' %
-                     (spw, best_spw, 100.0*best_score))
+            LOG.warning('spw %s: Tsys spw %s doesn\'t cover whole frequnecy range (only %s%% overlap)' %
+                        (spw, best_spw, 100.0*best_score))
         yield [best_spw, spw]

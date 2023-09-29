@@ -27,10 +27,9 @@ import re
 import string
 import subprocess
 
-import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import logging
 
-LOG = infrastructure.get_logger(__name__)
-
+LOG = logging.get_logger(__name__)
 
 # Set the command used to shrink plots down to thumbnails. If set to None, no
 # thumbnails will be generated 
@@ -251,7 +250,7 @@ class PlotGroup(object):
 class Selector(object):
     # CSS classes have a restricted character sets, so we use a regex to 
     # remove them
-    _regex = re.compile('\W')
+    _regex = re.compile(r'\W')
 
     def __init__(self, parameter, value):
         self.value = string.capwords(value)
@@ -297,7 +296,7 @@ class Plot(object):
         """
         The CSS class to be used for this plot.
         """
-        regex = re.compile('\W')
+        regex = re.compile(r'\W')
         css_classes = [Parameters.getCssId(parameter) + ''.join(regex.split(str(val)))
                        for parameter, val in self.parameters.items()]
         return ' '.join(css_classes)
@@ -372,18 +371,18 @@ class Plot(object):
         try:
             with open(os.devnull, 'w') as dev_null:
                 ret = subprocess.call(cmd, stdout=dev_null, stderr=dev_null)
-            if ret is 0:
+            if ret == 0:
                 # return code is 0: thumbnail file successfully created
                 return thumb_file
             else:
                 LOG.warning('Error creating thumbnail for %s' % 
                             os.path.basename(self.abspath))
-                return self.basename   
+                return self.abspath   
         except OSError as e:
             # command not available. Return the full-sized image filename
             LOG.warning('Error creating thumbnail for %s: %s' % 
                         (os.path.basename(self.abspath), e))
-            return self.basename
+            return self.abspath
 
     def __repr__(self):
         return '<Plot(\'%s\')>' % self.abspath 

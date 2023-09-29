@@ -10,6 +10,7 @@ import os
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.utils as utils
+from pipeline.environment import iers_info
 
 def tablerow_cmp(tr1, tr2):
     # sort rows by:
@@ -27,7 +28,7 @@ def tablerow_cmp(tr1, tr2):
         return (tr1.time_start > tr2.time_start) - (tr1.time_start < tr2.time_start)
     if tr1.session != tr2.session:
         # natural sort so that session9 comes before session10
-        name_sorted = sorted((tr1.session, tr2.session), key=utils.natural_sort)
+        name_sorted = utils.natural_sort((tr1.session, tr2.session))
         return -1 if name_sorted[0] == tr1.session else 1
     return 0
 
@@ -81,6 +82,10 @@ $(document).ready(function() {
                     <th>Observation End</th>
                     <td>${obs_end}&nbsp;UTC</td>
                 </tr>
+                <tr>
+                    <th>Number of Execution Blocks</th>
+                    <td>${number_of_execblocks}</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -123,6 +128,34 @@ $(document).ready(function() {
                                             data-selectable="true"
                                             data-options='{"touch" : false}'
                                             data-src="#hidden-environment">environment</a>)</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>IERSeop2000 Version</th>
+                    % if iers_eop_2000_version != 'NOT FOUND':
+                        <td>${iers_eop_2000_version} (last date: ${utils.format_datetime(iers_eop_2000_last_date)})</td>
+                    % else:
+                        <td>
+                            <p class="danger alert-danger">
+                                <span class="glyphicon glyphicon-remove-sign"></span> IERSeop2000 Table not found.
+                            </p>
+                        </td>
+                    % endif
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>IERSpredict Version</th>
+                    % if iers_predict_version != 'NOT FOUND':
+                        <td>${iers_predict_version} (last date: ${utils.format_datetime(iers_predict_last_date)}) </td>
+                    % else:
+                        <td>
+                            <p class="danger alert-danger">
+                                <span class="glyphicon glyphicon-remove-sign"></span> IERSpredict Table not found.
+                            </p>
+                        </td>
+                    % endif
                     <td></td>
                     <td></td>
                 </tr>
@@ -237,15 +270,51 @@ $(document).ready(function() {
                                 <td colspan="${numcol}">${ouslabel} ${ousid} <b>Scheduling Block ID:</b> ${sb_id} ${sb_name_markup}</td>
                             </tr>
                             <tr bgcolor="#E8F0FF">
+                            <% 
+                                 session_group = list(sessiongroup)
+                                 if pcontext.project_summary.telescope == 'ALMA':
+                                    acs_version = session_group[0].acs_software_version
+                                    software_build_version = session_group[0].acs_software_build_version
+                            %>
+                            % if pcontext.project_summary.telescope == 'ALMA':                        
+                                <td colspan="${numcol}"><b>Session:</b> ${sessionkey} <b>ACS Version:</b> ${acs_version}, <b>Build Version:</b> ${software_build_version} </td>
+                            % else: 
                                 <td colspan="${numcol}"><b>Session:</b> ${sessionkey} </td>
+                            % endif
                             </tr>
-                            % for row in sessiongroup:
+                            % for row in session_group:
+                                % if pcontext.project_summary.telescope == 'ALMA':
+                                <!-- If either the ACS software version or build version is different from the previous value, display the new software and build versions. -->
+                                    % if row.acs_software_version != acs_version or row.acs_software_build_version != software_build_version:
+                                        <td colspan="${numcol}"><b>ACS Version:</b> ${row.acs_software_version}, <b>Build Version:</b> ${row.acs_software_build_version} </td>
+                                        <% 
+                                        acs_version = row.acs_software_version
+                                        software_build_version = row.acs_software_build_version
+                                        %>
+                                    % endif
+                                % endif
                                 <tr>
                                     <td><a href="${row.href}">${row.ms}</a></td>
                                     <td>${utils.commafy(row.receivers, quotes=False)}</td>
                                     <td>${row.num_antennas}</td>
                                     <td>${utils.format_datetime(row.time_start)}</td>
-                                    <td>${utils.format_datetime(row.time_end)}</td>
+                                    <td>${utils.format_datetime(row.time_end)}
+                                    % if iers_info.validate_date(row.time_end): 
+                                         </td>
+                                    % elif iers_info.date_message_type(row.time_end) == "INFO":
+                                            <p>MS dates not fully covered by IERSeop2000. CASA will use IERSpredict.</p>
+                                        </td>
+                                    % elif iers_info.date_message_type(row.time_end) == "WARN":
+                                            <p class="warning alert-warning"> 
+                                                <span class="glyphicon glyphicon-exclamation-sign"></span> MS dates not fully covered by IERSeop2000. CASA will use IERSpredict.
+                                            </p>
+                                        </td>
+                                    % else:
+                                            <p class="danger alert-danger">
+                                                <span class="glyphicon glyphicon-remove-sign"></span> MS dates not fully covered by IERSpredict. Please update your data repository.
+                                            </p>
+                                        </td>
+                                    % endif
                                     <td>${row.time_on_source}</td>
                                     <td>${str(row.baseline_min)}</td>
                                     <td>${str(row.baseline_max)}</td>

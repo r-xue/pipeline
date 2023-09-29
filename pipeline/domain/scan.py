@@ -1,11 +1,10 @@
 import datetime
+import operator
 import pprint
 
-import operator
-
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 
 _pprinter = pprint.PrettyPrinter()
 
@@ -56,8 +55,8 @@ class Scan(object):
         sorted_epochs = {spw_id: sorted(midpoints, key=lambda e: e[0]['m0']['value'])
                          for spw_id, midpoints in scan_times.items()}
 
-        qt = casatools.quanta
-        mt = casatools.measures            
+        qt = casa_tools.quanta
+        mt = casa_tools.measures
 
         self.__exposure_time = {}
         for spw_id, epochs in sorted_epochs.items():
@@ -89,8 +88,8 @@ class Scan(object):
                 self.__end_time = range_end_epoch
 
     def __repr__(self):
-        mt = casatools.measures
-        qt = casatools.quanta
+        mt = casa_tools.measures
+        qt = casa_tools.quanta
 
         start_epoch = self.start_time
         end_epoch = self.end_time

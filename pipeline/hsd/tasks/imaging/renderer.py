@@ -1,23 +1,39 @@
-import os
 import collections
+import os
+from typing import TYPE_CHECKING
 
-import pipeline.infrastructure.renderer.basetemplates as basetemplates
-import pipeline.infrastructure.casatools as casatools
-import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.utils as utils
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.filenamer as filenamer
-
-from ..common import renderer as sdsharedrenderer
-from ..common import utils as sdutils
-from ..common import compress
-
+import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure.renderer.basetemplates as basetemplates
+import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 from . import resultobjects
 from . import display
+from ..common import utils as sdutils
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = logging.get_logger(__name__)
 
-ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name estimate range width theoretical_rms observed_rms')
+ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name range width theoretical_rms observed_rms')
+
+
+class SingleDishMomentMapPlotRenderer(basetemplates.JsonPlotRenderer):
+    """Custom JsonPlotRenderer for imaging plots."""
+
+    def update_json_dict(self, d: dict, plot: 'Plot') -> None:
+        """Update JSON dictionary in place.
+
+        Add plot type to the dictionary.
+
+        Args:
+            d: JSON dictionary for rendering
+            plot: Plot object
+        """
+        for key in ['moment', 'chans']:
+            d[key] = plot.parameters[key]
 
 
 class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -35,9 +51,10 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             'dovirtual': dovirtual
         })
 
-        cqa = casatools.quanta
+        cqa = casa_tools.quanta
         plots = []
         image_rms = []
+        image_rms_notreps = []
         for r in results:
             if isinstance(r, resultobjects.SDImagingResultItem):
                 image_item = r.outcome['image']
@@ -58,12 +75,15 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     rms_info = r.sensitivity_info
                     sensitivity = rms_info.sensitivity
                     theoretical_rms = r.theoretical_rms['sensitivity']
+                    bw = cqa.tos(cqa.convert(sensitivity['bandwidth'], 'kHz'))
                     trms = cqa.tos(theoretical_rms) if theoretical_rms['value'] >= 0 else 'n/a'
-                    icon = '<span class="glyphicon glyphicon-ok"></span>' if rms_info.representative else ''
-                    tr = ImageRMSTR(image_item.imagename, icon, rms_info.frequency_range,
-                                    cqa.getvalue(cqa.convert(sensitivity['bandwidth'], 'kHz'))[0],
-                                    trms, cqa.tos(sensitivity['sensitivity']))
-                    image_rms.append(tr)
+                    irms = cqa.tos(sensitivity['sensitivity']) if cqa.getvalue(sensitivity['sensitivity']) >= 0 else 'n/a'
+                    tr = ImageRMSTR(image_item.imagename, rms_info.frequency_range, bw, trms, irms)
+                    if image_item.sourcename == ref_ms.representative_target[0]:
+                        image_rms.append(tr)
+                    else:
+                        image_rms_notreps.append(tr)
+        image_rms.extend(image_rms_notreps)
 
         rms_table = utils.merge_td_columns(image_rms, num_to_merge=0)
 
@@ -76,7 +96,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                      'rmsmap': {'type': 'rms_map',
                                 'plot_title': 'Baseline RMS Map'},
                      'momentmap': {'type': 'sd_moment_map',
-                                   'plot_title': 'Maximum Intensity Map'},
+                                   'plot_title': 'Moment Map'},
                      'integratedmap': {'type': 'sd_integrated_map',
                                        'plot_title': 'Integrated Intensity Map'},
                      'contaminationmap': {'type': 'sd_contamination_map',
@@ -113,12 +133,20 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             subpage = collections.OrderedDict()
             plot_title = value['plot_title']
             LOG.debug('plot_title=%s'%(plot_title))
-            renderer = basetemplates.JsonPlotRenderer('generic_x_vs_y_ant_field_spw_pol_plots.mako',
-                                                      context,
-                                                      results,
-                                                      flattened,
-                                                      plot_title,
-                                                      filenamer.sanitize('%s.html' % (plot_title.lower())))
+            if key == 'momentmap':
+                LOG.debug('use moment map renderer')
+                renderer_cls = SingleDishMomentMapPlotRenderer
+                template = 'moment_map.mako'
+            else:
+                LOG.debug('use generic renderer')
+                renderer_cls = basetemplates.JsonPlotRenderer
+                template = 'generic_x_vs_y_ant_field_spw_pol_plots.mako'
+            renderer = renderer_cls(template,
+                                    context,
+                                    results,
+                                    flattened,
+                                    plot_title,
+                                    filenamer.sanitize('%s.html' % (plot_title.lower())))
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
             for fieldobj in sorted_fields:
@@ -167,12 +195,24 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             summary_plots[field_name] = []
             for plot in plots:
                 spw = plot.parameters['spw']
+                # ensure each spw has summary plot
                 if spw not in spw_list:
                     spw_list.append(spw)
                     summary_plots[field_name].append(plot)
+                # overwrite existing plot with the one for COMBINED data
                 if plot.parameters['ant'] == 'COMBINED':
                     idx = spw_list.index(spw)
-                    summary_plots[field_name][idx] = plot
+                    if 'moment' in plot.parameters:
+                        # special treatment for moment map
+                        # overwrite existing plot with max intensity map
+                        # for line-free channels if it exists
+                        if plot.parameters['moment'] == 'maximum' and \
+                          plot.parameters['chans'] == 'line_free':
+                            summary_plots[field_name][idx] = plot
+                    else:
+                        # simply overwrite otherwise
+                        summary_plots[field_name][idx] = plot
+
         return summary_plots
 
     @staticmethod
@@ -181,7 +221,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         nfields = [len(ms.fields) for ms in context.observing_run.measurement_sets]
         repid = nfields.index(max(nfields))
         ms = context.observing_run.measurement_sets[repid]
-        source_names = [filenamer.sanitize(s.name) for s in ms.sources]
+        source_dict = dict((filenamer.sanitize(s.name), s.id) for s in ms.sources)
 
         summary_plots = {}
         for field_name, plots in plot_group.items():
@@ -198,8 +238,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 if spw_id not in spw_list:
                     spw_list.append(spw_id)
                 source_name = plot.field
-                source_index = source_names.index(source_name)
-                source_id = ms.sources[source_index].id
+                source_id = source_dict[source_name]
                 # center frequency
                 spw = ms.get_spectral_window(spw_id)
                 cf = spw.centre_frequency

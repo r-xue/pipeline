@@ -1,8 +1,8 @@
 import os
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 from .basecleansequence import BaseCleanSequence
 
 LOG = infrastructure.get_logger(__name__)
@@ -26,7 +26,7 @@ class ImageCentreThresholdSequence(BaseCleanSequence):
             #   flux > 0.3 (or adjusted for image size) when flux available
             #   centre quarter otherwise
             if self.flux not in (None, ''):
-                cm = casatools.image.newimagefromimage(
+                cm = casa_tools.image.newimagefromimage(
                     infile=self.flux+extension, outfile=new_cleanmask, overwrite=True)
                 # verbose = False to suppress warning message
                 cm.calcmask('T')
@@ -35,11 +35,11 @@ class ImageCentreThresholdSequence(BaseCleanSequence):
                 cm.calcmask('"%s" > %s' % (self.flux+extension, str(pblimit_image)))
                 cm.done()
             else:
-                cm = casatools.image.newimagefromimage(
+                cm = casa_tools.image.newimagefromimage(
                     infile=self.residuals[0]+extension, outfile=new_cleanmask, overwrite=True)
                 cm.set(pixels='0')
                 shape = cm.shape()
-                rg = casatools.regionmanager
+                rg = casa_tools.regionmanager
                 region = rg.box([shape[0]//4, shape[1]//4],
                   [shape[0]-shape[0]//4, shape[1]-shape[1]//4])
                 cm.set(pixels='1', region=region)
@@ -53,9 +53,9 @@ class ImageCentreThresholdSequence(BaseCleanSequence):
                     if spwkey in frequency_selection and frequency_selection[spwkey] not in (None, 'NONE', ''):
                         channel_ranges.extend(utils.freq_selection_to_channels(new_cleanmask, frequency_selection[spwkey].split()[0]))
                 if channel_ranges != []:
-                    with casatools.ImageReader(new_cleanmask) as iaTool:
+                    with casa_tools.ImageReader(new_cleanmask) as iaTool:
                         shape = iaTool.shape()
-                        rgTool = casatools.regionmanager
+                        rgTool = casa_tools.regionmanager
                         for channel_range in channel_ranges:
                             LOG.info('Unmasking channels %d to %d' % (channel_range[0], channel_range[1]))
                             region = rgTool.box([0, 0, 0, channel_range[0]],

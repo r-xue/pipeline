@@ -1,8 +1,10 @@
-import numpy
 import re
+from typing import Union, Tuple
 
-import pipeline.infrastructure.casatools as casatools
+import numpy
+
 import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
@@ -17,83 +19,103 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         self.imaging_mode = 'VLASS-QL'
 
     # niter
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
+    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0, intent='TARGET') -> int:
+        """Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual"""
         if niter:
             return int(niter)
         else:
             return 20000
 
-    def niter(self):
+    def niter(self) -> int:
+        """Tclean niter parameter heuristics."""
         return self.niter_correction(None, None, None, None, None, None)
 
-    def deconvolver(self, specmode, spwspec):
+    def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
+        """Tclean deconvolver parameter heuristics."""
         return 'mtmfs'
 
-    def robust(self):
+    def robust(self) -> float:
+        """Tclean robust parameter heuristics."""
         return 1.0
 
-    def gridder(self, intent, field):
+    def gridder(self, intent, field) -> str:
+        """Tclean gridder parameter heuristics."""
         return 'mosaic'
 
-    def cell(self, beam=None, pixperbeam=None):
+    def cell(self, beam=None, pixperbeam=None) -> Union[str, list]:
+        """Tclean cell parameter heuristics."""
         return ['1.0arcsec']
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None, spwspec=None):
+               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '') -> Union[list, int]:
+        """Tclean imsize parameter heuristics."""
         return [7290, 7290]
 
-    def reffreq(self):
+    def reffreq(self) -> str:
+        """Tclean reffreq parameter heuristics."""
         return '3.0GHz'
 
-    def cyclefactor(self, iteration):
+    def cyclefactor(self, iteration: int) -> float:
+        """Tclean cyclefactor parameter heuristics."""
         if iteration == 0:
             return 1.
         else:
             return 2.
 
-    def cycleniter(self, iteration):
+    def cycleniter(self, iteration: int ) -> int:
+        """Tclean cycleniter parameter heuristics."""
         if iteration == 0:
             return -1
         else:
             return 500
 
-    def scales(self):
+    def scales(self, iteration: Union[int, None] = None) -> list:
+        """Tclean scales parameter heuristics."""
         return [0]
 
-    def uvtaper(self, beam_natural=None, protect_long=None):
+    def uvtaper(self, beam_natural=None, protect_long=None) -> Union[str, list]:
+        """Tclean uvtaper parameter heuristics."""
         return []
 
-    def uvrange(self, field=None, spwspec=None):
+    def uvrange(self, field=None, spwspec=None) -> tuple:
+        """Tclean uvrange parameter heuristics."""
         return None, None
 
-    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None):
+    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None,
+             results_list: Union[list, None] = None) -> str:
         return ''
 
-    def buffer_radius(self):
+    def buffer_radius(self) -> float:
         return 1000.
 
-    def specmode(self):
+    def specmode(self) -> str:
+        """Tclean specmode parameter heuristics."""
         return 'mfs'
 
-    def intent(self):
+    def intent(self) -> str:
+        """Tclean intent parameter heuristics."""
         return 'TARGET'
 
-    def nterms(self, spwspec):
+    def nterms(self, spwspec) -> int:
+        """Tclean nterms parameter heuristics."""
         return 2
 
-    def stokes(self):
+    def stokes(self, intent: str = '', joint_intents: str = '') -> str:
+        """Tclean stokes parameter heuristics."""
         return 'I'
 
-    def pb_correction(self):
+    def pb_correction(self) -> bool:
         return False
 
-    def conjbeams(self):
+    def conjbeams(self) -> bool:
+        """Tclean conjbeams parameter heuristics."""
         return False
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
         return 0.0, None, None
 
-    def savemodel(self, iteration):
+    def savemodel(self, iteration: int) -> str:
+        """Tclean savemodel parameter heuristics."""
         return 'none'
 
     def find_fields(self, distance='0deg', phase_center=None, matchregex=''):
@@ -101,9 +123,9 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         # Created STM 2016-May-16 use center direction measure
         # Returns list of fields from msfile within a rectangular box of size distance
 
-        qa = casatools.quanta
-        me = casatools.measures
-        tb = casatools.table
+        qa = casa_tools.quanta
+        me = casa_tools.measures
+        tb = casa_tools.table
 
         msfile = self.vislist[0]
 
@@ -119,20 +141,20 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
             qrad = qa.convert(qdist, 'rad')
             maxrad = qrad['value']
         except:
-            print('ERROR: cannot parse distance {}'.format(distance))
+            LOG.error('cannot parse distance {}'.format(distance))
             return
 
         try:
             tb.open(msfile + '/FIELD')
         except:
-            print('ERROR: could not open {}/FIELD'.format(msfile))
+            LOG.error('could not open {}/FIELD'.format(msfile))
             return
         field_dirs = tb.getcol('PHASE_DIR')
         field_names = tb.getcol('NAME')
         tb.close()
 
         (nd, ni, nf) = field_dirs.shape
-        print('Found {} fields'.format(nf))
+        LOG.info('Found {} fields'.format(nf))
 
         # compile field dictionaries
         ddirs = {}
@@ -155,10 +177,10 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
                 flookup[fn].append(i)
             else:
                 flookup[fn] = [i]
-        print('Cataloged {} fields'.format(nf))
+        LOG.info('Cataloged {} fields'.format(nf))
 
         # Construct offset separations in ra,dec
-        print('Looking for fields with maximum separation {}'.format(distance))
+        LOG.info('Looking for fields with maximum separation {}'.format(distance))
         nreject = 0
         skipmatch = matchregex == '' or matchregex == []
         for i in range(nf):
@@ -192,9 +214,9 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
                     else:
                         nreject += 1
 
-        print('Found {} fields within {}'.format(len(fieldlist), distance))
+        LOG.info('Found {} fields within {}'.format(len(fieldlist), distance))
         if not skipmatch:
-            print('Rejected {} distance matches for regex'.format(nreject))
+            LOG.info('Rejected {} distance matches for regex'.format(nreject))
 
         return fieldlist
 
@@ -205,9 +227,9 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         # Version STM 2016-Jun-18 correct RA sep for cos(dec)
         # Version STM 2016-Jul-11 actually implement Jun 18 fix :(
 
-        qa = casatools.quanta
-        me = casatools.measures
-        tb = casatools.table
+        qa = casa_tools.quanta
+        me = casa_tools.measures
+        tb = casa_tools.table
 
         msfile = self.vislist[0]
 
@@ -223,20 +245,20 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
             qrad = qa.convert(qdist, 'rad')
             maxrad = qrad['value']
         except:
-            print('ERROR: cannot parse distance {}'.format(distance))
+            LOG.error('cannot parse distance {}'.format(distance))
             return
         #
         try:
             tb.open(msfile+'/FIELD')
         except:
-            print('ERROR: could not open {}/FIELD'.format(msfile))
+            LOG.error('could not open {}/FIELD'.format(msfile))
             return
         field_dirs = tb.getcol('PHASE_DIR')
         field_names = tb.getcol('NAME')
         tb.close()
         #
         (nd, ni, nf) = field_dirs.shape
-        print('Found {} fields'.format(nf))
+        LOG.info('Found {} fields'.format(nf))
         #
         # compile field dictionaries
         ddirs = {}
@@ -259,10 +281,10 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
                 flookup[fn].append(i)
             else:
                 flookup[fn] = [i]
-        print('Cataloged {} fields'.format(nf))
+        LOG.info('Cataloged {} fields'.format(nf))
         #
         # Construct offset separations in ra,dec
-        print('Looking for fields with maximum separation {}'.format(distance))
+        LOG.info('Looking for fields with maximum separation {}'.format(distance))
         nreject = 0
         skipmatch = matchregex == '' or matchregex == []
         for i in range(nf):
@@ -295,9 +317,9 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
                     else:
                         nreject += 1
 
-        print('Found {} fields within {}'.format(len(fieldlist), distance))
+        LOG.info('Found {} fields within {}'.format(len(fieldlist), distance))
         if not skipmatch:
-            print('Rejected {} distance matches for regex'.format(nreject))
+            LOG.info('Rejected {} distance matches for regex'.format(nreject))
         #
         return fieldlist
 
@@ -309,9 +331,9 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         # Version STM 2016-Jul-11 actually implement Jun 18 fix :(
         # Version STM 2017-Feb-10 use dd_dec for ra_offset
 
-        qa = casatools.quanta
-        me = casatools.measures
-        tb = casatools.table
+        qa = casa_tools.quanta
+        me = casa_tools.measures
+        tb = casa_tools.table
 
         msfile = self.vislist[0]
 
@@ -327,20 +349,20 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
             qrad = qa.convert(qdist, 'rad')
             maxrad = qrad['value']
         except:
-            print('ERROR: cannot parse distance {}'.format(distance))
+            LOG.error('cannot parse distance {}'.format(distance))
             return
         #
         try:
             tb.open(msfile+'/FIELD')
         except:
-            print('ERROR: could not open {}/FIELD'.format(msfile))
+            LOG.error('could not open {}/FIELD'.format(msfile))
             return
         field_dirs = tb.getcol('PHASE_DIR')
         field_names = tb.getcol('NAME')
         tb.close()
         #
         (nd, ni, nf) = field_dirs.shape
-        print('Found {} fields'.format(nf))
+        LOG.info('Found {} fields'.format(nf))
         #
         # compile field dictionaries
         ddirs = {}
@@ -363,10 +385,10 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
                 flookup[fn].append(i)
             else:
                 flookup[fn] = [i]
-        print('Cataloged {} fields'.format(nf))
+        LOG.info('Cataloged {} fields'.format(nf))
         #
         # Construct offset separations in ra,dec
-        print('Looking for fields with maximum separation {}'.format(distance))
+        LOG.info('Looking for fields with maximum separation {}'.format(distance))
         nreject = 0
         skipmatch = matchregex == '' or matchregex == []
         for i in range(nf):
@@ -400,16 +422,16 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
                     else:
                         nreject += 1
 
-        print('Found {} fields within {}'.format(len(fieldlist), distance))
+        LOG.info('Found {} fields within {}'.format(len(fieldlist), distance))
         if not skipmatch:
-            print('Rejected {} distance matches for regex'.format(nreject))
+            LOG.info('Rejected {} distance matches for regex'.format(nreject))
 
     def threshold(self, iteration, threshold, hm_masking):
 
         return threshold
 
-    def nsigma(self, iteration, hm_nsigma):
-
+    def nsigma(self, iteration: int, hm_nsigma: float, hm_masking: str) -> Union[float, None]:
+        """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
         else:
@@ -418,13 +440,16 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
             else:
                 return 4.5
 
-    def datacolumn(self):
+    def datacolumn(self) -> str:
+        """Column parameter to be used as tclean argument"""
         return 'data'
 
-    def wprojplanes(self):
+    def wprojplanes(self, gridder=None, spwspec=None) -> int:
+        """Tclean wprojplanes parameter heuristics."""
         return 1
 
-    def rotatepastep(self):
+    def rotatepastep(self) -> float:
+        """Tclean rotatepastep parameter heuristics."""
         return 360.
 
     def get_autobox_params(self, iteration, intent, specmode, robust):

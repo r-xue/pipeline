@@ -1,7 +1,7 @@
 <%!
 rsc_path = ""
 import os
-import pipeline.infrastructure.renderer.rendererutils as rendererutils
+from pipeline.infrastructure.renderer import rendererutils
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 <%block name="header" />
@@ -139,7 +139,7 @@ see detailed plots per spectral window and antenna.</p>
 			<h4>Amplitude vs frequency
 				(<a class="replace"
                     data-vis="${ms}"
-		            href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}">show ${ms}</a>)
+		            href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, amp_subpages[ms])}">show ${ms}</a>)
 			</h4>
 			<p>The plots below show amplitude vs frequency for the
 			bandpass correction, overlayed for all spectral windows
@@ -150,13 +150,13 @@ see detailed plots per spectral window and antenna.</p>
 		<div class="row">
 			<div class="col-md-6">
 		        % if plot is None or not os.path.exists(plot.thumbnail):
-				<a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
+				<a href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, amp_subpages[ms])}"
                    data-fancybox="plots-${ms}">
 		            <img data-src="holder.js/255x188/text:Not Available">
                 </a>
 				<div class="caption">
 					<h5>Reference antenna
-                        (<a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
+                        (<a href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, amp_subpages[ms])}"
  	                        class="replace"
 	                        data-vis="${ms}">
 	                        show all detail plots</a>)
@@ -175,7 +175,7 @@ see detailed plots per spectral window and antenna.</p>
 				<div class="caption">
 					<h5>
 		                Reference antenna (${plot.parameters['ant']})
-	                    (<a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
+	                    (<a href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, amp_subpages[ms])}"
 	                       class="replace"
 	                       data-ant="${plot.parameters['ant']}"
 	                       data-vis="${plot.parameters['vis']}">
@@ -207,13 +207,13 @@ see detailed plots per spectral window and antenna.</p>
 	        %>
 			<div class="col-md-6">
 		        % if plot is None or not os.path.exists(plot.thumbnail):
-				<a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
+				<a href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, amp_subpages[ms])}"
                    data-fancybox="plots-${ms}">
 		            <img data-src="holder.js/255x188/text:Not Available">
                 </a>
 				<div class="caption">
 					<h5>Typical antenna
-                        (<a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
+                        (<a href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, amp_subpages[ms])}"
  	                        class="replace"
 	                        data-vis="${ms}">
 	                        show all detail plots</a>)
@@ -231,7 +231,7 @@ see detailed plots per spectral window and antenna.</p>
 				</a>
 				<div class="caption">
 					<h5>Typical antenna (${plot.parameters['ant']})
-	                    (<a href="${os.path.relpath(os.path.join(dirname, amp_subpages[ms]), pcontext.report_dir)}"
+	                    (<a href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, amp_subpages[ms])}"
 	                       class="replace"
 	                       data-ant="${plot.parameters['ant']}"
 	                       data-vis="${plot.parameters['vis']}">
@@ -274,7 +274,7 @@ see detailed plots per spectral window and antenna.</p>
 			<h4>Phase vs frequency
 				(<a class="replace"
                     data-vis="${ms}"
-		            href="${os.path.relpath(os.path.join(dirname, phase_subpages[ms]), pcontext.report_dir)}">show ${ms}</a>)
+		            href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, phase_subpages[ms])}">show ${ms}</a>)
 			</h4>
 			<p>The plot below shows phase vs frequency for the
 			bandpass correction, overlayed for all spectral windows
@@ -285,13 +285,13 @@ see detailed plots per spectral window and antenna.</p>
 		<div class="row">
 			<div class="col-md-12">
 		        % if plot is None or not os.path.exists(plot.thumbnail):
-				<a href="${os.path.relpath(os.path.join(dirname, phase_subpages[ms]), pcontext.report_dir)}"
+				<a href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, phase_subpages[ms])}"
                    data-fancybox="plots-${ms}">
 		            <img data-src="holder.js/255x188/text:Not Available">
                 </a>
 				<div class="caption">
 					<h5>Typical antenna
-                        (<a href="${os.path.relpath(os.path.join(dirname, phase_subpages[ms]), pcontext.report_dir)}"
+                        (<a href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, phase_subpages[ms])}"
  	                        class="replace"
 	                        data-vis="${ms}">
 	                        show all detail plots</a>)
@@ -308,7 +308,7 @@ see detailed plots per spectral window and antenna.</p>
 				</a>
 				<div class="caption">
 					<h5>Typical antenna (${plot.parameters['ant']})
-	                    (<a href="${os.path.relpath(os.path.join(dirname, phase_subpages[ms]), pcontext.report_dir)}"
+	                    (<a href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, phase_subpages[ms])}"
 	                       class="replace"
 	                       data-ant="${plot.parameters['ant']}"
 	                       data-vis="${plot.parameters['vis']}">

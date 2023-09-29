@@ -2,13 +2,14 @@ import collections
 import os
 import sys
 from copy import deepcopy
+
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_XML, ORIGIN_ANALYSIS_UTILS
 from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -18,11 +19,14 @@ The ALMA receiver band, nominal tsys, and sensitivity info.
     This information should go elsewhere in the next release
     The ALMA receiver bands are defined per pipeline convention
 """
-ALMA_BANDS = ['ALMA Band 3', 'ALMA Band 4', 'ALMA Band 5', 'ALMA Band 6',
+ALMA_BANDS = ['ALMA Band 1', 'ALMA Band 2', 'ALMA Band 3', 'ALMA Band 4', 'ALMA Band 5', 'ALMA Band 6',
               'ALMA Band 7', 'ALMA Band 8', 'ALMA Band 9', 'ALMA Band 10']
-ALMA_TSYS = [75.0, 86.0, 120.0, 90.0, 150.0, 387.0, 1200.0, 1515.0]
+ALMA_TSYS = [56.0, 65.0, 75.0, 86.0, 120.0, 90.0, 150.0, 387.0, 1200.0, 1515.0]
 # Sensitivities in mJy (for 16*12 m antennas, 1 minute, 8 GHz, 2pol)
-ALMA_SENSITIVITIES = [0.20, 0.24, 0.37, 0.27, 0.50, 1.29, 5.32, 8.85]
+ALMA_SENSITIVITIES = [0.16, 0.19, 0.20, 0.24, 0.37, 0.27, 0.50, 1.29, 5.32, 8.85]
+ALMA_FIDUCIAL_NUM_ANTENNAS = 16
+ALMA_FIDUCIAL_EXP_TIME = 1.0  # minutes
+ALMA_FIDUCIAL_BANDWIDTH = 8.0e9  # Hz
 
 # origins with smaller numbers are preferred over those with larger numbers
 # this is a dict rather than a list so that a default preference order can be
@@ -304,18 +308,21 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
     # Get atmospheric scans associated with the field name list
     atmscans = get_scans_for_field_intent(ms, fieldnamelist, 'ATMOSPHERE')
 
-    # No atmospheric scans found
-    #    If phase calibrator examine the TARGET atmospheric scans
-    if not atmscans and intent == 'PHASE':
+    # If no atmospheric scans were found, and the intent specifies a phase
+    # calibrator or check source, then try to find atmospheric scans associated
+    # with the science target fields.
+    if not atmscans and intent in ['CHECK', 'PHASE']:
+        fieldlist = [f.name for f in ms.get_fields(intent='TARGET')]
+        if fieldlist:
+            atmscans = get_scans_for_field_intent(ms, fieldlist, 'ATMOSPHERE')
 
-        # Get science target names
-        scifields = ms.get_fields(intent='TARGET')
-        if len(scifields) <= 0:
-            return tsysdict
-        scifieldlist = [scifield.name for scifield in scifields]
-
-        # Find atmospheric scans associated with the science target
-        atmscans = get_scans_for_field_intent(ms, scifieldlist, 'ATMOSPHERE')
+    # If still no atmospheric scans were found, and the intent specifies a
+    # check source, then try to find atmospheric scans associated with the
+    # phase calibrator fields.
+    if not atmscans and intent == 'CHECK':
+        fieldlist = [f.name for f in ms.get_fields(intent='PHASE')]
+        if fieldlist:
+            atmscans = get_scans_for_field_intent(ms, fieldlist, 'ATMOSPHERE')
 
     # Still no atmospheric scans found
     #    Return
@@ -349,9 +356,9 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
 
             # Get tsys spws and spw ids
             scanspwlist = [scanspw for scanspw in list(atmscan.spws)
-                           if scanspw.num_channels not in (1, 4)]
+                           if scanspw.num_channels not in ms.exclude_num_chans]
             scanspwidlist = [scanspw.id for scanspw in list(atmscan.spws)
-                             if scanspw.num_channels not in (1, 4)]
+                             if scanspw.num_channels not in ms.exclude_num_chans]
 
             # Match the Tsys spw to the science spw
             #   Match first by id then by frequency
@@ -387,16 +394,25 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
                     ftsysdict['snr_scan'] = obscan.id
                     break
 
+            # PIPE-1154: if no scan for field name list and intent occurred
+            # after the Tsys scan, then fall back to picking the most recent
+            # scan that occurred before the Tsys scan (assuming obscans are
+            # sorted chronologically).
+            if 'snr_scan' not in ftsysdict:
+                for obscan in obscans:
+                    if obscan.id < atmscan.id:
+                        ftsysdict['snr_scan'] = obscan.id
+
             ftsysdict['tsys_scan'] = atmscan.id
             ftsysdict['tsys_spw'] = bestspwid
             break
 
-        # Update the spw dictinary
+        # Update the spw dictionary
         if ftsysdict:
             LOG.info('    Matched spw %d to a Tsys spw %d' % (spwid, bestspwid))
             tsysdict[spwid] = ftsysdict
         else:
-            LOG.warn('    Cannot match spw %d to a Tsys spw in MS %s' % (spwid, ms.basename))
+            LOG.warning('    Cannot match spw %d to a Tsys spw in MS %s' % (spwid, ms.basename))
 
     return tsysdict
 
@@ -443,56 +459,69 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
     The median temperature dictionary keys and values
         key: the spw id         value: The median Tsys temperature in degrees K
     """
+    # PIPE-775: Output the call to the function. The second and third arguments (tsys_spwlist and scan_list)
+    #  should have the same length
+    LOG.trace("Called get_mediantemp({}, {}, {}, antenna='{}', temptype='{}')".format(
+        ms, tsys_spwlist, scan_list, antenna, temptype))
 
     # Initialize
     medtempsdict = collections.OrderedDict()
     LOG.info('Estimating Tsys temperatures')
 
     # Temperature type must be one of 'tsys' or 'trx' or 'tsky'
-    if temptype != 'tsys' and temptype != 'trx' and temptype != 'tsky':
+    if temptype not in ['tsys', 'trx', 'tsky']:
         return medtempsdict
 
     # Get list of unique scan ids.
-    uniqueScans = list(set(scan_list))
+    unique_scans = sorted(set(scan_list))
+
+    # Get the associated spws for each scan id
+    scans_spws = {scan: [spw.id for spw in ms.get_scans(scan_id=scan)[0].spws] for scan in unique_scans}
+    LOG.debug("Scan spws: {}".format(scans_spws))
 
     # Determine the start and end times for each unique scan
-    beginScanTimes = []
-    endScanTimes = []
-    for scan in uniqueScans:
+    begin_scan_times = []
+    end_scan_times = []
+    for scan in unique_scans:
         reqscan = ms.get_scans(scan_id=scan)
         if not reqscan:
-            LOG.warn('Cannot find observation scan %d in MS %s' % (scan, ms.basename))
+            LOG.warning('Cannot find observation scan %d in MS %s' % (scan, ms.basename))
             return medtempsdict
-        startTime = reqscan[0].start_time
-        endTime = reqscan[0].end_time
-        beginScanTimes.append(startTime)
-        endScanTimes.append(endTime)
-        LOG.debug ('scan %d start %s end %s' % (scan, startTime, endTime))
+        start_time = reqscan[0].start_time
+        end_time = reqscan[0].end_time
+        begin_scan_times.append(start_time)
+        end_scan_times.append(end_time)
+        LOG.debug('scan %d start %s end %s' % (scan, start_time, end_time))
 
     # Get the syscal table meta data.
-    with casatools.TableReader(os.path.join(ms.name,  'SYSCAL')) as table:
+    with casa_tools.TableReader(os.path.join(ms.name, 'SYSCAL')) as table:
 
         # Get the antenna ids
         tsys_antennas = table.getcol('ANTENNA_ID')
         if len(tsys_antennas) < 1:
-            LOG.warn('The SYSCAL table is blank in MS %s' % ms.basename)
+            LOG.warning('The SYSCAL table is blank in MS %s' % ms.basename)
             return medtempsdict
 
         # Get columns and tools needed to understand the tsys times
         time_colkeywords = table.getcolkeywords('TIME')
         time_unit = time_colkeywords['QuantumUnits'][0]
         time_ref = time_colkeywords['MEASINFO']['Ref']
-        mt = casatools.measures
-        qt = casatools.quanta
+        mt = casa_tools.measures
+        qt = casa_tools.quanta
 
         # Get time and intervals
-        tsys_start_times = table.getcol('TIME')
+        tsys_times = table.getcol('TIME')
         tsys_intervals = table.getcol('INTERVAL')
 
         # Compute the time range of validity for each tsys measurement
         #    Worry about memory efficiency later
-        tsys_start_times = tsys_start_times - 0.5 * tsys_intervals
+        # PIPE-775: This considers the time to be the central time
+        tsys_start_times = tsys_times - 0.5 * tsys_intervals
         tsys_end_times = tsys_start_times + tsys_intervals
+
+        # Get the spw ids
+        tsys_spws = table.getcol('SPECTRAL_WINDOW_ID')
+        tsys_uniqueSpws = np.unique(tsys_spws)
 
         # Create a scan id array and populate it with zeros
         scanids = np.zeros(len(tsys_start_times), dtype=np.int32)
@@ -509,50 +538,46 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
             LOG.debug('row %d start %s end %s' % (i, tstart, tend))
 
             # Scan starts after end of validity interval or ends before
-            # the beginning of the validity interval
-            for j in range(len(uniqueScans)):
-                if (beginScanTimes[j]['m0']['value'] > tend['m0']['value'] or
-                        endScanTimes[j]['m0']['value'] < tstart['m0']['value']):
+            # the beginning of the validity interval.
+            for j, scan in enumerate(unique_scans):
+                if (begin_scan_times[j]['m0']['value'] > tend['m0']['value'] or
+                    end_scan_times[j]['m0']['value'] < tstart['m0']['value']):
                     continue
                 if scanids[i] <= 0:
-                    scanids[i] = uniqueScans[j]
+                    scanids[i] = unique_scans[j]
                     nmatch = nmatch + 1
 
         if nmatch <= 0:
-            LOG.warn('No SYSCAL table row matches for scans %s tsys spws %s in MS %s' %
-                     (uniqueScans, tsys_spwlist, ms.basename))
+            LOG.warning('No SYSCAL table row matches for scans %s tsys spws %s in MS %s' %
+                        (unique_scans, tsys_spwlist, ms.basename))
             return medtempsdict
         else:
             LOG.info('    SYSCAL table row matches for scans %s Tsys spws %s %d / %d' %
-                     (uniqueScans, tsys_spwlist, nmatch, len(tsys_start_times)))
-
-        # Get the spw ids
-        tsys_spws = table.getcol('SPECTRAL_WINDOW_ID')
-        tsys_uniqueSpws = np.unique(tsys_spws)
+                     (unique_scans, tsys_spwlist, nmatch, len(tsys_start_times)))
 
     # Get a list of unique antenna ids.
     if antenna == '':
-        uniqueAntennaIds = [a.id for a in ms.get_antenna()]
+        unique_antenna_ids = [a.id for a in ms.get_antenna()]
     else:
-        uniqueAntennaIds = [ms.get_antenna(search_term=antenna)[0].id]
+        unique_antenna_ids = [ms.get_antenna(search_term=antenna)[0].id]
 
     # Loop over the spw and scan list which have the same length
     for spw, scan in zip(tsys_spwlist, scan_list):
 
         # If no Tsys data skip to the next window
         if spw not in tsys_uniqueSpws:
-            LOG.warn('Tsys spw %d is not in the SYSCAL table for MS %s' %
-                     (spw, ms.basename))
+            LOG.warning('Tsys spw %d is not in the SYSCAL table for MS %s' %
+                        (spw, ms.basename))
             continue
             # return medtempsdict
 
         # Loop over the rows
         medians = []
-        with casatools.TableReader(os.path.join(ms.name, 'SYSCAL')) as table:
+        with casa_tools.TableReader(os.path.join(ms.name, 'SYSCAL')) as table:
             for i in range(len(tsys_antennas)):
                 if tsys_spws[i] != spw:
                     continue
-                if tsys_antennas[i] not in uniqueAntennaIds:
+                if tsys_antennas[i] not in unique_antenna_ids:
                     continue
                 if scan != scanids[i]:
                     continue
@@ -568,7 +593,7 @@ def get_mediantemp(ms, tsys_spwlist, scan_list, antenna='', temptype='tsys'):
             medtempsdict[spw] = np.median(medians)
             LOG.info("    Median Tsys %s value for Tsys spw %2d = %.1f K" % (temptype, spw, medtempsdict[spw]))
         else:
-            LOG.warn('    No Tsys data for spw %d scan %d in MS %s' % (spw, scan, ms.basename))
+            LOG.warning('    No Tsys data for spw %d scan %d in MS %s' % (spw, scan, ms.basename))
 
     # Return median temperature per spw and scan.
     return medtempsdict
@@ -696,7 +721,8 @@ def get_obsinfo(ms, fieldnamelist, intent, spwidlist, compute_nantennas='all', m
         # one spw to the next
         spwscans = []
         for obscan in obscans:
-            scanspwset = {scanspw.id for scanspw in list(obscan.spws) if scanspw.num_channels not in (1, 4)}
+            scanspwset = {scanspw.id for scanspw in list(obscan.spws)
+                          if scanspw.num_channels not in ms.exclude_num_chans}
             if len({spwid}.intersection(scanspwset)) == 0:
                 continue
             spwscans.append(obscan)
@@ -894,7 +920,7 @@ def _transfer_obsinfo(spwlist, spw_dict, obs_dict):
 
 
 def compute_gaincalsnr(ms, spwlist, spw_dict, edge_fraction):
-    """Compute the gain to signal to noise given the spw list and the spw
+    """Compute the gain to signal-to-noise given the spw list and the spw
     dictionary.
 
     This code assumes that the science spws are observed in both the
@@ -910,7 +936,7 @@ def compute_gaincalsnr(ms, spwlist, spw_dict, edge_fraction):
     The SNR dictionary keys and values
         key: the spw id     value: The science spw id as an integer
 
-    The preaveraging parameter dictionary keys abd values
+    The preaveraging parameter dictionary keys and values
         key: 'band'                       value: The ALMA receiver band
         key: 'frequency_Hz'               value: The frequency of the spw
         key: 'nchan_total'                value: The total number of channels
@@ -931,6 +957,11 @@ def compute_gaincalsnr(ms, spwlist, spw_dict, edge_fraction):
 
     maxEffectiveBW = 2.0e9 * (1.0 - 2.0 * edge_fraction)
 
+    # PIPE-788: retrieve the fraction of flagged data
+    scans = set(np.hstack([spw_dict[spwid]['snr_scans'] for spwid in spwlist]))
+    flag_task = casa_tasks.flagdata(vis=ms.name, scan=','.join(map(str, list(scans))), mode='summary')
+    flag_result = flag_task.execute()
+
     LOG.info('Signal to noise summary')
     for spwid in spwlist:
 
@@ -940,30 +971,31 @@ def compute_gaincalsnr(ms, spwlist, spw_dict, edge_fraction):
         # Compute the various generic SNR factors
         if spw_dict[spwid]['median_tsys'] <= 0.0:
             relativeTsys = 1.0
-            LOG.warn('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
+            LOG.warning('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
         else:
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1
-        arraySizeFactor = np.sqrt(16 * 15 / 2.0) / np.sqrt(nbaselines)
+        arraySizeFactor = np.sqrt(ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1) / 2.0 / nbaselines)
         if spw_dict[spwid]['num_7mantenna'] == 0:
             areaFactor = 1.0
         elif spw_dict[spwid]['num_12mantenna'] == 0:
             areaFactor = (12.0 / 7.0) ** 2
         else:
-            # Not sure this is correct
-            ntotant = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna']
-            areaFactor = (spw_dict[spwid]['num_12mantenna'] + (12.0 / 7.0)**2 * spw_dict[spwid]['num_7mantenna']) / \
-                ntotant
+            # general case:  eq. 6 in arXiv:2306.07420
+            areaFactor = (spw_dict[spwid]['num_12mantenna'] + spw_dict[spwid]['num_7mantenna'] * (12./7)**2) / \
+                         (spw_dict[spwid]['num_12mantenna'] + spw_dict[spwid]['num_7mantenna'])
         polarizationFactor = np.sqrt(2.0)
 
         # SNR computation
-        timeFactor = 1.0 / np.sqrt(spw_dict[spwid]['exptime'] / len(spw_dict[spwid]['snr_scans']))
-        bandwidthFactor = np.sqrt(8.0e9 / min(spw_dict[spwid]['bandwidth'], maxEffectiveBW))
+        timeFactor = ALMA_FIDUCIAL_EXP_TIME / np.sqrt(spw_dict[spwid]['exptime'] / len(spw_dict[spwid]['snr_scans']))
+        bandwidthFactor = np.sqrt(ALMA_FIDUCIAL_BANDWIDTH / min(spw_dict[spwid]['bandwidth'], maxEffectiveBW))
+        # PIPE-788: multiply the exposure time by the fraction of unflagged data
+        flagFactor = 1.0 / np.sqrt(1 - flag_result['spw'][str(spwid)]['flagged'] / flag_result['spw'][str(spwid)]['total'])
         factor = relativeTsys * timeFactor * arraySizeFactor * \
-            areaFactor * bandwidthFactor * polarizationFactor
+            areaFactor * bandwidthFactor * polarizationFactor * flagFactor
         sensitivity = ALMA_SENSITIVITIES[bandidx] * factor
         if 'flux' in spw_dict[spwid]:
-            snrPerScan = spw_dict[spwid]['flux'] * 1000.0 / sensitivity
+            snrPerScan = spw_dict[spwid]['flux'] * 1000.0 / sensitivity  # factor of 1000 converting from Jy to mJy
         else:
             snrPerScan = None
 
@@ -1060,7 +1092,7 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         #    the bandpass frequency solint
         if spw_dict[spwid]['median_tsys'] <= 0.0:
             relativeTsys = 1.0
-            LOG.warn('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
+            LOG.warning('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
         else:
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1
@@ -1068,8 +1100,8 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         # PIPE-408: do not continue if there are no unflagged baselines for current spw; this will cause this spw
         # to be absent from the solution interval dictionary that is returned.
         if nbaselines < 0:
-            LOG.warn("Cannot compute optimal bandpass frequency solution interval for spw {} in MS {}; no (unflagged)"
-                     " baselines were found".format(spwid, ms.basename))
+            LOG.warning("Cannot compute optimal bandpass frequency solution interval for spw {} in MS {}; no (unflagged)"
+                        " baselines were found".format(spwid, ms.basename))
             continue
 
         arraySizeFactor = np.sqrt(16 * 15 / 2.0) / np.sqrt(nbaselines)
@@ -1101,8 +1133,10 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         bpsensitivity = ALMA_SENSITIVITIES[bandidx] * bpfactor
         snrPerChannel = spw_dict[spwid]['flux'] * 1000.0 / bpsensitivity
         requiredChannels = (reqBpSnr / snrPerChannel) ** 2
-        LOG.info("spw=%d, band=%d, alma_sensitivity=%s, bpfactor=%f" % (spwid, bandidx, ALMA_SENSITIVITIES[bandidx], bpfactor))
-        LOG.info("requiredChannels=%f, repBpSnr=%f, snrPerChannel=%f, spw flux=%f, bpsensitivity=%f" % (requiredChannels, reqBpSnr, snrPerChannel, spw_dict[spwid]['flux'], bpsensitivity))
+        LOG.info("spw={}, band={}, alma_sensitivity={}, bpfactor={}".format(
+            spwid, bandidx+1, ALMA_SENSITIVITIES[bandidx], bpfactor))
+        LOG.info("requiredChannels={}, repBpSnr={}, snrPerChannel={}, spw flux={}, bpsensitivity={}".format(
+            requiredChannels, reqBpSnr, snrPerChannel, spw_dict[spwid]['flux'], bpsensitivity))
         evenChannels = nextHighestDivisibleInt(spw_dict[spwid]['nchan'], int(np.ceil(requiredChannels)))
 
         # Fill in the dictionary
@@ -1152,8 +1186,8 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
                   reqPhaseupSnr))
         solint_dict[spwid]['nphaseup_solutions'] = solInts
         if tooFewIntervals:
-            LOG.warn('%s Spw %d would have less than %d time intervals in its solution in MS %s' %
-                     (asterisks, spwid, minBpNintervals, ms.basename))
+            LOG.warning('%s Spw %d would have less than %d time intervals in its solution in MS %s' %
+                        (asterisks, spwid, minBpNintervals, ms.basename))
 
         # Bandpass solution
         #    Determine frequenty interval in MHz
@@ -1194,8 +1228,8 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
                   reqBpSnr))
         solint_dict[spwid]['nbandpass_solutions'] = solChannels
         if tooFewChannels:
-            LOG.warn('%s Spw %d would have less than %d channels in its solution in MS %s' %
-                     (asterisks, spwid, minBpNchan, ms.basename))
+            LOG.warning('%s Spw %d would have less than %d channels in its solution in MS %s' %
+                        (asterisks, spwid, minBpNchan, ms.basename))
 
     return solint_dict
 

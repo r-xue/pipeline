@@ -238,7 +238,7 @@ class taskutil2(taskutil):
         self.tasks = []
         for i in range(len(tasks)):
             task = os.path.basename(tasks[i]).replace('.xml', '')
-            if self.prefix is None or re.match('%s_.*' % self.prefix, task) is not None:
+            if self.prefix is None or re.match(r'%s_.*' % self.prefix, task) is not None:
                 #task[:len(self.prefix)] == self.prefix:
                 self.tasks.append(task)
 

@@ -25,9 +25,9 @@ task = pipeline.tasks.RestoreData(inputs)
 results = task.execute(dry_run=False)
 results.accept(context)
 """
-import glob
 import os
 import re
+import ast
 import sys
 import shutil
 import tarfile
@@ -42,6 +42,8 @@ from pipeline.infrastructure import utils
 from .. import applycal
 from .. import importdata
 from ..common import manifest
+
+from pipeline.extern.almarenorm import alma_renorm
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -124,8 +126,8 @@ class RestoreDataInputs(vdp.StandardInputs):
         :type bdfflags: boolean True or False
         :param lazy: use the lazy filler to restore data
         :type lazy: boolean True or False
-        :param asis: list of ASDM tables to import as is
-        :type asis: comma delimated list of tables
+        :param asis: Creates verbatim copies of the ASDM tables in the output MS.
+        :type asis: space delimated list of tables
         """
         super(RestoreDataInputs, self).__init__()
 
@@ -146,7 +148,7 @@ class RestoreDataInputs(vdp.StandardInputs):
 
 class RestoreDataResults(basetask.Results):
     def __init__(self, importdata_results=None, applycal_results=None, flagging_summaries=None,
-                 casa_version_orig=None, pipeline_version_orig=None, orig_mpi_servers=0):
+                 casa_version_orig=None, pipeline_version_orig=None, orig_mpi_servers=0, renorm_applied=False):
         """
         Initialise the results objects.
         """
@@ -158,6 +160,7 @@ class RestoreDataResults(basetask.Results):
         self.casa_version_orig = casa_version_orig
         self.pipeline_version_orig = pipeline_version_orig
         self.orig_mpi_servers = orig_mpi_servers
+        self.renorm_applied = renorm_applied
 
     def merge_with_context(self, context):
         if self.importdata_results:
@@ -225,7 +228,7 @@ class RestoreData(basetask.StandardTaskTemplate):
 
         # Copy the required calibration products from "someplace" on disk
         #   (default ../products) to ../rawdata. The pipeline manifest file
-        #   if present is used to determine which files to copy. Otherwise   
+        #   if present is used to determine which files to copy. Otherwise
         #   a file naming scheme is used. The latter is deprecated as it
         #   requires the exportdata / restoredata tasks to be synchronized
         #   but it is maintained for testing purposes.
@@ -267,12 +270,64 @@ class RestoreData(basetask.StandardTaskTemplate):
         # pipeline manifest.
         casa_version, pipeline_version, num_mpi = self._extract_casa_pipeline_version(pipemanifest)
 
+        # If necessary, renormalize ALMA IF data; returns bool declaring
+        # whether the renormalization was run.
+        renorm_applied = self._do_renormalize(pipemanifest, session_names=session_names,
+                                              session_vislists=session_vislists)
+
         # Return the results object, which will be used for the weblog
         return RestoreDataResults(import_results, apply_results, flagging_summaries, casa_version, pipeline_version,
-                                  num_mpi)
+                                  num_mpi, renorm_applied)
 
     def analyse(self, results):
         return results
+
+    def _do_renormalize(self, pipemanifest, session_names=None, session_vislists=None):
+        # read the manifest and look for a renorm element(s).  there should be one per EB
+        # if it's there, do the renorm steps using the stored params, but do not
+        # create the plots
+
+        applied = False
+
+        # Loop over sessions
+        for index, session in enumerate(session_names):
+
+            # Get the visibility list for that session.
+            vislist = session_vislists[index]
+
+            for vis in vislist:
+                # for each non-target asdm/vis in the manifest structure
+                params = pipemanifest.get_renorm(vis)
+                if params:
+                    # Convert input parameters with ast (string to bool, dict, etc).
+                    kwargs = {key: ast.literal_eval(val) if val else val for key, val in params.items()}
+
+                    # PIPE-1687: restrict input arguments to those needed by
+                    # renorm interface function.
+                    kwargs = {
+                        'vis': vis,
+                        'spw': [int(x) for x in kwargs['spw'].split(',') if x],
+                        'apply': kwargs['apply'],
+                        'threshold': kwargs['threshold'],
+                        'excludechan': kwargs['excludechan'],
+                        'correct_atm': kwargs['correctATM'],
+                        'atm_auto_exclude': kwargs['atm_auto_exclude'],
+                        'bwthreshspw': kwargs['bwthreshspw'],
+                    }
+
+                    try:
+                        LOG.info(f'Renormalizing {vis} with hifa_renorm {params}')
+                        _, _, _, _, _, renorm_applied, _, _ = alma_renorm(**kwargs)
+                        if 'apply' in kwargs and kwargs['apply'] and renorm_applied:
+                            applied = True
+                        else:
+                            LOG.error(f'Failed application of renormalization for {vis} {params}')
+                    except Exception as e:
+                        LOG.error(f'Failure in running renormalization heuristic: {e}')
+                else:
+                    LOG.info(f'Not calling hifa_renorm for {vis} - no renorm call in manifest.')
+
+        return applied
 
     def _do_copy_manifest_toraw(self, template):
         """
@@ -282,7 +337,7 @@ class RestoreData(basetask.StandardTaskTemplate):
 
         # Download the pipeline manifest file from the archive or
         #     products_dir to rawdata_dir
-        manifest_files = glob.glob(os.path.join(inputs.products_dir, template))
+        manifest_files = utils.glob_ordered(os.path.join(inputs.products_dir, template))
         for manifestfile in manifest_files:
             LOG.info('Copying %s to %s' % (manifestfile, inputs.rawdata_dir))
             shutil.copy(manifestfile, os.path.join(inputs.rawdata_dir,
@@ -297,9 +352,9 @@ class RestoreData(basetask.StandardTaskTemplate):
         # Get the list of files in the rawdata directory
         #   First find all the manifest files of any kind
         #   If there is more than one file in that list then try the more restrictive template
-        manifestfiles = glob.glob(os.path.join(inputs.rawdata_dir, template1))
+        manifestfiles = utils.glob_ordered(os.path.join(inputs.rawdata_dir, template1))
         if len(manifestfiles) > 1:
-            manifestfiles2 = glob.glob(os.path.join(inputs.rawdata_dir, template2))
+            manifestfiles2 = utils.glob_ordered(os.path.join(inputs.rawdata_dir, template2))
             if len(manifestfiles2) > 0 and len(manifestfiles2) < len(manifestfiles):
                 manifestfiles = manifestfiles2
 
@@ -324,7 +379,7 @@ class RestoreData(basetask.StandardTaskTemplate):
             inflagfiles = [os.path.join(inputs.products_dir, flagfile)
                            for flagfile in pipemanifest.get_final_flagversions(ouss).values()]
         else:
-            inflagfiles = glob.glob(os.path.join(inputs.products_dir, '*.flagversions.tgz'))
+            inflagfiles = utils.glob_ordered(os.path.join(inputs.products_dir, '*.flagversions.tgz'))
 
         for flagfile in inflagfiles:
             LOG.info('Copying %s to %s' % (flagfile, inputs.rawdata_dir))
@@ -336,7 +391,7 @@ class RestoreData(basetask.StandardTaskTemplate):
             incaltables = [os.path.join(inputs.products_dir, caltable)
                            for caltable in pipemanifest.get_caltables(ouss).values()]
         else:
-            incaltables = glob.glob(os.path.join(inputs.products_dir, '*.caltables.tgz'))
+            incaltables = utils.glob_ordered(os.path.join(inputs.products_dir, '*.caltables.tgz'))
 
         for caltable in incaltables:
             LOG.info('Copying %s to %s' % (caltable, inputs.rawdata_dir))
@@ -349,7 +404,7 @@ class RestoreData(basetask.StandardTaskTemplate):
             inapplycals = [os.path.join(inputs.products_dir, applycals)
                            for applycals in pipemanifest.get_applycals(ouss).values()]
         else:
-            inapplycals = glob.glob(os.path.join(inputs.products_dir, '*.calapply.txt'))
+            inapplycals = utils.glob_ordered(os.path.join(inputs.products_dir, '*.calapply.txt'))
 
         for calapply_list in inapplycals:
             LOG.info('Copying %s to %s' % (calapply_list, inputs.rawdata_dir))
@@ -456,8 +511,7 @@ class RestoreData(basetask.StandardTaskTemplate):
         """
 
         # regex to match unix paths
-        unix_path = re.compile('((?:\\/[\\w\\.\\-]+)+)',
-                               re.IGNORECASE | re.DOTALL)
+        unix_path = re.compile(r'((?:(\.{1,2})?\/[\w\.\-]+)+)', re.IGNORECASE | re.DOTALL)
 
         # define a function that replaces directory names with our new output
         # directory
@@ -498,8 +552,8 @@ class RestoreData(basetask.StandardTaskTemplate):
                     tarfilename = os.path.join(inputs.rawdata_dir,
                                                pipemanifest.get_caltables(ouss)['default'])
             elif ousid == '':
-                tarfilename = glob.glob(os.path.join(inputs.rawdata_dir,
-                                                     '*' + session + '.caltables.tgz'))[0]
+                tarfilename = utils.glob_ordered(os.path.join(inputs.rawdata_dir,
+                                                              '*' + session + '.caltables.tgz'))[0]
             else:
                 tarfilename = os.path.join(inputs.rawdata_dir,
                                            ousid + session + '.caltables.tgz')
@@ -507,8 +561,9 @@ class RestoreData(basetask.StandardTaskTemplate):
             with tarfile.open(tarfilename, 'r:gz') as tar:
                 tarmembers = tar.getmembers()
 
-                # Loop over the visibilities associated with that session
-                for vis in vislist:
+                # Retrieve any caltable associated with either session name or
+                # the measurement sets associated with this session.
+                for vis in vislist + [session]:
                     LOG.info('Restoring caltables for %s from %s'
                              '' % (os.path.basename(vis), tarfilename))
                     extractlist = []
@@ -526,8 +581,8 @@ class RestoreData(basetask.StandardTaskTemplate):
                             tar.extractall(path=inputs.output_dir, members=extractlist)
 
     def _do_applycal(self):
-        container = vdp.InputsContainer(applycal.Applycal, self.inputs.context)
-        applycal_task = applycal.Applycal(container)
+        container = vdp.InputsContainer(applycal.SerialApplycal, self.inputs.context)
+        applycal_task = applycal.SerialApplycal(container)
         return self._executor.execute(applycal_task, merge=True)
 
     def _get_sessions(self, sessions=None, vis=None):

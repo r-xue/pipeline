@@ -4,16 +4,15 @@ import pipeline.infrastructure.renderer.weblog as weblog
 
 from .solint import Solint
 from .fluxboot import Fluxboot
-from .fluxboot2 import Fluxboot2
-from .fluxboot2 import Fluxboot2Results
+from .fluxboot import FluxbootResults
 from . import solint
 from . import fluxboot
 from . import renderer
-from . import fluxboot2
+from . import fluxboot
 
 from . import qa
 
-qaadapter.registry.register_to_dataset_topic(Fluxboot2Results)
+qaadapter.registry.register_to_dataset_topic(FluxbootResults)
 
 # from . import qa
 
@@ -27,4 +26,3 @@ qaadapter.registry.register_to_dataset_topic(Fluxboot2Results)
 
 weblog.add_renderer(Solint, renderer.T2_4MDetailsSolintRenderer(), group_by=weblog.UNGROUPED)
 weblog.add_renderer(Fluxboot, renderer.T2_4MDetailsfluxbootRenderer(), group_by=weblog.UNGROUPED)
-weblog.add_renderer(Fluxboot2, renderer.T2_4MDetailsfluxbootRenderer(), group_by=weblog.UNGROUPED)

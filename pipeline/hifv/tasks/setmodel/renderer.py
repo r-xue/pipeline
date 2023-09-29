@@ -5,6 +5,7 @@ Created on 11 Sep 2014
          bkent April 2015
 """
 import collections
+import operator
 import os
 
 import pipeline.infrastructure.callibrary as callibrary
@@ -95,10 +96,10 @@ def make_flux_table(context, results):
         vis_cell = os.path.basename(single_result.vis)
 
         # measurements will be empty if fluxscale derivation failed
-        if len(single_result.measurements) is 0:
+        if len(single_result.measurements) == 0:
             continue
 
-        for field_arg, measurements in single_result.measurements.items():
+        for field_arg in sorted(single_result.measurements, key=lambda fld: ms_for_result.get_fields(fld)[0].id):
             fields = ms_for_result.get_fields(field_arg)
             field = ms_for_result.get_fields(field_arg)[0]
             try:
@@ -111,7 +112,7 @@ def make_flux_table(context, results):
                 LOG.info("Single amplitude calibrator")
             field_cell = '%s (#%s)' % (field.name, field.id)
 
-            for measurement in sorted(measurements, key=lambda m: int(m.spw_id)):
+            for measurement in sorted(single_result.measurements[field_arg], key=operator.attrgetter('spw_id')):
                 fluxes = collections.defaultdict(lambda: 'N/A')
                 for stokes in ['I', 'Q', 'U', 'V']:
                     try:

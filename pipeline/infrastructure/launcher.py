@@ -6,20 +6,23 @@ import datetime
 import os
 import pickle
 import pprint
+from typing import Dict, Optional
 
 from pipeline import environment
 from . import callibrary
-from . import casatools
+from . import casa_tools
+from . import eventbus
 from . import imagelibrary
 from . import logging
 from . import project
 from . import utils
+from .eventbus import ContextCreatedEvent, ContextResumedEvent
 
 LOG = logging.get_logger(__name__)
 
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [5, 9, 9, 919]
+MIN_CASA_REVISION = [6, 5, 4, 7]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 
@@ -100,14 +103,24 @@ class Context(object):
         imaging mode string; may be used to switch between imaging parameter
         heuristics; currently only used for deciding what products to export
 
-    """
-    def __init__(self, output_dir=None, name=None):
-        # initialise the context name with something reasonable: a current
-        # timestamp
-        now = datetime.datetime.utcnow()
-        self.name = name if name else now.strftime('pipeline-%Y%m%dT%H%M%S')
+    .. py:attribute:: selfcal_targets
 
-        # domain depends on infrastructure.casatools, so infrastructure cannot
+        list of targets for which self-calibration is performed
+
+    .. py:attribute:: selfcal_resources
+
+        list of files/tables required for the self-calibration restoration
+
+    """
+    def __init__(self, name: Optional[str] = None):
+        if name is None:
+            # initialise the context name with something reasonable: a current
+            # timestamp
+            now = datetime.datetime.utcnow()
+            name = now.strftime('pipeline-%Y%m%dT%H%M%S')
+        self.name = name
+
+        # domain depends on infrastructure.casa_tools, so infrastructure cannot
         # depend on domain hence the run-time import
         import pipeline.domain as domain
         self.observing_run = domain.ObservingRun()
@@ -122,12 +135,13 @@ class Context(object):
         self.project_structure = project.ProjectStructure()
         self.project_performance_parameters = project.PerformanceParameters()
 
-        self.output_dir = output_dir
+        self.output_dir = ''
+        self.report_dir = os.path.join(self.output_dir, self.name, 'html')
         self.products_dir = None
+
         self.task_counter = 0
         self.subtask_counter = 0
         self.results = []
-        self.logs = {}
         self.contfile = None
         self.linesfile = None
         self.size_mitigation_parameters = {}
@@ -138,40 +152,31 @@ class Context(object):
         self.per_spw_cont_sensitivities_all_chan = {'robust': None, 'uvtaper': None}
         self.synthesized_beams = {'robust': None, 'uvtaper': None}
         self.imaging_mode = None
+        self.selfcal_targets = []
+        self.selfcal_resources = []
 
-        LOG.trace('Creating report directory \'%s\'' % self.report_dir)
+        LOG.trace('Creating report directory: %s', self.report_dir)
         utils.mkdir_p(self.report_dir)
 
-        LOG.trace('Setting products directory to \'%s\'' % self.products_dir)
+        LOG.trace('Setting products directory: %s', self.products_dir)
 
         LOG.trace('Pipeline stage counter set to {0}'.format(self.stage))
         LOG.todo('Add OUS registration task. Hard-coding log type to MOUS')
         self.logtype = 'MOUS'
 
-        self.logs['casa_commands'] = 'casa_commands.log'
-        self.logs['pipeline_script'] = 'casa_pipescript.py'
-        self.logs['pipeline_restore_script'] = 'casa_piperestorescript.py'
+        self.logs: Dict[str, str] = dict(
+            casa_commands='casa_commands.log',
+            pipeline_script='casa_pipescript.py',
+            pipeline_restore_script='casa_piperestorescript.py',
+            aqua_report='pipeline_aquareport.xml'
+        )
+
+        event = ContextCreatedEvent(context_name=self.name, output_dir=self.output_dir)
+        eventbus.send_message(event)
 
     @property
     def stage(self):
-        return '%s_%s' % (self.task_counter, self.subtask_counter) 
-
-    @property
-    def report_dir(self):
-        return os.path.join(self.output_dir, self.name, 'html')
-
-    @property
-    def output_dir(self):
-        return self._output_dir
-
-    @output_dir.setter
-    def output_dir(self, value):
-        if value is None:
-            value = './'
-
-        value = os.path.abspath(value)
-        LOG.trace('Setting output_dir to \'%s\'' % value)
-        self._output_dir = value
+        return f'{self.task_counter}_{self.subtask_counter}'
 
     @property
     def products_dir(self):
@@ -180,19 +185,18 @@ class Context(object):
     @products_dir.setter
     def products_dir(self, value):
         if value is None:
-            (root_dir, _) = os.path.split(self.output_dir)
-            value = os.path.join(root_dir, 'products')
+            value = os.path.join('../', 'products')
 
-        value = os.path.abspath(value)
-        LOG.trace('Setting products_dir to \'%s\'' % value)
+        value = os.path.relpath(value, self.output_dir)
+        LOG.trace('Setting products_dir: %s', value)
         self._products_dir = value
 
     def save(self, filename=None):
         if filename in ('', None):
-            filename = '%s.context' % self.name
+            filename = f'{self.name}.context'
 
         with open(filename, 'wb') as context_file:
-            LOG.info('Saving context to \'{0}\''.format(filename))          
+            LOG.info('Saving context: %s', filename)
             pickle.dump(self, context_file, protocol=-1)
 
     def __str__(self):
@@ -204,7 +208,7 @@ class Context(object):
                           pprint.pformat(ms_names)))
 
     def __repr__(self):
-        return '<Context(name={!r})>'.format(self.name)
+        return f"<Context(name='{self.name}')>"
 
     def set_state(self, cls, name, value):
         """
@@ -231,6 +235,27 @@ class Context(object):
         instance = m[cls]
         setattr(instance, name, value)
 
+    def get_oussid(self):
+        """
+        Get the parent OUS 'ousstatus' name. This is the sanitized OUS
+        status UID.
+        """
+        ps = self.project_structure
+        if ps is None or ps.ousstatus_entity_id == 'unknown':
+            return 'unknown'
+        else:
+            return ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
+
+    def get_recipe_name(self):
+        """
+        Get the recipe name from project structure.
+        """
+        ps = self.project_structure
+        if ps is None or ps.recipe_name == 'Undefined':
+            return ''
+        else:
+            return ps.recipe_name
+
 
 class Pipeline(object):
     """
@@ -241,7 +266,7 @@ class Pipeline(object):
     TODO replace this class with a static factory method on Context? 
     """
 
-    def __init__(self, context=None, output_dir='./', loglevel='info',
+    def __init__(self, context=None, loglevel='info',
                  casa_version_check=True, name=None, plotlevel='default',
                  path_overrides={}):
         """
@@ -252,14 +277,19 @@ class Pipeline(object):
             Specifying 'last' loads the last-saved Context, while passing None
             creates a new Context.
         :type context: string
-        :param output_dir: root directory to which all output will be written
-        :type output_dir: string
         :param loglevel: pipeline log level
         :type loglevel: string
         :param casa_version_check: enable (True) or bypass (False) the CASA
             version check. Default is True.
-        :type ignore_casa_version: boolean
-        """        
+        :param name: if not "None", this overrides the name of the Pipeline
+            Context if a new context needs to be created.
+        :type name: string
+        :param plotlevel: Pipeline plots level
+        :type plotlevel: string
+        :param path_overrides: dictionary containing context properties to be
+             redefined when loading existing context (e.g. "name").
+        :type path_overrides: dict
+        """
         # configure logging with the preferred log level
         logging.set_logging_level(level=loglevel)
 
@@ -279,7 +309,7 @@ class Pipeline(object):
         # if no previous context was specified, create a new context for the
         # given measurement set
         if context is None:
-            self.context = Context(output_dir=output_dir, name=name)
+            self.context = Context(name=name)
 
         # otherwise load the context from disk..
         else:
@@ -289,9 +319,12 @@ class Pipeline(object):
 
             # .. the user-specified file
             with open(context, 'rb') as context_file:
-                LOG.info('Reading context from file {0}'.format(context))
+                LOG.info('Reading context: %s', context)
                 last_context = utils.pickle_load(context_file)
                 self.context = last_context
+
+                event = ContextResumedEvent(context_name=last_context.name, output_dir=last_context.output_dir)
+                eventbus.send_message(event)
 
             for k, v in path_overrides.items():
                 setattr(self.context, k, v)
@@ -308,7 +341,7 @@ class Pipeline(object):
         report_dir = context.report_dir
 
         # create a hard-link to the current CASA log in the report directory 
-        src = casatools.log.logfile()
+        src = casa_tools.log.logfile()
         dst = os.path.join(report_dir, os.path.basename(src))
         if not os.path.exists(dst):
             try:
@@ -333,7 +366,10 @@ class Pipeline(object):
         # list all the files in the directory..
         files = [f for f in os.listdir(directory) if f.endswith('.context')]
 
-        # .. and from these matches, create a dict mapping files to their 
+        if len(files) == 0:
+            raise FileNotFoundError(f'No pipeline context exists in {os.path.abspath(directory)}')
+
+        # .. and from these matches, create a dict mapping files to their
         # modification timestamps, ..
         name_n_timestamp = dict([(f, os.stat(directory+f).st_mtime) 
                                  for f in files])

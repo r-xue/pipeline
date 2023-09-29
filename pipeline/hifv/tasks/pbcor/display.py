@@ -2,9 +2,9 @@ import collections
 import os
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
-
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.h.tasks.common.displays.imhist import ImageHistDisplay
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -25,24 +25,39 @@ class PbcorimagesSummary(object):
             os.mkdir(stage_dir)
 
         LOG.info("Making PNG pbcor images for weblog")
-        plot_wrappers = []
+        plot_dict = {}
+        self.result.residual_stats = {}
+        self.result.pbcor_stats = {}
 
-        for pbcorimagename in self.result.pbcorimagenames:
-            if 'residual.pbcor' in pbcorimagename:
-                plot_wrappers.append(sky.SkyDisplay().plot(self.context, pbcorimagename,
-                                                           reportdir=stage_dir, intent='',
-                                                           collapseFunction='mean'))
-                with casatools.ImageReader(pbcorimagename) as image:
-                    self.result.residual_stats = image.statistics(robust=True)
-            elif 'image.pbcor' in pbcorimagename:
-                plot_wrappers.append(sky.SkyDisplay().plot(self.context, pbcorimagename,
-                                                           reportdir=stage_dir, intent='',
-                                                           collapseFunction='mean'))
-                with casatools.ImageReader(pbcorimagename) as image:
-                    self.result.pbcor_stats = image.statistics(robust=True)
-            else:
-                plot_wrappers.append(sky.SkyDisplay().plot(self.context, pbcorimagename,
-                                                           reportdir=stage_dir, intent='',
-                                                           collapseFunction='mean'))
+        for basename, pbcor_images in self.result.pbcorimagenames.items():
+            plot_wrappers = []
+            for pbcor_imagename in pbcor_images:
 
-        return [p for p in plot_wrappers if p is not None]
+                if pbcor_imagename.endswith('.pb') or pbcor_imagename.endswith('.pb.tt0'):
+                    vmin = 0.0
+                    vmax = 1.0
+                else:
+                    vmin = vmax = None
+                plot_wrappers.append(sky.SkyDisplay().plot(self.context, pbcor_imagename,
+                                                           reportdir=stage_dir, intent='',
+                                                           collapseFunction='mean', vmin=vmin, vmax=vmax))
+                # PIPE-1163: avoid saving stats from .tt1
+                if not pbcor_imagename.endswith('.tt1'):
+                    if 'residual.pbcor' in pbcor_imagename:
+                        with casa_tools.ImageReader(pbcor_imagename) as image:
+                            self.result.residual_stats[basename] = image.statistics(robust=True)
+                    elif 'image.pbcor' in pbcor_imagename:
+                        with casa_tools.ImageReader(pbcor_imagename) as image:
+                            self.result.pbcor_stats[basename] = image.statistics(robust=True)
+                    else:
+                        try:
+                            if self.context.imaging_mode.startswith('VLASS'):
+                                plot_wrappers.append(ImageHistDisplay(self.context, pbcor_imagename,
+                                                                      x_axis='Primary Beam Response', y_axis='Num. of Pixel',
+                                                                      reportdir=stage_dir, boxsize=1.0).plot())
+                        except Exception as ex:
+                            pass
+
+            plot_dict[basename] = [p for p in plot_wrappers if p is not None]
+
+        return plot_dict

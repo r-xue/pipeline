@@ -8,6 +8,13 @@ from functools import reduce
 <%block name="title">${importdata.title()}</%block>
 
 <%
+def get_imported_ms():
+	"""Retrun a list of imported MS domain objects."""
+	ms_list = []
+	for importdata_result in result:
+		ms_list.extend(importdata_result.mses)
+	return ms_list
+
 def get_spwmap(ms):
     dotsysspwmap = ms.calibration_strategy['tsys']
     tsys_strategy = ms.calibration_strategy['tsys_strategy']
@@ -26,16 +33,16 @@ def get_spwmap(ms):
         for spw in ms.get_spectral_windows(science_windows_only=True):
             spwmap[spw.id] = [spw.id]
     return spwmap
-  
+
 spwmap = {}
-for ms in pcontext.observing_run.measurement_sets:
+for ms in get_imported_ms():
     spwmap[ms.basename] = get_spwmap(ms)
-    
+
 fieldmap = {}
-for ms in pcontext.observing_run.measurement_sets:
+for ms in get_imported_ms():
     map_as_name = dict([(ms.fields[i].name, ms.fields[j].name) for i, j in ms.calibration_strategy['field_strategy'].items()])
     fieldmap[ms.basename] = map_as_name
-    
+
 contents = {}
 for vis, _spwmap in spwmap.items():
     _fieldmap = fieldmap[vis]
@@ -69,7 +76,7 @@ for vis, _spwmap in spwmap.items():
 -->
 
 <p>Data from ${num_mses} measurement set${'s were' if num_mses != 1 else ' was'}
- registered with the pipeline. The imported data 
+ registered with the pipeline. The imported data
 ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 
 <table class="table table-bordered table-striped table-condensed"
@@ -83,12 +90,11 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 			<th scope="col" rowspan="2">Dst Type</th>
 			<th scope="col" colspan="3">Number Imported</th>
 			<th scope="col" rowspan="2">Size</th>
-			<th scope="col" rowspan="2">flux.csv</th>
 		</tr>
 		<tr>
 			<th>Scans</th>
 			<th>Fields</th>
-			<th>Flux Densities</th>
+			<th>Science Target</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -103,52 +109,14 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 			<td>MS</td>
 			<td>${len(ms.scans)}</td>
 			<td>${len(ms.fields)}</td>
-			<!-- count the number of measurements added to the setjy result in
-				 each importdata_result -->
-			<td>${reduce(lambda x, setjy_result: x + sum(len(y) for y in setjy_result.measurements.values()), importdata_result.setjy_results, 0)}</td>
+			<td>${len({source.name for source in ms.sources if 'TARGET' in source.intents})}</td>
 			<td>${str(ms.filesize)}</td>
-			<td><a href="${fluxcsv_files[ms.basename]}" class="replace-pre" data-title="flux.csv">View</a> or <a href="${fluxcsv_files[ms.basename]}" download="${fluxcsv_files[ms.basename]}">download</a></td>
 		</tr>
 	% endfor
 % endfor
 	</tbody>
 </table>
 
-% if flux_imported:
-<h3>Imported Flux Densities</h3>
-<p>The following flux densities were imported into the pipeline context:</p>
-<table class="table table-bordered table-striped table-condensed"
-	   summary="Flux density results">
-	<caption>Flux densities imported from the ASDM.  Online flux catalog values are used when available for ALMA.</caption>
-    <thead>
-	    <tr>
-	        <th scope="col" rowspan="2">Measurement Set</th>
-	        <th scope="col" rowspan="2">Field</th>
-	        <th scope="col" rowspan="2">SpW</th>
-	        <th scope="col" colspan="4">Flux Density</th>
-	        <th scope="col" rowspan="2">Spix</th>
-	        <th scope="col" rowspan="2">Age Of Nearest <p>Monitor Point (days)</th>
-	    </tr>
-	    <tr>
-	        <th scope="col">I</th>
-	        <th scope="col">Q</th>
-	        <th scope="col">U</th>
-	        <th scope="col">V</th>
-	    </tr>
-	</thead>
-	<tbody>
-	% for tr in flux_table_rows:
-		<tr>
-		% for td in tr:
-			${td}
-		% endfor
-		</tr>
-	%endfor
-	</tbody>
-</table>
-% else:
-<p>No flux densities were imported.</p>
-% endif
 
 <h3>Representative Target Information</h3>
 % if repsource_defined:
@@ -186,8 +154,8 @@ ${'is' if num_mses == 1 else 'are'} summarised below.</p>
 % endif
 
 <h4>Summary of Reduction Group</h4>
-<p>Reduction group is a set of data that will be processed together at the following stages such as 
-baseline subtraction and imaging. Grouping is performed based on field and spectral window properties 
+<p>Reduction group is a set of data that will be processed together at the following stages such as
+baseline subtraction and imaging. Grouping is performed based on field and spectral window properties
 (frequency coverage and number of channels).</p>
 
 <table class="table table-bordered table-striped table-condensed"
@@ -220,7 +188,7 @@ baseline subtraction and imaging. Grouping is performed based on field and spect
 </table>
 
 <h4>Calibration Strategy</h4>
-<p>Summary of sky calibration mode, spectral window mapping for T<sub>sys</sub> calibration, 
+<p>Summary of sky calibration mode, spectral window mapping for T<sub>sys</sub> calibration,
 and mapping information on reference and target fields.</p>
 <table class="table table-bordered table-striped table-condensed"
        summary="Summary of Calibration Strategy">
@@ -241,7 +209,7 @@ and mapping information on reference and target fields.</p>
         </tr>
     </thead>
     <tbody>
-    % for ms in pcontext.observing_run.measurement_sets:
+    % for ms in get_imported_ms():
         <%
             content = contents[ms.basename]
             num_content = len(content)

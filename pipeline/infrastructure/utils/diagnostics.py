@@ -8,7 +8,8 @@ import platform
 import subprocess
 import threading
 
-import pipeline.extern.ps_mem as ps_mem
+import ps_mem
+
 from .. import jobrequest
 from .. import logging
 from .. import mpihelpers
@@ -43,19 +44,19 @@ def enable_memstats():
                 total = measures.FileSize(cmd[1], measures.FileSizeUnits.KILOBYTES)
 
                 LOG.info('%s%s: private=%s shared=%s total=%s' % (
-                    msg, jobrequest.fn.__name__, str(private),
+                    msg, jobrequest.fn_name, str(private),
                     str(shared), str(total)))
 
             vm_accuracy = ps_mem.shared_val_accuracy()
-            if vm_accuracy is -1:
+            if vm_accuracy == -1:
                 LOG.warning("Shared memory is not reported by this system. "
                             "Values reported will be too large, and totals "
                             "are not reported")
-            elif vm_accuracy is 0:
+            elif vm_accuracy == 0:
                 LOG.warning("Shared memory is not reported accurately by "
                             "this system. Values reported could be too "
                             "large, and totals are not reported.")
-            elif vm_accuracy is 1:
+            elif vm_accuracy == 1:
                 LOG.warning("Shared memory is slightly over-estimated by "
                             "this system for each program, so totals are "
                             "not reported.")
@@ -150,7 +151,7 @@ def enable_fd_logs(interval_secs=60):
 
     def get_hook_fn(msg, start=False, cancel=False):
         def log_file_descriptors(jobrequest):
-            job_name = jobrequest.fn.__name__
+            job_name = jobrequest.fn_name
             if start:
                 if enable_fd_logs.interval:
                     enable_fd_logs.interval.stop()

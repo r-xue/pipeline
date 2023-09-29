@@ -53,7 +53,7 @@ class CheckProductSizeHeuristics(object):
         size_mitigation_parameters = {}
 
         # Create makeimlist inputs
-        makeimlist_inputs = makeimlist.MakeImListInputs(self.context, vis=self.inputs.vis)
+        makeimlist_inputs = makeimlist.MakeImListInputs(self.context)
         makeimlist_inputs.intent = 'TARGET'
         makeimlist_inputs.specmode = 'cube'
         makeimlist_inputs.clearlist = True
@@ -69,7 +69,9 @@ class CheckProductSizeHeuristics(object):
         imlist = makeimlist_result.targets
 
         # Extract some information for later
-        fields = list({i['field'] for i in imlist})
+        #
+        # Sort fields to get consistent mitigation results.
+        fields = sorted({i['field'] for i in imlist})
         nfields = len(fields)
         spws = list({i['spw'] for i in imlist})
         ref_ms = self.context.observing_run.measurement_sets[0]
@@ -81,9 +83,9 @@ class CheckProductSizeHeuristics(object):
             float(ref_ms.get_spectral_window(real_spw).channels[0].getWidth().convert_to(measures.FrequencyUnits.HERTZ).value)) \
             for spw, real_spw in zip(spws, real_spws)])
 
-        if len(fields) == 0:
+        if nfields == 0:
             LOG.error('Cannot determine any default imaging targets')
-            return {}, 0.0, 0.0, 0.0, 0.0, 0.0, True, {'longmsg': 'Cannot determine any default imaging targets', 'shortmsg': 'Cannot determine targets'}, known_synthesized_beams
+            return {}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, True, {'longmsg': 'Cannot determine any default imaging targets', 'shortmsg': 'Cannot determine targets'}, known_synthesized_beams
 
         # Get representative target information
         repr_target, \
@@ -97,6 +99,9 @@ class CheckProductSizeHeuristics(object):
         maxAllowedBeamAxialRatio, \
         sensitivityGoal = \
             imlist[0]['heuristics'].representative_target()
+
+        # Make sure that the representative source is the first list item.
+        fields = utils.place_repr_source_first(fields, repr_source)
 
         # Get original maximum cube and product sizes
         cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
@@ -210,14 +215,9 @@ class CheckProductSizeHeuristics(object):
             if nfields == 0:
                 nfields = 1
 
-            # Truncate the field list
+            # Truncate the field list. The representative source is always
+            # included since it is the first list item.
             mitigated_fields = fields[:nfields]
-
-            # Make sure the representative source is included in the new list
-            for field in fields[nfields:]:
-                if utils.dequote(field) == utils.dequote(repr_source):
-                    mitigated_fields[0] = field
-                    break
 
             size_mitigation_parameters['field'] = ','.join(mitigated_fields)
 
@@ -352,6 +352,7 @@ class CheckProductSizeHeuristics(object):
                         break
                 size_mitigation_parameters['spw'] = ','.join(map(str, sorted(mitigated_spws)))
 
+                LOG.info('At least one cube size exceeded the large cube limit. Only one large SPW will be imaged.')
                 LOG.info('Size mitigation: Setting (cube) spw to %s' % (size_mitigation_parameters['spw']))
 
                 # Recalculate sizes
@@ -371,9 +372,6 @@ class CheckProductSizeHeuristics(object):
                 cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
                 LOG.info('spw mitigation leads to product size of %s GB' % (total_productsize))
 
-        # Save cube mitigated product size for logs
-        cube_mitigated_productsize = total_productsize
-
         if (self.inputs.maxproductsize != -1.0) and (total_productsize > self.inputs.maxproductsize):
             LOG.error('Product size cannot be mitigated. Remaining factor: %.4f.' % (total_productsize / self.inputs.maxproductsize / nfields))
             return size_mitigation_parameters, \
@@ -390,7 +388,8 @@ class CheckProductSizeHeuristics(object):
         # of any mitigation.
         max_num_sciencetargets = 30
         if (nfields > max_num_sciencetargets) and (sum(nchans.values()) > 960):
-            LOG.warn('The number of science targets is > 30 and the total number of spectral channels across all science spws > 960. The imaging pipeline will take substantial time to run on this MOUS.')
+            LOG.warning('The number of science targets is > 30 and the total number of spectral channels across all science spws > 960. '
+                        'The imaging pipeline will take substantial time to run on this MOUS.')
 
         if size_mitigation_parameters != {}:
             return size_mitigation_parameters, \
@@ -399,7 +398,7 @@ class CheckProductSizeHeuristics(object):
                    maxcubesize, total_productsize, \
                    original_imsize, mitigated_imsize, \
                    False, \
-                   {'longmsg': 'Size had to be mitigated (%s)' % (','.join(str(x) for x in size_mitigation_parameters)), \
+                   {'longmsg': 'Size had to be mitigated (%s)%s' % (','.join(str(x) for x in size_mitigation_parameters), ' - large cube limit exceeded' if 'spw' in size_mitigation_parameters else ''), \
                     'shortmsg': 'Size was mitigated'}, \
                    known_synthesized_beams
         else:
@@ -447,7 +446,7 @@ class CheckProductSizeHeuristics(object):
         total_productsize = 0.0
 
         # Create makeimlist inputs
-        makeimlist_inputs = makeimlist.MakeImListInputs(self.context, vis=self.inputs.vis)
+        makeimlist_inputs = makeimlist.MakeImListInputs(self.context)
         makeimlist_inputs.intent = 'TARGET'
         makeimlist_inputs.specmode = 'cont'
         makeimlist_inputs.clearlist = True

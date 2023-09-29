@@ -27,14 +27,14 @@ import collections
 import os
 import re
 import time
+from typing import Tuple
 
 # import memory_profiler
 import numpy
 
-import casatools
-
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as pl_casatools
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import absolute_path
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -138,10 +138,6 @@ UserFlagIndex = 2
 OnlineFlagIndex = 3
 
 
-def absolute_path(name):
-    return os.path.abspath(os.path.expanduser(os.path.expandvars(name)))
-
-
 def timetable_key(table_type, antenna, spw, polarization=None, ms=None, field_id=None):
     key = 'TIMETABLE_%s' % table_type
     if ms is not None:
@@ -156,47 +152,71 @@ def timetable_key(table_type, antenna, spw, polarization=None, ms=None, field_id
 
 class DataTableIndexer(object):
     """
+    Map between serial indices and per-MS row indices.
+
     DataTableIndexer is responsible for mapping between classical
-    (serial) row indices and per-MS row indices.
+    (serial) row indices (unique row IDs throughout all origin MSes)
+    and per-MS row indices.
     """
     @property
-    def mses(self):
-        return self.context.observing_run.measurement_sets
+    def origin_mses(self):
+        return self.__origin_mses
+
+    @origin_mses.setter
+    def origin_mses(self, value):
+        """Set an attribute, origin_ms."""
+        self.__origin_mses = value
 
     def __init__(self, context):
+        """
+        Initialize DataTable Indexer class.
+
+        Args:
+            context: Pipeline context
+        """
         self.context = context
+        self.origin_mses = [ms for ms in self.context.observing_run.measurement_sets
+                            if ms.name == ms.origin_ms]
         self.nrow_per_ms = []
-        for ms in context.observing_run.measurement_sets:
-            ro_table_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename, 'RO')
-            with pl_casatools.TableReader(ro_table_name) as tb:
+        for origin_ms in self.origin_mses:
+            ro_table_name = os.path.join(context.observing_run.ms_datatable_name, origin_ms.basename, 'RO')
+            with casa_tools.TableReader(ro_table_name) as tb:
                 self.nrow_per_ms.append(tb.nrows())
         self.num_mses = len(self.nrow_per_ms)
 
-    def serial2perms(self, i):
+    def serial2perms(self, i: int) -> Tuple[str, int]:
         """
-        Return two indices. The former indicates a MS index while
-        the later corresponds to the row index of the datatable for
-        that MS.
+        Return basename of origin MS and per-MS row id of a given serial index.
 
-        i -- serial index
+        Args:
+            i: serial index
+
+        Returns:
+            The basename of origin MS and the row index of the datatable for
+            that MS corresponding to a given serial index.
         """
         base = 0
         for j in range(self.num_mses):
             past_base = base
             base += self.nrow_per_ms[j]
             if i < base:
-                return self.mses[j].basename, i - past_base
+                return self.origin_mses[j].basename, i - past_base
 
         raise RuntimeError('Internal Consistency Error. ')
 
-    def perms2serial(self, vis, i):
+    def perms2serial(self, vis: str, i: int) -> int:
         """
         Return serial index.
 
-        vis -- basename of the MS
-        i -- per MS datatable row index
+        Args:
+            vis: Name of an MS
+            i: per-MS DataTable row index
+
+        Returns:
+            A specified index in serial mode
         """
-        j = self.mses.index(self.context.observing_run.get_ms(vis))
+        ms = self.context.observing_run.get_ms(vis)
+        j = self.origin_mses.index(self.context.observing_run.get_ms(ms.origin_ms))
         assert j < self.num_mses
         assert i < self.nrow_per_ms[j]
 
@@ -204,7 +224,8 @@ class DataTableIndexer(object):
         return base + i
 
     def per_ms_index_list(self, ms, index_list):
-        j = self.mses.index(ms)
+        origin_ms = self.context.observing_run.get_ms(ms.origin_ms)
+        j = self.origin_mses.index(origin_ms)
         base = sum(self.nrow_per_ms[:j])
         length = self.nrow_per_ms[j]
         perms_list = numpy.where(numpy.logical_and(index_list >= base,
@@ -254,8 +275,10 @@ class DataTableImpl(object):
         self.memtable2 = 'DataTableImplRW%s.MemoryTable' % timestamp
         self.plaintable = ''
         self.cols = {}
-
-        self.tb1, self.tb2 = casatools.table(), casatools.table()
+        # New table class instances are required to avoid accidental closure of
+        # the global table tool instance, casa_tools.table
+        self.tb1 = casa_tools._logging_table_cls()
+        self.tb2 = casa_tools._logging_table_cls()
         self.isopened = False
         if name is None or len(name) == 0:
             if readonly is None:
@@ -329,7 +352,7 @@ class DataTableImpl(object):
             subkey = 'SMALL'
         else:
             subkey = 'LARGE'
-        pattern = '^TIMETABLE_%s_.*' % subkey
+        pattern = r'^TIMETABLE_%s_.*' % subkey
         if numpy.any(numpy.fromiter((re.match(pattern, x) is not None for x in self.keywordnames()), dtype=bool)):
             group_id = 0
             for key in self.tb2.keywordnames():
@@ -458,7 +481,6 @@ class DataTableImpl(object):
         LOG.debug('Exporting DataTable to %s...' % name)
         # overwrite check
         abspath = absolute_path(name)
-        basename = os.path.basename(abspath)
         if not os.path.exists(abspath):
             os.makedirs(abspath)
         elif overwrite:
@@ -510,7 +532,7 @@ class DataTableImpl(object):
         with_nochange = 'NOCHANGE' in cols
 
         # open table
-        with pl_casatools.TableReader(rwtable, nomodify=False, lockoptions={'option': 'user'}) as tb:
+        with casa_tools.TableReader(rwtable, nomodify=False, lockoptions={'option': 'user'}) as tb:
             # lock table
             tb.lock()
             LOG.info('Process {0} have acquired a lock for RW table'.format(os.getpid()))
@@ -612,11 +634,11 @@ class DataTableImpl(object):
         self._close()
         abspath = absolute_path(name)
         if not minimal or abspath != self.plaintable:
-            with pl_casatools.TableReader(os.path.join(name, 'RO')) as tb:
+            with casa_tools.TableReader(os.path.join(name, 'RO')) as tb:
                 self.tb1 = tb.copy(self.memtable1, deep=True,
                                    valuecopy=True, memorytable=True,
                                    returnobject=True)
-        with pl_casatools.TableReader(os.path.join(name, 'RW')) as tb:
+        with casa_tools.TableReader(os.path.join(name, 'RW')) as tb:
             self.tb2 = tb.copy(self.memtable2, deep=True,
                                valuecopy=True, memorytable=True,
                                returnobject=True)
@@ -626,11 +648,11 @@ class DataTableImpl(object):
         self._close()
         abspath = absolute_path(name)
         if not minimal or abspath != self.plaintable:
-            with pl_casatools.TableReader(os.path.join(name, 'RO')) as tb:
+            with casa_tools.TableReader(os.path.join(name, 'RO')) as tb:
                 self.tb1 = tb.copy(self.memtable1, deep=True,
                                    valuecopy=True, memorytable=True,
                                    returnobject=True)
-        with pl_casatools.TableReader(os.path.join(name, 'RW')) as tb:
+        with casa_tools.TableReader(os.path.join(name, 'RW')) as tb:
             self.tb2 = tb.copy(self.memtable2, deep=True,
                                valuecopy=True, memorytable=True,
                                returnobject=True)
@@ -795,14 +817,14 @@ class DataTableImpl(object):
                     from_fields = [atm_fields[i].id for i in nearest_id]
                 else:
                     # more generic case that requires to search nearest field by separation
-                    rmin = pl_casatools.quanta.quantity(180.0, 'deg')
+                    rmin = casa_tools.quanta.quantity(180.0, 'deg')
                     origin = to_field.mdirection
                     nearest_id = -1
                     for f in atm_fields:
-                        r = pl_casatools.measures.separation(origin, f.mdirection)
+                        r = casa_tools.measures.separation(origin, f.mdirection)
                         #LOG.info('before test: rmin {} r {} nearest_id {}'.format(rmin['value'], r['value'], nearest_id))
                         # quanta.le is equivalent to <=
-                        if pl_casatools.quanta.le(r, rmin):
+                        if casa_tools.quanta.le(r, rmin):
                             rmin = r
                             nearest_id = f.id
                         #LOG.info('after test: rmin {} r {} nearest_id {}'.format(rmin['value'], r['value'], nearest_id))
@@ -814,7 +836,7 @@ class DataTableImpl(object):
             from_fields = [fld.id for fld in msobj.get_fields(gainfield)]
         LOG.info('from_fields = {}'.format(from_fields))
 
-        with pl_casatools.TableReader(tsystable) as tb:
+        with casa_tools.TableReader(tsystable) as tb:
             tsel = tb.query('FIELD_ID IN {}'.format(list(from_fields)))
             spws = tsel.getcol('SPECTRAL_WINDOW_ID')
             times = tsel.getcol('TIME')
@@ -913,7 +935,7 @@ class DataTableImpl(object):
         # (performance degraded)
         ms_rows = self.getcol('ROW')
         tmp_array = numpy.empty((4, 1,), dtype=numpy.int32)
-        with pl_casatools.TableReader(infile) as tb:
+        with casa_tools.TableReader(infile) as tb:
             # for dt_row in index[0]:
             for dt_row, ms_row in enumerate(ms_rows):
                 # ms_row = rows[dt_row]

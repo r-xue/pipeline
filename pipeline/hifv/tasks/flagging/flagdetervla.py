@@ -68,10 +68,11 @@ import string
 from casatasks.private import flaghelper
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.flagging import flagdeterbase
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 # ------------------------------------------------------------------------------
@@ -209,6 +210,9 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
     """
     FlagDeterVLAInputs defines the inputs for the FlagDeterVLA pipeline task.
     """
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     baseband = vdp.VisDependentProperty(default=True)
     clip = vdp.VisDependentProperty(default=True)
     edgespw = vdp.VisDependentProperty(default=True)
@@ -556,15 +560,44 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         :rtype: a string
         """
-        inputs = self.inputs
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        quack_scan_string = m.get_vla_quackingscans()
+        quack_scan_string = self._get_vla_quackingscans()
         int_time = m.get_vla_max_integration_time()
 
         quack_mode_cmd = 'mode=\'quack\' scan=\'%s\' quackinterval=%s quackmode=\'beg\' quackincrement=False reason=\'quack\' name=\'quack\'' % (quack_scan_string, str(1.5*int_time))
 
         return quack_mode_cmd
+
+    def _get_vla_quackingscans(self):
+        """Find VLA scans for quacking.  Quack! :)"""
+
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        vis = m.name
+        with casa_tools.MSReader(vis) as ms:
+            scan_summary = ms.getscansummary()
+
+        integ_scan_list = []
+        for scan in scan_summary:
+            integ_scan_list.append(int(scan))
+        sorted_scan_list = sorted(integ_scan_list)
+
+        scan_list = [1]
+        old_scan = scan_summary[str(sorted_scan_list[0])]['0']
+
+        old_field = old_scan['FieldId']
+        old_spws = old_scan['SpwIds']
+        for ii in range(1, len(sorted_scan_list)):
+            new_scan = scan_summary[str(sorted_scan_list[ii])]['0']
+            new_field = new_scan['FieldId']
+            new_spws = new_scan['SpwIds']
+            if (new_field != old_field) or (set(new_spws) != set(old_spws)):
+                scan_list.append(sorted_scan_list[ii])
+                old_field = new_field
+                old_spws = new_spws
+        quack_scan_string = ','.join(["%s" % ii for ii in scan_list])
+
+        return quack_scan_string
 
     def _get_baseband_cmds(self):
         """
@@ -572,18 +605,12 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
         At least one channel in each band edge is flagged when the function is called.
         """
 
-        inputs = self.inputs
-
-        # get heuristics from the context
-        context = inputs.context
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-
         bottomSPW=''
         topSPW=''
 
         # Determination of baseband taken from original EVLA scripted pipeline
         # -----MS info script part
-        with casatools.TableReader(inputs.vis+'/SPECTRAL_WINDOW') as table:
+        with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
             reference_frequencies = table.getcol('REF_FREQUENCY')  # spwobj.ref_frequency
             spw_bandwidths = table.getcol('TOTAL_BANDWIDTH')  # spwobj.bandwidth
             originalBBClist = table.getcol('BBC_NO')  # spwobj.baseband
@@ -624,7 +651,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
                 low_spws.append(spwList[ii][0])
                 high_spws.append(spwList[ii][len(spwList[ii])-1])
 
-        quanta = casatools.quanta
+        quanta = casa_tools.quanta
         bandedge_hz = quanta.getvalue(quanta.convert('20MHz', 'Hz'))
         topSPW_list = []
         bottomSPW_list = []

@@ -49,16 +49,23 @@ pipeline.pages = pipeline.pages || function() {
             pipeline.appContainer.redirectPreAnchorTarget();
 
             // load the stage given in the URL
-            var logfile = $.url().param("logfile");
+            const logfile = $.url().param("logfile");
 
             if (logfile) {
-                var onSuccess = [function() {
+                const onGet = [function (data) {
+                    // PIPE-792: escape HTML characters in CASA log
+                    return UTILS.escapeHtml(data);
+                }];
+                const onSuccess = [function() {
                     pipeline.appContainer.addPreMarkup(logfile);
                     pipeline.appContainer.setTitle(logfile);
                     pipeline.history.pushState(logfile);
                 }];
-                pipeline.appContainer.load(logfile, onSuccess);
+
+                pipeline.appContainer.load(logfile, onSuccess, onGet);
             }
+
+            pipeline.history.pushState();
         };
 
         return innerModule;
@@ -509,7 +516,7 @@ pipeline.appContainer = pipeline.appContainer || (function() {
         }
     };
 
-    module.load = function(href, onSuccess) {
+    module.load = function(href, onSuccess, onGet) {
         loadedHref = href;
         isPreFormatted = false;
         title = "Untitled";
@@ -522,6 +529,15 @@ pipeline.appContainer = pipeline.appContainer || (function() {
             onSuccess = [];
         }
 
+        // set onGet to [] if undefined; wrap in list if scalar
+        if (onGet) {
+            if (!(onGet instanceof Array)) {
+                onGet = [onGet]
+            }
+        } else {
+            onGet = [];
+        }
+
         var container = module.getSelector();
         onSuccess.push(function() {
             module.redirectPreAnchorTarget(container);
@@ -531,9 +547,9 @@ pipeline.appContainer = pipeline.appContainer || (function() {
         // HTML, bypassing the javascript parts of the page which would
         // otherwise load repeatedly
         if (href === undefined) {
-            href = document.URL + " #mainbody";
+            href = document.URL + "#mainbody";
         }
-        UTILS.loadContent(container, href, onSuccess);
+        UTILS.loadContent(container, href, onSuccess, onGet);
     };
 
     module.addPreMarkup = function(pageTitle) {
@@ -565,15 +581,20 @@ pipeline.appContainer = pipeline.appContainer || (function() {
             // return.
             pipeline.history.replaceState();
 
-            var title = $(this).data("title");
+            const title = $(this).data("title");
 
-            var onSuccess = [function() {
+            // PIPE-792: escape HTML characters present in raw CASA log
+            const onGet = [function (data) {
+                return UTILS.escapeHtml(data);
+            }];
+
+            const onSuccess = [function() {
                 pipeline.appContainer.addPreMarkup(title);
                 pipeline.appContainer.setTitle(title);
                 pipeline.history.pushState(title);
             }];
 
-            pipeline.appContainer.load(this.href, onSuccess);
+            pipeline.appContainer.load(this.href, onSuccess, onGet);
         });
     };
 
@@ -808,8 +829,6 @@ pipeline.detailsframe = pipeline.detailsframe || (function() {
 
     module.addPreMarkup = function(pageTitle) {
         var target = $(module.getSelector());
-        if (target.html().includes("<!-- CASALOG"))
-            target.html(escapeCasalogHtml(target.html()));
         target.wrapInner("<code />");
         target.wrapInner("<pre />");
         target.prepend('<div class="page-header">' +
@@ -843,7 +862,7 @@ pipeline.detailsframe = pipeline.detailsframe || (function() {
         module.load(href, onSuccess);
     };
 
-    module.load = function(href, onSuccess) {
+    module.load = function(href, onSuccess, onGet) {
         if (onSuccess) {
             if (!(onSuccess instanceof Array)) {
                 onSuccess = [onSuccess]
@@ -852,12 +871,20 @@ pipeline.detailsframe = pipeline.detailsframe || (function() {
             onSuccess = [];
         }
 
-        var container = module.getSelector();
+        if (onGet) {
+            if (!(onGet instanceof Array)) {
+                onGet = [onGet]
+            }
+        } else {
+            onGet = [];
+        }
+
+        const container = module.getSelector();
         onSuccess.push(function() {
             UTILS.redirectAnchorTarget(container);
             UTILS.redirectPreAnchorTarget(container);
         });
-        UTILS.loadContent(container, href, onSuccess);
+        UTILS.loadContent(container, href, onSuccess, onGet);
 
         loadedHref = href;
         isPreFormatted = false;
@@ -1052,33 +1079,69 @@ var UTILS = (function() {
             // return.
             pipeline.history.replaceState();
 
-            var title = $(this).data("title") || $.url(this.href).attr('file');
+            const title = $(this).data("title") || $.url(this.href).attr('file');
 
-            var onSuccess = [function() {
+            const onGet = [function (data) {
+                // PIPE-792: escape HTML characters in CASA log
+                return UTILS.escapeHtml(data);
+            }];
+
+            const onSuccess = [function() {
                 pipeline.msselector.setVisible(false);
                 pipeline.detailsframe.addPreMarkup(title);
                 pipeline.history.pushState();
             }];
 
-            pipeline.detailsframe.load(this.href, onSuccess);
+            if (typeof $(this).attr('no-escape-html') !== 'undefined') {
+                pipeline.detailsframe.load(this.href, onSuccess);
+            } else {
+                pipeline.detailsframe.load(this.href, onSuccess, onGet);
+            }
         });
     };
 
-    module.loadContent = function(target, href, onSuccess) {
-        $(target).html("<div class=\"page-header\"><h1><span class=\"glyphicon glyphicon-refresh spinning\" style=\"vertical-align:top\"></span> Loading...</h1></div>");
-        $(target).load(href, function(response, status, xhr) {
-            if (status === "error") {
-                let msg =`<h1>Error: cannot load content</h1>
+    module.escapeHtml = function(unescaped) {
+        const entityMap = {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '/': '&#x2F;',
+          '`': '&#x60;',
+          '=': '&#x3D;'
+        };
+
+        return String(unescaped).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+        });
+    }
+
+    module.loadContent = function(target, href, onSuccess, onGet) {
+        const failmsg =`<h1>Error: cannot load content</h1>
 <p class="lead">Browser security prevents the weblog from displaying the requested content.</p>
 <p>Your browser cannot display the requested web log page. This error can occur when attempting to view the web log
     while the pipeline is running and web log content is still being generated. If the pipeline is not running yet
     the problem perists, the error is most likely to be caused by your web browser security settings preventing 
-    viewing the web log as flat files. In this case, to view the web log you must serve the web log via HTTP by using 
-    <code>h_weblog</code> from inside a CASA session, or relax your web browser security.</p>
+    viewing the web log as flat files. In this case, to view the web log you must serve the web log via HTTP by 
+    launching a local http server or using <code>h_weblog</code> from inside a CASA session.</p>
 <h2>Solutions</h2>
 <p>First, ensure that pipeline is not currently running. If the problem persists, follow one of the approaches 
     described below.</p>
-<h3>Recommended: use <code>h_weblog()</code></h3>
+<h3>Recommended: launch a local http server</h3>
+<p>In the command line, go to the folder where the weblog is located (e.g.,
+    <samp>&lt;path_to_untarred_weblog&gt;/pipeline-procedure_hifa_calimage/html/</samp>) and simply type:</p>
+<samp>
+<pre>
+python3 -m http.server 8080 --bind localhost
+</pre>
+</samp>
+<p>Then open your browser at the webpage <samp>http://localhost:8080/</samp></p>
+<p>This method uses python3, either already available on your system or bundled with CASA.
+    In the latter case, you may find it at
+    <samp>/Applications/CASA.app/Contents/MacOS/python3</samp> (on MacOS) or at
+    <samp>&lt;casa_install_path&gt;/bin/python3</samp> (on Linux).</p>
+<h3>Alternative: use <code>h_weblog()</code></h3>
 <p>From inside a CASA session, navigate to the root of the untarred weblog directory, <em>e.g.</em>,
     pipeline-procedure_hifa_calimage, and run <code>h_weblog</code>. This command will serve the web log via HTTP and
     launch a browser connecting to the web log. The web log URL is also printed to the CASA logger, should you need to
@@ -1088,7 +1151,7 @@ var UTILS = (function() {
 CASA <5>: h_weblog()
 2020-07-30 12:57:20     INFO    h_weblog::::casa        ##########################################
 2020-07-30 12:57:20     INFO    h_weblog::::casa        ##### Begin Task: h_weblog           #####
-2020-07-30 12:57:20     INFO    h_weblog::::casa        h_weblog( pipelinemode='automatic', relpath='' )
+2020-07-30 12:57:20     INFO    h_weblog::::casa        h_weblog( relpath='' )
 2020-07-30 12:57:20     INFO    h_weblog::pipeline::casa        Found weblogs at:
 2020-07-30 12:57:20     INFO    h_weblog::pipeline::casa+               main/pipeline-procedure_hifa_calimage/html/t1-1.html
 2020-07-30 12:57:20     INFO    h_weblog::pipeline::casa        Using existing HTTP server at 127.0.0.1 port 30000 ...
@@ -1106,39 +1169,40 @@ CASA <5>: h_weblog()
 <pre>
 ssh -L 30000:localhost:30000 remotepc</name>
 </pre>
-</samp>     
-<h3>Alternative: lower browser security</h3>
-<p><strong>These modification lowers your browser security and should be reverted after viewing the weblog!</strong></p>
-<h4>Firefox</h4>
-<p>Navigate to <code>about:config</code> and search for the <code>privacy.file_unique_origin</code> preference. Change
-    the preference value to false.</p>
-<h4>Safari</h4>
-<p>Open Safari preferences, navigate to <em>Advanced</em> tab and check the <em>Show Develop in menu bar</em> option. 
-    From the new <em>Develop</em> menu option now visible at the top of the screen, select <em>Disable Local File 
-    Restriction</em>.</p>
-<h4>Chrome</h4>
-<p>The <code>--disable-web-security</code> and <code>--user-data-dir</code> command line arguments must passed to 
-    Chrome via the command line. For example, on MacOS start Chrome like this:</p>
-<samp>
-<pre>
-/Applications/Chrome.app/Contents/MacOS/Chrome --disable-web-security --user-data-dir=~/tmp
-</pre>
-</samp>`;
-                $(target).html(msg);// + xhr.status + " " + xhr.statusText);
-            }
+</samp>
+<h3>Troubleshooting</h3>
+<p>Refer to the <a href="https://casaguides.nrao.edu/index.php?title=ALMA_Pipeline_Known_Issues" target="_blank">
+    ALMA Pipeline Known Issues</a> webpage for alternative ways to view the files locally by
+    temporarily disabling some browser security features.</p>
+`;
 
-            if (status === "success") {
-                if (onSuccess) {
-                    // keep compatibility with scalar callback function
-                    if (onSuccess instanceof Array) {
-                        for (var i = 0; i < onSuccess.length; i++) {
-                            onSuccess[i]();
-                        }
-                    } else {
-                        onSuccess();
-                    }
+        // display 'loading' spinner
+        $(target).html("<div class=\"page-header\"><h1><span class=\"glyphicon glyphicon-refresh spinning\" style=\"vertical-align:top\"></span> Loading...</h1></div>");
+
+        // load data but do not display it..
+        $.get(href, function(data) {
+            // .. because first we must run the unprocessed content through the optional onGet function(s)
+            if (onGet) {
+                for (let i = 0; i < onGet.length; i++) {
+                    data = onGet[i](data);
                 }
             }
+            // ... and only then set the inner content
+            $(target).html(data);
+
+            // with the HTML set, run any post-processing functions
+            if (onSuccess) {
+                // keep compatibility with scalar callback function
+                if (onSuccess instanceof Array) {
+                    for (let i = 0; i < onSuccess.length; i++) {
+                        onSuccess[i]();
+                    }
+                } else {
+                    onSuccess();
+                }
+            }
+        }, "text").fail(function(jqXHR, textStatus, errorThrown) {
+            $(target).html(failmsg);
         });
     };
 
@@ -1398,6 +1462,9 @@ var PLOTS = function() {
         },
         "K": function(xAxisLabel) {
             xAxisLabel.text("K");
+        },
+        "Flagged fraction": function(xAxisLabel) {
+            xAxisLabel.text("Flagged %");
         }
     };
 
@@ -1791,14 +1858,3 @@ var ALL_IN_ONE = function() {
 
     return module;
 }();
-
-function escapeCasalogHtml(unsafe) {
-    return unsafe
-         .replace(/<!-- CASALOG/g, "")
-         .replace(/CASALOG -->/g, "")
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
-}

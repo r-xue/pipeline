@@ -1,4 +1,3 @@
-import datetime
 import math
 import os
 
@@ -8,7 +7,10 @@ import numpy as np
 from scipy.interpolate import splev, splrep
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils.conversion import mjd_seconds_to_datetime
+
+from .plotstyle import RescaleXAxisTimeTicks
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -50,16 +52,16 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
     If figfile is not a string, the file created will be <ms>.pwv.png.
     """
     if not os.path.exists(ms):
-        LOG.warn("Could not find  ms: %s" % ms)
+        LOG.warning("Could not find  ms: %s" % ms)
         return
 
     if not os.path.exists(ms+'/ASDM_CALWVR') and not os.path.exists(ms+'/ASDM_CALATMOSPHERE'):
         # Confirm that it is ALMA data
         observatory = getObservatoryName(ms)
         if observatory.find('ALMA') < 0 and observatory.find('ACA') < 0:
-            LOG.warn("This is not ALMA data.  No PWV plot made.")
+            LOG.warning("This is not ALMA data.  No PWV plot made.")
         else:
-            LOG.warn("Could not find either %s/ASDM_CALWVR or ASDM_CALATMOSPHERE" % ms)
+            LOG.warning("Could not find either %s/ASDM_CALWVR or ASDM_CALATMOSPHERE" % ms)
         return
 
     try:
@@ -69,7 +71,7 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
         if observatory.find('ALMA') < 0 and observatory.find('ACA') < 0:
             LOG.info("This is not ALMA data.  No ASDM_CALWVR or ASDM_CALATMOSPHERE")
         else:
-            LOG.warn("Could not open %s/ASDM_CALWVR nor ASDM_CALATMOSPHERE" % ms)
+            LOG.warning("Could not open %s/ASDM_CALWVR nor ASDM_CALATMOSPHERE" % ms)
         return
 
     # Initialize plotting
@@ -94,7 +96,7 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
         antennaName = antennaName[matches]
 
     unique_antennas = np.unique(antennaName)
-    list_of_date_times = mjdSecondsListToDateTime(watertime)
+    list_of_date_times = mjd_seconds_to_datetime(watertime)
     timeplot = matplotlib.dates.date2num(list_of_date_times)
     for a in range(len(unique_antennas)):
         matches = np.where(unique_antennas[a] == np.array(antennaName))[0]
@@ -120,7 +122,7 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
     if len(water) > 1:
         ius = splrep(watertime, water, s=len(watertime)-math.sqrt(2*len(watertime)), k=order)
         water = splev(regular_time, ius, der=0)
-    list_of_date_times = mjdSecondsListToDateTime(regular_time)
+    list_of_date_times = mjd_seconds_to_datetime(regular_time)
     timeplot = matplotlib.dates.date2num(list_of_date_times)
     plt.plot_date(timeplot, water, 'k-')
 
@@ -137,7 +139,8 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
     for a in range(len(unique_antennas)):
         plt.text(xlim[1]+0.01*xrange+0.055*xrange*(a // 48), ylim[1]-0.024*yrange*(a % 48 - 2),
                  unique_antennas[a], color=overlayColors[a % len(overlayColors)], size=8)
-    plt.xlabel('Universal Time (%s)' % (utdatestring(watertime[0])))
+    date_string = mjd_seconds_to_datetime(watertime[0:])[0].strftime('%Y-%m-%d')
+    plt.xlabel('Universal Time (%s)' % date_string)
     plt.ylabel('PWV (mm)')
     adesc.xaxis.grid(True, which='major')
     adesc.yaxis.grid(True, which='major')
@@ -158,7 +161,7 @@ def plotPWV(ms, figfile='', plotrange=[0, 0, 0, 0], clip=True):
     elif len(figfile) > 0:
         plt.savefig(figfile)
     else:
-        LOG.warn("Failed to create PWV plot")
+        LOG.warning("Failed to create PWV plot")
     plt.clf()
     plt.close()
 
@@ -168,20 +171,19 @@ def readPWVFromMS(vis):
     Reads all the PWV values from a measurement set, returning a list
     of lists:   [[mjdsec], [pwv], [antennaName]]
     """
-    mytb = casatools.table
     if os.path.exists("%s/ASDM_CALWVR" % vis):
-        mytb.open("%s/ASDM_CALWVR" % vis)
-        time = mytb.getcol('startValidTime')  # mjdsec
-        antenna = mytb.getcol('antennaName')
-        pwv = mytb.getcol('water')
-        mytb.close()
+        with casa_tools.TableReader(vis+"/ASDM_CALWVR") as table:
+            time = table.getcol('startValidTime')  # mjdsec
+            antenna = table.getcol('antennaName')
+            pwv = table.getcol('water')
+
         if len(pwv) < 1:
             LOG.info("The ASDM_CALWVR table is empty, switching to ASDM_CALATMOSPHERE")
             time, antenna, pwv = readPWVFromASDM_CALATMOSPHERE(vis)
     elif os.path.exists("%s/ASDM_CALATMOSPHERE" % vis):
         time, antenna, pwv = readPWVFromASDM_CALATMOSPHERE(vis)
     else:
-        LOG.warn("Did not find ASDM_CALWVR nor ASDM_CALATMOSPHERE")
+        LOG.warning("Did not find ASDM_CALWVR nor ASDM_CALATMOSPHERE")
         return[[0], [1], [0]]
 
     return [time, pwv, antenna]
@@ -195,21 +197,19 @@ def readPWVFromASDM_CALATMOSPHERE(vis):
         if vis.find('.ms') < 0:
             vis += '.ms'
             if not os.path.exists(vis):
-                LOG.warn("Could not find measurement set")
+                LOG.warning("Could not find measurement set")
                 return
             elif not os.path.exists(vis+'/ASDM_CALATMOSPHERE'):
-                LOG.warn("Could not find ASDM_CALATMOSPHERE in the measurement set")
+                LOG.warning("Could not find ASDM_CALATMOSPHERE in the measurement set")
                 return
         else:
-            LOG.warn("Could not find measurement set")
+            LOG.warning("Could not find measurement set")
             return
 
-    mytb = casatools.table
-    mytb.open("%s/ASDM_CALATMOSPHERE" % vis)
-    pwvtime = mytb.getcol('startValidTime')  # mjdsec
-    antenna = mytb.getcol('antennaName')
-    pwv = mytb.getcol('water')[0]  # There seem to be 2 identical entries per row, so take first one.
-    mytb.close()
+    with casa_tools.TableReader(vis + "/ASDM_CALATMOSPHERE") as table:
+        pwvtime = table.getcol('startValidTime')  # mjdsec
+        antenna = table.getcol('antennaName')
+        pwv = table.getcol('water')[0]  # There seem to be 2 identical entries per row, so take first one.
 
     return pwvtime, antenna, pwv
 
@@ -221,15 +221,12 @@ def getObservatoryName(ms):
     """
     Returns the observatory name in the specified ms.
     """
-
-    obsTable = ms+'/OBSERVATION'
+    obsTable = ms + '/OBSERVATION'
     try:
-        mytb = casatools.table
-        mytb.open(obsTable)
-        myName = mytb.getcell('TELESCOPE_NAME')
-        mytb.close()
+        with casa_tools.TableReader(obsTable) as table:
+            myName = table.getcell('TELESCOPE_NAME')
     except:
-        LOG.warn("Could not open OBSERVATION table to get the telescope name: %s" % obsTable)
+        LOG.warning("Could not open OBSERVATION table to get the telescope name: %s" % obsTable)
         myName = ''
     return myName
 
@@ -260,80 +257,3 @@ def MAD(a, c=0.6745, axis=0):
         m = np.median(np.fabs(aswp - d) / c, axis=0)
 
     return m
-
-
-def utdatestring(mjdsec):
-    (mjd, date_time_string) = mjdSecondsToMJDandUT(mjdsec)
-    tokens = date_time_string.split()
-    return tokens[0]
-
-
-def mjdSecondsToMJDandUT(mjdsec, prec=6):
-    """
-    Converts a value of MJD seconds into MJD, and into a UT date/time string.
-    prec: 6 means HH:MM:SS,  7 means HH:MM:SS.S
-    example: (56000.0, '2012-03-14 00:00:00 UT')
-    Caveat: only works for a scalar input value
-    """
-    me = casatools.measures
-    today = me.epoch('utc', 'today')
-    mjd = np.array(mjdsec) / 86400.
-    today['m0']['value'] = mjd
-
-    hhmmss = call_qa_time(today['m0'], prec=prec)
-    date = casatools.quanta.splitdate(today['m0'])
-    utstring = "%s-%02d-%02d %s UT" % (date['year'], date['month'], date['monthday'], hhmmss)
-
-    me.done()
-
-    return mjd, utstring
-
-
-def mjdSecondsListToDateTime(mjdsecList):
-    """
-    Takes a list of mjd seconds and converts it to a list of datetime
-    structures.
-    """
-    me = casatools.measures
-    dt = []
-    typelist = type(mjdsecList)
-    if not (typelist == list or typelist == np.ndarray):
-        mjdsecList = [mjdsecList]
-    for mjdsec in mjdsecList:
-        today = me.epoch('utc', 'today')
-        mjd = mjdsec / 86400.
-        today['m0']['value'] = mjd
-        hhmmss = call_qa_time(today['m0'])   # don't fully understand this
-        date = casatools.quanta.splitdate(today['m0'])  # date is now a dict
-        time_string = '%d-%d-%d %d:%d:%d.%06d' % (date['monthday'], date['month'], date['year'], date['hour'],
-                                                  date['min'], date['sec'], date['usec'])
-        mydate = datetime.datetime.strptime(time_string, '%d-%m-%Y %H:%M:%S.%f')
-        dt.append(mydate)
-    me.done()
-    return dt
-
-
-def call_qa_time(arg, form='', prec=0, showform=False):
-    """
-    This is a wrapper for qa.time(), which in casa 4.0.0 returns a list
-    of strings instead of just a scalar string.
-    """
-    if isinstance(arg, dict) and isinstance(arg['value'], (list, np.ndarray)):
-        arg['value'] = arg['value'][0]
-    result = casatools.quanta.time(arg, form=form, prec=prec, showform=showform)
-    if isinstance(result, (list, np.ndarray)):
-        return result[0]
-    else:
-        return result
-
-
-def RescaleXAxisTimeTicks(xlim, adesc):
-    if xlim[1] - xlim[0] < 10/1440.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 1))))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.SecondLocator(bysecond=list(range(0, 60, 30))))
-    elif xlim[1] - xlim[0] < 0.5/24.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 5))))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 1))))
-    elif xlim[1] - xlim[0] < 1/24.:
-        adesc.xaxis.set_major_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 10))))
-        adesc.xaxis.set_minor_locator(matplotlib.dates.MinuteLocator(byminute=list(range(0, 60, 2))))

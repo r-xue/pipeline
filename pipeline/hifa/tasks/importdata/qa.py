@@ -2,7 +2,6 @@ import collections
 from itertools import chain
 from typing import List, Tuple, Dict, Callable, Set
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
@@ -10,6 +9,7 @@ import pipeline.qa.scorecalculator as qacalc
 from pipeline.domain.field import Field
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.h.tasks.exportdata import aqua
+from pipeline.infrastructure import casa_tools
 from .almaimportdata import ALMAImportDataResults
 
 LOG = logging.get_logger(__name__)
@@ -43,7 +43,7 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
     child_cls = None
 
     def handle(self, context, result):
-        # Check for the presense of polarization intents
+        # Check for the presence of polarization intents
         recipe_name = context.project_structure.recipe_name
         polcal_scores = _check_polintents(recipe_name, result.mses)
 
@@ -60,8 +60,21 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         # Flux service usage
         score5 = _check_fluxservice(result)
 
+        # Check for flux.csv
+        score6 = _check_fluxcsv(result)
+
+        # Check if amp/bp/phcal objects are the same (returns list of pqa)
+        scores7 = _check_calobjects(recipe_name, result.mses)
+
+        # Check for flux service messages/warnings
+        score8 = _check_fluxservicemessages(result)
+
+        # Check for flux service status codes
+        score9 = _check_fluxservicestatuscodes(result)
+
         result.qa.pool.extend(polcal_scores)
-        result.qa.pool.extend([score2, score3, score4, score5])
+        result.qa.pool.extend([score2, score3, score4, score5, score6, score8, score9])
+        result.qa.pool.extend(scores7)
 
 
 def _check_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
@@ -101,7 +114,8 @@ def _check_parallactic_angle_range(mses: List[MeasurementSet],
 
     # Check parallactic angle for each polcal in each session
     for session_name, session_mses in session_to_mses.items():
-        all_metrics['sessions'][session_name] = {'min_parang_range': 360.0, 'vis': [ms_do.name for ms_do in session_mses]}
+        all_metrics['sessions'][session_name] = {'min_parang_range': 360.0,
+                                                 'vis': [ms_do.name for ms_do in session_mses]}
         for intent in intents:
             all_metrics['sessions'][session_name][intent] = {}
             polcal_names = {polcal.name
@@ -112,7 +126,8 @@ def _check_parallactic_angle_range(mses: List[MeasurementSet],
             for polcal_name in polcal_names:
                 parallactic_range = ous_parallactic_range(session_mses, polcal_name, intent)
                 all_metrics['sessions'][session_name][intent][polcal_name] = parallactic_range
-                all_metrics['sessions'][session_name]['min_parang_range'] = min(all_metrics['sessions'][session_name]['min_parang_range'], parallactic_range)
+                all_metrics['sessions'][session_name]['min_parang_range'] = min(
+                    all_metrics['sessions'][session_name]['min_parang_range'], parallactic_range)
                 LOG.info(f'Parallactic angle range for {polcal_name} ({intent}) in session {session_name}: '
                          f'{parallactic_range}')
                 session_scores = qacalc.score_parallactic_range(
@@ -151,7 +166,34 @@ def _check_fluxservice(result) -> pqa.QAScore:
     return qacalc.score_fluxservice(result)
 
 
-#- functions to measure parallactic angle coverage of polarisation calibrator ------------------------------------------
+def _check_fluxservicemessages(result) -> pqa.QAScore:
+    """
+    Check flux service messages
+    """
+    return qacalc.score_fluxservicemessages(result)
+
+def _check_fluxservicestatuscodes(result) -> pqa.QAScore:
+    """
+    Check flux service statuscodes
+    """
+    return qacalc.score_fluxservicestatuscodes(result)
+
+def _check_fluxcsv(result) -> pqa.QAScore:
+    """
+    Check for flux.csv file
+    """
+    return qacalc.score_fluxcsv(result)
+
+
+def _check_calobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+    """
+    Check if BP/Phcal/Ampcal are all the same object
+    """
+
+    return qacalc.score_samecalobjects(recipe_name, mses)
+
+
+# - functions to measure parallactic angle coverage of polarisation calibrator ----------------------------------------
 
 # Type aliases for the parallactic angle computations.
 ParallacticAngle = float
@@ -196,7 +238,7 @@ def parallactic_range_for_field(ms: MeasurementSet, f: Field, intent: str) -> Tu
     """
     Get the parallactic angle range for field f when observed with the specified
     intent.
-    
+
     :param ms: MeasurementSet to process
     :param f: Field to inspect
     :param intent: observing intent to consider
@@ -231,8 +273,8 @@ def parallactic_angle_at_epoch(f: Field, e: dict) -> float:
     :param e: CASA epoch
     :return: angular separation in degrees
     """
-    me = casatools.measures
-    qa = casatools.quanta
+    me = casa_tools.measures
+    qa = casa_tools.quanta
 
     try:
         me.doframe(me.observatory('ALMA'))
@@ -261,15 +303,15 @@ def range_after_processing(fs: List[float], g: Callable[[float], float]):
 
 def to_signed(angle: ParallacticAngle) -> SignedAngle:
     if angle > 180:
-        return angle-360
+        return angle - 360
     return angle
 
 
 def to_positive_definite(angle: ParallacticAngle) -> PositiveDefiniteAngle:
     if angle < 0:
-        return angle+360
+        return angle + 360
     return angle
 
-#- end parallactic angle coverage functions ----------------------------------------------------------------------------
+# - end parallactic angle coverage functions ----------------------------------------------------------------------------
 
 

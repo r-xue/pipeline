@@ -3,9 +3,9 @@ import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -81,14 +81,14 @@ class testgainsPerAntennaChart(object):
 
         times = []
         for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
-            with casatools.TableReader(bpdgain_touse) as tb:
+            with casa_tools.TableReader(bpdgain_touse) as tb:
                 times.extend(tb.getcol('TIME'))
         mintime = np.min(times)
         maxtime = np.max(times)
 
         for bandname, bpdgain_tousename in self.result.bpdgain_touse.items():
 
-            with casatools.TableReader(bpdgain_tousename) as tb:
+            with casa_tools.TableReader(bpdgain_tousename) as tb:
                 cpar = tb.getcol('CPARAM')
                 flgs = tb.getcol('FLAG')
             amps = np.abs(cpar)
@@ -140,7 +140,7 @@ class testgainsPerAntennaChart(object):
                         job.execute(dry_run=False)
 
                     except Exception as ex:
-                        LOG.warn("Unable to plot " + filename + str(ex))
+                        LOG.warning("Unable to plot " + filename + str(ex))
                 else:
                     LOG.debug('Using existing ' + filename + ' plot.')
 
@@ -154,7 +154,7 @@ class testgainsPerAntennaChart(object):
                                                    'file': os.path.basename(figfile)})
                     plots.append(plot)
                 except Exception as ex:
-                    LOG.warn("Unable to add plot to stack. " + str(ex))
+                    LOG.warning("Unable to add plot to stack. " + str(ex))
                     plots.append(None)
 
         return [p for p in plots if p is not None]

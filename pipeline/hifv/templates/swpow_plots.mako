@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer import rendererutils
 %>
 
 % if plots:
@@ -11,15 +12,10 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 </div>
 
 % for ms in swpowspgain_subpages.keys():
-
-    <h4>Plots:  <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, swpowspgain_subpages[ms]), pcontext.report_dir)}">SwPow SPgain plots </a> |
-        <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, swpowtsys_subpages[ms]), pcontext.report_dir)}">SwPow Tsys plots</a>
+    <h4>Plots:
+        <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, swpowspgain_subpages[ms])}">SwPow SPgain plots </a> |
+        <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, swpowtsys_subpages[ms])}">SwPow Tsys plots</a>
     </h4>
-
-
-
 %endfor
 
 <br>

@@ -44,7 +44,10 @@ class LowgainflagInputs(vdp.StandardInputs):
     # Flagging view is created if number of antennas in a set equals-or-exceeds
     # the threshold.
     min_nants_threshold = vdp.VisDependentProperty(default=5)
-    niter = vdp.VisDependentProperty(default=1)
+    niter = vdp.VisDependentProperty(default=2)
+
+    # PIPE-566, PIPE-808: set threshold for "too many entirely flagged"
+    tmef1_limit = vdp.VisDependentProperty(default=0.666)
 
     @vdp.VisDependentProperty
     def refant(self):
@@ -71,7 +74,7 @@ class LowgainflagInputs(vdp.StandardInputs):
         return ','.join([str(spw.id) for spw in science_spws])
 
     def __init__(self, context, output_dir=None, vis=None, intent=None, spw=None, refant=None, flag_nmedian=None,
-                 fnm_lo_limit=None, fnm_hi_limit=None, niter=None, min_nants_threshold=None):
+                 fnm_lo_limit=None, fnm_hi_limit=None, niter=None, min_nants_threshold=None, tmef1_limit=None):
         super(LowgainflagInputs, self).__init__()
 
         # pipeline inputs
@@ -91,6 +94,7 @@ class LowgainflagInputs(vdp.StandardInputs):
         self.fnm_hi_limit = fnm_hi_limit
         self.fnm_lo_limit = fnm_lo_limit
         self.niter = niter
+        self.tmef1_limit = tmef1_limit
 
 
 @task_registry.set_equivalent_casa_task('hif_lowgainflag')
@@ -144,7 +148,7 @@ class Lowgainflag(basetask.StandardTaskTemplate):
         # (unflagged) data at all for a spw (e.g. because gaincal could not
         # compute any solutions). In this case the underlying (bad) data in the
         # MS for this spw should get flagged explicitly.
-        rules.extend(flagger.make_flag_rules(flag_tmef1=True, tmef1_axis='Antenna1', tmef1_limit=1.0))
+        rules.extend(flagger.make_flag_rules(flag_tmef1=True, tmef1_axis='Antenna1', tmef1_limit=inputs.tmef1_limit))
 
         # Construct the flagger task around the data view task and the
         # flagsetter task. 
@@ -152,7 +156,7 @@ class Lowgainflag(basetask.StandardTaskTemplate):
             context=inputs.context, output_dir=inputs.output_dir,
             vis=inputs.vis, datatask=datatask, viewtask=viewtask,
             flagsettertask=flagsettertask, rules=rules, niter=inputs.niter,
-            extendfields=['field', 'timerange'], iter_datatask=True, skip_fully_flagged=False)
+            extendfields=['field', 'scan'], iter_datatask=True, skip_fully_flagged=False)
         flaggertask = flagger(matrixflaggerinputs)
 
         # Execute the flagger task.
@@ -213,7 +217,7 @@ class Lowgainflag(basetask.StandardTaskTemplate):
             # Get final view.
             view = result.last(description)
 
-            # Identify antennas fully flagged for all timestamps, mapping the
+            # Identify antennas fully flagged for all scans, mapping the
             # array indices to the original antenna IDs using the flagging view
             # x-axis data.
             antids_fully_flagged = view.axes[0].data[
@@ -284,10 +288,9 @@ class Lowgainflag(basetask.StandardTaskTemplate):
                     # Log a warning if any antennas are to be demoted from
                     # the refant list.
                     LOG.warning(
-                        '{} - the following antennas are moved to the end '
-                        'of the refant list because they are fully '
-                        'flagged for one or more spws: '
-                        '{}'.format(ms.basename, ant_msg))
+                        '{} - the following antennas have been fully flagged '
+                        'in one or more spws, and moved to the end '
+                        'of the refant list: {}'.format(ms.basename, ant_msg))
 
                     # Update result to set the refants to demote:
                     result.refants_to_demote = refants_to_demote
@@ -419,28 +422,18 @@ class LowgainflagView(object):
         # Open gains caltable.
         gtable = caltableaccess.CalibrationTableDataFiller.getcal(table)
 
-        # Get range of times covered.
-        times = set()
+        # Get range of scans covered.
+        scans = set()
         for row in gtable.rows:
             # The gain table is T, should be no pol dimension
             npols = np.shape(row.get('CPARAM'))[0]
             if npols != 1:
                 raise Exception('table has polarization results')
-            times.update([row.get('TIME')])
-        times = np.sort(list(times))
+            scans.update([row.get('SCAN_NUMBER')])
+        scans = np.sort(list(scans))
 
-        # times in gain table sometimes show jitter - either perhaps
-        # resulting from different flagging for different antenna/spw,
-        # or from out of sync timing in raw data (a problem now cured
-        # I'm told, Mar-2014).
-        # Ignore time differences smaller than 5sec.
-        filtered_times = []
-        last_time = 0.0
-        for timestamp in times:
-            if timestamp - last_time > 5.0:
-                filtered_times.append(timestamp)
-                last_time = timestamp
-        times = np.array(filtered_times)
+        # Create translation of scan ID to flagging view axis ID.
+        scanid_to_axisid = {scan_id: axis_id for axis_id, scan_id in enumerate(scans)}
 
         # Get the MS domain object.
         ms = self.context.observing_run.get_ms(name=self.vis)
@@ -459,12 +452,8 @@ class LowgainflagView(object):
             # Identify antennas with current diameter.
             antenna_ids = sorted([antenna.id for antenna in ms.antennas if antenna.diameter == antdiam])
 
-            # Create translation of antenna ID to flagging view
-            # axis ID.
-            antid_to_axisid = {
-                ant_id: axis_id
-                for axis_id, ant_id in enumerate(antenna_ids)
-            }
+            # Create translation of antenna ID to flagging view axis ID.
+            antid_to_axisid = {ant_id: axis_id for axis_id, ant_id in enumerate(antenna_ids)}
             nants = len(antenna_ids)
 
             # If the number of antennas is below the threshold, then skip
@@ -480,26 +469,23 @@ class LowgainflagView(object):
                 for spwid in spwids:
 
                     # Initialize arrays for flagging view.
-                    data = np.zeros([nants, len(times)])
-                    flag = np.ones([nants, len(times)], np.bool)
+                    data = np.zeros([nants, len(scans)])
+                    flag = np.ones([nants, len(scans)], bool)
 
                     for row in gtable.rows:
                         ant = row.get('ANTENNA1')
-                        if (row.get('SPECTRAL_WINDOW_ID') == spwid and
-                                ant in antenna_ids):
+                        if row.get('SPECTRAL_WINDOW_ID') == spwid and ant in antenna_ids:
                             gain = row.get('CPARAM')[0][0]
-                            caltime = row.get('TIME')
                             gainflag = row.get('FLAG')[0][0]
+                            scan = row.get('SCAN_NUMBER')
                             if not gainflag:
-                                data[antid_to_axisid[ant], np.abs(times-caltime) < 5] = np.abs(gain)
-                                flag[antid_to_axisid[ant], np.abs(times-caltime) < 5] = 0
+                                data[antid_to_axisid[ant], scanid_to_axisid[scan]] = np.abs(gain)
+                                flag[antid_to_axisid[ant], scanid_to_axisid[scan]] = 0
 
                     axes = [
-                        commonresultobjects.ResultAxis(
-                            name='Antenna1', units='id',
-                            data=np.asarray(antenna_ids)),
-                        commonresultobjects.ResultAxis(
-                            name='Time', units='', data=times)
+                        commonresultobjects.ResultAxis(name='Antenna1', units='id', data=np.asarray(antenna_ids)),
+                        commonresultobjects.ResultAxis(name='Scan', units='id', data=[str(scan) for scan in scans],
+                                                       channel_width=1)
                     ]
 
                     # associate the result with a generic filename - using

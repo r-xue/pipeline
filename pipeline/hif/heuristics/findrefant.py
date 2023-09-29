@@ -32,12 +32,10 @@ import operator
 
 import numpy
 
-import casatools
-
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as pl_casatools
-from pipeline.infrastructure import casa_tasks
 import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -239,12 +237,12 @@ class RefAntHeuristics(object, metaclass=vdp.PipelineInputsMeta):
 
     def _get_names(self):
         antenna_table = os.path.join(self.vis, 'ANTENNA')
-        with pl_casatools.TableReader(antenna_table) as table:
+        with casa_tools.TableReader(antenna_table) as table:
             names = table.getcol('NAME').tolist()
 
         # Remove ignored antennas
         if self.refantignore:
-            LOG.warn('Antennas to be ignored: {0}'.format(self.refantignore))
+            LOG.warning('Antennas to be ignored: {0}'.format(self.refantignore))
             names = [n for n in names if n not in self.refantignore.split(',')]
 
         # Return the antenna names
@@ -416,20 +414,15 @@ class RefAntGeometry:
 
         # Create the local instance of the table tool and open it with
         # the antenna subtable of the MS
-        tbLoc = casatools.table()
-        tbLoc.open(self.vis+'/ANTENNA')  # Take zeroth element
+        with casa_tools.TableReader(self.vis + '/ANTENNA') as table:
 
-        # Get the antenna information from the antenna table
-        info = dict()
+            # Get the antenna information from the antenna table
+            info = dict()
 
-        info['position'] = tbLoc.getcol( 'POSITION' )
-        info['flag_row'] = tbLoc.getcol( 'FLAG_ROW' )
-        info['name'] = tbLoc.getcol( 'NAME' )
-        info['position_keywords'] = tbLoc.getcolkeywords( 'POSITION' )
-
-        # Close the table tool and delete the local instance
-        tbLoc.close()
-        del tbLoc
+            info['position'] = table.getcol('POSITION')
+            info['flag_row'] = table.getcol('FLAG_ROW')
+            info['name'] = table.getcol('NAME')
+            info['position_keywords'] = table.getcolkeywords('POSITION')
 
         # The flag tool appears to return antenna names as upper case,
         # which seems to be different from the antenna names stored in
@@ -471,11 +464,8 @@ class RefAntGeometry:
     def _get_measures(self, info):
 
         # Create the local instances of the measures and quanta tools
-
-        #meLoc = casa.__measureshome__.create()
-        meLoc = casatools.measures()
-        #qaLoc = casa.__quantahome__.create()
-        qaLoc = casatools.quanta()
+        meLoc = casa_tools.measures
+        qaLoc = casa_tools.quanta
 
         # Initialize the measures dictionary and the position and
         # position_keywords variables
@@ -505,10 +495,9 @@ class RefAntGeometry:
 
                 measures[ant] = meLoc.position(rf=rf, v0=v0, v1=v1, v2=v2)
 
-        # Delete the local instances of the measures and quanta tools
-
-        del qaLoc
-        del meLoc
+        # Close the local instances of the measures and quanta tools
+        qaLoc.done()
+        meLoc.done()
 
         # Return the measures
 
@@ -545,13 +534,9 @@ class RefAntGeometry:
     def _get_latlongrad( self, info, measures ):
 
         # Create the local instance of the quanta tool
-
-        #qaLoc = casa.__quantahome__.create()
-        qaLoc = casatools.quanta()
-
+        qaLoc = casa_tools.quanta
 
         # Get the radii, longitudes, and latitudes
-
         radii = dict()
         longs = dict()
         lats = dict()
@@ -576,15 +561,11 @@ class RefAntGeometry:
             convert = qaLoc.convert( quantity, 'rad' )
             lats[ant] = qaLoc.getvalue( convert )
 
-
         # Delete the local instance of the quanta tool
-
-        del qaLoc
-
+        qaLoc.done()
 
         # Return the tuple containing the radius, longitude, and
         # latitude python dictionaries
-
         return radii, longs, lats
 
 # ------------------------------------------------------------------------------
@@ -684,7 +665,7 @@ class RefAntGeometry:
 
         # Get the number of good data, calculate the fraction of good
         # data, and calculate the good and bad weights
-        far = numpy.array(list(distance.values()), numpy.float)
+        far = numpy.array(list(distance.values()), float)
         fFar = far / float(numpy.max(far))
 
         wFar = fFar * len(far)
@@ -931,7 +912,7 @@ class RefAntFlagging:
             # Get the number of good data, calculate the fraction of good
             # data, and calculate the good and bad weights
 
-            nGood = numpy.array(list(good.values()), numpy.float)
+            nGood = numpy.array(list(good.values()), float)
             fGood = nGood / float(numpy.max(nGood))
 
             wGood = fGood * len(nGood)

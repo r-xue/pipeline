@@ -1,20 +1,18 @@
-import glob
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.infrastructure import casa_tools, task_registry, utils
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class AnalyzealphaResults(basetask.Results):
-    def __init__(self, max_location=None, alpha_and_error=None):
+    def __init__(self, max_location=None, alpha_and_error=None, image_at_max=None):
         super(AnalyzealphaResults, self).__init__()
         self.pipeline_casa_task = 'Analyzealpha'
         self.max_location = max_location
         self.alpha_and_error = alpha_and_error
+        self.image_at_max = image_at_max
 
     def merge_with_context(self, context):
         """
@@ -58,22 +56,19 @@ class Analyzealpha(basetask.StandardTaskTemplate):
 
             if not subimagefile:
                 if imageitem['multiterm']:
-                    subimagefile = glob.glob(imageitem['imagename'].replace('.subim', '.pbcor.tt0.subim'))[0]
+                    subimagefile = utils.glob_ordered(imageitem['imagename'].replace('.subim', '.pbcor.tt0.subim'))[0]
                 else:
-                    subimagefile = glob.glob(imageitem['imagename'].replace('.subim', '.pbcor.subim'))[0]
+                    subimagefile = utils.glob_ordered(imageitem['imagename'].replace('.subim', '.pbcor.subim'))[0]
 
             if not alphafile:
-                alphafile = glob.glob(imlist[0]['imagename'].replace('.image.subim', '.alpha'))[0]
+                alphafile = utils.glob_ordered(imlist[0]['imagename'].replace('.image.subim', '.alpha'))[0]
 
             if not alphaerrorfile:
-                alphaerrorfile = glob.glob(imlist[0]['imagename'].replace('.image.subim', '.alpha.error'))[0]
+                alphaerrorfile = utils.glob_ordered(imlist[0]['imagename'].replace('.image.subim', '.alpha.error'))[0]
 
-            #
-            # The following is example code to extract the value from the .alpha and .alpha.error
-            # images (for wideband continuum MTMFS with nterms>1)
-            #
-            # Run imstat on the restored tt0 I subimage
-            with casatools.ImageReader(subimagefile) as image:
+            # Extract the value from the .alpha and .alpha.error images (for wideband continuum MTMFS with nterms>1)
+            # 
+            with casa_tools.ImageReader(subimagefile) as image:
                 stats = image.statistics(robust=False)
 
                 # Extract the position of the maximum from imstat return dictionary
@@ -85,40 +80,30 @@ class Analyzealpha(basetask.StandardTaskTemplate):
 
                 subim_worldcoords = image.toworld(stats['maxpos'][:2], 's')
 
-            # Set up a box string for that max pixel
-            # mybox = '%i,%i,%i,%i' % (maxposx, maxposy, maxposx, maxposy)
+                image_val = image.pixelvalue(image.topixel(subim_worldcoords)['numeric'][:2].round())
+                image_at_max = image_val['value']['value']
+                image_at_max_string = '{:.4e}'.format(image_at_max)
+                LOG.info('|* Restored image value at max {}'.format(image_at_max_string))
 
             # Extract the value of that pixel from the alpha subimage
-            with casatools.ImageReader(alphafile) as image:
+            with casa_tools.ImageReader(alphafile) as image:
                 # TODO possibly replace round with round_half_up in python3 pipeline
                 alpha_val = image.pixelvalue(image.topixel(subim_worldcoords)['numeric'][:2].round())
-            # try:
-            #     task = casa_tasks.imval(imagename=alphafile, box=mybox)
-            #     alpha_val = self._executor.execute(task)
-            # except:
-            #     alpha_val = -999.
 
             alpha_at_max = alpha_val['value']['value']
-            # alpha_at_max = alpha_val['data'][0]
             alpha_string = '{:.3f}'.format(alpha_at_max)
 
             # Extract the value of that pixel from the alphaerror subimage
-            with casatools.ImageReader(alphaerrorfile) as image:
+            with casa_tools.ImageReader(alphaerrorfile) as image:
                 # TODO possibly replace round with round_half_up in python3 pipeline
                 alphaerror_val = image.pixelvalue(image.topixel(subim_worldcoords)['numeric'][:2].round())
-            # try:
-            #     task = casa_tasks.imval(imagename=alphaerrorfile, box=mybox)
-            #     alphaerror_val = self._executor.execute(task)
-            # except:
-            #     alphaerror_val = -999.
             alphaerror_at_max = alphaerror_val['value']['value']
-            # alphaerror_at_max = alphaerror_val['data'][0]
             alphaerror_string = '{:.3f}'.format(alphaerror_at_max)
 
             alpha_and_error = '%s +/- %s' % (alpha_string, alphaerror_string)
             LOG.info('|* Alpha at restored max {}'.format(alpha_and_error))
 
-        return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error)
+        return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error, image_at_max=image_at_max)
 
     def analyse(self, results):
         return results

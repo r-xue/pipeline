@@ -6,7 +6,7 @@ from .taskregistry import task_registry
 
 from . import api
 from . import callibrary
-from . import casatools
+from . import casa_tools
 from . import casa_tasks
 from . import contfilehandler
 from . import filenamer
@@ -15,6 +15,7 @@ from . import jobrequest
 from . import logging
 from . import mpihelpers
 from . import utils
+from . import timetracker
 from .callibrary import CalLibrary, CalTo, CalFrom, CalApplication, CalState
 from .jobrequest import JobRequest
 from .launcher import Context, Pipeline
@@ -32,7 +33,8 @@ _PLOT_LEVELS = {'all': 30,
 _PLOT_DETAIL_THRESHOLDS = {'default': 20,
                            'hif_applycal': 30,
                            'hifv_applycals': 30,
-                           'hifv_plotsummary': 30}
+                           'hifv_plotsummary': 30,
+                           'hsd_baseline': 30}
 
 
 def set_plot_level(plotlevel):
@@ -44,7 +46,7 @@ def set_plot_level(plotlevel):
     setattr(module, 'PLOT_LEVEL', _PLOT_LEVELS[plotlevel])
 
 
-def generate_detail_plots(result=None): 
+def generate_detail_plots(result=None):
     if result is None:
         LOG.warning('Calling generate_detail_plots without a result argument '
                     'is deprecated.')
@@ -63,6 +65,9 @@ def generate_detail_plots(result=None):
     elif task.startswith('hifv_plotsummary'):
         LOG.info('Using plot level for the VLA as: ' + str(_PLOT_DETAIL_THRESHOLDS['hifv_plotsummary']))
         return PLOT_LEVEL >= _PLOT_DETAIL_THRESHOLDS['hifv_plotsummary']
+
+    elif task.startswith('hsd_baseline'):
+        return PLOT_LEVEL >= _PLOT_DETAIL_THRESHOLDS['hsd_baseline']
 
     else:
         return PLOT_LEVEL >= _PLOT_DETAIL_THRESHOLDS['default']

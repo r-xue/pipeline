@@ -39,10 +39,7 @@ class Rqcal(basetask.StandardTaskTemplate):
     def prepare(self):
         inputs = self.inputs
 
-        #with casatools.MSReader(inputs.vis) as ms:
-        #    ms_summary = ms.summary()
-
-        #startdate = ms_summary['BeginTime']
+        # Get start date from context.
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         startdate = m.start_time['m0']['value']
 

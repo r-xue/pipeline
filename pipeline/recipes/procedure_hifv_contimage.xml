@@ -9,6 +9,12 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifv_flagtargetsdata</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hif_mstransform</Command>
         <ParameterSet>
         </ParameterSet>
@@ -38,13 +44,15 @@
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">hm_masking</Keyword>
-                <Value xmlns="">none</Value>
-            </Parameter>
-            <Parameter>
                 <Keyword xmlns="">hm_cyclefactor</Keyword>
                 <Value xmlns="">3.0</Value>
             </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_pbcor</Command>
+        <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
 

@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-import pylab as pb
+import matplotlib.pyplot as plt
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -39,17 +39,18 @@ class fluxbootSummaryChart(object):
         job.execute(dry_run=False)
 
     def get_figfile(self):
-        return os.path.join(self.context.report_dir, 
-                            'stage%s' % self.result.stage_number, 
+        return os.path.join(self.context.report_dir,
+                            'stage%s' % self.result.stage_number,
                             'bootstrappedFluxDensities-%s-summary.png' % self.ms.basename)
 
     def get_plot_wrapper(self):
         figfile = self.get_figfile()
 
-        wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename,
-                                                                                'type': 'fluxboot',
-                                                                                'spw': '',
-                                                                                'figurecaption':'Model calibrator.  Plot of amp vs. freq.'})
+        wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp',
+                              parameters={'vis': self.ms.basename,
+                                          'type': 'fluxboot',
+                                          'spw': '',
+                                          'figurecaption':'Model calibrator.  Plot of amp vs. freq.'})
 
         if not os.path.exists(figfile):
             LOG.trace('Plotting model calibrator flux densities. Creating new plot.')
@@ -128,14 +129,14 @@ class modelfitSummaryChart(object):
         figfile = self.get_figfile()
 
         webdicts = self.webdicts
-        pb.clf()
+        plt.clf()
 
         mysize = 'small'
         colors = ['red', 'blue', 'green', 'cyan', 'yellow', 'orange', 'purple']
         colorcount = 0
         title = ''
 
-        fig = pb.figure(figsize=(10, 6))
+        fig = plt.figure(figsize=(10, 6))
         ax1 = fig.add_subplot(111)
         ax2 = ax1.twiny()
 
@@ -187,13 +188,11 @@ class modelfitSummaryChart(object):
 
                 ax1.plot(np.log10(np.array(frequencies) * 1.e9), np.log10(data), 'o', label=source,
                          color=colors[colorcount])
-                # pb.plot(frequencies, model, '-', color=colors[colorcount])
                 ax1.plot(np.log10(freqs), np.log10(fittedfluxd), '-', color=colors[colorcount])
 
                 minfreqlist.append(minfreq)
                 maxfreqlist.append(maxfreq)
 
-                # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
                 colorcount += 1
 
             except Exception as e:
@@ -222,20 +221,14 @@ class modelfitSummaryChart(object):
         locs = locs[1:-1]
 
         precision = 2
-        # LOG.debug(locs)
         labels = ["{:.{}f}".format(loc, precision) for loc in (10 ** locs) / 1.e9]
-        # LOG.debug(labels)
 
         ax2.set_xlim(np.log10(np.array([minxlim, maxxlim])))
         ax2.set_xticks(locs)
         ax2.set_xticklabels(labels)
         ax2.tick_params(bottom=False, top=True, left=False, right=False)
         ax2.tick_params(labelbottom=False, labeltop=True, labelleft=False, labelright=False)
-        # pb.xscale('log')
-        # pb.yscale('log')
 
-        # ax1.legend()
-        # ax1.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), shadow = True, ncol = 2)
         chartBox = ax1.get_position()
         ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.6, chartBox.height])
         ax1.legend(loc='upper center', bbox_to_anchor=(1.45, 0.8), shadow=True, ncol=1)
@@ -243,9 +236,8 @@ class modelfitSummaryChart(object):
         ax1.set_xlabel('log10 Frequency [Hz]', size=mysize)
         ax2.set_xlabel('Frequency [GHz]', size=mysize)
 
-        # pb.title('Flux (Data and Fit) vs. Frequency')
-        pb.savefig(figfile)
-        pb.close()
+        plt.savefig(figfile)
+        plt.close()
 
     def get_figfile(self):
         return os.path.join(self.context.report_dir,
@@ -288,16 +280,17 @@ class residualsSummaryChart(object):
 
         webdicts = self.webdicts
 
-        #pb.clf()
-
-        fig = pb.figure(figsize=(10, 6))
-        # ax1 = fig.add_subplot(111)
-        ax1 = fig.add_axes([0.1, 0.1, 0.5, 0.8])
+        fig = plt.figure(figsize=(10, 6))
+        ax1 = fig.add_subplot(111)
+        ax2 = ax1.twiny()
 
         mysize = 'small'
         colors = ['red', 'blue', 'green', 'cyan', 'yellow', 'orange', 'purple']
         colorcount = 0
         title = ''
+
+        minfreqlist = []
+        maxfreqlist = []
 
         for source, datadicts in webdicts.items():
             try:
@@ -306,25 +299,57 @@ class residualsSummaryChart(object):
                 for datadict in datadicts:
                     residuals.append(float(datadict['data']) - float(datadict['fitteddata']))
                     frequencies.append(float(datadict['freq']))
+
+                frequencies = np.array(frequencies)
+                minfreq = np.min(frequencies)
+                maxfreq = np.max(frequencies)
+
                 ax1.plot(np.log10(np.array(frequencies) * 1.e9), residuals, 'o', label=source, color=colors[colorcount])
                 ax1.plot(np.linspace(np.min(np.log10(np.array(frequencies) * 1.e9)), np.max(np.log10(np.array(frequencies) * 1.e9)), 10),
                          np.zeros(10) + np.mean(residuals), linestyle='--', label='Mean', color=colors[colorcount])
-                pb.ylabel('Residuals (data - fit) [Jy]', size=mysize)
-                pb.xlabel('log10 Frequency [Hz]', size=mysize)
-                # pb.legend()
-                # pb.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), shadow=True, ncol=2)
-                chartBox = ax1.get_position()
-                # ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.8, chartBox.height])
-                ax1.legend(loc='upper center', bbox_to_anchor=(1.45, 0.8), shadow=True, ncol=1)
-                # title = title + '   ' + str(source) + '({!s})'.format(colors[colorcount])
+
+                minfreqlist.append(minfreq)
+                maxfreqlist.append(maxfreq)
+
                 colorcount += 1
 
             except Exception as e:
                 continue
 
-        pb.title('Residuals vs. Frequency')
-        pb.savefig(figfile)
-        pb.close()
+        # Set x-axis
+        ax1.tick_params(axis='x', which='minor', bottom=False)
+        ax1.tick_params(bottom=True, top=False, left=True, right=False)
+        ax1.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=False)
+        rangepad = (np.max(maxfreqlist) - np.min(minfreqlist)) * 0.1
+        minxlim = 1.e9 * (np.min(minfreqlist) - rangepad)
+        maxxlim = 1.e9 * (np.max(maxfreqlist) + rangepad)
+        if rangepad > np.min(minfreqlist):
+            minxlim = 1.e9 * np.min(minfreqlist) * 0.90
+        ax1.set_xlim(np.log10(np.array([minxlim, maxxlim])))
+
+        locs = ax1.get_xticks()
+        locs = locs[1:-1]
+
+        precision = 2
+        # LOG.debug(locs)
+        labels = ["{:.{}f}".format(loc, precision) for loc in (10 ** locs) / 1.e9]
+        # LOG.debug(labels)
+
+        ax2.set_xlim(np.log10(np.array([minxlim, maxxlim])))
+        ax2.set_xticks(locs)
+        ax2.set_xticklabels(labels)
+        ax2.tick_params(bottom=False, top=True, left=False, right=False)
+        ax2.tick_params(labelbottom=False, labeltop=True, labelleft=False, labelright=False)
+
+        chartBox = ax1.get_position()
+        ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.6, chartBox.height])
+        ax1.legend(loc='upper center', bbox_to_anchor=(1.45, 0.8), shadow=True, ncol=1)
+        ax1.set_ylabel('Residuals (data - fit) [Jy]', size=mysize)
+        ax1.set_xlabel('log10 Frequency [Hz]', size=mysize)
+        ax2.set_xlabel('Frequency [GHz]', size=mysize)
+
+        plt.savefig(figfile)
+        plt.close()
 
     def get_figfile(self):
         return os.path.join(self.context.report_dir,

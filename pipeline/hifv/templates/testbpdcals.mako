@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer import rendererutils
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -11,41 +12,35 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 % for ms in summary_plots:
     <h4>Plots:  <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, testdelay_subpages[ms]), pcontext.report_dir)}">Test delay plots </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, testdelay_subpages[ms])}">Test delay plots </a>|
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, ampgain_subpages[ms]), pcontext.report_dir)}">Gain Amplitude </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, ampgain_subpages[ms])}">Gain Amplitude </a>|
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, phasegain_subpages[ms]), pcontext.report_dir)}">Gain Phase </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, phasegain_subpages[ms])}">Gain Phase </a>|
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, bpsolamp_subpages[ms]), pcontext.report_dir)}">BP Amp solution </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolamp_subpages[ms])}">BP Amp solution </a>|
         <a class="replace"
-           href="${os.path.relpath(os.path.join(dirname, bpsolphase_subpages[ms]), pcontext.report_dir)}">BP Phase solution </a>
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolphase_subpages[ms])}">BP Phase solution </a>
     </h4>
 %endfor
 
 
 <%self:plot_group plot_dict="${summary_plots}"
-                                  url_fn="${lambda ms:  'noop'}">
+                  url_fn="${lambda ms: 'noop'}">
 
         <%def name="title()">
             testBPdcals summary plot
         </%def>
 
         <%def name="preamble()">
-
-
         </%def>
-        
-        
+
         <%def name="mouseover(plot)">Summary window </%def>
-        
-        
-        
+
         <%def name="fancybox_caption(plot)">
           Initial calibrated bandpass
         </%def>
-        
-        
+
         <%def name="caption_title(plot)">
            Initial calibrated bandpass
         </%def>
@@ -55,7 +50,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <h3>Flag bad deformatters</h3>
 
 <p>Identify and flag basebands with bad deformatters or RFI based on bandpass (BP) table amps and phases.</p>
-
 
         % for single_result in result:
 
@@ -130,8 +124,3 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
             </table>
 
         % endfor
-
-
-
-
-

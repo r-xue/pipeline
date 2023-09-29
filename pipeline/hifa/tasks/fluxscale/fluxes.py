@@ -19,11 +19,9 @@ def export_flux_from_fit_result(results, context, filename, fieldids_with_spix=N
     if not isinstance(results, list):
         results = [results, ]
 
-    abspath = os.path.join(context.output_dir, filename)
-
     columns = ['ms', 'field', 'spw', 'I', 'Q', 'U', 'V', 'spix', 'uvmin', 'uvmax', 'comment']
 
-    with open(abspath, 'w+') as f:
+    with open(filename, 'w+') as f:
         writer = csv.writer(f)
         writer.writerow(columns)
 
@@ -54,4 +52,4 @@ def export_flux_from_fit_result(results, context, filename, fieldids_with_spix=N
                                      float(m.uvmin), float(m.uvmax), comment))
                     counter += 1
 
-        LOG.info('Exported %s flux measurements to %s' % (counter, abspath))
+        LOG.info('Exported %s flux measurements to %s', counter, filename)

@@ -4,7 +4,6 @@ import os
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
@@ -13,6 +12,7 @@ from pipeline.hif.tasks.bandpass import bandpassmode, bandpassworker
 from pipeline.hif.tasks.bandpass.common import BandpassResults
 from pipeline.hifa.tasks.bpsolint import bpsolint
 from pipeline.infrastructure import callibrary
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
 
@@ -63,12 +63,13 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
     solint = vdp.VisDependentProperty(default='inf')
     # PIPE-628: new parameter to unregister existing bcals before appending to callibrary 
     unregister_existing = vdp.VisDependentProperty(default=False)
-
+    # PIPE-712: Expose fillgaps parameter 
+    fillgaps = vdp.VisDependentProperty(default=0)
 
     def __init__(self, context, output_dir=None, vis=None, mode='channel', hm_phaseup=None, phaseupbw=None,
                  phaseupsolint=None, phaseupsnr=None, phaseupnsols=None, hm_bandpass=None, solint=None,
                  maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None, unregister_existing=None, 
-                 **parameters):
+                 fillgaps=None, **parameters):
         super(ALMAPhcorBandpassInputs, self).__init__(context, output_dir=output_dir, vis=vis, mode=mode, **parameters)
         self.bpnsols = bpnsols
         self.bpsnr = bpsnr
@@ -83,6 +84,7 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
         self.phaseupsolint = phaseupsolint
         self.solint = solint
         self.unregister_existing = unregister_existing
+        self.fillgaps = fillgaps
 
 
 @task_registry.set_equivalent_casa_task('hifa_bandpass')
@@ -152,6 +154,12 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         if inputs.hm_phaseup != '':
             result.preceding.append(phaseup_result.final)
 
+            # PIPE-1624: Store bandpass phaseup caltable table name so it
+            # can be saved into the context. Do not use the version in
+            # preceding.append (above), as it is labeled "deprecated"
+            for cal in phaseup_result.final:
+                result.phaseup_caltable_for_phase_rms.append(cal.gaintable)
+
         # PIPE-628: set whether we should unregister old bandpass calibrators
         # on results acceptance
         result.unregister_existing = inputs.unregister_existing
@@ -186,7 +194,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
 
         # Number of expected results.
         nexpected = len(snr_result.spwids)
-        quanta = casatools.quanta
+        quanta = casa_tools.quanta
 
         # Look for missing and bad solutions.
         #    Adjust the estimates for poor solutions to the
@@ -274,7 +282,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             return inputs.phaseupsolint
 
         # If phaseup solints are all the same return the first one
-        if len(set(tmpsolints)) is 1:
+        if len(set(tmpsolints)) == 1:
             LOG.info("Best phaseup solint estimate is '%s'" % tmpsolints[0])
             return tmpsolints[0]
 
@@ -395,7 +403,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
     # Compute the bandpass using SNR estimates
     def _do_snr_bandpass(self, snr_result):
         inputs = self.inputs
-        quanta = casatools.quanta
+        quanta = casa_tools.quanta
 
         # Store original values of some parameters.
         orig_spw = inputs.spw
@@ -504,7 +512,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
 
         # Convert bandwidth input to CASA quantity and then on to pipeline
         # domain Frequency object
-        quanta = casatools.quanta
+        quanta = casa_tools.quanta
         bw_quantity = quanta.convert(quanta.quantity(inputs.phaseupbw), 'Hz')
         bandwidth = measures.Frequency(quanta.getvalue(bw_quantity)[0],
                                        measures.FrequencyUnits.HERTZ)
@@ -528,7 +536,7 @@ def _constrain_phaseupsolint(input_solint, integration_time, max_solint):
     which are greater than a specified maximum. The inputs and outputs
     are times in seconds in string quanta format '60.0s'
     """
-    quanta = casatools.quanta
+    quanta = casa_tools.quanta
 
     input_solint_q = quanta.quantity(input_solint)
     integration_time_q = quanta.quantity(integration_time)

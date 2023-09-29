@@ -3,37 +3,50 @@ Created on 9 Jan 2014
 
 @author: sjw
 """
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import collections
 import datetime
 import functools
 import math
 import operator
 import os
-from typing import List
-from scipy.special import erf
+import re
+import traceback
+from typing import List, Tuple, TYPE_CHECKING
 
 import numpy as np
+from scipy import interpolate
+from scipy.special import erf
 
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
+from pipeline.domain.measurementset import MeasurementSet
 import pipeline.infrastructure.basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.renderer.rendererutils as rutils
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.checksource as checksource
 from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.infrastructure import casa_tools
+
+if TYPE_CHECKING:
+    from pipeline.hif.tasks.gaincal.common import GaincalResults
+    from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
 
 __all__ = ['score_polintents',                                # ALMA specific
            'score_bands',                                     # ALMA specific
            'score_bwswitching',                               # ALMA specific
-           'score_spwnames',                                  # ALMA specific
+           'score_science_spw_names',                         # ALMA specific
            'score_tsysspwmap',                                # ALMA specific
            'score_number_antenna_offsets',                    # ALMA specific
            'score_missing_derived_fluxes',                    # ALMA specific
            'score_derived_fluxes_snr',                        # ALMA specific
-           'score_phaseup_mapping_fraction',                  # ALMA specific
+           'score_phaseup_spw_median_snr_for_phase',          # ALMA specific
+           'score_phaseup_spw_median_snr_for_check',          # ALMA specific
+           'score_decoherence_assessment',                    # ALMA specific
            'score_refspw_mapping_fraction',                   # ALMA specific
            'score_missing_phaseup_snrs',                      # ALMA specific
            'score_missing_bandpass_snrs',                     # ALMA specific
@@ -45,6 +58,11 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
+           'score_renorm',                                    # ALMA IF specific
+           'score_polcal_gain_ratio',                         # ALMA IF specific
+           'score_polcal_gain_ratio_rms',                     # ALMA IF specific
+           'score_polcal_leakage',                            # ALMA IF specific
+           'score_polcal_residual_pol',                       # ALMA IF specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -55,6 +73,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_missing_intents',
            'score_ephemeris_coordinates',
            'score_online_shadow_template_agents',
+           'score_lowtrans_flagcmds',                         # ALMA IF specific
            'score_applycal_agents',
            'score_vla_agents',
            'score_total_data_flagged',
@@ -328,7 +347,7 @@ def score_ms_model_data_column_present(all_mses, mses_with_column):
         longmsg = ('No model data column found in %s' % s)
         shortmsg = 'MODELDATA empty'
 
-    score = linear_score(f, 0.0, 1.0, 1.0, 0.5)
+    score = linear_score(f, 0.0, 1.0, 1.0, 0.9)
 
     origin = pqa.QAOrigin(metric_name='score_ms_model_data_column_present',
                           metric_score=f,
@@ -351,7 +370,7 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
         # log a message like 'Entries were found in the HISTORY table for
         # a.ms and b.ms'
         basenames = utils.commafy([ms.basename for ms in mses_with_history], quotes=False)
-        if len(mses_with_history) is 1:
+        if len(mses_with_history) == 1:
             longmsg = ('Unexpected entries were found in the HISTORY table of %s. '
                        'This measurement set may already be processed.' % basenames)
         else:
@@ -383,11 +402,10 @@ def score_bwswitching(mses):
     bandwidth switching observings. For bandwidth switched
     observations the TARGET and PHASE spws are different.
     """
-    score = 1.0
-    num_mses = len(mses)
-    all_ok = True
+    nophasecals_all = set()   # track any spws that have no phase calibration across all MSes
+    num_b2b = 0    # number of MSes that have bandwidth switching in the B2B mode
+    num_bwsw = 0   # number of MSes that have bandwidth switching not in the B2B mode
     complaints = []
-    nophasecals = []
 
     # analyse each MS
     for ms in mses:
@@ -411,27 +429,41 @@ def score_bwswitching(mses):
         if len(nophasecals) == 0:
             continue
 
-        # Score the difference
-        all_ok = False
-        for _ in nophasecals:
-            score += (-1.0 / num_mses / len(nophasecals))
-        longmsg = ('%s contains no phase calibrations for target spws %s'
-                   '' % (ms.basename, utils.commafy(nophasecals, False)))
-        complaints.append(longmsg)
+        nophasecals_all.update(nophasecals)
 
-    if all_ok:
+        # the following section is invoked for B2B and BWSW modes
+        diffgain_mode = ms.get_diffgain_mode()
+        if diffgain_mode == 'B2B':
+            num_b2b += 1
+            complaints.append('%s uses the B2B mode' % ms.basename)
+        elif diffgain_mode == 'BWSW':
+            num_bwsw += 1
+            complaints.append('%s contains no phase calibrations for target spws %s' %
+                              (ms.basename, utils.commafy(list(nophasecals), quotes=False)))
+
+    if num_bwsw == 0 and num_b2b == 0:
         longmsg = ('Phase calibrations found for all target spws in %s.' % (
-                   utils.commafy([ms.basename for ms in mses], False)))
+            utils.commafy([ms.basename for ms in mses], quotes=False)))
         shortmsg = 'Phase calibrations found for all target spws'
+        score = 1.0
     else:
         longmsg = '%s.' % utils.commafy(complaints, False)
-        shortmsg = 'No phase calibrations found for target spws %s' % list(nophasecals)
+        if num_bwsw > 0:   # at least one MS has no phase calibration and is not in a B2B mode
+            shortmsg = 'No phase calibrations found for target spws %s' % list(nophasecals_all)
+            if num_bwsw > 1:
+                shortmsg += ' in %i MSes' % num_bwsw
+            score = 0.0   # indicates that this mode is currently not supported by the pipeline
+        else:
+            shortmsg = 'B2B mode'
+            if num_b2b > 1:
+                shortmsg += ' in %i MSes' % num_b2b
+            score = 0.9
 
     origin = pqa.QAOrigin(metric_name='score_bwswitching',
-                          metric_score=len(nophasecals),
-                          metric_units='Number of MSes without phase calibrators')
+                          metric_score=score,
+                          metric_units='MS score based on the number of spws without phase calibrators')
 
-    return pqa.QAScore(max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -541,7 +573,7 @@ def score_parallactic_range(
             metric_score=coverage,
             metric_units='degrees'
         )
-        score = pqa.QAScore(0.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+        score = pqa.QAScore(0.6, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
                             weblog_location=pqa.WebLogLocation.BANNER,
                             applies_to=pqa.TargetDataSelection(session={session_name}))
         scores.append(score)
@@ -557,7 +589,7 @@ def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> Lis
     """
     pol_intents = {'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'}
     # these recipes are allowed to process polarisation data
-    pol_recipes = {'hifa_polcal', 'hifa_polcalimage'}
+    pol_recipes = {'hifa_polcal', 'hifa_polcalimage', 'hifa_polcal_renorm', 'hifa_polcalimage_renorm'}
 
     # Sort to ensure presentation consistency
     mses = sorted(mses, key=lambda ms: ms.basename)
@@ -654,6 +686,50 @@ def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> Lis
 
     return scores
 
+
+@log_qa
+def score_samecalobjects(recipe_name: str, mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
+    """
+        Check if BP/Phcal/Ampcal are all the same object and score appropriately
+    """
+    alma_recipes = {'hifa_cal', 'hifa_calimage', 'hifa_calsurvey', 'hifa"image', 'hifa_polcal', 'hifa_polcalimage'}
+
+    # Sort to ensure presentation consistency
+    mses = sorted(mses, key=lambda ms: ms.basename)
+
+    # We are just considering ALMA recipes.   True if an ALMA recipe, false if not
+    alma_recipes_expected = recipe_name in alma_recipes
+
+    # holds the final list of QA scores
+    scores: List[pqa.QAScore] = []
+
+    if alma_recipes_expected:
+        for ms in mses:
+            # Get list of calibrator names
+            calfields = ms.get_fields(intent='AMPLITUDE,PHASE,BANDPASS')
+            calfieldnames = [field.name for field in calfields]
+
+            # Check for any duplicate names in the list of calibrator field names
+            # samefieldnames = all(element == calfieldnames[0] for element in calfieldnames)
+            samefieldnames = any(calfieldnames.count(x) > 1 for x in calfieldnames)
+            if samefieldnames:
+                scorevalue = 0.3
+                msg = "Some calibrators are the same object."
+            else:
+                scorevalue = 1.0
+                msg = "Calibrators are different objects."
+
+            origin = pqa.QAOrigin(metric_name='score_samecalobjects',
+                                  metric_score=scorevalue,
+                                  metric_units='samecalobjects')
+
+            score = pqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg, origin=origin)
+
+            scores.append(score)
+
+    return scores
+
+
 @log_qa
 def score_missing_intents(mses, array_type='ALMA_12m'):
     """
@@ -674,9 +750,9 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
         }
     else:
         score_map = {
-            'PHASE': -1.0,
-            'BANDPASS': -0.1,
-            'AMPLITUDE': -0.1
+            'PHASE': -0.7,
+            'BANDPASS': -0.7,
+            'AMPLITUDE': -0.7
         }
 
     required = set(score_map.keys())
@@ -685,7 +761,7 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
     all_ok = True
     complaints = []
 
-    # hold names of MSes this QA will be applicable to 
+    # hold names of MSes this QA will be applicable to
     applies_to = set()
 
     # analyse each MS
@@ -717,7 +793,7 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
                           metric_units='Score based on missing calibration intents')
 
     return pqa.QAScore(
-        max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin, 
+        max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin,
         applies_to=pqa.TargetDataSelection(vis=applies_to)
     )
 
@@ -735,9 +811,9 @@ def score_ephemeris_coordinates(mses):
     num_mses = len(mses)
     all_ok = True
     complaints = []
-    zero_direction = casatools.measures.direction('j2000', '0.0deg', '0.0deg')
-    zero_ra = casatools.quanta.formxxx(zero_direction['m0'], format='hms', prec=3)
-    zero_dec = casatools.quanta.formxxx(zero_direction['m1'], format='dms', prec=2)
+    zero_direction = casa_tools.measures.direction('j2000', '0.0deg', '0.0deg')
+    zero_ra = casa_tools.quanta.formxxx(zero_direction['m0'], format='hms', prec=3)
+    zero_dec = casa_tools.quanta.formxxx(zero_direction['m1'], format='dms', prec=2)
 
     applies_to = set()
 
@@ -771,6 +847,7 @@ def score_ephemeris_coordinates(mses):
         applies_to=pqa.TargetDataSelection(vis=applies_to)
     )
 
+
 @log_qa
 def score_online_shadow_template_agents(ms, summaries):
     """
@@ -787,6 +864,51 @@ def score_online_shadow_template_agents(ms, summaries):
     score.origin = new_origin
 
     return score
+
+
+@log_qa
+def score_lowtrans_flagcmds(ms, result):
+    """
+    Get a score for data flagged by the low transmission agent.
+
+    Heuristic from PIPE-624: search for SpW(s) flagged for low transmission,
+    and set score to:
+    * 1 if no SpWs are flagged.
+    * red warning threshold if the representative SpW is flagged, or otherwise,
+    * blue suboptimal threshold if any non-representative SpW is flagged.
+    """
+    # Search in flag commands for SpW(s) flagged for low transmission.
+    spws = []
+    flagcmds = [f for f in result.flagcmds() if "low_transmission" in f]
+    for flagcmd in flagcmds:
+        match = re.search(r"spw='(\d*)'", flagcmd)
+        if match:
+            spws.append(int(match.group(1)))
+
+    # If successful in finding SpWs that were flagged for low transmission,
+    # then create a score that depends on whether the representative SpW was
+    # among those flagged.
+    if spws:
+        # Get representative SpW for MS.
+        _, rspw = ms.get_representative_source_spw()
+        if rspw in spws:
+            score = rutils.SCORE_THRESHOLD_ERROR
+            longmsg = f"Representative SpW {rspw} flagged for low transmission"
+            shortmsg = f"Representative SpW flagged for low transmission"
+        else:
+            score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+            longmsg = f"Non-representative SpW(s) {', '.join(str(s) for s in spws)} flagged for low transmission"
+            shortmsg = f"Non-representative SpW(s) flagged for low transmission"
+    else:
+        score = 1.0
+        longmsg = "No SpW(s) flagged for low transmission"
+        shortmsg = "No SpW(s) flagged for low transmission"
+
+    origin = pqa.QAOrigin(metric_name='score_lowtrans',
+                          metric_score=score,
+                          metric_units='SpW(s) flagged by low transmission agent.')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -976,7 +1098,7 @@ def countbaddelays(m, delaytable, delaymax):
         Dictionary with antenna name as key
     """
     delaydict = collections.defaultdict(list)
-    with casatools.TableReader(delaytable) as tb:
+    with casa_tools.TableReader(delaytable) as tb:
         spws = np.unique(tb.getcol('SPECTRAL_WINDOW_ID'))
         for ispw in spws:
             tbspw = tb.query(query='SPECTRAL_WINDOW_ID==' + str(ispw), name='byspw')
@@ -1004,7 +1126,7 @@ def score_total_data_vla_delay(filename, m):
     For each antenna with delays > 200 ns, reduce score by 0.1
     """
 
-    with casatools.TableReader(filename) as tb:
+    with casa_tools.TableReader(filename) as tb:
         fpar = tb.getcol('FPARAM')
         delays = np.abs(fpar)  # Units of nanoseconds
         maxdelay = np.max(delays)
@@ -1240,13 +1362,136 @@ def score_contiguous_session(mses, tolerance=datetime.timedelta(hours=1)):
 
 
 @log_qa
-def score_wvrgcal(ms_name, wvr_score):
-    if wvr_score < 1.0:
-        score = 0
-    else:
-        score = linear_score(wvr_score, 1.0, 2.0, 0.5, 1.0)
+def score_wvrgcal(ms_name, dataresult):
 
-    longmsg = 'RMS improvement was %0.2f for %s' % (wvr_score, ms_name)
+    wvr_score = dataresult.qa_wvr.overall_score
+    score = wvr_score.copy()
+
+    # create lists for disc, rms, and flagged antennas checks
+    disc_list=[]
+    rms_list=[]
+    flagant_list=[]
+    for WVRinfo in dataresult.wvr_infos:
+        disc_list.append(WVRinfo.disc.value)
+        rms_list.append(WVRinfo.rms.value)
+        if WVRinfo.flag:
+            flagant_list.append(WVRinfo.antenna)
+
+    # limits for disc and rms triggers - 
+    # same as hard coded in wvrg_qa to make the remcloud 
+    # trigger result object boolean
+    disc_max = 500 # in um
+    rms_max = 500 # in um
+    # subset lists for ants exceeding the limits
+    disc_limit=[dval for dval in disc_list if dval > disc_max]
+    rms_limit=[rval for rval in rms_list if rval > rms_max]
+
+    qa_messages = []
+
+    # check the booleans that pass important information
+    if dataresult.PHnoisy:
+        qa_messages.append('Only Bandpass used for WVR improvement assessment')
+    if dataresult.suggest_remcloud:
+        qa_messages.append('Remcloud suggested')
+
+    if score > 1.0:
+        # if nothing else score passes will be >1.0
+        # truncate to 1.0 - ratio_score now holding improvement 
+        score = 1.0
+        if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 or dataresult.PHnoisy is True:
+            score = 0.9  # i.e. to blue as a maximum value
+            # now adjust 0.1 per bad entry
+            reduceBy =  len(flagant_list)*0.1
+            reduceBy += len(disc_limit)*0.1
+            reduceBy += len(rms_limit)*0.1
+            score = score - reduceBy
+            # Crude check for the message - check if flag or disc/rms
+            if len(flagant_list) > 0:
+                qa_messages.append('Flagged antenna(s)')
+            if len(disc_limit) > 0:
+                qa_messages.append('Elevated disc value(s)')
+            if len(rms_limit) > 0:
+                qa_messages.append('Elevated rms value(s)')
+            # before making the score check if noisy BP was triggered
+            if dataresult.BPnoisy:
+                score = 0.66  # downgrade to yellow to trigger a warning
+                qa_messages.append('Atmospheric phases appear unstable')
+                if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
+                    # inherit previous reduceBy values
+                    score = score - reduceBy
+                # new linear score for yellow truncation
+                score = linear_score(score, 0.0, 0.66, 0.34, 0.66)
+            else:
+                score = linear_score(score, 0.0, 0.9, 0.67, 0.9)
+                # i.e. inputs will be truncated to between 0.0 and 0.9, linfited to be then between 0.67 and 0.9 - blue
+
+    # now for scores < 1.0 
+    elif score < 1.0:
+        qa_messages.append('No WVR improvement')  # PIPE-1837 message changed, now below
+
+        # presuming disc list and rms list are all filled
+        if np.median(disc_list) > disc_max or np.median(rms_list) > rms_max:
+            score = 0.33
+            qa_messages.append('Elevated disc/rms value(s) - Check atmospheric phase stability')
+            if len(flagant_list) > 0:
+                reduceBy = len(disc_limit)*0.1
+                qa_messages.append('Flagged antenna(s)')
+                score = score - reduceBy
+            score = linear_score(score, 0.0, 0.33, 0.0, 0.33)
+            # i.e. inputs will be truncated to between 0.0 and 0.33, linfited to be then between 0.0 and 0.33 RED
+
+        else:
+            score = 0.66
+            reduceBy = 0.0  # initiate due to PIPE-1837 if/else loops 
+            if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
+                # now adjust 0.1 per bad entry
+                reduceBy += len(flagant_list)*0.1
+                reduceBy += len(disc_limit)*0.1
+                reduceBy += len(rms_limit)*0.1
+                score = score - reduceBy
+                # Crude check for the message - check if flag or disc/rms
+                if len(flagant_list) > 0:
+                    qa_messages.append('Flagged antenna(s)')
+                if len(disc_limit) > 0:
+                    qa_messages.append('Elevated disc value(s)')
+                if len(rms_limit) > 0:
+                    qa_messages.append('Elevated rms value(s)')
+
+            # PIPE-1837 before final yellow scoring we assess if the 
+            # phase rms from wvrg_qa was 'good' i.e. <1 radian
+            # but only when there are no other WVR soln issues, i.e. 
+            # disc or rms are below the fixed limits - note
+            # message changes explicitly if only BP is 'good' or both BP and Phase
+            # technically the phase can be noisy due to SNR, not atmospheric variations
+            if len(disc_limit) == 0 and len(rms_limit) == 0:
+                # here we would check if initscore > 0.X: "limit' 
+                if dataresult.BPgood:
+                    qa_messages.append('Bandpass ' + ('and Phase ' if dataresult.PHgood else '') +
+                                       'calibrator atmospheric phase stability appears to be good')
+                    score = 0.9 - reduceBy  # still account for flagged antennas
+                    score = linear_score(score, 0.0, 0.9, 0.67, 0.9)
+                else:
+                    # we don't modify from the previous assessment - i.e. data seem ok, no poor rms or disc,
+                    # but the phase RMS is not explicitly reported as good - I suspect some LB and HF might come here
+                    qa_messages.append('Check atmospheric phase stability')
+                    # if disc and rms didn't trigger but phase stability not reported as good - still yellow
+                    score = linear_score(score, 0.0, 0.66, 0.34, 0.66)
+  
+            # Otherwise now we are back to yellow when disc or rms also triggered on any ant and append message now
+            else:
+                qa_messages.append('Check atmospheric phase stability')
+                score = linear_score(score, 0.0, 0.66, 0.34, 0.66)
+                # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
+
+    # join the short messages for the QA score (are these stored?? ) 
+    qa_mesg = ' - '.join(qa_messages)
+
+    if qa_mesg:
+        longmsg = 'phase RMS improvement was %0.2f for %s - %s' % (wvr_score, ms_name, qa_mesg)
+    else:
+        longmsg = 'phase RMS improvement was %0.2f for %s' % (wvr_score, ms_name)
+
+    # should be made always 
     shortmsg = '%0.2fx improvement' % wvr_score
 
     origin = pqa.QAOrigin(metric_name='score_wvrgcal',
@@ -1520,21 +1765,45 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
 
 
 @log_qa
-def score_phaseup_mapping_fraction(ms, fullcombine, phaseup_spwmap):
+def score_combine_spwmapping(ms, intent, field, spwmapping):
+    """
+    Evaluate whether or not a spw mapping is using combine.
+    If not, then set score to 1. If so, then set score to the sub-optimal
+    threshold (for blue info message).
+    """
+    if spwmapping.combine:
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        longmsg = f'Using combined spw mapping for {ms.basename}, intent={intent}, field={field}'
+        shortmsg = 'Using combined spw mapping'
+    else:
+        score = 1.0
+        longmsg = f'No combined spw mapping for {ms.basename}, intent={intent}, field={field}'
+        shortmsg = 'No combined spw mapping'
+
+    origin = pqa.QAOrigin(metric_name='score_check_phaseup_combine_mapping',
+                          metric_score=spwmapping.combine,
+                          metric_units='Using combined spw mapping')
+
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, intent={intent}, field={field})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+
+
+@log_qa
+def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
     """
     Compute the fraction of science spws that have not been
     mapped to other probably wider windows.
     """
-
-    if not phaseup_spwmap:
+    if not spwmapping.spwmap:
         nunmapped = len([spw for spw in ms.get_spectral_windows(science_windows_only=True)])
         score = 1.0
-        longmsg = 'No spw mapping for %s ' % ms.basename
+        longmsg = f'No spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'No spw mapping'
-    elif fullcombine is True:
+    elif spwmapping.combine:
         nunmapped = 0
         score = rutils.SCORE_THRESHOLD_WARNING
-        longmsg = 'Combined spw mapping for %s ' % ms.basename
+        longmsg = f'Combined spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'Combined spw mapping'
     else:
         # Expected science windows
@@ -1545,32 +1814,207 @@ def score_phaseup_mapping_fraction(ms, fullcombine, phaseup_spwmap):
         nunmapped = 0
         samesideband = True
         for spwid, scispw in zip(scispwids, scispws):
-            if spwid == phaseup_spwmap[spwid]:
+            if spwid == spwmapping.spwmap[spwid]:
                 nunmapped += 1
             else:
-                if scispw.sideband != ms.get_spectral_window(phaseup_spwmap[spwid]).sideband:
+                if scispw.sideband != ms.get_spectral_window(spwmapping.spwmap[spwid]).sideband:
                     samesideband = False
 
         if nunmapped >= nexpected:
             score = 1.0
-            longmsg = 'No spw mapping for %s ' % ms.basename
+            longmsg = f'No spw mapping for {ms.basename}, intent={intent}, field={field}'
             shortmsg = 'No spw mapping'
         else:
             # Replace the previous score with a warning
             if samesideband is True:
                 score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
-                longmsg = 'Spw mapping within sidebands for %s' % ms.basename
+                longmsg = f'Spw mapping within sidebands for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping within sidebands'
             else:
                 score = rutils.SCORE_THRESHOLD_WARNING
-                longmsg = 'Spw mapping across sidebands required for %s' % ms.basename
+                longmsg = f'Spw mapping across sidebands required for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping across sidebands'
 
     origin = pqa.QAOrigin(metric_name='score_phaseup_mapping_fraction',
                           metric_score=nunmapped,
                           metric_units='Number of unmapped science spws')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, intent={intent}, field={field})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+
+
+@log_qa
+def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_threshold):
+    """
+    Score the median achieved SNR for a given phase calibrator field and SpW.
+    Introduced for hifa_spwphaseup (PIPE-665).
+    """
+    if median_snr <= 0.3 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_ERROR
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 30% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.5 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_WARNING
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 50% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.75 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 75% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    else:
+        score = 1.0
+        shortmsg = 'Median SNR is ok'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is > 75% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
+                          metric_score=median_snr,
+                          metric_units='Median SNR')
+
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+
+
+@log_qa
+def score_decoherence_assessment(ms: MeasurementSet, phaserms_results, outlier_antennas: str):
+    """
+    Assess the cycle time phase RMS value, which is important as everything longer than a cycle time
+    is corrected by phase referencing (in terms of atmospheric phase variations).
+
+    Also checks the outlier antennas and the 80th percentile baseline with and without flagged antennas.
+    """
+    try:
+        phasermscycle_p80: float = phaserms_results['phasermscycleP80']
+        bl_p80: float = phaserms_results['blP80']
+        bl_p80_orig: float = phaserms_results['blP80orig']
+
+        initial_score = 1.0 - phasermscycle_p80/100.0
+        RMSstring = str(round(phasermscycle_p80, 2))
+
+        LOG.info("For {0}, the Phase RMS calculated over the cycle time for the unflagged baselines longer than 80th percentile is {1} \
+                    deg".format(ms.basename, RMSstring))
+
+        # Stable Phases, < 30 deg phaseRMS
+        if initial_score > 0.7:
+            base_score = 1.0
+            shortmsg = "Excellent stability Phase RMS (<30deg)."
+            longmsg = "For {0}, excellent stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+                        deg over the cycle time.".format(ms.basename, RMSstring)
+
+            # Check for problem antennas and update the score if needed.
+            # these are outliers >100 deg, or those beyond "outlier_limit" in SSFherusitics (6 MAD)
+            if len(outlier_antennas) > 0:
+                base_score = 0.9
+
+        elif initial_score > 0.5 and initial_score <= 0.7:
+            # 30 to 50 deg phase RMS: not really a problem just informative
+            # that the phase noise is elevated - no 'need' to look
+            # as 50 deg phase RMS can still cause ~30% decoherence
+            base_score = 0.9
+            shortmsg = "Stable conditions phase RMS (30-50deg)."
+            longmsg = "For {0}, good stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+                            deg over the cycle time.".format(ms.basename, RMSstring)
+
+        # These are high phase noise -
+        # outliers have already been clipped past 100 degrees
+        # and those >4 MAD above the P80 phase RMS value
+        # so, if we still get here, the phases were poor/v.bad - or there
+        # were too many antennas classed as bad in the analysis function
+        elif initial_score <= 0.5 and initial_score > 0.3:
+            # 50 - 70 deg phase RMS, i.e. 30-50% lost due to decoherence
+            # The initial score is representative
+            base_score = initial_score
+            shortmsg = "Elevated Phase RMS (50-70deg) exceeds stable parameters."
+            longmsg = "For {0}, elevated phase instability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+                            deg over the cycle time. Some image artifacts/defects may occur.".format(ms.basename, RMSstring)
+
+        elif initial_score <= 0.3:
+            if initial_score <= 0.0:
+                base_score = 0.0
+            else:
+                base_score = initial_score
+
+            shortmsg = "High Phase RMS (>70deg) exceeds limit for poor stability"
+            longmsg = "For {0}, very poor phase stability: The baseline-based median phase RMS for baselines longer than P80 is {1} \
+                        deg over the cycle time. Significant image artifacts/defects may be present.".format(ms.basename, RMSstring)
+
+        else:  # This should never happen
+            base_score = 0.0
+            shortmsg = "The phase RMS could not be assessed."
+            longmsg = "For {}, the spatial structure function could not be assessed".format(ms)
+
+        # Append antenna outlier information to longmsg if present
+        if len(outlier_antennas) > 0:
+            if len(outlier_antennas.split(",")) == 1:
+                longmsg = "{0} {1} has higher phase RMS.".format(longmsg, outlier_antennas)
+            else:
+                longmsg = "{0} {1} have higher phase RMS".format(longmsg, outlier_antennas)
+
+        # The P80 is shorter than the P80 of all data due to notable baseline flagging
+        #       tbd but if the P80 is 10-15% lower than expected - i.e. can later impact QA2
+        #       as the longer baselines have maybe been flagged out
+        if bl_p80 < bl_p80_orig * 0.85:
+            LOG.info("P80 of unflagged data is more than 15% shorter than P80 of all baselines due to baseline and antennas flags")
+            if base_score == 1.0:
+                base_score = 0.9
+            longmsg = "{} P80 of unflagged data is more than 15% shorter than P80 of all baselines".format(longmsg)
+
+    except:
+        # For any error in the above:
+        base_score = 0.0
+        phasermscycle_p80 = 0.0
+        shortmsg = "The phase RMS could not be assessed."
+        longmsg = "For {}, the spatial structure function could not be assessed.".format(ms.basename)
+        LOG.error(traceback.format_exc())
+
+    # Create metric origin
+    phase_stability_origin = pqa.QAOrigin(metric_name='Phase stability',
+                                          metric_score=phasermscycle_p80,
+                                          metric_units='Degrees')
+       
+    return pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin, 
+                       weblog_location=pqa.WebLogLocation.ACCORDION)
+
+
+@log_qa
+def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_threshold):
+    """
+    Score the median achieved SNR for a given check source field and SpW.
+    Introduced for hifa_spwphaseup (PIPE-665).
+    """
+    if median_snr <= 0.3 * snr_threshold:
+        score = 0.7
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 30% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.5 * snr_threshold:
+        score = 0.8
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 50% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.75 * snr_threshold:
+        score = 0.9
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 75% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+    else:
+        score = 1.0
+        shortmsg = 'Median SNR is ok'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is > 75% of the' \
+                  f' phase SNR threshold ({snr_threshold:.1f}).'
+
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
+                          metric_score=median_snr,
+                          metric_units='Median SNR')
+
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -1604,7 +2048,9 @@ def score_missing_phaseup_snrs(ms, spwids, phsolints):
                           metric_score=nmissing,
                           metric_units='Number of spws with missing SNR measurements')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, spw={spwid for spwid in spwids})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -1640,7 +2086,9 @@ def score_poor_phaseup_solutions(ms, spwids, nphsolutions, min_nsolutions):
                           metric_score=npoor,
                           metric_units='Number of poor phaseup solutions')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, spw={spwid for spwid in spwids})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -1805,20 +2253,24 @@ def score_derived_fluxes_snr(ms, measurements):
     score = 0.0
     minscore = 1.0
     minsnr = None
+    snr_thresh = 26.25
+    low_snr_flux = collections.defaultdict(list)
 
-    for value in measurements.values():
+    for fieldid, field_measurements in measurements.items():
         # Loop over the flux measurements
-        for flux in value:
-            fluxjy = flux.I.to_units(measures.FluxDensityUnits.JANSKY)
-            uncjy = flux.uncertainty.I.to_units(measures.FluxDensityUnits.JANSKY)
+        for measurement in field_measurements:
+            fluxjy = measurement.I.to_units(measures.FluxDensityUnits.JANSKY)
+            uncjy = measurement.uncertainty.I.to_units(measures.FluxDensityUnits.JANSKY)
             if fluxjy <= 0.0 or uncjy <= 0.0:
                 continue
             snr = fluxjy / uncjy
             minsnr = snr if minsnr is None else min(minsnr, snr)
             nmeasured += 1
-            score1 = linear_score(float(snr), 5.0, 26.25, 0.66, 1.0)
+            score1 = linear_score(float(snr), 5.0, snr_thresh, 0.66, 1.0)
             minscore = min(minscore, score1)
             score += score1
+            if score1 < 1.0:
+                low_snr_flux[fieldid].append(measurement.spw_id)
 
     if nmeasured > 0:
         score /= nmeasured
@@ -1832,8 +2284,12 @@ def score_derived_fluxes_snr(ms, measurements):
         longmsg = 'No low SNR derived fluxes for %s ' % ms.basename
         shortmsg = 'No low SNR derived fluxes'
     else:
-        longmsg = 'Low SNR derived fluxes for %s ' % ms.basename
-        shortmsg = 'Low SNR derived fluxes'
+        # Report which field(s) and SpW(s) had low SNR.
+        fld_summaries = [f'field {fid}, SpW(s) {", ".join(str(s) for s in sorted(spwids))}'
+                         for fid, spwids in sorted(low_snr_flux.items())]
+        longmsg = f'For {ms.basename}, the fractional uncertainty in the derived scaling factor is large' \
+                  f' (> {100/snr_thresh:.1f}%) for {"; ".join(fld_summaries)}. The calibrator may be too faint.'
+        shortmsg = 'Uncertainty in some of the derived fluxes'
 
     origin = pqa.QAOrigin(metric_name='score_derived_fluxes_snr',
                           metric_score=minsnr,
@@ -2165,47 +2621,51 @@ def score_sd_line_detection(group_id_list, spw_id_list, lines_list):
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
-
 @log_qa
-def score_sd_line_detection_for_ms(group_id_list, field_id_list, spw_id_list, lines_list):
-    detected_spw = []
-    detected_field = []
-    detected_group = []
+def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
+                              pol: str, stat: List[tuple]) -> pqa.QAScore:
+    """
+    Return Pipeline QA score of baseline quality.
 
-    for group_id, field_id, spw_id, lines in zip(group_id_list, field_id_list, spw_id_list, lines_list):
-        if any([l[2] for l in lines]):
-            LOG.trace('detected lines exist at group_id %s field_id %s spw_id %s' % (group_id, field_id, spw_id))
-            unique_spw_id = set(spw_id)
-            if len(unique_spw_id) == 1:
-                detected_spw.append(unique_spw_id.pop())
-            else:
-                detected_spw.append(-1)
-            unique_field_id = set(field_id)
-            if len(unique_field_id) == 1:
-                detected_field.append(unique_field_id.pop())
-            else:
-                detected_field.append(-1)
-            detected_group.append(group_id)
+    Args:
+        vis: MS name
+        source: source name
+        ant: antenna name
+        vspw: virtual spw ID
+        pol: polarization
+        stat: a list of binned statistics
 
-    if len(detected_spw) == 0:
-        score = 0.0
-        longmsg = 'No spectral lines are detected'
-        shortmsg = 'No spectral lines are detected'
-    else:
-        score = 1.0
-        if detected_spw.count(-1) == 0 and detected_field.count(-1) == 0:
-            longmsg = 'Spectral lines are detected at Spws (%s) Fields (%s)' % (', '.join(map(str, detected_spw)),
-                                                                                ', '.join(map(str, detected_field)))
-        else:
-            longmsg = 'Spectral lines are detected at ReductionGroups %s' % (','.join(map(str, detected_group)))
-        shortmsg = 'Spectral lines are detected'
+    Returns:
+        Pipeline QA score of baseline quality.
+    """
+    scores = []
+    LOG.info(f'Statistics of {vis}: {source}, {ant}, {vspw}, {pol}')
+    # See PIPEREQ-168 for details of QA metrics.
+    # The values of bin_diff_ratio at the edges of ramp
+    ramp_range = (1.8, 3.6)
+    # The scores at the corresponding edges of ramp. These values are also
+    # adopted in extrapolation beyond ramp_range.
+    score_range = (1.0, 0.33)
+    metric_func = interpolate.interp1d(ramp_range, score_range,
+                                       kind='linear', bounds_error=False,
+                                       fill_value=score_range)
+    for s in stat:
+        diff_score =  metric_func(s.bin_diff_ratio)
+        scores.append(diff_score)
+        LOG.info(f'rdiff = {s.bin_diff_ratio} -> score = {diff_score}')
+    final_score = np.nanmin(scores)
+    quality = 'Good'
+    if final_score <= 0.66:
+        quality='Poor'
+    elif final_score <= 0.9:
+        quality='Moderate'
+    shortmsg = f'{quality} baseline flatness'
+    longmsg = f'{quality} baseline flatness in {vis}, {source}, {ant}, virtual spw {vspw}, {pol}'
+    origin = pqa.QAOrigin(metric_name='score_sd_baseline_quality',
+                          metric_score=len(stat),
+                          metric_units='Statistics of binned spectra')
 
-    origin = pqa.QAOrigin(metric_name='score_sd_line_detection_for_ms',
-                          metric_score=len(detected_spw),
-                          metric_units='Number of spectral lines detected')
-
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
-
+    return pqa.QAScore(final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 @log_qa
 def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gfluxscale_err):
@@ -2218,8 +2678,8 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
     The fit is performed using pixels in a circular regions
     around the center of the image
     """
-    qa = casatools.quanta
-    me = casatools.measures
+    qa = casa_tools.quanta
+    me = casa_tools.measures
 
     # Get the reference direction of the check source field
     #    There is at least one field with check source intent
@@ -2311,7 +2771,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         fitflux = None
         fitflux_err = None
         fitpeak = None
-        score = 0.0
+        score = 0.34
         longmsg = 'Check source fit failed for %s field %s spwid %d' % (msnames, fieldname, spwid)
         shortmsg = 'Check source fit failed'
         metric_score = 'N/A'
@@ -2329,23 +2789,13 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
 
         warnings = []
 
-        if refflux is not None:
-            coherence = fitdict['fluxloss']['value'] * 100.0
-            flux_score = max(0.0, 1.0 - fitdict['fluxloss']['value'])
-            flux_metric = fitdict['fluxloss']['value']
-            flux_unit = 'flux loss'
-        else:
-            flux_score = 0.0
-            flux_metric = 'N/A'
-            flux_unit = 'flux loss'
-
         offset_score = 0.0
         offset_metric = 'N/A'
         offset_unit = 'beams'
         if beams is None:
             warnings.append('unfitted offset')
         else:
-            offset_score = max(0.0, 1.0 - min(1.0, beams))
+            offset_score = max(0.33, 1.0 - min(1.0, beams))
             offset_metric = beams
             if beams > 0.30:
                 warnings.append('large fitted offset of %.2f marcsec and %.2f synth beam' % (offset, beams))
@@ -2359,7 +2809,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             warnings.append('gfluxscale value of 0.0 mJy')
         else:
             chk_fitflux_gfluxscale_ratio = fitflux * 1000. / gfluxscale
-            fitflux_score = max(0.0, 1.0 - abs(1.0 - chk_fitflux_gfluxscale_ratio))
+            fitflux_score = max(0.33, 1.0 - abs(1.0 - chk_fitflux_gfluxscale_ratio))
             fitflux_metric = chk_fitflux_gfluxscale_ratio
             if chk_fitflux_gfluxscale_ratio < 0.8:
                 warnings.append('low [Fitted / gfluxscale] Flux Density Ratio of %.2f' % (chk_fitflux_gfluxscale_ratio))
@@ -2373,7 +2823,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             warnings.append('Fitted Flux Density value of 0.0 mJy')
         else:
             chk_fitpeak_fitflux_ratio = fitpeak / fitflux
-            fitpeak_score = max(0.0, 1.0 - abs(1.0 - (chk_fitpeak_fitflux_ratio)))
+            fitpeak_score = max(0.33, 1.0 - abs(1.0 - (chk_fitpeak_fitflux_ratio)))
             fitpeak_metric = chk_fitpeak_fitflux_ratio
             if chk_fitpeak_fitflux_ratio < 0.7:
                 warnings.append('low Fitted [Peak Intensity / Flux Density] Ratio of %.2f' % (chk_fitpeak_fitflux_ratio))
@@ -2393,17 +2843,20 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         metric_units = '%s, %s, %s' % (offset_unit, fitflux_unit, fitpeak_unit)
 
         if warnings != []:
-            longmsg = '%s field %s spwid %d: has a %s%s' % (msnames, fieldname, spwid, ' and a '.join(warnings), snr_msg)
+            longmsg = 'EB %s field %s spwid %d: has a %s%s' % (msnames, fieldname, spwid, ' and a '.join(warnings), snr_msg)
             # Log warnings only if they would not be logged by the QA system (score <= 0.66)
             if score > 0.66:
-                LOG.warn(longmsg)
+                LOG.warning(longmsg)
         else:
-            longmsg = 'Check source fit successful'
+            if score <= 0.9:
+                longmsg = 'EB %s field %s spwid %d: Check source fit not optimal' % (msnames, fieldname, spwid)
+            else:
+                longmsg = 'EB %s field %s spwid %d: Check source fit successful' % (msnames, fieldname, spwid)
 
         if score <= 0.9:
             shortmsg = 'Check source fit not optimal'
 
-    origin = pqa.QAOrigin(metric_name='score_checksources',
+    origin = pqa.QAOrigin(metric_name='ScoreChecksources',
                           metric_score=metric_score,
                           metric_units=metric_units)
 
@@ -2513,7 +2966,6 @@ def generate_metric_mask(context, result, cs, mask):
         bool array -- metric mask (True: valid, False: invalid)
     """
     outcome = result.outcome
-    imagename = outcome['image'].imagename
     org_direction = outcome['image'].org_direction
     imshape = mask.shape
 
@@ -2524,7 +2976,6 @@ def generate_metric_mask(context, result, cs, mask):
 
     mses = context.observing_run.measurement_sets
     ms_list = [mses[i] for i in file_index]
-    vis_list = np.asarray([m.basename for m in ms_list])
     spw_list = np.asarray([context.observing_run.virtual2real_spw_id(i, m) for i, m in zip(vspw_list, ms_list)])
 
     ra = []
@@ -2533,12 +2984,12 @@ def generate_metric_mask(context, result, cs, mask):
     ofs_dec = []
     online_flag = []
 
-    for i in range(len(mses)):
-        vis = mses[i].basename
-        datatable_name = os.path.join(context.observing_run.ms_datatable_name, vis)
+    for i in range(len(ms_list)):
+        origin_basename = os.path.basename(ms_list[i].origin_ms)
+        datatable_name = os.path.join(context.observing_run.ms_datatable_name, origin_basename)
         rotable_name = os.path.join(datatable_name, 'RO')
         rwtable_name = os.path.join(datatable_name, 'RW')
-        _index = np.where(file_index == i)
+        _index = np.where(file_index == file_index[i])
         if len(_index[0]) == 0:
             continue
 
@@ -2546,7 +2997,7 @@ def generate_metric_mask(context, result, cs, mask):
         _fieldlist = field_list[_index]
         _spwlist = spw_list[_index]
 
-        with casatools.TableReader(rotable_name) as tb:
+        with casa_tools.TableReader(rotable_name) as tb:
             unit_ra = tb.getcolkeyword('OFS_RA', 'UNIT')
             unit_dec = tb.getcolkeyword('OFS_DEC', 'UNIT')
             tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(list(_antlist), list(_fieldlist), list(_spwlist)))
@@ -2555,7 +3006,7 @@ def generate_metric_mask(context, result, cs, mask):
             rows = tsel.rownumbers()
             tsel.close()
 
-        with casatools.TableReader(rwtable_name) as tb:
+        with casa_tools.TableReader(rwtable_name) as tb:
             permanent_flag = tb.getcol('FLAG_PERMANENT').take(rows, axis=2)
             online_flag.extend(permanent_flag[0, OnlineFlagIndex])
 
@@ -2576,7 +3027,7 @@ def generate_metric_mask(context, result, cs, mask):
     metric_mask = np.empty(imshape, dtype=bool)
     metric_mask[:] = False
 
-    qa = casatools.quanta
+    qa = casa_tools.quanta
 
     # template measure for world-pixel conversion
     # 2019/06/03 TN
@@ -2645,8 +3096,8 @@ def generate_metric_mask(context, result, cs, mask):
 
 
 def direction_recover( ra, dec, org_direction ):
-    me = casatools.measures
-    qa = casatools.quanta
+    me = casa_tools.measures
+    qa = casa_tools.quanta
 
     direction = me.direction( org_direction['refer'],
                               str(ra)+'deg', str(dec)+'deg' )
@@ -2689,7 +3140,7 @@ def score_sdimage_masked_pixels(context, result):
     imagename = image_item.imagename
 
     LOG.debug('imagename = {}'.format(imagename))
-    with casatools.ImageReader(imagename) as ia:
+    with casa_tools.ImageReader(imagename) as ia:
         # get mask
         # Mask Definition: True is valid, False is invalid.
         mask = ia.getchunk(getmask=True)
@@ -2717,7 +3168,7 @@ def score_sdimage_masked_pixels(context, result):
     LOG.debug('Total number of pixels to be included in: {}'.format(len(total_pixels)))
     masked_pixels = total_pixels[total_pixels == False]
     if len(total_pixels) == 0:
-        LOG.warn('No pixels associated with pointing data exist. QA score will be zero.')
+        LOG.warning('No pixels associated with pointing data exist. QA score will be zero.')
         metric_score = -1.0
     else:
         masked_fraction = float(len(masked_pixels)) / float(len(total_pixels))
@@ -2732,7 +3183,7 @@ def score_sdimage_masked_pixels(context, result):
     metric_score_max = 1.0
     metric_score_min = 0.0
 
-    # convert score and threhold for logging purpose
+    # convert score and threshold for logging purpose
     frac2percentage = lambda x: '{:.4g}%'.format(x * 100)
     imbasename = os.path.basename(imagename.rstrip('/'))
 
@@ -2822,6 +3273,7 @@ def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=origin)
 
 
+@log_qa
 def score_science_spw_names(mses, virtual_science_spw_names):
     """
     Check that all MSs have the same set of spw names. If this is
@@ -2854,6 +3306,261 @@ def score_science_spw_names(mses, virtual_science_spw_names):
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
+def score_renorm(result):
+    if result.renorm_applied:
+        msg = 'Restore successful with renormalization applied'
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+    else:
+        msg = 'Restore successful'
+        score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='score_renormalize',
+                            metric_score=score,
+                            metric_units='')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+@log_qa
+def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: GaincalResults,
+                            threshold: float = 0.1) -> List[pqa.QAScore]:
+    """
+    This QA heuristic inspects the gain ratios in an X/Y gain ratio caltable
+    and creates a score based on how large the deviation from one is.
+
+    Args:
+        session_name: name of session being evaluated.
+        ant_names: dictionary mapping antenna IDs to names.
+        xyratio_result: Gaincal task result object containing the
+            CalApplication for the caltable to analyze.
+        threshold: threshold used to determine whether the gain ratio deviates
+            too much from 1 (resulting in a lowered score).
+    Returns:
+        List of QAScore objects.
+    """
+    scores = []
+    # Score each caltable in result.
+    for calapp in xyratio_result.final:
+        # Retrieve data from caltable.
+        with casa_tools.TableReader(calapp.gaintable) as table:
+            gains = np.squeeze(table.getcol('CPARAM'))
+            spws = table.getcol('SPECTRAL_WINDOW_ID')
+            ants = table.getcol('ANTENNA1')
+
+        # Score each SpW separately.
+        for spwid in sorted(set(spws)):
+            ind_spw = np.where(spws == spwid)[0]
+            ratios = np.abs(gains[0, ind_spw]) / np.abs(gains[1, ind_spw])
+            ind_bad = np.where(np.abs(1 - ratios) > threshold)[0]
+
+            if len(ind_bad) > 0:
+                score = 0.65
+                ant_str = utils.commafy([f"{ant_names[i]} (#{i})" for i in ants[ind_bad]], quotes=False)
+                longmsg = f"Session '{session_name}' has gain ratios deviate from 1 by more than {threshold} for SpW" \
+                          f" {spwid}, antenna(s) {ant_str}"
+                shortmsg = "Large gain ratio deviation"
+                origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio',
+                                      metric_score=score,
+                                      metric_units='gain ratio')
+                scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    # If no large deviations in gain ratio are found, then create a good score.
+    if not scores:
+        score = 1.0
+        longmsg = f"Session '{session_name}' has gain ratios with deviations from 1 <= the threshold of {threshold}" \
+                  f" for all SpWs and all antennas."
+        shortmsg = "Gain ratio"
+        origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio',
+                              metric_score=score,
+                              metric_units='gain ratio')
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    return scores
+
+
+@log_qa
+def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, List], threshold: float = 0.02) \
+        -> pqa.QAScore:
+    """
+    This QA heuristic receives gain ratio RMS corresponding to scan IDs, and
+    scores outliers beyond the threshold.
+
+    Args:
+        session_name: name of session being evaluated.
+        gain_ratio_rms: tuple containing a list of scan IDs and a list of
+            corresponding gain ratio RMS.
+        threshold: threshold used to determine whether the gain ratio RMS is
+            high enough to return a lowered score.
+
+    Returns:
+        QAScore object
+    """
+    # Retrieve the gain ratio RMS and scan IDs.
+    scanids, ratio_rms = gain_ratio_rms
+
+    # Identify outlier gain ratio RMS
+    ind_bad = np.where(np.asarray(ratio_rms) > threshold)[0]
+
+    if len(ind_bad) > 0:
+        score = 0.6
+        longmsg = f"Session '{session_name}' has gain ratio RMS greater than {threshold} in scan(s)" \
+                  f" {utils.commafy([str(s) for s in np.asarray(scanids)[ind_bad]], quotes=False)}."
+        shortmsg = "High gain ratio RMS"
+    else:
+        score = 1.0
+        longmsg = f"Session '{session_name}' has gain ratio RMS <= the threshold of {threshold} for all scans."
+        shortmsg = "Gain ratio RMS"
+
+    origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio_rms',
+                          metric_score=score,
+                          metric_units='gain ratio rms')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
+def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: PolcalWorkerResults, th_poor: float = 0.10,
+                         th_bad: float = 0.15) -> List[pqa.QAScore]:
+    """
+    This heuristic inspects the polarization calibrator leakage (D-terms)
+    solutions caltable and create a score based on how large the deviation from
+    zero is.
+
+    Args:
+        session_name: name of session being evaluated.
+        ant_names: dictionary mapping antenna IDs to names.
+        leakage_result: PolcalWorker task result object containing the
+            CalApplication for the leakage caltable to analyze.
+        th_poor: threshold used to declare that leakage solutions are poor.
+        th_bad: threshold used to declare that leakage solutions are bad.
+    Returns:
+        List of QAScore objects.
+    """
+    scores = []
+    # Score each caltable in result.
+    for calapp in leakage_result.final:
+        # Retrieve data from leakage solutions caltable.
+        with casa_tools.TableReader(calapp.gaintable) as table:
+            # Retrieve unique SpWs and antennas.
+            uniq_spws = sorted(set(table.getcol('SPECTRAL_WINDOW_ID')))
+            uniq_ants = sorted(set(table.getcol('ANTENNA1')))
+
+            # Score each SpW separately.
+            for spwid in uniq_spws:
+                # Retrieve D-terms for current SpW.
+                data = table.query(f"SPECTRAL_WINDOW_ID=={spwid}", columns='CPARAM')
+                dterms = data.getcol('CPARAM')
+
+                # For each antenna, check if the D-terms solutions exceed the
+                # threshold.
+                bad_antids = []
+                poor_antids = []
+                for antid in uniq_ants:
+                    pol1 = dterms[0, :, antid]
+                    pol2 = dterms[1, :, antid]
+
+                    rpol1 = abs(np.real(pol1)) > th_bad
+                    ipol1 = abs(np.imag(pol1)) > th_bad
+                    rpol2 = abs(np.real(pol2)) > th_bad
+                    ipol2 = abs(np.imag(pol2)) > th_bad
+
+                    if rpol1.any() or ipol1.any() or rpol2.any() or ipol2.any():
+                        bad_antids.append(antid)
+                        continue
+
+                    rpol1 = abs(np.real(pol1)) > th_poor
+                    ipol1 = abs(np.imag(pol1)) > th_poor
+                    rpol2 = abs(np.real(pol2)) > th_poor
+                    ipol2 = abs(np.imag(pol2)) > th_poor
+
+                    if rpol1.any() or ipol1.any() or rpol2.any() or ipol2.any():
+                        poor_antids.append(antid)
+
+                if poor_antids:
+                    score = 0.75
+                    longmsg = f"Session '{session_name}' has D-terms solutions that deviate by {th_poor}-{th_bad} for" \
+                              f" SpW {spwid}, antenna(s)" \
+                              f" {utils.commafy([ant_names[i] for i in poor_antids], quotes=False)}."
+                    shortmsg = "Large deviation D-terms solutions"
+                    origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
+                                          metric_score=score,
+                                          metric_units='D-terms solutions deviation')
+                    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+                if bad_antids:
+                    score = 0.55
+                    longmsg = f"Session '{session_name}' has D-terms solutions that deviate by more than {th_bad} for" \
+                              f" SpW {spwid}, antenna(s)" \
+                              f" {utils.commafy([ant_names[i] for i in bad_antids], quotes=False)}."
+                    shortmsg = "Very large deviation D-terms solutions"
+                    origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
+                                          metric_score=score,
+                                          metric_units='D-terms solutions deviation')
+                    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    # If no poor D-terms solutions are found, then create a good score.
+    if not scores:
+        score = 1.0
+        longmsg = f"Session '{session_name}' has D-terms solutions <= the threshold of {th_poor} for all SpWs and" \
+                  f" antennas."
+        shortmsg = "D-terms solutions"
+        origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
+                              metric_score=score,
+                              metric_units='D-terms solutions deviation')
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    return scores
+
+
+@log_qa
+def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: float = 0.001) -> List[pqa.QAScore]:
+    """
+    This heuristic inspects the dictionary returned by CASA's polfromgain and
+    scores the residual polarization in Q and U, compared to a threshold.
+
+    Args:
+        session_name: name of session being evaluated.
+        pfg_result: dictionary of results produced by polfromgain
+        threshold: threshold for residual polarization, above which the score
+            should be lowered.
+    Returns:
+        List of QAScore objects.
+    """
+    scores = []
+
+    # Create score for each field.
+    for field_name, field_result in pfg_result.items():
+        # Check residual polarization for each SpW.
+        bad_spwids = []
+        for spwid, spw_result in field_result.items():
+            # Skip the result for "Average SpW".
+            if 'Ave' in spwid:
+                continue
+
+            # The SpW result is a list of [I, Q, U, V], check whether Q or U
+            # exceed threshold.
+            if abs(spw_result[1]) > threshold or abs(spw_result[2]) > threshold:
+                bad_spwids.append(spwid[3:])
+
+        # Create a score depending on whether any SpW had too high residual
+        # polarization.
+        if bad_spwids:
+            score = 0.5
+            longmsg = f"Session '{session_name}' has residual polarization greater than {threshold} in SpW(s)" \
+                      f" {utils.commafy(bad_spwids, quotes=False)}."
+            shortmsg = "High residual polarization"
+        else:
+            score = 1.0
+            longmsg = f"Session '{session_name}' residual polarization <= the threshold of {threshold}."
+            shortmsg = "Residual polarization"
+        origin = pqa.QAOrigin(metric_name='score_polcal_residual_pol',
+                              metric_score=score,
+                              metric_units='residual polarization')
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    return scores
+
+
+@log_qa
 def score_fluxservice(result):
     """
     If the primary FS query fails and the backup is invoked,
@@ -2863,22 +3570,60 @@ def score_fluxservice(result):
     """
 
     if result.inputs['dbservice'] is False:
-        msg = "Flux catalog service not used."
         score = 1.0
+        msg = "Flux catalog service not used."
+        for setjy_result in result.setjy_results:
+            measurements = setjy_result.measurements
+            for measurement in measurements.items():
+                try:
+                    fluxorigin = measurement[1][0].origin
+                    if fluxorigin == 'Source.xml':
+                        score = 0.3
+                        msg = "Flux catalog service not used.  Source.xml is the origin."
+                except Exception as e:
+                    LOG.debug("Skip since there is not a flux measurement")
+
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
                               metric_score=score,
                               metric_units='flux service')
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
     elif result.inputs['dbservice'] is True:
-        if result.fluxservice is 'FIRSTURL':
-            msg = "Flux catalog service used."
+        msg = ""
+        if result.fluxservice == 'FIRSTURL':
+            msg += "Flux catalog service used.  "
             score = 1.0
-        elif result.fluxservice is 'BACKUPURL':
-            msg = 'Backup flux catalog service used.'
+        elif result.fluxservice == 'BACKUPURL':
+            msg += "Backup flux catalog service used.  "
             score = 0.9
-        elif result.fluxservice is 'FAIL':
-            msg = 'Neither primary or backup flux service could be queried.  ASDM values used.'
-            score = 0.6
+        elif result.fluxservice == 'FAIL':
+            msg += "Neither primary or backup flux service could be queried.  ASDM values used."
+            score = 0.3
+
+        agecounter = 0
+        if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
+            for setjy_result in result.setjy_results:
+                measurements = setjy_result.measurements
+                for measurement in measurements.items():
+                    try:
+                        fieldid = measurement[0]
+                        mm = result.mses[0]
+                        fieldobjs = mm.get_fields(field_id=fieldid)
+                        intentlist = []
+                        for fieldobj in fieldobjs:
+                            intentlist.append(fieldobj.intents)
+
+                        # PIPE-1124.  Only determine QA age scoring if 'AMPLITUDE' intent is present for a source.
+                        if 'AMPLTIUDE' in intentlist:
+                            age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
+                            if int(abs(age)) > 14:
+                                agecounter = agecounter + 1
+                    except IndexError:
+                        LOG.debug("Skip since there is no age present")
+
+            # Any sources with age of nearest monitoring point greater than 14 days?
+            if agecounter > 0:
+                score = 0.5
+                msg += "Age of nearest monitor point is greater than 14 days."
 
         origin = pqa.QAOrigin(metric_name='score_fluxservice',
                               metric_score=score,
@@ -2886,65 +3631,125 @@ def score_fluxservice(result):
         return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
-def score_mom8_fc_image(mom8_fc_name, peak_snr, cube_chanScaled_MAD, outlier_threshold, n_pixels, n_outlier_pixels, is_eph_obj=False):
+@log_qa
+def score_fluxservicemessages(result):
+    """
+    Report any flux service messaging and status codes
+    """
+    if result.inputs['dbservice'] is False:
+        score = 1.0
+        longmsg = "Flux catalog service not used.  No warning messages reported."
+        shortmsg = longmsg
+    elif result.inputs['dbservice'] is True:
+        score = 1.0
+        longmsg = "No warning messages from the flux catalog service."
+        shortmsg = longmsg
+        if result.qastatus:
+            longmsg = ""
+            for qacode in result.qastatus:
+                if qacode['clarification']:
+                    score = 0.5
+                    # Queries a per source, so there may be more than one message returned.
+                    longmsg += "Source: {!s},  Status code: {!s},     Message: {!s}\n".format(qacode['source'],
+                                                                                            qacode['status_code'],
+                                                                                            qacode['clarification'])
+                    shortmsg = "Flux service returned warning messages."
+
+    origin = pqa.QAOrigin(metric_name='score_fluxservice_messaging',
+                          metric_score=score,
+                          metric_units='flux service messaging')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
+def score_fluxservicestatuscodes(result):
+    """
+    Report any flux service codes for status_code > 1
+    """
+    if result.inputs['dbservice'] is False:
+        score = 1.0
+        msg = "Flux catalog service not used.  No status codes to report."
+    elif result.inputs['dbservice'] is True:
+        score = 1.0
+        msg = "Flux catalog service status queries returned code 0 or 1."
+        if result.qastatus:
+            scores = []
+            for qacode in result.qastatus:
+                # Status code can be 0,1,2,3
+                if int(qacode['status_code']) > 1:
+                    score = 0.3
+                    msg = "A query of the flux catalog service returned a status code: {!s}".format(str(qacode['status_code']))
+
+    origin = pqa.QAOrigin(metric_name='score_fluxservice_statuscode',
+                          metric_score=score,
+                          metric_units='flux service status code')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+@log_qa
+def score_fluxcsv(result):
+    """
+    Check for existence of flux.csv file on import
+    """
+
+    if os.path.exists('flux.csv'):
+        score = 1.0
+        msg = 'flux.csv exists on disk'
+    else:
+        score = 0.3
+        msg = "flux.csv does not exist"
+
+    origin = pqa.QAOrigin(metric_name='score_fluxcsv',
+                          metric_score=score,
+                          metric_units='flux csv')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+
+
+
+
+
+@log_qa
+def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asymmetry, mom8_fc_max_segment_beams, mom8_fc_frac_max_segment):
     """
     Check the MOM8 FC image for outliers above a given SNR threshold. The score
     can vary between 0.33 and 1.0 depending on the fraction of outlier pixels.
     """
 
-    outlier_fraction = n_outlier_pixels / n_pixels
-    with casatools.ImageReader(mom8_fc_name) as image:
+    mom8_fc_outlier_threshold1 = 5.0
+    mom8_fc_outlier_threshold2 = 3.5
+    mom8_fc_histogram_asymmetry_threshold1 = 0.20
+    mom8_fc_histogram_asymmetry_threshold2 = 0.05
+    mom8_fc_max_segment_beams_threshold = 1.0
+    mom8_fc_score_min = 0.33
+    mom8_fc_score_max = 1.00
+    mom8_fc_metric_scale = 100.0
+    if mom8_fc_frac_max_segment != 0.0:
+        mom8_fc_score = mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * (1.0 + erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment)))
+    else:
+        mom8_fc_score = mom8_fc_score_max
+
+    with casa_tools.ImageReader(mom8_fc_name) as image:
         info = image.miscinfo()
         field = info.get('field')
-        spw = info.get('spw')
+        spw = info.get('virtspw')
 
-    # Do not yet analyze the MOM8 FC image for ephemeris sources due to
-    # missing LSRK to REST frame conversion. Set the score to a fixed value
-    # of 0.89 (PIPE-704). To be revised when CAS-12012 is implemented.
-    if is_eph_obj:
-        LOG.info('The MOM0 FC and MOM8 FC images for ephemeris source {:s} may be in error due to LSRK to REST translation issues for the Findcont Channels. If the source has real line emission check results carefully. The MOM8 FC score has been fixed to 0.89 without analyzing the actual image.'.format(field))
-        score = 0.89
-        longmsg = 'MOM8 FC score for field {:s} spw {:s} was fixed to 0.89 due to LSRK to REST translation issues for the Findcont Channels. The peak SNR is {:#.5g}.'.format(field, spw, peak_snr)
-        shortmsg = 'MOM8 FC score fixed to 0.89'
-        weblog_location = pqa.WebLogLocation.ACCORDION
-
-        origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
-                              metric_score='Manually fixed value',
-                              metric_units='None')
-
-        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
-
-    if peak_snr <= outlier_threshold:
-        score = 1.0
-        longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is below the QA threshold.'.format(field, spw, peak_snr)
-        shortmsg = 'MOM8 FC peak SNR below QA threshold'
-        weblog_location = pqa.WebLogLocation.ACCORDION
+    if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold1) or \
+       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and mom8_fc_max_segment_beams > mom8_fc_max_segment_beams_threshold):
+        mom8_fc_final_score = min(mom8_fc_score, 0.65)
     else:
-        LOG.info('Image {:s} has {:d} pixels ({:.2f}%) above a threshold of {:.1f} x channel scaled MAD = {:#.5g}.'.format(os.path.basename(mom8_fc_name),
-                                          n_outlier_pixels,
-                                          outlier_fraction * 100.0,
-                                          outlier_threshold,
-                                          outlier_threshold * cube_chanScaled_MAD))
+        mom8_fc_final_score = max(mom8_fc_score, 0.67)
 
-        m8fc_score_min = 0.33
-        m8fc_score_max = 0.90
-        m8fc_metric_scale = 300.0
-        score = m8fc_score_min + 0.5 * (m8fc_score_max - m8fc_score_min) * (1.0 + erf(-np.log10(m8fc_metric_scale * outlier_fraction)))
-        if 0.66 <= score <= 0.9 and peak_snr > 1.2 * outlier_threshold and n_outlier_pixels > 8:
-            LOG.info('Modifying MOM8 FC score from {:.2f} to 0.65 due to peak SNR > 6.0 x channel scaled MAD and > 8 outlier pixels.'.format(score))
-            score = 0.65
-
-        if 0.33 <= score < 0.66:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} with a peak SNR of {:#.5g} indicates that there may be residual line emission in the findcont channels.'.format(field, spw, peak_snr)
-            shortmsg = 'MOM8 FC image indicates residual line emission'
-            weblog_location = pqa.WebLogLocation.UNSET
-        else:
-            longmsg = 'MOM8 FC image for field {:s} spw {:s} has a peak SNR of {:#.5g} which is above the QA threshold.'.format(field, spw, peak_snr)
-            shortmsg = 'MOM8 FC peak SNR above QA threshold'
-            weblog_location = pqa.WebLogLocation.ACCORDION
+    if 0.33 <= mom8_fc_final_score < 0.66:
+        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} with a peak SNR of {:#.5g} and a flux histogram asymmetry which indicate that there may be residual line emission in the findcont channels.'.format(field, spw, mom8_fc_peak_snr)
+        shortmsg = 'MOM8 FC image indicates residual line emission'
+        weblog_location = pqa.WebLogLocation.UNSET
+    else:
+        longmsg = 'MOM8 FC image for field {:s} virtspw {:s} has a peak SNR of {:#.5g} and no significant flux histogram asymmetry.'.format(field, spw, mom8_fc_peak_snr)
+        shortmsg = 'MOM8 FC peak SNR and flux histogram'
+        weblog_location = pqa.WebLogLocation.ACCORDION
 
     origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
-                          metric_score=(peak_snr, outlier_fraction),
-                          metric_units='Peak SNR / Outlier fraction')
+                          metric_score=(mom8_fc_peak_snr, mom8_10_fc_histogram_asymmetry, mom8_fc_max_segment_beams, mom8_fc_frac_max_segment),
+                          metric_units='Peak SNR / Histogram asymmetry, Max. segment size in beams, Max. segment fraction')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+    return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)

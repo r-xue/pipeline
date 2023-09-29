@@ -10,6 +10,7 @@ import math
 import operator
 import os
 
+import numpy as np
 import matplotlib.pyplot as plt
 
 import pipeline.domain.measures as measures
@@ -155,33 +156,43 @@ def make_flux_table(context, results):
         if len(single_result.measurements) == 0:
             continue
 
-        for field_arg, measurements in single_result.measurements.items():
+        for field_arg in sorted(single_result.measurements, key=lambda f: ms_for_result.get_fields(f)[0].id):
             field = ms_for_result.get_fields(field_arg)[0]
 
-            intents = ' '. join(field.intents.intersection(transintent))
+            intents = " ". join(sorted(field.intents.intersection(transintent)))
             field_cell = '%s (#%s) %s' % (field.name, field.id, intents)
 
-            for measurement in sorted(measurements, key=lambda m: int(m.spw_id)):
+            for measurement in sorted(single_result.measurements[field_arg], key=operator.attrgetter('spw_id')):
                 spw = ms_for_result.get_spectral_window(measurement.spw_id)
                 freqbw = '%s %s' % (str(spw.centre_frequency), str(spw.bandwidth))
                 fluxes = collections.defaultdict(lambda: 'N/A')
 
                 for stokes in ['I', 'Q', 'U', 'V']:
-                    try:                        
+                    try:
                         flux = getattr(measurement, stokes)
                         unc = getattr(measurement.uncertainty, stokes)
                         flux_jy = flux.to_units(measures.FluxDensityUnits.JANSKY)
                         if stokes == 'I':
                             flux_jy_I = flux_jy
                         unc_jy = unc.to_units(measures.FluxDensityUnits.JANSKY)
-
+                        sp_str, sp_scale = utils.get_si_prefix(flux_jy, lztol=0)
                         if flux_jy != 0 and unc_jy != 0:
                             unc_ratio = decimal.Decimal('100')*(unc_jy/flux_jy)
-                            uncertainty = ' &#177; %s (%0.1f%%)' % (str(unc), unc_ratio)
+                            if unc_ratio >= 0.1:
+                                unc_ratio_str = '{:.1f}'.format(unc_ratio)
+                            else:
+                                unc_ratio_str = np.format_float_positional(
+                                    unc_ratio, precision=1, fractional=False, trim='-')
+                            unc_value = float(unc_jy)/sp_scale
+                            if unc_value >= 0.001:
+                                unc_value_str = '{:.3f}'.format(unc_value)
+                            else:
+                                unc_value_str = np.format_float_positional(
+                                    unc_value, precision=1, fractional=False, trim='-')
+                            fluxes[stokes] = '{:.3f} &#177 {} {} ({}%)'.format(
+                                float(flux_jy)/sp_scale, unc_value_str, sp_str+'Jy', unc_ratio_str)
                         else:
-                            uncertainty = ''
-
-                        fluxes[stokes] = '%s%s' % (flux, uncertainty)
+                            fluxes[stokes] = '{:.3f} {}'.format(float(flux_jy)/sp_scale, sp_str+'Jy')
                     except:
                         pass
 
@@ -228,17 +239,27 @@ def make_flux_table(context, results):
                             try:
                                 fsflux = getattr(fs_measurement, stokes)
                                 fsunc = getattr(fs_measurement.uncertainty, stokes)
-
                                 fsflux_jy = fsflux.to_units(measures.FluxDensityUnits.JANSKY)
                                 fsunc_jy = fsunc.to_units(measures.FluxDensityUnits.JANSKY)
-
+                                sp_str, sp_scale = utils.get_si_prefix(fsflux_jy, lztol=0)
                                 if fsflux_jy != 0 and fsunc_jy != 0:
                                     fsunc_ratio = decimal.Decimal('100') * (fsunc_jy / fsflux_jy)
-                                    fsunc_str = ' &#177; %s (%0.1f%%)' % (str(fsunc), fsunc_ratio)
+                                    if fsunc_ratio >= 0.1:
+                                        fsunc_ratio_str = '{:.1f}'.format(fsunc_ratio)
+                                    else:
+                                        fsunc_ratio_str = np.format_float_positional(
+                                            fsunc_ratio, precision=1, fractional=False, trim='-')
+                                    fsunc_value = float(fsunc_jy)/sp_scale
+                                    if fsunc_value >= 0.001:
+                                        fsunc_value_str = '{:.3f}'.format(fsunc_value)
+                                    else:
+                                        fsunc_value_str = np.format_float_positional(
+                                            fsunc_value, precision=1, fractional=False, trim='-')
+                                    fsfluxes[stokes] = '{:.3f} &#177 {} {} ({}%)'.format(
+                                        float(fsflux_jy)/sp_scale, fsunc_value_str, sp_str+'Jy', fsunc_ratio_str)
                                 else:
-                                    fsunc_str = ''
+                                    fsfluxes[stokes] = '{:.3f} {}'.format(float(fsflux_jy)/sp_scale, sp_str+'Jy')
 
-                                fsfluxes[stokes] = '%s%s' % (fsflux, fsunc_str)
                             except:
                                 pass
                         try:
@@ -315,13 +336,17 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
         # Avoid offset values (PIPE-644)
         ax.yaxis.set_major_formatter(plt.ScalarFormatter(useOffset=False))
 
-        colours = itertools.cycle('bgrcmyk')
+        # PIPE-1550: cycle through different symbols and colours simultaneously
+        # (diagonally across the 7x10 matrix of unique combinations, rather than row-by-row);
+        # note that this assumes that the numbers of symbols and colours are coprime
+        symbols_and_colours = zip(itertools.cycle('osDv^<>'),
+                                  itertools.cycle(plt.get_cmap('tab10').colors))  # standard Tableau colormap
 
         x_min = 1e99
         x_max = 0
         for m in sorted(measurements, key=operator.attrgetter('spw_id')):
             # cycle colours so that windows centred on the same frequency are distinguishable
-            colour = next(colours)
+            symbol, colour = next(symbols_and_colours)
 
             spw = ms.get_spectral_window(m.spw_id)
             x = spw.centre_frequency.to_units(FrequencyUnits.GIGAHERTZ)
@@ -333,8 +358,10 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
             y = m.I.to_units(FluxDensityUnits.JANSKY)
             y_unc = m.uncertainty.I.to_units(FluxDensityUnits.JANSKY)
             if not (y == 0 and y_unc == 0):
-                label = 'Calibrated data flux for spw {}'.format(spw.id)
-                ax.errorbar(x, y, xerr=x_unc, yerr=y_unc, fmt='{!s}-o'.format(colour), label=label)
+                label = 'spw {}'.format(spw.id)
+                ax.errorbar(
+                    x, y, xerr=x_unc, yerr=y_unc,
+                    marker=symbol, color=colour, ls="-", label=label)
 
             x_min = min(x_min, x - x_unc)
             x_max = max(x_max, x + x_unc)
@@ -361,11 +388,11 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
             x, y, spix = list(zip(*sorted(zip(x, y, spix))))
             # PIPE-644: always plot catalog fluxes in black.
             colour = "k"
-            ax.plot(x, y, marker='o', color=colour, label='Data source: {}'.format(label))
+            ax.plot(x, y, marker='o', color=colour, label='Data source:\n{}'.format(label))
 
             s_xmin = scale_flux(x[0], y[0], x_min, spix[0])
             s_xmax = scale_flux(x[-1], y[-1], x_max, spix[-1])
-            ax.plot([x[0], x_min], [y[0], s_xmin], color=colour, label='Spectral index extrapolation',
+            ax.plot([x[0], x_min], [y[0], s_xmin], color=colour, label='Spectral index\nextrapolation',
                     linestyle='dotted')
             ax.plot([x[-1], x_max], [y[-1], s_xmax], color=colour, label='_nolegend_', linestyle='dotted')
 
@@ -421,6 +448,7 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
         parameters = {
             'vis': ms.basename,
             'field': field.name,
+            'field_id': field.id,
             'intent': sorted(set(field.intents))
         }
         wrapper = logger.Plot(full_path, x_axis='frequency', y_axis='Flux Density', parameters=parameters)

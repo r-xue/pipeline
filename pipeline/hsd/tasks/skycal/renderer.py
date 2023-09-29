@@ -1,12 +1,18 @@
-import os
+"""Renderer module for skycal task."""
 import collections
+import os
 
-import pipeline.infrastructure.casatools as casatools
+from typing import TYPE_CHECKING, Any, Dict, List
+if TYPE_CHECKING:
+    from pipeline.domain.field import Field
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.domain import MeasurementSet
+    from pipeline.infrastructure.basetask import ResultsList
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.datatable import DataTableImpl as DataTable
-
+from pipeline.infrastructure import casa_tools
 from . import skycal as skycal_task
 from . import display as skycal_display
 
@@ -14,14 +20,35 @@ LOG = logging.get_logger(__name__)
 
 
 class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='skycal.mako',
-                 description='Single-Dish Sky Calibration', 
-                 always_rerender=False):
+    """Weblog renderer class for skycal task."""
+
+    def __init__(self,
+                 uri: str = 'skycal.mako',
+                 description: str = 'Single-Dish Sky Calibration',
+                 always_rerender: bool = False) -> None:
+        """Initialize T2_4MDetailsSingleDishSkyCalRenderer instance.
+
+        Args:
+            uri: Name of Mako template file. Defaults to 'skycal.mako'.
+            description: Description of the task. This is embedded into the task detail page.
+                         Defaults to 'Single-Dish Sky Calibration'.
+            always_rerender: Always rerender the page if True. Defaults to False.
+        """
         super(T2_4MDetailsSingleDishSkyCalRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self, ctx, context, results):
-        stage_dir = os.path.join(context.report_dir, 
+    def update_mako_context(self,
+                            ctx: Dict[str, Any],
+                            context: 'Context',
+                            results: 'ResultsList') -> None:
+        """Update context for weblog rendering.
+
+        Args:
+            ctx: Context for weblog rendering.
+            context: Pipeline context.
+            results: ResultsList instance. Should hold a list of SDSkyCalResults instance.
+        """
+        stage_dir = os.path.join(context.report_dir,
                                  'stage%d' % results.stage_number)
         if not os.path.exists(stage_dir):
             os.mkdir(stage_dir)
@@ -103,7 +130,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                     reference_coord = self._get_reference_coord(context, ms, field_domain)
                     reference_coords[vis][field_domain.name] = reference_coord
 
-            result.final = final_original  
+            result.final = final_original
 
             # Compute elevation difference
             eldiff = skycal_task.compute_elevation_difference(context, result)
@@ -123,6 +150,32 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             summary_interval_vs_time[vis].extend(summaries_interval)
             details_interval_vs_time[vis].extend(details_interval)
 
+        # sort plots
+        for vis in summary_amp_vs_freq:
+            ms = context.observing_run.get_ms(vis)
+            name_id_map = dict((f.clean_name, f.id) for f in ms.fields)
+
+            def sort_by_field_spw(plot):
+                field_name = plot.parameters['field']
+                spw_id = plot.parameters['spw']
+                field_id = name_id_map[field_name]
+                return field_id, spw_id
+
+            for summary_dict in (summary_amp_vs_freq, summary_amp_vs_time,):
+                if vis not in summary_dict:
+                    continue
+
+                _plot_list = summary_dict[vis]
+
+                if len(_plot_list) == 0:
+                    continue
+
+                LOG.debug('sorting plot list for %s xaxis %s yaxis %s' %
+                         (vis, _plot_list[0].x_axis, _plot_list[0].y_axis))
+                LOG.debug('before: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
+                _plot_list.sort(key=sort_by_field_spw)
+                LOG.debug(' after: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
+
         # Sky Level vs Frequency
         flattened = [plot for inner in details_amp_vs_freq.values() for plot in inner]
         renderer = basetemplates.JsonPlotRenderer(uri='hsd_generic_x_vs_y_ant_field_spw_plots.mako',
@@ -134,7 +187,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
         for vis in details_amp_vs_freq:
-            amp_vs_freq_subpages[vis] = os.path.basename(renderer.path)        
+            amp_vs_freq_subpages[vis] = os.path.basename(renderer.path)
 
         # Sky Level vs Time
         flattened = [plot for inner in details_amp_vs_time.values() for plot in inner]
@@ -177,7 +230,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         LOG.debug('reference_coords=%s' % reference_coords)
 
-        # update Mako context                
+        # update Mako context
         ctx.update({'applications': applications,
                     'summary_amp_vs_freq': summary_amp_vs_freq,
                     'amp_vs_freq_subpages': amp_vs_freq_subpages,
@@ -189,7 +242,17 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                     'elev_diff_subpages': elev_diff_subpages,
                     'reference_coords': reference_coords})
 
-    def get_skycal_applications(self, context, result, ms):
+    def get_skycal_applications(self, context: 'Context', result: skycal_task.SDSkyCalResults, ms: 'MeasurementSet') -> List[Dict]:
+        """Get application information from SDSkyCalResults instance and set them into a list.
+
+        Args:
+            context: Pipeline context.
+            result: SDSkyCalResults instance.
+            ms: MeasurementSet domain object.
+
+        Returns:
+            A list "application" containing dictionary; they are used to a table in skycal.mako file.
+        """
         applications = []
 
         calmode_map = {'ps': 'Position-switch',
@@ -216,7 +279,17 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         return applications
 
-    def _get_reference_coord(self, context, ms, field):
+    def _get_reference_coord(self, context: 'Context', ms: 'MeasurementSet', field: 'Field') -> str:
+        """Get celestial coordinates and the reference.
+
+        Args:
+            context: Pipeline context.
+            ms: MeasurementSet domain object.
+            field: field domain object.
+
+        Returns:
+            Reference, RA and Declination.
+        """
         LOG.debug('_get_reference_coord({ms}, {field})'.format(ms=ms.basename, field=field.name))
         spws = ms.get_spectral_windows(science_windows_only=True)
         dd = ms.get_data_description(spw=spws[0].id)
@@ -224,7 +297,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         reference_states = [state for state in ms.states if 'REFERENCE' in state.intents]
         state_ids = [state.id for state in reference_states]
         field_id = field.id
-        with casatools.TableReader(ms.name) as tb:
+        with casa_tools.TableReader(ms.name) as tb:
             t = tb.query('ANTENNA1==ANTENNA2 && FIELD_ID=={field} && DATA_DESC_ID={ddid} && STATE_ID IN {states}'
                          ''.format(field=field_id, ddid=data_desc_id, states=state_ids))
             rownumbers = t.rownumbers()
@@ -233,11 +306,11 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             t.close()
             timeref = tb.getcolkeyword('TIME', 'MEASINFO')['Ref']
             timeunit = tb.getcolkeyword('TIME', 'QuantumUnits')[0]
-        with casatools.MSMDReader(ms.name) as msmd:
+        with casa_tools.MSMDReader(ms.name) as msmd:
             pointing_direction = msmd.pointingdirection(rownumbers[0])
             antenna_position = msmd.antennaposition(antenna_ids[0])
-        qa = casatools.quanta
-        me = casatools.measures
+        qa = casa_tools.quanta
+        me = casa_tools.measures
         epoch = me.epoch(rf=timeref, v0=qa.quantity(times[0], timeunit))
 
         LOG.debug('pointing_direction=%s' % pointing_direction)
@@ -248,7 +321,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         # 2018/04/18 TN
         # CAS-10874 single dish pipeline should use a direction reference
         # taken from input MS
-        datatable_name = os.path.join(context.observing_run.ms_datatable_name, ms.basename)
+        origin_basename = os.path.basename(ms.origin_ms)
+        datatable_name = os.path.join(context.observing_run.ms_datatable_name, origin_basename)
         datatable = DataTable()
         datatable.importdata(datatable_name, minimal=False, readonly=True)
         outref = datatable.direction_ref

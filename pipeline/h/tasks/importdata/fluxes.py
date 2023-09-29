@@ -96,7 +96,11 @@ def read_fluxes_nodb(ms):
         if source_id >= len(ms.sources):
             LOG.warning('Source.xml refers to source #{}, which was not found in {}'.format(source_id, ms.basename))
             continue
-        source = ms.sources[int(source_id)]
+
+        try:
+            source = ms.sources[int(source_id)]
+        except Exception as e:
+            LOG.warning("Source index error with: {!s} ".format(source_id))
 
         # all elements must contain data to proceed
         if flux_text is None or frequency_text is None:
@@ -370,10 +374,10 @@ def import_flux(output_dir, observing_run, filename=None):
     Read flux densities from a CSV file and import them into the context.
     """
     # regular expressions to match values from comment template
-    origin_re = re.compile('(?:origin=)(?P<origin>\S+)')
-    age_re = re.compile('(?:age=)(?P<age>\S+)')
-    Band3age_re = re.compile('(?:Band3age=)(?P<Band3age>\S+)')
-    query_re = re.compile('(?:queried_at=)(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \w{3})')
+    origin_re = re.compile(r'(?:origin=)(?P<origin>\S+)')
+    age_re = re.compile(r'(?:age=)(?P<age>\S+)')
+    Band3age_re = re.compile(r'(?:Band3age=)(?P<Band3age>\S+)')
+    query_re = re.compile(r'(?:queried_at=)(?P<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \w{3})')
 
     if not filename:
         filename = os.path.join(output_dir, 'flux.csv')

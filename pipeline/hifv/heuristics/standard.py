@@ -10,11 +10,11 @@ class Standard(api.Heuristic):
         'Triton', 'Ceres', 'Pallas', 'Vesta', 'Juno',
         'Victoria', 'Davida'}
 
-    def calculate(self, field):
+    def calculate(self, field: str) -> str:
         field = set(utils.safe_split(field))
         if field.issubset(self.ephemeris_fields):
             return 'Butler-JPL-Horizons 2012'
-            #return 'Butler-JPL-Horizons 2010'
+            # return 'Butler-JPL-Horizons 2010'
         elif field.isdisjoint(self.ephemeris_fields):
             return 'Perley-Butler 2017'
         else:

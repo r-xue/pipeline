@@ -1,12 +1,19 @@
+"""
+Store frequency information of MeasurementSet.
+
+This module provides classes to store logical representation of spectral
+windows, channel frequency information, and channel selection.
+"""
 import decimal
 import itertools
 import operator
+from typing import List, Optional, Union
 
 import numpy
 
-from . import measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure import casa_tools
+from . import measures
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -54,7 +61,7 @@ def compress(values):
     return the list as given.
     """
     deltas = set(numpy.diff(values))
-    if len(deltas) is 1:
+    if len(deltas) == 1:
         delta = deltas.pop()
         return ArithmeticProgression(values[0], delta, len(values))
     else:
@@ -177,48 +184,49 @@ class Channel(object):
 
 class SpectralWindow(object):
     """
-    SpectralWindow is a logical representation of a spectral window.
+    SpectralWindow is a logical representation of a spectral window (spw).
 
-    .. py:attribute:: id
-
-        the numerical identifier of this spectral window within the
-        SPECTRAL_WINDOW subtable of the measurement set
-
-    .. py:attribute:: channels
-
-        the number of channels
-
-    .. py:attribute:: bandwidth
-
-        the total bandwidth
-
-    .. py:attribute:: ref_frequency
-
-        the reference frequency
-
-    .. py:attribute:: chan_width
-
-        the channel width
-
-    .. py:attribute:: intents
-
-        the observing intents that have been observed using this spectral
-        window
+    Attributes:
+        id: The numerical identifier of this spectral window within the
+            SPECTRAL_WINDOW subtable of the MeasurementSet
+        band: Frequency band
+        bandwidth: The total bandwidth
+        baseband: The baseband
+        channels: Frequency information of each channel in spectral window,
+            i.e.,, frequencies, channel width, effective band width.
+        freq_lo: A list of LO frequencies
+        intents: the observing intents that have been observed using this
+            spectral window
+        mean_frequency: Mean frequency of spectral window
+        name: Spectral window name
+        receiver: Receiver type, e.g., 'TSB'
+        ref_frequency: The reference frequency
+        sideband: Side band
+        transitions: Spectral transitions recorded associated with spectral window
+        type: Spectral window type, e.g., 'TDM'
+        sdm_num_bin: Number of bins for online spectral averaging
+        correlation_bits: Number of bits used for correlation
+        median_receptor_angle: Median feed receptor angle.
     """
 
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
                  'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
-                 'channels', '_ref_frequency_frame', 'transitions')
+                 'channels', '_ref_frequency_frame', 'spectralspec', 'transitions', 'sdm_num_bin', 'correlation_bits',
+                 'median_receptor_angle')
 
     def __getstate__(self):
+        """Define what to pickle as a class intance."""
         return (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name,
                 self.baseband, self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency,
-                self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions)
+                self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame,
+                self.spectralspec, self.transitions, self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle)
 
     def __setstate__(self, state):
+        """Define how to unpickle a class instance."""
         (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name, self.baseband,
          self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency, self._max_frequency,
-         self._centre_frequency, self.channels, self._ref_frequency_frame, self.transitions) = state
+         self._centre_frequency, self.channels, self._ref_frequency_frame, self.spectralspec, self.transitions,
+         self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle) = state
 
     def __repr__(self):
         chan_freqs = self.channels.chan_freqs
@@ -234,7 +242,7 @@ class SpectralWindow(object):
             chan_effective_bws = numpy.array(list(chan_effective_bws))
 
         return ('SpectralWindow({0!r}, {1!r}, {2!r}, {3!r}, {4!r}, {5!r}, {6}, {7}, {8}, {9!r}, {10!r}, {11!r}, '
-                '{12!r})').format(
+                '{12!r}, {13}, {14}, {15!r})').format(
             self.id,
             self.name,
             self.type,
@@ -250,25 +258,62 @@ class SpectralWindow(object):
             self.sideband,
             self.baseband,
             self.band,
-            self.transitions
+            self.transitions,
+            self.sdm_num_bin,
+            self.correlation_bits,
+            self.median_receptor_angle
         )
 
-    def __init__(self, spw_id, name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
-                 chan_effective_bws, sideband, baseband, receiver, freq_lo, band='Unknown', transitions=None):
+    def __init__(self, spw_id: int, name: str, spw_type: str, bandwidth: float,
+                 ref_freq: dict, mean_freq: float, chan_freqs: numpy.ndarray,
+                 chan_widths: numpy.ndarray, chan_effective_bws: numpy.ndarray,
+                 sideband: int, baseband: int,
+                 receiver: Optional[str], freq_lo: Optional[Union[List[float], numpy.ndarray]],
+                 band: str = 'Unknown',
+                 spectralspec: Optional[str] = None,
+                 transitions: Optional[List[str]] = None,
+                 sdm_num_bin: Optional[int] = None,
+                 correlation_bits: Optional[str]=None,
+                 median_receptor_angle: Optional[numpy.ndarray] = None):
+        """
+        Initialize SpectralWindow class.
+
+        Args:
+            spw_id: Spw ID
+            name: Spw name
+            spw_type: Spectral window type, e.g., 'TDM'
+            bandwidth: The total bandwidth
+            ref_freq: The reference frequency
+            mean_freq: Mean frequency of spectral window in Hz
+            chan_freqs: A list of frequency of each channel in spw in Hz
+            chan_widths: A list of channel width of each channel in spw in Hz
+            chan_effective_bws: A list of effective bandwidth of each channel in spw in Hz
+            sideband: Side band
+            baseband: The baseband
+            receiver: Receiver type, e.g., 'TSB'
+            freq_lo: A list of LO frequencies in Hz
+            band: Frequency band
+            spectralspec: SpectralSpec name
+            transitions: Spectral transitions recorded associated with spectral window
+            sdm_num_bin: Number of bins for online spectral averaging
+            correlation_bits: Number of bits used for correlation
+            median_receptor_angle: Median feed receptor angle.
+        """
         if transitions is None:
             transitions = ['Unknown']
 
         self.id = spw_id
         self.bandwidth = measures.Frequency(bandwidth, measures.FrequencyUnits.HERTZ)
 
-        ref_freq_hz = casatools.quanta.convertfreq(ref_freq['m0'], 'Hz')
-        ref_freq_val = casatools.quanta.getvalue(ref_freq_hz)[0]
+        ref_freq_hz = casa_tools.quanta.convertfreq(ref_freq['m0'], 'Hz')
+        ref_freq_val = casa_tools.quanta.getvalue(ref_freq_hz)[0]
         self.ref_frequency = measures.Frequency(ref_freq_val, measures.FrequencyUnits.HERTZ)
         self._ref_frequency_frame = ref_freq['refer']
 
         self.mean_frequency = measures.Frequency(mean_freq, measures.FrequencyUnits.HERTZ)
         self.band = band
         self.type = spw_type
+        self.spectralspec = spectralspec
         self.intents = set()
 
         # work around NumPy bug with empty strings
@@ -292,6 +337,9 @@ class SpectralWindow(object):
         self._centre_frequency = (self._min_frequency + self._max_frequency) / 2.0
 
         self.transitions = transitions
+        self.sdm_num_bin = sdm_num_bin
+        self.correlation_bits = correlation_bits
+        self.median_receptor_angle = median_receptor_angle
 
     @property
     def centre_frequency(self):

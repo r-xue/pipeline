@@ -6,7 +6,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
-from pipeline.infrastructure import casa_tasks, casatools
+from pipeline.infrastructure import casa_tasks, casa_tools
 from . import importdata
 from ..exportdata import aqua
 
@@ -60,7 +60,7 @@ class ImportDataQAHandler(pqa.QAPlugin):
         bad_mses = []
 
         for ms in mses:
-            with casatools.TableReader(ms.name) as table:
+            with casa_tools.TableReader(ms.name) as table:
                 if 'MODEL_DATA' in table.colnames():
                     bad_mses.append(ms)
 
@@ -78,7 +78,7 @@ class ImportDataQAHandler(pqa.QAPlugin):
 
         for ms in mses:
             history_table = os.path.join(ms.name, 'HISTORY')
-            with casatools.TableReader(history_table) as table:
+            with casa_tools.TableReader(history_table) as table:
                 if table.nrows() != 0:
                     origin_col = table.getcol('ORIGIN')
                     if createmms:
@@ -136,7 +136,7 @@ class ImportDataQAHandler(pqa.QAPlugin):
 
             for intent in bad_scans:
                 scan_ids = [scan.id for scan in bad_scans[intent]]
-                multi = False if len(scan_ids) is 1 else True
+                multi = False if len(scan_ids) == 1 else True
                 # log something like 'More than 12% of PHASE scans 1, 2, and 7 
                 # in vla.ms are flagged'
                 LOG.warning('More than %s%% of %s scan%s %s in %s %s flagged'

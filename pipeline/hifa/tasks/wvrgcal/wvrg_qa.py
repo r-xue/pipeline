@@ -1,15 +1,16 @@
+
 import math
 
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 from pipeline.h.tasks.common import commonresultobjects
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
 
-def calculate_qa_numbers(result):
+def calculate_qa_numbers(result, result_wvrinfos, PHnoisy, BPnoisy):
     """Calculate a single number from the qa views stored in result.
 
     result -- The Qa2Result object containing the Qa2 views.
@@ -25,8 +26,43 @@ def calculate_qa_numbers(result):
         # qa score is no-wvr rms / with-wvr rms
         qa_per_view[description] = 1.0 / np.median(qa_data[qa_flag == False])
 
+        # PIPE-1509
+        # as we are looping the descriptions (i.e. BANDPASS and PHASE intents)
+        # we can already assign the overall score for the
+        # new clause, if PHnoisy==True
+        if PHnoisy and 'BANDPASS' in description:
+            result.overall_score = qa_per_view[description]
+
     result.view_score = qa_per_view
-    result.overall_score = np.median(list(qa_per_view.values()))
+
+    # if the PHnoisy was not triggered 
+    # we do the median as was done pre-PIPE-1509
+    if not PHnoisy or result.overall_score == {}:
+        result.overall_score = np.median(list(qa_per_view.values()))
+
+    # Optional for PIPE-1509
+    # check if disc and rms values from the WVR code are 
+    # particularly high overall 
+
+    # hard coded limits - could be inputs - but not exposed
+    # PLWG to tweak later
+    disc_max = 500.
+    rms_max = 500.
+
+    disc_list=[]
+    rms_list=[]
+    for WVRinfo in result_wvrinfos:
+        disc_list.append(WVRinfo.disc.value)
+        rms_list.append(WVRinfo.rms.value)
+
+    # now just a remcloud trigger boolean - for tracking
+    # read and warn in scorecalcualtor 
+    suggest_remcloud = False
+    if result.overall_score < 1.0:
+        if np.median(disc_list) > disc_max or np.median(rms_list) > rms_max:
+            suggest_remcloud = True 
+
+    return suggest_remcloud
 
 
 def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
@@ -35,6 +71,18 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
     nowvr_results = calculate_phase_rms(context, nowvrtable, qa_intent)
     wvr_results = calculate_phase_rms(context, withwvrtable, qa_intent)
 
+    # Limits hard coded to 90. - could be flexible stage inputs?
+    # but probably not - i.e. people shouldn't mess with this heuristic 
+    # - later PLWG might adjust separatly to tweak scores
+    PHlim = 90.
+    BPlim = 90.
+
+    # Initial flag settings
+    PHnoisy = False
+    BPnoisy = False
+    BPgood = False
+    PHgood = False
+    
     for k, v in wvr_results.items():
         result.vis = v.filename
 
@@ -51,6 +99,48 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
         data_flag[np.isnan(data)] = True
         np.seterr(**oldseterr) 
 
+        # PIPE-1509
+        ## as above code checked for flag when phase RMS was zero/nan etc
+        ## use that to now make the phase RMS assessment 
+        ## for only unflagged data and pass the 'noisy' parameters to result
+        
+        # use the 80th percentile - why:
+        # 1) if the phase has pure noise all ants and scans will be > 100deg
+        #    - this is designed to catch low SNR, not variable atmosphere
+        #    -- this is used to decide if we use a combined PH and BP score or BP only
+        # 2) for the bandpass, this will select the 'worse' antennas which
+        #    will typically relate to longer baselines and we
+        #    and the bandpass should have v.high SNR in phase soln.
+        #    these are the 'longer' ones and hence 80th Percentile is good.
+        #    This metric really tracks the varying atmopshere
+        #    - this is used only in final score to say phase RMS is high
+        #      due to real variability not low SNR
+        # Due to one particualr problem dataset MOUS
+        # the max BP RMS is 93, 80th percentile is 84.9
+        # thus set limit to trigger if max > 90 and 80th % over 85
+        # few other LB data tested have phase RMS < 50 but
+        # wider data required - after tarball??
+
+        perhi = np.percentile(wvr_data[data_flag==False], 80)
+        perhi_nowvr = np.percentile(nowvr_data[data_flag==False], 80)
+        bpmax = np.max(wvr_data[data_flag==False])
+        if v.intent == 'PHASE' and perhi > PHlim:
+             PHnoisy = True
+        elif v.intent == 'BANDPASS' and perhi > (BPlim-5.) and bpmax > BPlim:
+             BPnoisy = True
+
+        # PIPE-1837
+        # simply add a bool again for 'good' phase rms
+        # define this as <1 radian over all the data averaged
+        # here just return the values for both, do logic for score elsewhere
+        LOG.info('phase rms is : '+str(perhi))
+        if v.intent == 'PHASE' and perhi_nowvr < 57.1:
+            PHgood = True
+        elif v.intent == 'BANDPASS' and perhi_nowvr < 57.1:
+            BPgood = True
+
+        ############################
+
         axes = v.axes
         improvement_result = commonresultobjects.ImageResult(
           v.filename, data=data,
@@ -58,6 +148,8 @@ def calculate_view(context, nowvrtable, withwvrtable, result, qa_intent):
           axes=axes, flag=data_flag, intent=v.intent, spw=v.spw)
 
         result.addview(improvement_result.description, improvement_result)
+
+    return PHnoisy, BPnoisy, PHgood, BPgood
 
 
 def calculate_phase_rms(context, gaintable, qa_intent):
@@ -70,7 +162,7 @@ def calculate_phase_rms(context, gaintable, qa_intent):
 
     try:
         phase_rms_results = {}
-        with casatools.TableReader(gaintable) as table:
+        with casa_tools.TableReader(gaintable) as table:
             vis = table.getkeyword('MSName')
 
             # access field names via domain object
@@ -150,8 +242,7 @@ def calculate_phase_rms(context, gaintable, qa_intent):
                                     gain.real * refant_gain.imag \
                                     - gain.imag * refant_gain.real
 
-                                complex_rel_phase = np.zeros([len(dot_product)],
-                                                             np.complex)
+                                complex_rel_phase = np.zeros([len(dot_product)], complex)
                                 complex_rel_phase.imag = np.arctan2(
                                     cross_product, dot_product)
 
@@ -163,8 +254,7 @@ def calculate_phase_rms(context, gaintable, qa_intent):
                 # now calculate the phase rms views
                 for spwid in spwids:
                     data = np.zeros([max(antennas)+1, len(time_chunks)])
-                    data_flag = np.ones([max(antennas)+1, len(time_chunks)],
-                                        np.bool)
+                    data_flag = np.ones([max(antennas)+1, len(time_chunks)], bool)
                     chunk_base_times = np.zeros([len(time_chunks)])
 
                     for antenna in antennas:
@@ -186,7 +276,7 @@ def calculate_phase_rms(context, gaintable, qa_intent):
                             chunk_base_times[i] = gain_times_chunk[0]
 
                             rms_refant = np.zeros([8])
-                            rms_refant_flag = np.ones([8], np.bool)
+                            rms_refant_flag = np.ones([8], bool)
 
                             for refant in refants:
                                 gain = cparam_refant[refant][0, 0, selected_rows]

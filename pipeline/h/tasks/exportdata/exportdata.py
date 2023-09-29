@@ -1,6 +1,6 @@
 """
 The exportdata module provides base classes for preparing data products
-on disk for upload to the archive. 
+on disk for upload to the archive.
 
 To test these classes, register some data with the pipeline using ImportData,
 then execute:
@@ -29,133 +29,37 @@ task = pipeline.tasks.exportdata.ExportData(inputs)
 """
 import collections
 import copy
-import errno
 import fnmatch
-import glob
 import io
 import os
 import shutil
 import sys
 import tarfile
+import uuid
 
-import pipeline as pipeline
+import astropy.io.fits as apfits
+
+from pipeline.infrastructure.launcher import Context
+from pipeline.h.tasks.exportdata.aqua import AquaXmlGenerator
+from pipeline.h.tasks.exportdata.aqua import export_to_disk as export_aqua_to_disk
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline import environment
-from pipeline.infrastructure.filenamer import fitsname
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
+from pipeline.infrastructure.filenamer import fitsname, PipelineProductNameBuilder
+from pipeline.domain import DataType
 from ..common import manifest
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)
 
-
 StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_file casa_commands_file casa_pipescript casa_restore_script')
-
-
-# product name utility 
-class PipelineProductNameBuiler(object):
-    @classmethod
-    def __build(self, *args, **kwargs):
-        if 'separator' in kwargs:
-            separator = kwargs['separator']
-        else:
-            separator = '.'
-        return separator.join(map(str, args))
-
-    @classmethod
-    def _join_dir(self, name, output_dir=None):
-        if output_dir is not None:
-            name = os.path.join(output_dir, name)
-        return name
-
-    @classmethod
-    def _build_from_oussid(self, basename, ousstatus_entity_id=None, output_dir=None):
-        if ousstatus_entity_id is None:
-            name = basename
-        else:
-            name = self.__build(ousstatus_entity_id, basename)
-        return self._join_dir(name, output_dir)
-
-    @classmethod
-    def _build_from_ps_oussid(self, basename, project_structure=None, ousstatus_entity_id=None, output_dir=None):
-        if project_structure is None:
-            name = basename
-        elif project_structure.ousstatus_entity_id == 'unknown':
-            name = basename
-        else:
-            name = self._build_from_oussid(basename, ousstatus_entity_id=ousstatus_entity_id)
-        return self._join_dir(name, output_dir)
-
-    @classmethod
-    def _build_from_oussid_session(self, basename, ousstatus_entity_id=None, session_name=None, output_dir=None):
-        name = self.__build(ousstatus_entity_id, session_name, basename)
-        return self._join_dir(name, output_dir)
-
-    @classmethod
-    def _build_calproduct_name(self, basename, aux_product=False, output_dir=None):
-        if aux_product:
-            prefix='auxcal'
-        else:
-            prefix='cal'
-        name = self.__build(prefix, basename, separator='')
-        return self._join_dir(name, output_dir)
-
-    @classmethod
-    def _build_from_vis(self, basename, vis, output_dir=None):
-        name = self.__build(os.path.basename(vis), basename)
-        return self._join_dir(name, output_dir)
-
-    @classmethod
-    def weblog(self, project_structure=None, ousstatus_entity_id=None, output_dir=None):
-        return self._build_from_ps_oussid('weblog.tgz', 
-                                          project_structure=project_structure, 
-                                          ousstatus_entity_id=ousstatus_entity_id,
-                                          output_dir=output_dir)
-
-    @classmethod
-    def casa_script(self, basename, project_structure=None, ousstatus_entity_id=None, output_dir=None):
-        return self._build_from_ps_oussid(basename, 
-                                          project_structure=project_structure, 
-                                          ousstatus_entity_id=ousstatus_entity_id,
-                                          output_dir=output_dir)
-
-    @classmethod
-    def manifest(self, basename, ousstatus_entity_id, output_dir=None):
-        return self._build_from_oussid(basename,
-                                       ousstatus_entity_id=ousstatus_entity_id,
-                                       output_dir=output_dir)
-
-    @classmethod
-    def calapply_list(self, vis, aux_product=False, output_dir=None):
-        basename = self._build_calproduct_name('apply.txt', aux_product=aux_product)
-        return self._build_from_vis(basename, vis, output_dir=output_dir)
-
-    @classmethod
-    def caltables(self, ousstatus_entity_id=None, session_name=None, aux_product=False, output_dir=None):
-        basename = self._build_calproduct_name('tables.tgz', aux_product=aux_product)
-        return self._build_from_oussid_session(basename=basename,
-                                               ousstatus_entity_id=ousstatus_entity_id,
-                                               session_name=session_name,
-                                               output_dir=None)
-
-    @classmethod
-    def aqua_report(self, basename, project_structure=None, ousstatus_entity_id=None, output_dir=None):
-        return self._build_from_ps_oussid(basename, 
-                                          project_structure=project_structure, 
-                                          ousstatus_entity_id=ousstatus_entity_id,
-                                          output_dir=output_dir)
-
-    @classmethod
-    def auxiliary_products(self, basename, ousstatus_entity_id=None, output_dir=None):
-        return self._build_from_oussid(basename,
-                                       ousstatus_entity_id=ousstatus_entity_id,
-                                       output_dir=output_dir)
 
 
 class ExportDataInputs(vdp.StandardInputs):
@@ -185,7 +89,7 @@ class ExportDataInputs(vdp.StandardInputs):
 
     .. py:attribute:: pprfile
 
-    the pipeline processing request. 
+    the pipeline processing request.
 
     .. py:attribute:: calintents
 
@@ -208,6 +112,10 @@ class ExportDataInputs(vdp.StandardInputs):
 
     the directory where the data productions will be written
     """
+
+    processing_data_type = [DataType.RAW, DataType.REGCAL_CONTLINE_ALL,
+                            DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE,
+                            DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE]
 
     calimages = vdp.VisDependentProperty(default=[])
     calintents = vdp.VisDependentProperty(default='')
@@ -330,7 +238,7 @@ class ExportData(basetask.StandardTaskTemplate):
     is_multi_vis_task = True
 
     # name builder
-    NameBuilder = PipelineProductNameBuiler
+    NameBuilder = PipelineProductNameBuilder
 
     def prepare(self):
         """
@@ -341,20 +249,16 @@ class ExportData(basetask.StandardTaskTemplate):
         # 'self.inputs' everywhere
         inputs = self.inputs
 
-        try:
-            LOG.trace('Creating products directory: {!s}'.format(inputs.products_dir))
-            os.makedirs(inputs.products_dir)
-        except OSError as exc:
-            if exc.errno != errno.EEXIST:
-                raise
+        # Create products directory if necessary.
+        utils.ensure_products_dir_exists(inputs.products_dir)
 
-        # Initialize the standard ous is string.
-        oussid = self.get_oussid(inputs.context)
+        # Initialize the standard OUS status ID string.
+        oussid = inputs.context.get_oussid()
 
         # Define the results object
         result = ExportDataResults()
 
-        # Make the standard vislist and the sessions lists. 
+        # Make the standard vislist and the sessions lists.
         #    These lists are constructed for the calibration mses only no matter the value of
         #    inputs.imaging_products_only
         session_list, session_names, session_vislists, vislist = self._make_lists(inputs.context, inputs.session,
@@ -403,7 +307,7 @@ class ExportData(basetask.StandardTaskTemplate):
         if not inputs.imaging_products_only:
             if inputs.exportcalprods:
                 sessiondict = self._do_standard_session_products(inputs.context, oussid, session_names, session_vislists,
-                                                             inputs.products_dir)
+                                                                 inputs.products_dir)
             elif inputs.exportmses:
                 # still needs sessiondict
                 for i in range(len(session_names)):
@@ -412,21 +316,21 @@ class ExportData(basetask.StandardTaskTemplate):
         result.sessiondict = sessiondict
 
         # Export calibrator images to FITS
-        calimages_list, calimages_fitslist = self._export_images(inputs.context, True, inputs.calintents,
-                                                                 inputs.calimages, inputs.products_dir)
+        calimages_list, calimages_fitslist, calimages_fitskeywords = self._export_images(inputs.context, True, inputs.calintents,
+                                                                                         inputs.calimages, inputs.products_dir, oussid)
         result.calimages=(calimages_list, calimages_fitslist)
 
         # Export science target images to FITS
-        targetimages_list, targetimages_fitslist = self._export_images(inputs.context, False, 'TARGET',
-                                                                       inputs.targetimages, inputs.products_dir)
+        targetimages_list, targetimages_fitslist, targetimages_fitskeywords = self._export_images(inputs.context, False, 'TARGET',
+                                                                                                  inputs.targetimages, inputs.products_dir, oussid)
         result.targetimages=(targetimages_list, targetimages_fitslist)
 
         # Export the pipeline manifest file
-        # 
+        #
         pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, sessiondict, msvisdict,
                                                 inputs.exportmses, calvisdict, inputs.exportcalprods,
-                                                [os.path.basename(image) for image in calimages_fitslist],
-                                                [os.path.basename(image) for image in targetimages_fitslist])
+                                                [os.path.basename(image) for image in calimages_fitslist], calimages_fitskeywords,
+                                                [os.path.basename(image) for image in targetimages_fitslist], targetimages_fitskeywords)
         casa_pipe_manifest = self._export_pipe_manifest(prefix, 'pipeline_manifest.xml', inputs.products_dir,
                                                         pipemanifest)
         result.manifest = os.path.basename(casa_pipe_manifest)
@@ -446,21 +350,6 @@ class ExportData(basetask.StandardTaskTemplate):
         """
         return results
 
-    def get_oussid(self, context):
-        """
-        Determine the ous prefix
-        """
-
-        # Get the parent ous ousstatus name. This is the sanitized ous
-        # status uid
-        ps = context.project_structure
-        if ps is None or ps.ousstatus_entity_id == 'unknown':
-            oussid = 'unknown'
-        else:
-            oussid = ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
-
-        return oussid
-
     def get_recipename(self, context):
         """
         Get the recipe name
@@ -476,6 +365,15 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return recipe_name
 
+    def _has_imaging_data(self, context, vis):
+        """
+        Check if the given vis contains any imaging data.
+        """
+
+        imaging_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE]
+        ms_object = context.observing_run.get_ms(name=vis)
+        return any(ms_object.get_data_column(datatype) for datatype in imaging_datatypes)
+
     def _make_lists(self, context, session, vis, imaging_only_mses=False):
         """
         Create the vis and sessions lists
@@ -486,9 +384,9 @@ class ExportData(basetask.StandardTaskTemplate):
         if isinstance(vislist, str):
             vislist = [vislist]
         if imaging_only_mses:
-            vislist = [vis for vis in vislist if context.observing_run.get_ms(name=vis).is_imaging_ms]
+            vislist = [vis for vis in vislist if self._has_imaging_data(context, vis)]
         else:
-            vislist = [vis for vis in vislist if not context.observing_run.get_ms(name=vis).is_imaging_ms]
+            vislist = [vis for vis in vislist if not self._has_imaging_data(context, vis)]
 
         # Get the session list and the visibility files associated with
         # each session.
@@ -513,7 +411,7 @@ class ExportData(basetask.StandardTaskTemplate):
             ppr_file = None
 
         # Export a tar file of the web log
-        weblog_file = self._export_weblog(context, products_dir, oussid)
+        weblog_file = self._export_weblog(context, products_dir)
 
         # Export the processing log independently of the web log
         casa_commands_file = self._export_casa_commands_log(context, context.logs['casa_commands'], products_dir,
@@ -570,9 +468,7 @@ class ExportData(basetask.StandardTaskTemplate):
         # and tar them up.
         flag_version_list = []
         for visfile in vislist:
-            flag_version_file = self._export_final_flagversion( \
-                context, visfile, flag_version_name, \
-                products_dir)
+            flag_version_file = self._export_final_flagversion(visfile, flag_version_name, products_dir)
             flag_version_list.append(flag_version_file)
 
         # Loop over the measurements sets in the working directory, and
@@ -650,12 +546,12 @@ class ExportData(basetask.StandardTaskTemplate):
 
         targetflags_filelist = []
         if self.inputs.imaging_products_only:
-            flags_file_list = glob.glob('*.flagtargetstemplate.txt')
+            flags_file_list = utils.glob_ordered('*.flagtargetstemplate.txt')
         elif not vislist:
-            flags_file_list = glob.glob('*.flagtemplate.txt')
-            flags_file_list.extend(glob.glob('*.flagtsystemplate.txt'))
+            flags_file_list = utils.glob_ordered('*.flagtemplate.txt')
+            flags_file_list.extend(utils.glob_ordered('*.flagtsystemplate.txt'))
         else:
-            flags_file_list = glob.glob('*.flag*template.txt')
+            flags_file_list = utils.glob_ordered('*.flag*template.txt')
         for file_name in flags_file_list:
             flags_file = os.path.join(output_dir, file_name)
             if os.path.exists(flags_file):
@@ -664,59 +560,77 @@ class ExportData(basetask.StandardTaskTemplate):
             else:
                 targetflags_filelist.append('Undefined')
 
+        # PIPE-1834: look for timetracker json report files
+        timetracker_file_list = utils.glob_ordered('*.timetracker.json')
+        if timetracker_file_list:
+            empty = False
+
+        # PIPE-1802: look for the selfcal/restore resources
+        selfcal_resources_list = []
+        if hasattr(self.inputs.context, 'selfcal_resources') and isinstance(self.inputs.context.selfcal_resources, list):
+            selfcal_resources_list = self.inputs.context.selfcal_resources
+        if selfcal_resources_list:
+            empty = False
+
         if empty:
             return None
 
-        # Create the tarfile
-        cwd = os.getcwd()
-        try:
-            os.chdir(output_dir)
+        # Define the name of the output tarfile
+        tarfilename = f'{oussid}.auxproducts.tgz'
+        LOG.info('Saving auxiliary data products in %s', tarfilename)
 
-            # Define the name of the output tarfile
-            tarfilename = '{}.auxproducts.tgz'.format(oussid)
-            LOG.info('Saving auxiliary data products in %s', tarfilename)
+        # Open tarfile
+        with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
 
-            # Open tarfile
-            with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
+            # Save flux file
+            if os.path.exists(flux_file):
+                tar.add(flux_file, arcname=os.path.basename(flux_file))
+                LOG.info('Saving auxiliary data product %s in %s', os.path.basename(flux_file), tarfilename)
+            else:
+                LOG.info('Auxiliary data product flux.csv does not exist')
 
-                # Save flux file
-                if os.path.exists(flux_file):
-                    tar.add(flux_file, arcname=os.path.basename(flux_file))
-                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(flux_file), tarfilename)
+            # Save antenna positions file
+            if os.path.exists(antpos_file):
+                tar.add(antpos_file, arcname=os.path.basename(antpos_file))
+                LOG.info('Saving auxiliary data product %s in %s', os.path.basename(antpos_file), tarfilename)
+            else:
+                LOG.info('Auxiliary data product antennapos.csv does not exist')
+
+            # Save continuum regions file
+            if os.path.exists(cont_file):
+                tar.add(cont_file, arcname=os.path.basename(cont_file))
+                LOG.info('Saving auxiliary data product %s in %s', os.path.basename(cont_file), tarfilename)
+            else:
+                LOG.info('Auxiliary data product cont.dat does not exist')
+
+            # Save target flag files
+            for flags_file in targetflags_filelist:
+                if os.path.exists(flags_file):
+                    tar.add(flags_file, arcname=os.path.basename(flags_file))
+                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(flags_file), tarfilename)
                 else:
-                    LOG.info('Auxiliary data product flux.csv does not exist')
+                    LOG.info('Auxiliary data product flagging target templates file does not exist')
 
-                # Save antenna positions file
-                if os.path.exists(antpos_file):
-                    tar.add(antpos_file, arcname=os.path.basename(antpos_file))
-                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(antpos_file), tarfilename)
+            # PIPE-1834: Save timetracker json report files
+            for timetracker_file in timetracker_file_list:
+                if os.path.exists(timetracker_file):
+                    tar.add(timetracker_file, arcname=os.path.basename(timetracker_file))
+                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(timetracker_file), tarfilename)
                 else:
-                    LOG.info('Auxiliary data product antennapos.csv does not exist')
+                    LOG.info('Auxiliary data product timetracker json report file does not exist')
 
-                # Save continuum regions file
-                if os.path.exists(cont_file):
-                    tar.add(cont_file, arcname=os.path.basename(cont_file))
-                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(cont_file), tarfilename)
-                else:
-                    LOG.info('Auxiliary data product cont.dat does not exist')
+            # PIPE-1802: Save selfcal restore resources
+            for selfcal_resource in selfcal_resources_list:
+                if os.path.exists(selfcal_resource):
+                    tar.add(selfcal_resource, arcname=selfcal_resource)
+                    LOG.info('Saving auxiliary data product %s in %s', selfcal_resource, tarfilename)
 
-                # Save target flag files
-                for flags_file in targetflags_filelist:
-                    if os.path.exists(flags_file):
-                        tar.add(flags_file, arcname=os.path.basename(flags_file))
-                        LOG.info('Saving auxiliary data product %s in %s', os.path.basename(flags_file), tarfilename)
-                    else:
-                        LOG.info('Auxiliary data product flagging target templates file does not exist')
-
-                tar.close()
-        finally:
-            # Restore the original current working directory
-            os.chdir(cwd)
+            tar.close()
 
         return tarfilename
 
     def _make_pipe_manifest(self, context, oussid, stdfproducts, sessiondict, msvisdict, exportmses, calvisdict,
-                            exportcalprods, calimages, targetimages):
+                            exportcalprods, calimages, calimages_fitskeywords, targetimages, targetimages_fitskeywords):
         """
         Generate the manifest file
         """
@@ -724,29 +638,37 @@ class ExportData(basetask.StandardTaskTemplate):
         # Separate the calibrator images into per ous and per ms images
         # based on the image values of prefix.
         per_ous_calimages = []
+        per_ous_calimages_keywords = []
         per_ms_calimages = []
-        for image in calimages:
-            if image.startswith(oussid) or image.startswith('oussid') or image.startswith('unknown'):
+        per_ms_calimages_keywords = []
+        for i, image in enumerate(calimages):
+            if (image.startswith(oussid) or
+                any(image.startswith(session_name) for session_name in sessiondict) or
+                image.startswith('oussid') or
+                image.startswith('unknown') or
+                image.startswith('session')):
                 per_ous_calimages.append(image)
+                per_ous_calimages_keywords.append(calimages_fitskeywords[i])
             else:
                 per_ms_calimages.append(image)
+                per_ms_calimages_keywords.append(calimages_fitskeywords[i])
 
         # Initialize the manifest document and the top level ous status.
         pipemanifest = self._init_pipemanifest(oussid)
         ouss = pipemanifest.set_ous(oussid)
         pipemanifest.add_casa_version(ouss, environment.casa_version_string)
-        pipemanifest.add_pipeline_version(ouss, pipeline.revision)
+        pipemanifest.add_pipeline_version(ouss, environment.pipeline_revision)
         pipemanifest.add_procedure_name(ouss, context.project_structure.recipe_name)
         pipemanifest.add_environment_info(ouss)
 
         if stdfproducts.ppr_file:
-            pipemanifest.add_pprfile(ouss, os.path.basename(stdfproducts.ppr_file))
+            pipemanifest.add_pprfile(ouss, os.path.basename(stdfproducts.ppr_file), oussid)
 
         # Add the flagging and calibration products
         for session_name in sessiondict:
             session = pipemanifest.set_session(ouss, session_name)
             if exportcalprods:
-                pipemanifest.add_caltables(session, sessiondict[session_name][1])
+                pipemanifest.add_caltables(session, sessiondict[session_name][1], session_name)
             for vis_name in sessiondict[session_name][0]:
                 immatchlist = [imname for imname in per_ms_calimages if imname.startswith(vis_name)]
                 (ms_file, flags_file, calapply_file) = (None, None, None)
@@ -758,23 +680,24 @@ class ExportData(basetask.StandardTaskTemplate):
                                              'calibrator')
 
         # Add a tar file of the web log
-        pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file))
+        pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file), oussid)
 
         # Add the processing log independently of the web log
-        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file))
+        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file), oussid)
 
         # Add the processing script independently of the web log
-        pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript))
+        pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript), oussid)
 
         # Add the restore script independently of the web log
         if stdfproducts.casa_restore_script != 'Undefined':
-            pipemanifest.add_restorescript(ouss, os.path.basename(stdfproducts.casa_restore_script))
+            pipemanifest.add_restorescript(ouss, os.path.basename(stdfproducts.casa_restore_script), oussid)
 
         # Add the calibrator images
-        pipemanifest.add_images(ouss, per_ous_calimages, 'calibrator')
+        pipemanifest.add_images(ouss, per_ous_calimages, 'calibrator', per_ous_calimages_keywords)
+        pipemanifest.add_images(ouss, per_ms_calimages, 'calibrator', per_ms_calimages_keywords)
 
         # Add the target images
-        pipemanifest.add_images(ouss, targetimages, 'target')
+        pipemanifest.add_images(ouss, targetimages, 'target', targetimages_fitskeywords)
 
         return pipemanifest
 
@@ -802,9 +725,9 @@ class ExportData(basetask.StandardTaskTemplate):
         # should be only one match but if there are more copy them all.
         pprmatches = []
         if pprtemplate is not None:
-            for file in os.listdir(output_dir):
+            for file in os.listdir(os.path.abspath(output_dir)): # the file list will be names without path
                 if fnmatch.fnmatch(file, pprtemplate):
-                    LOG.debug('Located pipeline processing request {}'.format(file))
+                    LOG.debug('Located pipeline processing request %s', file)
                     pprmatches.append(os.path.join(output_dir, file))
 
         # Copy the pipeline processing request files.
@@ -815,8 +738,7 @@ class ExportData(basetask.StandardTaskTemplate):
             else:
                 outfile = file
             pprmatchesout.append(outfile)
-            LOG.info('Copying pipeline processing file {} to {}'.format(os.path.basename(file),
-                                                                        os.path.basename(outfile)))
+            LOG.info('Copying pipeline processing file %s to %s', os.path.basename(file), os.path.basename(outfile))
             if not self._executor._dry_run:
                 shutil.copy(file, outfile)
 
@@ -826,29 +748,18 @@ class ExportData(basetask.StandardTaskTemplate):
         """
         Save the ms to a compressed tarfile in products.
         """
+        # Define the name of the output tarfile
+        visname = os.path.basename(vis)
+        tarfilename = visname + '.tgz'
+        LOG.info('Storing final ms %s in %s', visname, tarfilename)
 
-        # Save the current working directory and move to the pipeline
-        # working directory. This is required for tarfile IO
-        cwd = os.getcwd()
-        try:
-            os.chdir(context.output_dir)
+        # Create the tar file
+        if self._executor._dry_run:
+            return tarfilename
 
-            # Define the name of the output tarfile
-            visname = os.path.basename(vis)
-            tarfilename = visname + '.tgz'
-            LOG.info('Storing final ms %s in %s' %(visname, tarfilename))
-
-            # Create the tar file
-            if self._executor._dry_run:
-                return tarfilename
-
-            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-            tar.add(visname)
-            tar.close()
-
-        finally:
-            # Restore the original current working directory
-            os.chdir(cwd)
+        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+        tar.add(visname)
+        tar.close()
 
         return tarfilename
 
@@ -857,32 +768,24 @@ class ExportData(basetask.StandardTaskTemplate):
         Save the final flags to a final flag version.
         """
 
-        LOG.info('Saving final flags for %s in flag version %s' % \
-                (os.path.basename(vis), flag_version_name))
+        LOG.info('Saving final flags for %s in flag version %s', os.path.basename(vis), flag_version_name)
         if not self._executor._dry_run:
-            task = casa_tasks.flagmanager(vis=vis,
-                                           mode='save', versionname=flag_version_name)
+            task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name)
             self._executor.execute(task)
 
-    def _export_final_flagversion(self, context, vis, flag_version_name,
-                                  products_dir):
+    def _export_final_flagversion(self, vis, flag_version_name, products_dir):
         """
         Save the final flags version to a compressed tarfile in products.
         """
-
-        # Save the current working directory and move to the pipeline
-        # working directory. This is required for tarfile IO
-        cwd = os.getcwd()
-        os.chdir(context.output_dir)
-
         # Define the name of the output tarfile
         visname = os.path.basename(vis)
         tarfilename = visname + '.flagversions.tgz'
-        LOG.info('Storing final flags for {} in {}'.format(visname, tarfilename))
+        LOG.info('Storing final flags for %s in %s', visname, tarfilename)
 
-        # Define the directory to be saved
-        flagsname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
-        LOG.info('Saving flag version {}'.format(flag_version_name))
+        # Define the directory to be saved, and where to store in tar archive.
+        flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
+        flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
+        LOG.info('Saving flag version %s', flag_version_name)
 
         # Define the versions list file to be saved
         flag_version_list = os.path.join(visname + '.flagversions', 'FLAG_VERSION_LIST')
@@ -894,12 +797,9 @@ class ExportData(basetask.StandardTaskTemplate):
         # Create the tar file
         if not self._executor._dry_run:
             tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-            tar.add(flagsname)
+            tar.add(flagsname, arcname=flagsarcname)
             tar.addfile(ti, io.BytesIO(line))
             tar.close()
-
-        # Restore the original current working directory
-        os.chdir(cwd)
 
         return tarfilename
 
@@ -908,14 +808,8 @@ class ExportData(basetask.StandardTaskTemplate):
         Save the final calibration list to a file. For now this is
         a text file. Eventually it will be the CASA callibrary file.
         """
-
         applyfile_name = self.NameBuilder.calapply_list(vis=vis, aux_product=imaging)
-        # if imaging:
-        #     applyfile_name = os.path.basename(vis) + '.auxcalapply.txt'
-        # else:
-        #     applyfile_name = os.path.basename(vis) + '.calapply.txt'
-        LOG.info('Storing calibration apply list for %s in  %s',
-                 os.path.basename(vis), applyfile_name)
+        LOG.info('Storing calibration apply list for %s in  %s', os.path.basename(vis), applyfile_name)
 
         if self._executor._dry_run:
             return applyfile_name
@@ -945,10 +839,10 @@ class ExportData(basetask.StandardTaskTemplate):
                     applyfile.write(applied_calstate.as_applycal())
             else:
                 applyfile_name = 'Undefined'
-                LOG.info('No calibrations for MS %s' % os.path.basename(vis))
+                LOG.info('No calibrations for MS %s', os.path.basename(vis))
         except:
             applyfile_name = 'Undefined'
-            LOG.info('No calibrations for MS %s' % os.path.basename(vis))
+            LOG.info('No calibrations for MS %s', os.path.basename(vis))
 
         return applyfile_name
 
@@ -996,8 +890,7 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Log the sessions
         for i in range(len(session_vis_list)):
-            LOG.info('Visibility list for session %s is %s' % \
-                     (session_names[i], session_vis_list[i]))
+            LOG.info('Visibility list for session %s is %s', session_names[i], session_vis_list[i])
 
         return wksessions, session_names, session_vis_list
 
@@ -1006,89 +899,44 @@ class ExportData(basetask.StandardTaskTemplate):
         Save the final calibration tables in a tarfile one file
         per session.
         """
+        # Define the name of the output tarfile
+        tarfilename = self.NameBuilder.caltables(ousstatus_entity_id=oussid,
+                                                 session_name=session,
+                                                 aux_product=imaging)
+        LOG.info('Saving final caltables for %s in %s', session, tarfilename)
 
-        # Save the current working directory and move to the pipeline
-        # working directory. This is required for tarfile IO
-        cwd = os.getcwd()
-        try:
-            os.chdir(context.output_dir)
-
-            # Define the name of the output tarfile
-            tarfilename = self.NameBuilder.caltables(ousstatus_entity_id=oussid,
-                                                     session_name=session,
-                                                     aux_product=imaging)
-            # if imaging:
-            #     tarfilename = '{}.{}.auxcaltables.tgz'.format(oussid, session)
-            # else:
-            #     tarfilename = '{}.{}.caltables.tgz'.format(oussid, session)
-            LOG.info('Saving final caltables for %s in %s', session, tarfilename)
-
-            # Create the tar file
-            if self._executor._dry_run:
-                return tarfilename
-
-            caltables = set()
-
-            for visfile in vislist:
-                LOG.info('Collecting final caltables for %s in %s',
-                         os.path.basename(visfile), tarfilename)
-
-                # Create the list of applied caltables for that vis
-                try:
-                    calto = callibrary.CalTo(vis=visfile)
-                    calstate = context.callibrary.applied.trimmed(context, calto)
-                    caltables.update(calstate.get_caltable())
-                except:
-                    LOG.info('No caltables for MS %s' % os.path.basename(visfile))
-
-            if not caltables:
-                return 'Undefined'
-
-            with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
-                # Tar the session list.
-                for table in caltables:
-                    tar.add(table, arcname=os.path.basename(table))
-
+        # Create the tar file
+        if self._executor._dry_run:
             return tarfilename
 
-        finally:
-            # Restore the original current working directory
-            os.chdir(cwd)
+        caltables = set()
 
-    def _export_weblog(self, context, products_dir, oussid):
+        for visfile in vislist:
+            LOG.info('Collecting final caltables for %s in %s', os.path.basename(visfile), tarfilename)
 
+            # Create the list of applied caltables for that vis
+            try:
+                calto = callibrary.CalTo(vis=visfile)
+                calstate = context.callibrary.applied.trimmed(context, calto)
+                caltables.update(calstate.get_caltable())
+            except:
+                LOG.info('No caltables for MS %s', os.path.basename(visfile))
+
+        if not caltables:
+            return 'Undefined'
+
+        with tarfile.open(os.path.join(products_dir, tarfilename), 'w:gz') as tar:
+            # Tar the session list.
+            for table in caltables:
+                tar.add(table, arcname=os.path.basename(table))
+
+        return tarfilename
+
+    def _export_weblog(self, context, products_dir):
         """
         Save the processing web log to a tarfile
         """
-
-        # Save the current working directory and move to the pipeline
-        # working directory. This is required for tarfile IO
-        cwd = os.getcwd()
-        os.chdir(context.output_dir)
-
-        # Define the name of the output tarfile
-        ps = context.project_structure
-        # if ps is None:
-        #     tarfilename = 'weblog.tgz'
-        # elif ps.ousstatus_entity_id == 'unknown':
-        #     tarfilename = 'weblog.tgz'
-        # else:
-        #     tarfilename = oussid + '.weblog.tgz'
-        tarfilename = self.NameBuilder.weblog(project_structure=ps,
-                                              ousstatus_entity_id=oussid)
-
-        LOG.info('Saving final weblog in %s' %(tarfilename))
-
-        # Create the tar file
-        if not self._executor._dry_run:
-            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-            tar.add(os.path.join(os.path.basename(os.path.dirname(context.report_dir)), 'html'))
-            tar.close()
-
-        # Restore the original current working directory
-        os.chdir(cwd)
-
-        return tarfilename
+        return utils.export_weblog_as_tar(context, products_dir, self.NameBuilder, self._executor._dry_run)
 
     def _export_casa_commands_log(self, context, casalog_name, products_dir, oussid):
         """
@@ -1097,16 +945,12 @@ class ExportData(basetask.StandardTaskTemplate):
         casalog_file = os.path.join(context.report_dir, casalog_name)
 
         ps = context.project_structure
-        out_casalog_file = self.NameBuilder.casa_script(casalog_name, 
-                                                        project_structure=ps, 
+        out_casalog_file = self.NameBuilder.casa_script(casalog_name,
+                                                        project_structure=ps,
                                                         ousstatus_entity_id=oussid,
                                                         output_dir=products_dir)
-        # if ps is None or ps.ousstatus_entity_id == 'unknown':
-        #     out_casalog_file = os.path.join(products_dir, casalog_name)
-        # else:
-        #     out_casalog_file = os.path.join(products_dir, oussid + '.' + casalog_name)
 
-        LOG.info('Copying casa commands log {} to {}'.format(casalog_file, out_casalog_file))
+        LOG.info('Copying casa commands log %s to %s', casalog_file, out_casalog_file)
         if not self._executor._dry_run:
             shutil.copy(casalog_file, out_casalog_file)
 
@@ -1120,16 +964,12 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Get the output file name
         ps = context.project_structure
-        out_script_file = self.NameBuilder.casa_script(script_name, 
-                                                       project_structure=ps, 
+        out_script_file = self.NameBuilder.casa_script(script_name,
+                                                       project_structure=ps,
                                                        ousstatus_entity_id=oussid,
                                                        output_dir=products_dir)
-        # if ps is None or ps.ousstatus_entity_id == 'unknown':
-        #     out_script_file = os.path.join(products_dir, script_name)
-        # else:
-        #     out_script_file = os.path.join(products_dir, oussid + '.' + script_name)
 
-        LOG.info('Creating casa restore script {}'.format(script_file))
+        LOG.info('Creating casa restore script %s', script_file)
 
         # This is hardcoded.
         tmpvislist = []
@@ -1144,8 +984,7 @@ class ExportData(basetask.StandardTaskTemplate):
             tmpvislist.append(filename)
         task_string = "    hif_restoredata(vis=%s, session=%s, ocorr_mode='%s')" % (tmpvislist, session_list, ocorr_mode)
 
-        template = '''__rethrow_casa_exceptions = True
-h_init()
+        template = '''h_init()
 try:
 %s
 finally:
@@ -1155,8 +994,7 @@ finally:
         with open(script_file, 'w') as casa_restore_file:
             casa_restore_file.write(template)
 
-        LOG.info('Copying casa restore script %s to %s' % \
-                 (script_file, out_script_file))
+        LOG.info('Copying casa restore script %s to %s', script_file, out_script_file)
         if not self._executor._dry_run:
             shutil.copy(script_file, out_script_file)
 
@@ -1169,45 +1007,31 @@ finally:
 
         ps = context.project_structure
         casascript_file = os.path.join(context.report_dir, casascript_name)
-        out_casascript_file = self.NameBuilder.casa_script(casascript_name, 
-                                                           project_structure=ps, 
+        out_casascript_file = self.NameBuilder.casa_script(casascript_name,
+                                                           project_structure=ps,
                                                            ousstatus_entity_id=oussid,
                                                            output_dir=products_dir)
-        # if ps is None:
-        #     casascript_file = os.path.join(context.report_dir, casascript_name)
-        #     out_casascript_file = os.path.join(products_dir, casascript_name)
-        # elif ps.ousstatus_entity_id == 'unknown':
-        #     casascript_file = os.path.join(context.report_dir, casascript_name)
-        #     out_casascript_file = os.path.join(products_dir, casascript_name)
-        # else:
-        #     #ousid = ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
-        #     casascript_file = os.path.join(context.report_dir, casascript_name)
-        #     out_casascript_file = os.path.join(products_dir, oussid + '.' + casascript_name)
 
-        LOG.info('Copying casa script file %s to %s' % \
-                 (casascript_file, out_casascript_file))
+        LOG.info('Copying casa script file %s to %s', casascript_file, out_casascript_file)
         if not self._executor._dry_run:
             shutil.copy(casascript_file, out_casascript_file)
 
         return os.path.basename(out_casascript_file)
 
     def _export_pipe_manifest(self, oussid, manifest_name, products_dir, pipemanifest):
-
         """
         Save the manifest file.
         """
-        out_manifest_file = self.NameBuilder.manifest(manifest_name, 
+        out_manifest_file = self.NameBuilder.manifest(manifest_name,
                                                       ousstatus_entity_id=oussid,
                                                       output_dir=products_dir)
-        #out_manifest_file = os.path.join(products_dir, oussid + '.' + manifest_name)
-        LOG.info('Creating manifest file {}'.format(out_manifest_file))
+        LOG.info('Creating manifest file %s', out_manifest_file)
         if not self._executor._dry_run:
             pipemanifest.write(out_manifest_file)
 
         return out_manifest_file
 
-    def _export_images(self, context, calimages, calintents, images,
-                       products_dir):
+    def _export_images(self, context, calimages, calintents, images, products_dir, ous_name):
         """
         Export the images to FITS files.
         """
@@ -1219,7 +1043,7 @@ finally:
             if calimages:
                 LOG.info('Exporting calibrator source images')
                 if calintents == '':
-                    intents = ['PHASE', 'BANDPASS', 'CHECK', 'AMPLITUDE']
+                    intents = ['PHASE', 'BANDPASS', 'CHECK', 'AMPLITUDE', 'POLARIZATION']
                 else:
                     intents = calintents.split(',')
                 cleanlist = context.calimlist.get_imlist()
@@ -1301,6 +1125,21 @@ finally:
                             if os.path.exists(imagename) and not os.path.exists(imagename2):
                                 images_list.append((imagename, version))
                                 cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+
+                    # Add POLI/POLA images for polarization calibrators
+                    if image['sourcetype'] == 'POLARIZATION':
+                        if image['imagename'].find('.pbcor') != -1:
+                            for polcal_imtype in ('POLI', 'POLA'):
+                                imagename = image['imagename'].replace('.pbcor', '').replace('IQUV', polcal_imtype)
+                                if os.path.exists(imagename):
+                                    images_list.append((imagename, version))
+                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                        else:
+                            for polcal_imtype in ('POLI', 'POLA'):
+                                imagename = image['imagename'].replace('IQUV', polcal_imtype)
+                                if os.path.exists(imagename):
+                                    images_list.append((imagename, version))
+                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
         else:
             # Assume only the root image name was given.
             cleanlib = imagelibrary.ImageLibrary()
@@ -1328,24 +1167,29 @@ finally:
 
         # Convert to FITS.
         fits_list = []
+        fits_keywords_list = []
         for image_ver in images_list:
             image, version = image_ver
-            print('Working on {}'.format(image))
             fitsfile = fitsname(products_dir, image, version)
             # skip if image doesn't exist
             if not os.path.exists(image):
-                LOG.info('Skipping unexisting image {}'.format(os.path.basename(image)))
+                LOG.info('Skipping unexisting image %s', os.path.basename(image))
                 continue
-            LOG.info('Saving final image {} to FITS file {}'.format(os.path.basename(image),
-                                                                    os.path.basename(fitsfile)))
+            LOG.info('Saving final image %s to FITS file %s', os.path.basename(image), os.path.basename(fitsfile))
 
-            # PIPE-325: abbreviate 'spw' for FITS header when spw string is "too long"
-            with casatools.ImageReader(image) as img:
+            # PIPE-325: abbreviate 'spw' and/or 'virtspw' for FITS header when spw string is "too long"
+            with casa_tools.ImageReader(image) as img:
                 info = img.miscinfo()
-                if ('spw' in info) and (len(info['spw']) >= 68):
-                    spw_sorted = sorted([int(x) for x in info['spw'].split(',')])
-                    info['spw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
-                    img.setmiscinfo(info)
+                if 'spw' in info:
+                    if len(info['spw']) >= 68:
+                        spw_sorted = sorted([int(x) for x in info['spw'].split(',')])
+                        info['spw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
+                        img.setmiscinfo(info)
+                if 'virtspw' in info:
+                    if len(info['virtspw']) >= 68:
+                        spw_sorted = sorted([int(x) for x in info['virtspw'].split(',')])
+                        info['virtspw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
+                        img.setmiscinfo(info)
 
             if not self._executor._dry_run:
                 task = casa_tasks.exportfits(imagename=image, fitsimage=fitsfile, velocity=False, optical=False,
@@ -1353,24 +1197,73 @@ finally:
                                              stokeslast=True)
                 self._executor.execute(task)
                 fits_list.append(fitsfile)
+                # Fetch header keywords for manifest
+                try:
+                    ff = apfits.open(fitsfile)
+                    fits_keywords = dict()
+                    # Loop through FITS keywords.
+                    for key in ['object', 'obsra', 'obsdec', 'intent', 'specmode',
+                                'spw', 'virtspw', 'spwisvrt',
+                                'naxis1', 'ctype1', 'cunit1', 'crpix1', 'crval1', 'cdelt1',
+                                'naxis2', 'ctype2', 'cunit2', 'crpix2', 'crval2', 'cdelt2',
+                                'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
+                                'naxis4', 'ctype4', 'cunit4', 'crpix4', 'crval4', 'cdelt4',
+                                'bmaj', 'bmin', 'bpa', 'robust', 'weight',
+                                'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays', 'modifier']:
+                        fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
+
+                    if 'nspwnam' in ff[0].header:
+                        nspwnam = ff[0].header['nspwnam']
+                        fits_keywords['nspwnam'] = str(nspwnam)
+                        for i in range(1, nspwnam+1):
+                            key = 'spwnam{:02d}'.format(i)
+                            fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
+
+                    # Some names and/or values need to be mapped
+                    fits_keywords['imagemin'] = str(ff[0].header.get('datamin', 'N/A'))
+                    fits_keywords['imagemax'] = str(ff[0].header.get('datamax', 'N/A'))
+                    fits_keywords['rms'] = str(ff[0].header.get('datarms', 'N/A'))
+                    fits_keywords['producttype'] = str(ff[0].header.get('specmode', 'N/A'))
+                    fits_keywords['pl_datatype'] = str(ff[0].header.get('datatype', 'N/A'))
+                    fits_keywords['pol'] = str(ff[0].header.get('stokes', 'N/A'))
+                    imagetype = str(ff[0].header['type'])
+                    if imagetype == 'flux':
+                        fits_keywords['datatype'] = 'pb'
+                    elif imagetype == 'pbcorimage':
+                        fits_keywords['datatype'] = 'pbcor'
+                    elif imagetype == 'cleanmask':
+                        fits_keywords['datatype'] = 'mask'
+                    elif imagetype == 'singledish':
+                        fits_keywords['datatype'] = 'sd'
+                    else:
+                        fits_keywords['datatype'] = 'N/A'
+
+                    fits_keywords['format'] = 'fits'
+                    fits_keywords['ous'] = ous_name
+
+                    ff.close()
+                except Exception as e:
+                    LOG.info('Fetching FITS keywords for {} failed: {}'.format(fitsfile, e))
+                    fits_keywords = dict()
+                fits_keywords_list.append(fits_keywords)
 
         new_cleanlist = copy.deepcopy(cleanlist)
 
-        return new_cleanlist, fits_list
+        return new_cleanlist, fits_list, fits_keywords_list
 
     @staticmethod
-    def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report):
+    def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report, ous_name):
 
         pipemanifest = manifest.PipelineManifest('')
         pipemanifest.import_xml(manifest_file)
         ouss = pipemanifest.get_ous()
 
         if aqua_report:
-            pipemanifest.add_aqua_report(ouss, os.path.basename(aqua_report))
+            pipemanifest.add_aqua_report(ouss, os.path.basename(aqua_report), ous_name)
 
         if aux_fproducts:
             # Add auxiliary data products file
-            pipemanifest.add_aux_products_file(ouss, os.path.basename(aux_fproducts))
+            pipemanifest.add_aux_products_file(ouss, os.path.basename(aux_fproducts), ous_name)
 
         # Add the auxiliary caltables
         if aux_caltablesdict:
@@ -1378,9 +1271,95 @@ finally:
                 session = pipemanifest.get_session(ouss, session_name)
                 if session is None:
                     session = pipemanifest.set_session(ouss, session_name)
-                pipemanifest.add_auxcaltables(session, aux_caltablesdict[session_name][1])
+                pipemanifest.add_auxcaltables(session, aux_caltablesdict[session_name][1], session_name)
                 for vis_name in aux_caltablesdict[session_name][0]:
                     pipemanifest.add_auxasdm(session, vis_name, aux_calapplysdict[vis_name])
 
         pipemanifest.write(manifest_file)
 
+    def _export_aqua_report(self, context: Context, oussid: str, products_dir: str, report_generator: AquaXmlGenerator,
+                            weblog_filename: str):
+        """Save the AQUA report.
+
+        Note the method is mostly a duplicate of the conterpart
+             in hifa/tasks/exportdata/almaexportdata
+
+        Args:
+            context : pipeline context
+            oussid : OUS status ID
+            products_dir (str): path of product directory
+            report_generator: AQUA XML Generator
+            weblog_filename (str): weblog tarball filename
+
+        Returns:
+            AQUA report file path
+        """
+
+        aqua_file = os.path.join(context.output_dir, context.logs['aqua_report'])
+
+        LOG.info('Generating pipeline AQUA report')
+        try:
+            report_xml = report_generator.get_report_xml(context)
+            export_aqua_to_disk(report_xml, aqua_file)
+        except Exception as e:
+            LOG.exception('Error generating the pipeline AQUA report', exc_info=e)
+            return 'Undefined'
+
+        ps = context.project_structure
+        out_aqua_file = self.NameBuilder.aqua_report(context.logs['aqua_report'],
+                                                     project_structure=ps,
+                                                     ousstatus_entity_id=oussid,
+                                                     output_dir=products_dir)
+
+        LOG.info(f'Copying AQUA report {aqua_file} to {out_aqua_file}')
+        shutil.copy(aqua_file, out_aqua_file)
+
+        # put aqua report into html directory, so it can be linked to the weblog
+        aqua_html_path = os.path.join(context.report_dir, aqua_file)
+        LOG.info(f'Copying AQUA report {aqua_file} to {aqua_html_path}')
+        shutil.copy(aqua_file, context.report_dir)
+
+        products_weblog_tarball = os.path.join(context.products_dir, weblog_filename)
+
+        if os.path.isfile(products_weblog_tarball) and tarfile.is_tarfile(products_weblog_tarball):
+
+            with tarfile.open(products_weblog_tarball, "r:gz") as tar:
+
+                files_to_keep = []
+                aqua_html_path_in_tarball = None
+                for member in tar.getmembers():
+                    if aqua_file in member.name:
+                        aqua_html_path_in_tarball = member
+                    else:
+                        files_to_keep.append(member)
+
+                # PIPE-1942: we create a temp tarball file under a random UUID name, add/update the latest AUQA report XML
+                # and all other existing weblog content into it, and overwrite the old weblog tarball with this new one.
+                # We do this because tarfile does not support updating files in place. We also avoid using Python/tempfile
+                # because 1) it might create a large temp file in /tmp on the computing node; 2) it will create a file
+                # without the group read/write permission.
+
+                # Create a new tarball with the updated aqua file, keeping all others the same
+                temp_weblog_tarball = str(uuid.uuid4())
+                with tarfile.open(temp_weblog_tarball, "w:gz") as new_tar:
+
+                    LOG.debug(f'Created a temp tarball file: {temp_weblog_tarball}')
+
+                    # Add all the existing files (excluding the aqua report XML) from the old tarball to the new tarball
+                    for member in files_to_keep:
+                        new_tar.addfile(member, tar.extractfile(member))
+
+                    # If an aqua file was already in the old weblog tarball, then add it under the same relative path/name.
+                    # Else, add it into the weblog tarball.
+                    if aqua_html_path_in_tarball is not None:
+                        LOG.debug(f'Updating {aqua_html_path_in_tarball.name} in contents of {temp_weblog_tarball}')
+                        new_tar.add(aqua_file, arcname=aqua_html_path_in_tarball.name)
+                    else:
+                        LOG.debug(f'Adding {aqua_html_path} to contents of {temp_weblog_tarball}')
+                        new_tar.add(f'{aqua_html_path}')
+
+            LOG.info(f'Adding/updating the AQUA report in {products_weblog_tarball}')
+            LOG.debug(f'Moving {temp_weblog_tarball} to {products_weblog_tarball}')
+            shutil.move(temp_weblog_tarball, products_weblog_tarball)
+
+        return os.path.basename(out_aqua_file)

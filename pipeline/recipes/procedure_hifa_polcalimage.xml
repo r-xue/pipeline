@@ -9,6 +9,10 @@
                 <Keyword xmlns="">minparang</Keyword>
                 <Value xmlns="">60.0</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">dbservice</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -153,8 +157,18 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifa_polcal</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hif_applycal</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parang</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -164,6 +178,30 @@
             <Parameter>
                 <Keyword xmlns="">intent</Keyword>
                 <Value xmlns="">PHASE,BANDPASS,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">intent</Keyword>
+                <Value xmlns="">POLARIZATION</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cont</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">per_session</Keyword>
+                <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -213,7 +251,21 @@
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">maxproductsize</Keyword>
-                <Value xmlns="">350.0</Value>
+                <Value xmlns="">500.0</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_renorm</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">apply</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">atm_auto_exclude</Keyword>
+                <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -254,12 +306,6 @@
 
     <ProcessingCommand>
         <Command xmlns="">hif_findcont</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_uvcontfit</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>

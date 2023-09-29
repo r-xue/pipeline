@@ -7,11 +7,11 @@ import numpy
 import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics.vlascanheuristics import VLAScanHeuristics
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -23,15 +23,16 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
     ocorr_mode = vdp.VisDependentProperty(default='co')
     bdfflags = vdp.VisDependentProperty(default=False)
     process_caldevice = vdp.VisDependentProperty(default=True)
+    createmms = vdp.VisDependentProperty(default='false')
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, createmms=None,
-                 ocorr_mode=None):
+                 ocorr_mode=None, datacolumns=None):
         super(VLAImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                                                   process_caldevice=process_caldevice, session=session,
                                                   overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
                                                   save_flagonline=save_flagonline, createmms=createmms,
-                                                  ocorr_mode=ocorr_mode, asimaging=False)
+                                                  ocorr_mode=ocorr_mode, datacolumns=datacolumns)
 
 
 class VLAImportDataResults(basetask.Results):
@@ -89,7 +90,7 @@ class VLAImportDataResults(basetask.Results):
         msinfo.calibratorIntents()
         msinfo.determine3C84()
 
-        with casatools.TableReader(ms) as table:
+        with casa_tools.TableReader(ms) as table:
             scanNums = sorted(numpy.unique(table.getcol('SCAN_NUMBER')))
 
         # Check for missing scans
@@ -100,12 +101,12 @@ class VLAImportDataResults(basetask.Results):
             if scanNums.count(i + 1) == 1:
                 pass
             else:
-                LOG.warn("WARNING: Scan " + str(i + 1) + " is not present")
+                LOG.warning("WARNING: Scan " + str(i + 1) + " is not present")
                 missingScans += 1
                 missingScanStr = missingScanStr + str(i + 1) + ', '
 
         if missingScans > 0:
-            LOG.warn("WARNING: There were " + str(missingScans) + " missing scans in this MS")
+            LOG.warning("WARNING: There were " + str(missingScans) + " missing scans in this MS")
         else:
             LOG.info("No missing scans found.")
 

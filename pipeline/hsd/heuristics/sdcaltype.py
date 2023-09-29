@@ -1,10 +1,12 @@
 import os
+
 import numpy
 
-import pipeline.infrastructure.api as api
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.api as api
 from pipeline.hsd.heuristics import DataTypeHeuristics
+from pipeline.infrastructure import casa_tools
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -109,10 +111,10 @@ class MsCalibrationTypeHeuristics(api.Heuristic):
         """
         caltype = 'none'
 
-        with casatools.TableReader(filename) as tb:
+        with casa_tools.TableReader(filename) as tb:
             statetable = tb.getkeyword('STATE').lstrip('Table: ')
         if os.path.exists(statetable):
-            with casatools.TableReader(statetable) as tb:
+            with casa_tools.TableReader(statetable) as tb:
                 obsmodes = tb.getcol( 'OBS_MODE' )
                 obsmode = obsmodes[0]
             if ( obsmode.find( 'PSWITCH' ) != -1 ):

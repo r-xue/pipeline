@@ -77,7 +77,7 @@ def _identify_ants_to_demote(flagging_state, ms, antenna_id_to_name):
         # Convert antenna IDs to names and create a string.
         ants_str = ", ".join(map(str, [antenna_id_to_name[iant]
                                        for iant in ants_flagged]))
-        LOG.warning(
+        LOG.attention(
             "{msname} - for intent {intent} (field {fieldid}: "
             "{fieldname}) and spw {spw}, the following antennas "
             "are fully flagged: {ants}".format(
@@ -150,7 +150,7 @@ def _identify_ants_to_remove(result, ms, metric_to_test, ants_fully_flagged, ant
         ants_str = ", ".join(
             map(str, [antenna_id_to_name[iant]
                       for iant in ants_fully_flagged_in_all_spws_any_intent]))
-        LOG.warning(
+        LOG.attention(
             '{0} - the following antennas are fully flagged in all Tsys '
             'spws for one or more fields with the intent "BANDPASS", '
             '"PHASE", and/or "AMPLITUDE": {1}'.format(ms.basename, ants_str))
@@ -212,7 +212,7 @@ class TsysflagInputs(vdp.StandardInputs):
 
         return result
 
-    fb_sharps_limit = vdp.VisDependentProperty(default=0.05)
+    fb_sharps_limit = vdp.VisDependentProperty(default=0.15)
     fd_max_limit = vdp.VisDependentProperty(default=5)
     fe_edge_limit = vdp.VisDependentProperty(default=3.0)
     ff_max_limit = vdp.VisDependentProperty(default=13)
@@ -532,15 +532,6 @@ class Tsysflag(basetask.StandardTaskTemplate):
 
                         # Reset the refant removal list in the result to be empty.
                         result.refants_to_remove = set()
-                    else:
-                        # Log a warning if any antennas are to be removed from
-                        # the refant list.
-                        LOG.warning(
-                            '{0} - the following reference antennas are '
-                            'removed from the refant list because they are '
-                            'fully flagged in all Tsys spws in the '
-                            '"BANDPASS", "PHASE", and/or "AMPLITUDE" '
-                            'intents: {1}'.format(ms.basename, ant_msg))
 
                 # Identify intersection between refants and candidate
                 # antennas to demote, skipping those that are to be
@@ -576,15 +567,6 @@ class Tsysflag(basetask.StandardTaskTemplate):
 
                         # Reset the refant demotion list in the result to be empty.
                         result.refants_to_demote = set()
-                    else:
-                        # Log a warning if any antennas are to be demoted from
-                        # the refant list.
-                        LOG.warning(
-                            '{0} - the following antennas are moved to the end '
-                            'of the refant list because they are fully '
-                            'flagged for one or more Tsys spws, in one or more '
-                            'fields with intent "BANDPASS", "PHASE", and/or '
-                            '"AMPLITUDE": {1}'.format(ms.basename, ant_msg))
 
             # If no list of reference antennas was registered with the MS,
             # raise a warning.
@@ -617,7 +599,7 @@ class Tsysflag(basetask.StandardTaskTemplate):
         # already created and merged into the context by tsyscal, but we
         # recreate it here since it is needed by the weblog renderer to create
         # a Tsys summary chart.
-        calto = callibrary.CalTo(vis=tsystable.vis)
+        calto = callibrary.CalTo(vis=inputs.vis)
         calfrom = callibrary.CalFrom(caltable_to_assess, caltype='tsys', spwmap=spwmap)
         calapp = callibrary.CalApplication(calto, calfrom)
         result.final = [calapp]
@@ -765,9 +747,8 @@ class Tsysflag(basetask.StandardTaskTemplate):
         # already created and merged into the context by tsyscal, but we
         # recreate it here since it is needed by the weblog renderer to create
         # a Tsys summary chart.
-        calto = callibrary.CalTo(vis=tsystable.vis)
-        calfrom = callibrary.CalFrom(caltable_to_assess, caltype='tsys',
-                                     spwmap=spwmap)
+        calto = callibrary.CalTo(vis=inputs.vis)
+        calfrom = callibrary.CalFrom(caltable_to_assess, caltype='tsys', spwmap=spwmap)
         calapp = callibrary.CalApplication(calto, calfrom)
         result.final = [calapp]
 
@@ -878,8 +859,8 @@ class Tsysflag(basetask.StandardTaskTemplate):
         # Count fully flagged spectra, raise warning if there were any.
         nflagged = allflags.count(True)
         if nflagged > 0:
-            LOG.warning("{}: {} out of {} spectra were fully flagged in all channels (for any polarisation) prior to"
-                        " evaluation of flagging heuristics.".format(os.path.basename(caltable), nflagged,
+            LOG.attention("{}: {} out of {} spectra were fully flagged in all channels (for any polarisation) prior to"
+                          " evaluation of flagging heuristics.".format(os.path.basename(caltable), nflagged,
                                                                      len(allflags)))
 
 
@@ -1232,7 +1213,7 @@ class TsysflagView(object):
                         # Initialize median spectrum and corresponding flag list
                         # and populate with valid data
                         stackmedian = np.zeros(np.shape(spectrumstack)[1])
-                        stackmedianflag = np.ones(np.shape(spectrumstack)[1], np.bool)
+                        stackmedianflag = np.ones(np.shape(spectrumstack)[1], bool)
                         for j in range(np.shape(spectrumstack)[1]):
                             valid_data = spectrumstack[:, j][np.logical_not(flagstack[:, j])]
                             if len(valid_data):
@@ -1251,7 +1232,7 @@ class TsysflagView(object):
                         # view, and get values for the 'times' axis.
                         times = np.sort(list(times))
                         data = np.zeros([antenna_ids[-1]+1, len(times)])
-                        flag = np.ones([antenna_ids[-1]+1, len(times)], np.bool)
+                        flag = np.ones([antenna_ids[-1]+1, len(times)], bool)
 
                         # Populate the flagging view based on the flagging metric
                         for description in tsysspectra[pol].descriptions():
@@ -1330,7 +1311,7 @@ class TsysflagView(object):
                     # Initialize median spectrum and corresponding flag list
                     # and populate with valid data
                     stackmedian = np.zeros(np.shape(spectrumstack)[1])
-                    stackmedianflag = np.ones(np.shape(spectrumstack)[1], np.bool)
+                    stackmedianflag = np.ones(np.shape(spectrumstack)[1], bool)
                     for j in range(np.shape(spectrumstack)[1]):
                         valid_data = spectrumstack[:, j][np.logical_not(flagstack[:, j])]
                         if len(valid_data):
@@ -1349,7 +1330,7 @@ class TsysflagView(object):
                     # and get values for the 'times' axis.
                     times = np.sort(list(times))
                     data = np.zeros([antenna_ids[-1]+1, len(times)])
-                    flag = np.ones([antenna_ids[-1]+1, len(times)], np.bool)
+                    flag = np.ones([antenna_ids[-1]+1, len(times)], bool)
 
                     # Populate the flagging view based on the flagging metric
                     for description in tsysspectra[pol].descriptions():
@@ -1454,7 +1435,7 @@ class TsysflagView(object):
                 # Initialize median spectrum and corresponding flag list
                 # and populate with valid data
                 stackmedian = np.zeros(np.shape(spectrumstack)[1])
-                stackmedianflag = np.ones(np.shape(spectrumstack)[1], np.bool)
+                stackmedianflag = np.ones(np.shape(spectrumstack)[1], bool)
                 for j in range(np.shape(spectrumstack)[1]):
                     valid_data = spectrumstack[:, j][np.logical_not(flagstack[:, j])]
                     if len(valid_data):
@@ -1471,7 +1452,7 @@ class TsysflagView(object):
             # and get values for the 'times' axis.
             times = np.sort(list(times))
             data = np.zeros([antenna_ids[-1]+1, len(times)])
-            flag = np.ones([antenna_ids[-1]+1, len(times)], np.bool)
+            flag = np.ones([antenna_ids[-1]+1, len(times)], bool)
 
             # Populate the flagging view based on the flagging metric:
             # Get MAD of channel by channel derivative of Tsys
@@ -1612,7 +1593,7 @@ class TsysflagView(object):
 
                     # Initialize median spectrum and corresponding flag list
                     stackmedian = np.zeros(np.shape(spectrumstack)[1])
-                    stackmedianflag = np.ones(np.shape(spectrumstack)[1], np.bool)
+                    stackmedianflag = np.ones(np.shape(spectrumstack)[1], bool)
 
                     # Calculate median Tsys spectrum from spectrum stack
                     for j in range(np.shape(spectrumstack)[1]):
@@ -1635,7 +1616,7 @@ class TsysflagView(object):
                     # and not flagged, and create a new list of flags 
                     # that include these channels
                     newflag = (diff > 0.05) & np.logical_not(diff_flag)
-                    flag_chan = np.zeros([len(newflag)+1], np.bool)
+                    flag_chan = np.zeros([len(newflag)+1], bool)
                     flag_chan[:-1] = newflag
                     flag_chan[1:] = np.logical_or(flag_chan[1:], newflag)
                     channels_flagged = np.arange(len(newflag)+1)[flag_chan]
@@ -1661,7 +1642,7 @@ class TsysflagView(object):
             # and get values for the 'times' axis.
             times = np.sort(list(times))
             data = np.zeros([antenna_ids[-1]+1, len(times)])
-            flag = np.ones([antenna_ids[-1]+1, len(times)], np.bool)
+            flag = np.ones([antenna_ids[-1]+1, len(times)], bool)
 
             # Populate the flagging view based on the flagging metric
             for description in tsysspectra[pol].descriptions():
@@ -1769,7 +1750,7 @@ class TsysflagView(object):
 
             # Initialize median spectrum and corresponding flag list
             stackmedian = np.zeros(np.shape(spectrumstack)[1])
-            stackmedianflag = np.ones(np.shape(spectrumstack)[1], np.bool)
+            stackmedianflag = np.ones(np.shape(spectrumstack)[1], bool)
 
             # Calculate median Tsys spectrum from spectrum stack
             for j in range(np.shape(spectrumstack)[1]):
@@ -1862,7 +1843,7 @@ class TsysflagView(object):
             # Initialize median spectrum and corresponding flag list
             # and populate with valid data
             spw_median = np.zeros(np.shape(spw_spectrumstack)[1])
-            spw_medianflag = np.ones(np.shape(spw_spectrumstack)[1], np.bool)
+            spw_medianflag = np.ones(np.shape(spw_spectrumstack)[1], bool)
             for j in range(np.shape(spw_spectrumstack)[1]):
                 valid_data = spw_spectrumstack[:, j][np.logical_not(spw_flagstack[:, j])]
                 if len(valid_data):
@@ -1876,7 +1857,7 @@ class TsysflagView(object):
 
                 # Initialize the data and flagging state for the flagging view
                 ant_median = np.zeros(np.shape(ant_spectrumstack[antenna_id])[1])
-                ant_medianflag = np.ones(np.shape(ant_spectrumstack[antenna_id])[1], np.bool)
+                ant_medianflag = np.ones(np.shape(ant_spectrumstack[antenna_id])[1], bool)
 
                 # Populate the flagging view based on the flagging metric:
                 # Calculate diff between median for spw/antenna and median for spw

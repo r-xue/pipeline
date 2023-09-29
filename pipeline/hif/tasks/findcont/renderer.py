@@ -4,22 +4,22 @@ Created on 24 Aug 2015
 @author: sjw
 """
 import collections
+import copy
+import glob
 import operator
 import os
 import shutil
-import glob
-import copy
 
 import numpy
 import matplotlib
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.h.tasks.common.displays as displays
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -86,6 +86,8 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         refer = 'TOPO'
                     elif (refers == 'LSRK').all():
                         refer = 'LSRK'
+                    elif (refers == 'SOURCE').all():
+                        refer = 'SOURCE'
                     else:
                         refer = 'UNDEFINED'
                     sorted_ranges = sorted(raw_ranges_for_spw, key=operator.itemgetter(0))
@@ -143,34 +145,33 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def _get_jointmaskplot(self, context, result, field, spw):
 
-        joint2 = glob.glob('{}/*s{}*{}*spw{}*joint.mask2'.format(context.output_dir, result.stage_number, field, spw))
-        joint = glob.glob('{}/*s{}*{}*spw{}*joint.mask'.format(context.output_dir, result.stage_number, field, spw))
-        
-        if joint2:
-            src = joint2[0]
+        joint_mask_name = result.joint_mask_names.get((field, spw), '')
+
+        if joint_mask_name.endswith('.joint.mask2'):
             masktype = 'jointmask2'
-        elif joint:
-            src = joint[0]
+        elif joint_mask_name.endswith('.joint.mask'):
             masktype = 'jointmask'
+        elif joint_mask_name.endswith('.amendedJointMask.original'):
+            masktype = 'amendedmask'
         else:
             return 'No plot available'
 
-        with casatools.ImageReader(src) as image:
+        with casa_tools.ImageReader(joint_mask_name) as image:
             info = image.miscinfo()
             info['type'] = masktype
-            info['spw'] = spw
+            info['virtspw'] = spw
             info['field'] = field
             image.setmiscinfo(info)
 
         # create a plot object so we can access (thus generate) the thumbnail
         reportdir = context.report_dir+'/stage{}/'.format(result.stage_number)
 
-        plot_obj = displays.sky.SkyDisplay().plot(context, src, reportdir=reportdir, intent='', collapseFunction='mean',
-                                                  **{'cmap': copy.deepcopy(matplotlib.cm.YlOrRd)})
+        plot_obj = displays.sky.SkyDisplay().plot(context, joint_mask_name, reportdir=reportdir, intent='', collapseFunction='mean',
+                                                  **{'cmap': copy.copy(matplotlib.cm.YlOrRd)})
 
         fullsize_relpath = os.path.relpath(plot_obj.abspath, context.report_dir)
         thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, context.report_dir)
-        title = 'Detected continuum ranges for %s spw %s' % (field, spw)
+        title = 'Mask used for spectrum for %s spw %s' % (field, spw)
 
         html_args = {
             'fullsize': fullsize_relpath,

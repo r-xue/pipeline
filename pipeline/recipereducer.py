@@ -149,9 +149,9 @@ def string_to_val(s):
     """
     try:
         pyobj = ast.literal_eval(s)
-        # seems Tsys wants its groupintent as a string
-        # if type(pyobj) in (list, tuple):
-        #     pyobj = s
+        # PIPE-1030: prevent a string like "1,2,3" from being unexpectedly translated into tuple
+        if type(pyobj) is tuple and s.strip()[0] != '(':
+            pyobj = s
         return pyobj
     except ValueError:
         return s
@@ -171,7 +171,7 @@ def _as_task_call(task_class, task_args):
 
 def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
            context=None, name=None, loglevel='info', plotlevel='default',
-           session=None, exitstage=None):
+           session=None, exitstage=None, startstage=None):
     if vis is None:
         vis = []
 
@@ -187,11 +187,18 @@ def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
     if session is None:
         session = ['default'] * len(vis)
 
+    if startstage is None:
+        startstage = 0
+
     task_args = TaskArgs(vis, infiles, session)
     task_generator = _get_tasks(context, task_args, procedure)
     try:
+        procedure_stage_nr = 0
         while True:
             task = next(task_generator)
+            procedure_stage_nr += 1
+            if procedure_stage_nr < startstage:
+                continue
             LOG.info('Executing pipeline task %s' % task._hif_call)
 
             try:

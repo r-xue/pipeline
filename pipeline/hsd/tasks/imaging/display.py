@@ -1,27 +1,33 @@
+"""Set of plotting classes for hsd_imaging task."""
+import copy
+import itertools
 import math
 import os
 import time
+from typing import Callable, Generator, List, Optional, Union
 
 import numpy
-#TODO: pylab should be replaced by pyplot
-import pylab as pl
+from scipy import interpolate
+import matplotlib
+import matplotlib.axes as axes
+import matplotlib.figure as figure
+import matplotlib.ticker as ticker
 from matplotlib.ticker import MultipleLocator
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.renderer.logger as logger
+from pipeline.domain import DataType
 from pipeline.h.tasks.common import atmutil
-from pipeline.hsd.tasks.common.display import DPIDetail, DPISummary, SDImageDisplay, SDImageDisplayInputs, ShowPlot
-from pipeline.hsd.tasks.common.display import sd_polmap as polmap
+from pipeline.hsd.tasks.common.display import DPIDetail, SDImageDisplay, SDImageDisplayInputs
+from pipeline.hsd.tasks.common.display import sd_polmap as polmap, SpectralImage, ChannelSelection
 from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
-from pipeline.hsd.tasks.common.display import NoData, NoDataThreshold
+from pipeline.hsd.tasks.common.display import NoData
+from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
-
-# NoData = -32767.0
-# NoDataThreshold = NoData + 10000.0
 
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation
@@ -31,52 +37,137 @@ HHMMSSss = pointing.HHMMSSss
 LOG = infrastructure.get_logger(__name__)
 
 
-class ChannelAveragedAxesManager(MapAxesManagerBase):
-    def __init__(self, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap):
-        super(ChannelAveragedAxesManager, self).__init__()
+class ImageAxesManager(MapAxesManagerBase):
+    """Axes manager for figure containing ImageAxes instance."""
+
+    def __init__(self, fig: figure.Figure,
+                 xformatter: ticker.Formatter, yformatter: ticker.Formatter,
+                 xlocator: ticker.Locator, ylocator: ticker.Locator,
+                 xrotation: float, yrotation: float,
+                 ticksize: int, colormap: str) -> None:
+        """Construct ImageAxesManager instance.
+
+        Args:
+            fig: matplotlib.figure.Figure instance
+            xformatter: tick formatter for x-axis
+            yformatter: tick formatter for y-axis
+            xlocator: tick locator for x-axis
+            ylocator: tick locator for y-axis
+            xrotation: rotation angle of x-axis label
+            yrotation: rotation angle of y-axis label
+            ticksize: tick label size
+            colormap: colormap to use. 'gray' for gray scale. Otherwise, 'jet' is used.
+        """
+        super(ImageAxesManager, self).__init__()
+        self.figure = fig
         self.xformatter = xformatter
         self.yformatter = yformatter
         self.xlocator = xlocator
         self.ylocator = ylocator
         self.xrotation = xrotation
         self.yrotation = yrotation
-        self.isgray = (colormap == 'gray')
 
         self.ticksize = ticksize
 
-        self._axes_tpmap = None
+        self.cmap = 'gray' if colormap == 'gray' else 'jet'
+
+    def set_colorbar_for(self, axes: axes.Axes,
+                         value_min: float, value_max: float, value_unit: str,
+                         shrink: float = 1.0):
+        """Set colorbar associated with given Axes instance.
+
+        Axes is supposed to contain ImageAxes inside. If Axes already has colorbar,
+        it reuses the existing one rather than creating new instance.
+
+        Args:
+            axes: Axes instance
+            value_min: minimum value of the range of colorbar
+            value_max: maximum value of the range of colorbar
+            value_unit: unit of the value
+            shrink: shrink parameter for colorbar. Defaults to 1.0.
+        """
+        # axes should contain one AxesImage
+        assert len(axes.images) == 1
+        colorbar = getattr(axes, 'colorbar', None)
+        if colorbar is None:
+            norm = matplotlib.colors.Normalize(value_min, value_max)
+            colorbar = self.figure.colorbar(matplotlib.cm.ScalarMappable(norm, self.cmap), shrink=shrink, ax=axes)
+            for t in colorbar.ax.get_yticklabels():
+                fontsize = t.get_fontsize() * 0.5
+                t.set_fontsize(fontsize)
+            axes.colorbar = colorbar
+        else:
+            colorbar.mappable.set_clim((value_min, value_max))
+            colorbar.draw_all()
+            # set_clim and draw_all clears y-label
+        fontsize = colorbar.ax.get_yticklabels()[0].get_fontsize()
+        colorbar.ax.set_ylabel('[%s]' % value_unit, fontsize=fontsize)
+
+
+class SingleImageAxesManager(ImageAxesManager):
+    """Axes manager for figure containing single ImageAxes instance."""
+
+    def __init__(self, fig: figure.Figure,
+                 xformatter: ticker.Formatter, yformatter: ticker.Formatter,
+                 xlocator: ticker.Locator, ylocator: ticker.Locator,
+                 xrotation: float, yrotation: float,
+                 ticksize: int, colormap: str) -> None:
+        """Construct SingleImageAxesManager instance.
+
+        Args:
+            fig: matplotlib.figure.Figure instance
+            xformatter: tick formatter for x-axis
+            yformatter: tick formatter for y-axis
+            xlocator: tick locator for x-axis
+            ylocator: tick locator for y-axis
+            xrotation: rotation angle of x-axis label
+            yrotation: rotation angle of y-axis label
+            ticksize: tick label size
+            colormap: colormap to use. 'gray' for gray scale. Otherwise, 'jet' is used.
+        """
+        super(SingleImageAxesManager, self).__init__(fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap)
+        self._image_axes = None
 
     @property
-    def axes_tpmap(self):
-        if self._axes_tpmap is None:
-            axes = pl.axes([0.25, 0.25, 0.5, 0.5])
+    def image_axes(self) -> axes.Axes:
+        """Return Axes instance for the image.
+
+        Returns:
+            Axes instance. The instance is created only once and
+            return existing one for the subsequent access.
+        """
+        if self._image_axes is None:
+            axes = self.figure.add_axes([0.25, 0.25, 0.5, 0.5])
             axes.xaxis.set_major_formatter(self.xformatter)
             axes.yaxis.set_major_formatter(self.yformatter)
             axes.xaxis.set_major_locator(self.xlocator)
             axes.yaxis.set_major_locator(self.ylocator)
             xlabels = axes.get_xticklabels()
-            pl.setp(xlabels, 'rotation', self.xrotation, fontsize=self.ticksize)
+            for label in xlabels:
+                label.set_rotation(self.xrotation)
+                label.set_fontsize(self.ticksize)
             ylabels = axes.get_yticklabels()
-            pl.setp(ylabels, 'rotation', self.yrotation, fontsize=self.ticksize)
-            pl.title('Baseline RMS Map', size=self.ticksize)
+            for label in ylabels:
+                label.set_rotation(self.yrotation)
+                label.set_fontsize(self.ticksize)
             xlabel, ylabel = self.get_axes_labels()
-            pl.xlabel(xlabel, size=self.ticksize)
-            pl.ylabel(ylabel, size=self.ticksize)
+            axes.set_xlabel(xlabel, size=self.ticksize)
+            axes.set_ylabel(ylabel, size=self.ticksize)
 
-            if self.isgray:
-                pl.gray()
-            else:
-                pl.jet()
+            self._image_axes = axes
 
-            self._axes_tpmap = axes
-
-        return self._axes_tpmap
+        return self._image_axes
 
 
 class SDChannelAveragedImageDisplay(SDImageDisplay):
-    MATPLOTLIB_FIGURE_ID = 8911
+    """Plotter to create a color map for channel averaged spw."""
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of color maps for channel averaged spw.
+
+        Returns:
+            List of plot objects.
+        """
         self.init()
 
         Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
@@ -85,11 +176,7 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                                                                               self.direction_reference)
 
         # Plotting
-        if ShowPlot: pl.ion()
-        else: pl.ioff()
-        pl.figure(self.MATPLOTLIB_FIGURE_ID)
-        if ShowPlot: pl.ioff()
-        pl.clf()
+        fig = self.figure
 
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_max + self.dec_min) / 180. * 3.141592653)
@@ -97,30 +184,26 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
         colormap = 'color'
         TickSize = 6
 
-        axes_manager = ChannelAveragedAxesManager(RAformatter, DECformatter,
-                                                  RAlocator, DEClocator,
-                                                  RArotation, DECrotation,
-                                                  TickSize, colormap)
+        axes_manager = SingleImageAxesManager(fig, RAformatter, DECformatter,
+                                              RAlocator, DEClocator,
+                                              RArotation, DECrotation,
+                                              TickSize, colormap)
         axes_manager.direction_reference = self.direction_reference
-        axes_tpmap = axes_manager.axes_tpmap
-        tpmap_colorbar = None
+        axes_tpmap = axes_manager.image_axes
         beam_circle = None
-
-        pl.gcf().sca(axes_tpmap)
 
         plot_list = []
 
-#         masked_data = self.data * self.mask
+        data = self.data
+        mask = self.mask
         for pol in range(self.npol):
-#             Total = masked_data.take([pol], axis=self.id_stokes).squeeze()
-            Total = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
+            Total = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze()
             Total = numpy.flipud(Total.transpose())
             tmin = Total.min()
             tmax = Total.max()
 
             # 2008/9/20 DEC Effect
-            im = pl.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
-            #im = pl.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
+            im = axes_tpmap.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
             del Total
 
             xlim = axes_tpmap.get_xlim()
@@ -132,29 +215,19 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                 #if not ((Ymax == Ymin) and (Xmax == Xmin)):
                 #if not all(image_shape[id_direction] <= 1):
                 if self.nx > 1 or self.ny > 1:
-                    if tpmap_colorbar is None:
-                        tpmap_colorbar = pl.colorbar(shrink=0.8)
-                        for t in tpmap_colorbar.ax.get_yticklabels():
-                            newfontsize = t.get_fontsize()*0.5
-                            t.set_fontsize(newfontsize)
-                    else:
-                        tpmap_colorbar.mappable.set_clim((tmin, tmax))
-                        tpmap_colorbar.draw_all()
-                    # set_clim and draw_all clears y-label
-                    tpmap_colorbar.ax.set_ylabel('[%s]' % self.image.brightnessunit, fontsize=newfontsize)
+                    axes_manager.set_colorbar_for(axes_tpmap, tmin, tmax, self.brightnessunit, shrink=0.8)
 
             # draw beam pattern
             if beam_circle is None:
                 beam_circle = pointing.draw_beam(axes_tpmap, 0.5 * self.beam_size, self.aspect, self.ra_min, self.dec_min)
 
-            pl.title('Total Power', size=TickSize)
+            axes_tpmap.title('Total Power', size=TickSize)
             axes_tpmap.set_xlim(xlim)
             axes_tpmap.set_ylim(ylim)
 
-            if ShowPlot: pl.draw()
             FigFileRoot = self.inputs.imagename+'.pol%s'%(pol)
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_TP.png')
-            pl.savefig(plotfile, format='png', dpi=DPIDetail)
+            fig.savefig(plotfile, dpi=DPIDetail)
 
             im.remove()
 
@@ -178,42 +251,56 @@ class SDChannelAveragedImageDisplay(SDImageDisplay):
                                parameters=parameters)
             plot_list.append(plot)
 
-        return plot_list
+        fig.clf()
+        del fig
 
-# class SDMomentMapDisplayInputs(SDImageDisplayInputs):
-#     MAP_MOMENT = 8
-#     def __init__(self, context, result):
-#         super(SDMomentMapDisplayInputs,self).__init__(context, result)
-#         # obtain integrated image using immoments task
-#         print self.imagename
-#         #job = casa_tasks.immoments(imagename=self.imagename, moments=[0], outfile=self.momentmap_name)
-#
-#     @property
-#     def momentmap_name(self):
-#         return self.result.outcome['image'].imagename.rstrip('/') + ('.mom%d' % self.MAP_MOMENT)
+        return plot_list
 
 
 class SDMomentMapDisplay(SDImageDisplay):
-    MATPLOTLIB_FIGURE_ID = 8911
-    MAP_MOMENT = 8
-    MAP_TITLE = "Max Intensity Map"
+    """Plotter to create a moment map."""
 
-    def __init__(self, inputs):
+    def __init__(self, inputs: SDImageDisplayInputs) -> None:
+        """Create SDMomentMapDisplay instance.
+
+        Args:
+            Inputs instance.
+        """
         super(self.__class__, self).__init__(inputs)
-    #         if hasattr(self.inputs, 'momentmap_name'):
-    #             self.imagename = self.inputs.momentmap_name
-    #         else:
-        self.imagename = self.inputs.result.outcome['image'].imagename.rstrip('/') + ('.mom%d' % self.MAP_MOMENT)
+        self.moment_images = []
 
-    def init(self):
-        if os.path.exists(self.imagename):
-            os.system('rm -rf %s'%(self.imagename))
-        job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=[self.MAP_MOMENT], outfile=self.imagename)
-        job.execute(dry_run=False)
-        assert os.path.exists(self.imagename)
+    def init(self) -> None:
+        """Do some initialization for moment map.
+
+        Execute immoments task to generate moment image as well as
+        performing generic initialization defined in the super class.
+        """
+        self.moment_images = []
+        for spec in self.inputs.MomentMapList:
+            chans = self.inputs.create_channel_mask(spec.chans)
+            LOG.debug('chans = "%s"', chans)
+            moment_imagename_list = [self.inputs.moment_imagename(moment, spec.chans) for moment in spec.moments]
+            for imagename in moment_imagename_list:
+                if os.path.exists(imagename):
+                    status = casa_tools.image.removefile(imagename)
+            outfile = self.inputs.moment_imagename(spec.moments, spec.chans)
+            moments = [moment.value for moment in spec.moments]
+            LOG.debug(f'moment_imagename_list={moment_imagename_list}')
+            LOG.debug(f'moments={moments}')
+            LOG.debug(f'outfile={outfile}')
+            job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=moments, chans=chans, outfile=outfile)
+            job.execute(dry_run=False)
+            for imagename in moment_imagename_list:
+                assert os.path.exists(imagename)
+            self.moment_images.extend(moment_imagename_list)
         super(self.__class__, self).init()
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of moment maps.
+
+        Returns:
+            List of plot objects.
+        """
         self.init()
 
         Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
@@ -222,11 +309,7 @@ class SDMomentMapDisplay(SDImageDisplay):
                                                                               self.direction_reference)
 
         # Plotting
-        if ShowPlot: pl.ion()
-        else: pl.ioff()
-        pl.figure(self.MATPLOTLIB_FIGURE_ID)
-        if ShowPlot: pl.ioff()
-        pl.clf()
+        fig = self.figure
 
         # 2008/9/20 Dec Effect has been taken into account
         #Aspect = 1.0 / math.cos(0.5 * (self.dec_max + self.dec_min) / 180. * 3.141592653)
@@ -234,95 +317,150 @@ class SDMomentMapDisplay(SDImageDisplay):
         colormap = 'color'
         TickSize = 6
 
-        axes_manager = ChannelAveragedAxesManager(RAformatter, DECformatter,
-                                                  RAlocator, DEClocator,
-                                                  RArotation, DECrotation,
-                                                  TickSize, colormap)
+        axes_manager = SingleImageAxesManager(fig, RAformatter, DECformatter,
+                                              RAlocator, DEClocator,
+                                              RArotation, DECrotation,
+                                              TickSize, colormap)
         axes_manager.direction_reference = self.direction_reference
-        axes_tpmap = axes_manager.axes_tpmap
-        tpmap_colorbar = None
+        axes_tpmap = axes_manager.image_axes
         beam_circle = None
-
-        pl.gcf().sca(axes_tpmap)
 
         plot_list = []
 
-        for pol in range(self.npol):
-            masked_data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
-            Total = numpy.flipud(masked_data.transpose())
-            del masked_data
+        for imagename in self.moment_images:
 
-            # 2008/9/20 DEC Effect
-            im = pl.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent)
-            #im = pl.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
-            tmin = Total.min()
-            tmax = Total.max()
-            del Total
+            if not os.path.exists(imagename):
+                continue
 
-            xlim = axes_tpmap.get_xlim()
-            ylim = axes_tpmap.get_ylim()
+            split_imagename = imagename.split('.')
+            moment_type = split_imagename[-1]
+            chans = split_imagename[-2]
 
-            # colorbar
-            #print "min=%s, max of Total=%s" % (tmin,tmax)
-            if not (tmin == tmax):
-                #if not ((Ymax == Ymin) and (Xmax == Xmin)):
-                #if not all(image_shape[id_direction] <= 1):
-                if self.nx > 1 or self.ny > 1:
-                    if tpmap_colorbar is None:
-                        tpmap_colorbar = pl.colorbar(shrink=0.8)
-                        newfontsize = None
-                        for t in tpmap_colorbar.ax.get_yticklabels():
-                            newfontsize = t.get_fontsize()*0.5
-                            t.set_fontsize(newfontsize)
-                    else:
-                        tpmap_colorbar.mappable.set_clim((tmin, tmax))
-                        tpmap_colorbar.draw_all()
-                    #if newfontsize is None: # no ticks in colorbar likely invalid TP map
-                    # set_clim and draw_all clears y-label
-                    tpmap_colorbar.ax.set_ylabel('[%s]'%(self.brightnessunit), fontsize=newfontsize)
+            if moment_type == 'maximum':
+                map_title = 'Max Intensity Map'
+            else:  # 'integrated'
+                map_title = 'Integrated Intensity Map'
 
-            # draw beam pattern
-            if beam_circle is None:
-                beam_circle = pointing.draw_beam(axes_tpmap, 0.5 * self.beam_size, self.aspect, self.ra_min,
-                                                 self.dec_min)
+            image = SpectralImage(imagename)
+            data = image.data
+            mask = image.mask
 
-            pl.title(self.MAP_TITLE, size=TickSize)
-            axes_tpmap.set_xlim(xlim)
-            axes_tpmap.set_ylim(ylim)
+            for pol in range(self.npol):
 
-            if ShowPlot:
-                pl.draw()
-            FigFileRoot = self.inputs.imagename+'.pol%s' % pol
-            plotfile = os.path.join(self.stage_dir, FigFileRoot+'_TP.png')
-            pl.savefig(plotfile, format='png', dpi=DPIDetail)
+                masked_data = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze()
+                Total = numpy.flipud(masked_data.transpose())
+                del masked_data
 
-            im.remove()
+                if moment_type == 'maximum' and chans == 'line_free':
+                    # adjust color scale according to the logic described in PIPE-373/PIPE-197
+                    with casa_tools.ImageReader(imagename) as ia:
+                        # cf. hif/tasks/tclean/tclean.py mom8_stats
+                        stats = ia.statistics(robust=True, stretch=True)
+                    tmin = stats['median'] - stats['medabsdevmed']
 
-            parameters = {}
-            parameters['intent'] = 'TARGET'
-            parameters['spw'] = self.inputs.spw
-            parameters['pol'] = self.image.stokes[pol] #polmap[pol]
-            parameters['ant'] = self.inputs.antenna
-            parameters['type'] = 'sd_moment_map'
-            parameters['file'] = self.inputs.imagename
-            parameters['field'] = self.inputs.source
-            parameters['vis'] = 'ALL'
+                    per_channel_stats = self.inputs.compute_per_channel_stats()
+                    line_free_channels = self.inputs.get_line_free_channels()
+                    sigma = numpy.median(per_channel_stats['sigma'][line_free_channels])
+                    tmax = 10 * sigma
+                else:
+                    tmin = Total.min()
+                    tmax = Total.max()
 
-            plot = logger.Plot(plotfile,
-                               x_axis='R.A.',
-                               y_axis='Dec.',
-                               field=self.inputs.source,
-                               parameters=parameters)
+                # 2008/9/20 DEC Effect
+                im = axes_tpmap.imshow(
+                    Total, interpolation='nearest', aspect=self.aspect, extent=Extent,
+                    vmin=tmin, vmax=tmax
+                )
+                del Total
 
-            plot_list.append(plot)
+                xlim = axes_tpmap.get_xlim()
+                ylim = axes_tpmap.get_ylim()
+
+                # colorbar
+                #print "min=%s, max of Total=%s" % (tmin,tmax)
+                if not (tmin == tmax):
+                    #if not ((Ymax == Ymin) and (Xmax == Xmin)):
+                    #if not all(image_shape[id_direction] <= 1):
+                    if self.nx > 1 or self.ny > 1:
+                        axes_manager.set_colorbar_for(axes_tpmap, tmin, tmax, self.brightnessunit, shrink=0.8)
+
+                # draw beam pattern
+                if beam_circle is None:
+                    beam_circle = pointing.draw_beam(axes_tpmap, 0.5 * self.beam_size, self.aspect, self.ra_min,
+                                                     self.dec_min)
+
+                axes_tpmap.set_title(map_title, size=TickSize)
+                axes_tpmap.set_xlim(xlim)
+                axes_tpmap.set_ylim(ylim)
+
+                figfile = imagename + f'.pol{pol}.png'
+                plotfile = os.path.join(self.stage_dir, figfile)
+                fig.savefig(plotfile, dpi=DPIDetail)
+
+                im.remove()
+
+                parameters = {}
+                parameters['intent'] = 'TARGET'
+                parameters['spw'] = self.inputs.spw
+                parameters['pol'] = self.image.stokes[pol] #polmap[pol]
+                parameters['ant'] = self.inputs.antenna
+                parameters['type'] = 'sd_moment_map'
+                parameters['moment'] = moment_type
+                parameters['chans'] = chans
+                parameters['file'] = self.inputs.imagename
+                parameters['field'] = self.inputs.source
+                parameters['vis'] = 'ALL'
+
+                plot = logger.Plot(plotfile,
+                                   x_axis='R.A.',
+                                   y_axis='Dec.',
+                                   field=self.inputs.source,
+                                   parameters=parameters)
+
+                plot_list.append(plot)
+
+        fig.clf()
+        del fig
 
         return plot_list
 
 
-class ChannelMapAxesManager(ChannelAveragedAxesManager):
-    def __init__(self, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap, nh, nv,
-                 brightnessunit):
-        super(ChannelMapAxesManager, self).__init__(xformatter, yformatter,
+class ChannelMapAxesManager(ImageAxesManager):
+    """Creates and manages Axes instances for channel map.
+
+    Channel map consists of the following Axes:
+
+        - Integrated intensity map (top right)
+        - Integrated spectrum with spectral line location (top center)
+        - Close up of integrated spectrum with ranges for each channel map (top left)
+        - Tiled channel map
+    """
+
+    def __init__(self, fig: figure.Figure,
+                 xformatter: ticker.Formatter, yformatter: ticker.Formatter,
+                 xlocator: ticker.Locator, ylocator: ticker.Locator,
+                 xrotation: float, yrotation: float,
+                 ticksize: int, colormap: str,
+                 nh: int, nv: int, brightnessunit: str):
+        """Construct ChannelMapAxesManager instance.
+
+        The constructor generates (nh * nv) axes for channel map.
+
+        Args:
+            fig: matplotlib.figure.Figure instance
+            xformatter: tick formatter for x-axis
+            yformatter: tick formatter for y-axis
+            xlocator: tick locator for x-axis
+            ylocator: tick locator for y-axis
+            xrotation: rotation angle of x-axis label
+            yrotation: rotation angle of y-axis label
+            ticksize: tick label size
+            colormap: colormap to use. 'gray' for gray scale. Otherwise, 'jet' is used.
+            nh: number of channel maps in horizontal direction
+            nv: number of channel maps in vertical direction
+            brightnessunit: unit of the data to be displayed
+        """
+        super(ChannelMapAxesManager, self).__init__(fig, xformatter, yformatter,
                                                     xlocator, ylocator,
                                                     xrotation, yrotation,
                                                     ticksize, colormap)
@@ -341,70 +479,110 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
         self._axes_chmap = None
 
     @property
-    def axes_integmap(self):
+    def axes_integmap(self) -> axes.Axes:
+        """Create Axes instance for integrated intensity map.
+
+        Creates and returns Axes instance for integrated intensity
+        map, which is located at the top right of the figure.
+
+        Returns:
+            Axes instance for integrated intensity map.
+        """
         if self._axes_integmap is None:
-            axes = pl.axes([self.left, self.bottom, 0.98-self.left, self.height])
+            axes = self.figure.add_axes([self.left, self.bottom, 0.98 - self.left, self.height])
 
             axes.xaxis.set_major_formatter(self.xformatter)
             axes.yaxis.set_major_formatter(self.yformatter)
             axes.xaxis.set_major_locator(self.xlocator)
             axes.yaxis.set_major_locator(self.ylocator)
             xlabels = axes.get_xticklabels()
-            pl.setp(xlabels, 'rotation', self.xrotation, fontsize=self.ticksize)
+            for label in xlabels:
+                label.set_rotation(self.xrotation)
+                label.set_fontsize(self.ticksize)
             ylabels = axes.get_yticklabels()
-            pl.setp(ylabels, 'rotation', self.yrotation, fontsize=self.ticksize)
+            for label in ylabels:
+                label.set_rotation(self.yrotation)
+                label.set_fontsize(self.ticksize)
             xlabel, ylabel = self.get_axes_labels()
-            pl.xlabel(xlabel, size=self.ticksize)
-            pl.ylabel(ylabel, size=self.ticksize)
-            if self.isgray:
-                pl.gray()
-            else:
-                pl.jet()
+            axes.set_xlabel(xlabel, size=self.ticksize)
+            axes.set_ylabel(ylabel, size=self.ticksize)
 
             self._axes_integmap = axes
 
         return self._axes_integmap
 
     @property
-    def axes_integsp_full(self):
+    def axes_integsp_full(self) -> axes.Axes:
+        """Create Axes instance for integrated spectrum.
+
+        Creates and returns Axes instance for integrated spectrum,
+        which is located at the top center of the figure.
+
+        Returns:
+            Axes instance for integrated spectrum.
+        """
         if self._axes_integsp_full is None:
             left = 0.6-self.width
-            axes = pl.axes([left, self.bottom, self.width, self.height])
+            axes = self.figure.add_axes([left, self.bottom, self.width, self.height])
             axes.xaxis.get_major_formatter().set_useOffset(False)
-            pl.xticks(size=self.ticksize)
-            pl.yticks(size=self.ticksize)
+            axes.xaxis.set_tick_params(which='major', labelsize=self.ticksize)
+            axes.yaxis.set_tick_params(which='major', labelsize=self.ticksize)
 
-            pl.xlabel('Frequency (GHz)', size=self.ticksize)
-            pl.ylabel('Intensity (%s)' % self.brightnessunit, size=self.ticksize)
-            pl.title('Integrated Spectrum', size=self.ticksize)
+            axes.set_xlabel('Frequency (GHz)', size=self.ticksize)
+            axes.set_ylabel('Intensity (%s)' % self.brightnessunit, size=self.ticksize)
+            axes.set_title('Integrated Spectrum', size=self.ticksize)
 
             self._axes_integsp_full = axes
 
         return self._axes_integsp_full
 
     @property
-    def axes_integsp_zoom(self):
+    def axes_integsp_zoom(self) -> axes.Axes:
+        """Create Axes instance for close up view of integrated spectrum.
+
+        Creates and returns Axes instance for close up view of
+        integrated spectrum, which is located at the top left of the figure.
+
+        Returns:
+            Axes instance for close up view of integrated spectrum.
+        """
         if self._axes_integsp_zoom is None:
             left = 0.3-self.width
-            axes = pl.axes([left, self.bottom, self.width, self.height])
-            pl.xticks(size=self.ticksize)
-            pl.yticks(size=self.ticksize)
-            pl.xlabel('Relative Velocity w.r.t. Window Center (km/s)', size=self.ticksize)
-            pl.ylabel('Intensity (%s)' % self.brightnessunit, size=self.ticksize)
-            pl.title('Integrated Spectrum (zoom)', size=self.ticksize)
+            axes = self.figure.add_axes([left, self.bottom, self.width, self.height])
+            axes.xaxis.set_tick_params(which='major', labelsize=self.ticksize)
+            axes.yaxis.set_tick_params(which='major', labelsize=self.ticksize)
+            axes.set_xlabel('Relative Velocity w.r.t. Window Center (km/s)', size=self.ticksize)
+            axes.set_ylabel('Intensity (%s)' % self.brightnessunit, size=self.ticksize)
+            axes.set_title('Integrated Spectrum (zoom)', size=self.ticksize)
 
             self._axes_integsp_zoom = axes
 
         return self._axes_integsp_zoom
 
     @property
-    def axes_chmap(self):
+    def axes_chmap(self) -> List[axes.Axes]:
+        """Create Axes instances for channel map.
+
+        Creates and returns Axes instance for channel map,
+        which is tiled at the bottom of the figure.
+
+        Returns:
+            List of Axes instances for channel map.
+        """
         if self._axes_chmap is None:
             self._axes_chmap = list(self.__axes_chmap())
 
         return self._axes_chmap
 
-    def __axes_chmap(self):
+    def __axes_chmap(self) -> Generator[axes.Axes, None, None]:
+        """Create Axes instances for channel map.
+
+        Axes instances are tiled at the bottom of the figure.
+        Total number of instances is self.nh * self.nv.
+
+        Yields:
+            Axes instances corresponding to individual map.
+        """
 #         chmap_hfrac = 0.92 # leave some room for colorbar
 #         offset = 0.01
         for i in range(self.nchmap):
@@ -419,47 +597,44 @@ class ChannelMapAxesManager(ChannelAveragedAxesManager):
 #                 width = min(width*1.25, 1-offset-left)
             bottom = 1.0 / float((self.nv+2)) * (y + 0.05)
             height = 1.0 / float((self.nv+2)) * 0.85
-            a = pl.axes([left, bottom, width, height])
+            a = self.figure.add_axes([left, bottom, width, height])
             a.set_aspect('equal')
-            a.xaxis.set_major_locator(pl.NullLocator())
-            a.yaxis.set_major_locator(pl.NullLocator())
-            if self.isgray:
-                pl.gray()
-            else:
-                pl.jet()
+            a.xaxis.set_major_locator(matplotlib.ticker.NullLocator())
+            a.yaxis.set_major_locator(matplotlib.ticker.NullLocator())
 
             yield a
 
 
 class SDSparseMapDisplay(SDImageDisplay):
-    #MATPLOTLIB_FIGURE_ID = 8910
+    """Plotter to create a sparse profile map."""
+
     MaxPanel = 8
 
-#     @property
-#     def num_valid_spectrum(self):
-#         return self.inputs.num_valid_spectrum
-
-    def enable_atm(self):
+    def enable_atm(self) -> None:
+        """Enable overlay of ATM transmission curve."""
         self.showatm = True
 
-    def disable_atm(self):
+    def disable_atm(self) -> None:
+        """Disable overlay of ATM transmission curve."""
         self.showatm = False
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of sparse profile maps.
 
+        Returns:
+            List of Plot instances.
+        """
         self.init()
 
         return self.__plot_sparse_map()
 
-    def __plot_sparse_map(self):
+    def __plot_sparse_map(self) -> List[logger.Plot]:
+        """Create list of sparse profile maps.
 
+        Returns:
+            List of Plot instances.
+        """
         # Plotting routine
-        #Mark = '-b'
-        #if ShowPlot: pl.ion()
-        #else: pl.ioff()
-        #pl.figure(self.MATPLOTLIB_FIGURE_ID)
-        #if ShowPlot: pl.ioff()
-
         num_panel = min(max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1), self.MaxPanel)
         STEP = int((max(self.x_max - self.x_min + 1, self.y_max - self.y_min + 1) - 1) // num_panel) + 1
         NH = (self.x_max - self.x_min) // STEP + 1
@@ -470,7 +645,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         chan0 = 0
         chan1 = self.nchan
 
-        plotter = SDSparseMapPlotter(NH, NV, STEP, self.brightnessunit)
+        plotter = SDSparseMapPlotter(self.figure, NH, NV, STEP, self.brightnessunit)
         plotter.direction_reference = self.direction_reference
 
         plot_list = []
@@ -488,9 +663,10 @@ class SDSparseMapDisplay(SDImageDisplay):
                 ms = self.inputs.context.observing_run.measurement_sets[ms_id]
                 vis = ms.name
                 antenna_id = 0 # nominal
-                spw_id = self.inputs.spw
+                vspw_id = self.inputs.spw
+                spw_id = self.inputs.context.observing_run.virtual2real_spw_id(vspw_id, ms)
                 atm_freq, atm_transmission = atmutil.get_transmission(vis=vis, antenna_id=antenna_id,
-                                                            spw_id=spw_id, doplot=False)
+                                                                      spw_id=spw_id, doplot=False)
                 frame = self.frequency_frame
                 if frame != 'TOPO':
                     # do conversion
@@ -500,8 +676,8 @@ class SDSparseMapDisplay(SDImageDisplay):
                     direction_ref = field.mdirection
                     start_time = ms.start_time
                     end_time = ms.end_time
-                    me = casatools.measures
-                    qa = casatools.quanta
+                    me = casa_tools.measures
+                    qa = casa_tools.quanta
                     qmid_time = qa.quantity(start_time['m0'])
                     qmid_time = qa.add(qmid_time, end_time['m0'])
                     qmid_time = qa.div(qmid_time, 2.0)
@@ -509,28 +685,40 @@ class SDSparseMapDisplay(SDImageDisplay):
                                         v0=qmid_time)
                     position_ref = ms.antennas[antenna_id].position
 
-                    # initialize
+                    if frame == 'REST':
+                        with casa_tools.MSReader( ms.name ) as mse:
+                            # use 'SOURCE' to get 'REST', Unit of atm_freq is GHz
+                            v_to   = mse.cvelfreqs( spwids=[spw_id], outframe='SOURCE' ) / 1.0E+9
+                            v_from = mse.cvelfreqs( spwids=[spw_id], outframe='TOPO'   ) / 1.0E+9
+                        _frameconv = interpolate.interp1d( v_from, v_to,
+                                                           kind='linear',
+                                                           bounds_error=False,
+                                                           fill_value='extrapolate' )
+                    else:
+                        # initialize
+                        me.done()
+                        me.doframe(time_ref)
+                        me.doframe(direction_ref)
+                        me.doframe(position_ref)
+
+                        def _frameconv(x):
+                            # ATM is always in TOPO
+                            m = me.frequency(rf='TOPO', v0=qa.quantity(x, 'GHz'))
+                            converted = me.measure(v=m, rf=frame)
+                            qout = qa.convert(converted['m0'], outunit='GHz')
+                            return qout['value']
+
+                    atm_freq = numpy.fromiter(map(_frameconv, atm_freq), dtype=atm_freq.dtype)
                     me.done()
-                    me.doframe(time_ref)
-                    me.doframe(direction_ref)
-                    me.doframe(position_ref)
-
-                    def _tolsrk(x):
-                        # ATM is always in TOPO
-                        m = me.frequency(rf='TOPO', v0=qa.quantity(x, 'GHz'))
-                        converted = me.measure(v=m, rf=frame)
-                        qout = qa.convert(converted['m0'], outunit='GHz')
-                        return qout['value']
-
-                    tolsrk = numpy.vectorize(_tolsrk)
-                    atm_freq = tolsrk(atm_freq)
                 plotter.set_atm_transmission(atm_transmission, atm_freq)
 
         # loop over pol
+        data = self.data
+        mask = self.mask
         for pol in range(self.npol):
             Plot = numpy.zeros((num_panel, num_panel, (chan1 - chan0)), numpy.float32) + NoData
-            TotalSP = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze().sum(axis=(0, 1))
-            isvalid = numpy.any(self.mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
+            TotalSP = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze().sum(axis=(0, 1))
+            isvalid = numpy.any(mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
             Nsp = sum(isvalid.flatten())
             LOG.info('Nsp=%s' % Nsp)
             TotalSP /= Nsp
@@ -544,7 +732,7 @@ class SDSparseMapDisplay(SDImageDisplay):
                     y0 = y * STEP
                     y1 = (y + 1) * STEP
                     valid_index = isvalid[x0:x1, y0:y1].nonzero()
-                    chunk = self._get_array_chunk(self.data, (x0, y0, pol), (x1, y1, pol+1), slice_axes).squeeze(axis=self.id_stokes) * self._get_array_chunk(self.mask, (x0, y0, pol), (x1, y1, pol+1), slice_axes).squeeze(axis=self.id_stokes)
+                    chunk = self._get_array_chunk(data, (x0, y0, pol), (x1, y1, pol+1), slice_axes).squeeze(axis=self.id_stokes) * self._get_array_chunk(mask, (x0, y0, pol), (x1, y1, pol+1), slice_axes).squeeze(axis=self.id_stokes)
                     valid_sp = chunk[valid_index[0], valid_index[1], :]
                     Plot[x][y] = valid_sp.mean(axis=0)
                     del valid_index, chunk, valid_sp
@@ -575,18 +763,20 @@ class SDSparseMapDisplay(SDImageDisplay):
                                    parameters=parameters)
                 plot_list.append(plot)
 
+        plotter.done()
+
         return plot_list
 
-    def _get_array_chunk(self, data, blc, trc, axes):
+    def _get_array_chunk(self, data: numpy.ndarray, blc: List[int], trc: List[int], axes: List[int]) -> numpy.ndarray:
         """
-        Returns a slice of an array
+        Return a slice of an array.
 
         data : an array that could be sliced
         blc : a list of minimum index in each dimention of axes to slice
         trc : a list of maximum index in each dimention of axes to slice
               Note trc is used for the second parameter to construct slice.
               Hence, the indices of last elements in returned array is trc-1
-        axes : a list of demention of axes in cube blc and trc corresponds
+        axes : a list of dimention of axes in cube blc and trc corresponds
         """
         array_shape = data.shape
         ndim = len(array_shape)
@@ -600,16 +790,18 @@ class SDSparseMapDisplay(SDImageDisplay):
 
 
 class SDChannelMapDisplay(SDImageDisplay):
-    #MATPLOTLIB_FIGURE_ID = 8910
+    """Plotter to create a channel map."""
+
     NumChannelMap = 15
     NhPanel = 5
     NvPanel = 3
-    #NumChannelMap = 12
-    #NhPanel = 4
-    #NvPanel = 3
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of channel maps.
 
+        Returns:
+            List of Plot instances.
+        """
         self.init()
 
         if self.stokes_string != 'I':
@@ -617,45 +809,26 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return self.__plot_channel_map()
 
-    def __valid_lines(self):
-        group_desc = self.inputs.reduction_group
-        ant_index = self.inputs.antennaid_list
-        spwid_list = self.inputs.spwid_list
-        msid_list = self.inputs.msid_list
-        fieldid_list = self.inputs.fieldid_list
+    def __get_integrated_spectra(self) -> numpy.ma.masked_array:
+        """Compute integrated spectrum from the image.
 
-        line_list = []
-#         for group_desc in reduction_group.values():
-        for g in group_desc:
-            found = False
-            for (msid, ant, fid, spw) in zip(msid_list, ant_index, fieldid_list, spwid_list):
-                msobj_list = self.inputs.context.observing_run.measurement_sets
-                msname_list = [os.path.abspath(msobj_list[idx].name) for idx in range(len(msobj_list))]
-                group_msid = msname_list.index(os.path.abspath(g.ms.name))
-                del msobj_list, msname_list
-                if group_msid == msid and g.antenna_id == ant and \
-                    g.field_id == fid and g.spw_id == spw:
-                    found = True
-                    break
-            if found:
-                for ll in g.channelmap_range:
-                    if ll not in line_list and ll[2] is True:
-                        line_list.append(ll)
-        return line_list
+        Image weights provided by the weight image is taken into account.
 
-    def __get_integrated_spectra(self):
+        Returns:
+            Integrated spectrum as masked array.
+        """
         imagename = self.inputs.imagename
         weightname = self.inputs.imagename + '.weight'
         new_id_stokes = 0 if self.id_stokes < self.id_spectral else 1
         # un-weighted image
-        unweight_ia = casatools.image.imagecalc(outfile='', pixels='"%s" * "%s"' % (imagename, weightname))
+        unweight_ia = casa_tools.image.imagecalc(outfile='', pixels='"%s" * "%s"' % (imagename, weightname))
 
         # if all pixels are masked, return fully masked array
         unweight_mask = unweight_ia.getchunk(getmask=True)
-        if numpy.all(unweight_mask == False):
+        if numpy.all(numpy.logical_not(unweight_mask)):
             unweight_ia.close()
             sp_ave = numpy.ma.masked_array(numpy.zeros((self.npol, self.nchan), dtype=numpy.float32),
-                                           mask=numpy.ones((self.npol, self.nchan), dtype=numpy.bool))
+                                           mask=numpy.ones((self.npol, self.nchan), dtype=bool))
             return sp_ave
 
         # average image spectra over map area taking mask into account
@@ -669,10 +842,10 @@ class SDChannelMapDisplay(SDImageDisplay):
         finally:
             collapsed_ia.close()
         # set mask to weight image
-        with casatools.ImageReader(imagename) as ia:
+        with casa_tools.ImageReader(imagename) as ia:
             maskname = ia.maskhandler('get')[0]
-        with casatools.ImageReader(weightname) as ia:
-            if maskname!='T': #'T' is no mask (usually an image from completely flagged MSes)
+        with casa_tools.ImageReader(weightname) as ia:
+            if maskname != 'T':  # 'T' is no mask (usually an image from completely flagged MSes)
                 ia.maskhandler('delete', [maskname])
                 ia.maskhandler('copy', ['%s:%s' % (imagename, maskname), maskname])
                 ia.maskhandler('set', maskname)
@@ -696,53 +869,57 @@ class SDChannelMapDisplay(SDImageDisplay):
                     sp_ave[pol, :] = curr_sp
         return sp_ave
 
-    def __plot_channel_map(self):
+    def __plot_channel_map(self) -> List[logger.Plot]:
+        """Create list of channel maps.
+
+        Returns:
+            List of Plot instances.
+        """
         colormap = 'color'
         scale_max = False
         scale_min = False
 
         plot_list = []
 
-        # nrow is number of grid points for image
-#         nrow = self.nx * self.ny
+        is_freq_chan_reversed_image = False
+        if isinstance(self.inputs.result, SDImagingResultItem):
+            is_freq_chan_reversed_image = self.inputs.result.frequency_channel_reversed
 
         # retrieve line list from reduction group
         # key is antenna and spw id
-        line_list = self.__valid_lines()
+        line_list = self.inputs.valid_lines(is_freq_chan_reversed_image)
 
         # 2010/6/9 in the case of non-detection of the lines
         if len(line_list) == 0:
             return plot_list
 
         # Set data
-        Map = numpy.zeros((self.NumChannelMap, (self.y_max - self.y_min + 1), (self.x_max - self.x_min + 1)),
+        Map = numpy.zeros((self.NumChannelMap,
+                           (self.y_max - self.y_min + 1),
+                           (self.x_max - self.x_min + 1)),
                           dtype=numpy.float32)
-#         RMSMap = numpy.zeros(((self.y_max - self.y_min + 1), (self.x_max - self.x_min + 1)), dtype=numpy.float32)
 
         # Swap (x,y) to match the clustering result
         grid_size_arcsec = self.grid_size * 3600.0
-        ExtentCM = ((self.x_max+0.5)*grid_size_arcsec, (self.x_min-0.5)*grid_size_arcsec, (self.y_min-0.5)*grid_size_arcsec, (self.y_max+0.5)*grid_size_arcsec)
-        Extent = (self.ra_max+self.grid_size/2.0, self.ra_min-self.grid_size/2.0, self.dec_min-self.grid_size/2.0, self.dec_max+self.grid_size/2.0)
-        span = max(self.ra_max - self.ra_min + self.grid_size, self.dec_max - self.dec_min + self.grid_size)
-        (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span,
-                                                                              self.direction_reference)
+        ExtentCM = ((self.x_max + 0.5) * grid_size_arcsec,
+                    (self.x_min - 0.5) * grid_size_arcsec,
+                    (self.y_min - 0.5) * grid_size_arcsec,
+                    (self.y_max + 0.5) * grid_size_arcsec)
+        Extent = (self.ra_max + self.grid_size / 2.0,
+                  self.ra_min - self.grid_size / 2.0,
+                  self.dec_min - self.grid_size / 2.0,
+                  self.dec_max + self.grid_size / 2.0)
+        span = max(self.ra_max - self.ra_min + self.grid_size,
+                   self.dec_max - self.dec_min + self.grid_size)
+        (RAlocator, DEClocator, RAformatter, DECformatter) = \
+            pointing.XYlabel(span, self.direction_reference)
 
         # How to coordinate the map
         TickSize = 6
-        #if ShowPlot: pl.ion()
-        #else: pl.ioff()
-        #pl.figure(self.MATPLOTLIB_FIGURE_ID)
-        #if ShowPlot: pl.ioff()
-
-        # 2008/9/20 Dec Effect has been taken into account
-        #Aspect = 1.0 / math.cos(0.5 * (self.dec_min + self.dec_max) / 180.0 * 3.141592653)
-
-        # Check the direction of the Velocity axis
-        Reverse = (self.velocity[0] < self.velocity[1])
 
         # Initialize axes
-        pl.clf()
-        axes_manager = ChannelMapAxesManager(RAformatter, DECformatter,
+        fig = self.figure
+        axes_manager = ChannelMapAxesManager(fig, RAformatter, DECformatter,
                                              RAlocator, DEClocator,
                                              RArotation, DECrotation,
                                              TickSize, colormap,
@@ -750,144 +927,184 @@ class SDChannelMapDisplay(SDImageDisplay):
                                              self.brightnessunit)
         axes_manager.direction_reference = self.direction_reference
         axes_integmap = axes_manager.axes_integmap
-        integmap_colorbar = None
         beam_circle = None
         axes_integsp1 = axes_manager.axes_integsp_full
         axes_integsp2 = axes_manager.axes_integsp_zoom
         axes_chmap = axes_manager.axes_chmap
-        chmap_colorbar = [None for v in range(self.NvPanel)]
 
         Sp_integ = self.__get_integrated_spectra()
         # loop over detected lines
         ValidCluster = 0
-        for line_window in line_list:
-            # shift channel according to the edge parameter
-            ChanC = int(line_window[0] + 0.5 - self.edge[0])
-            if float(ChanC) == line_window[0] - self.edge[0]:
-                VelC = self.velocity[ChanC]
-            else:
-                VelC = 0.5 * ( self.velocity[ChanC] + self.velocity[ChanC-1] )
-            if ChanC > 0:
-                ChanVelWidth = abs(self.velocity[ChanC] - self.velocity[ChanC - 1])
-            else:
-                ChanVelWidth = abs(self.velocity[ChanC] - self.velocity[ChanC + 1])
+        data = self.data
+        mask = self.mask
 
+        # If the frequency channel of the image cube has been reversed to ascending,
+        # indices of frequency and velocity must have an offset to get a center value of them.
+        if is_freq_chan_reversed_image:
+            _offset = 0.5
+            _left_edge = self.edge[1]
+        else:
+            _offset = 0
+            _left_edge = self.edge[0]
+
+        # NOTE: Variable names MUST be easy to understand.
+        # The variables with the prefixes, 'idx_' and 'indices_', indicate they are an index or
+        # sequence (list, set, array, etc.) of indices in the loop below.
+
+        for line_window in line_list:
+            _line_center = line_window[0]
+            _line_width = line_window[1]
+            _line_center_shifted = _line_center - _left_edge
+
+            # Offset calculation of index(int) from line(float) when the line has a decimal point of 0.5
+            # and frequency channel of the image is reversed;
+            # ex) n=107.5, nchan=128, reversed_n = nchan-1-n = 19.5
+            # when the real numeric cut-edge is 0.5 then the calculation of index 1-0.5 is to be neary 0.5 and not 0.5.
+            # So, the cut-edge which has 0.5 + offset 0.5 like int(19.5 + 0.5) must be 19, not 20.
+            _cut_edge_offset = 0
+            if is_freq_chan_reversed_image and _line_center_shifted - int(_line_center_shifted) == 0.5:
+                _cut_edge_offset = 1
+
+            # shift channel according to the edge parameter
+            idx_line_center = int(_line_center_shifted + 0.5) - _cut_edge_offset
+            if float(idx_line_center) == _line_center_shifted:
+                velocity_line_center = self.velocity[idx_line_center]
+            else:
+                if is_freq_chan_reversed_image:
+                    velocity_line_center = 0.5 * (self.velocity[idx_line_center + 1] +
+                                                  self.velocity[idx_line_center])
+                else:
+                    velocity_line_center = 0.5 * (self.velocity[idx_line_center] +
+                                                  self.velocity[idx_line_center - 1])
+            LOG.debug(f'center velocity[{idx_line_center}]: {velocity_line_center}')
+            if idx_line_center > 0:
+                ChanVelWidth = abs(self.velocity[idx_line_center] - self.velocity[idx_line_center - 1])
+            else:
+                ChanVelWidth = abs(self.velocity[idx_line_center] - self.velocity[idx_line_center + 1])
+
+            LOG.debug(f"center frequency[{idx_line_center}]: {self.frequency[idx_line_center]}")
             # 2007/9/13 Change the magnification factor 1.2 to your preference (to Dirk)
             # be sure the width of one channel map is integer
             # 2014/1/12 factor 1.4 -> 1.0 since velocity structure was taken into account for the range in validation.py
-            #ChanW = max(int(line_window[1] * 1.4 / self.NumChannelMap + 0.5), 1)
-            ChanW = max(int(line_window[1] / self.NumChannelMap + 0.5), 1)
-            #ChanB = int(ChanC - self.NumChannelMap / 2.0 * ChanW)
-            ChanB = int(ChanC - self.NumChannelMap / 2.0 * ChanW + 0.5)
+            indices_width_of_line = max(int(_line_width / self.NumChannelMap + 0.5), 1)
+            idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indices_width_of_line + 0.5 + _offset)
             # 2007/9/10 remedy for 'out of index' error
-            #print '\nDEBUG0: Nc, ChanB, ChanW, NchanMap', Nc, ChanB, ChanW, self.NumChannelMap
-            if ChanB < 0:
-                ChanW = int(ChanC * 2.0 / self.NumChannelMap)
-                if ChanW == 0: continue
-                ChanB = int(ChanC - self.NumChannelMap / 2.0 * ChanW)
-            elif ChanB + ChanW * self.NumChannelMap > self.nchan:
-                ChanW = int((self.nchan - 1 - ChanC) * 2.0 / self.NumChannelMap)
-                if ChanW == 0: continue
-                ChanB = int(ChanC - self.NumChannelMap / 2.0 * ChanW)
-            #print 'DEBUG1: Nc, ChanB, ChanW, NchanMap', Nc, ChanB, ChanW, self.NumChannelMap, '\n'
+            LOG.debug('idx_left_end, indices_width_of_line, NchanMap : '
+                      f'{idx_left_end}, {indices_width_of_line}, {self.NumChannelMap}')
+            if idx_left_end < 0:
+                indices_width_of_line = int(idx_line_center * 2.0 / self.NumChannelMap)
+                if indices_width_of_line == 0:
+                    continue
+                idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indices_width_of_line)
+            elif idx_left_end + indices_width_of_line * self.NumChannelMap > self.nchan:
+                indices_width_of_line = int((self.nchan - 1 - idx_line_center) * 2.0 / self.NumChannelMap)
+                if indices_width_of_line == 0:
+                    continue
+                idx_left_end = int(idx_line_center - self.NumChannelMap / 2.0 * indices_width_of_line)
 
-            chan0 = max(ChanB-1, 0)
-            chan1 = min(ChanB + self.NumChannelMap*ChanW, self.nchan-1)
-            V0 = min(self.velocity[chan0], self.velocity[chan1]) - VelC
-            V1 = max(self.velocity[chan0], self.velocity[chan1]) - VelC
-            #print 'chan0, chan1, V0, V1, VelC =', chan0, chan1, V0, V1, VelC
+            chan0 = max(idx_left_end - 1, 0)
+            chan1 = min(idx_left_end + self.NumChannelMap * indices_width_of_line, self.nchan - 1)
+            V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
+            V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
+            LOG.debug('chan0, chan1, V0, V1, velocity_line_center : '
+                      f'{chan0}, {chan1}, {V0}, {V1}, {velocity_line_center}')
 
             vertical_lines = []
+
             # vertical lines for integrated spectrum #1
-            pl.gcf().sca(axes_integsp1)
-            vertical_lines.append(pl.axvline(x=self.frequency[max(ChanB, 0)], linewidth=0.3, color='r'))
-            vertical_lines.append(pl.axvline(x=self.frequency[chan1], linewidth=0.3, color='r'))
+            vertical_lines.append(
+                axes_integsp1.axvline(x=self.frequency[chan0], linewidth=0.3, color='r')
+            )
+            vertical_lines.append(
+                axes_integsp1.axvline(x=self.frequency[chan1], linewidth=0.3, color='r')
+            )
 
             # vertical lines for integrated spectrum #2
-            pl.gcf().sca(axes_integsp2)
             for i in range(self.NumChannelMap + 1):
-                ChanL = int(ChanB + i*ChanW)
-                #if 0 <= ChanL and ChanL < nchan:
-                if 0 < ChanL and ChanL < self.nchan:
-                    vertical_lines.append(pl.axvline(x = 0.5*(self.velocity[ChanL]+self.velocity[ChanL-1]) - VelC, linewidth=0.3, color='r'))
-                elif ChanL == 0:
-                    vertical_lines.append(pl.axvline(x = 0.5*(self.velocity[ChanL]-self.velocity[ChanL+1]) - VelC, linewidth=0.3, color='r'))
-                #print 'DEBUG: Vel[ChanL]', i, (self.velocity[ChanL]+self.velocity[ChanL-1])/2.0 - VelC
+                idx_chan_left_end = int(idx_left_end + i * indices_width_of_line)
+                vel_chan_left_end = None
+                if idx_chan_left_end == 0:
+                    vel_chan_left_end = 0.5 * (self.velocity[idx_chan_left_end] -
+                                               self.velocity[idx_chan_left_end - 1]) - velocity_line_center
+                else:
+                    vel_chan_left_end = 0.5 * (self.velocity[idx_chan_left_end] +
+                                               self.velocity[idx_chan_left_end - 1]) - velocity_line_center
+                vertical_lines.append(
+                    axes_integsp2.axvline(x=vel_chan_left_end, linewidth=0.3, color='r')
+                )
+                LOG.debug(f'i, Vel[idx_chan_left_end] : {i}, {vel_chan_left_end}')
 
             # loop over polarizations
             for pol in range(self.npol):
                 plotted_objects = []
 
-                masked_data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
+                masked_data = (data.take([pol], axis=self.id_stokes) *
+                               mask.take([pol], axis=self.id_stokes)).squeeze()
 
                 # Integrated Spectrum
                 t0 = time.time()
 
                 # Draw Total Intensity Map
-                Total = masked_data.sum(axis=2) * ChanVelWidth
-                Total = numpy.flipud(Total.transpose())
+                total = masked_data.sum(axis=2) * ChanVelWidth
+                total = numpy.flipud(total.transpose())
 
                 # 2008/9/20 DEC Effect
-                pl.gcf().sca(axes_integmap)
-                plotted_objects.append(pl.imshow(Total, interpolation='nearest', aspect=self.aspect, extent=Extent))
-                #im = pl.imshow(Total, interpolation='nearest', aspect='equal', extent=Extent)
+                plotted_objects.append(
+                    axes_integmap.imshow(total, interpolation='nearest',
+                                         aspect=self.aspect, extent=Extent)
+                )
 
                 xlim = axes_integmap.get_xlim()
                 ylim = axes_integmap.get_ylim()
 
                 # colorbar
-                #print "min=%s, max of Total=%s" % (Total.min(),Total.max())
-                if not (Total.min() == Total.max()):
+                LOG.debug(f'total min:{total.min()}, total max:{total.max()}')
+                if not (total.min() == total.max()):
                     if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
-                        if integmap_colorbar is None:
-                            integmap_colorbar = pl.colorbar(shrink=0.8)
-                            for t in integmap_colorbar.ax.get_yticklabels():
-                                newfontsize_integ = t.get_fontsize()*0.5
-                                t.set_fontsize(newfontsize_integ)
-                        else:
-                            integmap_colorbar.mappable.set_clim((Total.min(), Total.max()))
-                            integmap_colorbar.draw_all()
-                        # set_clim and draw_all clears y-label
-                        integmap_colorbar.ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize_integ)
+                        axes_manager.set_colorbar_for(axes_integmap, total.min(), total.max(),
+                                                      f'{self.brightnessunit} km/s', shrink=0.8)
 
                 # draw beam pattern
                 if beam_circle is None:
-                    beam_circle = pointing.draw_beam(axes_integmap, self.beam_radius, self.aspect, self.ra_min, self.dec_min)
+                    beam_circle = pointing.draw_beam(axes_integmap, self.beam_radius, self.aspect,
+                                                     self.ra_min, self.dec_min)
 
-                pl.title('Total Intensity: CenterFreq.= %.3f GHz' % self.frequency[ChanC], size=TickSize)
+                axes_integmap.set_title('Total Intensity: CenterFreq.= %.3f GHz' %
+                                        self.frequency[idx_line_center], size=TickSize)
                 axes_integmap.set_xlim(xlim)
                 axes_integmap.set_ylim(ylim)
 
                 t1 = time.time()
 
                 # Plot Integrated Spectrum #1
-#                 Sp = numpy.sum(numpy.transpose((valid * numpy.transpose(flattened_data))),axis=0)/numpy.sum(valid,axis=0)
-                #Sp = numpy.sum(flattened_data * valid.reshape((nrow,1)), axis=0)/valid.sum()
-                Sp = Sp_integ[pol,:]
-                (F0, F1) = (min(self.frequency[0], self.frequency[-1]), max(self.frequency[0], self.frequency[-1]))
+                Sp = Sp_integ[pol, :]
+                (F0, F1) = (min(self.frequency[0], self.frequency[-1]),
+                            max(self.frequency[0], self.frequency[-1]))
                 spmin = Sp.min()
                 spmax = Sp.max()
                 dsp = spmax - spmin
                 spmin -= dsp * 0.1
                 spmax += dsp * 0.1
+                LOG.debug(f'Freq0, Freq1: {F0}, {F1}')
 
-                pl.gcf().sca(axes_integsp1)
-                plotted_objects.extend(pl.plot(self.frequency, Sp, '-b', markersize=2, markeredgecolor='b', markerfacecolor='b'))
-                #print 'DEBUG: Freq0, Freq1', self.frequency[ChanB], self.frequency[ChanB + self.NumChannelMap * ChanW]
-                pl.axis([F0, F1, spmin, spmax])
+                axes_integsp1.plot(self.frequency, Sp, '-b', markersize=2,
+                                   markeredgecolor='b', markerfacecolor='b')
+                axes_integsp1.axis([F0, F1, spmin, spmax])
 
                 t2 = time.time()
 
                 # Plot Integrated Spectrum #2
-                pl.gcf().sca(axes_integsp2)
-                plotted_objects.extend(pl.plot(self.velocity[chan0:chan1] - VelC, Sp[chan0:chan1], '-b', markersize=2, markeredgecolor='b', markerfacecolor='b'))
+                axes_integsp2.plot(self.velocity[chan0:chan1 + 1] - velocity_line_center,
+                                   Sp[chan0:chan1 + 1], '-b', markersize=2, markeredgecolor='b',
+                                   markerfacecolor='b')
                 # adjust Y-axis range to the current line
-                spmin_zoom = Sp[chan0:chan1].min()
-                spmax_zoom = Sp[chan0:chan1].max()
+                spmin_zoom = Sp[chan0:chan1 + 1].min()
+                spmax_zoom = Sp[chan0:chan1 + 1].max()
                 dsp = spmax_zoom - spmin_zoom
                 spmin_zoom -= dsp * 0.1
                 spmax_zoom += dsp * 0.1
-                pl.axis([V0, V1, spmin_zoom, spmax_zoom])
+                axes_integsp2.axis([V0, V1, spmin_zoom, spmax_zoom])
+                LOG.debug(f'Velo0, Velo1: {V0}, {V1}')
 
                 t3 = time.time()
 
@@ -896,20 +1113,17 @@ class SDChannelMapDisplay(SDImageDisplay):
                 Vmax0 = Vmin0 = 0
                 Title = []
                 for i in range(self.NumChannelMap):
-                    if Reverse:
-                        ii = i
-                    else:
-                        ii = self.NumChannelMap - i - 1
-                    C0 = ChanB + ChanW*ii
-                    C1 = C0 + ChanW
+                    ii = self.NumChannelMap - i - 1
+                    C0 = idx_left_end + indices_width_of_line * ii
+                    C1 = C0 + indices_width_of_line
                     if C0 < 0 or C1 >= self.nchan - 1:
                         continue
-                    velo = (self.velocity[C0] + self.velocity[C1-1]) / 2.0 - VelC
+                    velo = (self.velocity[C0] + self.velocity[C1 - 1]) / 2.0 - velocity_line_center
                     width = abs(self.velocity[C0] - self.velocity[C1])
                     Title.append('(Vel,Wid) = (%.1f, %.1f) (km/s)' % (velo, width))
                     NMap += 1
-                    tmp = masked_data[:, :, C0:C1].sum(axis=2) * ChanVelWidth
-                    Map[i] = numpy.flipud(tmp.transpose())
+                    _mask = masked_data[:, :, C0:C1].sum(axis=2) * ChanVelWidth
+                    Map[i] = numpy.flipud(_mask.transpose())
                 del masked_data
                 Vmax0 = Map.max()
                 Vmin0 = Map.min()
@@ -927,51 +1141,40 @@ class SDChannelMapDisplay(SDImageDisplay):
                     return plot_list
 
                 for i in range(NMap):
-                    #im = pl.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='bilinear', aspect='equal', extent=Extent)
                     if Vmax != Vmin:
-                        #im = pl.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest', aspect='equal', extent=ExtentCM)
-                        pl.gcf().sca(axes_chmap[i])
-                        plotted_objects.append(pl.imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest', aspect='equal', extent=ExtentCM))
+                        axes_chmap[i].imshow(Map[i], vmin=Vmin, vmax=Vmax, interpolation='nearest',
+                                             aspect='equal', extent=ExtentCM)
                         x = i % self.NhPanel
                         if x == (self.NhPanel - 1):
-                            y = int(i // self.NhPanel)
-                            if chmap_colorbar[y] is None:
-                                cb = pl.colorbar()
-                                for t in cb.ax.get_yticklabels():
-                                    newfontsize_cmap = t.get_fontsize()*0.5
-                                    t.set_fontsize(newfontsize_cmap)
-                                chmap_colorbar[y] = cb
-                            else:
-                                chmap_colorbar[y].mappable.set_clim(Vmin, Vmax)
-                                chmap_colorbar[y].draw_all()
-                            # set_clim and draw_all clears y-label
-                            chmap_colorbar[y].ax.set_ylabel('[%s km/s]' % self.brightnessunit, fontsize=newfontsize_cmap)
-                        pl.title(Title[i], size=TickSize)
+                            axes_manager.set_colorbar_for(axes_chmap[i], Vmin, Vmax, f'{self.brightnessunit} km/s')
+
+                        axes_chmap[i].set_title(Title[i], size=TickSize)
 
                 t4 = time.time()
-                LOG.debug('PROFILE: integrated intensity map: %s sec'%(t1-t0))
-                LOG.debug('PROFILE: integrated spectrum #1: %s sec'%(t2-t1))
-                LOG.debug('PROFILE: integrated spectrum #2: %s sec'%(t3-t2))
-                LOG.debug('PROFILE: channel map: %s sec'%(t4-t3))
+                LOG.debug('PROFILE: integrated intensity map: %s sec' % (t1 - t0))
+                LOG.debug('PROFILE: integrated spectrum #1: %s sec' % (t2 - t1))
+                LOG.debug('PROFILE: integrated spectrum #2: %s sec' % (t3 - t2))
+                LOG.debug('PROFILE: channel map: %s sec' % (t4 - t3))
 
-                if ShowPlot: pl.draw()
-                FigFileRoot = self.inputs.imagename + '.pol%s'%(pol)
-                plotfile = os.path.join(self.stage_dir, FigFileRoot+'_ChannelMap_%s.png'%(ValidCluster))
-                pl.savefig(plotfile, format='png', dpi=DPIDetail)
+                FigFileRoot = self.inputs.imagename + '.pol%s' % (pol)
+                plotfile = os.path.join(self.stage_dir, FigFileRoot + '_ChannelMap_%s.png' % (ValidCluster))
+                fig.savefig(plotfile, dpi=DPIDetail)
 
-                for obj in plotted_objects:
-                    obj.remove()
+                for _a in itertools.chain([axes_integmap, axes_integsp1, axes_integsp2], axes_chmap):
+                    for obj in itertools.chain(_a.lines[:], _a.texts[:], _a.patches[:], _a.images[:]):
+                        if (obj not in vertical_lines) and (obj != beam_circle):
+                            obj.remove()
 
                 parameters = {}
                 parameters['intent'] = 'TARGET'
                 parameters['spw'] = self.spw
-                parameters['pol'] = self.image.stokes[pol] #polmap[pol]
+                parameters['pol'] = self.image.stokes[pol]  # polmap[pol]
                 parameters['ant'] = self.antenna
                 parameters['type'] = 'channel_map'
                 parameters['file'] = self.inputs.imagename
                 parameters['field'] = self.inputs.source
                 parameters['vis'] = 'ALL'
-                parameters['line'] = [self.frequency[chan0] * 1e9, self.frequency[chan1] * 1e9] # GHz -> Hz
+                parameters['line'] = [self.frequency[chan0] * 1e9, self.frequency[chan1] * 1e9]  # GHz -> Hz
 
                 plot = logger.Plot(plotfile,
                                    x_axis='R.A.',
@@ -985,41 +1188,62 @@ class SDChannelMapDisplay(SDImageDisplay):
             for line in vertical_lines:
                 line.remove()
 
+        del axes_manager
+        fig.clf()
+        del fig
+
         return plot_list
-
-
-class RmsMapAxesManager(ChannelAveragedAxesManager):
-    @property
-    def axes_rmsmap(self):
-        return self.axes_tpmap
-
-    def __init__(self, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap):
-        super(RmsMapAxesManager, self).__init__(xformatter, yformatter, xlocator, ylocator,
-                                                xrotation, yrotation, ticksize, colormap)
 
 
 class SDRmsMapDisplay(SDImageDisplay):
-    #MATPLOTLIB_FIGURE_ID = 8910
+    """Plotter to create a baseline rms map."""
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create list of baseline rms maps.
+
+        Returns:
+            List of Plot instances.
+        """
         self.init()
 
         t1 = time.time()
-        plot_list = self.__plot_channel_map()
+        plot_list = self.__plot()
         t2 = time.time()
-        LOG.debug('__plot_channel_map: elapsed time %s sec'%(t2-t1))
+        LOG.debug('__plot: elapsed time %s sec'%(t2-t1))
 
         return plot_list
 
-    def __get_rms(self):
+    def __get_rms(self) -> numpy.ndarray:
+        """Compute baseline rms for each spatial pixel.
+
+        Returns:
+            Two-dimensional array of baseline rms.
+        """
         # reshape rms to a 3d array in shape, (nx_im, ny_im, npol_data)
         return self.__reshape_grid_table_values(self.inputs.result.outcome['rms'], float)
 
-    def __get_num_valid(self):
+    def __get_num_valid(self) -> numpy.ndarray:
+        """Compute number of valid spectra associated with each spatial pixel.
+
+        Returns:
+            Two-dimentional array of number of valid spectra
+        """
         # reshape validsp to a 3d array in shape, (nx_im, ny_im, npol_data)
         return self.__reshape_grid_table_values(self.inputs.result.outcome['validsp'], int)
 
-    def __reshape_grid_table_values(self, array2d, dtype=None):
+    def __reshape_grid_table_values(self, array2d, dtype=None) -> numpy.ndarray:
+        """Reshape input 2-D array into 3-D array.
+
+        The input two-dimensional array with shape (npol, nx * ny) into
+        three-dimensional array with shape (nx, ny, npol).
+
+        Args:
+            array2d: Input two-dimensional array.
+            dtype: Array data type. Defaults to None.
+
+        Returns:
+            Reshaped array.
+        """
         # reshape 2d array in shape, (npol, nx*ny), to (nx, ny, npol)
         npol_data = len(array2d)
         # retruned value will be transposed
@@ -1029,8 +1253,13 @@ class SDRmsMapDisplay(SDImageDisplay):
                 array3d[pol, :, :] = numpy.array(array2d[pol]).reshape((self.ny, self.nx))
         return numpy.flipud(array3d.transpose())
 
-    def __plot_channel_map(self):
-        pl.clf()
+    def __plot(self) -> List[logger.Plot]:
+        """Create list of baseline rms maps.
+
+        Returns:
+            List of Plot instances.
+        """
+        fig = figure.Figure()
 
         colormap = 'color'
         plot_list = []
@@ -1046,43 +1275,44 @@ class SDRmsMapDisplay(SDImageDisplay):
         span = max(self.ra_max - self.ra_min + self.grid_size, self.dec_max - self.dec_min + self.grid_size)
         (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span, self.direction_reference)
 
-        axes_manager = RmsMapAxesManager(RAformatter, DECformatter,
-                                         RAlocator, DEClocator,
-                                         RArotation, DECrotation,
-                                         TickSize, colormap)
+        axes_manager = SingleImageAxesManager(fig, RAformatter, DECformatter,
+                                              RAlocator, DEClocator,
+                                              RArotation, DECrotation,
+                                              TickSize, colormap)
         axes_manager.direction_reference = self.direction_reference
-        rms_axes = axes_manager.axes_rmsmap
-        rms_colorbar = None
+        rms_axes = axes_manager.image_axes
         beam_circle = None
 
         rms = self.__get_rms()
         nvalid = self.__get_num_valid()
+
+        # threshold percentages (minimum and maximum)
+        beam_pix = self.beam_size * abs(self.ny/(self.dec_max - self.dec_min))
+        length = 4*(self.nx*self.ny)**0.5
+        thres_min = 1  # 1 percent
+        thres_max = (1.0 - (length*beam_pix/6.0)/(self.nx*self.ny))*100
+
         npol_data = rms.shape[2]
-#         for pol in xrange(self.npol):
+#        for pol in xrange(self.npol):
         for pol in range(npol_data):
             rms_map = rms[:, :, pol] * (nvalid[:, :, pol] > 0)
             rms_map = numpy.flipud(rms_map.transpose())
-            #LOG.debug('rms_map=%s'%(rms_map))
+            rms_map_v = rms_map[~numpy.isnan(rms_map)]
+            rms_map_v = rms_map[numpy.nonzero(rms_map)]
+            if len(rms_map_v) == 0:
+                continue
+            # threshold values (minimum and maximum)
+            q_min, q_max = numpy.nanpercentile(rms_map_v, [thres_min, thres_max])
             # 2008/9/20 DEC Effect
-            image = pl.imshow(rms_map, interpolation='nearest', aspect=self.aspect, extent=Extent)
+            image = rms_axes.imshow(rms_map, vmin=q_min, vmax=q_max, interpolation='nearest', aspect=self.aspect, extent=Extent)
             xlim = rms_axes.get_xlim()
             ylim = rms_axes.get_ylim()
 
             # colorbar
-            rmsmin = rms_map.min()
-            rmsmax = rms_map.max()
-            if not (rmsmin == rmsmax):
+            if not (q_min == q_max):
                 if not ((self.y_max == self.y_min) and (self.x_max == self.x_min)):
-                    if rms_colorbar is None:
-                        rms_colorbar = pl.colorbar(shrink=0.8)
-                        for t in rms_colorbar.ax.get_yticklabels():
-                            newfontsize = t.get_fontsize()*0.5
-                            t.set_fontsize(newfontsize)
-                    else:
-                        rms_colorbar.mappable.set_clim((rmsmin, rmsmax))
-                        rms_colorbar.draw_all()
-                    # set_clim and draw_all clears y-label
-                    rms_colorbar.ax.set_ylabel('[%s]' % self.brightnessunit)
+                    axes_manager.set_colorbar_for(rms_axes, q_min, q_max, self.brightnessunit, shrink=0.8)
+
             del rms_map
 
             # draw beam pattern
@@ -1091,12 +1321,11 @@ class SDRmsMapDisplay(SDImageDisplay):
 
             rms_axes.set_xlim(xlim)
             rms_axes.set_ylim(ylim)
+            rms_axes.set_title('Baseline RMS Map', size=TickSize)
 
-            if ShowPlot:
-                pl.draw()
             FigFileRoot = self.inputs.imagename + '.pol%s' % pol
             plotfile = os.path.join(self.stage_dir, FigFileRoot+'_rmsmap.png')
-            pl.savefig(plotfile, format='png', dpi=DPISummary)
+            fig.savefig(plotfile, dpi=DPIDetail)
 
             image.remove()
 
@@ -1117,12 +1346,31 @@ class SDRmsMapDisplay(SDImageDisplay):
                                 parameters=parameters)
             plot_list.append(plot2)
 
+        fig.clf()
+        del fig
+
         return plot_list
 
 
 class SpectralMapAxesManager(MapAxesManagerBase):
-    def __init__(self, nh, nv, brightnessunit, locator, ticksize):
+    """Creates and manages Axes instances for detailed spectral map."""
+
+    def __init__(self, fig: figure.Figure, nh: int, nv: int,
+                 brightnessunit: str, locator: ticker.Locator, ticksize: int) -> None:
+        """Create SpectralMapAxesManager instance.
+
+        Total number of Axes instances in the figure is nh * nv.
+
+        Args:
+            fig: figure.Figure instance
+            nh: number of Axes instances in horizontal direction
+            nv: number of Axes instances in vertical direction
+            brightnessunit: unit for the image
+            locator: locator for x-axis
+            ticksize: tick label size
+        """
         super(SpectralMapAxesManager, self).__init__()
+        self.figure = fig
         self.nh = nh
         self.nv = nv
         self.brightnessunit = brightnessunit
@@ -1132,13 +1380,33 @@ class SpectralMapAxesManager(MapAxesManagerBase):
         self._axes = None
 
     @property
-    def axes_list(self):
+    def axes_list(self) -> List[axes.Axes]:
+        """Return list of Axes instances for the profile map.
+
+        Translation of one-dimensional list into two-dimensional location
+        is needed.
+
+          - The first Axes corresponds to the bottom left panel
+          - The first to (nh-1)-th Axes form the bottom row of the profile map
+          - The nh-th to (2*nh-1)-th Axes form the next row, which is right above
+            the bottom row
+          - Similarly, the list is translated into nv rows in total
+          - The last Axes corresponds to the top right panel
+
+        Returns:
+            List of Axes instances.
+        """
         if self._axes is None:
             self._axes = list(self.__axes_list())
 
         return self._axes
 
-    def __axes_list(self):
+    def __axes_list(self) -> Generator[axes.Axes, None, None]:
+        """Create list of Axes instances for detailed profile map.
+
+        Yields:
+            Axes instance corresponding to each panel of profile map.
+        """
         npanel = self.nh * self.nv
         for ipanel in range(npanel):
             x = ipanel % self.nh
@@ -1150,31 +1418,49 @@ class SpectralMapAxesManager(MapAxesManagerBase):
             y0 = 1.0 / float(self.nv) * (y + 0.15)
             #y1 = 1.0 / float(self.nv) * 0.7
             y1 = 1.0 / float(self.nv) * 0.65
-            a = pl.axes([x0, y0, x1, y1])
+            a = self.figure.add_axes([x0, y0, x1, y1])
             a.xaxis.get_major_formatter().set_useOffset(False)
             a.xaxis.set_major_locator(self.locator)
             a.yaxis.set_label_coords(-0.22, 0.5)
             a.yaxis.get_major_formatter().set_useOffset(False)
             a.title.set_y(0.95)
             a.title.set_size(self.ticksize)
-            pl.ylabel('Intensity (%s)'%(self.brightnessunit), size=self.ticksize)
-            pl.xticks(size=self.ticksize)
-            pl.yticks(size=self.ticksize)
+            a.set_ylabel('Intensity (%s)' % (self.brightnessunit), size=self.ticksize)
+            a.xaxis.set_tick_params(which='major', labelsize=self.ticksize)
+            a.yaxis.set_tick_params(which='major', labelsize=self.ticksize)
 
             yield a
 
 
 class SDSpectralMapDisplay(SDImageDisplay):
-    #MATPLOTLIB_FIGURE_ID = 8910
+    """Plotter for detailed spectral map."""
+
     MaxNhPanel = 5
     MaxNvPanel = 5
 
-    def plot(self):
+    def plot(self) -> List[logger.Plot]:
+        """Create detailed profile map.
+
+        If provided image is so large that its number of spatial pixels
+        exceed the number of panels for single sparse map, multiple
+        image files are created.
+
+        Returns:
+            List of detailed profile maps.
+        """
         self.init()
         return self.__plot_spectral_map()
 
-    def __get_strides(self):
-        qa = casatools.quanta
+    def __get_strides(self) -> List[int]:
+        """Return the stride for creating profile map.
+
+        The stride represents the number of spatial pixels that are combined into
+        single profile map.
+
+        Returns:
+            List of strides in horizontal and vertical directions.
+        """
+        qa = casa_tools.quanta
         units = self.image.units
         factors = []
         for idx in self.image.id_direction:
@@ -1182,8 +1468,17 @@ class SDSpectralMapDisplay(SDImageDisplay):
             factors.append(int(numpy.round(abs(self.grid_size / cell))))
         return factors
 
-    def __plot_spectral_map(self):
-        pl.clf()
+    def __plot_spectral_map(self) -> List[logger.Plot]:
+        """Create detailed profile map.
+
+        If provided image is so large that its number of spatial pixels
+        exceed the number of panels for single sparse map, multiple
+        image files are created.
+
+        Returns:
+            List of detailed profile maps.
+        """
+        fig = figure.Figure()
 
         (STEPX, STEPY) = self.__get_strides()
 
@@ -1199,7 +1494,7 @@ class SDSpectralMapDisplay(SDImageDisplay):
             NH = int((self.x_max - self.x_min) // STEPX // NhPanel + 1)
             NV = int((self.y_max - self.y_min) // STEPY // NvPanel + 1)
             # an array with length of total number of spectra to be plotted (initialized by -1)
-            ROWS = numpy.zeros(NH * NV * NhPanel * NvPanel, dtype=numpy.int) - 1
+            ROWS = numpy.zeros(NH * NV * NhPanel * NvPanel, dtype=int) - 1
             # 2010/6/15 GK Change the plotting direction: UpperLeft->UpperRight->OneLineDown repeat...
             for x in range(0, self.nx, STEPX):
                 posx = (self.x_max - x)//STEPX // NhPanel
@@ -1251,24 +1546,25 @@ class SDSpectralMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        axes_manager = SpectralMapAxesManager(NhPanel, NvPanel, self.brightnessunit,
+        axes_manager = SpectralMapAxesManager(fig, NhPanel, NvPanel, self.brightnessunit,
                                               FreqLocator,
                                               TickSize)
         axes_list = axes_manager.axes_list
-        plot_objects = []
 
         # MS-based procedure
         reference_data = self.context.observing_run.measurement_sets[self.inputs.msid_list[0]]
-        is_baselined = reference_data.work_data != reference_data.name
+        is_baselined = reference_data.get_data_column(DataType.BASELINED) is not None
 
+        data = self.data
+        mask = self.mask
         for pol in range(self.npol):
-            data = (self.data.take([pol], axis=self.id_stokes) * self.mask.take([pol], axis=self.id_stokes)).squeeze()
+            data = (data.take([pol], axis=self.id_stokes) * mask.take([pol], axis=self.id_stokes)).squeeze()
             Npanel = 0
 
             # to eliminate max/min value due to bad pixel or bad fitting,
             #  1/10-th value from max and min are used instead
 #             valid_index = numpy.where(self.num_valid_spectrum[:,:,pol] > 0)
-            mask2d = numpy.any(self.mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
+            mask2d = numpy.any(mask.take([pol], axis=self.id_stokes).squeeze(), axis=2)
             valid_index = mask2d.nonzero()
             valid_data = data[valid_index[0], valid_index[1], chan0:chan1]
             ListMax = valid_data.max(axis=1)
@@ -1300,23 +1596,18 @@ class SDSpectralMapDisplay(SDImageDisplay):
                     if 0 <= _x < self.nx and 0 <= _y < self.ny:
                         a = axes_list[NSp]
                         a.set_axis_on()
-                        pl.gcf().sca(a)
                         world_x = xrv + (_x - xrp) * xic
                         world_y = yrv + (_y - yrp) * yic
                         title = '(IF, POL, X, Y) = (%s, %s, %s, %s)\n%s %s' % (self.spw, pol, _x, _y, HHMMSSss(world_x), DDMMSSs(world_y))
 #                         if self.num_valid_spectrum[_x][_y][pol] > 0:
                         if mask2d[_x][_y]:
-                            plot_objects.extend(
-                                pl.plot(self.frequency, data[_x][_y], Mark, markersize=2, markeredgecolor='b',
-                                        markerfacecolor='b')
-                                )
+                            a.plot(self.frequency, data[_x][_y], Mark, markersize=2, markeredgecolor='b',
+                                   markerfacecolor='b')
                         else:
-                            plot_objects.append(
-                                pl.text((xmin+xmax)/2.0, (ymin+ymax)/2.0, 'NO DATA', horizontalalignment='center',
-                                        verticalalignment='center', size=TickSize)
-                                )
+                            a.text((xmin + xmax) / 2.0, (ymin + ymax) / 2.0, 'NO DATA', horizontalalignment='center',
+                                   verticalalignment='center', size=TickSize)
                         a.title.set_text(title)
-                        pl.axis([xmin, xmax, ymin, ymax])
+                        a.axis([xmin, xmax, ymin, ymax])
                     else:
                         a = axes_list[NSp]
                         a.set_axis_off()
@@ -1325,21 +1616,19 @@ class SDSpectralMapDisplay(SDImageDisplay):
                 NSp += 1
                 if NSp >= (NhPanel * NvPanel) or (irow == len(ROWS)-1 and mode.upper() != 'RASTER'):
                     NSp = 0
-                    if ShowPlot:
-                        pl.draw()
 
                     prefix = self.inputs.imagename+'.pol%s_Result' % pol
                     plotfile = os.path.join(self.stage_dir, prefix+'_%s.png' % Npanel)
                     if not os.path.exists(plotfile):
                         LOG.debug('Regenerate plot: %s' % plotfile)
-                        pl.savefig(plotfile, format='png', dpi=DPIDetail)
+                        fig.savefig(plotfile, dpi=DPIDetail)
                     else:
                         LOG.debug('Use existing plot: %s' % plotfile)
 
-                    for obj in plot_objects:
-                        obj.remove()
-                        del obj
-                    plot_objects = []
+                    for _a in axes_list:
+                        for obj in itertools.chain(_a.lines[:], _a.texts[:], _a.patches[:], _a.images[:]):
+                            obj.remove()
+                            del obj
 
                     parameters = {}
                     parameters['intent'] = 'TARGET'
@@ -1361,55 +1650,101 @@ class SDSpectralMapDisplay(SDImageDisplay):
                     Npanel += 1
             del data, mask2d
         del ROWS
+        del axes_manager
+        fig.clf()
+        del fig
         print("Returning {} plots from spectralmap".format(len(plot_list)))
         return plot_list
 
 
 class SDSpectralImageDisplay(SDImageDisplay):
-    MATPLOTLIB_FIGURE_ID = 8910
+    """Plotter for science spectral window."""
+
+    def __plot(self, display_cls: SDImageDisplay,
+               prologue: Optional[Callable[[SDImageDisplay], None]] = None,
+               epilogue: Optional[Callable[[SDImageDisplay], None]] = None) -> List[logger.Plot]:
+        """Generate Plot list using given display class.
+
+        Args:
+            display_cls: display class
+            prologue: Function to execute before plot method is called.
+                      The function must take SDImageDisplay instance as its argument.
+                      Defaults to None.
+            epilogue: Function to execute after plot method is called.
+                      The function must take SDImageDisplay instance as its argument.
+                      Defaults to None.
+
+        Returns:
+            List of Plot instances.
+        """
+        worker = display_cls(self.inputs)
+        if prologue:
+            prologue(worker)
+        plot_list = worker.plot()
+        if epilogue:
+            epilogue(worker)
+        return plot_list
 
     @casa5style_plot
-    def plot(self):
-        if ShowPlot: pl.ion()
-        else: pl.ioff()
-        pl.figure(self.MATPLOTLIB_FIGURE_ID)
-        if ShowPlot: pl.ioff()
+    def plot(self) -> List[logger.Plot]:
+        """Create Plot instances for science spectral windows.
 
-#         self.init()
+        It creates the following plots from the single inputs.
+        They are returned as a plain list.
 
+          - sparse spectral map
+          - channel map
+          - detailed spectral map
+          - baseline rms map
+          - moment map (max intensity map)
+
+        Returns:
+            List of Plot instances.
+        """
         plot_list = []
         t0 = time.time()
-        worker = SDSparseMapDisplay(self.inputs)
-        worker.enable_atm()
-        plot_list.extend(worker.plot())
+        plot_list.extend(
+            self.__plot(SDSparseMapDisplay, lambda x: x.enable_atm())
+        )
         t1 = time.time()
-        worker = SDChannelMapDisplay(self.inputs)
-        plot_list.extend(worker.plot())
+        LOG.debug('sparse_map: elapsed time %s sec' % (t1-t0))
+        plot_list.extend(
+            self.__plot(SDChannelMapDisplay)
+        )
         t2 = time.time()
+        LOG.debug('channel_map: elapsed time %s sec' % (t2-t1))
         # skip spectral map (detailed profile map) if the data is NRO
         if not self.inputs.isnro:
-            worker = SDSpectralMapDisplay(self.inputs)
-            plot_list.extend(worker.plot())
+            plot_list.extend(
+                self.__plot(SDSpectralMapDisplay)
+            )
         t3 = time.time()
-        worker = SDRmsMapDisplay(self.inputs)
-        plot_list.extend(worker.plot())
+        LOG.debug('spectral_map: elapsed time %s sec' % (t3-t2))
+        plot_list.extend(
+            self.__plot(SDRmsMapDisplay)
+        )
         t4 = time.time()
-        worker = SDMomentMapDisplay(self.inputs)
-        plot_list.extend(worker.plot())
+        LOG.debug('rms_map: elapsed time %s sec' % (t4-t3))
+        plot_list.extend(
+            self.__plot(SDMomentMapDisplay)
+        )
         t5 = time.time()
-        LOG.debug('sparse_map: elapsed time %s sec'%(t1-t0))
-        LOG.debug('channel_map: elapsed time %s sec'%(t2-t1))
-        LOG.debug('spectral_map: elapsed time %s sec'%(t3-t2))
-        LOG.debug('rms_map: elapsed time %s sec'%(t4-t3))
-        LOG.debug('moment_map: elapsed time %s sec'%(t5-t4))
+        LOG.debug('moment_map: elapsed time %s sec' % (t5-t4))
 
         # contamination plots
         plot_list.extend(self.add_contamination_plot())
 
         return plot_list
 
-    def add_contamination_plot(self):
-        context = self.inputs.context
+    def add_contamination_plot(self) -> List[logger.Plot]:
+        """Return list of Plot instances for contamination plot.
+
+        Plot instance is created only when input has valid file
+        name of contamination plot for "combined" image.
+
+        Returns:
+            List of Plot instances.
+        """
         plotfile = os.path.join(self.stage_dir, self.inputs.contamination_plot)
         if self.inputs.antenna == 'COMBINED' and os.path.exists(plotfile):
             parameters = {}
@@ -1433,8 +1768,19 @@ class SDSpectralImageDisplay(SDImageDisplay):
             return []
 
 
-def SDImageDisplayFactory(mode):
-    LOG.debug('MODE=%s'%(mode))
+def SDImageDisplayFactory(mode: str) -> Union[SDChannelAveragedImageDisplay, SDSpectralImageDisplay]:
+    """Return appropriate display class for plotting.
+
+    If mode is "TP", SDChannelAveragedImageDisplay is returned.
+    Otherwise, SDSpectralImageDisplay is returned.
+
+    Args:
+        mode: Type of the spectral window.
+
+    Returns:
+        Appropriate display class
+    """
+    LOG.debug('MODE=%s' % (mode))
     if mode == 'TP':
         return SDChannelAveragedImageDisplay
 

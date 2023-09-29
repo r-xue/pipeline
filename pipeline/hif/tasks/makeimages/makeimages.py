@@ -2,15 +2,16 @@ import os
 import tempfile
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
-import pipeline.infrastructure.casatools as casatools
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
+from pipeline.h.tasks.common.sensitivity import Sensitivity
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
-import pipeline.infrastructure.utils as utils
-from pipeline.h.tasks.common.sensitivity import Sensitivity
 from .resultobjects import MakeImagesResult
 from ..tclean import Tclean
 from ..tclean.resultobjects import TcleanResult
@@ -19,29 +20,33 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class MakeImagesInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
     hm_cleaning = vdp.VisDependentProperty(default='rms')
     hm_cyclefactor = vdp.VisDependentProperty(default=-999.0)
-    hm_dogrowprune = vdp.VisDependentProperty(default=True)
+    hm_dogrowprune = vdp.VisDependentProperty(default=None)
     hm_growiterations = vdp.VisDependentProperty(default=-999)
     hm_lownoisethreshold = vdp.VisDependentProperty(default=-999.0)
-    hm_masking = vdp.VisDependentProperty(default='auto')
+    hm_masking = vdp.VisDependentProperty(default=None)
     hm_minbeamfrac = vdp.VisDependentProperty(default=-999.0)
     hm_minpercentchange = vdp.VisDependentProperty(default=-999.0)
     hm_minpsffraction = vdp.VisDependentProperty(default=-999.0)
     hm_maxpsffraction = vdp.VisDependentProperty(default=-999.0)
-    hm_fastnoise = vdp.VisDependentProperty(default=True)
+    hm_fastnoise = vdp.VisDependentProperty(default=None)
     hm_nsigma = vdp.VisDependentProperty(default=0.0)
-    hm_perchanweightdensity = vdp.VisDependentProperty(default=False)
+    hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
     hm_npixels = vdp.VisDependentProperty(default=0)
     hm_negativethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_noisethreshold = vdp.VisDependentProperty(default=-999.0)
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
+    hm_weighting = vdp.VisDependentProperty(default=None)
     masklimit = vdp.VisDependentProperty(default=2.0)
     parallel = vdp.VisDependentProperty(default='automatic')
     tlimit = vdp.VisDependentProperty(default=2.0)
-    weighting = vdp.VisDependentProperty(default='briggs')
+    drcorrect = vdp.VisDependentProperty(default=-999.0)
     overwrite_on_export = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
@@ -60,17 +65,16 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
-                 hm_maxpsffraction=None, hm_cleaning=None, tlimit=None, masklimit=None,
-                 cleancontranges=None, calcsb=None, mosweight=None, overwrite_on_export=None,
+                 hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
+                 cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None,
                  parallel=None,
                  # Extra parameters
-                 weighting=None):
+                 ):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
 
         self.target_list = target_list
-        self.weighting = weighting
         self.hm_masking = hm_masking
         self.hm_sidelobethreshold = hm_sidelobethreshold
         self.hm_noisethreshold = hm_noisethreshold
@@ -88,18 +92,20 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_cyclefactor = hm_cyclefactor
         self.hm_minpsffraction = hm_minpsffraction
         self.hm_maxpsffraction = hm_maxpsffraction
+        self.hm_weighting = hm_weighting
         self.tlimit = tlimit
+        self.drcorrect = drcorrect
         self.masklimit = masklimit
         self.cleancontranges = cleancontranges
         self.calcsb = calcsb
-        self.mosweight = mosweight
+        self.hm_mosweight = hm_mosweight
         self.parallel = parallel
         self.overwrite_on_export = overwrite_on_export
 
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
+#api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_makeimages')
@@ -136,9 +142,10 @@ class MakeImages(basetask.StandardTaskTemplate):
             for (target, task) in task_queue:
                 try:
                     worker_result = task.get_result()
-                except exceptions.PipelineException:
+                except exceptions.PipelineException as ex:
                     result.add_result(TcleanResult(), target, outcome='failure')
-                    LOG.error('Cleaning failure for field {!s} spw {!s} specmode {!s}'.format(target['field'], target['spw'], target['specmode']))
+                    LOG.error('Cleaning failure for field {!s} spw {!s} specmode {!s}.\nException from hif_tclean: {!s}'.format(
+                        target['field'], target['spw'], target['specmode'], ex))
                 else:
                     # Note add_result() removes 'heuristics' from worker_result
                     heuristics = target['heuristics']
@@ -179,28 +186,44 @@ class MakeImages(basetask.StandardTaskTemplate):
         """
         Returns True if the clean target is one to export image sensitivity
         Conditions to export image sensitivities are
-        1. cubes generated by SRDP ALMA image cube recipe (specmode='cube')
-        2. reprSrc and reprSpw (all specmode)
+        - cubes generated by SRDP ALMA image cube recipe (specmode='cube')
+        - all target images for ALMA if not SRDP
+        - reprSrc and reprSpw (all specmode)
         """
+
         # SRDP ALMA optimized cube images
         if self.inputs.context.project_structure.recipe_name == 'hifa_cubeimage':
             # only cubes
             return clean_result.specmode == 'cube'
+
+        # ALMA pipeline
+        if heuristics.imaging_mode == 'ALMA':
+            return clean_result.intent == 'TARGET'
+
         # Representative source and SpW
-        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = heuristics.representative_target()
-        if str(repr_spw) in clean_result.spw.split(',') and repr_source==utils.dequote(clean_result.sourcename):
+        _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
+        if str(repr_spw) in clean_result.spw.split(',') and repr_source == utils.dequote(clean_result.sourcename):
             return True
+
         # Don't export image sensitivity for the other clean targets
         return False
 
     def _get_image_rms_as_sensitivity(self, result, target, heuristics):
-        imname = result.image
+        if not result.image:
+            return None
+
+        extension = 'tt0.' if result.multiterm else '' # Needed when nterms=2, see PIPE-1361
+        # the tt0 needs to be inserted before the ending ".pbcor" in the image name
+        index = result.image.find('pbcor')
+        imname = result.image[:index] + extension + result.image[index:]
+
         if not os.path.exists(imname):
             return None
-        cqa = casatools.quanta
+
+        cqa = casa_tools.quanta
         cell = target['cell'][0:2] if len(target['cell']) >= 2 else (target['cell'][0], target['cell'][0])
         # Image beam
-        with casatools.ImageReader(imname) as image:
+        with casa_tools.ImageReader(imname) as image:
             restoringbeam = image.restoringbeam()
             csys = image.coordsys()
             chanwidth_of_image = csys.increment(format='q', type='spectral')['quantity']['*1']
@@ -217,9 +240,18 @@ class MakeImages(basetask.StandardTaskTemplate):
         diameters = list(heuristics.antenna_diameters().keys())
         array = ('%dm' % min(diameters))
 
+        # Check if this sensitivity is for the representative source and SpW
+        _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
+        if str(repr_spw) in result.spw.split(',') and repr_source == utils.dequote(result.sourcename):
+            is_representative = True
+        else:
+            is_representative = False
+
         return Sensitivity(array=array,
+                           intent=target['intent'],
                            field=target['field'],
                            spw=result.spw,
+                           is_representative=is_representative,
                            bandwidth=chanwidth_of_image,
                            effective_bw=effectiveBW_of_image,
                            bwmode=result.orig_specmode,
@@ -227,7 +259,11 @@ class MakeImages(basetask.StandardTaskTemplate):
                            cell=cell,
                            robust=target['robust'],
                            uvtaper=target['uvtaper'],
-                           sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'))
+                           sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'),
+                           pbcor_image_min=cqa.quantity(result.image_min, 'Jy/beam'),
+                           pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'),
+                           imagename=result.image.replace('.pbcor', ''),
+                           datatype=result.datatype)
 
 
 class CleanTaskFactory(object):
@@ -275,7 +311,24 @@ class CleanTaskFactory(object):
         is_cal_image = 'TARGET' not in target['intent']
 
         is_tier0_job = is_mpi_ready and is_cal_image
+        # PIPE-1923 asks to temporarily turn off Tier-0 mode for
+        # POLARIZATION intent when imaging IQUV because of a
+        # potential CASA bug. This should be undone when this
+        # bug is fixed.
+        if target['intent'] == 'POLARIZATION' and target['stokes'] == 'IQUV':
+            is_tier0_job = False
+            if is_mpi_ready:
+                LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV polarization calibrator imaging (PIPE-1923).')
+
         parallel_wanted = mpihelpers.parse_mpi_input_parameter(self.__inputs.parallel)
+
+        # PIPE-1401: turn on the tier0 parallelization for individuals planes in the VLASS coarse cube imaging
+        # Also see the disscussions in PIPE-1357
+        vlass_se_cube_tier0_wanted = True
+        is_vlass_se_cube = 'TARGET' in target['intent'] and self.__context.imaging_mode == 'VLASS-SE-CUBE'
+        if all([vlass_se_cube_tier0_wanted, is_vlass_se_cube, is_mpi_ready]):
+            is_tier0_job = True
+            task_args['parallel'] = False
 
         if is_tier0_job and parallel_wanted:
             executable = mpihelpers.Tier0PipelineTask(Tclean,
@@ -305,7 +358,7 @@ class CleanTaskFactory(object):
             'output_dir': inputs.output_dir,
             'vis': inputs.vis,
             # set the weighting type
-            'weighting': inputs.weighting,
+            'weighting': inputs.hm_weighting,
             # other vals
             'tlimit': inputs.tlimit,
             'masklimit': inputs.masklimit,
@@ -314,10 +367,14 @@ class CleanTaskFactory(object):
             'parallel': parallel,
             'hm_perchanweightdensity': inputs.hm_perchanweightdensity,
             'hm_npixels': inputs.hm_npixels,
+            'restoringbeam': image_heuristics.restoringbeam(),
         })
 
         if 'hm_nsigma' not in task_args:
             task_args['hm_nsigma'] = inputs.hm_nsigma
+
+        if inputs.drcorrect not in (None, -999.0):
+            task_args['drcorrect'] = inputs.drcorrect
 
         if target['robust'] not in (None, -999.0):
             task_args['robust'] = target['robust']
@@ -336,12 +393,11 @@ class CleanTaskFactory(object):
             task_args['gridder'] = image_heuristics.gridder(
                     task_args['intent'], task_args['field'])
 
-        if inputs.hm_masking == '':
+        if inputs.hm_masking in (None, ''):
             if 'TARGET' in task_args['intent']:
-                # For the time being the target imaging uses the
-                # inner quarter. Other methods will be made available
-                # later.
                 task_args['hm_masking'] = 'auto'
+            elif task_args['intent'] == 'POLARIZATION' and task_args['stokes'] == 'IQUV':
+                task_args['hm_masking'] = 'centralregion'
             else:
                 task_args['hm_masking'] = 'auto'
         else:
@@ -369,10 +425,13 @@ class CleanTaskFactory(object):
         if target['is_per_eb']:
             task_args['is_per_eb'] = target['is_per_eb']
 
-        if inputs.mosweight is None:
+        if inputs.hm_mosweight not in (None, ''):
+            task_args['mosweight'] = inputs.hm_mosweight
+        elif target['mosweight'] not in (None, ''):
             task_args['mosweight'] = target['mosweight']
         else:
-            task_args['mosweight'] = inputs.mosweight
+            task_args['mosweight'] = image_heuristics.mosweight(task_args['intent'], task_args['field'])
+
 
         if inputs.hm_cyclefactor not in (None, -999.0):
             # The tclean task argument was already called "cyclefactor"
@@ -391,10 +450,15 @@ class CleanTaskFactory(object):
 
 
 def _get_description_map(intent):
-    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
+    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE'):
         return {
             'mfs': 'Make calibrator images',
             'cont': 'Make calibrator images'
+        }
+    elif intent in ('POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
+        return {
+            'mfs': 'Make polarization calibrator images',
+            'cont': 'Make polarization calibrator images'
         }
     elif intent == 'CHECK':
         return {
@@ -413,10 +477,15 @@ def _get_description_map(intent):
         return {}
 
 def _get_sidebar_map(intent):
-    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
+    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE'):
         return {
             'mfs': 'cals',
             'cont': 'cals'
+        }
+    elif intent in ('POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
+        return {
+            'mfs': 'pol',
+            'cont': 'pol'
         }
     elif intent == 'CHECK':
         return {

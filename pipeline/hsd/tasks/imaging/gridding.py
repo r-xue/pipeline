@@ -2,18 +2,21 @@ import collections
 import math
 import os
 import time
+from typing import Any, List
 
 import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.casatools as casatools
+from pipeline.domain import DataType
 from pipeline.domain.datatable import DataTableIndexer
+from pipeline.infrastructure import casa_tools
 from .. import common
 from ..common import compress
 
 from .accumulator import Accumulator
+from ..common import observatory_policy
 
 LOG = infrastructure.get_logger(__name__)
 DO_TEST = True
@@ -32,6 +35,10 @@ def gridding_factory(observing_pattern):
 
 
 class GriddingInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.BASELINED, DataType.ATMCORR,
+                            DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
+
     infiles = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     antennaids = vdp.VisDependentProperty(default=-1)
     fieldids = vdp.VisDependentProperty(default=-1)
@@ -92,17 +99,18 @@ class GriddingBase(basetask.StandardTaskTemplate):
             self.antenna = [inputs.antennaids]
         else:
             self.antenna = inputs.antennaids
-        # Make sure using parent MS name
+        # Use work MS
         if isinstance(inputs.infiles, str):
-            self.files = [common.get_parent_ms_name(context, inputs.infiles)]
+            self.files = [inputs.infiles]
         else:
-            self.files = [ common.get_parent_ms_name(context, name) for name in inputs.infiles]
+            self.files = list(inputs.infiles)
         if isinstance(inputs.spwids, int):
             self.spw = [inputs.spwids]
         else:
             self.spw = inputs.spwids
         # maps variety of spwid among MSes (not supposed to happen)
-        self.msidxs = [common.get_parent_ms_idx(context, name) for name in self.files]
+        ms_list = [context.observing_run.get_ms(name=name) for name in self.files]
+        self.msidxs = [context.observing_run.measurement_sets.index(ms) for ms in ms_list]
         self.spwmap = dict([(m, s) for (m, s) in zip(self.msidxs, self.spw)])
         if isinstance(inputs.fieldids, int):
             self.field = [inputs.fieldids]
@@ -124,26 +132,28 @@ class GriddingBase(basetask.StandardTaskTemplate):
             msidx = self.msidxs[i]
             spwid = self.spw[i]
             poltype = self.poltype[i]
-            ddobj = context.observing_run.measurement_sets[msidx].get_data_description(spw=spwid)
+            ddobj = ms_list[i].get_data_description(spw=spwid)
             self.polid[msidx] = ddobj.get_polarization_id(poltype)
 
         LOG.debug('Members to be processed:')
-        for (m, a, s, p) in zip(self.files, self.antenna, self.spw, self.poltype):
-            LOG.debug('\t%s Antenna %s Spw %s Pol %s'%(os.path.basename(m), a, s, p))
+        for (m, a, s, p) in zip(ms_list, self.antenna, self.spw, self.poltype):
+            LOG.debug('\t%s Antenna %s Spw %s Pol %s'%(m.basename, a, s, p))
 
-        reference_data = context.observing_run.get_ms(name=self.files[0])
+        reference_data = ms_list[0]
         reference_spw = reference_data.spectral_windows[self.spw[0]]
         is_eph_obj = reference_data.get_fields(self.field[0])[0].source.is_eph_obj
         self.nchan = reference_spw.num_channels
         # beam size
-        grid_size = casatools.quanta.convert(reference_data.beam_sizes[self.antenna[0]][self.spw[0]], 'deg')['value']
+        grid_size = casa_tools.quanta.convert(reference_data.beam_sizes[self.antenna[0]][self.spw[0]], 'deg')['value']
+        imaging_policy = observatory_policy.get_imaging_policy(context)
+        grid_factor = imaging_policy.get_beam_size_pixel()
         self.grid_ra = grid_size
         self.grid_dec = grid_size
 
         combine_radius = self.grid_ra
         kernel_width = 0.5 * combine_radius
         allowance = self.grid_ra * 0.1
-        spacing = self.grid_ra / 9.0
+        spacing = self.grid_ra / grid_factor
         DataIn = self.files
         LOG.info('DataIn=%s'%(DataIn))
         grid_table = self.dogrid(DataIn, kernel_width, combine_radius, allowance, spacing, is_eph_obj, datatable_dict=datatable_dict)
@@ -152,7 +162,6 @@ class GriddingBase(basetask.StandardTaskTemplate):
         result = GriddingResults(task=self.__class__,
                                  success=True,
                                  outcome=compress.CompressedObj(grid_table))
-        result.task = self.__class__
         del grid_table
 
         return result
@@ -164,10 +173,10 @@ class GriddingBase(basetask.StandardTaskTemplate):
         """
         The process does re-map and combine spectrum for each position
         GridTable format:
-          [[IF,POL,0,0,RAcent,DECcent,[[row0,r0,RMS0,index0,ant0],[row1,r1,RMS1,index1,ant1],..,[rowN,rN,RMSN,indexN,antn]]]
-           [IF,POL,0,1,RAcent,DECcent,[[row0,r0,RMS0,index0,ant0],[row1,r1,RMS1,index1,ant1],..,[rowN,rN,RMSN,indexN,antn]]]
+          [[[IF0,...,IFN],POL,0,0,RAcent,DECcent,[[index0,r0,RMS0,ant0],[index1,r1,RMS1,ant1],..,[indexN,rN,RMSN,antn]]]
+           [[IF0,...,IFN],POL,0,1,RAcent,DECcent,[[index0,r0,RMS0,ant0],[index1,r1,RMS1,index1,ant1],..,[indexN,rN,RMSN,antn]]]
                         ......
-           [IF,POL,M,N,RAcent,DECcent,[[row0,r0,RMS0,index0,ant0],[row1,r1,RMS1,index1,ant1],..,[rowN,rN,RMSN,indexN,antn]]]]
+           [[IF0,...,IFN],POL,M,N,RAcent,DECcent,[[index0,r0,RMS0,ant0],[index1,r1,RMS1,ant1],..,[indexN,rowN,rN,RMSN,antn]]]]
          where row0,row1,...,rowN should be combined to one for better S/N spectra
                'r' is a distance from grid position
         'weight' can be 'CONST', 'GAUSS', or 'LINEAR'
@@ -189,19 +198,21 @@ class GriddingBase(basetask.StandardTaskTemplate):
         index_dict_key = 0
         for msid, ant, fld, spw in zip(self.msidxs, self.antenna, self.field, self.spw):
             basename = mses[msid].basename
-            vis = mses[msid].name
-            _index_list = common.get_index_list_for_ms(dt_dict[basename], [vis], [ant], [fld], [spw])
+            origin_vis = mses[msid].origin_ms
+            _index_list = common.get_index_list_for_ms(dt_dict[basename], [origin_vis], [ant], [fld], [spw])
             index_dict[index_dict_key].extend(_index_list)
             index_dict_key += 1
         indexer = DataTableIndexer(context)
 
         def _g():
+            """Yield a serial row ID of datatable to process for all rows to process."""
             for x in range(index_dict_key):
                 msid = self.msidxs[x]
-                ms = mses[msid]
+                origin_basename = os.path.basename(mses[msid].origin_ms)
                 for i in index_dict[x]:
-                    yield indexer.perms2serial(ms.basename, i)
+                    yield indexer.perms2serial(origin_basename, i)
 
+        # list of all datatable serial row ID to process
         index_list = numpy.fromiter(_g(), dtype=numpy.int64)
         num_spectra = len(index_list)
 
@@ -210,20 +221,20 @@ class GriddingBase(basetask.StandardTaskTemplate):
             return []
 
         def _g2(colname):
+            """Yield a datatable cell of a given colname for all rows to process."""
+            # ms_map: key=basename of origin MS, value=basename of work MS.
+            ms_map = dict([(os.path.basename(mses[i].origin_ms), mses[i].basename) for i in self.msidxs])
             for i in index_list:
-                vis, j = indexer.serial2perms(i)
-                datatable = dt_dict[vis]
+                origin_basename, j = indexer.serial2perms(i)
+                datatable = dt_dict[ ms_map[origin_basename] ]
                 yield datatable.getcell(colname, j)
 
         def _g3(colname):
+            """Yield a given datatable column of rows to process for each MS."""
             for key, msid in enumerate(self.msidxs):
-                basename = mses[msid].basename
-                datatable = dt_dict[basename]
+                datatable = dt_dict[mses[msid].basename]
                 _list = index_dict[key]
                 yield datatable.getcol(colname).take(_list, axis=-1)
-
-        #rows = table.getcol('ROW').take(index_list)
-        rows = numpy.fromiter(_g2('ROW'), dtype=numpy.int64, count=num_spectra)
 
         #vislist = map(lambda x: x.basename, mses)
         #LOG.info('self.msidxs={0}'.format(self.msidxs))
@@ -272,7 +283,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
             ants = numpy.fromiter(_g2('ANTENNA'), dtype=numpy.int32, count=num_spectra)
             fids = numpy.fromiter(_g2('FIELD_ID'), dtype=numpy.int32, count=num_spectra)
             ifnos = numpy.fromiter(_g2('IF'), dtype=numpy.int32, count=num_spectra)
-            for _i in range(len(rows)):
+            for _i in range(len(index_list)):
                 _msid = msids[_i]
                 _ant = ants[_i]
                 _spw = ifnos[_i]
@@ -291,7 +302,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
         dec_corr = 1.0 / math.cos(decs[0] / 180.0 * 3.141592653)
 
 ###### TODO: Proper handling of POL
-        GridTable = self._group(index_list, rows, msids, ras, decs, stats, combine_radius, allowance_radius, grid_spacing, dec_corr)
+        GridTable = self._group(index_list, msids, ras, decs, stats, combine_radius, allowance_radius, grid_spacing, dec_corr)
 
         # create storage
         _counter = 0
@@ -342,7 +353,7 @@ class GriddingBase(basetask.StandardTaskTemplate):
                 deltalist = ()
                 rmslist = ()
             else:
-                indexlist = numpy.array([IDX2StorageID[int(idx)] for idx in RowDelta[:, 3]])
+                indexlist = numpy.array([IDX2StorageID[int(idx)] for idx in RowDelta[:, 0]])
                 valid_index = numpy.where(net_flag[indexlist] == 1)[0]
                 indexlist = indexlist.take(valid_index)
                 deltalist = RowDelta[:, 1].take(valid_index)
@@ -378,9 +389,31 @@ class GriddingBase(basetask.StandardTaskTemplate):
 
 
 class RasterGridding(GriddingBase):
-    def _group(self, index_list, rows, msids, ras, decs, stats, CombineRadius, Allowance, GridSpacing, DecCorrection):
+    def _group(self, index_list: List[int], msids: List[int], ras: List[float],
+               decs: List[float], stats: List[float],
+               CombineRadius: float, Allowance: float, GridSpacing: float,
+               DecCorrection: float) -> List[List[Any]]:
         """
-        Gridding by RA/DEC position
+        Grid STATISTICS by RA/DEC position for raster map.
+
+        Args:
+            index_list: List of DataTable indices to process
+            msids: Indices of MS in context for each element of index_list
+            ras: RA of each element of index_list
+            decs: DEC of each element of index_list
+            stats: STATISTICS in DataTable of each element of index_list
+            CombineRadius: Radius to combine data together
+            Allowance: Allowance to combine data together (not used)
+            GridSpacing: Spacing between each grid center
+            DecCorrection: A decrination correction flactor
+
+        Returns:
+            GridTable data structure. Each element of list stores data for each
+            grid position. The data of each grid position consists of,
+            [SpwID of each data gridded], POL, XID, YID, RA, DEC,
+            [index_list, distance of poining from grid center, stat,
+            msids of each data gridded].
+            See also documentation of GriddingBase.dogrid for more details.
         """
         start = time.time()
 
@@ -427,7 +460,6 @@ class RasterGridding(GriddingBase):
             SelectD = numpy.where(numpy.logical_and(DeltaDEC < CombineRadius, DeltaDEC > -CombineRadius))[0]
             sDeltaDEC = numpy.take(DeltaDEC, SelectD)
             sRA = numpy.take(ras, SelectD)
-            sROW = numpy.take(rows, SelectD)
             sIDX = numpy.take(index_list, SelectD)
             # TODO: select proper stat element
             sRMS = numpy.take(stats, SelectD, axis=1)
@@ -440,20 +472,19 @@ class RasterGridding(GriddingBase):
                 Delta = sDeltaDEC * sDeltaDEC + sDeltaRA * sDeltaRA
                 SelectR = numpy.where(Delta < ThresholdR)[0]
                 if len(SelectR > 0):
-                    ssROW = numpy.take(sROW, SelectR)
-                    ssRMS = numpy.take(sRMS, SelectR)
+                    ssRMS = numpy.take(sRMS[1], SelectR)
                     ssIDX = numpy.take(sIDX, SelectR)
                     ssMS = numpy.take(sMS, SelectR)
                     ssDelta = numpy.sqrt(numpy.take(Delta, SelectR))
                     line = ([self.spwmap[x] for x in ssMS], self.poltype[0], x, y, RA, DEC,
-                            numpy.transpose([ssROW, ssDelta, ssRMS, ssIDX, ssMS]))
-                    del ssROW, ssRMS, ssIDX, ssMS, ssDelta
+                            numpy.transpose([ssIDX, ssDelta, ssRMS, ssMS]))
+                    del ssRMS, ssIDX, ssMS, ssDelta
                 else:
                     line = (self.spw, self.poltype[0], x, y, RA, DEC, ())
                 GridTable.append(line)
                 del SelectR
                 #LOG.debug("GridTable: %s" % line)
-            del SelectD, sDeltaDEC, sRA, sROW, sIDX, sRMS, sMS
+            del SelectD, sDeltaDEC, sRA, sIDX, sRMS, sMS
 
         LOG.info('NGridRA = %s  NGridDEC = %s' % (NGridRA, NGridDEC))
 
@@ -463,9 +494,31 @@ class RasterGridding(GriddingBase):
 
 
 class SinglePointGridding(GriddingBase):
-    def _group(self, index_list, rows, msids, ras, decs, stats, CombineRadius, Allowance, GridSpacing, DecCorrection):
+    def _group(self, index_list: List[int], msids: List[int], ras: List[float],
+               decs: List[float], stats: List[float],
+               CombineRadius: float, Allowance: float, GridSpacing: float,
+               DecCorrection: float) -> List[List[Any]]:
         """
-        Gridding by RA/DEC position
+        Grid STATISTICS by RA/DEC position for single pointing data.
+
+        Args:
+            index_list: List of DataTable indices to process
+            msids: Indices of MS in context for each element of index_list
+            ras: RA of each element of index_list
+            decs: DEC of each element of index_list
+            stats: STATISTICS in DataTable of each element of index_list
+            CombineRadius: Radius to combine data together (not used)
+            Allowance: Allowance to combine data together
+            GridSpacing: Spacing between each grid center (not used)
+            DecCorrection: A decrination correction flactor (not used)
+
+        Returns:
+            GridTable data structure. Each element of list stores data for each
+            grid position. The data of each grid position consists of,
+            [SpwID of each data gridded], POL, XID, YID, RA, DEC,
+            [index_list, distance of poining from grid center, stat,
+            msids of each data gridded]
+            See also documentation of GriddingBase.dogrid for more details.
         """
         start = time.time()
 
@@ -480,7 +533,7 @@ class SinglePointGridding(GriddingBase):
             Delta = math.sqrt((ras[x] - CenterRA) ** 2.0 + (decs[x] - CenterDEC) ** 2.0)
             if Delta <= Allowance:
                 line[0].append(self.spwmap[msids[x]])
-                line[6].append([index_list[x], Delta, stats[x], index_list[x], msids[x]])
+                line[6].append([index_list[x], Delta, stats[x], msids[x]])
         line[6] = numpy.array(line[6], dtype=float)
         GridTable.append(line)
         #LOG.debug("GridTable: %s" % line)
@@ -493,9 +546,31 @@ class SinglePointGridding(GriddingBase):
 
 
 class MultiPointGridding(GriddingBase):
-    def _group(self, index_list, rows, msids, ras, decs, stats, CombineRadius, Allowance, GridSpacing, DecCorrection):
+    def _group(self, index_list: List[int], msids: List[int], ras: List[float],
+               decs: List[float], stats: List[float],
+               CombineRadius: float, Allowance: float, GridSpacing: float,
+               DecCorrection: float) -> List[List[Any]]:
         """
-        Gridding by RA/DEC position
+         Grid STATISTICS by RA/DEC position for multi-pointing data.
+
+        Args:
+            index_list: List of DataTable indices to process
+            msids: Indices of MS in context for each element of index_list
+            ras: RA of each element of index_list
+            decs: DEC of each element of index_list
+            stats: STATISTICS in DataTable of each element of index_list
+            CombineRadius: Radius to combine data together (not used)
+            Allowance: Allowance to combine data together
+            GridSpacing: Spacing between each grid center (not used)
+            DecCorrection: A decrination correction flactor (not used)
+
+        Returns:
+            GridTable data structure. Each element of list stores data for each
+            grid position. The data of each grid position consists of,
+            [SpwID of each data gridded], POL, XID, YID, RA, DEC,
+            [index_list, distance of poining from grid center, stat,
+            msids of each data gridded]
+            See also documentation of GriddingBase.dogrid for more details.
         """
         start = time.time()
 
@@ -526,7 +601,7 @@ class MultiPointGridding(GriddingBase):
                             Delta = math.sqrt((ras[x] - CenterRA) ** 2.0 + (decs[x] - CenterDEC) ** 2.0)
                             if Delta <= Allowance:
                                 line[0].append(self.spwmap[msids[x]])
-                                line[6].append([index_list[x], Delta, stats[x], index_list[x], msids[x]])
+                                line[6].append([index_list[x], Delta, stats[x], msids[x]])
                                 Flag[x] = 0
                     line[6] = numpy.array(line[6])
                     GridTable.append(line)

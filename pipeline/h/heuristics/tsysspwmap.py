@@ -18,8 +18,8 @@
 import numpy
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -117,11 +117,11 @@ def tsysspwmap(ms, tsystable, trim=True, relax=False, tsysChanTol=1):
         return unmatched_science_spws, spwMaps
 
     # Get the spectral windows with entries in the solution table
-    with casatools.TableReader(tsystable) as table:
+    with casa_tools.TableReader(tsystable) as table:
         measuredTsysSpw = numpy.unique(table.getcol("SPECTRAL_WINDOW_ID"))
 
     # Get the frequency ranges for the allowed 
-    with casatools.TableReader("%s/SPECTRAL_WINDOW" % tsystable) as table:
+    with casa_tools.TableReader("%s/SPECTRAL_WINDOW" % tsystable) as table:
         for i in measuredTsysSpw:
             spwMap = SpwMap(i)
             chanFreqs = table.getcell("CHAN_FREQ", i)
@@ -137,14 +137,14 @@ def tsysspwmap(ms, tsystable, trim=True, relax=False, tsysChanTol=1):
     # Now loop through the main table's spectral window table
     # to map the spectral windows as desired.
     vis = ms.name
-    with casatools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
+    with casa_tools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
         it = table.nrows()
 
     for j in spwMaps:
-        with casatools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
+        with casa_tools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
             j.bbNo = table.getcell("BBC_NO", j.calSpwId)
         for i in range(it):
-            with casatools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
+            with casa_tools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
                 chanFreqs = table.getcell("CHAN_FREQ", i)
                 if len(chanFreqs) > 1:
                     chanWidth = table.getcell("CHAN_WIDTH", i)[0]
@@ -162,7 +162,7 @@ def tsysspwmap(ms, tsystable, trim=True, relax=False, tsysChanTol=1):
 
     applyCalSpwMap = []
     spwWithoutMatch = []
-    with casatools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
+    with casa_tools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
         for i in range(it):
             useSpw = None
             for j in spwMaps:

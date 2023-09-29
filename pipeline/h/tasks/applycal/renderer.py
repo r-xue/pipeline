@@ -8,7 +8,8 @@ import itertools
 import operator
 import os
 import shutil
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Optional, Type, Union
+
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure
@@ -18,17 +19,16 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure.basetask import ResultsList
 from pipeline.infrastructure.displays.summary import UVChart
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.renderer.logger import Plot
-from ..common import flagging_renderer_utils as flagutils
+from pipeline.h.tasks.applycal.applycal import ApplycalResults
+from pipeline.infrastructure.renderer.basetemplates import JsonPlotRenderer
+from ..common import flagging_renderer_utils as flagutils, mstools
 from ..common.displays import applycal as applycal
 
 LOG = logging.get_logger(__name__)
-
-FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
 class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -38,11 +38,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         super(T2_4MDetailsApplycalRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self, ctx, context, result):
-        weblog_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
+    def update_mako_context(self, mako_context, pipeline_context, result):
+        weblog_dir = os.path.join(pipeline_context.report_dir, 'stage%s' % result.stage_number)
 
         # calculate which intents to display in the flagging statistics table
-        intents_to_summarise = flagutils.intents_to_summarise(context)
+        intents_to_summarise = flagutils.intents_to_summarise(pipeline_context)
         flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
         flag_table_intents.extend(intents_to_summarise)
 
@@ -50,7 +50,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for r in result:
             if r.inputs['flagsum'] is True:
                 flag_totals = utils.dict_merge(flag_totals,
-                                               flagutils.flags_for_result(r, context, intents_to_summarise=intents_to_summarise))
+                    flagutils.flags_for_result(r, pipeline_context, intents_to_summarise=intents_to_summarise))
 
         calapps = {}
         for r in result:
@@ -63,13 +63,13 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         filesizes = {}
         for r in result:
             vis = r.inputs['vis']
-            ms = context.observing_run.get_ms(vis)
+            ms = pipeline_context.observing_run.get_ms(vis)
             filesizes[ms.basename] = ms._calc_filesize()
 
         # return all agents so we get ticks and crosses against each one
         agents = ['before', 'applycal']
 
-        ctx.update({
+        mako_context.update({
             'flags': flag_totals,
             'calapps': calapps,
             'caltypes': caltypes,
@@ -84,14 +84,14 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         amp_vs_uv_subpages = {}
 
         amp_vs_time_summary_plots, amp_vs_time_subpages = self.create_plots(
-            context,
+            pipeline_context,
             result,
             applycal.AmpVsTimeSummaryChart,
             ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'TARGET', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
         )
 
         phase_vs_time_summary_plots, phase_vs_time_subpages = self.create_plots(
-            context,
+            pipeline_context,
             result,
             applycal.PhaseVsTimeSummaryChart,
             ['PHASE', 'BANDPASS', 'AMPLITUDE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
@@ -103,10 +103,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # it doesn't matter that the subpages dict is repeatedly redefined.
             # The only purpose of the returned dict is to map the vis to a
             # non-existing page, which will disable the link.
+
             plots, amp_vs_freq_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
-                applycal.AmpVsFrequencySummaryChart,
+                applycal.AmpVsFrequencyFieldSummaryChart,
                 intents
             )
 
@@ -116,7 +117,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         phase_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
         for intents in [['PHASE'], ['BANDPASS'], ['CHECK'], ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
             plots, phase_vs_freq_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
                 applycal.PhaseVsFrequencyPerSpwSummaryChart,
                 intents
@@ -131,9 +132,9 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for intents in [['AMPLITUDE'], ['PHASE'], ['BANDPASS'], ['CHECK'],
                         ['POLARIZATION'], ['POLANGLE'], ['POLLEAKAGE']]:
             plots, amp_vs_uv_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
-                applycal.AmpVsUVSummaryChart,
+                applycal.AmpVsUVFieldSummaryChart,
                 intents
             )
 
@@ -142,8 +143,9 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # CAS-5970: add science target plots to the applycal page
         (science_amp_vs_freq_summary_plots,
+         science_amp_vs_freq_subpages,
          science_amp_vs_uv_summary_plots,
-         uv_max) = self.create_science_plots(context, result)
+         uv_max) = self.create_science_plots(pipeline_context, result)
 
         corrected_ratio_to_antenna1_plots = utils.OrderedDefaultdict(list)
         corrected_ratio_to_uv_dist_plots = {}
@@ -162,7 +164,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                                        (['POLANGLE'], ''),
                                        (['POLLEAKAGE'], '')]:
                 p, _ = self.create_plots(
-                    context,
+                    pipeline_context,
                     [r],
                     applycal.CorrectedToModelRatioVsAntenna1SummaryChart,
                     intents,
@@ -173,7 +175,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     corrected_ratio_to_antenna1_plots[vis].extend(vis_plots)
 
             p, _ = self.create_plots(
-                context,
+                pipeline_context,
                 [r],
                 applycal.CorrectedToModelRatioVsUVDistanceSummaryChart,
                 ['AMPLITUDE'],
@@ -194,10 +196,10 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # plots relatively unchanged.
         #
         amp_vs_time_detail_plots, amp_vs_time_subpages = self.create_plots(
-            context,
+            pipeline_context,
             result,
             applycal.CAS9154AmpVsTimeDetailChart,
-            ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK', 'TARGET'],
+            ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK', 'TARGET', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
             ApplycalAmpVsTimePlotRenderer,
             avgchannel='9000'
         )
@@ -206,7 +208,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # detail plots. Don't need the return dictionary, but make sure a
             # renderer is passed so the detail page is written to disk
             amp_vs_freq_detail_plots, amp_vs_freq_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
                 applycal.AmpVsFrequencyDetailChart,
                 ['BANDPASS', 'PHASE', 'CHECK', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
@@ -214,7 +216,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             )
 
             phase_vs_freq_detail_plots, phase_vs_freq_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
                 applycal.PhaseVsFrequencyDetailChart,
                 ['BANDPASS', 'PHASE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
@@ -222,7 +224,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             )
 
             phase_vs_time_detail_plots, phase_vs_time_subpages = self.create_plots(
-                context,
+                pipeline_context,
                 result,
                 applycal.PhaseVsTimeDetailChart,
                 ['AMPLITUDE', 'PHASE', 'BANDPASS', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'],
@@ -237,7 +239,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 (phase_vs_time_detail_plots, ApplycalPhaseVsTimePlotRenderer, phase_vs_time_subpages)):
             if d:
                 all_plots = list(utils.flatten([v for v in d.values()]))
-                renderer = plotter_cls(context, result, all_plots)
+                renderer = plotter_cls(pipeline_context, result, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
                     # redirect subpage links to master page
@@ -245,22 +247,37 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         subpages[vis] = renderer.path
 
         # CAS-11511: add plots of UV coverage.
-        if utils.contains_single_dish(context):
+        if utils.contains_single_dish(pipeline_context):
             uv_plots = None
         else:
-            uv_plots = self.create_uv_plots(context, result, weblog_dir)
+            uv_plots = self.create_uv_plots(pipeline_context, result, weblog_dir)
 
         # PIPE-615: Add links to the hif_applycal weblog for viewing each
         # callibrary table (and store all callibrary tables in the weblog
         # directory)
-        callib_map = copy_callibrary(result, context.report_dir)
+        callib_map = copy_callibrary(result, pipeline_context.report_dir)
 
         # PIPE-396: Suppress redundant plots from hifa_applycal
-        amp_vs_freq_summary_plots = deduplicate(context, amp_vs_freq_summary_plots)
-        amp_vs_uv_summary_plots = deduplicate(context, amp_vs_uv_summary_plots)
-        corrected_ratio_to_antenna1_plots = deduplicate(context, corrected_ratio_to_antenna1_plots)
+        amp_vs_freq_summary_plots = deduplicate(pipeline_context, amp_vs_freq_summary_plots)
+        amp_vs_uv_summary_plots = deduplicate(pipeline_context, amp_vs_uv_summary_plots)
+        corrected_ratio_to_antenna1_plots = deduplicate(pipeline_context, corrected_ratio_to_antenna1_plots)
 
-        ctx.update({
+        # PIPE-1327: Link outliers file in weblog
+
+        # Copy applycal QA outliers file across to weblog directory
+        outliers_filename = 'applycalQA_outliers.txt'
+        if os.path.exists(outliers_filename):
+            outliers_path = os.path.join(weblog_dir, outliers_filename)
+            outliers_weblink = os.path.join('stage%s' % result.stage_number, outliers_filename)
+            outliers_path_link = '<a href="{!s}" class="replace-pre" data-title="{!s}">View</a>' \
+                                 ' or <a href="{!s}" download="{!s}">download</a> {!s} file.'.format(outliers_weblink, outliers_filename,
+                                                                                                 outliers_weblink, outliers_weblink, outliers_filename)
+            LOG.trace('Copying %s to %s' % (outliers_filename, weblog_dir))
+            shutil.copy(outliers_filename, weblog_dir)
+        else:
+            outliers_path_link = ''
+
+        mako_context.update({
             'amp_vs_freq_plots': amp_vs_freq_summary_plots,
             'phase_vs_freq_plots': phase_vs_freq_summary_plots,
             'amp_vs_time_plots': amp_vs_time_summary_plots,
@@ -269,6 +286,7 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'corrected_to_antenna1_plots': corrected_ratio_to_antenna1_plots,
             'corrected_to_model_vs_uvdist_plots': corrected_ratio_to_uv_dist_plots,
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
+            'science_amp_vs_freq_subpages': science_amp_vs_freq_subpages,
             'science_amp_vs_uv_plots': science_amp_vs_uv_summary_plots,
             'uv_plots': uv_plots,
             'uv_max': uv_max,
@@ -278,7 +296,8 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'amp_vs_uv_subpages': amp_vs_uv_subpages,
             'phase_vs_time_subpages': phase_vs_time_subpages,
             'callib_map': callib_map,
-            'flag_table_intents': flag_table_intents
+            'flag_table_intents': flag_table_intents,
+            'outliers_path_link': outliers_path_link
         })
 
     @staticmethod
@@ -297,13 +316,22 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def create_science_plots(self, context, results):
         """
         Create plots for the science targets, returning two dictionaries of 
-        vis:[Plots].
+        vis:[Plots], vis:[subpage paths], and vis:[max UV distances].
+
+        Args:
+            context: pipeline context
+            results: ResultsList instance containing Applycal Results
+
+        Returns:
+            Three dictionaries of plot objects, subpage paths, and
+            max UV distances for each vis.
         """
         amp_vs_freq_summary_plots = collections.defaultdict(dict)
         amp_vs_uv_summary_plots = collections.defaultdict(dict)
         max_uvs = collections.defaultdict(dict)
 
         amp_vs_freq_detail_plots = {}
+        amp_vs_freq_subpages = collections.defaultdict(lambda: 'null')
         amp_vs_uv_detail_plots = {}
 
         for result in results:
@@ -385,12 +413,42 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 renderer = plotter_cls(context, results, all_plots)
                 with renderer.get_file() as fileobj:
                     fileobj.write(renderer.render())
+                if plotter_cls is ApplycalAmpVsFreqSciencePlotRenderer:
+                    amp_vs_freq_subpages.update((vis, renderer.path) for vis in d.keys())
 
-        return amp_vs_freq_summary_plots, amp_vs_uv_summary_plots, max_uvs
+        return amp_vs_freq_summary_plots, amp_vs_freq_subpages, amp_vs_uv_summary_plots, max_uvs
 
     @staticmethod
-    def science_plots_for_result(context, result, plotter_cls, fields, uvrange=None, renderer_cls=None):
-        overrides = {'coloraxis': 'spw'}
+    def science_plots_for_result(
+            context: Context, 
+            result: ApplycalResults,
+            plotter_cls: Type[Union[applycal.PlotmsAntComposite, applycal.PlotmsSpwComposite, 
+                                    applycal.PlotmsBasebandComposite, applycal.PlotmsFieldComposite, 
+                                    applycal.PlotmsFieldSpwComposite, applycal.PlotmsSpwAntComposite, 
+                                    applycal.PlotmsFieldSpwAntComposite]], 
+            fields: Iterable[int], 
+            uvrange: Optional[str]=None, 
+            renderer_cls: Optional[Type[JsonPlotRenderer]]=None, 
+            preserve_coloraxis: bool=False
+    ) -> List[Plot]:
+        """
+        Create science plots for result
+        
+        Create science plots for result.
+        Args:
+            context:            Pipeline Context
+            result:             Applycal Results
+            plotter_cls:        Plotter class
+            fields:             List of field_ids
+            uvrange:            UV range
+            renderer_cls:       Renderer class
+            preserve_coloraxis: True to preserve predefined 'coloraxis' (for SD)
+                                False to override 'coloraxis' with 'spw' (default)
+        Returns:
+            List[Plot]: List of Plot instances.
+        """
+        # preserve coloraxis if necessary (PIPE-710: SD needs to preserve 'coloraxis')
+        overrides = {} if preserve_coloraxis else {'coloraxis': 'spw'}
 
         if uvrange is not None:
             overrides['uvrange'] = uvrange
@@ -574,6 +632,33 @@ class ApplycalAmpVsFreqSciencePlotRenderer(basetemplates.JsonPlotRenderer):
                 result, plots, title, outfile)
 
 
+class ApplycalAmpVsFreqPerAntSciencePlotRenderer(basetemplates.JsonPlotRenderer):
+    """
+    Class to render 'per antenna' Amp vs Freq plots for applycal
+    """
+    def __init__(self, 
+                 context: Context, 
+                 result: ApplycalResults, 
+                 plots: List[Plot]
+    ) -> None:
+        """
+        Construct ApplycalAmpVsFreqPerAntSciencePlotRenderer instance
+
+        Args:
+            context: Pipeline context
+            result:  Applycal Results
+            plots:   List of Plot instances
+        """
+        vis = utils.get_vis_from_plots(plots)
+
+        title = 'Calibrated amplitude vs frequency for %s' % vis
+        outfile = filenamer.sanitize('science_amp_vs_freq-%s.html' % vis)
+
+        super(ApplycalAmpVsFreqPerAntSciencePlotRenderer, self).__init__(
+            'generic_x_vs_y_field_spw_ant_detail_plots.mako', context,
+            result, plots, title, outfile)
+
+
 class ApplycalAmpVsUVSciencePlotRenderer(basetemplates.JsonPlotRenderer):
     def __init__(self, context, result, plots):
         vis = utils.get_vis_from_plots(plots)
@@ -656,7 +741,7 @@ def _get_data_selection_for_plot(context, result, intent):
     intent = ','.join(intent).upper()
 
     vis = {calapp.vis for calapp in result.applied}
-    assert (len(vis) is 1)
+    assert (len(vis) == 1)
     vis = vis.pop()
 
     wanted = set(intent.split(','))
@@ -707,102 +792,29 @@ def get_brightest_field(ms, source, intent='TARGET'):
         LOG.info('Only one %s target for Source #%s. Bypassing brightest target selection.', intent, source.id)
         return fields_for_source[0]
 
-    visstat_fields, visstat_spws = get_visstat_data_selection(ms, fields_for_source, spw_ids, intent)
-    if not visstat_fields:
-        LOG.info('All data flagged. Bypassing brightest target selection.')
-        return fields_for_source[0]
-
     # a list of (field, field flux) tuples
-    median_flux = []
-
-    # defines the parameters for the visstat job
-    job_params = {
-        'vis': ms.name,
-        'axis': 'amp',
-        'datacolumn': 'corrected',
-        'spw': ','.join((str(spw_id) for spw_id in sorted(visstat_spws))),
-        'field': ','.join((str(field.id) for field in sorted(visstat_fields, key=operator.attrgetter('id')))),
-        'intent': utils.to_CASA_intent(ms, intent),
-        'reportingaxes': 'field',
-        'useflags': True
-    }
-
-    # run visstat for each scan selection for the target
-    LOG.info('Calculating which %s field has the highest median flux for Source #%s', intent, source.id)
-    job = casa_tasks.visstat(**job_params)
-    visstat_result = job.execute(dry_run=False)
-
-    # representative visstat output:
-    #  'FIELD_ID=6': {'median': 2.4579226970672607}
-    for k, v in visstat_result.items():
-        _, field_id = k.split('=')
-        measurement_field = [f for f in fields_for_source if f.id == int(field_id)][0]
-        median_flux.append((measurement_field, float(v['median'])))
+    mean_flux = []
+    for field in fields_for_source:
+        fluxes_for_field = []
+        for spwid in spw_ids:
+            fluxes_for_field_and_spw = mstools.compute_mean_flux(ms, field.id, spwid, intent)[0]
+            if fluxes_for_field_and_spw:
+                fluxes_for_field.append(fluxes_for_field_and_spw)
+        if fluxes_for_field:
+            mean_flux.append((field, sum(fluxes_for_field) / len(fluxes_for_field)))
 
     LOG.debug('Median flux for %s targets:', intent)
-    for field, field_flux in median_flux:
+    for field, field_flux in mean_flux:
         LOG.debug('\t{!r} ({}): {}'.format(field.name, field.id, field_flux))
 
     # find the ID of the field with the highest average flux
-    sorted_by_flux = sorted(median_flux, key=operator.itemgetter(1), reverse=True)
+    sorted_by_flux = sorted(mean_flux, key=operator.itemgetter(1), reverse=True)
     brightest_field, highest_flux = sorted_by_flux[0]
 
     LOG.info('{} field {!r} (#{}) has highest median flux ({})'.format(
         intent, brightest_field.name, brightest_field.id, highest_flux
     ))
     return brightest_field
-
-
-def get_visstat_data_selection(ms, fields_for_source, spw_ids, intent):
-    """
-    Validate a visstat data selection, removing field/spw combinations that
-    are completely flagged.
-
-    :param ms: MeasurementSet object, used to get MS filename
-    :param fields_for_source: iterable of Field domain objects
-    :param spw_ids: iterable of integer spw IDs
-    :return: ([Field, Field, ...], [int, int, ...])
-    """
-    LOG.info('Finding flagged data selections for {}'.format(ms.basename))
-
-    #
-    # PIPE-446: handle visstat exception
-    #
-    # Visstat raises an exception if a field is completely flagged.
-    # Unfortunately it doesn't report which is the problem field, so we have
-    # to find that by inspecting flagdata summaries, one for each field.
-    #
-    casa_intent = utils.to_CASA_intent(ms, intent)
-    inpfile = ["mode='summary' name='field_{}_spw_{}' field='{}' spw='{}' intent='{}'".format(field.id, spw_id, field.id, spw_id, casa_intent)
-               for field in sorted(fields_for_source, key=operator.attrgetter('id'))
-               for spw_id in sorted(spw_ids)]
-    flagdata_job = casa_tasks.flagdata(vis=ms.name, datacolumn='corrected', mode='list', inpfile=inpfile)
-    flagdata_result = flagdata_job.execute(dry_run=False)
-
-    spw_to_fields_for_visstat_job = {spw: set(fields_for_source) for spw in spw_ids}
-
-    for flagdata_summary in flagdata_result.values():
-        num_flagged_rows = flagdata_summary['flagged']
-        num_rows = flagdata_summary['total']
-        if num_flagged_rows == num_rows:
-            _, flagged_field, _, flagged_spw = flagdata_summary['name'].split('_')
-            LOG.info('Discarding field %s spw %s as a visstat candidate', flagged_field, flagged_spw)
-            field_to_remove = ms.fields[int(flagged_field)]
-            spw_to_fields_for_visstat_job[int(flagged_spw)].remove(field_to_remove)
-
-    # Take the spw(s) with the largest number of <100% flagged fields.
-    #
-    # Different spws could have the same number of fields but a different
-    # selection of fields (e.g., a different field in each spw has been flagged).
-    # We don't care which field set is selected when multiple spws give the
-    # same number of good fields.
-    fields_for_job = max(spw_to_fields_for_visstat_job.values(), key=len)
-
-    # Identify the spws that are good for the job fields we just identified.
-    spws_for_job_fields = {spw_id for spw_id, fields_for_spw in spw_to_fields_for_visstat_job.items()
-                           if fields_for_job.issubset(fields_for_spw)}
-
-    return fields_for_job, spws_for_job_fields
 
 
 def copy_callibrary(results: ResultsList, report_dir: str) -> Dict[str, str]:
@@ -863,6 +875,7 @@ def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
     # sort and group the plots.
     spw_fn = lambda plot: plot.parameters['spw']
     intent_fn = lambda plot: plot.parameters['intent']
+    field_fn = lambda plot: plot.parameters['field']
 
     # First, group plots by spw
     plots_by_spw = sorted(plots, key=spw_fn)
@@ -880,28 +893,30 @@ def _deduplicate_plots(ms: MeasurementSet, plots: List[Plot]) -> List[Plot]:
             # Store group iterator as a list
             spw_intent_plots = list(spw_intent_plots)  
 
-            # This should result in a single plot. If not, bail. Failsafe
-            # behaviour is to return original list of plots. It's better to
-            # have duplicates present than exceptions.
-            if len(spw_intent_plots) != 1:
-                LOG.warning('Plot deduplication cancelled. '
-                            'Could not process ambiguous plot for spw %s intent %s', spw, intent)
-                return plots
-            plot = spw_intent_plots[0]
+            # Try something new... does this fail if no fields? (i.e. need to move back in 'if')?
+            spw_intent_plots_by_field = sorted(spw_intent_plots, key=field_fn)
+            for field, spw_intent_field_plots in itertools.groupby(spw_intent_plots_by_field, field_fn):
+                spw_intent_field_plots = list(spw_intent_field_plots)
 
-            scan_ids = sorted({(scan.id) for scan in ms.get_scans(scan_intent=intent, spw=spw)})
-            scan_ids = ','.join(str(s) for s in scan_ids)
-            if scan_ids not in plots_for_scan:
-                LOG.debug('Retaining plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
-                plots_for_scan[scan_ids] = plot
-            else:
-                LOG.debug('Discarding duplicate plot for scan %s (spw=%s intent=%s)', scan_ids, spw, intent)
-                # intents are strings inside lists, e.g., ['BANDPASS']
-                old_intent = intent_fn(plots_for_scan[scan_ids])
-                new_intent = [','.join(sorted(set(old_intent).union(set(intent))))]
-                LOG.info('Deduplicating plot: spw %s %s -> %s', spw, old_intent, new_intent)
-                plots_for_scan[scan_ids].parameters['intent'] = new_intent
-
+                # This should result in a single plot. If not, bail. Failsafe
+                # behaviour is to return original list of plots. It's better to
+                # have duplicates present than exceptions.
+                if len(spw_intent_field_plots) != 1:
+                    LOG.warning('Plot deduplication cancelled. '
+                           'Could not process ambiguous plot for spw %s intent %s field', spw, intent, field)
+                else: 
+                    plot = spw_intent_field_plots[0]
+                    scan_ids = sorted({(scan.id) for scan in ms.get_scans(scan_intent=intent, spw=spw, field=field)})
+                    scan_ids = ','.join(str(s) for s in scan_ids)
+                    if scan_ids not in plots_for_scan:
+                        LOG.debug('Retaining plot for scan %s (spw=%s intent=%s field=%s)', scan_ids, spw, intent, field)
+                        plots_for_scan[scan_ids] = plot
+                    else:
+                        LOG.debug('Discarding duplicate plot for scan %s (spw=%s intent=%s field=%s)', scan_ids, spw, intent, field)
+                        # intents are strings inside lists, e.g., ['BANDPASS']
+                        old_intent = intent_fn(plots_for_scan[scan_ids])
+                        new_intent = [','.join(sorted(set(old_intent).union(set(intent))))]
+                        LOG.info('Deduplicating plot: spw %s %s -> %s', spw, old_intent, new_intent)
+                        plots_for_scan[scan_ids].parameters['intent'] = new_intent 
         deduplicated.extend(plots_for_scan.values())
-
     return deduplicated

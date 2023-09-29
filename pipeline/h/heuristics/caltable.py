@@ -21,7 +21,7 @@ def _truncate_floats(s, precision=3):
     # so instead of finding the offending digits and removing them,
     # we have to capture the good digits and cut off the remainder
     # during replacement.
-    pattern = '(\d+\.\d{%s})\d+' % precision
+    pattern = r'(\d+\.\d{%s})\d+' % precision
     return re.sub(pattern, '\\1', s)
 
 
@@ -113,9 +113,17 @@ class DelayCaltable(CaltableNamer):
         return filenamer.DelayCalibrationTable()
 
 
-class PolCaltable(CaltableNamer):
+class PolcalCaltable(CaltableNamer):
     def get_namer(self):
-        return filenamer.InstrumentPolCalibrationTable()
+        return filenamer.PolCalibrationTable()
+
+    def customise(self, namer, task_args):
+        namer.spectral_window_nochan(task_args.get('spw', None))
+
+        if 'solint' in task_args:
+            # convert integer solints to str for truncation
+            solint = str(task_args['solint'])
+            namer.solint(_truncate_floats(solint, 3))
 
 
 class FluxCaltable(CaltableNamer):

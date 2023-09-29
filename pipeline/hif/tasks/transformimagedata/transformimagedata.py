@@ -3,11 +3,12 @@ import shutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.h.tasks.mstransform import mssplit
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -51,7 +52,7 @@ class TransformimagedataResults(basetask.Results):
         context.observing_run.measurement_sets.pop(0)
 
         for i in range(0, len(context.clean_list_pending)):
-            outvisname = context.output_dir + '/' + os.path.basename(self.outputvis)
+            outvisname = os.path.join(context.output_dir, os.path.basename(self.outputvis))
             context.clean_list_pending[i]['heuristics'].observing_run.measurement_sets[0].name = outvisname
             newvislist = [self.outputvis]
             context.clean_list_pending[i]['heuristics'].vislist = newvislist
@@ -70,6 +71,8 @@ class TransformimagedataResults(basetask.Results):
 
 
 class TransformimagedataInputs(mssplit.MsSplitInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     clear_pointing = vdp.VisDependentProperty(default=True)
     modify_weights = vdp.VisDependentProperty(default=False)
@@ -81,14 +84,13 @@ class TransformimagedataInputs(mssplit.MsSplitInputs):
     def outputvis(self):
 
         output_dir = self.context.output_dir
-
         if isinstance(self._outputvis, vdp.NullMarker):
             # Need this to be in the working directory
             # vis_root = os.path.splitext(self.vis)[0]
             vis_root = os.path.splitext(os.path.basename(self.vis))[0]
-            return output_dir + '/' + vis_root + '_split.ms'
+            return os.path.join(output_dir, vis_root + '_split.ms')
         else:
-            return output_dir + '/' + os.path.basename(self.outputvis)
+            return os.path.join(output_dir, os.path.basename(self.outputvis))
 
     @outputvis.convert
     def outputvis(self, value=''):
@@ -195,30 +197,31 @@ class Transformimagedata(mssplit.MsSplit):
             #result.outputvis = result.vis
 
         # Import the new MS
-        to_import = os.path.abspath(result.outputvis)
-        observing_run = tablereader.ObservingRunReader.get_observing_run(to_import)
+        rel_to_import = result.outputvis
+        observing_run = tablereader.ObservingRunReader.get_observing_run(rel_to_import)
 
         # Adopt same session as source measurement set
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
-            ms.is_imaging_ms = True
+            ms.origin_ms = self.inputs.ms.origin_ms
+            self._set_data_column_to_ms(ms)
 
         # Note there will be only 1 MS in the temporary observing run structure
         result.ms = observing_run.measurement_sets[0]
 
         if inputs.clear_pointing:
             LOG.info('Removing POINTING table from ' + ms.name)
-            with casatools.TableReader(ms.name + '/POINTING', nomodify=False) as table:
+            with casa_tools.TableReader(ms.name + '/POINTING', nomodify=False) as table:
                 rows = table.rownumbers()
                 table.removerows(rows)
 
         if inputs.modify_weights:
             LOG.info('Re-initializing the weights in ' + ms.name)
             if inputs.wtmode:
-                task = casa_tasks.initweights(ms.name, wtmode=inputs.wtmode)
+                task = casa_tasks.initweights(vis=ms.name, wtmode=inputs.wtmode)
             else:
-                task = casa_tasks.initweights(ms.name)
+                task = casa_tasks.initweights(vis=ms.name)
             self._executor.execute(task)
 
         return result

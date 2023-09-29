@@ -22,6 +22,10 @@
                 <Value xmlns="">1.5int</Value>
             </Parameter>
             <Parameter>
+                <Keyword xmlns="">fracspw</Keyword>
+                <Value xmlns="">0.01</Value>
+            </Parameter>            
+            <Parameter>
                 <Keyword xmlns="">intents</Keyword>
                 <Value xmlns="">*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*</Value>
             </Parameter>
@@ -41,6 +45,12 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifv_syspower</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifv_testBPdcals</Command>
         <ParameterSet>
         </ParameterSet>
@@ -49,6 +59,10 @@
     <ProcessingCommand>
         <Command xmlns="">hifv_checkflag</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">checkflagmode</Keyword>
+                <Value xmlns="">bpd-vla</Value>
+            </Parameter>            
         </ParameterSet>
     </ProcessingCommand>
     
@@ -63,17 +77,10 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">checkflagmode</Keyword>
-                <Value xmlns="">semi</Value>
+                <Value xmlns="">allcals-vla</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-    
-    <ProcessingCommand>
-        <Command xmlns="">hifv_semiFinalBPdcals</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-    
 
     <ProcessingCommand>
         <Command xmlns="">hifv_solint</Command>
@@ -82,7 +89,7 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_fluxboot2</Command>
+        <Command xmlns="">hifv_fluxboot</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
@@ -100,14 +107,14 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_targetflag</Command>
+        <Command xmlns="">hifv_checkflag</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">intents</Keyword>
-                <Value xmlns="">*CALIBRATE*,*TARGET*</Value>
+                <Keyword xmlns="">checkflagmode</Keyword>
+                <Value xmlns="">target-vla</Value>
             </Parameter>
         </ParameterSet>
-    </ProcessingCommand>
+    </ProcessingCommand>   
 
     <ProcessingCommand>
         <Command xmlns="">hifv_statwt</Command>
@@ -140,7 +147,7 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">hm_masking</Keyword>
-                <Value xmlns="">none</Value>
+                <Value xmlns="">centralregion</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -187,16 +194,18 @@
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">hm_masking</Keyword>
-                <Value xmlns="">none</Value>
-            </Parameter>
-            <Parameter>
                 <Keyword xmlns="">hm_cyclefactor</Keyword>
                 <Value xmlns="">3.0</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
+    <ProcessingCommand>
+        <Command xmlns="">hifv_pbcor</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>    
+    
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>
         <ParameterSet>

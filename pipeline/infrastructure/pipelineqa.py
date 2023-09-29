@@ -27,6 +27,7 @@ import enum
 import operator
 from typing import Optional, Set, List
 
+from . import eventbus
 from . import logging
 
 LOG = logging.get_logger(__name__)
@@ -167,7 +168,7 @@ class QAScore(object):
         self.hierarchy = hierarchy
 
     def __str__(self):
-        return 'QAScore(%r, %r, %r, %s)'.format(self.score, self.longmsg, self.shortmsg, self.applies_to)
+        return 'QAScore({!s}, {!r}, {!r}, {!s})'.format(self.score, self.longmsg, self.shortmsg, self.applies_to)
 
     def __repr__(self):
         origin = None if self.origin is NULL_ORIGIN else self.origin
@@ -327,7 +328,7 @@ class QARegistry(object):
 
         # register the capturing log handler, buffering all messages so that
         # we can add them to the result - and subsequently, the weblog
-        logging_handler = logging.CapturingHandler(logging.WARNING)
+        logging_handler = logging.CapturingHandler(logging.ATTENTION)
         logging.add_handler(logging_handler)
 
         try:

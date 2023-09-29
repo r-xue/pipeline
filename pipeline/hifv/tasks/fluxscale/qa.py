@@ -6,8 +6,8 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
-from . import Fluxboot2
-from . import Fluxboot2Results
+from . import Fluxboot
+from . import FluxbootResults
 from . import solint
 
 LOG = logging.get_logger(__name__)
@@ -51,10 +51,10 @@ class SolintListQAHandler(pqa.QAPlugin):
         result.qa.all_unity_longmsg = longmsg
 
 
-class Fluxboot2QAHandler(pqa.QAPlugin):
-    result_cls = Fluxboot2Results
+class FluxbootQAHandler(pqa.QAPlugin):
+    result_cls = FluxbootResults
     child_cls = None
-    generating_task = Fluxboot2
+    generating_task = Fluxboot
 
     def handle(self, context, result):
         # Get a QA score based on RMS of the residuals per receiver band and source
@@ -105,12 +105,12 @@ class Fluxboot2QAHandler(pqa.QAPlugin):
         return rmsmeanvalues
 
 
-class Fluxboot2ListQAHandler(pqa.QAPlugin):
+class FluxbootListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing FluxbootResults.
     """
     result_cls = collections.Iterable
-    child_cls = Fluxboot2Results
+    child_cls = FluxbootResults
 
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our

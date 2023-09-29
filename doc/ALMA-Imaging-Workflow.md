@@ -1,4 +1,4 @@
-ALMA interferometry imaging workflow
+# ALMA interferometry imaging workflow
 
 - hif_makeimlist
 
@@ -24,7 +24,6 @@ ALMA interferometry imaging workflow
     - stokes 'I'
     - start (task parameter if set)
     - uvrange (task parameter if set)
-
 
 - hif_makeimages
 

@@ -43,7 +43,7 @@
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">maxproductsize</Keyword>
-                <Value xmlns="">350.0</Value>
+                <Value xmlns="">500.0</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -60,12 +60,6 @@
 
     <ProcessingCommand>
         <Command xmlns="">hif_findcont</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_uvcontfit</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>

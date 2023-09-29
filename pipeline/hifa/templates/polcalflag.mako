@@ -3,25 +3,6 @@ rsc_path = ""
 import os
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
-
-# method to output flagging percentages neatly
-def percent_flagged(flagsummary):
-    flagged = flagsummary.flagged
-    total = flagsummary.total
-
-    if total is 0:
-        return 'N/A'
-    else:
-        return '%0.1f%%' % (100.0 * flagged / total)
-
-_types = {
-    'before': 'Calibrated data before flagging',
-    'after': 'Calibrated data after flagging'
-}
-
-def plot_type(plot):
-    return _types[plot.parameters['type']]
-
 %>
 
 <%inherit file="t2-4m_details-base.mako"/>
@@ -54,6 +35,9 @@ def plot_type(plot):
     <li><a href="#flagged_data_summary">Flagged data summary table</a></li>
 % if any(v != [] for v in time_plots.values()):
     <li><a href="#amp_vs_time">Amplitude vs time plots for flagging</a></li>
+% endif
+% if any(v != [] for v in uvdist_plots.values()):
+    <li><a href="#amp_vs_uvdist">Amplitude vs uvdist plots for flagging</a></li>
 % endif
 </ul>
 
@@ -134,7 +118,7 @@ def plot_type(plot):
             <th>${k}</th>
         % for step in ['before','after']:
             % if flags[ms].get(step) is not None:
-            <td>${percent_flagged(flags[ms][step]['Summary'][k])}</td>
+            <td>${rendererutils.percent_flagged(flags[ms][step]['Summary'][k])}</td>
             % else:
            <td>0.0%</td>
             % endif
@@ -172,7 +156,7 @@ def plot_type(plot):
     <%def name="mouseover(plot)">Click to show amplitude vs time for spw ${plot.parameters['spw']}</%def>
 
     <%def name="fancybox_caption(plot)">
-        ${plot_type(plot)}<br>
+        ${rendererutils.plot_type(plot)}<br>
         ${plot.parameters['vis']}<br>
         Spw ${plot.parameters['spw']}<br>
         Intents: ${utils.commafy([plot.parameters['intent']], False)}
@@ -187,7 +171,58 @@ def plot_type(plot):
     </%def>
 
     <%def name="caption_text(plot, ptype)">
-        ${plot_type(plot)}.
+        ${rendererutils.plot_type(plot)}.
+    </%def>
+
+</%self:plot_group>
+
+% endif
+
+% if any(v != [] for v in uvdist_plots.values()):
+
+<%self:plot_group plot_dict="${uvdist_plots}"
+                  url_fn="${lambda x: 'junk'}"
+                  rel_fn="${lambda plot: 'amp_vs_uvdist_%s_%s' % (plot.parameters['vis'], plot.parameters['spw'])}"
+                  title_id="amp_vs_uvdist"
+                  break_rows_by="type_idx"
+                  sort_row_by="spw">
+
+    <%def name="title()">
+        Amplitude vs UV distance
+    </%def>
+
+    <%def name="preamble()">
+        <p>These plots show amplitude vs UV distance for two cases: 1, the calibrated data before application of any
+        flags; and 2, where flagging was applied, the calibrated data after application of flags.</p>
+
+        <p>Data are plotted for all antennas and correlations, with different
+        correlations shown in different colours.</p>
+
+        <p>The plots of amplitude vs UV distance show only the target fields for which new flags were found, and are
+        only produced for spws with new flags.</p>
+    </%def>
+
+    <%def name="mouseover(plot)">Click to show amplitude vs UV distance for spw ${plot.parameters['spw']}</%def>
+
+    <%def name="fancybox_caption(plot)">
+        ${rendererutils.plot_type(plot)}<br>
+        ${plot.parameters['vis']}<br>
+        Spw ${plot.parameters['spw']}<br>
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
+        Fields: ${rendererutils.summarise_fields(plot.parameters['field'])}
+    </%def>
+
+    <%def name="caption_title(plot)">
+        Spectral Window ${plot.parameters['spw']}<br>
+    </%def>
+
+    <%def name="caption_subtitle(plot)">
+        Intents: ${utils.commafy([plot.parameters['intent']], False)}<br>
+        Fields: ${rendererutils.summarise_fields(plot.parameters['field'])}
+    </%def>
+
+    <%def name="caption_text(plot, ptype)">
+        ${rendererutils.plot_type(plot)}.
     </%def>
 
 </%self:plot_group>

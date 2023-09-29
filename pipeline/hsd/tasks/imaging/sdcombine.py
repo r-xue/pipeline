@@ -1,24 +1,34 @@
+"""SDImageCombine classes"""
+
+from typing import TYPE_CHECKING, Dict, List, NewType, Optional
+
 import os
 import shutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.imagelibrary as imagelibrary
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from .resultobjects import SDImagingResultItem
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+    Direction = NewType( 'Direction', Dict )
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class SDImageCombineInputs(vdp.StandardInputs):
     """
-    Inputs for image plane combination
+    Inputs for image plane combination.
     """
+
     inimages = vdp.VisDependentProperty(default='')
     outfile = vdp.VisDependentProperty(default='')
     org_directions = vdp.VisDependentProperty(default='')
+    specmodes = vdp.VisDependentProperty(default='')
 
     @inimages.convert
     def inimages(self, value):
@@ -29,13 +39,29 @@ class SDImageCombineInputs(vdp.StandardInputs):
                 _check_image(v)
         return value
 
-    def __init__(self, context, inimages, outfile, org_directions):
+    def __init__(self,
+                 context:        'Context',
+                 inimages:       List[str],
+                 outfile:        str,
+                 org_directions: List[Optional['Direction']],
+                 specmodes:      List[str]):
+        """
+        Construct SDImageCombineInputs instance.
+
+        Args:
+            context        : Pipeline context
+            inimages       : Imagenames to combine
+            outfile        : Output image name
+            org_directions : List of direction of origin for ephemeris objects
+            specmodes      : List of specmodes
+        """
         super(SDImageCombineInputs, self).__init__()
 
         self.context = context
         self.inimages = inimages
         self.outfile = outfile
         self.org_directions = org_directions
+        self.specmodes = specmodes
 
 
 class SDImageCombine(basetask.StandardTaskTemplate):
@@ -47,6 +73,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
         infiles = self.inputs.inimages
         outfile = self.inputs.outfile
         org_directions = self.inputs.org_directions
+        specmodes = self.inputs.specmodes
         inweights = [name+".weight" for name in infiles]
         outweight = outfile + ".weight"
         num_in = len(infiles)
@@ -61,14 +88,14 @@ class SDImageCombine(basetask.StandardTaskTemplate):
         def get_safe_path(path):
             #p = os.path.relpath(path, self.inputs.context.output_dir)
             LOG.debug('original path = "{}"'.format(path))
-            p = path.replace(':', '\:') if ':' in path else path
+            p = path.replace(':', r'\:') if ':' in path else path
             LOG.debug('safe path = "{}"'.format(p))
             return p
 
         # check uniformity of org_directions and feed org_direction
         threshold = 1E-5   #deg
-        me = casatools.measures
-        qa = casatools.quanta
+        me = casa_tools.measures
+        qa = casa_tools.quanta
         if len(org_directions) > 1:
             for idx in range(1, len(org_directions)):
                 if org_directions[0] is None:
@@ -79,6 +106,11 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                     if separation > threshold:
                         raise RuntimeError( "inconsistent org_directions (separation={} deg) {}".format(separation, org_directions) )
         org_direction = org_directions[0]
+
+        # check uniformity of specmodes
+        if len(set(specmodes)) > 1:
+            raise RuntimeError( "inconsistent specmodes ({})".format(specmodes) )
+        specmode = specmodes[0]
 
         # combine weight images
         LOG.info("Generating combined weight image.")
@@ -94,7 +126,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
 
         if status is True:
             # Need to replace NaNs in masked pixels
-            with casatools.ImageReader(outfile) as ia:
+            with casa_tools.ImageReader(outfile) as ia:
                 # save default mask name
                 default_mask = ia.maskhandler('default')[0]
 
@@ -119,7 +151,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             # dedault value to align with the parameter setting for sdimaging
             # (see worker.py).
             minweight = 0.1
-            with casatools.ImageReader(outweight) as ia:
+            with casa_tools.ImageReader(outweight) as ia:
                 # exclude 0 (and negative weights)
                 ia.calcmask('"{}" > 0.0'.format(get_safe_path(ia.name())), name='nonzero')
 
@@ -129,7 +161,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             # re-evaluate mask
             threshold = minweight * median_weight[0]
             for imagename in [outfile, outweight]:
-                with casatools.ImageReader(imagename) as ia:
+                with casa_tools.ImageReader(imagename) as ia:
                     # new mask name
                     updated_mask = 'mask_combine'
 
@@ -147,7 +179,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             image_item = imagelibrary.ImageItem(imagename=outfile,
                                                 sourcename='',  # will be filled in later
                                                 spwlist=[],  # will be filled in later
-                                                specmode='cube',
+                                                specmode=specmode,
                                                 sourcetype='TARGET',
                                                 org_direction=org_direction)
             outcome = {'image': image_item}
@@ -170,7 +202,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             shutil.rmtree(imagename)
         combine_args = dict(imagename=infiles, outfile=imagename,
                             mode='evalexpr', expr=expr)
-        LOG.debug('Executing immath task: args=%s'%(combine_args))
+        LOG.debug('Executing immath task: args=%s' % (combine_args))
         combine_job = casa_tasks.immath(**combine_args)
 
         # execute job

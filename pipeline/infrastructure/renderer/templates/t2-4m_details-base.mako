@@ -3,8 +3,9 @@ import html
 import os
 import xml.sax.saxutils as saxutils
 
+from pipeline.infrastructure.utils import get_obj_size
+
 import pipeline.domain.measures as measures
-import pipeline.extern.asizeof as asizeof
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.htmlrenderer as hr
@@ -20,7 +21,7 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 </head>
 
 <%def name="plot_group(plot_dict, url_fn, data_spw=False, data_field=False, data_baseband=False, data_tsysspw=False,
-                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='')">
+                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='', separate_rows_by='', show_row_break_value=False)">
 % if plot_dict:
     % if title_id:
         <h3 id="${title_id}" class="jumptarget">${caller.title()}</h3>
@@ -36,9 +37,9 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
         <%
             relurl = url_fn(ms)
             if relurl:
-                subpage_abspath = os.path.join(pcontext.report_dir, dirname, relurl)
-                subpage_path = os.path.relpath(subpage_abspath, pcontext.report_dir)
-                subpage_exists = os.path.exists(subpage_abspath)
+                subpage_path = rendererutils.get_relative_url(pcontext.report_dir, dirname, relurl,
+                                                              allow_nonexistent=False)
+                subpage_exists = subpage_path is not None
             else:
                 subpage_exists = false
         %>
@@ -61,9 +62,21 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
             ${caller.ms_preamble(ms)}
         % endif
 
-        % for plots_in_row in rendererutils.group_plots(ms_plots, break_rows_by):
+        % for idx_row, (plots_in_row, group_name) in enumerate(rendererutils.group_plots(ms_plots, break_rows_by)):
+
+        % if idx_row!=0:
+            % if separate_rows_by=='thick-line':
+                <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+            % endif
+        % endif
+
+        % if show_row_break_value: 
+            <h5>${group_name}</h5>
+        % endif
+
         <div class="row">
             % if plots_in_row is not None:
+
             % for plot in rendererutils.sort_row_by(plots_in_row, sort_row_by):
             <%
                 intent = plot.parameters.get('intent', 'No intent')
@@ -76,10 +89,15 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
                 <%
                     fullsize_relpath = os.path.relpath(plot.abspath, pcontext.report_dir)
                     thumbnail_relpath = os.path.relpath(plot.thumbnail, pcontext.report_dir)
+                    link = plot.parameters.get('link', '')
+                    if link != '':
+                        id_link = 'id="{}"'.format(link)
+                    else: 
+                        id_link = ''
                 %>
 
                 <div class="thumbnail">
-                    <a href="${fullsize_relpath}"
+                    <a ${id_link} href="${fullsize_relpath}"
                        % if rel_fn:
                            data-fancybox="${rel_fn(plot)}"
                        % elif relurl:
@@ -174,21 +192,176 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation
 </div>
 
 <%
-    notification_trs = rendererutils.get_notification_trs(result, alerts_info, alerts_success)
+weblog_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLocation.ACCORDION, WebLogLocation.BANNER, WebLogLocation.UNSET])
+num_scores = 0
+score_color_counts = []
+representative_score = result.qa.representative
+if representative_score is not None and representative_score.score is not None:
+    if -0.1 <= representative_score.score <= rendererutils.SCORE_THRESHOLD_ERROR:
+        representative_score_render_class = 'danger alert-danger'
+    elif rendererutils.SCORE_THRESHOLD_ERROR < representative_score.score <= rendererutils.SCORE_THRESHOLD_WARNING:
+        representative_score_render_class = 'warning alert-warning'
+    elif rendererutils.SCORE_THRESHOLD_WARNING < representative_score.score <= rendererutils.SCORE_THRESHOLD_SUBOPTIMAL:
+        representative_score_render_class = 'info alert-info'
+    elif rendererutils.SCORE_THRESHOLD_SUBOPTIMAL < representative_score.score <= 1.0:
+        representative_score_render_class = 'success alert-success'
+    else:
+        representative_score_render_class = 'panel panel-default'
+else:
+    representative_score_render_class = 'panel panel-default'
+
+error_scores = rendererutils.scores_in_range(weblog_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
+if len(error_scores) > 0:
+    num_scores += len(error_scores)
+    score_color_counts.append('%d red' % (len(error_scores)))
+    if representative_score is None:
+        representative_score = min(error_scores, key=lambda s: s.score)
+        representative_score_render_class = 'danger alert-danger'
+
+warning_scores = rendererutils.scores_in_range(weblog_scores, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
+if len(warning_scores) > 0:
+    num_scores += len(warning_scores)
+    score_color_counts.append('%d yellow' % (len(warning_scores)))
+    if representative_score is None:
+        representative_score = min(warning_scores, key=lambda s: s.score)
+        representative_score_render_class = 'warning alert-warning'
+
+suboptimal_scores = rendererutils.scores_in_range(weblog_scores, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL)
+if len(suboptimal_scores) > 0:
+    num_scores += len(suboptimal_scores)
+    score_color_counts.append('%d blue' % (len(suboptimal_scores)))
+    if representative_score is None:
+        representative_score = min(suboptimal_scores, key=lambda s: s.score)
+        representative_score_render_class = 'info alert-info'
+
+optimal_scores = rendererutils.scores_in_range(weblog_scores, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0)
+if len(optimal_scores) > 0:
+    num_scores += len(optimal_scores)
+    score_color_counts.append('%d green' % (len(optimal_scores)))
+    if representative_score is None:
+        representative_score = min(optimal_scores, key=lambda s: s.score)
+        representative_score_render_class = 'success alert-success'
+%>
+
+<div class="panel-group" id="qa-details-accordion" role="tablist" aria-multiselectable="true">
+
+    <div class="panel panel-default">
+        <div class="panel-heading-compact" role="tab" id="headingTwo">
+            <h5 class="panel-title-compact ${representative_score_render_class}">
+                % if num_scores > 1:
+                    % if representative_score.score is not None:
+                        QA Score: &nbsp; ${'%0.2f' % representative_score.score} &nbsp; ${representative_score.longmsg} &nbsp;
+                        <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <u><i><b>All QA Scores (${', '.join(score_color_counts)})</b></i></u>
+                        </a>
+                    % else:
+                        QA Score: &nbsp; N/A &nbsp;
+                        <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <u><i><b>All QA Scores (${', '.join(score_color_counts)})</b></i></u>
+                        </a>
+                    % endif
+                % else:
+                    % if representative_score.score is not None:
+                        <tr class="${representative_score_render_class}">
+                        QA Score: &nbsp; ${'%0.2f' % representative_score.score} &nbsp; ${representative_score.longmsg}
+                        </tr>
+                    % else:
+                        <tr class="${representative_score_render_class}">
+                        QA Score: &nbsp; N/A
+                        </tr>
+                    % endif
+                % endif
+            </h5>
+        </div>
+        % if num_scores > 1:
+        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+            <div class="panel-body">
+                % if result.qa.pool:
+                <table class="table table-bordered table-condensed" summary="Pipeline QA summary">
+                    <caption>Pipeline QA summary for this task.</caption>
+                    <thead>
+                        <tr>
+                            <th>Score</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    % for qascore in error_scores:
+                    <tr class="danger alert-danger">
+                        <td>${'%0.2f' % qascore.score}</td>
+                        <td>${qascore.longmsg}</td>
+                    </tr>
+                    % endfor
+                    % for qascore in warning_scores:
+                    <tr class="warning alert-warning">
+                        <td>${'%0.2f' % qascore.score}</td>
+                        <td>${qascore.longmsg}</td>
+                    </tr>
+                    % endfor
+                    % for qascore in suboptimal_scores:
+                    <tr class="info alert-info">
+                        <td>${'%0.2f' % qascore.score}</td>
+                        <td>${qascore.longmsg}</td>
+                    </tr>
+                    % endfor
+                    % for qascore in optimal_scores:
+                    <tr class="success alert-success">
+                        <td>${'%0.2f' % qascore.score}</td>
+                        <td>${qascore.longmsg}</td>
+                    </tr>
+                    % endfor
+                    </tbody>
+                </table>
+                % else:
+                    No pipeline QA for this task.
+                % endif
+            </div>
+        </div>
+        % endif
+    </div>
+
+</div>
+
+<%
+    notification_trs, most_severe_render_class = rendererutils.get_notification_trs(result, alerts_info, alerts_success)
 %>
 % if notification_trs:
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Task notifications</th>
-        </tr>
-    </thead>
-    <tbody>
-    % for tr in notification_trs:
-        ${tr}
-    % endfor
-    </tbody>
-</table>
+<div class="panel-group" id="notification-details-accordion" role="tablist" aria-multiselectable="true">
+
+    <div class="panel panel-default">
+        <div class="panel-heading-compact" role="tab" id="headingThree">
+            <h5 class="panel-title-compact ${most_severe_render_class}">
+                % if len(notification_trs) > 1:
+                    Most Severe Notification: &nbsp; ${notification_trs[0]} &nbsp;
+                    <a data-toggle="collapse" data-parent="#notification-details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <u><i><b>All Notifications (${len(notification_trs)})</b></i></u>
+                    </a>
+                % else:
+                    <tr class="${most_severe_render_class}">
+                    Notification: &nbsp; ${notification_trs[0]}
+                    </tr>
+                % endif
+            </h5>
+        </div>
+        % if len(notification_trs) > 1:
+        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+            <div class="panel-body">
+                <table class="table table-bordered table-condensed" summary="Task notifications">
+                    <caption>Notifications for this task.</caption>
+                    <thead>
+                    </thead>
+                    <tbody>
+                    % for tr in notification_trs:
+                        ${tr}
+                    % endfor
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        % endif
+    </div>
+
+</div>
 % endif
 
 ${next.body()}
@@ -215,62 +388,6 @@ ${next.body()}
         </div>
     %endif
     </%doc>
-
-    <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="headingThree">
-            <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#details-accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                Pipeline QA
-                </a>
-            </h4>
-        </div>
-        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-            <div class="panel-body">
-                % if result.qa.pool:
-                <table class="table table-bordered" summary="Pipeline QA summary">
-                    <caption>Pipeline QA summary for this task.</caption>
-                    <thead>
-                        <tr>
-                            <th>Score</th>
-                            <th>Reason</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <%
-                    accordion_scores = rendererutils.scores_with_location(result.qa.pool, [WebLogLocation.ACCORDION, WebLogLocation.UNSET])
-                    %>
-                    % for qascore in rendererutils.scores_in_range(accordion_scores, -0.1, rendererutils.SCORE_THRESHOLD_ERROR):
-                    <tr class="danger alert-danger">
-                        <td>${'%0.2f' % qascore.score}</td>
-                        <td>${qascore.longmsg}</td>
-                    </tr>
-                    % endfor
-                    % for qascore in rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING):
-                    <tr class="warning alert-warning">
-                        <td>${'%0.2f' % qascore.score}</td>
-                        <td>${qascore.longmsg}</td>
-                    </tr>
-                    % endfor
-                    % for qascore in rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL):
-                    <tr class="info alert-info">
-                        <td>${'%0.2f' % qascore.score}</td>
-                        <td>${qascore.longmsg}</td>
-                    </tr>
-                    % endfor
-                    % for qascore in rendererutils.scores_in_range(accordion_scores, rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, 1.0):
-                    <tr class="success alert-success">
-                        <td>${'%0.2f' % qascore.score}</td>
-                        <td>${qascore.longmsg}</td>
-                    </tr>
-                    % endfor
-                    </tbody>
-                </table>
-                % else:
-                    No pipeline QA for this task.
-                % endif
-            </div>
-        </div>
-    </div>
 
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingFour">
@@ -311,7 +428,7 @@ ${next.body()}
                     <dd>${utils.format_timedelta(result.timestamps.end - result.timestamps.start, dp=3)}</dd>
                     % if logging.logging_level <= logging.DEBUG:
                         <dt>Context size</dt>
-                        <dd>${str(measures.FileSize(asizeof.asizeof(pcontext), measures.FileSizeUnits.BYTES))}</dd>
+                        <dd>${str(measures.FileSize(get_obj_size(pcontext), measures.FileSizeUnits.BYTES))}</dd>
                     % endif
                 </dl>
             Note, WebLog generation is not included in the time.

@@ -3,8 +3,8 @@ import operator
 import os
 import uuid
 from functools import reduce
+from typing import List, Set, Tuple, Union
 
-import numpy as np
 import scipy.stats as stats
 
 import pipeline.domain as domain
@@ -12,18 +12,18 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.sessionutils as sessionutils
-import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import FluxMeasurement
-from pipeline.h.tasks.common import commonfluxresults
-from pipeline.h.tasks.common import commonhelpermethods
+from pipeline.domain import MeasurementSet
+from pipeline.h.tasks.common import commonfluxresults, mstools
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import gaincal
 from pipeline.hif.tasks.fluxscale import fluxscale
+from pipeline.hif.tasks.gaincal.common import GaincalResults
 from pipeline.hif.tasks.setmodel import setjy
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
 from . import fluxes
@@ -54,11 +54,21 @@ class GcorFluxscaleResults(commonfluxresults.FluxCalibrationResults):
             fluxscale_measurements = collections.defaultdict(list)
         self.fluxscale_measurements = fluxscale_measurements
 
+        self.calapps_for_check_sources = [] 
+
     def merge_with_context(self, context):
         # Update the measurement set with the calibrated visibility based flux
         # measurements for later use in imaging (PIPE-644, PIPE-660).
         ms = context.observing_run.get_ms(self.vis)
         ms.derived_fluxes = self.measurements
+
+        # Update the measurement set with the fluxscale derived flux
+        # measurements for later use in polarisation calibration (PIPE-1776).
+        ms.fluxscale_fluxes = self.fluxscale_measurements
+
+        # Store these calapps in the context so that they can be plotted in hifa_timegaincal's
+        # diagnostic phase vs. time plots. See PIPE-1377 for more information.
+        ms.phase_calapps_for_check_sources = self.calapps_for_check_sources
 
 
 class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
@@ -115,9 +125,9 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # Initialize results.
         result = GcorFluxscaleResults(inputs.vis, resantenna='', uvrange='')
 
-        # Check that the measurement set does have an amplitude calibrator.
+        # If this measurement set does not have an amplitude calibrator, then
+        # log an error and return early with empty result.
         if inputs.reference == '':
-            # No point carrying on if not.
             LOG.error('%s has no data with reference intent %s' % (inputs.ms.basename, inputs.refintent))
             return result
 
@@ -128,144 +138,29 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             LOG.info('Flux calibrator field(s) {!r} in {!s} have no data with '
                      'intent {!s}'.format(inputs.reference, inputs.ms.basename, inputs.transintent))
 
-        # set the reference antenna
-        refant = inputs.refant
-        if refant == '':
+        # Get reference antenna.
+        refant = self._get_refant()
 
-            # Get the reference antenna for this measurement set from the
-            # context. This comes back as a string containing a ranked
-            # list of antenna names.
-            refant = inputs.ms.reference_antenna
+        # Get reference spectral window map for flux scaling.
+        refspwmap = self._get_refspwmap()
 
-            # If no reference antenna was found in the context for this measurement
-            # (refant equals either None or an empty string), then raise an exception.
-            if not (refant and refant.strip()):
-                msg = ('No reference antenna specified and none found in context for %s' % inputs.ms.basename)
-                LOG.error(msg)
-                raise exceptions.PipelineException(msg)
-
-        LOG.trace('refant: %s' % refant)
-
-        # Get the reference spwmap for flux scaling
-        refspwmap = inputs.refspwmap
-        if not refspwmap:
-            refspwmap = inputs.ms.reference_spwmap
-            if not refspwmap:
-                refspwmap = [-1]
-
-        # Determine the spw gaincal strategy. This determines how the phase only tables will
-        # be constructed.
-        if inputs.ms.combine_spwmap:
-            spwidlist = [spw.id for spw in inputs.ms.get_spectral_windows(science_windows_only=True)]
-            fieldnamelist = [field.name for field in inputs.ms.get_fields(task_arg=inputs.transfer, intent='PHASE')]
-            exptimes = heuristics.exptimes.get_scan_exptimes(inputs.ms, fieldnamelist, 'PHASE', spwidlist)
-            phaseup_solint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
-            phase_gaintype = 'T'
-            phase_combine = 'spw'
-            phaseup_spwmap = inputs.ms.combine_spwmap
-            phase_interp = 'linearPD,linear'
-        else:
-            phaseup_solint = inputs.phaseupsolint
-            phase_gaintype = 'G'
-            phase_combine = ''
-            phaseup_spwmap = inputs.ms.phaseup_spwmap
-            phase_interp = None
-
-        # Resolved source heuristics.
-        #    Needs improvement if users start specifying the input antennas.
-        #    For the time being force minblperant to be 2 instead of None to
-        #    avoid ACA and Tsys flagging issues.
-        allantenna = inputs.antenna
-        minblperant = 2
-
-        if inputs.hm_resolvedcals == 'automatic':
-            # Get the antennas to be used in the gaincals, limiting
-            # the range if the reference calibrator is resolved.
-            refant0 = refant.split(',')[0]  # use the first refant
-            resantenna, uvrange = heuristics.fluxscale.antenna(ms=inputs.ms, refsource=inputs.reference, refant=refant0,
-                                                               peak_frac=inputs.peak_fraction)
-
-            # Do nothing if the source is unresolved.
-            # If the source is resolved but the number of
-            # antennas equals the total number of antennas
-            # use all the antennas but pass along the uvrange
-            # limit.
-            if resantenna == '' and uvrange == '':
-                pass
-            else:
-                nant = len(inputs.ms.antennas)
-                nresant = len(resantenna.split(','))
-                if nresant >= nant:
-                    resantenna = allantenna
-        else:
-            resantenna = allantenna
-            uvrange = inputs.uvrange
-
+        # Evaluate heuristics for resolved sources to determine which antennae
+        # should be used in subsequent gaincals.
+        allantenna, filtered_refant, minblperant, resantenna, uvrange = self._derive_ants_to_use(refant)
         result.resantenna = resantenna
         result.uvrange = uvrange
 
-        # Do a phase-only gaincal on the flux calibrator using a
-        # restricted set of antennas
-        if resantenna == '':
-            filtered_refant = refant
-        else:  # filter refant if resolved calibrator or antenna selection
-            resant_list = resantenna.rstrip('&').split(',')
-            filtered_refant = str(',').join([ant for ant in refant.split(',') if ant in resant_list])
+        # Create the phase caltables and merge into the local context.
+        phase_results = self._do_phasecals(allantenna, resantenna, filtered_refant, minblperant, uvrange)
 
-        r = self._do_gaincal(field=inputs.reference, intent=inputs.refintent, gaintype=phase_gaintype, calmode='p',
-                             combine=phase_combine, solint=inputs.phaseupsolint, antenna=resantenna, uvrange=uvrange,
-                             refant=filtered_refant, minblperant=minblperant, phaseup_spwmap=None, phase_interp=None,
-                             append=False, merge=False)
-
-        # Test for the existence of the caltable
-        try:
-            caltable = r.final.pop().gaintable
-        except:
-            caltable = r.error.pop().gaintable
-            LOG.warn('Cannot compute phase solution table %s for the flux calibrator' % (os.path.basename(caltable)))
-
-        # Do a phase-only gaincal on the remaining calibrators using the full
-        # set of antennas; append this to the phase solutions caltable produced
-        # for the flux calibrator; merge result into local task context so that
-        # the caltable is included in pre-apply for subsequent gaincal.
-        append = os.path.exists(caltable)
-        r = self._do_gaincal(caltable=caltable, field=inputs.transfer, intent=inputs.transintent,
-                             gaintype=phase_gaintype, calmode='p', combine=phase_combine, solint=phaseup_solint,
-                             antenna=allantenna, uvrange='', minblperant=None, refant=filtered_refant,
-                             phaseup_spwmap=phaseup_spwmap, phase_interp=phase_interp, append=append, merge=True)
+        # PIPE-1377: get list of CHECK source CalApps and store in final
+        # result. These are currently used in hifa_timegaincal's diagnostic
+        # phase vs. time plots.
+        result.calapps_for_check_sources = self._extract_calapps_for_check(phase_results)
 
         # Now do the amplitude-only gaincal. This will produce the caltable
-        # that fluxscale will analyse
-        try:
-            ampcal_result = self._do_gaincal(
-                field=inputs.transfer + ',' + inputs.reference,
-                intent=inputs.transintent + ',' + inputs.refintent, gaintype='T', calmode='a',
-                combine='', solint=inputs.solint, antenna=allantenna, uvrange='',
-                refant=filtered_refant, minblperant=minblperant, phaseup_spwmap=None,
-                phase_interp=None, append=False, merge=True)
-
-            # Get the gaincal caltable from the results
-            try:
-                caltable = ampcal_result.final.pop().gaintable
-            except:
-                caltable = ' %s' % ampcal_result.error.pop().gaintable if ampcal_result.error else ''
-                LOG.warn('Cannot compute compute the flux scaling table%s' % (os.path.basename(caltable)))
-
-            # To make the following fluxscale reliable the caltable
-            # should contain gains for the the same set of antennas for
-            # each of the amplitude and phase calibrators - looking
-            # at each spw separately.
-            if os.path.exists(caltable):
-                check_ok = self._check_caltable(caltable=caltable, ms=inputs.ms, reference=inputs.reference,
-                                                transfer=inputs.transfer)
-            else:
-                check_ok = False
-
-        except:
-            caltable = ' %s' % ampcal_result.error.pop().gaintable if ampcal_result.error else ''
-            LOG.warn('Cannot compute phase solution table%s for the phase '
-                     'and bandpass calibrator' % (os.path.basename(caltable)))
-            check_ok = False
+        # that fluxscale will analyse.
+        ampcal_result, caltable, check_ok = self._do_ampcal(allantenna, filtered_refant, minblperant)
 
         # If no valid amplitude caltable is available to analyse, then log an
         # error and return early.
@@ -307,121 +202,84 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         return result
 
     @staticmethod
-    def _check_caltable(caltable, ms, reference, transfer):
+    def _check_caltable(caltable: str, ms: MeasurementSet, reference: str, transfer: str):
         """
-        Check that the give caltable is well-formed so that a 'fluxscale'
-        will run successfully on it:
+        Check that the given caltable is well-formed so that a 'fluxscale' will
+        run successfully on it, by checking that the caltable contains results
+        for the reference and transfer field(s). Log a warning if fields are
+        missing.
 
-          1. Check that the caltable contains results for the reference and
-             transfer fields.
+        Args:
+            caltable: path to caltable to evaluate
+            ms: MeasurementSet domain object
+            reference: string with name(s) of reference field(s)
+            transfer: string with names of transfer fields
         """
-        # get the ids of the reference source and phase source(s)
-        ref_fieldid = {field.id for field in ms.fields if field.name == reference}
-        transfer_fieldids = {field.id for field in ms.fields if field.name in transfer}
+        # Get the ids of the reference source and transfer calibrator source(s).
+        ref_fieldid = {field.id for field in ms.fields if field.name in reference.split(',')}
+        transfer_fieldids = {field.id for field in ms.fields if field.name in transfer.split(',')}
 
-        with casatools.TableReader(caltable) as table:
+        # Get field IDs in caltable.
+        with casa_tools.TableReader(caltable) as table:
             fieldids = table.getcol('FIELD_ID')
 
-        # warn if field IDs does not contains the amplitude and phase calibrators
+        # Warn if field IDs in caltable do not include the reference and transfer sources.
         fieldids = set(fieldids)
         if fieldids.isdisjoint(ref_fieldid):
             LOG.warning('%s contains ambiguous reference calibrator field names' % os.path.basename(caltable))
         if not fieldids.issuperset(transfer_fieldids):
             LOG.warning('%s does not contain results for all transfer calibrators' % os.path.basename(caltable))
 
-        return True
+    def _derive_ants_to_use(self, refant):
+        inputs = self.inputs
 
-    def _compute_calvis_flux(self, fieldid, spwid):
+        # Resolved source heuristics.
+        #    Needs improvement if users start specifying the input antennas.
+        #    For the time being force minblperant to be 2 instead of None to
+        #    avoid ACA and Tsys flagging issues.
+        allantenna = inputs.antenna
+        minblperant = 2
 
-        # Read in data from the MS, for specified field, spw, and all transfer
-        # intents.
-        data = self._read_data_from_ms(self.inputs.ms, fieldid, spwid, self.inputs.transintent)
+        if inputs.hm_resolvedcals == 'automatic':
 
-        # Return if no valid data were read.
-        if not data:
-            return
+            # Get the antennas to be used in the gaincals, limiting
+            # the range if the reference calibrator is resolved.
+            refant0 = refant.split(',')[0]  # use the first refant
+            resantenna, uvrange = heuristics.fluxscale.antenna(ms=inputs.ms, refsource=inputs.reference, refant=refant0,
+                                                               peak_frac=inputs.peak_fraction)
 
-        # Get number of correlations for this spw.
-        corr_type = commonhelpermethods.get_corr_products(self.inputs.ms, int(spwid))
-        ncorrs = len(corr_type)
-
-        # Select which correlations to consider for computing the mean
-        # visibility flux:
-        #  - for single and dual pol, consider all correlations.
-        #  - for ncorr == 4 with linear correlation products (XX, XY, etc)
-        #    select the XX and YY columns.
-        #  - for other values of ncorrs, or e.g. circular correlation (LL, RL)
-        #    raise a warning that these are not handled.
-        if ncorrs in [1, 2]:
-            columns_to_select = range(ncorrs)
-        elif ncorrs == 4 and set(corr_type) == {'XX', 'XY', 'YX', 'YY'}:
-            columns_to_select = [corr_type.index('XX'), corr_type.index('YY')]
+            # Do nothing if the source is unresolved.
+            # If the source is resolved but the number of
+            # antennas equals the total number of antennas
+            # use all the antennas but pass along the uvrange
+            # limit.
+            if resantenna == '' and uvrange == '':
+                pass
+            else:
+                nant = len(inputs.ms.antennas)
+                nresant = len(resantenna.split(','))
+                if nresant >= nant:
+                    resantenna = allantenna
         else:
-            LOG.warning("Unexpected polarisations found for MS {}, unable to compute mean visibility fluxes."
-                        "".format(self.inputs.ms.basename))
-            columns_to_select = []
+            resantenna = allantenna
+            uvrange = inputs.uvrange
 
-        # Derive mean flux and variance for each polarisation.
-        mean_fluxes = []
-        variances = []
-        for col in columns_to_select:
-            # Select data for current polarisation.
-            ampdata = np.squeeze(data['corrected_data'], axis=1)[col]
-            flagdata = np.squeeze(data['flag'], axis=1)[col]
-            weightdata = data['weight'][col]
+        # Do a phase-only gaincal on the flux calibrator using a
+        # restricted set of antennas
+        if resantenna == '':
+            filtered_refant = refant
+        else:  # filter refant if resolved calibrator or antenna selection
+            resant_list = resantenna.rstrip('&').split(',')
+            filtered_refant = str(',').join([ant for ant in refant.split(',') if ant in resant_list])
 
-            # Select for non-flagged data and non-NaN data.
-            id_nonbad = np.where(np.logical_and(np.logical_not(flagdata), np.isfinite(ampdata)))
-            amplitudes = ampdata[id_nonbad]
-            weights = weightdata[id_nonbad]
-
-            # If no valid data are available, skip to the next polarisation.
-            if len(amplitudes) == 0:
-                continue
-
-            # Determine number of non-flagged antennas, baselines, and
-            # integrations.
-            ant1 = data['antenna1'][id_nonbad]
-            ant2 = data['antenna2'][id_nonbad]
-            n_ants = len(set(ant1) | set(ant2))
-            n_baselines = n_ants * (n_ants - 1) // 2
-            n_ints = len(amplitudes) // n_baselines
-
-            # PIPE-644: Determine scale factor for variance.
-            var_scale = np.mean([len(amplitudes), n_ints * n_ants])
-
-            # Compute mean flux and stdev for current polarisation.
-            mean_flux = np.abs(np.average(amplitudes, weights=weights))
-            variance = np.average((np.abs(amplitudes) - mean_flux)**2, weights=weights) / var_scale
-
-            # Store for this polarisation.
-            mean_fluxes.append(mean_flux)
-            variances.append(variance)
-
-        # Compute mean flux and mean stdev for all polarisations.
-        if mean_fluxes:
-            mean_flux = np.mean(mean_fluxes)
-            mean_std = np.sqrt(np.mean(variances))
-        # If no valid data was found for any polarisation, then set flux and
-        # uncertainty to zero.
-        else:
-            mean_flux = 0
-            mean_std = 0
-            LOG.debug("No valid data found for MS {}, field {}, spw {}, unable to compute mean visibility flux; flux"
-                      " and uncertainty will be set to zero.".format(self.inputs.ms.basename, fieldid, spwid))
-
-        # Combine into single flux measurement object.
-        flux = domain.FluxMeasurement(spwid, mean_flux, origin=ORIGIN)
-        flux.uncertainty = domain.FluxMeasurement(spwid, mean_std, origin=ORIGIN)
-
-        return flux
+        return allantenna, filtered_refant, minblperant, resantenna, uvrange
 
     def _derive_calvis_flux(self):
         """
         Derive calibrated visibility fluxes.
 
         To compute the "calibrated" fluxes, this method will "temporarily"
-        apply the existing calibration tables, including the the new phase and
+        apply the existing calibration tables, including the new phase and
         amplitude caltables created earlier during the hifa_gfluxscale task.
 
         First, create a back-up of the MS flagging state, then run an applycal
@@ -455,7 +313,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             LOG.info('Applying pre-existing caltables and preliminary phase-up and amplitude caltables.')
             acinputs = applycal.IFApplycalInputs(context=inputs.context, vis=inputs.vis, field=inputs.transfer,
                                                  intent=inputs.transintent, flagsum=False, flagbackup=False)
-            actask = applycal.IFApplycal(acinputs)
+            actask = applycal.SerialIFApplycal(acinputs)
             self._executor.execute(actask)
 
             # Initialize result.
@@ -465,9 +323,11 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             # spw and add as flux measurement to the final result.
             for fieldid in transfer_fieldids:
                 for spwid in spw_ids:
-                    fluxes_for_field_and_spw = self._compute_calvis_flux(fieldid, spwid)
-                    if fluxes_for_field_and_spw:
-                        result.measurements[fieldid].append(fluxes_for_field_and_spw)
+                    mean_flux, std_flux = mstools.compute_mean_flux(self.inputs.ms, fieldid, spwid, self.inputs.transintent)
+                    if mean_flux:
+                        flux = domain.FluxMeasurement(spwid, mean_flux, origin=ORIGIN)
+                        flux.uncertainty = domain.FluxMeasurement(spwid, std_flux, origin=ORIGIN)
+                        result.measurements[fieldid].append(flux)
         finally:
             # Restore the MS flagging state.
             LOG.info('Restoring back-up of flagging state.')
@@ -512,9 +372,46 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         return fluxscale_result
 
+    def _do_ampcal(self, antenna: str, refant: str, minblperant: int) -> Tuple[Union[None, GaincalResults], str, bool]:
+        inputs = self.inputs
+
+        ampcal_result = None
+        check_ok = False
+        try:
+            # Create amplitude gain solutions and merge into the local context,
+            # so that these amplitude solutions will be used in a temporary
+            # applycal when deriving calibrated visibility fluxes.
+            ampcal_result = self._do_gaincal(
+                field=f'{inputs.transfer},{inputs.reference}', intent=f'{inputs.transintent},{inputs.refintent}',
+                gaintype='T', calmode='a', combine='', solint=inputs.solint, antenna=antenna, uvrange='',
+                minsnr=inputs.minsnr, refant=refant, minblperant=minblperant, spwmap=None, interp=None,
+                append=False)
+            ampcal_result.accept(inputs.context)
+
+            # Get the gaincal caltable from the results
+            try:
+                caltable = ampcal_result.final.pop().gaintable
+            except:
+                caltable = ' %s' % ampcal_result.error.pop().gaintable if ampcal_result.error else ''
+                LOG.warning(f'Cannot compute compute the flux scaling table{os.path.basename(caltable)}')
+
+            # Check that the caltable exists and contains data for the
+            # reference and transfer fields.
+            if os.path.exists(caltable):
+                self._check_caltable(caltable=caltable, ms=inputs.ms, reference=inputs.reference,
+                                     transfer=inputs.transfer)
+                check_ok = True
+        except:
+            # Try to fetch caltable name from ampcal result.
+            caltable = ' %s' % ampcal_result.error.pop().gaintable if (ampcal_result and ampcal_result.error) else ''
+            LOG.warning(f'Cannot compute phase solution table{os.path.basename(caltable)} for the phase and bandpass'
+                        f' calibrator')
+
+        return ampcal_result, caltable, check_ok
+
     def _do_gaincal(self, caltable=None, field=None, intent=None, gaintype='G', calmode=None, combine=None, solint=None,
-                    antenna=None, uvrange='', refant=None, minblperant=None, phaseup_spwmap=None, phase_interp=None,
-                    append=None, merge=True):
+                    antenna=None, uvrange='', minsnr=None, refant=None, minblperant=None, spwmap=None, interp=None,
+                    append=False):
         inputs = self.inputs
 
         # Use only valid science spws
@@ -523,6 +420,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         spw_ids = {spw.id for fld in fieldlist for spw in fld.valid_spws.intersection(sci_spws)}
         spw_ids = ','.join(map(str, spw_ids))
 
+        # Initialize gaincal task inputs.
         task_args = {
             'output_dir': inputs.output_dir,
             'vis': inputs.vis,
@@ -533,7 +431,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             'solint': solint,
             'gaintype': gaintype,
             'calmode': calmode,
-            'minsnr': inputs.minsnr,
+            'minsnr': minsnr,
             'combine': combine,
             'refant': refant,
             'antenna': antenna,
@@ -542,37 +440,278 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             'solnorm': False,
             'append': append
         }
-
-        # Note that field and antenna task there default values for the
-        # purpose of setting up the calto object.
         task_inputs = gaincal.GTypeGaincal.Inputs(inputs.context, **task_args)
-        task = gaincal.GTypeGaincal(task_inputs)
 
-        # Execute task
+        # Initialize and execute gaincal task.
+        task = gaincal.GTypeGaincal(task_inputs)
         result = self._executor.execute(task)
 
-        # Merge
-        if merge:
-            overrides = {}
+        # Define what overrides should be included in the cal application.
+        # Add overrides for field, interpolation, and SpW mapping if
+        # provided.
+        calapp_overrides = {}
 
-            # Adjust the spwmap for the combine case
-            if inputs.ms.combine_spwmap and phase_interp:
-                overrides['interp'] = phase_interp
+        # Phase solution caltables should be registered with
+        # calwt=False (PIPE-1154).
+        if calmode == 'p':
+            calapp_overrides['calwt'] = False
 
-            # Adjust the spw map
-            if phaseup_spwmap:
-                overrides['spwmap'] = phaseup_spwmap
+        # Adjust the field if provided.
+        if field:
+            calapp_overrides['field'] = field
 
-            if overrides:
-                original_calapp = result.pool[0]
-                modified_calapp = callibrary.copy_calapplication(original_calapp, **overrides)
-                result.pool[0] = modified_calapp
-                result.final[0] = modified_calapp
+        # Adjust the intent if provided.
+        if intent:
+            calapp_overrides['intent'] = intent
 
-            # Merge result to the local context
-            result.accept(inputs.context)
+        # Adjust the interp if provided.
+        if interp:
+            calapp_overrides['interp'] = interp
+
+        # Adjust the spw map if provided.
+        if spwmap:
+            calapp_overrides['spwmap'] = spwmap
+
+        # If a caltable was created and any overrides are necessary, then
+        # create a modified CalApplication and replace CalApp in result with
+        # this new one.
+        if result.pool and calapp_overrides:
+            original_calapp = result.pool[0]
+            modified_calapp = callibrary.copy_calapplication(original_calapp, **calapp_overrides)
+            result.pool[0] = modified_calapp
+            result.final[0] = modified_calapp
 
         return result
+
+    def _do_phasecals(self, all_ants: str, restr_ants: str, refant: str, minblperant: int,
+                      uvrange: str) -> List[GaincalResults]:
+        # Collect phase cal results for merging into context.
+        phase_results = []
+
+        # Identify unique transfer intents, whether PHASE/CHECK are present
+        # among the transfer intents, and what non-PHASE/CHECK intents are
+        # present.
+        trans_intents = set(self.inputs.transintent.split(','))
+        pc_intents = {'CHECK', 'PHASE'} & trans_intents
+        non_pc_intents = trans_intents - pc_intents
+
+        # PIPE-1154: identify set of all calibrator intents that are not PHASE
+        # / CHECK; these impact which fields are in subsequent phase
+        # calibrations.
+        amp_intent = set(self.inputs.refintent.split(','))
+        exclude_intents = amp_intent | non_pc_intents
+
+        # Compute phase caltable for the flux calibrator, using restricted set
+        # of antennas.
+        phase_results.append(self._do_phasecal_for_amp_calibrator(restr_ants, refant, minblperant, uvrange,
+                                                                  non_pc_intents))
+
+        # PIPE-1154: compute phase caltable(s) with optimal parameters for
+        # PHASE and/or CHECK fields that do not cover any of the other
+        # calibrator intents.
+        phase_results.extend(self._do_phase_for_phase_check_no_overlap(pc_intents, exclude_intents, all_ants, refant))
+
+        # PIPE-1490: for PHASE fields that do cover other calibrator intents,
+        # create a separate solve.
+        phase_results.extend(self._do_phase_for_phase_with_overlap(exclude_intents, all_ants, refant))
+
+        # PIPE-1154: for the remaining calibrator intents, compute phase
+        # solutions using full set of antennas.
+        if non_pc_intents:
+            phase_results.extend(self._do_phasecal_for_other_calibrators(non_pc_intents, all_ants, refant))
+
+        # Accept all phase cal results into the local context to register the
+        # newly created phase caltables in the callibrary of the local context,
+        # so that these phase solutions will be used in pre-apply during
+        # upcoming amplitude solves.
+        for result in phase_results:
+            result.accept(self.inputs.context)
+
+        return phase_results
+
+    @staticmethod
+    def _extract_calapps_for_check(gaincal_results: List[GaincalResults]) -> List:
+        # Extract list of CalApps for any gaincal result where intent was
+        # CHECK.
+        calapps = []
+        for result in gaincal_results:
+            if result.inputs['intent'] == 'CHECK':
+                calapps.extend(result.final)
+        return calapps
+
+    @staticmethod
+    def _get_intent_field(ms: MeasurementSet, intents: Set, exclude_intents: Set = None) -> List[Tuple[str, str]]:
+        if exclude_intents is None:
+            exclude_intents = set()
+
+        # PIPE-1493: only collect unique combinations of field name and intent.
+        # This means that if multiple fields with different IDs have the same
+        # name, then these will appear only once in the list of intents-fields
+        # to process. This assumes that there is no scenario where there are
+        # legitimately multiple different field IDs that have the same name,
+        # and that should be processed separately.
+        intent_field = set()
+        for intent in intents:
+            for field in ms.get_fields(intent=intent):
+                # Check whether found field also covers any of the intents to
+                # skip.
+                excluded_intents_found = field.intents.intersection(exclude_intents)
+                if not excluded_intents_found:
+                    intent_field.add((intent, field.name))
+                else:
+                    # Log a message to explain why no phase caltable will be
+                    # derived for this particular combination of field and
+                    # intent.
+                    excluded_intents_str = ", ".join(sorted(excluded_intents_found))
+                    LOG.debug(f'{ms.basename}: will not derive phase calibration for field {field.name} (#{field.id})'
+                              f' and intent {intent} because this field also covers calibrator intent(s)'
+                              f' {excluded_intents_str}')
+
+        return sorted(intent_field)
+
+    def _do_phasecal_for_amp_calibrator(self, antenna: str, refant: str, minblperant: int,
+                                        uvrange: str, non_pc_intents: Set) -> GaincalResults:
+        inputs = self.inputs
+
+        # Compute phase caltable for the amplitude calibrator (set by
+        # "refintent"). PIPE-1154: for amplitude calibrator, always use
+        # combine='' and gaintype="G", no spwmap or interp.
+        LOG.info(f'Compute phase gaincal table for flux calibrator (intent={inputs.refintent},'
+                 f' field={inputs.reference}).')
+        phase_result = self._do_gaincal(field=inputs.reference, intent=inputs.refintent, gaintype="G", calmode='p',
+                                        combine='', solint=inputs.phaseupsolint, antenna=antenna, uvrange=uvrange,
+                                        minsnr=inputs.minsnr, refant=refant, minblperant=minblperant, spwmap=None,
+                                        interp=None)
+        # PIPE-1831: update the CalApplication to add the other non-phase/check
+        # calibrator intents as valid intents that this phase caltable can be
+        # applied to. This is necessary for datasets where a field that covers
+        # both the amplitude calibrator and other (non-phase/check)
+        # calibrators. Without this, any subsequent gaincal on this field would
+        # split the call for this field into separate ones for AMP and other
+        # intents, leading to undesired duplicate solutions.
+        if phase_result.pool:
+            original_calapp = phase_result.pool[0]
+            intents_str = ",".join({original_calapp.intent} | non_pc_intents)
+            modified_calapp = callibrary.copy_calapplication(original_calapp, intent=intents_str)
+            phase_result.pool[0] = modified_calapp
+            phase_result.final[0] = modified_calapp
+
+        return phase_result
+
+    def _do_phase_for_phase_check_no_overlap(self, pc_intents: Set, exclude_intents: Set, antenna: str,
+                                             refant: str) -> List[GaincalResults]:
+        # Collect phase cal results.
+        phase_results = []
+
+        # PIPE-1154: identify which fields covered the PHASE calibrator and/or
+        # CHECK source intent while not also covering one of the other
+        # calibrator intents (typically AMPLITUDE, BANDPASS, POL*). For these
+        # fields, derive separate phase solutions for each combination of
+        # intent, field, and use optimal gaincal parameters based on spwmapping
+        # registered in the measurement set.
+        intent_field_to_assess = self._get_intent_field(self.inputs.ms, intents=pc_intents,
+                                                        exclude_intents=exclude_intents)
+
+        for intent, field in intent_field_to_assess:
+            phase_results.append(self._do_phasecal_for_intent_field(intent, field, antenna, refant))
+
+        return phase_results
+
+    def _do_phase_for_phase_with_overlap(self, exclude_intents: Set, antenna: str, refant: str) -> List[GaincalResults]:
+        # Collect phase cal results.
+        phase_results = []
+
+        # PIPE-1154, PIPE-1490: identify which fields cover the PHASE
+        # calibrator while also covering one of the other calibrator intents.
+        # For these fields, derive phase solutions in a separate caltable.
+        intent_field = set()
+        for field in self.inputs.ms.get_fields(intent="PHASE"):
+            if field.intents.intersection(exclude_intents):
+                intent_field.add(("PHASE", field.name))
+
+        # Run phase gaincal for selected PHASE fields.
+        for intent, field in intent_field:
+            phase_results.append(self._do_phasecal_for_intent_field(intent, field, antenna, refant))
+
+        return phase_results
+
+    def _do_phasecal_for_intent_field(self, intent: str, field: str, antenna: str, refant: str) -> GaincalResults:
+        # Get optimal phase solution parameters for current intent and
+        # field, based on spw mapping info in MS.
+        combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(intent, field)
+
+        # Create phase caltable and merge it into the local context so that the
+        # caltable is included in pre-apply for subsequent gaincal.
+        LOG.info(f'Compute phase gaincal table for intent={intent}, field={field}.')
+        result = self._do_gaincal(field=field, intent=intent, gaintype=gaintype, calmode='p', combine=combine,
+                                  solint=solint, antenna=antenna, uvrange='', minsnr=self.inputs.minsnr, refant=refant,
+                                  spwmap=spwmap, interp=interp)
+
+        return result
+
+    def _do_phasecal_for_other_calibrators(self, intent: Set, antenna: str, refant: str) -> List[GaincalResults]:
+        inputs = self.inputs
+        phase_results = []
+
+        # Identify fields that cover the provided intents. Note that
+        # inputs.transfer will skip any field that already covers the intent
+        # inputs.refintent (the amplitude calibrator), as that is covered by a
+        # separate gaincal.
+        fields = ",".join(f.name for f in inputs.ms.get_fields(inputs.transfer)
+                          if set(intent).intersection(set(f.intents)))
+
+        # Only proceed if valid fields were found.
+        if fields:
+            # Intents as string for CASA input.
+            intents_str = ",".join(intent)
+
+            # PIPE-1154: the phase solves for the remaining calibrators should
+            # always use combine='', gaintype="G", no spwmap or interp.
+            LOG.info(f'Compute phase gaincal table for other calibrators (intent={intents_str}, field={fields}).')
+            phase_results.append(self._do_gaincal(field=fields, intent=intents_str, gaintype='G', calmode='p',
+                                                  combine='', solint=inputs.phaseupsolint, antenna=antenna, uvrange='',
+                                                  minsnr=inputs.minsnr, refant=refant, minblperant=None, spwmap=None,
+                                                  interp=None))
+        return phase_results
+
+    def _get_phasecal_params(self, intent: str, field: str):
+        inputs = self.inputs
+        ms = inputs.ms
+
+        # By default, no spw mapping or combining, no interp, gaintype='G', and
+        # using input solint.
+        combine = ''
+        gaintype = 'G'
+        interp = None
+        solint = inputs.phaseupsolint
+        spwmap = []
+
+        # Try to fetch spwmapping info from MS for requested intent and field.
+        spwmapping = ms.spwmaps.get((intent, field), None)
+
+        # If a mapping was found, use the spwmap, and update combine and interp
+        # depending on whether it is a combine spw mapping.
+        if spwmapping:
+            spwmap = spwmapping.spwmap
+
+            # If the spwmap is for combining spws, then override combine,
+            # interp, and gaintype accordingly, and compute an optimal solint.
+            if spwmapping.combine:
+                combine = 'spw'
+                gaintype = 'T'
+                interp = 'linearPD,linear'
+
+                # Compute optimal solint.
+                spwidlist = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
+                exptimes = heuristics.exptimes.get_scan_exptimes(ms, [field], intent, spwidlist)
+                solint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
+            else:
+                # PIPE-1154: when using a phase up spw mapping, ensure that
+                # interp = 'linear,linear'; though this may need to be changed
+                # in the future, see PIPEREQ-85.
+                interp = 'linear,linear'
+
+        return combine, gaintype, interp, solint, spwmap
 
     def _do_fluxscale(self, caltable=None, refspwmap=None):
         inputs = self.inputs
@@ -591,6 +730,49 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         return self._executor.execute(task, merge=True)
 
+    def _get_refant(self):
+        inputs = self.inputs
+
+        # By default, use reference antenna specified by task inputs.
+        refant = inputs.refant
+
+        # If no refant is provided by task inputs, get the reference antenna
+        # for this measurement set from the context.then fetch refant
+        # for this measurement set from the context.
+        if refant == '':
+            # Get refant from ms in inputs. This comes back as a string
+            # containing a ranked list of antenna names.
+            refant = inputs.ms.reference_antenna
+
+            # If no reference antenna was found in the context for this measurement
+            # (refant equals either None or an empty string), then raise an exception.
+            if not (refant and refant.strip()):
+                msg = ('No reference antenna specified and none found in context for %s' % inputs.ms.basename)
+                LOG.error(msg)
+                raise exceptions.PipelineException(msg)
+
+        LOG.trace('refant: %s' % refant)
+
+        return refant
+
+    def _get_refspwmap(self):
+        inputs = self.inputs
+
+        # By default, use reference antenna specified by task inputs.
+        refspwmap = inputs.refspwmap
+
+        # If no ref spwmap is provided by task inputs, then try to get it from
+        # the context for this measurement set.
+        if not refspwmap:
+            refspwmap = inputs.ms.reference_spwmap
+
+            # If not valid reference spwmap was defined, then return a map
+            # that signifies no mapping.
+            if not refspwmap:
+                refspwmap = [-1]
+
+        return refspwmap
+
     def _do_setjy(self, reffile=None, field=None):
         inputs = self.inputs
 
@@ -606,43 +788,6 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         task = setjy.Setjy(task_inputs)
 
         return self._executor.execute(task, merge=True)
-
-    @staticmethod
-    def _read_data_from_ms(ms, fieldid, spwid, intent):
-
-        # Initialize data selection.
-        data_selection = {'field': fieldid,
-                          'scanintent': '*%s*' % utils.to_CASA_intent(ms, intent),
-                          'spw': spwid}
-
-        # Get number of channels for this spw.
-        nchans = ms.get_spectral_windows(spwid)[0].num_channels
-
-        # Read in data from MS.
-        with casatools.MSReader(ms.name) as openms:
-            try:
-                # Apply data selection.
-                openms.msselect(data_selection)
-
-                # Read in the weights from MS separately, prior to channel
-                # averaging.
-                weights = openms.getdata(['weight'])
-
-                # Set channel selection to take the average of all channels.
-                openms.selectchannel(1, 0, nchans, 1)
-
-                # Extract data from MS.
-                data = openms.getdata(['corrected_data', 'flag', 'antenna1', 'antenna2'])
-            except:
-                # Log a warning and return without data.
-                LOG.warning('Unable to compute mean vis for intent(s) {}, field {}, spw {}'
-                            ''.format(intent, fieldid, spwid))
-                return
-
-        # Combine the two dictionaries.
-        data = {**data, **weights}
-
-        return data
 
     def _replace_amplitude_caltable(self, ampresult, fsresult):
         inputs = self.inputs
@@ -753,7 +898,7 @@ class SessionGcorFluxscale(basetask.StandardTaskTemplate):
                     no_amplitude_field_names = {f.name for f in no_amplitude_ms.fields}
                     fields_to_adopt = no_amplitude_field_names.intersection(set(averaged.keys()))
 
-                    if len(fields_to_adopt) is 0:
+                    if len(fields_to_adopt) == 0:
                         LOG.error('Could not find a flux calibration to adopt for '
                                   '{!s}.'.format(no_amplitude_ms.basename))
                         continue
@@ -791,7 +936,7 @@ class SessionGcorFluxscale(basetask.StandardTaskTemplate):
 def get_field_name(context, vis, identifier):
     ms = context.observing_run.get_ms(vis)
     fields = set(ms.get_fields(task_arg=identifier))
-    if len(fields) is not 1:
+    if len(fields) != 1:
         raise KeyError('{!r} does not uniquely identify a field: ({!s} matches found)'
                        ''.format(identifier, len(fields)))
     fields = fields.pop()
@@ -822,7 +967,7 @@ def collect_flux_measurements(context, vis_result_tuples):
 
             for m in measurements:
                 spws = ms.get_spectral_windows(task_arg=m.spw_id)
-                assert(len(spws) is 1)
+                assert(len(spws) == 1)
                 spw = spws.pop()
                 d[field_name].append((vis, spw.name, m))
 

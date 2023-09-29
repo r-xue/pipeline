@@ -8,12 +8,12 @@ import os
 
 import numpy
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common.displays import tsys as displays
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -135,7 +135,7 @@ class TsyscalPlotRenderer(basetemplates.JsonPlotRenderer):
 
     def get_stat(self, vis, spw, antenna):
         tsys_spw = self._spwmap[vis][spw]
-        with casatools.CalAnalysis(self._caltable[vis]) as ca:
+        with casa_tools.CalAnalysis(self._caltable[vis]) as ca:
             args = {'spw': tsys_spw,
                     'antenna': antenna,
                     'axis': 'TIME',
@@ -174,7 +174,7 @@ class TsyscalPlotRenderer(basetemplates.JsonPlotRenderer):
 def create_url_fn(root, plots):
     vis_set = {p.parameters['vis'] for p in plots}
 
-    if len(vis_set) is 1:
+    if len(vis_set) == 1:
         return lambda x: filenamer.sanitize('%s-%s.html' % (root, x))
     else:
         return lambda x: filenamer.sanitize('%s-all_data.html' % root)

@@ -3,8 +3,8 @@ import os
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 
 LOG = logging.get_logger(__name__)
 
@@ -23,10 +23,11 @@ class T2_4MDetailsBpSolintRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 BpsolintTR = collections.namedtuple('BpsolintTR', 'vis spw phintervals phnpoints bpintervals, bpnpoints')
 
+
 def make_bpsolint_table(context, results):
     # will hold all the flux stat table rows for the results
 
-    qt = casatools.quanta
+    qt = casa_tools.quanta
 
     rows = []
     for single_result in results:
@@ -34,7 +35,7 @@ def make_bpsolint_table(context, results):
         vis_cell = os.path.basename(single_result.vis)
 
         # measurements will be empty if fluxscale derivation failed
-        if len(single_result.spwids) is 0:
+        if len(single_result.spwids) == 0:
             continue
 
         for i in range(len(single_result.spwids)):
@@ -70,4 +71,3 @@ def make_bpsolint_table(context, results):
             rows.append(tr)
 
     return utils.merge_td_columns(rows)
-

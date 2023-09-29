@@ -1,6 +1,7 @@
 from .antenna import Antenna
 from .antennaarray import AntennaArray
 from .datadescription import DataDescription
+from .datatype import DataType
 from .field import Field
 from .fluxmeasurement import FluxMeasurement
 from .measurementset import MeasurementSet

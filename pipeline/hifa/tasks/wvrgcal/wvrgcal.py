@@ -10,6 +10,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
+from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks import gaincal
 from pipeline.hifa.heuristics import atm as atm_heuristic
 from pipeline.hifa.heuristics import wvrgcal as wvrgcal_heuristic
@@ -287,15 +288,15 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                 job_flag = np.array(job_result['Flag'])
                 job_wvrflag = set(job_name[job_flag])
             else:
-                LOG.warn('CASA wvrgcal job terminated unexpectedly with '
-                         'exit code %s; no flags generated.' % (job_result['rval']))
+                LOG.warning('CASA wvrgcal job terminated unexpectedly with '
+                            'exit code %s; no flags generated.' % (job_result['rval']))
                 job_wvrflag = set([])
 
             input_wvrflag = set(wvrflag)
             generated_wvrflag = job_wvrflag.difference(input_wvrflag)
             if generated_wvrflag:
-                LOG.warn('%s wvrgcal has flagged antennas: %s' % (
-                  os.path.basename(inputs.vis), list(generated_wvrflag)))
+                LOG.warning('%s wvrgcal has flagged antennas: %s' % (
+                    os.path.basename(inputs.vis), list(generated_wvrflag)))
 
             wvrflag_set = set(result.wvrflag)
             wvrflag_set.update(job_wvrflag)
@@ -378,9 +379,15 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             LOG.info('qa: wvrgcal QA calculation was successful')
             break
 
-        # accept this result object, thus adding the WVR table to the 
-        # callibrary
+        # Accept the result object into the local copy of the context, thus
+        # adding the WVR table to the callibrary of this local copy.
+        # PIPE-1058: accepting the result requires a stage number. Normally,
+        # this would be added by the task execution infrastructure. In this
+        # the result of the currently-still-running task is being accepted
+        # into a local context already, before the result has been finalised,
+        # so need to explicitly set stage number now.
         LOG.debug('qa: accept WVR results into copy of context')
+        result.stage_number = inputs.context.task_counter
         result.accept(inputs.context)
 
         # do a phase calibration on the bandpass and phase calibrators, now 
@@ -395,11 +402,20 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         wvr_caltable = wvr_result.inputs['caltable']
         result.qa_wvr.gaintable_wvr = wvr_caltable
 
-        LOG.info('qa: calculate ratio no-WVR phase RMS / with-WVR phase rms')
-        wvrg_qa.calculate_view(inputs.context, nowvr_caltable,
-                               wvr_caltable, result.qa_wvr, qa_intent)
+        # Edited for PIPE-1837 adding BPgood and PHgood
+        LOG.info('qa: calculate ratio with-WVR phase RMS / without-WVR phase rms')
+        PHnoisy, BPnoisy, PHgood, BPgood = wvrg_qa.calculate_view(inputs.context, nowvr_caltable,
+                                                  wvr_caltable, result.qa_wvr, qa_intent)
+        result.PHnoisy = PHnoisy
+        result.BPnoisy = BPnoisy
+        result.PHgood = PHgood
+        result.BPgood = BPgood
 
-        wvrg_qa.calculate_qa_numbers(result.qa_wvr)
+        suggest_remcloud = wvrg_qa.calculate_qa_numbers(result.qa_wvr, result.wvr_infos, PHnoisy, BPnoisy)
+        result.suggest_remcloud = suggest_remcloud
+
+        # PIPE-846: report improvement factors.
+        self._report_wvr_improvement(result)
 
         # if the qa score indicates that applying the wvrg file will
         # make things worse then remove it from the results so that
@@ -411,6 +427,29 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             result.final[:] = []
 
         return result
+
+    def _report_wvr_improvement(self, result):
+        """
+        Report the improvement factors from QA data views to the log (PIPE-846).
+        """
+        # Get translation from antenna IDs to names.
+        ms = self.inputs.context.observing_run.get_ms(name=self.inputs.vis)
+        ant_names, _ = commonhelpermethods.get_antenna_names(ms)
+
+        # Report improvement values for each view:
+        for description in result.qa_wvr.descriptions():
+            # Get list of antennas and timestamps from data view.
+            qa_result = result.qa_wvr.last(description)
+            antids = qa_result.axes[0].data
+            timestamps = qa_result.axes[1].data
+
+            # For each antenna, and then each timestamp, report the improvement
+            # factor, and whether that entry was flagged.
+            LOG.info(f"Phase improvement ratios for {result.vis}, intent {qa_result.intent}, SpW {qa_result.spw}:")
+            for xid, antid in enumerate(antids):
+                for yid, timestamp in enumerate(timestamps):
+                    LOG.info(f"Ant #{antid} ({ant_names[antid]}), time {timestamp}: {qa_result.data[xid, yid]:.2f}"
+                             f" {'(flagged)' if qa_result.flag[xid, yid] else ''}")
 
     def _do_qa_bandpass(self, inputs):
         """

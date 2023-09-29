@@ -3,11 +3,11 @@ import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.casatools as casatools
 from pipeline.domain import measures
 from pipeline.h.heuristics import tsysspwmap
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.h.tasks.common import commonresultobjects
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -68,31 +68,30 @@ class AtmHeuristics(object):
         # mid_latitude_summer = 2
         mid_latitude_winter = 3
 
-        fcentre = casatools.quanta.quantity(centre_freq, centre_freq_unit)
-        fresolution = casatools.quanta.quantity(resolution, resolution_unit)
-        fwidth = casatools.quanta.quantity(width, width_unit)
+        fcentre = casa_tools.quanta.quantity(centre_freq, centre_freq_unit)
+        fresolution = casa_tools.quanta.quantity(resolution, resolution_unit)
+        fwidth = casa_tools.quanta.quantity(width, width_unit)
 
         # setup atm
-        casatools.atmosphere.initAtmProfile(
+        casa_tools.atmosphere.initAtmProfile(
             humidity=humidity,
-            temperature=casatools.quanta.quantity(temperature, "K"),
-            altitude=casatools.quanta.quantity(5059, "m"),
-            pressure=casatools.quanta.quantity(pressure, 'mbar'),
+            temperature=casa_tools.quanta.quantity(temperature, "K"),
+            altitude=casa_tools.quanta.quantity(5059, "m"),
+            pressure=casa_tools.quanta.quantity(pressure, 'mbar'),
             atmType=mid_latitude_winter)
-        casatools.atmosphere.initSpectralWindow(
-            len(centre_freq), fcentre, fwidth, fresolution)
-        casatools.atmosphere.setUserWH2O(casatools.quanta.quantity(pwv, 'mm'))
+        casa_tools.atmosphere.initSpectralWindow(len(centre_freq), fcentre, fwidth, fresolution)
+        casa_tools.atmosphere.setUserWH2O(casa_tools.quanta.quantity(pwv, 'mm'))
 
         self.opacities = {}
         for spw in self.science_spws:
             band = spw_to_band[spw.id]
 
-            numchan = casatools.atmosphere.getNumChan(band)
-            refchan = casatools.atmosphere.getRefChan(band)
-            reffreq = casatools.atmosphere.getRefFreq(band)
-            reffreq = casatools.quanta.convert(reffreq, 'GHz')
-            chansep = casatools.atmosphere.getChanSep(band)
-            chansep = casatools.quanta.convert(chansep, 'GHz')
+            numchan = casa_tools.atmosphere.getNumChan(band)
+            refchan = casa_tools.atmosphere.getRefChan(band)
+            reffreq = casa_tools.atmosphere.getRefFreq(band)
+            reffreq = casa_tools.quanta.convert(reffreq, 'GHz')
+            chansep = casa_tools.atmosphere.getChanSep(band)
+            chansep = casa_tools.quanta.convert(chansep, 'GHz')
 
             # axis object describing channel/freq axis
             freqs = np.zeros([numchan], np.double)
@@ -103,8 +102,8 @@ class AtmHeuristics(object):
                                                   units='GHz', data=freqs)
 
             # calculate opacities
-            dry = np.array(casatools.atmosphere.getDryOpacitySpec(band)[1])
-            wet = np.array(casatools.atmosphere.getWetOpacitySpec(band)[1]['value'])
+            dry = np.array(casa_tools.atmosphere.getDryOpacitySpec(band)[1])
+            wet = np.array(casa_tools.atmosphere.getWetOpacitySpec(band)[1]['value'])
 
             # object containing result
             opacity = commonresultobjects.SpectrumResult(
@@ -216,7 +215,7 @@ class AtmHeuristics(object):
         spw_ids = np.array([spw.id for spw in self.science_spws])
 
         for ispw, spw in enumerate(self.science_spws):
-            metric[ispw] = np.float(np.sqrt(spw.bandwidth.to_units(measures.FrequencyUnits.GIGAHERTZ))) * \
+            metric[ispw] = float(np.sqrt(spw.bandwidth.to_units(measures.FrequencyUnits.GIGAHERTZ))) * \
                            np.exp(-1.0 * np.median(self.opacities[spw.id].data))
 
         result = spw_ids[np.argsort(metric)[::-1]]
@@ -268,7 +267,7 @@ class AtmHeuristics(object):
         # a valid median Tsys is available.
         for ispw, spw in enumerate(self.science_spws):
             if np.isfinite(median_tsys[spw.id]):
-                metric[ispw] = np.float(np.sqrt(spw.bandwidth.to_units(measures.FrequencyUnits.MEGAHERTZ))) / \
+                metric[ispw] = float(np.sqrt(spw.bandwidth.to_units(measures.FrequencyUnits.MEGAHERTZ))) / \
                                median_tsys[spw.id]
 
         # Sort spws by highest to lowest metric; convert to list of strings.

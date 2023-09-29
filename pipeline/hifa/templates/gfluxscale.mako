@@ -184,7 +184,8 @@ def rx_for_plot(plot):
 
 <%self:plot_group plot_dict="${flux_plots}"
                   url_fn="${lambda ms: None}"
-				  title_id="flux_vs_freq_comparison">
+				  title_id="flux_vs_freq_comparison"
+                  sort_row_by="field_id">
 
 	<%def name="title()">
 		Calibrated visibility flux density vs catalogue flux density

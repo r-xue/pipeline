@@ -1,33 +1,66 @@
+"""Worker task for baseline subtraction."""
 import abc
+import numpy
 import os
+
+from typing import TYPE_CHECKING, Any, List, Optional, Type, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
-import pipeline.infrastructure.casatools as casatools
+from pipeline.infrastructure.utils import relative_path
+import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataTable, DataType
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import CubicSplineFitParamConfig
-from pipeline.domain import DataTable
-from .. import common
-from . import plotter
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
+from . import plotter
+from .. import common
+from ..common import utils
 
-_LOG = infrastructure.get_logger(__name__)
-LOG = sdutils.OnDemandStringParseLogger(_LOG)
+if TYPE_CHECKING:
+    import numpy as np
+
+    from pipeline.infrastructure.api import Heuristic
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.hsd.tasks.common.utils import RGAccumulator
+
+LOG = infrastructure.get_logger(__name__)
 
 
 class BaselineSubtractionInputsBase(vdp.StandardInputs):
+    """Base class of inputs for baseline subtraction task."""
+
+    # Search order of input vis
+    processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
     DATACOLUMN = {'CORRECTED_DATA': 'corrected',
                   'DATA': 'data',
                   'FLOAT_DATA': 'float_data'}
 
     @vdp.VisDependentProperty
-    def colname(self):
+    def colname(self) -> str:
+        """Return name of existing data column in MS.
+
+        The following column names are examined in order, and return
+        the name if the column exists in MS. If multiple columns exist,
+        the following list shows the priority.
+
+            - CORRECTED_DATA
+            - DATA
+            - FLOAT_DATA
+
+        For example, if MS has CORRECTED_DATA and DATA columns,
+        CORRECTED_DATA will be returned.
+
+        Returns:
+            Data column name
+        """
         colname = ''
         if isinstance(self.vis, str):
-            with casatools.TableReader(self.vis) as tb:
+            with casa_tools.TableReader(self.vis) as tb:
                 candidate_names = ['CORRECTED_DATA',
                                    'DATA',
                                    'FLOAT_DATA']
@@ -37,21 +70,30 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
                         break
         return colname
 
-    def to_casa_args(self):
+    def to_casa_args(self) -> dict:
+        """Convert Inputs instance to the list of keyword arguments for sdbaseline.
+
+        Note that core parameters such as blfunc will be set dynamically through
+        the heuristics or inside task.
+
+        Returns:
+            Keyword arguments for sdbaseline
+        """
         args = super(BaselineSubtractionInputsBase, self).to_casa_args()  # {'vis': self.vis}
         prefix = os.path.basename(self.vis.rstrip('/'))
 
         # blparam
         if self.blparam is None or len(self.blparam) == 0:
-            args['blparam'] = prefix + '_blparam.txt'
+            args['blparam'] = relative_path(os.path.join(self.output_dir, prefix + '_blparam.txt'))
         else:
             args['blparam'] = self.blparam
 
         # baseline caltable filename
         if self.bloutput is None or len(self.bloutput) == 0:
             namer = caltable_heuristic.SDBaselinetable()
-            bloutput = namer.calculate(output_dir=self.output_dir,
-                                       stage=self.context.stage, **args)
+            bloutput = relative_path(namer.calculate(output_dir=self.output_dir,
+                                                            stage=self.context.stage,
+                                                            **args))
             args['bloutput'] = bloutput
         else:
             args['bloutput'] = self.bloutput
@@ -60,7 +102,7 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
         if ('outfile' not in args or
                 args['outfile'] is None or
                 len(args['outfile']) == 0):
-            args['outfile'] = self.vis.rstrip('/') + '_bl'
+            args['outfile'] = relative_path(os.path.join(self.output_dir, prefix + '_bl'))
 
         args['datacolumn'] = self.DATACOLUMN[self.colname]
 
@@ -68,18 +110,49 @@ class BaselineSubtractionInputsBase(vdp.StandardInputs):
 
 
 class BaselineSubtractionResults(common.SingleDishResults):
-    def __init__(self, task=None, success=None, outcome=None):
+    """Results class to hold the result of baseline subtraction."""
+
+    def __init__(self,
+                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
+                 success: Optional[bool] = None,
+                 outcome: Any = None) -> None:
+        """Construct BaselineSubtractionResults instance.
+
+        Args:
+            task: Task class that produced the result.
+            success: Whether task execution is successful or not.
+            outcome: Outcome of the task execution.
+        """
         super(BaselineSubtractionResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: 'Context') -> None:
+        """Merge result instance into context.
+
+        No specific merge operation is done.
+
+        Args:
+            context: Pipeline context.
+        """
         super(BaselineSubtractionResults, self).merge_with_context(context)
 
-    def _outcome_name(self):
+    def _outcome_name(self) -> str:
+        """Return string representation of outcome.
+
+        Returns:
+            Name of the blparam file with its format
+        """
         # outcome should be a name of blparam text file
         return 'blparam: "%s" bloutput: "%s"' % (self.outcome['blparam'], self.outcome['bloutput'])
 
 
 class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
+    """Inputs class for baseline subtraction tasks."""
+
+    # Search order of input vis
+    processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+
+    parallel = sessionutils.parallel_inputs_impl()
+
     vis = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     plan = vdp.VisDependentProperty(default=None)
     fit_order = vdp.VisDependentProperty(default='automatic')
@@ -90,36 +163,137 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
     org_directions_dict = vdp.VisDependentProperty(default=None)
 
     @vdp.VisDependentProperty
-    def prefix(self):
+    def prefix(self) -> str:
+        """Return the prefix for several output files of sdbaseline.
+
+        Prefix is the basename of the MS.
+
+        Returns:
+            Prefix string
+        """
         return os.path.basename(self.vis.rstrip('/'))
 
     @vdp.VisDependentProperty
-    def blparam(self):
+    def blparam(self) -> str:
+        """Return blparam file name.
+
+        Name is constructed from input MS name.
+
+        Returns:
+            The blparam file name
+        """
         return self.prefix + '_blparam.txt'
 
     @vdp.VisDependentProperty(readonly=True)
-    def field(self):
+    def field(self) -> List[int]:
+        """Return list of field ids to process.
+
+        Returned list should conform with the list of MS and
+        each field id is translated into the one for corresponding
+        MS in the list.
+
+        Returns:
+            List of field ids to process
+        """
         return self.plan.get_field_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def antenna(self):
+    def antenna(self) -> List[int]:
+        """Return list of antenna ids to process.
+
+        Returned list should conform with the list of MS and
+        each antenna id is translated into the one for corresponding
+        MS in the list.
+
+        Returns:
+            List of antenna ids to process
+        """
         return self.plan.get_antenna_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def spw(self):
+    def spw(self) -> List[int]:
+        """Return list of spectral window (spw) ids to process.
+
+        Returned list should conform with the list of MS and
+        each spw id is translated into the one for corresponding
+        MS in the list.
+
+        Returns:
+            List of spw ids to process
+        """
         return self.plan.get_spw_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def grid_table(self):
+    def grid_table(self) -> List[Union[int, float, 'np.ndarray']]:
+        """Return list of grid tables to process.
+
+        Returned list should conform with the list of MS and
+        each grid table is supposed to be processed together
+        with corresponding MS in the list.
+
+        Returns:
+            List of grid tables to process
+        """
         return self.plan.get_grid_table_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def channelmap_range(self):
+    def channelmap_range(self) -> List[List[List[Union[int, bool]]]]:
+        """Return list of line ranges to process.
+
+        Returned list should conform with the list of MS and
+        each channelmap range is supposed to be processed together
+        with corresponding MS in the list.
+
+        Returns:
+            List of channelmap ranges to process
+        """
         return self.plan.get_channelmap_range_list()
 
-    def __init__(self, context, vis=None, plan=None,
-                 fit_order=None, switchpoly=None,
-                 edge=None, deviationmask=None, blparam=None, bloutput=None, org_directions_dict=None):
+    def __init__(
+        self,
+        context: 'Context',
+        vis: Optional[Union[str, List[str]]] = None,
+        plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
+        fit_order: Optional[int] = None,
+        switchpoly: Optional[bool] = None,
+        edge: Optional[List[int]] = None,
+        deviationmask: Optional[Union[dict, List[dict]]] = None,
+        blparam: Optional[Union[str, List[str]]] = None,
+        bloutput: Optional[Union[str, List[str]]] = None,
+        org_directions_dict: Optional[dict] = None,
+        parallel: Optional[Union[bool, str]] = None
+    ) -> None:
+        """Construct BaselineSubtractionWorkerInputs instance.
+
+        Args:
+            context: Pipeline context
+            vis: Name of the MS or list of MSs. Defaults to None,
+                 which is to process all MSs registered to the context.
+            plan: Set of metadata for baseline subtraction, or List of
+                  the them. Defaults to None. The task may fail if None
+                  is given.
+            fit_order: Baseline fitting order. Defaults to None, which
+                       is to perform heuristics for fitting order.
+            switchpoly: Whther or not fall back to low order polynomial
+                        fit when large mask exist at the edge of spw.
+                        Defaults to True if None is given.
+            edge: Edge channels to exclude. Defaults to None, which means
+                  that all channels are processed.
+            deviationmask: List of deviation masks. Defaults to empty list
+                           if None is given.
+            blparam: Name of the blparam file name. Defaults to
+                     '{name_of_ms}_blparam.txt' if None is given.
+            bloutput: Name of the bloutput name. Defaults to the name
+                      following pipeline product naming convention
+                      (see to_casa_args method) if None is given.
+            org_directions_dict: Original source direction for ephemeris
+                                 correction. Defaults to None. This is
+                                 required only when target source is
+                                 ephemeris object.
+            parallel: Execute using CASA HPC functionality, if available.
+                      Default is None, which intends to turn on parallel
+                      processing if possible.
+        """
         super(BaselineSubtractionWorkerInputs, self).__init__()
 
         self.context = context
@@ -132,30 +306,54 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         self.blparam = blparam
         self.bloutput = bloutput
         self.org_directions_dict = org_directions_dict
+        self.parallel = parallel
+
 
 # Base class for workers
-class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
+class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
+    """Abstract worker class for baseline subtraction."""
+
     Inputs = BaselineSubtractionWorkerInputs
 
     @abc.abstractproperty
-    def Heuristics(self):
-        """
-        A reference to the :class:`Heuristics` class.
+    def Heuristics(self) -> Type['Heuristic']:
+        """Return heuristics class.
+
+        This abstract property must be implemented in each subclass.
+
+        Returns:
+            A reference to the :class:`Heuristic` class.
         """
         raise NotImplementedError
 
     is_multi_vis_task = False
 
-    def __init__(self, inputs):
-        super(BaselineSubtractionWorker, self).__init__(inputs)
+    def __init__(self, inputs: BaselineSubtractionWorkerInputs):
+        """Construct BaselineSubtractionWorker instance.
+
+        Args:
+            inputs: BaselineSubtractionWorkerInputs instance
+        """
+        super().__init__(inputs)
 
         # initialize plotter
-        self.datatable = DataTable(os.path.join(self.inputs.context.observing_run.ms_datatable_name,
-                                                self.inputs.ms.basename))
+        self.datatable = DataTable(sdutils.get_data_table_path(self.inputs.context,
+                                                               self.inputs.ms))
 
-    def prepare(self):
+    def prepare(self) -> BaselineSubtractionResults:
+        """Perform baseline subtraction.
+
+        Call sdbaseline task with optimized parameters. Parameter values such
+        as function type, fitting order, etc. are optimized by the heuristics
+        class defined in Heuristics attribute.
+
+        Returns:
+            BaselineSubtractionResults instance
+        """
         vis = self.inputs.vis
         ms = self.inputs.ms
+        origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
+        rowmap = sdutils.make_row_map_between_ms(origin_ms, vis)
         fit_order = self.inputs.fit_order
         edge = self.inputs.edge
         args = self.inputs.to_casa_args()
@@ -171,20 +369,20 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         field_id_list = self.inputs.field
         antenna_id_list = self.inputs.antenna
         spw_id_list = self.inputs.spw
-        LOG.debug('subgroup member for {vis}:\n\tfield: {field}\n\tantenna: {antenna}\n\tspw: {spw}',
-                  vis=ms.basename,
-                  field=field_id_list,
-                  antenna=antenna_id_list,
-                  spw=spw_id_list)
+        LOG.debug('subgroup member for %s:\n\tfield: %s\n\tantenna: %s\n\tspw: %s',
+                  ms.basename,
+                  field_id_list,
+                  antenna_id_list,
+                  spw_id_list)
 
         # initialization of blparam file
         # blparam file needs to be removed before starting iteration through
         # reduction group
         if os.path.exists(blparam):
-            LOG.debug('Cleaning up blparam file for {vis}', vis=vis)
+            LOG.debug('Cleaning up blparam file for %s', vis)
             os.remove(blparam)
 
-        #datatable = DataTable(context.observing_run.ms_datatable_name)
+        # datatable = DataTable(context.observing_run.ms_datatable_name)
 
         for (field_id, antenna_id, spw_id) in process_list.iterate_id():
             if (field_id, antenna_id, spw_id) in deviationmask_list:
@@ -193,8 +391,10 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 deviationmask = None
             blparam_heuristic = self.Heuristics(switchpoly=self.inputs.switchpoly)
             formatted_edge = list(common.parseEdge(edge))
-            out_blparam = blparam_heuristic(self.datatable, ms, antenna_id, field_id, spw_id,
-                                            fit_order, formatted_edge, deviationmask, blparam)
+            out_blparam = blparam_heuristic(self.datatable, ms, rowmap,
+                                            antenna_id, field_id, spw_id,
+                                            fit_order, formatted_edge,
+                                            deviationmask, blparam)
             assert out_blparam == blparam
 
         # execute sdbaseline
@@ -211,99 +411,132 @@ class BaselineSubtractionWorker(basetask.StandardTaskTemplate):
         results = BaselineSubtractionResults(success=True, outcome=outcome)
         return results
 
-    def analyse(self, results):
-        # plot
+    def analyse(self, results: BaselineSubtractionResults) -> BaselineSubtractionResults:
+        """Generate plots from baseline subtraction results.
+
+        Args:
+            results: BaselineSubtractionResults instance
+
+        Raises:
+            RuntimeError: Source name is invalid or not found in the domain object
+
+        Returns:
+            BaselineSubtractionResults instance
+        """
+        # plot png files of weblog and calculate QA score
         # initialize plot manager
-        plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, self.datatable)
-        outfile = results.outcome['outfile']
         ms = self.inputs.ms
+        outfile = results.outcome['outfile']
+        origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
+        origin_ms_id = self.inputs.context.observing_run.measurement_sets.index(origin_ms)
+        quality_manager = plotter.BaselineSubtractionQualityManager(ms, outfile, self.inputs.context, self.datatable)
+        plot_manager = plotter.BaselineSubtractionPlotManager(ms, outfile, self.inputs.context, self.datatable)
         org_directions_dict = self.inputs.org_directions_dict
         accum = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
-        LOG.info('deviationmask_list={}'.format(deviationmask_list))
-        status = plot_manager.initialize(ms, outfile)
+        formatted_edge = list(common.parseEdge(self.inputs.edge))
+        out_rowmap = utils.make_row_map(origin_ms, outfile)
+        in_rowmap = None if ms.name == ms.origin_ms else utils.make_row_map(origin_ms, ms.name)
         plot_list = []
-        for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
+        stats = []
 
-            LOG.info('field {0} antenna {1} spw {2}', field_id, antenna_id, spw_id)
+        for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
+            virtual_spwid = self.inputs.context.observing_run.real2virtual_spw_id(spw_id, ms)
+            data_desc = ms.get_data_description(spw=spw_id)
+            num_pol = data_desc.num_polarizations
+            polids = numpy.arange(num_pol, dtype=int)
+            LOG.info('field %s antenna %s spw %s', field_id, antenna_id, spw_id)
             if (field_id, antenna_id, spw_id) in deviationmask_list:
                 deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
             else:
                 deviationmask = None
 
-            if status:
-                fields = ms.get_fields(field_id=field_id)
-                source_name = fields[0].source.name
-                if source_name not in org_directions_dict:
-                    raise RuntimeError("source_name {} not found in org_directions_dict (sources found are {})"
-                                       "".format(source_name, list(org_directions_dict.keys())))
-                org_direction = org_directions_dict[source_name]
-                plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
-                                                                    org_direction,
-                                                                    grid_table,
-                                                                    deviationmask, channelmap_range))
+            fields = ms.get_fields(field_id=field_id)
+            source_name = fields[0].source.name
+            if source_name not in org_directions_dict:
+                raise RuntimeError("source_name {} not found in org_directions_dict (sources found are {})"
+                                   "".format(source_name, list(org_directions_dict.keys())))
+            org_direction = org_directions_dict[source_name]
+            data_manager = plotter.BaselineSubtractionDataManager(ms, outfile,
+                                                                  self.inputs.context,
+                                                                  self.datatable)
+            num_ra, num_dec, num_plane, rowlist = data_manager.analyze_plot_table(origin_ms_id,
+                                                                                  antenna_id,
+                                                                                  virtual_spwid,
+                                                                                  polids,
+                                                                                  grid_table,
+                                                                                  org_direction)
+            spw = ms.spectral_windows[spw_id]
+            nchan = spw.num_channels
+            data_desc = ms.get_data_description(spw=spw)
+            npol = data_desc.num_polarizations
+            data_manager.resize_storage(num_ra, num_dec, npol, nchan)
+            frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
+                                       dtype=numpy.float64)  # unit in GHz
+            data = data_manager.store_result_get_data(num_ra, num_dec, rowlist, npol, nchan,
+                                                      out_rowmap=out_rowmap, in_rowmap=in_rowmap)
+            postfit_integrated_data = data[0]
+            postfit_map_data = data[1]
+            prefit_integrated_data = data[2]
+            prefit_map_data = data[3]
+            prefit_averaged_data = data[4]
+            stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id,
+                                                                         postfit_integrated_data,
+                                                                         npol, frequency,
+                                                                         deviationmask,
+                                                                         channelmap_range,
+                                                                         formatted_edge))
+            plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
+                                                                postfit_integrated_data,
+                                                                postfit_map_data,
+                                                                prefit_integrated_data,
+                                                                prefit_map_data,
+                                                                prefit_averaged_data,
+                                                                num_ra, num_dec,
+                                                                rowlist, npol, frequency,
+                                                                grid_table, deviationmask,
+                                                                channelmap_range, formatted_edge,
+                                                                in_rowmap=in_rowmap))
         plot_manager.finalize()
 
         results.outcome['plot_list'] = plot_list
+        results.outcome['baseline_quality_stat'] = stats
         return results
 
 
 # Worker class for cubic spline fit
-class CubicSplineBaselineSubtractionWorker(BaselineSubtractionWorker):
+class SerialCubicSplineBaselineSubtractionWorker(SerialBaselineSubtractionWorker):
+    """Worker class of cspline baseline subtraction.
+
+    This is an implementation of BaselineSubtractionWorker class based on
+    segmented cubic spline fitting. Heuristics property returns
+    CubicSplineFitParamConfig heuristics class.
+    """
+
     Inputs = BaselineSubtractionWorkerInputs
     Heuristics = CubicSplineFitParamConfig
 
 
-# Tier-0 Parallelization
-class HpcBaselineSubtractionWorkerInputs(BaselineSubtractionWorkerInputs):
-    # use common implementation for parallel inputs argument
-    parallel = sessionutils.parallel_inputs_impl()
-
-    def __init__(self, context, vis=None, plan=None,
-                 fit_order=None, switchpoly=None,
-                 edge=None, deviationmask=None, blparam=None, bloutput=None,
-                 parallel=None, org_directions_dict=None):
-        super(HpcBaselineSubtractionWorkerInputs, self).__init__(context, vis=vis, plan=plan,
-                                                                 fit_order=fit_order, switchpoly=switchpoly,
-                                                                 edge=edge, deviationmask=deviationmask,
-                                                                 blparam=blparam, bloutput=bloutput,
-                                                                 org_directions_dict=org_directions_dict)
-        self.parallel = parallel
-
-
 # This is abstract class since Task is not specified yet
-class HpcBaselineSubtractionWorker(sessionutils.ParallelTemplate):
-    Inputs = HpcBaselineSubtractionWorkerInputs
+class BaselineSubtractionWorker(sessionutils.ParallelTemplate):
+    """Template class for parallel baseline subtraction task.
 
-    def __init__(self, inputs):
-        super(HpcBaselineSubtractionWorker, self).__init__(inputs)
+    This class is a template for parallel processing that executes
+    the task specified by Task property. Parallel processing is
+    enabled when parallel attribute of Inputs instance is True and
+    pipeline runs on mpicasa environment.
 
-    @basetask.result_finaliser
-    def get_result_for_exception(self, vis, exception):
-        LOG.error('Error operating target flag for {!s}'.format(os.path.basename(vis)))
-        LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
-        import traceback
-        tb = traceback.format_exc()
-        if tb.startswith('None'):
-            tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
-        return basetask.FailedTaskResults(self.__class__, exception, tb)
+    Note that this is abstract class. Task property must be implemented
+    in each subclass.
+    """
+
+    Inputs = BaselineSubtractionWorkerInputs
 
 
-class HpcCubicSplineBaselineSubtractionWorker(HpcBaselineSubtractionWorker):
-    Task = CubicSplineBaselineSubtractionWorker
+class CubicSplineBaselineSubtractionWorker(BaselineSubtractionWorker):
+    """Parallel processing task for cspline baseline subtraction.
 
-    def __init__(self, inputs):
-        super(HpcCubicSplineBaselineSubtractionWorker, self).__init__(inputs)
+    This executes CubicSplineBaselineSubtractionWorker in parallel.
+    """
 
-
-# # facade for FitParam
-# class BaselineSubtractionInputs(vdp.ModeInputs):
-#     _modes = {'spline': CubicSplineBaselineSubtractionWorker,
-#               'cspline': CubicSplineBaselineSubtractionWorker}
-#
-#     def __init__(self, context, fitfunc, **parameters):
-#         super(BaselineSubtractionInputs, self).__init__(context=context, mode=fitfunc, **parameters)
-#
-#
-# class BaselineSubtractionTask(basetask.ModeTask):
-#     Inputs = BaselineSubtractionInputs
+    Task = SerialCubicSplineBaselineSubtractionWorker

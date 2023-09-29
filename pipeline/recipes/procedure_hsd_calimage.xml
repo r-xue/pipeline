@@ -45,6 +45,12 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hsd_atmcor</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hsd_baseline</Command>
         <ParameterSet>
         </ParameterSet>

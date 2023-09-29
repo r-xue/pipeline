@@ -1,7 +1,7 @@
 import collections
 import copy
 import os
-from typing import Callable, Dict
+from typing import Callable, Dict, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -9,6 +9,7 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.callibrary import IntervalCalState
@@ -17,10 +18,9 @@ from ...heuristics.fieldnames import IntentFieldnames
 
 __all__ = [
     'Applycal',
+    'SerialApplycal',
     'ApplycalInputs',
     'ApplycalResults',
-    'HpcApplycal',
-    'HpcApplycalInputs'
 ]
 
 LOG = infrastructure.get_logger(__name__)
@@ -30,6 +30,21 @@ class ApplycalInputs(vdp.StandardInputs):
     """
     ApplycalInputs defines the inputs for the Applycal pipeline task.
     """
+    # parallel = sessionutils.parallel_inputs_impl()
+    @property
+    def parallel(self):
+        return self._parallel
+
+    @parallel.setter
+    def parallel(self, value):
+        if value is None:
+            value = False
+        else:
+            allowed = ('true', 'false', 'automatic', True, False)
+            if value not in allowed:
+                m = ', '.join(('{!r}'.format(i) for i in allowed))
+                raise ValueError('Value not in allowed value set ({!s}): {!r}'.format(m, value))
+        self._parallel = value
 
     @vdp.VisDependentProperty
     def antenna(self):
@@ -61,6 +76,7 @@ class ApplycalInputs(vdp.StandardInputs):
     flagdetailedsum = vdp.VisDependentProperty(default=False)
     flagsum = vdp.VisDependentProperty(default=True)
     intent = vdp.VisDependentProperty(default='TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK')
+    parang = vdp.VisDependentProperty(default=False)
 
     @vdp.VisDependentProperty
     def spw(self):
@@ -68,8 +84,9 @@ class ApplycalInputs(vdp.StandardInputs):
         return ','.join([str(spw.id) for spw in science_spws])
 
     def __init__(self, context, output_dir=None, vis=None, field=None, spw=None, antenna=None, intent=None,
-                 parang=None, applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None):
-        super(ApplycalInputs, self).__init__()
+                 parang=None, applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None,
+                 parallel=None):
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -90,10 +107,13 @@ class ApplycalInputs(vdp.StandardInputs):
         self.flagsum = flagsum
         self.flagdetailedsum = flagdetailedsum
 
+        self.parallel = parallel
+
     def to_casa_args(self):
-        casa_args = super(ApplycalInputs, self).to_casa_args()
+        casa_args = super().to_casa_args()
         del casa_args['flagsum']
         del casa_args['flagdetailedsum']
+        del casa_args['parallel']
         return casa_args
 
 
@@ -102,7 +122,8 @@ class ApplycalResults(basetask.Results):
     ApplycalResults is the results class for the pipeline Applycal task.
     """
 
-    def __init__(self, applied=None, callib_map: Dict[str, str]=None):
+    def __init__(self, applied=None, callib_map: Dict[str, str]=None,
+                 data_type: Optional[DataType]=None):
         """
         Construct and return a new ApplycalResults.
 
@@ -121,6 +142,7 @@ class ApplycalResults(basetask.Results):
         self.applied = set()
         self.applied.update(applied)
         self.callib_map = dict(callib_map)
+        self.data_type = data_type
 
     def merge_with_context(self, context):
         """
@@ -137,6 +159,14 @@ class ApplycalResults(basetask.Results):
             LOG.trace('Marking %s as applied' % calapp.as_applycal())
             context.callibrary.mark_as_applied(calapp.calto, calapp.calfrom)
 
+        # Update data_column
+        if self.data_type is not None:
+            msobj = context.observing_run.get_ms(self.inputs['vis'])
+            colname = 'CORRECTED_DATA'
+            # Temporal workaround: restoredata merges context twice
+            if msobj.get_data_column(self.data_type) != colname:
+                msobj.set_data_column(self.data_type, colname)
+
     def __repr__(self):
         s = 'ApplycalResults:\n'
         for caltable in self.applied:
@@ -152,9 +182,7 @@ class ApplycalResults(basetask.Results):
         return s
 
 
-@task_registry.set_equivalent_casa_task('h_applycal')
-@task_registry.set_casa_commands_comment('Calibrations are applied to the data. Final flagging summaries are computed')
-class Applycal(basetask.StandardTaskTemplate):
+class SerialApplycal(basetask.StandardTaskTemplate):
     """
     Applycal executes CASA applycal tasks for the current active context
     state, applying calibrations registered with the pipeline context to the
@@ -165,9 +193,11 @@ class Applycal(basetask.StandardTaskTemplate):
     on-the-fly calibration arguments.
     """
     Inputs = ApplycalInputs
+    # DataType to be set for a new column
+    applied_data_type = DataType.REGCAL_CONTLINE_ALL
 
     def __init__(self, inputs):
-        super(Applycal, self).__init__(inputs)
+        super().__init__(inputs)
 
     def modify_task_args(self, task_args):
         task_args['antenna'] = '*&*'
@@ -253,7 +283,8 @@ class Applycal(basetask.StandardTaskTemplate):
         vis_to_callib = {job.kw['vis']: job.kw['callib'] for job in jobs
                          if job.fn_name == 'applycal' and 'callib' in job.kw}
 
-        result = ApplycalResults(applied_calapps, callib_map=vis_to_callib)
+        result = ApplycalResults(applied_calapps, callib_map=vis_to_callib,
+                                 data_type=self.applied_data_type)
 
         # add and reshape the flagdata results if required
         if inputs.flagsum:
@@ -318,29 +349,11 @@ def reshape_flagdata_summary(flagdata_result):
 #     return {k: v for k, v in flagsummary.items() if k in fields_to_plot}
 
 
-class HpcApplycalInputs(ApplycalInputs):
-    # use common implementation for parallel inputs argument
-    parallel = sessionutils.parallel_inputs_impl()
-
-    def __init__(self, context, output_dir=None, vis=None, field=None, spw=None, antenna=None, intent=None, parang=None,
-                 applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None, parallel=None):
-        super(HpcApplycalInputs, self).__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,
-                                                antenna=antenna, intent=intent, parang=parang, applymode=applymode,
-                                                flagbackup=flagbackup, flagsum=flagsum, flagdetailedsum=flagdetailedsum)
-        self.parallel = parallel
-
-
-@task_registry.set_equivalent_casa_task('hpc_h_applycal')
-class HpcApplycal(sessionutils.ParallelTemplate):
-    Inputs = HpcApplycalInputs
-    Task = Applycal
-
-    def __init__(self, inputs):
-        super(HpcApplycal, self).__init__(inputs)
-
-    def get_result_for_exception(self, vis, exception):
-        LOG.error('Error applying calibrations for {!s}'.format(os.path.basename(vis)))
-        return ApplycalResults()
+@task_registry.set_equivalent_casa_task('h_applycal')
+@task_registry.set_casa_commands_comment('Calibrations are applied to the data. Final flagging summaries are computed')
+class Applycal(sessionutils.ParallelTemplate):
+    Inputs = ApplycalInputs
+    Task = SerialApplycal
 
 
 def jobs_without_calapply(merged, inputs, mod_fn):

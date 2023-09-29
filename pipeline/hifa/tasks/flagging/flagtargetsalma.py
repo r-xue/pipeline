@@ -4,11 +4,13 @@ import string
 from casatasks.private import flaghelper
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.api as api
+#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.executeppr import _sanitize_for_ms
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)
@@ -56,13 +58,15 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
 
         The filename of the ASCII file that contains the flagging template 
     """    
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     flagbackup = vdp.VisDependentProperty (default=False)
     template = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
     def filetemplate(self):
-        vis_root = os.path.splitext(self.vis)[0].split('_target')[0]
+        vis_root = _sanitize_for_ms(self.vis)
         return vis_root + '.flagtargetstemplate.txt'
 
     @filetemplate.convert
@@ -74,7 +78,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def inpfile(self):
-        vis_root = os.path.splitext(self.vis)[0].split('_target')[0]
+        vis_root = _sanitize_for_ms(self.vis)
         return os.path.join(self.output_dir, vis_root + '.flagtargetscmds.txt')
 
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, template=None, filetemplate=None):
@@ -108,7 +112,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
 
 # tell the infrastructure to prefentially apply the targets
 # flags to the split MS(s)
-api.ImagingMeasurementSetsPreferred.register(FlagTargetsALMAInputs)
+#api.ImagingMeasurementSetsPreferred.register(FlagTargetsALMAInputs)
 
 
 class FlagTargetsALMAResults(basetask.Results):

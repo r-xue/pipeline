@@ -1,8 +1,8 @@
 import os
 
-import pipeline.infrastructure.casatools as casatools
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
 from .basecleansequence import BaseCleanSequence
 
 LOG = infrastructure.get_logger(__name__)
@@ -29,8 +29,8 @@ class AutoMaskThresholdSequence(BaseCleanSequence):
         elif iteration == 2:
             if new_cleanmask != '' and self.flux not in (None, ''):
                 # Make a circular one
-                cm = casatools.image.newimagefromimage(infile=self.flux+extension, outfile=new_cleanmask,
-                                                       overwrite=True)
+                cm = casa_tools.image.newimagefromimage(infile=self.flux + extension, outfile=new_cleanmask,
+                                                        overwrite=True)
                 # verbose = False to suppress warning message
                 cm.calcmask('T')
                 cm.calc('1', verbose=False)
@@ -49,9 +49,9 @@ class AutoMaskThresholdSequence(BaseCleanSequence):
                                     utils.freq_selection_to_channels(new_cleanmask,
                                                                      frequency_selection[spwkey].split()[0]))
                     if channel_ranges != []:
-                        with casatools.ImageReader(new_cleanmask) as iaTool:
+                        with casa_tools.ImageReader(new_cleanmask) as iaTool:
                             shape = iaTool.shape()
-                            rgTool = casatools.regionmanager
+                            rgTool = casa_tools.regionmanager
                             for channel_range in channel_ranges:
                                 LOG.info('Unmasking channels %d to %d' % (channel_range[0], channel_range[1]))
                                 region = rgTool.box([0, 0, 0, channel_range[0]],
@@ -61,7 +61,7 @@ class AutoMaskThresholdSequence(BaseCleanSequence):
 
             self.result.cleanmask = new_cleanmask
             # CAS-10489: old centralregion option needs higher threshold
-            cqa = casatools.quanta
+            cqa = casa_tools.quanta
             self.result.threshold = '%sJy' % (cqa.getvalue(cqa.mul(self.threshold, 2.0))[0])
             self.result.sensitivity = self.sensitivity
             self.result.niter = self.niter

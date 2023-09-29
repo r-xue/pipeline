@@ -1,6 +1,7 @@
 import pipeline.h.tasks.restoredata.restoredata as restoredata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
+from pipeline.h.tasks.applycal import applycal
 from pipeline.infrastructure import task_registry
 from ..importdata import almaimportdata
 
@@ -9,7 +10,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class ALMARestoreDataInputs(restoredata.RestoreDataInputs):
     asis = vdp.VisDependentProperty(
-        default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing')
+        default='SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing')
 
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None, output_dir=None, session=None,
                  vis=None, bdfflags=None, lazy=None, asis=None, ocorr_mode=None):
@@ -33,3 +34,10 @@ class ALMARestoreData(restoredata.RestoreData):
                                         dbservice=False, asis=inputs.asis, ocorr_mode=inputs.ocorr_mode)
         importdata_task = almaimportdata.ALMAImportData(container)
         return self._executor.execute(importdata_task, merge=True)
+
+    # PIPE-1165: override applycal method to include polarisation intents.
+    def _do_applycal(self):
+        container = vdp.InputsContainer(applycal.SerialApplycal, self.inputs.context,
+                                        intent='TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE')
+        applycal_task = applycal.SerialApplycal(container)
+        return self._executor.execute(applycal_task, merge=True)

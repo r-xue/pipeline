@@ -1,237 +1,119 @@
-import numpy
-import re
+from typing import Union, Tuple, Optional
 
-import pipeline.infrastructure.casatools as casatools
+import numpy as np
+
 import pipeline.infrastructure as infrastructure
-from .imageparams_base import ImageParamsHeuristics
+import pipeline.domain.measures as measures
+from .imageparams_vlass_single_epoch_continuum import ImageParamsHeuristicsVlassSeContMosaic
 
 LOG = infrastructure.get_logger(__name__)
 
 
-class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristics):
+class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
-        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+        super().__init__(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         self.imaging_mode = 'VLASS-SE-CUBE'
+        self.vlass_stage = 3
 
-    # niter
-    def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0):
-        if niter:
-            return int(niter)
-        else:
-            return 20000
+    def reffreq(self) -> Optional[str]:
+        """Tclean reffreq parameter heuristics.
 
-    def niter(self):
-        return self.niter_correction(None, None, None, None, None, None)
-
-    def deconvolver(self, specmode, spwspec):
-        return 'mtmfs'
-
-    def robust(self):
-        return 1.0
-
-    def gridder(self, intent, field):
-        return 'mosaic'
-
-    def cell(self, beam=None, pixperbeam=None):
-        return ['0.6arcsec']
-
-    def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None, spwspec=None):
-        return [12150, 12150]
-
-    def reffreq(self):
-        return '3.0GHz'
-
-    def cyclefactor(self, iteration):
-        return 3.0
-
-    def cycleniter(self, iteration):
-        return 2000
-
-    def scales(self):
-        return [0]
-
-    def uvtaper(self, beam_natural=None, protect_long=None):
-        return []
-
-    def uvrange(self, field=None, spwspec=None):
-        return None, None
-
-    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None):
-        return ''
-
-    def buffer_radius(self):
-        return 1000.
-
-    def specmode(self):
-        return 'mfs'
-
-    def intent(self):
-        return 'TARGET'
-
-    def nterms(self, spwspec):
-        return 2
-
-    def stokes(self):
-        return 'IQU'
-
-    def pb_correction(self):
-        return False
-
-    def conjbeams(self):
-        return False
-
-    def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
-        return 0.0, None, None
-
-    def find_fields(self, distance='0deg', phase_center=None, matchregex=''):
-
-        # Created STM 2016-May-16 use center direction measure
-        # Returns list of fields from msfile within a rectangular box of size distance
-
-        qa = casatools.quanta
-        me = casatools.measures
-        tb = casatools.table
-
-        msfile = self.vislist[0]
-
-        fieldlist = []
-
-        phase_center = phase_center.split()
-        center_dir = me.direction(phase_center[0], phase_center[1], phase_center[2])
-        center_ra = center_dir['m0']['value']
-        center_dec = center_dir['m1']['value']
-
-        try:
-            qdist = qa.toangle(distance)
-            qrad = qa.convert(qdist, 'rad')
-            maxrad = qrad['value']
-        except:
-            print('ERROR: cannot parse distance {}'.format(distance))
-            return
-
-        try:
-            tb.open(msfile + '/FIELD')
-        except:
-            print('ERROR: could not open {}/FIELD'.format(msfile))
-            return
-        field_dirs = tb.getcol('PHASE_DIR')
-        field_names = tb.getcol('NAME')
-        tb.close()
-
-        (nd, ni, nf) = field_dirs.shape
-        print('Found {} fields'.format(nf))
-
-        # compile field dictionaries
-        ddirs = {}
-        flookup = {}
-        for i in range(nf):
-            fra = field_dirs[0, 0, i]
-            fdd = field_dirs[1, 0, i]
-            rapos = qa.quantity(fra, 'rad')
-            decpos = qa.quantity(fdd, 'rad')
-            ral = qa.angle(rapos, form=["tim"], prec=9)
-            decl = qa.angle(decpos, prec=10)
-            fdir = me.direction('J2000', ral[0], decl[0])
-            ddirs[i] = {}
-            ddirs[i]['ra'] = fra
-            ddirs[i]['dec'] = fdd
-            ddirs[i]['dir'] = fdir
-            fn = field_names[i]
-            ddirs[i]['name'] = fn
-            if fn in flookup:
-                flookup[fn].append(i)
-            else:
-                flookup[fn] = [i]
-        print('Cataloged {} fields'.format(nf))
-
-        # Construct offset separations in ra,dec
-        print('Looking for fields with maximum separation {}'.format(distance))
-        nreject = 0
-        skipmatch = matchregex == '' or matchregex == []
-        for i in range(nf):
-            dd = ddirs[i]['dir']
-            dd_ra = dd['m0']['value']
-            dd_dec = dd['m1']['value']
-            sep_ra = abs(dd_ra - center_ra)
-            if sep_ra > numpy.pi:
-                sep_ra = 2.0 * numpy.pi - sep_ra
-            # change the following to use dd_dec 2017-02-06
-            sep_ra_sky = sep_ra * numpy.cos(dd_dec)
-
-            sep_dec = abs(dd_dec - center_dec)
-
-            ddirs[i]['offset_ra'] = sep_ra_sky
-            ddirs[i]['offset_ra'] = sep_dec
-
-            if sep_ra_sky <= maxrad:
-                if sep_dec <= maxrad:
-                    if skipmatch:
-                        fieldlist.append(i)
-                    else:
-                        # test regex against name
-                        foundmatch = False
-                        fn = ddirs[i]['name']
-                        for rx in matchregex:
-                            mat = re.findall(rx, fn)
-                            if len(mat) > 0:
-                                foundmatch = True
-                        if foundmatch:
-                            fieldlist.append(i)
-                        else:
-                            nreject += 1
-
-        print('Found {} fields within {}'.format(len(fieldlist), distance))
-        if not skipmatch:
-            print('Rejected {} distance matches for regex'.format(nreject))
-
-        return fieldlist
-
-    def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max, residual_robust_rms, field, intent, spw, specmode):
-
-        '''Determine if another tclean iteration is necessary.'''
-
-        if iteration == 0:
-            return True, hm_masking
-        elif iteration == 1:
-            LOG.info('Final VLASS single epoch tclean call with no mask')
-            return True, 'none'
-        else:
-            return False, hm_masking
-
-    def threshold(self, iteration, threshold, hm_masking):
-
-        if hm_masking == 'auto':
-            return '0.0mJy'
-        elif hm_masking == 'none':
-            if iteration in [0, 1]:
-                return threshold
-            else:
-                return '0.0mJy'
-        else:
-            return threshold
-
-    def nsigma(self, iteration, hm_nsigma):
-
-        if hm_nsigma:
-            return hm_nsigma
-
-        if iteration == 0:
-            return None
-        elif iteration == 1:
-            return 3.0
-        else:
-            return 4.5
-
-    def savemodel(self, iteration):
+        tclean(reffreq=None) will automatically calculate the referenece frequency using the mean frequency of the selected spws.
+        For VLASS-SE-CONT, this is hardcoded to '3.0GHz'.
+        For VLASS-SE-CUBE, PIPE-1401 requests this to be explicitly set as the central freq derived from individual SPW groups.
+        None is returned here as a fallback and hif_editimlist() will set actual values.
+        """
         return None
 
-    def usepointing(self):
-        """clean flag to use pointing table."""
+    def meanfreq_spwgroup(self, spw_selection):
+        """Calculate the mean frequency of a spw group (specified by a selection string, e.g. '2,3,4')."""
 
-        return True
+        vis = self.vislist[0]
+        ms = self.observing_run.get_ms(vis)
+        spwid_list = [int(spw) for spw in spw_selection.split(',')]
 
-    def wprojplanes(self):
+        spwfreq_list = []
+        for spwid in spwid_list:
+            real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
+            spw = ms.get_spectral_window(real_spwid)
+            spwfreq_list.append(float(spw.mean_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ)))
+        meanfreq_value = np.mean(spwfreq_list)
 
-        return 32
+        return str(meanfreq_value)+'GHz'
+
+    def flagpct_spwgroup(self, results_list: Union[list, None] = None, spw_selection=None):
+        """Get the flag percentage of a spw group (specified by a selection string, e.g. '2,3,4').
+
+        Note: this is a quick check using existing results from hifv_flagtargetsdata().
+        More comprehensive (and expensive) check could be done using ImageParamsHeuristics.has_data() (also see PIPE-557)
+        """
+
+        flagpct = None
+
+        # Catch exception as the success of result parsing is not guaranteed.
+        try:
+            if results_list and type(results_list) is list:
+                for result in results_list:
+                    result_meta = result.read()
+                    if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
+                            'hifv_flagtargetsdata'):
+                        flagtargets_summary = [r.summaries for r in result_meta][0][-1]
+
+            n_flagged = n_total = 0
+            for spwid in [spw.strip() for spw in spw_selection.split(',')]:
+                n_flagged += flagtargets_summary['spw'][str(spwid)]['flagged']
+                n_total += flagtargets_summary['spw'][str(spwid)]['total']
+            flagpct = n_flagged/n_total
+        except Exception as e:
+            pass
+
+        return flagpct
+
+
+    def mask(self, hm_masking=None, rootname=None, iteration=None, mask=None,
+             results_list: Union[list, None] = None, clean_no_mask=None) -> Union[str, list]:
+        """Tier-1 mask name to be used for computing Tier-1 and Tier-2 combined mask.
+
+            Obtain the mask name from the latest MakeImagesResult object in context.results.
+            If not found, then set empty string (as base heuristics)."""
+        mask_list = ''
+        if results_list and type(results_list) is list:
+            for result in results_list:
+                result_meta = result.read()
+                if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
+                        'hifv_restorepims'):
+                    mask_list = [r.mask_list for r in result_meta][0]
+
+        # Add 'pb' string as a placeholder for cleaning without mask (pbmask only, see PIPE-977). This should
+        # always stand at the last place in the mask list.
+        # On request for first imaging stage (selfcal image) and automatically for the final imaging stage.
+        if (clean_no_mask and self.vlass_stage == 1) or self.vlass_stage == 3:
+            if clean_no_mask:
+                LOG.info('Cleaning without user mask is performed in pre-self calibration imaging stage '
+                         '(clean_no_mask_selfcal_image=True)')
+            if type(mask_list) is list:
+                mask_list.append('pb')
+            elif mask_list != '':  # mask is non-empty string
+                mask_list = [mask_list, 'pb']
+            else:
+                mask_list = 'pb'
+
+        # In case hif_makeimages result was not found or results_list was not provided
+        return mask_list
+
+    def nterms(self, spwspec) -> Union[int, None]:
+        """Tclean nterms parameter heuristics."""
+        return 1
+
+    def stokes(self, intent: str = '', joint_intents: str = '') -> str:
+        """Tclean stokes parameter heuristics."""
+        return 'IQUV'
+
+    def psfcutoff(self) -> float:
+        """Tclean psfcutoff parameter heuristics.
+
+        PIPE-1466: use psfcutoff=0.5 to properly fit the PSF for all spws in the VLASS Coarse Cube pipeline,
+        rather than the default value of 0.35 from CASA/tclean ver6.4.1.
+        """
+        return 0.5

@@ -75,13 +75,16 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
     # tooManyIntegrationsFraction
     tmint = vdp.VisDependentProperty(default=0.085)
 
+    # Solutions below this SNR are rejected
+    minsnr = vdp.VisDependentProperty(default=2.0)
+
     def __init__(self, context, output_dir=None, vis=None, caltable=None, intent=None, field=None, spw=None,
                  antenna=None, hm_phaseup=None, phaseupsolint=None, phaseupbw=None, phaseupsnr=None, phaseupnsols=None,
                  hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None,
                  combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None, antnegsig=None, antpossig=None,
                  tmantint=None, tmint=None, tmbl=None, antblnegsig=None, antblpossig=None, relaxed_factor=None,
                  niter=None, mode='channel'):
-        super(BandpassflagInputs, self).__init__(
+        super().__init__(
             context, output_dir=output_dir, vis=vis, caltable=caltable, intent=intent, field=field, spw=spw,
             antenna=antenna, hm_phaseup=hm_phaseup, phaseupsolint=phaseupsolint, phaseupbw=phaseupbw,
             phaseupsnr=phaseupsnr, phaseupnsols=phaseupnsols, hm_bandpass=hm_bandpass, solint=solint,
@@ -187,7 +190,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             LOG.info('Applying pre-existing caltables and preliminary phase-up, bandpass, and amplitude caltables.')
             acinputs = applycal.IFApplycalInputs(context=inputs.context, vis=inputs.vis, field=inputs.field,
                                                  intent=inputs.intent, flagsum=False, flagbackup=False)
-            actask = applycal.IFApplycal(acinputs)
+            actask = applycal.SerialIFApplycal(acinputs)
             acresult = self._executor.execute(actask)
             # copy across the vis:callibrary dict to our result. This dict 
             # will be inspected by the renderer to know if/which callibrary
@@ -334,8 +337,8 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             # Convert CASA intent from flagging command to pipeline intent.
             intent_str = utils.to_pipeline_intent(ms, intent)
 
-            # Log a warning.
-            LOG.warning(
+            # Log an attention.
+            LOG.attention(
                 "{msname} - for intent {intent} (field "
                 "{fieldname}) and spw {spw}, the following antennas "
                 "are fully flagged: {ants}".format(
@@ -463,9 +466,9 @@ class Bandpassflag(basetask.StandardTaskTemplate):
                         # Reset the refant removal list in the result to be empty.
                         result.refants_to_remove = set()
                     else:
-                        # Log a warning if any antennas are to be removed from
+                        # Log an attention if any antennas are to be removed from
                         # the refant list.
-                        LOG.warning(
+                        LOG.attention(
                             '{0} - the following reference antennas are '
                             'removed from the refant list because they became '
                             'fully flagged in all spws for one of the intents '
@@ -504,15 +507,6 @@ class Bandpassflag(basetask.StandardTaskTemplate):
 
                         # Reset the refant demotion list in the result to be empty.
                         result.refants_to_demote = set()
-                    else:
-                        # Log a warning if any antennas are to be demoted from
-                        # the refant list.
-                        LOG.warning(
-                            '{0} - the following antennas are moved to the end '
-                            'of the refant list because they are fully '
-                            'flagged for one or more spws, in one or more '
-                            'fields with intents among {1}: '
-                            '{2}'.format(ms.basename, ', '.join(intents), ant_msg))
 
             # If no list of reference antennas was registered with the MS,
             # raise a warning.

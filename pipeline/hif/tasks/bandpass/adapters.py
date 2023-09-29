@@ -17,10 +17,10 @@ import os
 
 import numpy
 
-import pipeline.infrastructure.casatools as casatools
-from pipeline.h.heuristics import echoheuristic as echoheuristic
-import pipeline.infrastructure.adapters as adapters 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.adapters as adapters
+from pipeline.h.heuristics import echoheuristic as echoheuristic
+from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -100,7 +100,7 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
                         ''.format(caltable.name))
             spw = ms.get_spectral_window(spw)
             num_antenna = len(ms.antennas)            
-            return numpy.ones([num_antenna+1, spw.num_channels], numpy.complex)
+            return numpy.ones([num_antenna+1, spw.num_channels], complex)
 
         spw = int(spw)
 
@@ -113,7 +113,7 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
         # open the CAL_DESC sub-table and read the column that maps
         # CAL_DESC_ID to SPECTRAL_WINDOW_ID
         cal_desc = os.path.join(caltable.name, 'CAL_DESC')        
-        with casatools.TableReader(cal_desc) as table:
+        with casa_tools.TableReader(cal_desc) as table:
             caldesc_2_spw = table.getcol('SPECTRAL_WINDOW_ID')[0]
             caldesc_id = numpy.arange(len(caldesc_2_spw))[caldesc_2_spw == spw]
             if len(caldesc_id) > 0:
@@ -126,7 +126,7 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
         # cal_flag arrays is to correct for the fact that the
         # calibration table arrays all have the number of channels
         # of the largest spw. This should change in the future.
-        with casatools.TableReader(caltable.name) as table:
+        with casa_tools.TableReader(caltable.name) as table:
             taql = 'CAL_DESC_ID=={0}'.format(caldesc_id) 
             subtable = table.query(query=taql)
             antenna1 = subtable.getcol('ANTENNA1')
@@ -137,8 +137,8 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
             # average the polarization results
             antenna_ids = [antenna.id for antenna in ms.antennas]
             num_antenna = len(antenna_ids)        
-            data = numpy.zeros([num_antenna+1, nchannels], numpy.complex)
-            flag = numpy.zeros([num_antenna+1, nchannels], numpy.bool)
+            data = numpy.zeros([num_antenna+1, nchannels], complex)
+            flag = numpy.zeros([num_antenna+1, nchannels], bool)
 
             antennas1 = [antenna1[i] for i in range(numpy.shape(gain)[2])
                          if i in antenna_ids]

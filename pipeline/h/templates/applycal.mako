@@ -87,10 +87,10 @@ def total_for_mses(mses, row):
 		for agent in flags[ms].keys():
 			fs = flags[ms][agent][row]
 			flagged += fs.flagged
-	if total is 0:
+	if total == 0:
 		return 'N/A'
 	else:
-		return '%0.1f%%' % (100.0 * flagged / total)
+		return '%0.3f%%' % (100.0 * flagged / total)
 
 def total_for_agent(agent, row, mses=flags.keys()):
 	flagged = 0
@@ -103,10 +103,10 @@ def total_for_agent(agent, row, mses=flags.keys()):
 		else:
 			# agent was not activated for this MS.
 			total += flags[ms]['before'][row].total
-	if total is 0:
+	if total == 0:
 		return 'N/A'
 	else:
-		return '%0.1f%%' % (100.0 * flagged / total)
+		return '%0.3f%%' % (100.0 * flagged / total)
 
 def space_comma(s):
 	return ', '.join(s.split(','))
@@ -594,7 +594,7 @@ def format_spwmap(spwmap, scispws):
 
 
 <%self:plot_group plot_dict="${science_amp_vs_freq_plots}"
-				  url_fn="${lambda x: 'science_amp_vs_freq-all_data.html'}"
+				  url_fn="${lambda x: science_amp_vs_freq_subpages[x]}"
 				  data_spw="${True}"
 				  data_field="${True}"
                   data_vis="${True}"
@@ -606,21 +606,24 @@ def format_spwmap(spwmap, scispws):
 		Science target: calibrated amplitude vs frequency
 	</%def>
 
-	<%def name="preamble()">
+	<%def name="ms_preamble(ms)">
 	% if uv_max[ms].value > 0.0:
         <p>Calibrated amplitude vs frequency plots for the each measurement
             set's representative source. For mosaics, the representative field is
             identified as the field with the highest median channel-averaged amplitude,
             calculated over all science spectral windows. The atmospheric transmission
             for each spectral window is overlayed on each plot in pink.</p>
+
+        <p>Data are plotted for all antennas and correlations, with different
+            spectral windows shown in different colours.</p>
     % else: #Single dish (source = field, so far)
 		<p>Calibrated amplitude vs frequency plots of each source in each
 		measurement set. The atmospheric transmission for each spectral window is
         overlayed on each plot in pink.</p>
-	% endif
 
 		<p>Data are plotted for all antennas and correlations, with different
-		spectral windows shown in different colours.</p>
+                antennas shown in different colours.</p>
+	% endif
 	</%def>
 
 	<%def name="mouseover(plot)">Click to show amplitude vs frequency for spw ${plot.parameters['spw']}</%def>
@@ -728,5 +731,7 @@ def format_spwmap(spwmap, scispws):
         (#${plot.parameters['field']}), spw ${plot.parameters['spw']}
 	</%def>
 </%self:plot_group>
+
+<p>${outliers_path_link}
 
 %endif

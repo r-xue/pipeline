@@ -7,6 +7,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
@@ -18,11 +19,13 @@ LOG = infrastructure.get_logger(__name__)
 # original MS. Other parameters will be added here as more
 # capabilities are added to hif_mstransform.
 class MstransformInputs(vdp.StandardInputs):
+    # Search order of input vis
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     @vdp.VisDependentProperty
     def outputvis(self):
         vis_root = os.path.splitext(self.vis)[0]
-        return vis_root + '_target.ms'
+        return vis_root + '_targets.ms'
 
     @outputvis.convert
     def outputvis(self, value):
@@ -160,7 +163,10 @@ class Mstransform(basetask.StandardTaskTemplate):
         # Run CASA task
         mstransform_args = inputs.to_casa_args()
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
-        self._executor.execute(mstransform_job)
+        try:
+            self._executor.execute(mstransform_job)
+        except OSError as ee:
+            LOG.warning(f"Caught mstransform exception: {ee}")
 
         # Copy across requisite XML files.
         self._copy_xml_files(inputs.vis, inputs.outputvis)
@@ -171,18 +177,21 @@ class Mstransform(basetask.StandardTaskTemplate):
 
         # Check for existence of the output vis. 
         if not os.path.exists(result.outputvis):
-            LOG.debug('Error creating target MS %s' % (os.path.basename(result.outputvis)))
+            LOG.debug('Error creating science targets cont+line MS %s' % (os.path.basename(result.outputvis)))
             return result
 
         # Import the new measurement set.
-        to_import = os.path.abspath(result.outputvis)
+        to_import = os.path.relpath(result.outputvis)
         observing_run = tablereader.ObservingRunReader.get_observing_run(to_import)
 
         # Adopt same session as source measurement set
         for ms in observing_run.measurement_sets:
             LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
             ms.session = self.inputs.ms.session
-            ms.is_imaging_ms = True
+            LOG.debug('Setting data_column and origin_ms.')
+            ms.origin_ms = self.inputs.ms.origin_ms
+            ms.set_data_column(DataType.REGCAL_CONTLINE_SCIENCE, 'DATA')
+
         result.mses.extend(observing_run.measurement_sets)
 
         return result
@@ -191,11 +200,11 @@ class Mstransform(basetask.StandardTaskTemplate):
     def _copy_xml_files(vis, outputvis):
         for xml_filename in ['SpectralWindow.xml', 'DataDescription.xml']:
             vis_source = os.path.join(vis, xml_filename)
-            outputvis_target = os.path.join(outputvis, xml_filename)
+            outputvis_targets_contline = os.path.join(outputvis, xml_filename)
             if os.path.exists(vis_source) and os.path.exists(outputvis):
-                LOG.info('Copying %s from original MS to target MS', xml_filename)
-                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target)
-                shutil.copyfile(vis_source, outputvis_target)
+                LOG.info('Copying %s from original MS to science targets cont+line MS', xml_filename)
+                LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_targets_contline)
+                shutil.copyfile(vis_source, outputvis_targets_contline)
 
 
 class MstransformResults(basetask.Results):
@@ -220,8 +229,6 @@ class MstransformResults(basetask.Results):
 
         # Create targets flagging template file if it does not already exist
         for ms in self.mses:
-            if not ms.is_imaging_ms:
-                continue
             template_flagsfile = os.path.join(
                 self.inputs['output_dir'], os.path.splitext(os.path.basename(self.vis))[0] + '.flagtargetstemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')

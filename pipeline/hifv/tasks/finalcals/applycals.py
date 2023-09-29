@@ -32,7 +32,7 @@ class ApplycalsInputs(applycal.IFApplycalInputs):
     field = vdp.VisDependentProperty(default='')
     spw = vdp.VisDependentProperty(default='')
     intent = vdp.VisDependentProperty(default='')
-    flagbackup = vdp.VisDependentProperty(default=False)
+    flagbackup = vdp.VisDependentProperty(default=True)
     calwt = vdp.VisDependentProperty(default=False)
     gainmap = vdp.VisDependentProperty(default=False)
 
@@ -45,7 +45,7 @@ class ApplycalsInputs(applycal.IFApplycalInputs):
 
 
 @task_registry.set_equivalent_casa_task('hifv_applycals')
-class Applycals(applycal.IFApplycal):
+class Applycals(applycal.SerialIFApplycal):
     Inputs = ApplycalsInputs
 
     # Note this is a temporary workaround
@@ -194,7 +194,7 @@ class Applycals(applycal.IFApplycal):
         applied = [callibrary.CalApplication(calto, calfroms)
                    for calto, calfroms in merged.items()]
 
-        result = happlycal.ApplycalResults(applied)
+        result = happlycal.ApplycalResults(applied=applied, data_type=self.applied_data_type)
 
         if inputs.flagsum:
             result.summaries = [stats_before, stats_after]
