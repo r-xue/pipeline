@@ -11,7 +11,7 @@ import subprocess
 # the pipeline wheels.
 
 
-def get_version():
+def get_version(cwd=None):
     """
     Return: a tuple containing last branch tag (possibly empty),
             last release tag, and possibly a "dirty" string
@@ -58,15 +58,15 @@ def get_version():
 
     gitbranch = subprocess.check_output(
         ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
-        stderr=subprocess.DEVNULL).decode().strip()
+        stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
 
     hashes = subprocess.check_output(
         ['git', 'log', '--since', '2019-10-01', '--simplify-by-decoration', "--pretty=%H", gitbranch],
-        stderr=subprocess.DEVNULL).decode().splitlines()
+        stderr=subprocess.DEVNULL, cwd=cwd).decode().splitlines()
 
     refstags = subprocess.check_output(
         ['git', 'show-ref', '--tags', '-d'],
-        stderr=subprocess.DEVNULL).decode().splitlines()
+        stderr=subprocess.DEVNULL, cwd=cwd).decode().splitlines()
 
     last_release_tag = get_last_release_tag(gitbranch)
     if gitbranch in ['main', 'master'] or 'release/' in gitbranch:
@@ -75,7 +75,7 @@ def get_version():
         last_branch_tag = get_last_branch_tag(gitbranch)
 
     output = (last_branch_tag, last_release_tag)
-    dirty_workspace = subprocess.call(['git', 'diff', '--quiet'])
+    dirty_workspace = subprocess.call(['git', 'diff', '--quiet'], cwd=cwd)
 
     if last_branch_tag == '' or dirty_workspace:
         # No tag at all for branch
@@ -84,10 +84,10 @@ def get_version():
         # Check if the latest tag is the latest commit
         headcommit = subprocess.check_output(
             ['git', 'rev-parse', 'HEAD'],
-            stderr=subprocess.DEVNULL).decode().strip()
+            stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
         tagcommit = subprocess.check_output(
             ['git', 'rev-list', '-n', '1', last_branch_tag],
-            stderr=subprocess.DEVNULL).decode().strip()
+            stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
         if tagcommit != headcommit:
             output += ('dirty',)
 
