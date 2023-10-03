@@ -3,7 +3,7 @@ import os
 import shutil
 import tarfile
 import collections
-from typing import List, Optional
+from typing import List, Optional, Set
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -210,6 +210,11 @@ class ImportData(basetask.StandardTaskTemplate):
         # compare to ms.name in order to calculate the origin of each MS
         converted_asdm_abspaths = [os.path.abspath(f) for f in converted_asdms]
 
+        # PIPE-2006: for ALMA data in cycles 0-2, replace the [incorrect] coordinate
+        # system name 'J2000' by 'ICRS' (supersedes PIPE-1575)
+        for ms_path in to_import:
+            self._rename_J2000_to_ICRS(ms_path)
+
         LOG.info('Creating pipeline objects for measurement set(s) {0}'
                  ''.format(', '.join(to_import)))
         if self._executor._dry_run:
@@ -221,7 +226,9 @@ class ImportData(basetask.StandardTaskTemplate):
 
         observing_run = ms_reader.get_observing_run(rel_to_import)
         available_data_types = [v.name for v in DataType]
-        short_data_types = list(set([v.replace('_ALL', '').replace('_SCIENCE', '') for v in available_data_types if v.endswith('_ALL') or v.endswith('_SCIENCE')]))
+        short_data_types = list(set([v.replace('_ALL', '').replace('_SCIENCE', '')
+                                     for v in available_data_types
+                                     if v.endswith('_ALL') or v.endswith('_SCIENCE')]))
         data_type_entry = collections.namedtuple('DataTypeEntry', ('str_data_type enum_data_type'))
         for ms in observing_run.measurement_sets:
             LOG.debug(f'Setting session to {inputs.session} for {ms.basename}')
@@ -300,16 +307,6 @@ class ImportData(basetask.StandardTaskTemplate):
                 ms.set_data_column(data_types['CORRECTED'].enum_data_type, correcteddatacolumn_name)
                 LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED"].str_data_type}')
 
-            # PIPE-1575: correct invalid coordinate system name in Cycle 2 and earlier datasets
-            for field in ms.fields:
-                if field._mdirection['refer'] in ['J2000', 'j2000']:
-                    LOG.info(f'{ms.basename}: changing coords from J2000 to ICRS for field {field.name}')
-                    field._mdirection['refer'] = 'ICRS'
-            for source in ms.sources:
-                if source._direction['refer'] in ['J2000', 'j2000']:
-                    LOG.info(f'{ms.basename}: changing coords from J2000 to ICRS for source {source.name}')
-                    source._direction['refer'] = 'ICRS'
-
             ms.session = inputs.session
             results.origin[ms.basename] = ms_origin
 
@@ -351,7 +348,7 @@ class ImportData(basetask.StandardTaskTemplate):
         # QA flux service messaging, return None by default
         return None, combined_results, None
 
-    def _analyse_filenames(self, filenames, vis):
+    def _analyse_filenames(self, filenames, vis) -> (Set[str], Set[str]):
         to_import = set()
         to_convert = set()
 
@@ -452,6 +449,38 @@ class ImportData(basetask.StandardTaskTemplate):
             template_text = FLAGGING_TEMPLATE_HEADER.replace('___TITLESTR___', titlestr)
             with open(outfile, 'w') as f:
                 f.writelines(template_text)
+
+    def _rename_J2000_to_ICRS(self, ms_path):
+        # PIPE-2006: rename J2000 FIELD and SOURCE table directions to ICRS (only for ALMA cycles 0-2);
+        # adapted from a script by D.Petry (ESO), 2016-03-04
+        with casa_tools.MSMDReader(ms_path) as msmd:
+            if 'ALMA' not in msmd.observatorynames():
+                return
+
+        tb = casa_tools.table
+        tb.open(ms_path + '/FIELD', nomodify=False)
+        basename = os.path.basename(ms_path)
+        changed_columns = set()
+        for colname in ['PhaseDir_Ref', 'DelayDir_Ref', 'RefDir_Ref']:
+            a = tb.getcol(colname)
+            for i in range(len(a)):
+                if a[i] == 0:  # J2000
+                    a[i] = 21  # ICRS
+                    changed_columns.add(colname)
+            tb.putcol(colname, a)
+        if changed_columns:
+            LOG.info(basename + ': changing coords from J2000 to ICRS in the FIELD table, columns ' +
+                     ', '.join(changed_columns))
+        tb.close()
+
+        tb.open(ms_path + '/SOURCE', nomodify=False)
+        x = tb.getcolkeywords('DIRECTION')
+        if x['MEASINFO']['Ref'] == 'J2000':
+            x['MEASINFO']['Ref'] = 'ICRS'
+            tb.putcolkeywords('DIRECTION', x)
+            LOG.info(basename + ': changing coords from J2000 to ICRS in the SOURCE table')
+        tb.close()
+
 
 def get_datacolumn_name(msname: str) -> Optional[str]:
     """
