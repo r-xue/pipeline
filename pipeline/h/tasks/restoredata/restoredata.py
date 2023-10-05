@@ -22,7 +22,7 @@ vis = [ '<ASDM name>' ]
 context = pipeline.Pipeline().context
 inputs = pipeline.tasks.RestoreData.Inputs(context, vis=vis)
 task = pipeline.tasks.RestoreData(inputs)
-results = task.execute(dry_run=False)
+results = task.execute()
 results.accept(context)
 """
 import os
@@ -436,8 +436,7 @@ class RestoreData(basetask.StandardTaskTemplate):
             flagversionpath = os.path.join(inputs.output_dir, flagversion)
             if os.path.exists(flagversionpath):
                 LOG.info('Removing default flagversion for %s' % ms.basename)
-                if not self._executor._dry_run:
-                    shutil.rmtree(flagversionpath)
+                shutil.rmtree(flagversionpath)
 
             # Untar MS.flagversions file in rawdata_dir to output_dir
             if ouss is not None:
@@ -450,20 +449,18 @@ class RestoreData(basetask.StandardTaskTemplate):
             LOG.info('    From %s' % tarfilename)
             LOG.info('    Into %s' % inputs.output_dir)
             with tarfile.open(tarfilename, 'r:gz') as tar:
-                if not self._executor._dry_run:
-                    tar.extractall(path=inputs.output_dir)
+                tar.extractall(path=inputs.output_dir)
 
             # Restore final flags version using flagmanager
             LOG.info('Restoring final flags for %s from flag version %s' % (ms.basename, flag_version_name))
-            if not self._executor._dry_run:
-                task = casa_tasks.flagmanager(vis=ms.name,
-                                              mode='restore',
-                                              versionname=flag_version_name)
-                try:
-                    self._executor.execute(task)
-                except Exception:
-                    LOG.error("Application of final flags failed for %s" % ms.basename)
-                    raise
+            task = casa_tasks.flagmanager(vis=ms.name,
+                                          mode='restore',
+                                          versionname=flag_version_name)
+            try:
+                self._executor.execute(task)
+            except Exception:
+                LOG.error("Application of final flags failed for %s" % ms.basename)
+                raise
 
             flagversionlist.append(flagversionpath)
 
@@ -487,19 +484,18 @@ class RestoreData(basetask.StandardTaskTemplate):
             LOG.info('Restoring calibration state for %s from %s'
                      '' % (ms.basename, applyfile_name))
 
-            if not self._executor._dry_run:
-                # Write converted calstate to a temporary file and use this
-                # for the import. the temporary file will automatically be
-                # deleted once out of scope
-                with tempfile.NamedTemporaryFile() as tmpfile:
-                    LOG.trace('Writing converted calstate to %s'
-                              '' % tmpfile.name)
-                    converted = self._convert_calstate_paths(applyfile_name)
-                    tmpfile.write(converted.encode(sys.stdout.encoding))
-                    tmpfile.flush()
+            # Write converted calstate to a temporary file and use this
+            # for the import. the temporary file will automatically be
+            # deleted once out of scope
+            with tempfile.NamedTemporaryFile() as tmpfile:
+                LOG.trace('Writing converted calstate to %s'
+                          '' % tmpfile.name)
+                converted = self._convert_calstate_paths(applyfile_name)
+                tmpfile.write(converted.encode(sys.stdout.encoding))
+                tmpfile.flush()
 
-                    inputs.context.callibrary.import_state(tmpfile.name,
-                                                           append=append)
+                inputs.context.callibrary.import_state(tmpfile.name,
+                                                       append=append)
             append = True
 
     def _convert_calstate_paths(self, applyfile):
@@ -574,11 +570,10 @@ class RestoreData(basetask.StandardTaskTemplate):
                             if member.name.endswith('.tbl/') or member.name.endswith('.tbl'):
                                 LOG.info('    Extracting caltable %s' % member.name)
 
-                    if not self._executor._dry_run:
-                        if len(extractlist) == len(tarmembers):
-                            tar.extractall(path=inputs.output_dir)
-                        else:
-                            tar.extractall(path=inputs.output_dir, members=extractlist)
+                    if len(extractlist) == len(tarmembers):
+                        tar.extractall(path=inputs.output_dir)
+                    else:
+                        tar.extractall(path=inputs.output_dir, members=extractlist)
 
     def _do_applycal(self):
         container = vdp.InputsContainer(applycal.SerialApplycal, self.inputs.context)

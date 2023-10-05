@@ -332,6 +332,10 @@ def score_ms_model_data_column_present(all_mses, mses_with_column):
     """
     num_with = len(mses_with_column)
     num_all = len(all_mses)
+
+    if num_all == 0:
+        return pqa.QAScore(0.0, 'No MSes were imported', 'No MSes imported')
+
     f = float(num_with) / num_all
 
     if mses_with_column:
@@ -365,6 +369,9 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
     """
     num_with = len(mses_with_history)
     num_all = len(all_mses)
+
+    if num_all == 0:
+        return pqa.QAScore(0.0, 'No MSes were imported', 'No MSes imported')
 
     if mses_with_history:
         # log a message like 'Entries were found in the HISTORY table for

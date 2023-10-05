@@ -22,7 +22,7 @@ from . import vdp
 from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getPprObject
 
 
-def executeppr(pprXmlFile: str, importonly: bool = True, dry_run: bool = False, loglevel: str = 'info',
+def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
                plotlevel: str = 'summary', interactive: bool = True):
     """
     Runs Pipeline Processing Request (PPR).
@@ -173,7 +173,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, dry_run: bool = False, 
             remapped_args = argmapper.convert_args(pipeline_task_class, task_args, convert_nulls=False)
             inputs = vdp.InputsContainer(pipeline_task_class, context, **remapped_args)
             task = pipeline_task_class(inputs)
-            results = task.execute(dry_run=dry_run)
+            results = task.execute()
             casa_tools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
 
             try:

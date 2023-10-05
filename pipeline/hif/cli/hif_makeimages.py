@@ -11,7 +11,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                    hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
                    hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
                    cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, parallel=None,
-                   dryrun=None, acceptresults=None):
+                   acceptresults=None):
 
     """
     hif_makeimages ---- Compute clean map
@@ -79,7 +79,6 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                             product retains the same name.  Additional products start
                             counting with 'v2', 'v3', etc.
     parallel                Clean images using MPI cluster
-    dryrun                  Run the task (False) or just display the command (True)
     acceptresults           Add the results to the pipeline context
 
     --------- examples -----------------------------------------------------------

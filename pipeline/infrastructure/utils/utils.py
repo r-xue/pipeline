@@ -760,7 +760,7 @@ def ensure_products_dir_exists(products_dir):
             raise
 
 
-def export_weblog_as_tar(context, products_dir, name_builder, dry_run=False):
+def export_weblog_as_tar(context, products_dir, name_builder):
     # Construct filename prefix from oussid and recipe name if available.
     prefix = context.get_oussid()
     recipe_name = context.get_recipe_name()
@@ -773,10 +773,9 @@ def export_weblog_as_tar(context, products_dir, name_builder, dry_run=False):
 
     # Save weblog directory to tar archive.
     LOG.info(f"Saving weblog in {tarfilename}")
-    if not dry_run:
-        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-        tar.add(os.path.join(os.path.basename(os.path.dirname(context.report_dir)), 'html'))
-        tar.close()
+    tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+    tar.add(os.path.join(os.path.basename(os.path.dirname(context.report_dir)), 'html'))
+    tar.close()
     return tarfilename
 
 

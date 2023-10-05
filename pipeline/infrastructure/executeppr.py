@@ -256,7 +256,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
             remapped_args = argmapper.convert_args(pipeline_task_class, task_args, convert_nulls=False)
             inputs = vdp.InputsContainer(pipeline_task_class, context, **remapped_args)
             task = pipeline_task_class(inputs)
-            results = task.execute(dry_run=False)
+            results = task.execute()
             casa_tools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
 
             try:

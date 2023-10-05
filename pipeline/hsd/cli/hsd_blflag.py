@@ -19,7 +19,7 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
                  plotflag=None, parallel=None,
                  infiles=None, antenna=None,
                  field=None, spw=None, pol=None,
-                 dryrun=None, acceptresults=None):
+                 acceptresults=None):
 
     """
     hsd_blflag ---- Flag spectra based on predefined criteria of single dish pipeline
@@ -92,8 +92,6 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
     pol           Data selection by polarizations.
                   example: 'XX,YY' (correlation XX and YY)
                            '' (all polarizations)
-    dryrun        Run the commands (True) or generate the commands to be
-                  run but do not execute (False).
     acceptresults Add the results of the task to the pipeline context (True)
                   or reject them (False).
 
