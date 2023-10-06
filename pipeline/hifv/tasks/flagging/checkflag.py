@@ -755,7 +755,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                      correlation=self.corrstring,
                                      timeaverage=True, timebin='1e8', timespan=timespan,
                                      keepflags=False, reindex=False)
-        job.execute(dry_run=False)
+        job.execute()
 
         with casa_tools.MSReader(vis_averaged_name) as msfile:
             vis_ampstats = msfile.statistics(column='data', complex_value='amp', useweights=False, useflags=True,

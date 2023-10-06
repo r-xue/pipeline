@@ -178,8 +178,8 @@ class PolcalWorker(basetask.StandardTaskTemplate):
         for job in jobs:
             polcal_returns.append(self._executor.execute(job))
 
-        # create the data selection target defining which data this caltable 
-        # should calibrate 
+        # create the data selection target defining which data this caltable
+        # should calibrate
         calto = callibrary.CalTo(vis=inputs.vis, spw=orig_spw)
 
         # create the calfrom object describing which data should be selected
@@ -195,9 +195,9 @@ class PolcalWorker(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         # Check that the caltable was actually generated
-        on_disk = [table for table in result.pool if table.exists() or self._executor._dry_run]
+        on_disk = [table for table in result.pool if table.exists()]
         result.final[:] = on_disk
-        missing = [table for table in result.pool if table not in on_disk and not self._executor._dry_run]
+        missing = [table for table in result.pool if table not in on_disk]
         result.error.clear()
         result.error.update(missing)
         return result

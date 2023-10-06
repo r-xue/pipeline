@@ -289,7 +289,7 @@ class SDMomentMapDisplay(SDImageDisplay):
             LOG.debug(f'moments={moments}')
             LOG.debug(f'outfile={outfile}')
             job = casa_tasks.immoments(imagename=self.inputs.imagename, moments=moments, chans=chans, outfile=outfile)
-            job.execute(dry_run=False)
+            job.execute()
             for imagename in moment_imagename_list:
                 assert os.path.exists(imagename)
             self.moment_images.extend(moment_imagename_list)
