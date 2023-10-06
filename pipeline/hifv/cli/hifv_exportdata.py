@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None, exportcalprods=None,
     pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None,
-    gainmap=None, acceptresults=None):
+    gainmap=None):
 
     """
     hifv_exportdata ---- Prepare and export interferometry and imaging data
@@ -65,8 +65,6 @@ def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportms
                           example: '../products'
     gainmap               The value of ``gainmap`` parameter in hifv_restoredata task put in
                           casa_piperestorescript.py
-    acceptresults         Add the results of the task to the pipeline context (True) or
-                          reject them (False).
 
     --------- examples -----------------------------------------------------------
 

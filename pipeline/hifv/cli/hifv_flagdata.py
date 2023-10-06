@@ -9,8 +9,7 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                   intents=None, edgespw=None, fracspw=None,
                   online=None, fileonline=None, template=None,
                   filetemplate=None, hm_tbuff=None, tbuff=None,
-                  flagbackup=None,
-                  acceptresults=None):
+                  flagbackup=None):
 
     """
     hifv_flagdata ---- Do basic deterministic flagging of a list of MeasurementSets
@@ -59,8 +58,6 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     hm_tbuff      The time buffer computation heuristic
     tbuff         List of time buffers (sec) to pad timerange in flag commands
     flagbackup    Backup pre-existing flags before applying new ones.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

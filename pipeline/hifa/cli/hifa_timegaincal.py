@@ -6,8 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstable=None, targetphasetable=None,
                      amptable=None, field=None, spw=None, antenna=None, calsolint=None, targetsolint=None, refant=None,
-                     refantmode=None, solnorm=None, minblperant=None, calminsnr=None, targetminsnr=None, smodel=None,
-                     acceptresults=None):
+                     refantmode=None, solnorm=None, minblperant=None, calminsnr=None, targetminsnr=None, smodel=None):
     """
     hifa_timegaincal ---- Determine temporal gains from calibrator observations
 
@@ -122,9 +121,6 @@ def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstabl
                      Defaults to using standard MODEL_DATA column data.
 
                      Example: smodel=[1,0,0,0]  - (I=1, unpolarized)
-    acceptresults
-                     Add the results of the task to the pipeline context (True) or
-                     reject them (False).
 
     --------- examples -----------------------------------------------------------
 

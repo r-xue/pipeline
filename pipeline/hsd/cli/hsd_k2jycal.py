@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
-                infiles=None, caltable=None, acceptresults=None):
+                infiles=None, caltable=None):
 
     """
     hsd_k2jycal ---- Derive Kelvin to Jy calibration tables
@@ -74,8 +74,6 @@ def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
     caltable      Name of output gain calibration tables.
 
                   example: caltable='ngc5921.gcal'
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

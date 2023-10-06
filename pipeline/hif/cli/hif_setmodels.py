@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, transintent=None, reffile=None,
-                  normfluxes=None, scalebychan=None, acceptresults=None):
+                  normfluxes=None, scalebychan=None):
 
     """
     hif_setmodels ---- Set calibrator source models
@@ -63,8 +63,6 @@ def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, trans
                   example: 'myfluxes.csv'
     normfluxes    Normalize the transfer source flux densities.
     scalebychan   Scale the flux density on a per channel basis or else on a per spw basis
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

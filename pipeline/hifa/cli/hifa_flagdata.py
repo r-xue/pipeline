@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None, scan=None, scannumber=None, intents=None,
                   edgespw=None, fracspw=None, fracspwfps=None, online=None, partialpol=None, lowtrans=None,
                   mintransrepspw=None, mintransnonrepspws=None, fileonline=None, template=None, filetemplate=None,
-                  hm_tbuff=None, tbuff=None, qa0=None, qa2=None, flagbackup=None, acceptresults=None):
+                  hm_tbuff=None, tbuff=None, qa0=None, qa2=None, flagbackup=None):
     """
     hifa_flagdata ---- Do metadata based flagging of a list of MeasurementSets.
 
@@ -126,9 +126,6 @@ def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None, scan=Non
                        QA2 flags.
     flagbackup
                        Back up any pre-existing flags.
-    acceptresults
-                       Add the results of the task to the pipeline context (True) or
-                       reject them (False).
 
     --------- examples -----------------------------------------------------------
 

@@ -4,8 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None,
-               acceptresults=None):
+def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None):
 
     """
     hif_antpos ---- Derive an antenna position calibration table
@@ -58,8 +57,6 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
     antposfile    The file(s) containing the antenna offsets. Used if hm_antpos
                   is 'file'.
                   example: 'antennapos.csv'
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

@@ -7,8 +7,7 @@ import pipeline.h.cli.utils as utils
 def hif_rawflagchans(vis=None, spw=None, intent=None,
   flag_hilo=None, fhl_limit=None, fhl_minsample=None,
   flag_bad_quadrant=None, fbq_hilo_limit=None,
-  fbq_antenna_frac_limit=None, fbq_baseline_frac_limit=None,
-  acceptresults=None):
+  fbq_antenna_frac_limit=None, fbq_baseline_frac_limit=None):
 
     """
     hif_rawflagchans ---- Flag deviant baseline/channels in raw data
@@ -92,8 +91,6 @@ def hif_rawflagchans(vis=None, spw=None, intent=None,
                             suspect channel/baselines in a particular baseline/quadrant exceeds
                             fbq_baseline_frac_limit then all data for that baseline/quadrant will
                             be flagged.
-    acceptresults           This parameter has no effect. The Tsyscal file is already
-                            in the pipeline context and is flagged in situ.
 
     --------- examples -----------------------------------------------------------
 

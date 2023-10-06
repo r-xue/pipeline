@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_session_refant(vis=None, phase_threshold=None, acceptresults=None):
+def hifa_session_refant(vis=None, phase_threshold=None):
     """
     hifa_session_refant ---- Select best reference antenna for session(s)
 
@@ -29,9 +29,6 @@ def hifa_session_refant(vis=None, phase_threshold=None, acceptresults=None):
                     solution outliers in caltables.
 
                     Example: phase_threshold=0.005
-    acceptresults
-                    Automatically accept the results of the task into the pipeline context (True)
-                    or reject them (False).
 
     --------- examples -----------------------------------------------------------
 

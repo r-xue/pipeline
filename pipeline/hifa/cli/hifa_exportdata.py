@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, pprfile=None, calintents=None,
-                    calimages=None, targetimages=None, products_dir=None, acceptresults=None):
+                    calimages=None, targetimages=None, products_dir=None):
     """
     hifa_exportdata ---- Prepare interferometry data for export
 
@@ -78,9 +78,6 @@ def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportms
                           Name of the data products subdirectory. Defaults to './'.
 
                           Example: products_dir='../products'
-    acceptresults
-                          Add the results of the task to the pipeline context (True) or
-                          reject them (False).
 
     --------- examples -----------------------------------------------------------
 

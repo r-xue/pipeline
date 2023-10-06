@@ -4,8 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_solint(vis=None, acceptresults=None, limit_short_solint=None,
-                refantignore=None):
+def hifv_solint(vis=None, limit_short_solint=None, refantignore=None):
 
     """
     hifv_solint ---- Determines different solution intervals
@@ -24,8 +23,6 @@ def hifv_solint(vis=None, acceptresults=None, limit_short_solint=None,
 
     vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets
                        specified in the h_init or hifv_importdata task.
-    acceptresults      Add the results of the task to the pipeline context (True) or
-                       reject them (False).  This is a pipeline task execution mode.
     limit_short_solint Keyword argument in units of seconds to limit the short solution interval.
                        Can be a string or float numerical value in units of seconds of '0.45' or 0.45.
                        Can be set to a string value of 'int'.

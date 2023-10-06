@@ -73,10 +73,6 @@ def get_heuristic(arg):
 
 
 def execute_task(context, casa_task, casa_args):
-    accept_results = casa_args.get('acceptresults', True)
-    if accept_results is None:
-        accept_results = True
-
     # get the pipeline task inputs
     task_inputs = _get_task_inputs(casa_task, context, casa_args)
 
@@ -89,8 +85,7 @@ def execute_task(context, casa_task, casa_args):
     results.taskname = casa_task
 
     # accept the results if desired
-    if accept_results:
-        _merge_results(context, results)
+    _merge_results(context, results)
 
     tracebacks = utils.get_tracebacks(results)
     if len(tracebacks) > 0:

@@ -5,8 +5,7 @@ from . import utils
 
 @utils.cli_wrapper
 def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, pprfile=None, calintents=None,
-                 calimages=None, targetimages=None, products_dir=None,
-                 acceptresults=None):
+                 calimages=None, targetimages=None, products_dir=None):
 
     """
     h_exportdata ---- Prepare interferometry data for export
@@ -58,7 +57,6 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
                           example: targetimages=['NGC3256.band3', 'NGC3256.band6']
     products_dir          Name of the data products subdirectory.
                           example: products_dir='../products'
-    acceptresults         Add the results into the pipeline context
 
     --------- examples -----------------------------------------------------------
 

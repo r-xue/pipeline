@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None, acceptresults=None):
+def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None):
     """
     hifa_flagtargets ---- Do science target flagging
 
@@ -32,9 +32,6 @@ def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None
                   form 'msname_flagtargetstemplate.txt' is assumed.
     flagbackup
                   Back up any pre-existing flags; defaults to False.
-    acceptresults
-                  Add the results of the task to the pipeline context (True)
-                  or reject them (False).
 
     --------- examples -----------------------------------------------------------
 

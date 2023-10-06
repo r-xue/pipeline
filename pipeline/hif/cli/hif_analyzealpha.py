@@ -4,8 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None,
-                     acceptresults=None):
+def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None):
 
     """
     hif_analyzealpha ---- Extract spectral index from intensity peak in VLA/VLASS images
@@ -23,7 +22,6 @@ def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None,
     image          Restored subimage
     alphafile      Input spectral index map
     alphaerrorfile Input spectral index error map
-    acceptresults  Add the results into the pipeline context
 
     --------- examples -----------------------------------------------------------
 

@@ -11,8 +11,7 @@ def hsd_tsysflag(vis=None, caltable=None,
                  flag_fieldshape=None, ff_refintent=None, ff_max_limit=None,
                  flag_birdies=None, fb_sharps_limit=None,
                  flag_toomany=None, tmf1_limit=None, tmef1_limit=None,
-                 metric_order=None, normalize_tsys=None, filetemplate=None,
-                 acceptresults=None):
+                 metric_order=None, normalize_tsys=None, filetemplate=None):
 
     """
     hsd_tsysflag ---- Flag deviant system temperature measurements
@@ -93,8 +92,6 @@ def hsd_tsysflag(vis=None, caltable=None,
     filetemplate    The name of a text file that contains the manual Tsys flagging
                     template. If the template flags file is undefined, a name of the form
                     'msname.flagtsystemplate.txt' is assumed.
-    acceptresults   Add the results of the task to the pipeline context (True) or
-                    reject them (False).
 
     --------- examples -----------------------------------------------------------
 

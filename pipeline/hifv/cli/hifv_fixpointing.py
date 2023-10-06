@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_fixpointing(vis=None, acceptresults=None):
+def hifv_fixpointing(vis=None):
 
     """
     hifv_fixpointing ---- Base fixpointing task
@@ -19,11 +19,6 @@ def hifv_fixpointing(vis=None, acceptresults=None):
 
     vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
                   specified in the h_init or hifv_importdata task.
-
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
-
-                  default: True
 
     --------- examples -----------------------------------------------------------
 

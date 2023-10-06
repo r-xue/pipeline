@@ -5,7 +5,7 @@ from . import utils
 
 @utils.cli_wrapper
 def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None, bdfflags=None,
-                  ocorr_mode=None, asis=None, acceptresults=None):
+                  ocorr_mode=None, asis=None):
 
     """
     h_restoredata ---- Restore flags and calibration state from a pipeline run
@@ -90,9 +90,6 @@ def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, raw
                   The value given to this option must be a list of table names separated by space characters.
 
                   example: ocorr_mode='Source Receiver'
-
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

@@ -4,8 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None,
-                acceptresults=None):
+def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
 
     """
     hsd_imaging ---- Generate single dish images
@@ -36,8 +35,6 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None,
                   example: "`*Sgr*,M100`"
     spw           Data selection by spw ids.
                   example: "3,4" (generate images for spw 3 and 4)
-    acceptresults Add the results of the task to the pipeline context (True)
-                  or reject them (False).
 
     --------- examples -----------------------------------------------------------
 

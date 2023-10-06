@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_targetflag(vis=None, acceptresults=None, intents=None):
+def hifv_targetflag(vis=None, intents=None):
 
     """
     hifv_targetflag ---- Targetflag
@@ -19,8 +19,6 @@ def hifv_targetflag(vis=None, acceptresults=None, intents=None):
 
     vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
                   specified in the h_init or hifv_importdata task.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
     intents       List of intents of scans to be flagged
 
     --------- examples -----------------------------------------------------------

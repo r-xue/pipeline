@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_fluxcalflag(vis=None, field=None, intent=None, spw=None, threshold=None, appendlines=None, linesfiles=None,
-                     applyflags=None, acceptresults=None):
+                     applyflags=None):
     """
     hifa_fluxcalflag ---- Locate and flag line regions in solar system flux calibrators
 
@@ -54,9 +54,6 @@ def hifa_fluxcalflag(vis=None, field=None, intent=None, spw=None, threshold=None
                   starting and ending frequency in GHz.
     applyflags
                   Boolean for whether to apply the generated flag commands. (default True)
-    acceptresults
-                  Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

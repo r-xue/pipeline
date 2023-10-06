@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_gaincurves(vis=None, caltable=None, acceptresults=None):
+def hifv_gaincurves(vis=None, caltable=None):
 
     """
     hifv_gaincurves ---- Runs gencal in gc mode
@@ -20,8 +20,6 @@ def hifv_gaincurves(vis=None, caltable=None, acceptresults=None):
 
     vis           List of input visibility data
     caltable      String name of caltable
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

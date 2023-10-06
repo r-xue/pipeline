@@ -4,8 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None, chanbin=None, timebin=None,
-                    acceptresults=None):
+def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None, chanbin=None, timebin=None):
 
     """
     hif_mstransform ---- Create new MeasurementSets for science target imaging
@@ -51,8 +50,6 @@ def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None,
                   switched to True.
     timebin       Bin width for time averaging. If timebin > 0s then
                   timeaverage is automatically switched to True.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_restorepims(vis=None, reimaging_resources=None, acceptresults=None):
+def hifv_restorepims(vis=None, reimaging_resources=None):
 
     """
     hifv_restorepims ---- Restore VLASS SE per-image measurement set data, resetting flagging, weights, and applying self-calibration.
@@ -20,10 +20,6 @@ def hifv_restorepims(vis=None, reimaging_resources=None, acceptresults=None):
 
     vis                 List of input visibility data
     reimaging_resources file path of reimaging_resources.tgz from the SE imaging product
-    acceptresults       Add the results of the task to the pipeline context (True) or
-                        reject them (False).
-
-                        default: True
 
     --------- examples -----------------------------------------------------------
 

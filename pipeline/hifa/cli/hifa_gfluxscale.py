@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, transintent=None, refspwmap=None,
                     reffile=None, phaseupsolint=None, solint=None, minsnr=None, refant=None, hm_resolvecals=None,
-                    antenna=None, peak_fraction=None, acceptresults=None):
+                    antenna=None, peak_fraction=None):
     """
     hifa_gfluxscale ---- Derive flux density scales from standard calibrators
 
@@ -126,9 +126,6 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
                     antennas to be included in the flux calibration. Defined as
                     the point where the calibrator visibilities have fallen to
                     ``peak_fraction`` of the peak value.
-    acceptresults
-                    Add the results of the task to the pipeline context (True) or
-                    reject them (False).
 
     --------- examples -----------------------------------------------------------
 

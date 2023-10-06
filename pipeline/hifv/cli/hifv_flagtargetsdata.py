@@ -4,8 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=None,
-                         acceptresults=None):
+def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=None):
 
     """
     hifv_flagtargetsdata ---- Apply a flagtemplate to target data prior to running imaging pipeline tasks
@@ -26,10 +25,6 @@ def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=
                   If the template flags files is undefined a name of the
                   form 'msname_flagtargetstemplate.txt' is assumed.
     flagbackup    Back up any pre-existing flags.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
-
-                  default: True
 
     --------- examples -----------------------------------------------------------
 

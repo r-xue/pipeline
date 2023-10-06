@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hif_makermsimages(vis=None, acceptresults=None):
+def hif_makermsimages(vis=None):
 
     """
     hif_makermsimages ---- Create RMS images for VLASS data.
@@ -22,8 +22,6 @@ def hif_makermsimages(vis=None, acceptresults=None):
                   converted  to MS format.
 
                   example: vis=['X227.ms', 'asdms.tar.gz']
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

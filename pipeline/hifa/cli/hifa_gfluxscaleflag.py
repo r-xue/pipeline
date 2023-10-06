@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_gfluxscaleflag(vis=None, intent=None, phaseupsolint=None, solint=None, minsnr=None, refant=None,
                         antnegsig=None, antpossig=None, tmantint=None, tmint=None, tmbl=None, antblnegsig=None,
-                        antblpossig=None, relaxed_factor=None, niter=None, acceptresults=None):
+                        antblpossig=None, relaxed_factor=None, niter=None):
     """
     hifa_gfluxscaleflag ---- Flag the phase, pol, flux calibrators
 
@@ -117,9 +117,6 @@ def hifa_gfluxscaleflag(vis=None, intent=None, phaseupsolint=None, solint=None, 
                    iterations are skipped.
 
                    Example: niter=2
-    acceptresults
-                   Add the results of the task to the pipeline context (True) or
-                   reject them (False).
 
     --------- examples -----------------------------------------------------------
 

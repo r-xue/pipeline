@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffile=None, fluxdensity=None, spix=None,
-                  reffreq=None, scalebychan=None, standard=None, acceptresults=None):
+                  reffreq=None, scalebychan=None, standard=None):
 
     """
     hifv_vlasetjy ---- Sets flux density scale and fills calibrator model to measurement set
@@ -33,8 +33,6 @@ def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffi
     reffreq       Reference frequency for spix.  Can be set when fluxdensity is not -1
     scalebychan   Scale the flux density on a per channel basis or else on a per spw basis
     standard      Flux density standard
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

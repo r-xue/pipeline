@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, hm_spwmapmode=None, maxnarrowbw=None,
                     minfracmaxbw=None, samebb=None, phasesnr=None, bwedgefrac=None, hm_nantennas=None,
                     maxfracflagged=None, combine=None, refant=None, minblperant=None, minsnr=None,
-                    unregister_existing=None, acceptresults=None):
+                    unregister_existing=None):
     """
     hifa_spwphaseup ---- Compute phase calibration spw map and per spw phase offsets
 
@@ -177,9 +177,6 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
     unregister_existing
                         Unregister previous spwphaseup calibrations from the pipeline context
                         before registering the new calibrations from this task.
-    acceptresults
-                        Add the results of the task to the pipeline context (True) or
-                        reject them (False).
 
     --------- examples -----------------------------------------------------------
 

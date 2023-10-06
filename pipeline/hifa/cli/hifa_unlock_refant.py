@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_unlock_refant(vis=None, acceptresults=None):
+def hifa_unlock_refant(vis=None):
     """
     hifa_unlock_refant ---- Unlock reference antenna list
 
@@ -28,8 +28,6 @@ def hifa_unlock_refant(vis=None, acceptresults=None):
                   MeasurementSets specified in the pipeline context.
 
                   Example: vis=['ngc5921.ms']
-    acceptresults
-                  Add the results into the pipeline context
 
     --------- examples -----------------------------------------------------------
 

@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=None, createmms=None,
-                    ocorr_mode=None, datacolumns=None, acceptresults=None):
+                    ocorr_mode=None, datacolumns=None):
 
     """
     hifv_importdata ---- Imports data into the VLA pipeline
@@ -69,8 +69,6 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
                   {'data':'raw','corrected':'regcal_contline'}
                   or {'data':'raw'} will be assumed, depending on
                   whether the corrected column exists or not.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

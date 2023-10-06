@@ -5,8 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, minphaseupints=None, evenbpints=None,
-                  bpsnr=None, minbpsnr=None, minbpnchan=None, hm_nantennas=None, maxfracflagged=None,
-                  acceptresults=None):
+                  bpsnr=None, minbpsnr=None, minbpnchan=None, hm_nantennas=None, maxfracflagged=None):
     """
     hifa_bpsolint ---- Compute optimal bandpass calibration solution intervals
 
@@ -146,9 +145,6 @@ def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, 
                    it is excluded from the signal-to-noise estimate.
 
                    example: maxfracflagged=0.80
-    acceptresults
-                   Accept results of the task to the pipeline context (True) or
-                   reject them (False).
 
     --------- examples -----------------------------------------------------------
 

@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 def hifa_wvrgcal(vis=None, caltable=None, offsetstable=None, hm_toffset=None, toffset=None, segsource=None,
                  sourceflag=None, hm_tie=None, tie=None, nsol=None, disperse=None, wvrflag=None, hm_smooth=None,
                  smooth=None, scale=None, maxdistm=None, minnumants=None, mingoodfrac=None, refant=None, qa_intent=None,
-                 qa_bandpass_intent=None, qa_spw=None, accept_threshold=None, acceptresults=None):
+                 qa_bandpass_intent=None, qa_spw=None, accept_threshold=None):
     """
     hifa_wvrgcal ----
     Generate a gain table based on Water Vapor Radiometer data, and calculate
@@ -160,8 +160,6 @@ def hifa_wvrgcal(vis=None, caltable=None, offsetstable=None, hm_toffset=None, to
                        The phase-rms improvement ratio
                        (rms without wvr / rms with wvr) above which the wrvg file will be
                        accepted into the context for subsequent application.
-    acceptresults
-                       Add the results to the pipeline context
 
     --------- examples -----------------------------------------------------------
 

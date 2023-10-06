@@ -4,8 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_modelcol=None,
-                   acceptresults=None):
+def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_modelcol=None):
 
     """
     hifv_checkflag ---- Run RFI flagging using flagdata in various modes
@@ -51,8 +50,6 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_model
                        default=True, for 'bpd-vla', 'allcals-vla', 'bpd', and 'allcals'
                        default=False, for '' and 'semi'
     overwrite_modelcol Always write the model column, even if it already exists
-    acceptresults      Add the results of the task to the pipeline context (True) or
-                       reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

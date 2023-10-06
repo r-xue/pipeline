@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hif_makecutoutimages(vis=None, offsetblc=None, offsettrc=None, acceptresults=None):
+def hif_makecutoutimages(vis=None, offsetblc=None, offsettrc=None):
 
     """
     hif_makecutoutimages ---- Cutout central 1 sq. degree from VLASS QL, SE, and Coarse Cube images
@@ -29,8 +29,6 @@ def hif_makecutoutimages(vis=None, offsetblc=None, offsettrc=None, acceptresults
                   in arcseconds
     offsettrc     +x and +y offsets to the top right corner (trc)
                   in arcseconds
-    acceptresults Add the results of the task to the pipeline context (True)
-                  or reject them (False).
 
     --------- examples -----------------------------------------------------------
 

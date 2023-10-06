@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None, mbdkcross=None,
-                        clipminmax=None, acceptresults=None):
+                        clipminmax=None):
 
     """
     hifv_circfeedpolcal ---- Perform polarization calibration for VLA circular feeds.
@@ -28,8 +28,6 @@ def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_
     leakage_poltype poltype to use in first polcal execution - blank string means use default heuristics
     mbdkcross       Run gaincal KCROSS grouped by baseband
     clipminmax      Acceptable range for leakage amplitudes, values outside will be flagged.
-    acceptresults   Add the results of the task to the pipeline context (True) or
-                    reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

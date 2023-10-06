@@ -5,8 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, applymode=None, flagbackup=None,
-                   flagsum=None, flagdetailedsum=None, gainmap=None,
-                   acceptresults=None):
+                   flagsum=None, flagdetailedsum=None, gainmap=None):
 
     """
     hifv_applycals ---- Apply calibration tables to measurement set
@@ -53,8 +52,6 @@ def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, ap
     flagsum         Compute before and after flagging summary statistics
     flagdetailedsum Compute detailed flagging statistics
     gainmap         Mode to map gainfields to scans.
-    acceptresults   Add the results of the task to the pipeline context (True) or
-                    reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

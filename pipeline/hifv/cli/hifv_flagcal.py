@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_flagcal(vis=None, caltable=None, clipminmax=None, acceptresults=None):
+def hifv_flagcal(vis=None, caltable=None, clipminmax=None):
 
     """
     hifv_flagcal ---- Flagcal task
@@ -20,8 +20,6 @@ def hifv_flagcal(vis=None, caltable=None, clipminmax=None, acceptresults=None):
     vis           List of input visibility data
     caltable      String name of the caltable
     clipminmax    Range to use for clipping
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

@@ -42,8 +42,7 @@ def hif_editimlist(imagename=None,
                    nsigma=None,
                    uvtaper=None,
                    uvrange=None,
-                   width=None,
-                   acceptresults=None):
+                   width=None):
 
     """
     hif_editimlist ---- Add to a list of images to be produced with hif_makeimages()
@@ -112,7 +111,6 @@ def hif_editimlist(imagename=None,
     uvtaper              Used to set a uv-taper during clean.
     uvrange              Set of data selection uv ranges, \'\' for all.
     width                Channel width
-    acceptresults        Add the results to the pipeline context
 
     --------- examples -----------------------------------------------------------
 

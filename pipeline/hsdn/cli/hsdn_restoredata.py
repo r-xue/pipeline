@@ -5,8 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hsdn_restoredata(vis=None, caltable=None, reffile=None,
-                     products_dir=None, copytoraw=None, rawdata_dir=None, hm_rasterscan=None,
-                     acceptresults=None):
+                     products_dir=None, copytoraw=None, rawdata_dir=None, hm_rasterscan=None):
 
     """
     hsdn_restoredata ---- Restore flagged and calibration single dish data from a pipeline run
@@ -101,8 +100,6 @@ def hsdn_restoredata(vis=None, caltable=None, reffile=None,
     hm_rasterscan Heuristics method for raster scan analysis. Two analysis modes,
                   time-domain analysis ('time') and direction analysis ('direction'), are available.
                   Default is 'time'.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

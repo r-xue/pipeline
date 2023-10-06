@@ -6,8 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None, antenna=None, hm_gaintype=None,
                 calmode=None, solint=None, combine=None, refant=None, refantmode=None, solnorm=None, minblperant=None,
-                minsnr=None, smodel=None, splinetime=None, npointaver=None, phasewrap=None,
-                acceptresults=None):
+                minsnr=None, smodel=None, splinetime=None, npointaver=None, phasewrap=None):
 
     """
     hif_gaincal ---- Determine temporal gains from calibrator observations
@@ -95,8 +94,6 @@ def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None, ante
                   hm_gaintype='gspline'. Keep at default value.
     phasewrap     Wrap the phase for changes larger than this amount (degrees).
                   Used for hm_gaintype='gspline'. Keep at default value.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

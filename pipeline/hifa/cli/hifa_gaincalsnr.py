@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, phasesnr=None, bwedgefrac=None, hm_nantennas=None,
-                    maxfracflagged=None, acceptresults=None):
+                    maxfracflagged=None):
     """
     hifa_gaincalsnr ---- Compute gaincal signal-to-noise ratios per spw
 
@@ -100,9 +100,6 @@ def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, phasesnr=None, 
                    before it is excluded from the signal to noise estimate.
 
                    Example: maxfracflagged=0.80
-    acceptresults
-                   Accept results of the task to the pipeline context (True) or
-                   reject them (False).
 
     --------- examples -----------------------------------------------------------
 

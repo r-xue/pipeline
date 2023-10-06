@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_selfcal(vis=None, acceptresults=None, refantignore=None,
+def hifv_selfcal(vis=None, refantignore=None,
                  combine=None, selfcalmode=None, refantmode=None, overwrite_modelcol=None):
 
     """
@@ -19,8 +19,6 @@ def hifv_selfcal(vis=None, acceptresults=None, refantignore=None,
 
     vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets
                        specified in the h_init or hifv_importdata task.
-    acceptresults      Add the results of the task to the pipeline context (True) or
-                       reject them (False).  This is a pipeline task execution mode.
     refantignore       String list of antennas to ignore
     combine            Data axes which to combine for solve
                        Options: '','obs','scan','spw',field', or any

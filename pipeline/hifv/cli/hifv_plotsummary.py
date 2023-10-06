@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_plotsummary(vis=None, acceptresults=None):
+def hifv_plotsummary(vis=None):
 
     """
     hifv_plotsummary ---- Create pipeline summary plots
@@ -18,8 +18,6 @@ def hifv_plotsummary(vis=None, acceptresults=None):
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of input visibility data
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

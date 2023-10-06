@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_swpowcal(vis=None, caltable=None, spw=None, acceptresults=None):
+def hifv_swpowcal(vis=None, caltable=None, spw=None):
 
     """
     hifv_swpowcal ---- Runs gencal in swpow mode
@@ -20,8 +20,6 @@ def hifv_swpowcal(vis=None, caltable=None, spw=None, acceptresults=None):
     vis           List of input visibility data
     caltable      String name of caltable
     spw           Spectral-window/frequency/channel: '' ==> all, spw="0:17~19"
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

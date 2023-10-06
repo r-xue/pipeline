@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_finalcals(vis=None, acceptresults=None, weakbp=None, refantignore=None):
+def hifv_finalcals(vis=None, weakbp=None, refantignore=None):
 
     """
     hifv_finalcals ---- Compute final gain calibration tables
@@ -17,10 +17,8 @@ def hifv_finalcals(vis=None, acceptresults=None, weakbp=None, refantignore=None)
 
     --------- parameter descriptions ---------------------------------------------
 
-     vis          The list of input MeasurementSets. Defaults to the list of MeasurementSets
+    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
                   specified in the h_init or hifv_importdata task.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
     weakbp        Activate weak bandpass heuristics
     refantignore  String list of antennas to ignore
 

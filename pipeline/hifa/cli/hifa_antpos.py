@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None,
-                acceptresults=None, threshold=None):
+                threshold=None):
     """
     hifa_antpos ---- Derive an antenna position calibration table
 
@@ -75,9 +75,6 @@ def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=N
     antposfile
                   The file(s) containing the antenna offsets. Used if
                   ``hm_antpos`` is 'file'.
-    acceptresults
-                  Automatically accept the results of the task into the pipeline
-                  context (True) or reject them (False).
     threshold
                   Highlight antenna position offsets greater than this value in
                   the weblog. Units are wavelengths and the default is 1.0.

@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hif_lowgainflag(vis=None, intent=None, spw=None, refant=None, flag_nmedian=None, fnm_lo_limit=None,
-                    fnm_hi_limit=None, tmef1_limit=None, acceptresults=None):
+                    fnm_hi_limit=None, tmef1_limit=None):
     """
     hif_lowgainflag ---- Flag antennas with low or high gain
 
@@ -65,9 +65,6 @@ def hif_lowgainflag(vis=None, intent=None, spw=None, refant=None, flag_nmedian=N
                   if the fraction is equal or greater than this value, then flag
                   the visibility data from all antennas in this spw
                   (default: 0.666)
-    acceptresults
-                  Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_testBPdcals(vis=None, acceptresults=None, weakbp=None, refantignore=None, doflagundernspwlimit=None):
+def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None):
 
     """
     hifv_testBPdcals ---- Runs initial delay and bandpass calibration to setup for RFI flagging
@@ -18,8 +18,6 @@ def hifv_testBPdcals(vis=None, acceptresults=None, weakbp=None, refantignore=Non
 
     vis                  The list of input MeasurementSets. Defaults to the list of MeasurementSets
                          specified in the h_init or hifv_importdata task.
-    acceptresults        Add the results of the task to the pipeline context (True) or
-                         reject them (False).  This is a pipeline task execution mode.
     weakbp               Activate weak bandpass heuristics
     refantignore         String list of antennas to ignore
                          Example:  refantignore='ea02,ea03'

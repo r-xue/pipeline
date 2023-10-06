@@ -5,8 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None,
-                    overwrite=None, nocopy=None, createmms=None,
-                    acceptresults=None):
+                    overwrite=None, nocopy=None, createmms=None):
 
     """
     hsdn_importdata ---- Imports Nobeyama data into the single dish pipeline
@@ -72,7 +71,6 @@ def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None
                   instead.
     nocopy        Disable copying of MS to working directory.
     createmms     Create an MMS
-    acceptresults results of the task to the pipeline context (True) or reject them (False).
 
     --------- examples -----------------------------------------------------------
 

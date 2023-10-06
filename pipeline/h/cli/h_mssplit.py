@@ -5,7 +5,7 @@ from . import utils
 
 @utils.cli_wrapper
 def h_mssplit(vis=None, outputvis=None, field=None, intent=None, spw=None, datacolumn=None, chanbin=None, timebin=None,
-              replace=None, acceptresults=None):
+              replace=None):
 
     """
     h_mssplit ---- Select data from calibrated MS(s) to form new MS(s) for imaging
@@ -44,7 +44,6 @@ def h_mssplit(vis=None, outputvis=None, field=None, intent=None, spw=None, datac
     timebin       The time binning factor. '0s' for no binning
                   example: '10s' for 10 second binning
     replace       If a split was performed delete the parent MS and remove it from the context.
-    acceptresults Add the results to the pipeline context
 
     --------- examples -----------------------------------------------------------
 

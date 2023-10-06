@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_tecmaps(vis=None, acceptresults=None):
+def hifv_tecmaps(vis=None):
 
     """
     hifv_tecmaps ---- Base tecmaps task
@@ -16,8 +16,6 @@ def hifv_tecmaps(vis=None, acceptresults=None):
 
     vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
                   specified in the h_init or hifv_importdata task.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

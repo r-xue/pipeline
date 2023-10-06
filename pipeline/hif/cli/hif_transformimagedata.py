@@ -5,8 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hif_transformimagedata(vis=None, outputvis=None, field=None, intent=None, spw=None, datacolumn=None, chanbin=None,
-                           timebin=None, replace=None, clear_pointing=None, modify_weights=None, wtmode=None,
-                           acceptresults=None):
+                           timebin=None, replace=None, clear_pointing=None, modify_weights=None, wtmode=None):
 
     """
     hif_transformimagedata ---- Extract fields for the desired VLASS image to a new MS and reset weights if desired
@@ -40,8 +39,6 @@ def hif_transformimagedata(vis=None, outputvis=None, field=None, intent=None, sp
     clear_pointing Clear the pointing table.
     modify_weights Re-initialize the weights.
     wtmode         optional weight initialization mode when modify_weights=True
-    acceptresults  Add the results of the task to the pipeline context (True) or
-                   reject them (False).
 
     --------- examples -----------------------------------------------------------
 

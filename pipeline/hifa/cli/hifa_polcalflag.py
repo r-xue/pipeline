@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_polcalflag(vis=None, acceptresults=None):
+def hifa_polcalflag(vis=None):
     """
     hifa_polcalflag ---- Flag polarization calibrators
 
@@ -24,9 +24,6 @@ def hifa_polcalflag(vis=None, acceptresults=None):
                   '': use all MeasurementSets in the context
 
                   Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    acceptresults
-                  Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

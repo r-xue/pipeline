@@ -4,8 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hsd_exportdata(pprfile=None,targetimages=None, products_dir=None,
-     acceptresults=None):
+def hsd_exportdata(pprfile=None,targetimages=None, products_dir=None):
 
     """
     hsd_exportdata ---- Prepare single dish data for export
@@ -35,8 +34,6 @@ def hsd_exportdata(pprfile=None,targetimages=None, products_dir=None,
                   example: targetimages=['r_aqr.CM02.spw5.line0.XXYY.sd.im', 'r_aqr.CM02.spw5.XXYY.sd.cont.im']
     products_dir  Name of the data products subdirectory. Defaults to './'
                   example: products_dir='../products'
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

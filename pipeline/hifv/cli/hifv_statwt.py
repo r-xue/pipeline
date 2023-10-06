@@ -4,8 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_statwt(vis=None, datacolumn=None, overwrite_modelcol=None,
-                statwtmode=None, acceptresults=None):
+def hifv_statwt(vis=None, datacolumn=None, overwrite_modelcol=None, statwtmode=None):
 
     """
     hifv_statwt ---- Compute statistical weights and write them to measurement set
@@ -29,8 +28,6 @@ def hifv_statwt(vis=None, datacolumn=None, overwrite_modelcol=None,
                        Single Epoch ('VLASS-SE') use case. Note that the 'VLASS-SE'
                        mode is meant to be used with datacolumn='residual_data'.
                        Default is 'VLA'.
-    acceptresults      Add the results of the task to the pipeline context (True) or
-                       reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

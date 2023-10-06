@@ -5,8 +5,7 @@ from . import utils
 
 @utils.cli_wrapper
 def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, overwrite=None,
-                 nocopy=None, bdfflags=None, lazy=None, ocorr_mode=None, createmms=None,
-                 acceptresults=None):
+                 nocopy=None, bdfflags=None, lazy=None, ocorr_mode=None, createmms=None):
 
     """
     h_importdata ---- Imports data into the interferometry pipeline
@@ -53,7 +52,6 @@ def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, over
     createmms         Create a multi-MeasurementSet ('true') ready for parallel
                       processing, or a standard MeasurementSet ('false'). The default setting
                       ('automatic') creates an MMS if running in a cluster environment.
-    acceptresults     Add the results into the pipeline context
 
     --------- examples -----------------------------------------------------------
 

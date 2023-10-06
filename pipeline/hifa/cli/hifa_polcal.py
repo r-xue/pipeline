@@ -3,7 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None, acceptresults=None):
+def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None):
     """
     hifa_polcal ---- Derive instrumental polarization calibration for ALMA.
 
@@ -40,9 +40,6 @@ def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None, acce
                     are reported in the CASA log.
 
                     Default: 1e-3
-    acceptresults
-                    Add the results of the task to the pipeline context (True)
-                    or reject them (False).
 
     --------- examples -----------------------------------------------------------
 

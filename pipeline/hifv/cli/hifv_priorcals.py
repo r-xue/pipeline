@@ -4,8 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None,
-                   acceptresults=None):
+def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None):
 
     """
     hifv_priorcals ---- Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.
@@ -24,8 +23,6 @@ def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, swpo
     show_tec_maps        Plot tec maps
     apply_tec_correction Apply tec correction
     swpow_spw            Spectral-window(s) for plotting: "" ==>all, spw="6,14"
-    acceptresults        Add the results of the task to the pipeline context (True) or
-                         reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 

@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, antenna=None, phaseup=None,
                  phaseupsolint=None, phaseupbw=None, solint=None, combine=None, refant=None, solnorm=None,
-                 minblperant=None, minsnr=None, acceptresults=None):
+                 minblperant=None, minsnr=None):
 
     """
     hif_bandpass ---- Compute bandpass calibration solutions
@@ -82,8 +82,6 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
                   solve. Antennas with fewer baselines are excluded from
                   solutions.
     minsnr        Reject solutions below this SNR
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

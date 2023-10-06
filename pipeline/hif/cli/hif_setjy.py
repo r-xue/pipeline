@@ -6,8 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_setjy(vis=None, field=None, intent=None, spw=None, model=None,
               reffile=None, normfluxes=None, reffreq=None, fluxdensity=None,
-              spix=None, scalebychan=None, standard=None,
-              acceptresults=None):
+              spix=None, scalebychan=None, standard=None):
 
     """
     hif_setjy ---- Fill the model column with calibrated visibilities
@@ -77,8 +76,6 @@ def hif_setjy(vis=None, field=None, intent=None, spw=None, model=None,
 
                   default: 'Butler-JPL-Horizons 2012' for solar system object
                                            'Perley-Butler 2010' otherwise
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 

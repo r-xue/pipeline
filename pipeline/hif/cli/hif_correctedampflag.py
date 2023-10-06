@@ -8,8 +8,7 @@ def hif_correctedampflag(
         vis=None, intent=None, field=None, spw=None, antnegsig=None,
         antpossig=None, tmantint=None,
         tmint=None, tmbl=None, antblnegsig=None,
-        antblpossig=None, relaxed_factor=None, niter=None,
-        acceptresults=None):
+        antblpossig=None, relaxed_factor=None, niter=None):
 
     """
     hif_correctedampflag ---- Flag corrected - model amplitudes based on calibrators.
@@ -62,8 +61,6 @@ def hif_correctedampflag(
     niter          Maximum number of times to iterate on evaluation of flagging
                    heuristics. If an iteration results in no new flags, then
                    subsequent iterations are skipped.
-    acceptresults  Add the results of the task to the pipeline context (True) or
-                   reject them (False).
 
     --------- examples -----------------------------------------------------------
 

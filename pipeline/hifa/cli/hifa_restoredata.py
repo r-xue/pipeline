@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
-                     bdfflags=None, ocorr_mode=None, asis=None, acceptresults=None):
+                     bdfflags=None, ocorr_mode=None, asis=None):
     """
     hifa_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run
 
@@ -98,9 +98,6 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
                   list of table names separated by whitespace characters.
 
                   Example: asis='Source Receiver'
-    acceptresults
-                  Add the results of the task to the pipeline context (True)
-                  or reject them (False).
 
     --------- examples -----------------------------------------------------------
 
