@@ -450,36 +450,34 @@ class ImportData(basetask.StandardTaskTemplate):
             with open(outfile, 'w') as f:
                 f.writelines(template_text)
 
-    def _rename_J2000_to_ICRS(self, ms_path):
+    @staticmethod
+    def _rename_J2000_to_ICRS(ms_path):
         # PIPE-2006: rename J2000 FIELD and SOURCE table directions to ICRS (only for ALMA cycles 0-2);
         # adapted from a script by D.Petry (ESO), 2016-03-04
         with casa_tools.MSMDReader(ms_path) as msmd:
             if 'ALMA' not in msmd.observatorynames():
                 return
 
-        tb = casa_tools.table
-        tb.open(ms_path + '/FIELD', nomodify=False)
         basename = os.path.basename(ms_path)
         changed_columns = set()
-        for colname in ['PhaseDir_Ref', 'DelayDir_Ref', 'RefDir_Ref']:
-            a = tb.getcol(colname)
-            for i in range(len(a)):
-                if a[i] == 0:  # J2000
-                    a[i] = 21  # ICRS
-                    changed_columns.add(colname)
-            tb.putcol(colname, a)
+        with casa_tools.TableReader(ms_path + '/FIELD', nomodify=False) as tb:
+            for colname in ['PhaseDir_Ref', 'DelayDir_Ref', 'RefDir_Ref']:
+                a = tb.getcol(colname)
+                for i in range(len(a)):
+                    if a[i] == 0:  # J2000
+                        a[i] = 21  # ICRS
+                        changed_columns.add(colname)
+                tb.putcol(colname, a)
         if changed_columns:
             LOG.info(basename + ': changing coords from J2000 to ICRS in the FIELD table, columns ' +
                      ', '.join(changed_columns))
-        tb.close()
 
-        tb.open(ms_path + '/SOURCE', nomodify=False)
-        x = tb.getcolkeywords('DIRECTION')
-        if x['MEASINFO']['Ref'] == 'J2000':
-            x['MEASINFO']['Ref'] = 'ICRS'
-            tb.putcolkeywords('DIRECTION', x)
-            LOG.info(basename + ': changing coords from J2000 to ICRS in the SOURCE table')
-        tb.close()
+        with casa_tools.TableReader(ms_path + '/SOURCE', nomodify=False) as tb:
+            x = tb.getcolkeywords('DIRECTION')
+            if x['MEASINFO']['Ref'] == 'J2000':
+                x['MEASINFO']['Ref'] = 'ICRS'
+                tb.putcolkeywords('DIRECTION', x)
+                LOG.info(basename + ': changing coords from J2000 to ICRS in the SOURCE table')
 
 
 def get_datacolumn_name(msname: str) -> Optional[str]:
@@ -495,6 +493,7 @@ def get_datacolumn_name(msname: str) -> Optional[str]:
     """
     return search_columns(msname, ['DATA', 'FLOAT_DATA'])
 
+
 def get_correcteddatacolumn_name(msname: str) -> Optional[str]:
     """
     Return name of corrected data column in MeasurementSet (MS).
@@ -508,9 +507,11 @@ def get_correcteddatacolumn_name(msname: str) -> Optional[str]:
     """
     return search_columns(msname, ['CORRECTED_DATA'])
 
+
 def search_columns(msname: str, search_cols: List[str]) -> Optional[str]:
     """
     Args:
+        msname: MS directory name
         search_cols: List of column names to search for
 
     Returns:
@@ -523,7 +524,6 @@ def search_columns(msname: str, search_cols: List[str]) -> Optional[str]:
             if col in tb_cols:
                 return col
     return None
-
 
 
 FLAGGING_TEMPLATE_HEADER = '''#
