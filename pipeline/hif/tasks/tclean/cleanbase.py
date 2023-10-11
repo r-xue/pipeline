@@ -254,8 +254,8 @@ class CleanBase(basetask.StandardTaskTemplate):
         try:
             result = self._do_clean_cycle(scanidlist, result, iter=inputs.iter)
         except Exception as e:
-            error_msg = 'Cleaning failure for field {!s}, intent {!s}, specmode {!s}, spw {!s}: {!s}'.format(
-                inputs.field, inputs.intent, inputs.specmode, inputs.spw, e)
+            error_msg = ('Cleaning failure for field {!s}, intent {!s}, specmode {!s}, spw {!s}, iteration {!s}: {!s}'.
+                         format(inputs.field, inputs.intent, inputs.specmode, inputs.spw, inputs.iter, e))
             result.error = CleanBaseError(error_msg, 'Cleaning failure')
             LOG.error(error_msg)
             LOG.info(traceback.format_exc())
