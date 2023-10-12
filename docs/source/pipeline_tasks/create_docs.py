@@ -21,33 +21,6 @@ task_groups = {"h": "Generic",
                "hsd": "Single Dish",
                "hsdn": "Nobeyama"}
 
-# Dict which stores { 'task group' : [list of Tasks in that group]}
-tasks_by_group = {"h": [],
-                  "hif": [],
-                  "hifa": [],
-                  "hifas": [],
-                  "hifv": [],
-                  "hsd": [],
-                  "hsdn": []}
-
-# Tasks to exclude from the reference manual
-# hifv tasks confirmed by John Tobin via email 20230911
-# h tasks requested by Remy via email 20230921
-tasks_to_exclude = ['h_applycal',
-                    'h_export_calstate',
-                    'h_exportdata',
-                    'h_import_calstate',
-                    'h_importdata',
-                    'h_mssplit',
-                    'h_restoredata',
-                    'h_show_calstate',
-                    'hifv_targetflag',
-                    'hifv_gaincurves',
-                    'hifv_opcal',
-                    'hifv_rqcal',
-                    'hifv_swpowcal',
-                    'hifv_tecmaps']
-
 
 def check_dirs(filename: str):
     """Pre-check/create the ancestry directories of a given file path."""
@@ -56,13 +29,14 @@ def check_dirs(filename: str):
         os.makedirs(filedir)
 
 
-def write_out(pdict, rst_file="pipeline_new_tasks.rst", outdir=None):
+def write_landing_page(pdict, rst_file="pipeline_new_tasks.rst",
+                       mako_template="pipeline_tasks.mako", outdir=None):
     """Creates reST file for the "landing page" for the tasks.
     """
     script_path = os.path.dirname(os.path.realpath(__file__))
-    task_template = Template(filename=os.path.join(script_path, 'pipeline_tasks.mako'))
+    task_template = Template(filename=os.path.join(script_path, mako_template))
 
-    # Write the information from into a rst file that can be rendered by sphinx as html/pdf/etc.
+    # Write the information into a rst file that can be rendered by sphinx as html/pdf/etc.
 
     output_dir = script_path if outdir is None else outdir
     rst_file_full_path = os.path.join(output_dir, rst_file)
@@ -72,7 +46,7 @@ def write_out(pdict, rst_file="pipeline_new_tasks.rst", outdir=None):
         fd.writelines(rst_text)
 
 
-def write_tasks_out(pdict, outdir=None):
+def write_task_pages(pdict, outdir=None):
     """Creates reST files for each task.
     """
     script_path = os.path.dirname(os.path.realpath(__file__))
@@ -241,9 +215,10 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, dict]:
     return short_description, long_description, examples, parameters_dict
 
 
-def create_docs(missing_report=False, outdir=None, srcdir=None):
+def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude=None):
     """
-    Walks through the pipeline and creates documentation for each pipeline task.
+    Walks through the pipeline and creates reST documentation for each pipeline task, including an
+    overall landing page.
 
     Optionally generates and outputs lists of tasks with missing examples, parameters, and
     longer descriptions.
@@ -253,29 +228,59 @@ def create_docs(missing_report=False, outdir=None, srcdir=None):
         sys.path.insert(0, srcdir)
         import pipeline
 
+    # Dict which stores { 'task group' : [list of Tasks in that group]}
+    tasks_by_group = {"h": [],
+                      "hif": [],
+                      "hifa": [],
+                      "hifas": [],
+                      "hifv": [],
+                      "hsd": [],
+                      "hsdn": []}
+
+    if not tasks_to_exclude:
+        # Tasks to exclude from the reference manual
+        # hifv tasks confirmed by John Tobin via email 20230911
+        # h tasks requested by Remy via email 20230921
+        tasks_to_exclude = ['h_applycal',
+                            'h_export_calstate',
+                            'h_exportdata',
+                            'h_import_calstate',
+                            'h_importdata',
+                            'h_mssplit',
+                            'h_restoredata',
+                            'h_show_calstate',
+                            'hifv_targetflag',
+                            'hifv_gaincurves',
+                            'hifv_opcal',
+                            'hifv_rqcal',
+                            'hifv_swpowcal',
+                            'hifv_tecmaps']
+
     # Lists of cli PL tasks that are missing various pieces:
     missing_example = []
     missing_description = []
     missing_parameters = []
 
-    for name, obj in inspect.getmembers(pipeline):
-        if name in task_groups.keys():
-            for name2, obj2 in inspect.getmembers(obj):
-                if 'cli' in name2:
-                    for task_name, task_func in inspect.getmembers(obj2):
+    # Walk through the whole pipeline and generate documentation for cli pipeline tasks
+    for group_name, obj in inspect.getmembers(pipeline):
+        if group_name in task_groups.keys():
+            for folder_name, sub_obj in inspect.getmembers(obj):
+                if 'cli' in folder_name:
+                    for task_name, task_func in inspect.getmembers(sub_obj):
                         if '__' not in task_name and task_name is not None and task_name[0] == 'h':
                             docstring = task_func.__doc__
-                            short, long, examples, parameters = docstring_parse(docstring)
+                            short_description, long_description, examples, parameters = docstring_parse(docstring)
 
-                            if not examples:
-                                missing_example.append(task_name)
-                            if not long:
-                                missing_description.append(task_name)
-                            if not parameters:
-                                missing_parameters.append(task_name)
+                            if missing_report:
+                                if not examples:
+                                    missing_example.append(task_name)
+                                if not long_description:
+                                    missing_description.append(task_name)
+                                if not parameters:
+                                    missing_parameters.append(task_name)
 
                             if task_name not in tasks_to_exclude:
-                                tasks_by_group[name].append(Task(task_name, short, long, parameters, examples))
+                                tasks_by_group[group_name].append(Task(task_name, short_description, long_description, parameters, examples))
                             else:
                                 print("Excluding task: {}".format(task_name))
 
@@ -296,22 +301,22 @@ def create_docs(missing_report=False, outdir=None, srcdir=None):
         print("\n")
 
     # Write out "landing page"
-    write_out(tasks_by_group, outdir=outdir)
+    write_landing_page(tasks_by_group, outdir=outdir)
 
     # Write individual task pages
-    write_tasks_out(tasks_by_group, outdir=outdir)
+    write_task_pages(tasks_by_group, outdir=outdir)
 
 
 def cli_command():
     """CLI interface of create_docs.py.
-    
+
     try `python create_docs.py --help`
     """
 
     # insert the pipeline source directory in case it's not visual to the in-use interpreter.
     if os.getenv('pipeline_dir') is not None:
         # use the env variable "pipeline_dir" to look for the Pipeline source code.
-        pipeline_src = os.path.abspath(pipeline_dir)
+        pipeline_src = os.path.abspath('pipeline_dir')
     else:
         # use the ancestry path if "pipeline_dir" is not set.
         pipeline_src = os.path.abspath('../../pipeline')
@@ -322,7 +327,7 @@ def cli_command():
 
     args = parser.parse_args()
 
-    create_docs(missing_report=True, outdir=args.outdir, srcdir=args.srcdir)
+    create_docs(outdir=args.outdir, srcdir=args.srcdir, missing_report=True)
 
 
 if __name__ == "__main__":
