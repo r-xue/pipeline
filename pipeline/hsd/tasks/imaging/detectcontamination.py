@@ -1,15 +1,17 @@
-# coding: utf-8
-#
-# This code is originally provided by Yoshito Shimajiri.
-# See PIPE-251 for detail about this.
+"""
+This module provides functionality to detect contamination in spectral data.
 
-import collections
+Original code provided by Yoshito Shimajiri.
+For more details, refer to PIPE-251.
+"""
+
+from collections import namedtuple
 from math import ceil
 import os
-from typing import Optional, Tuple, TYPE_CHECKING
+from typing import Dict, Optional, Tuple, TYPE_CHECKING, Union
 
 import matplotlib
-import matplotlib.pyplot as plt
+import matplotlib.figure as figure
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -19,322 +21,717 @@ from ..common import display as sd_display
 from ..common import sdtyping
 
 if TYPE_CHECKING:
+    from matplotlib.axes import Axes
+    from matplotlib.axis import Axis
+    from matplotlib.ticker import Formatter, Locator
     from pipeline.infrastructure import Context
     from pipeline.infrastructure.imagelibrary import ImageItem
 
+
+# Initialize logger for this module
 LOG = infrastructure.get_logger(__name__)
 
+# Global parameters
+MATPLOTLIB_FIGURE_NUM = 6666  # Unique identifier for matplotlib figures
+STD_THRESHOLD = 4.  # Threshold for standard deviation to detect absorption features
 
-# global parameters
-MATPLOTLIB_FIGURE_NUM = 6666
-std_threshold = 4.
+# Parameters for slicing the cube image and determining the scope of processing
+N_SLICES = 10  # Total number of slices
+N_EDGE = 2  # Number of edge slices to be excluded from processing
+N_REMAINING = N_SLICES - N_EDGE * 2  # Number of slices remaining after excluding edges
 
-# amount of slicing the cube image, and amount of each edge of them to set out of scope of processing,
-# and the number of remaining; see: decide_rms()
-N_slices = 10
-N_edge = 2
-N_remaining = N_slices - N_edge * 2
+# Default colormap of graphs
+DEFAULT_COLORMAP = "rainbow"
 
-# Frequency Spec
-FrequencySpec = collections.namedtuple('FrequencySpec', ['unit', 'data'])
+# Define a named tuple to represent the frequency specification.
+#  unit: Represents the unit of the frequency (e.g., pixel, Hz, MHz).
+#  data: Represents the actual frequency data or values.
+FrequencySpec = namedtuple('FrequencySpec', ['unit', 'data'])
+
+# Define a named tuple to represent the direction specification in astronomical images.
+#  ref: Represents the reference frame (e.g., J2000, B1950).
+#  minra: Represents the minimum right ascension value.
+#  maxra: Represents the maximum right ascension value.
+#  mindec: Represents the minimum declination value.
+#  maxdec: Represents the maximum declination value.
+#  resolution: Represents the resolution of the image in the direction axes.
+DirectionSpec = namedtuple('DirectionSpec', ['ref', 'minra', 'maxra', 'mindec', 'maxdec', 'resolution'])
+
+# Define a named tuple to represent the sizes of each axis in a image cube.
+#  x: Represents the size of the X-axis (typically the RA direction in astronomical images).
+#  y: Represents the size of the Y-axis (typically the DEC direction in astronomical images).
+#  sp: Represents the size of the spectral axis (e.g., frequency or velocity).
+NAxis = namedtuple('NAxis', ['x', 'y', 'sp'])
 
 
-# Direction Spec
-DirectionSpec = collections.namedtuple('DirectionSpec', ['ref', 'minra', 'maxra', 'mindec', 'maxdec', 'resolution'])
+def detect_contamination(context: 'Context',
+                         item: 'ImageItem',
+                         is_frequency_channel_reversed: Optional[bool]=False):
+    """
+    Detect contamination in the given image item.
+
+    This function is the main routine of the module. It detects contamination in the provided image item
+    and generates a contamination report.
+
+    Args:
+        context (Context): The pipeline context object.
+        item (ImageItem): The image item object to be analyzed.
+        is_frequency_channel_reversed (bool, optional): True if frequency channels are in reversed order. Defaults to False.
+    """
+    LOG.info("=================")
+
+    # Create a directory for the current stage
+    stage_dir = os.path.join(context.report_dir, f'stage{context.task_counter}')
+    os.makedirs(stage_dir, exist_ok=True)
+
+    # Define the output name for the contamination report
+    output_name = os.path.join(stage_dir, item.imagename.rstrip('/') + '.contamination.png')
+    LOG.info(output_name)
+
+    # Read FITS and its header
+    cube_regrid, naxis = _read_fits(item.imagename)
+    image_obj = sd_display.SpectralImage(item.imagename)
+    freq_spec = _get_frequency_spec(naxis, image_obj)
+    dir_spec = _get_direction_spec(image_obj)
+
+    # Calculate RMS and Peak SN maps
+    rms_map, peak_sn, spectrum_at_peak, idx, idy = \
+        _calculate_rms_and_peak_sn(cube_regrid, naxis, is_frequency_channel_reversed)
+
+    # Initialize the mask map
+    mask_map = np.zeros([naxis.y, naxis.x])
+
+    # Generate the count map
+    count_map = _generate_count_map(cube_regrid, naxis)
+
+    # Determine peak SN threshold
+    # In the case that pixel number is fewer than the mask threshold (mask_num_thresh).
+    peak_sn_threshold = _determine_peak_sn_threshold(cube_regrid, rms_map, count_map)
+
+    # Update the mask map and calculate the masked average spectrum
+    mask_map, masked_average_spectrum = _get_mask_map_and_average_spectrum(cube_regrid, naxis,
+                                                                           peak_sn, peak_sn_threshold)
+
+    # Generate the contamination report figures
+    _make_figures(peak_sn, mask_map, rms_map, masked_average_spectrum,
+                  peak_sn_threshold, spectrum_at_peak, idy, idx, output_name,
+                  freq_spec, dir_spec)
+
+    # Issue a warning if an absorption feature is detected
+    _warn_deep_absorption_feature(masked_average_spectrum, item)
 
 
-def decide_rms(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', is_frequency_channel_reversed: bool) -> 'sdtyping.NpArray2D':
-    """Find the emission free channels roughly for estimating RMS.
+def _decide_rms(naxis: NAxis,
+                cube_regrid: 'sdtyping.NpArray3D',
+                is_frequency_channel_reversed: bool) -> 'sdtyping.NpArray2D':
+    """
+    Find the emission free channels roughly for estimating RMS.
 
-    Slice the cube image into N_slices frequeucy-wise (or AXIS3 wise), and return the slice
-    which has the smallest rms value among them.  Each N_edge slices on both edges are
+    Slice the cube image into N_SLICES frequeucy-wise (or AXIS3 wise), and return the slice
+    which has the smallest rms value among them.  Each N_EDGE slices on both edges are
     excluded from the estimate.
 
     Args:
-        naxis3 : a number of pixels along spectral axis
-        cube_regrid : data chunk loaded from image cube
-        is_frequency_channel_reversed : True if frequency channels are in reversed order. False if not.
+        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.
+        cube_regrid (NpArray3D) : data chunk loaded from image cube
+        is_frequency_channel_reversed (bool) : True if frequency channels are in reversed order. False if not.
 
     Returns:
         RMS map of the part of the cube.
     """
-    sliced_rms_maps = [__slice_and_calc_RMS_of_cube_regrid(naxis3, cube_regrid, x, is_frequency_channel_reversed)
-                       for x in range(N_edge, N_slices - N_edge)]
-    rms_check = np.array([np.nanmean(sliced_rms_maps[x]) for x in range(N_remaining)])
-    rms_map = sliced_rms_maps[np.argmin(rms_check)]
+    # Calculate RMS maps for the slices
+    sliced_rms_maps = [
+        _slice_and_calc_RMS_of_cube_regrid(naxis, cube_regrid, x, is_frequency_channel_reversed)
+        for x in range(N_EDGE, N_SLICES - N_EDGE)
+    ]
+
+    # Calculate mean RMS values for each slice
+    mean_rms_values = np.array([np.nanmean(sliced_rms_maps[x]) for x in range(N_REMAINING)])
+
+    # Select the RMS map with the smallest mean RMS value
+    rms_map = sliced_rms_maps[np.argmin(mean_rms_values)]
+
     LOG.info("RMS: {}".format(np.nanmean(rms_map)))
     return rms_map
 
 
-def __slice_and_calc_RMS_of_cube_regrid(naxis3: int, cube_regrid: 'sdtyping.NpArray3D', pos: int,
-                                        is_frequency_channel_reversed: bool) -> 'sdtyping.NpArray2D':
-    """Get one chunk from N_slices chunks of cube_regrid, and calculate RMS of it.
+def _slice_and_calc_RMS_of_cube_regrid(naxis: NAxis,
+                                       cube_regrid: 'sdtyping.NpArray3D',
+                                       pos: int,
+                                       is_frequency_channel_reversed: bool) -> 'sdtyping.NpArray2D':
+    """
+    Get one chunk from N_SLICES chunks of cube_regrid, and calculate RMS of it.
 
     Args:
-        naxis3 : a number of pixels along spectral axis
-        cube_regrid : data chunk loaded from image cube
-        pos : position to slice
-        is_frequency_channel_reversed : True if frequency channels are in reversed order. False if not.
+        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.
+        cube_regrid (NpAdday3D): data chunk loaded from image cube
+        pos (int): position to slice
+        is_frequency_channel_reversed (bool): True if frequency channels are in reversed order. False if not.
 
     Returns:
-        RMS array of a part of the cube.
+        RMS array of the squared standard deviation and mean for the sliced cube.
     """
-    if is_frequency_channel_reversed:
-        start_rms_ch, end_rms_ch = ceil(naxis3 * pos / N_slices), ceil(naxis3 * (pos + 1) / N_slices)
-    else:
-        start_rms_ch, end_rms_ch = int(naxis3 * pos / N_slices), int(naxis3 * (pos + 1) / N_slices)
+    # calculate start and end positions for slicing the cube
+    _func = ceil if is_frequency_channel_reversed else int
+    start_rms_ch = _func(naxis.sp * pos / N_SLICES)
+    end_rms_ch = _func(naxis.sp * (pos + 1) / N_SLICES)
 
+    # extract a slice from the cube based on the calculated positions
     sliced_cube = cube_regrid[start_rms_ch:end_rms_ch, :, :]
+
+    # calculate the squared standard deviation and mean for the sliced cube
     stddevsq = np.nanstd(sliced_cube, axis=0) ** 2.
     meansq = np.nanmean(sliced_cube, axis=0) ** 2.
-    rms = (stddevsq + meansq) ** 0.5
-    return rms
+
+    # compute and return the RMS using the squared standard deviation and mean
+    return np.sqrt(stddevsq + meansq)
 
 
-def make_figures(peak_sn: 'sdtyping.NpArray2D', mask_map: 'sdtyping.NpArray2D',
-                 rms_threshold: float, rms_map: 'sdtyping.NpArray2D',
-                 masked_average_spectrum: 'sdtyping.NpArray1D', all_average_spectrum: 'sdtyping.NpArray1D',
-                 naxis3: int, peak_sn_threshold: float, spectrum_at_peak: 'sdtyping.NpArray1D',
-                 idy: np.int64, idx: np.int64, output_name: str, fspec: FrequencySpec=None, dspec: DirectionSpec=None):
-    """Make figures of Contamination.
+def _make_figures(peak_sn: 'sdtyping.NpArray2D',
+                  mask_map: 'sdtyping.NpArray2D',
+                  rms_map: 'sdtyping.NpArray2D',
+                  masked_average_spectrum: 'sdtyping.NpArray1D',
+                  peak_sn_threshold: float,
+                  spectrum_at_peak: 'sdtyping.NpArray1D',
+                  idy: np.int64,
+                  idx: np.int64,
+                  output_name: str,
+                  freq_spec: Optional[FrequencySpec]=None,
+                  dir_spec: Optional[DirectionSpec]=None) -> None:
+    """
+    Create figures to visualize contamination.
 
     Args:
-        peak_sn : array of peak of SN
-        mask_map : array of mask map
-        rms_threshold : RMS threshold
-        rms_map : array of RMS map
-        masked_average_spectrum : list of masked average spectrum
-        all_average_spectrum : list of all average spectrum
-        naxis3 : a number of pixels along spectral axis
-        peak_sn_threshold : peak SN threshold
-        spectrum_at_peak : list of spectrum at peak
-        idy : y-axis index of pixel (spacial direction)
-        idx : x-axis index of pixel (spacial direction)
-        output_name : output file name
-        fspec : FrequensySpec(NamedTuple). Defaults to None.
-        dspec : DirectionSpec(NamedTuple). Defaults to None.
+        peak_sn (NpArray2D): Array representing the peak SN ratio.
+        mask_map (NpArray2D): Array representing the mask map.
+        rms_map (NpArray2D): Array representing the RMS map.
+        masked_average_spectrum (NpArray1D): Array representing the masked average spectrum.
+        peak_sn_threshold (float): Threshold value for the peak SN ratio.
+        spectrum_at_peak (NpArray1D): Array representing the spectrum at the peak.
+        idy (int64): Y-axis index of the pixel (spatial direction).
+        idx (int64): X-axis index of the pixel (spatial direction).
+        output_name (str): Name of the output file.
+        freq_spec (FrequencySpec, optional): Frequency specification. Defaults to None.
+        dir_spec (DirectionSpec, optional): Direction specification. Defaults to None.
     """
-    std_value = np.nanstd(masked_average_spectrum)
-    plt.figure(MATPLOTLIB_FIGURE_NUM, figsize=(20, 5))
-    a1 = plt.subplot(1, 3, 1)
-    a2 = plt.subplot(1, 3, 2)
+    # Initialize the figure with a specified size
+    _figure = figure.Figure(figsize=(20, 5))
+
+    # Create subplots(Axes) for peak SN map, mask map, and masked averaged spectrum
+    peak_sn_plot = _figure.add_subplot(1, 3, 1)
+    mask_map_plot = _figure.add_subplot(1, 3, 2)
     kw = {}
-    #dspec = None
-    if dspec is not None:
-        Extent = (dspec.maxra + dspec.resolution / 2, dspec.minra - dspec.resolution / 2,
-                  dspec.mindec - dspec.resolution / 2, dspec.maxdec + dspec.resolution / 2)
-        span = max(dspec.maxra - dspec.minra + dspec.resolution, dspec.maxdec - dspec.mindec + dspec.resolution)
-        (RAlocator, DEClocator, RAformatter, DECformatter) = pointing.XYlabel(span, dspec.ref)
-        for a in [a1, a2]:
-            a.xaxis.set_major_formatter(RAformatter)
-            a.yaxis.set_major_formatter(DECformatter)
-            a.xaxis.set_major_locator(RAlocator)
-            a.yaxis.set_major_locator(DEClocator)
-            xlabels = a.get_xticklabels()
-            plt.setp(xlabels, 'rotation', pointing.RArotation)
-            ylabels = a.get_yticklabels()
-            plt.setp(ylabels, 'rotation', pointing.DECrotation)
-        kw['extent'] = Extent
-        dunit = dspec.ref
-        # Pixel coordinate -> Axes coordinate
+
+    # Check if direction specification is provided
+    if dir_spec is not None:
+        _set_plot_spec(peak_sn_plot, dir_spec)
+        _set_plot_spec(mask_map_plot, dir_spec)
+        dir_unit = dir_spec.ref
+
+        # Convert pixel coordinates to axes coordinates
         scx = (idx + 0.5) / peak_sn.shape[1]
         scy = (idy + 0.5) / peak_sn.shape[0]
-        # aspect ratio based on DEC correction factor
-        aspect = 1.0 / np.cos((dspec.mindec + dspec.maxdec) / 2 / 180 * np.pi)
-        kw['aspect'] = aspect
+
+        # Set aspect ratio based on DEC correction factor
+        kw['aspect'] = 1.0 / np.cos((dir_spec.mindec + dir_spec.maxdec) / 2 / 180 * np.pi)
+
+        # Set extent for the plot
+        _half_resolution = dir_spec.resolution / 2
+        kw['extent'] = (dir_spec.maxra + _half_resolution, dir_spec.minra - _half_resolution,
+                        dir_spec.mindec - _half_resolution, dir_spec.maxdec + _half_resolution)
     else:
-        dunit = 'pixel'
+        dir_unit = 'pixel'
         scx = idx
         scy = peak_sn.shape[0] - 1 - idy
-    LOG.debug(f'scx = {scx}, scy = {scy}')
-    plt.sca(a1)
-    plt.title("Peak SN map")
-    plt.xlabel(f"RA [{dunit}]")
-    plt.ylabel(f"DEC [{dunit}]")
-    LOG.debug('peak_sn.shape = {}'.format(peak_sn.shape))
-    plt.imshow(np.flipud(peak_sn), cmap="rainbow", **kw)
-    ylim = plt.ylim()
-    LOG.debug('ylim = {}'.format(list(ylim)))
-    plt.colorbar(shrink=0.9)
-    trans = plt.gca().transAxes if dspec is not None else None
-    plt.scatter(scx, scy, s=300, marker="o", facecolors='none', edgecolors='grey', linewidth=5,
-                transform=trans)
-    plt.sca(a2)
-    plt.title("Mask map (1: SN<" + str(peak_sn_threshold) + ")")
-    plt.xlabel(f"RA [{dunit}]")
-    plt.ylabel(f"DEC [{dunit}]")
-    plt.imshow(np.flipud(mask_map), vmin=0, vmax=1, cmap="rainbow", **kw)
-    formatter = matplotlib.ticker.FixedFormatter(['Masked', 'Unmasked'])
-    plt.colorbar(shrink=0.9, ticks=[0, 1], format=formatter)
 
-    plt.subplot(1, 3, 3)
-    plt.title("Masked-averaged spectrum")
-    if fspec is not None:
-        abc = fspec.data
-        assert len(abc) == len(spectrum_at_peak)
-        plt.xlabel('Frequency [{}]'.format(fspec.unit))
-    else:
-        abc = np.arange(len(spectrum_at_peak), dtype=int)
-        plt.xlabel("Channel")
-    w = np.abs(abc[-1] - abc[0])
-    minabc = np.min(abc)
-    plt.ylabel("Intensity [K]")
-    plt.ylim(std_value * (-7.), std_value * 7.)
-    plt.plot(abc, spectrum_at_peak, "-", color="grey", label="spectrum at peak", alpha=0.5)
-    plt.plot(abc, masked_average_spectrum, "-", color="red", label="masked averaged")
-    plt.plot([abc[0], abc[-1]], [0, 0], "-", color="black")
-    plt.plot([abc[0], abc[-1]], [-4. * std_value, -4. * std_value], "--", color="red")
-    plt.plot([abc[0], abc[-1]], [np.nanmean(rms_map) * 1., np.nanmean(rms_map) * 1], "--", color="blue")
-    plt.plot([abc[0], abc[-1]], [np.nanmean(rms_map) * (-1.), np.nanmean(rms_map) * (-1.)], "--", color="blue")
-    if std_value * (7.) >= np.nanmean(rms_map) * peak_sn_threshold:
-        plt.plot([abc[0], abc[-1]], [np.nanmean(rms_map) * peak_sn_threshold, np.nanmean(rms_map) * peak_sn_threshold], "--", color="green")
-        plt.text(minabc + w * 0.5, np.nanmean(rms_map) * peak_sn_threshold, "lower 10% level", fontsize=18, color="green")
-    plt.text(minabc + w * 0.1, np.nanmean(rms_map) * 1., "1.0 x rms", fontsize=18, color="blue")
-    plt.text(minabc + w * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue", va='top')
-    plt.text(minabc + w * 0.6, -4. * std_value, "-4.0 x std", fontsize=18, color="red")
-    plt.legend()
-    if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
-        plt.text(minabc + w * 2. / 5., -5. * std_value, "Warning!!", fontsize=25, color="Orange")
+    # Plot the peak SN map, mask map, and masked averaged spectrum
+    _plot_peak_SN_map(_figure, peak_sn_plot, peak_sn, dir_unit, dir_spec is not None, scx, scy, kw)
+    _plot_mask_map(_figure, mask_map_plot, mask_map, peak_sn_threshold, dir_unit, kw)
+    _plot_masked_averaged_spectrum(_figure, rms_map, masked_average_spectrum, peak_sn_threshold,
+                                   spectrum_at_peak, freq_spec)
 
-    # disable use of offset on axis label
-    plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
-    plt.gca().get_yaxis().get_major_formatter().set_useOffset(False)
+    # Disable the use of offset on axis labels
+    _figure.gca().get_xaxis().get_major_formatter().set_useOffset(False)
+    _figure.gca().get_yaxis().get_major_formatter().set_useOffset(False)
 
-    plt.savefig(output_name, bbox_inches="tight")
-    plt.clf()
-
-    return
+    # Save the figure to the specified output file
+    _figure.savefig(output_name, bbox_inches="tight")
+    _figure.clf()
 
 
-def warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D', imageitem: 'ImageItem'=None):
-    """Warn if strong absorption feature is found.
+def _plot_peak_SN_map(fig: 'matplotlib.Figure',
+                      plot: 'Axes',
+                      peak_sn: 'sdtyping.NpArray2D',
+                      dir_unit: str,
+                      has_dir_spec: bool,
+                      scx: float,
+                      scy: float,
+                      kw: Dict[str, Union[float, Tuple[float, float]]]) -> None:
+    """
+    Plot the Peak Signal-to-Noise (SN) map with specified parameters.
 
     Args:
-        masked_average_spectrum: Array of masked average spectrum.
-        imageitem : ImageItem object. Defaults to None.
+        plot (Axes): The matplotlib Axes object to be used for plotting.
+        peak_sn (NpArray2D): The data representing the peak signal-to-noise ratio.
+        dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
+        has_dir_spec (bool): Flag indicating if a direction specification is provided.
+        scx (float): The x-coordinate for the scatter plot marker.
+        scy (float): The y-coordinate for the scatter plot marker.
+        kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().
     """
+    # Log the scatter plot coordinates
+    LOG.debug(f'scx = {scx}, scy = {scy}')
+
+    # Set the current Axes object to the provided plot
+    fig.sca(plot)
+
+    # Set the title and axis labels for the plot
+    plot.set_title("Peak SN map")
+    plot.set_xlabel(f"RA [{dir_unit}]")
+    plot.set_ylabel(f"DEC [{dir_unit}]")
+
+    # Log the shape of the peak SN data
+    LOG.debug('peak_sn.shape = {}'.format(peak_sn.shape))
+
+    # Display the peak SN data as an image with the specified colormap and keyword arguments
+    plot.imshow(np.flipud(peak_sn), cmap=DEFAULT_COLORMAP, **kw)
+
+    # Log the y-axis limits
+    ylim = plot.get_ylim()
+    LOG.debug('ylim = {}'.format(list(ylim)))
+
+    # Display a colorbar for the image
+    plot.colorbar = fig.colorbar(
+        matplotlib.cm.ScalarMappable(
+            matplotlib.colors.Normalize(np.nanmin(peak_sn), np.nanmax(peak_sn)),
+            DEFAULT_COLORMAP),
+        shrink=0.9, ax=plot)
+
+    # Determine the transformation for the scatter plot marker based on the presence of a direction specification
+    trans = fig.gca().transAxes if has_dir_spec else None
+
+    # Plot a scatter marker at the specified coordinates
+    plot.scatter(scx, scy, s=300, marker="o", facecolors='none',
+                 edgecolors='grey', linewidth=5, transform=trans)
+
+
+def _plot_mask_map(fig: 'matplotlib.Figure',
+                   plot: 'Axes',
+                   mask_map: 'sdtyping.NpArray2D',
+                   peak_sn_threshold: float,
+                   dir_unit: str,
+                   kw: Dict[str, Union[float, Tuple[float, float]]]):
+    """
+    Plot the mask map with specified parameters.
+
+    Args:
+        plot (Axes): The matplotlib Axes object to be used for plotting.
+        mask_map (NpArray2D): The data representing the mask map.
+        peak_sn_threshold (float): The threshold for the peak SN ratio.
+        dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
+        kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().
+    """
+    # Set the current Axes object to the provided plot
+    fig.sca(plot)
+
+    # Set the title and axis labels for the plot
+    plot.set_title(f"Mask map (1: SN<{peak_sn_threshold})")
+    plot.set_xlabel(f"RA [{dir_unit}]")
+    plot.set_ylabel(f"DEC [{dir_unit}]")
+
+    # Display the mask map data as an image with the specified colormap and keyword arguments
+    plot.imshow(np.flipud(mask_map), vmin=0, vmax=1, cmap=DEFAULT_COLORMAP, **kw)
+
+    # Define a custom formatter for the colorbar labels
+    formatter = matplotlib.ticker.FixedFormatter(['Masked', 'Unmasked'])
+
+    # Display a colorbar for the image with the custom formatter
+    plot.colorbar = fig.colorbar(
+        matplotlib.cm.ScalarMappable(
+            matplotlib.colors.Normalize(np.nanmin(mask_map), np.nanmax(mask_map)),
+            DEFAULT_COLORMAP),
+        shrink=0.9, ticks=[0, 1], format=formatter, ax=plot)
+
+
+def _plot_masked_averaged_spectrum(fig: 'matplotlib.Figure',
+                                   rms_map: 'sdtyping.NpArray2D',
+                                   masked_average_spectrum: 'sdtyping.NpArray1D',
+                                   peak_sn_threshold: float,
+                                   spectrum_at_peak: 'sdtyping.NpArray1D',
+                                   freq_spec: Optional[FrequencySpec]=None):
+    """
+    Plot the masked-averaged spectrum with specified parameters.
+
+    Args:
+        rms_map (NpArray2D): The data representing the RMS map.
+        masked_average_spectrum (NpArray1D): The masked averaged spectrum data.
+        peak_sn_threshold (float): The threshold for the peak signal-to-noise ratio.
+        spectrum_at_peak (NpArray1D): The spectrum data at the peak.
+        freq_spec (Optional[FrequencySpec]): Frequency specifications. Defaults to None.
+    """
+    # Calculate the standard deviation of the masked averaged spectrum
+    stddev = np.nanstd(masked_average_spectrum)
+
+    # Create a subplot for the masked-averaged spectrum
+    plot = fig.add_subplot(1, 3, 3)
+    plot.set_title("Masked-averaged spectrum")
+
+    if freq_spec is not None:
+        abc = freq_spec.data
+        assert len(abc) == len(spectrum_at_peak)
+        plot.set_xlabel(f'Frequency [{freq_spec.unit}]')
+    else:
+        abc = np.arange(len(spectrum_at_peak), dtype=int)
+        plot.set_xlabel("Channel")
+
+    # Get the width and the minimum value of the frequency or channel range
+    w = np.abs(abc[-1] - abc[0])
+    minabc = np.min(abc)
+
+    # Set y-axis label and limits
+    plot.set_ylabel("Intensity [K]")
+    plot.set_ylim(stddev * (-7.), stddev * 7.)
+
+    # Plot the spectrum at the peak and the masked averaged spectrum
+    plot.plot(abc, spectrum_at_peak, "-", color="grey", label="spectrum at peak", alpha=0.5)
+    plot.plot(abc, masked_average_spectrum, "-", color="red", label="masked averaged")
+
+    # Define the edges for horizontal lines
+    _edge = [abc[0], abc[-1]]
+
+    # Plot horizontal lines for reference
+    plot.plot(_edge, [0, 0], "-", color="black")
+    plot.plot(_edge, [-4. * stddev, -4. * stddev], "--", color="red")
+    plot.plot(_edge, [np.nanmean(rms_map) * 1., np.nanmean(rms_map) * 1], "--", color="blue")
+    plot.plot(_edge, [np.nanmean(rms_map) * (-1.), np.nanmean(rms_map) * (-1.)], "--", color="blue")
+
+    # Check if the standard deviation is above the threshold and plot additional lines and annotations
+    if stddev * (7.) >= np.nanmean(rms_map) * peak_sn_threshold:
+        plot.plot(_edge,
+                  [np.nanmean(rms_map) * peak_sn_threshold, np.nanmean(rms_map) * peak_sn_threshold],
+                  "--", color="green")
+        plot.text(minabc + w * 0.5, np.nanmean(rms_map) * peak_sn_threshold,
+                  "lower 10% level", fontsize=18, color="green")
+
+    # Add text annotations for the plotted lines
+    plot.text(minabc + w * 0.1, np.nanmean(rms_map) * 1., "1.0 x rms", fontsize=18, color="blue")
+    plot.text(minabc + w * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue", va='top')
+    plot.text(minabc + w * 0.6, -4. * stddev, "-4.0 x std", fontsize=18, color="red")
+
+    # Display the legend
+    plot.legend()
+
+    # Add a warning text if the minimum of the masked averaged spectrum is below the threshold
+    if np.nanmin(masked_average_spectrum) <= (-1) * stddev * STD_THRESHOLD:
+        plot.text(minabc + w * 2. / 5., -5. * stddev, "Warning!!", fontsize=25, color="Orange")
+
+
+def _set_plot_spec(plot: 'Axes',
+                   dir_spec: DirectionSpec):
+    """
+    Configure the plot specifications based on the provided direction specifications.
+
+    This function adjusts the x and y axis labels, ticks, and rotations based on the provided
+    direction specifications. It uses the pointing module to determine the appropriate formatting
+    and rotation for the RA and DEC labels.
+
+    Args:
+        plot (Axes): The plot object to be configured.
+        dir_spec (DirectionSpec): The direction specifications containing details about RA and DEC.
+    """
+    # Calculate the span based on the maximum and minimum RA and DEC values, and the resolution
+    _span = max(dir_spec.maxra - dir_spec.minra + dir_spec.resolution,
+                dir_spec.maxdec - dir_spec.mindec + dir_spec.resolution)
+
+    # Get the appropriate locators and formatters for RA and DEC based on the span and reference
+    RAlocator, DEClocator, RAformatter, DECformatter = pointing.XYlabel(_span, dir_spec.ref)
+
+    # Configure the x-axis (RA) and y-axis (DEC) with the obtained formatters, locators, and rotations
+    _configure_axis(plot.xaxis, RAformatter, RAlocator, pointing.RArotation)
+    _configure_axis(plot.yaxis, DECformatter, DEClocator, pointing.DECrotation)
+
+
+def _configure_axis(axis: 'Axis',
+                    formatter: 'Formatter',
+                    locator: 'Locator',
+                    rotation: Union['pointing.RArotation', 'pointing.DECrotation']):
+    """
+    Configure the given axis with the specified formatter, locator, and rotation.
+
+    Args:
+        axis (Axis): The axis to be configured.
+        formatter (Formatter): The formatter to be set for the axis.
+        locator (Locator): The locator to be set for the axis.
+        rotation (Union[pointing.RArotation, pointing.DECrotation]): The rotation to be set for the axis labels.
+    """
+    axis.set_major_formatter(formatter)
+    axis.set_major_locator(locator)
+    axis.set_tick_params(rotation=rotation)
+
+
+def _warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D',
+                                  imageitem: Optional['ImageItem']=None):
+    """
+    Warn if a strong absorption feature is detected in the spectrum.
+
+    This function checks the masked average spectrum for any strong absorption features.
+    If detected, it logs a warning message with details about the image item (if provided).
+
+    Args:
+        masked_average_spectrum (NpArray1D): Array representing the masked average spectrum.
+        imageitem (Optional['ImageItem']): ImageItem object containing details about the image. Defaults to None.
+    """
+    # Calculate the standard deviation of the masked average spectrum
     std_value = np.nanstd(masked_average_spectrum)
-    if np.nanmin(masked_average_spectrum) <= (-1) * std_value * std_threshold:
+
+    # Determine if the spectrum has a strong absorption feature
+    _has_strong_absorption = np.nanmin(masked_average_spectrum) <= (-1) * std_value * STD_THRESHOLD
+
+    # If a strong absorption feature is detected, log a warning message
+    if _has_strong_absorption:
         if imageitem is not None:
             field = imageitem.sourcename
             spw = ','.join(map(str, np.unique(imageitem.spwlist)))
-            warning_sentence = f'Field {field} Spw {spw}: '
-            'Absorption feature is detected in the lower S/N area. '
-            'Please check calibration result in detail.'
+            warning_sentence = (f'Field {field} Spw {spw}: '
+                                'Absorption feature is detected in the lower SN area. '
+                                'Please check calibration result in detail.')
+        else:
+            warning_sentence = ('Absorption feature detected but an image item is not specificated. '
+                                'Please check calibration result in detail.')
         LOG.warning(warning_sentence)
 
 
-def read_fits(input: str) -> Tuple['sdtyping.NpArray3D', int, int, int, float, float]:
-    """Read FITS and its header (CASA version).
+def _read_fits(input: str) -> Tuple['sdtyping.NpArray3D', NAxis]:
+    """
+    Read FITS file and extract its header information using casatools.
 
     Args:
-        input : FITS image
+        input (str): Path to the FITS image file.
 
     Returns:
-        data chunk generated from FITS, axises, and deltas
+        Tuple containing:
+        - Data chunk extracted from the FITS file.
+        - Sizes of axes of 3D image cube.
     """
-    LOG.info("FITS: {}".format(input))
+    LOG.info(f"FITS: {input}")
+
+    # Extract data chunk and coordinate system from the FITS file
     with casa_tools.ImageReader(input) as ia:
         cube = ia.getchunk()
         csys = ia.coordsys()
-        increments = csys.increment()
         csys.done()
 
+    # Reorder the axes of the cube for further processing
     cube_regrid = np.swapaxes(cube[:, :, 0, :], 2, 0)
-    naxis1 = cube.shape[0]
-    naxis2 = cube.shape[1]
-    naxis3 = cube.shape[3]
-    cdelt2 = increments['numeric'][1]
-    cdelt3 = abs(increments['numeric'][3])
 
-    return cube_regrid, naxis1, naxis2, naxis3, cdelt2, cdelt3
+    # Extract dimensions and increments from the cube and coordinate system
+    naxis = NAxis(x=cube.shape[0], y=cube.shape[1], sp=cube.shape[3])
+
+    return cube_regrid, naxis
 
 
-def detect_contamination(context: 'Context', imageitem: 'ImageItem', is_frequency_channel_reversed: Optional[bool]=False):
-    """Detect contamination. The main routine of the module.
+def _get_direction_spec(image_obj: 'sd_display.SpectralImage') -> DirectionSpec:
+    """
+    Extract direction specifications from a given SpectralImage object.
 
     Args:
-        context : object of Pipeline Context
-        imageitem : object of ImageItem
-        is_frequency_channel_reversed : True if frequency channels are in reversed order. False if not.
-    """
-    imagename = imageitem.imagename
-    LOG.info("=================")
-    stage_number = context.task_counter
-    stage_dir = os.path.join(context.report_dir, f'stage{stage_number}')
-    if not os.path.exists(stage_dir):
-        os.mkdir(stage_dir)
-    output_name = os.path.join(stage_dir, imagename.rstrip('/') + '.contamination.png')
-    LOG.info(output_name)
-    # Read FITS and its header
-    cube_regrid, naxis1, naxis2, naxis3, cdelt2, cdelt3 = read_fits(imagename)
-    image_obj = sd_display.SpectralImage(imagename)
-    (refpix, refval, increment) = image_obj.spectral_axis(unit='GHz')
-    frequency = np.array([refval + increment * (i - refpix) for i in range(naxis3)])
-    fspec = FrequencySpec(unit='GHz', data=frequency)
-    qa = casa_tools.quanta
-    minra = qa.convert(image_obj.ra_min, 'deg')['value']
-    maxra = qa.convert(image_obj.ra_max, 'deg')['value']
-    mindec = qa.convert(image_obj.dec_min, 'deg')['value']
-    maxdec = qa.convert(image_obj.dec_max, 'deg')['value']
-    grid_size = image_obj.beam_size / 3
-    dirref = image_obj.direction_reference
-    dspec = DirectionSpec(ref=dirref, minra=minra, maxra=maxra, mindec=mindec, maxdec=maxdec,
-                          resolution=grid_size)
+        image_obj: SpectralImage object containing image metadata.
 
-    # Making rms 　& Peak SN maps
-    rms_map = decide_rms(naxis3, cube_regrid, is_frequency_channel_reversed)
+    Returns:
+        DirectionSpec object.
+    """
+    # Initialize CASA quanta tool for unit conversion
+    qa = casa_tools.quanta
+
+    # Convert RA and DEC values from the image object to degrees
+    minra, maxra = _convert_to_degrees(image_obj.ra_min, image_obj.ra_max, qa)
+    mindec, maxdec = _convert_to_degrees(image_obj.dec_min, image_obj.dec_max, qa)
+
+    # The grid size is obtained by dividing the beam size by 3.
+    grid_size = image_obj.beam_size / 3
+
+    return DirectionSpec(ref=image_obj.direction_reference,
+                         minra=minra, maxra=maxra,
+                         mindec=mindec, maxdec=maxdec,
+                         resolution=grid_size)
+
+
+def _convert_to_degrees(min_value: float,
+                        max_value: float,
+                        qa: 'casa_tools.quanta') -> Tuple[float, float]:
+    """
+    Convert given values to degrees using CASA quanta tool.
+
+    Args:
+        min_value (float): Minimum value to convert.
+        max_value (float): Maximum value to convert.
+        qa (quanta): quanta object for unit conversion.
+
+    Returns:
+        Tuple containing the converted minimum and maximum values in degrees.
+    """
+    return qa.convert(min_value, 'deg')['value'], qa.convert(max_value, 'deg')['value']
+
+
+def _get_frequency_spec(naxis: NAxis,
+                        image_obj: 'sd_display.SpectralImage') -> FrequencySpec:
+    """
+    Extract frequency specifications from a given SpectralImage object.
+
+    Args:
+        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.
+        image_obj (SpectralImage) : SpectralImage object containing image metadata.
+
+    Returns:
+        FrequencySpec object.
+    """
+    # Retrieve spectral axis details in GHz from the image object
+    refpix, refval, increment = image_obj.spectral_axis(unit='GHz')
+
+    # Calculate the frequency values based on the spectral axis details
+    frequency = np.array([refval + increment * (i - refpix) for i in range(naxis.sp)])
+
+    return FrequencySpec(unit='GHz', data=frequency)
+
+
+def _calculate_rms_and_peak_sn(cube_regrid: 'sdtyping.NpArray3D',
+                               naxis: NAxis,
+                               is_frequency_channel_reversed: bool) -> Tuple[np.array, np.array, np.array, int, int]:
+    """Calculate the RMS (Root Mean Square) and Peak SN maps for the given data cube.
+
+    This function computes the RMS map for the data cube and then calculates the peak SN for each pixel.
+    It also identifies the location (idx, idy) of the maximum peak SN in the image.
+
+    Args:
+        cube_regrid (NpArray3D): 3D data cube containing the image data.
+        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.
+        is_frequency_channel_reversed (bool): Indicates if the frequency channels are in reversed order.
+
+    Returns:
+        Tuple[np.array, np.array, np.array, int, int]:
+            - rms_map: 2D array containing the RMS values for each pixel.
+            - peak_sn: 2D array containing the peak SN values for each pixel.
+            - spectrum_at_peak: 1D array containing the spectrum at the location of the maximum peak SN.
+            - idx: x-coordinate of the maximum peak SN location.
+            - idy: y-coordinate of the maximum peak SN location.
+    """
+    # Calculate the RMS map for the data cube
+    rms_map = _decide_rms(naxis, cube_regrid, is_frequency_channel_reversed)
+
+    # Calculate the peak SN for each pixel
     peak_sn = (np.nanmax(cube_regrid, axis=0)) / rms_map
+
+    # Identify the location of the maximum peak SN in the image
     idy, idx = np.unravel_index(np.nanargmax(peak_sn), peak_sn.shape)
     LOG.debug(f'idx {idx}, idy {idy}')
+
+    # Extract the spectrum at the location of the maximum peak SN
     spectrum_at_peak = cube_regrid[:, idy, idx]
 
-    # Making averaged spectra and masked average spectrum
-    all_average_spectrum = np.zeros([naxis3])
+    return rms_map, peak_sn, spectrum_at_peak, idx, idy
 
-    mask_map = np.zeros([naxis2, naxis1])
-    count_map = np.zeros([naxis2, naxis1])
-    #min_value = np.nanmin(cube_regrid)
-    #max_value = np.nanmax(cube_regrid)
-    rms_threshold = 2.
 
-    for i in range(naxis1):
-        for j in range(naxis2):
-            if np.isnan(np.nanmax(cube_regrid[:, j, i])) == False:
-                all_average_spectrum = all_average_spectrum + cube_regrid[:, j, i]
+def _generate_count_map(cube_regrid: 'sdtyping.NpArray3D',
+                        naxis: NAxis) -> np.array:
+    """
+    Generate a count map for the given data cube.
+
+    This function creates a count map where each pixel is set to 1.0 if the corresponding pixel
+    in the data cube has a valid value (not NaN).
+
+    Args:
+        cube_regrid (sdtyping.NpArray3D): 3D data cube containing the image data.
+        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.
+
+    Returns:
+        2D array where each pixel is set to 1.0 if the corresponding pixel
+        in the data cube has a valid value.
+    """
+    # Initialize the count map with zeros
+    count_map = np.zeros([naxis.y, naxis.x])
+
+    # Iterate over the data cube and update the count map
+    for i in range(naxis.x):
+        for j in range(naxis.y):
+            if not np.isnan(np.nanmax(cube_regrid[:, j, i])):
                 count_map[j, i] = 1.0
 
-    all_average_spectrum = all_average_spectrum / np.nansum(count_map)
+    return count_map
 
-    # In the case that pixel number is fewer than the mask threshold (mask_num_thresh).
-    #mask_num_thresh = 0.
-    peak_sn_threshold = 0.
-    peak_sn2 = (np.nanmax(cube_regrid, axis=0)) / rms_map
-    peak_sn_1d = np.ravel(peak_sn2)
+
+def _determine_peak_sn_threshold(cube_regrid: 'sdtyping.NpArray3D',
+                                 rms_map: np.array,
+                                 count_map: np.array) -> float:
+    """Determine the peak SN threshold.
+
+    This function calculates the peak SN for each pixel in the image and then determines a threshold
+    based on a certain percentage of the total number of valid pixels.
+
+    Args:
+        cube_regrid (sdtyping.NpArray3D): 3D data cube containing the image data.
+        rms_map (np.array): 2D array containing the root mean square (RMS) values for each pixel.
+        count_map (np.array): 2D array indicating the presence (1.) or absence (0.) of valid data for each pixel.
+
+    Returns:
+        The calculated peak SN threshold.
+    """
+    # Calculate the peak SN for each pixel
+    peak_sn = (np.nanmax(cube_regrid, axis=0)) / rms_map
+
+    # Flatten the 2D peak SN array to a 1D array and sort it
+    peak_sn_1d = np.ravel(peak_sn)
     peak_sn_1d.sort()
-    parcent_threshold = 10. #%
+
+    # Define the percentage threshold
+    percent_threshold = 10.  # %
+
+    # Calculate the number of pixels corresponding to the percentage threshold
     total_pix = np.sum(count_map)
-    pix_num_threshold = int(total_pix * parcent_threshold / 100.)
-    peak_sn_threshold = peak_sn_1d[pix_num_threshold]
+    pix_num_threshold = int(total_pix * percent_threshold / 100.)
 
-    mask_map2 = np.zeros([naxis2, naxis1])
-    masked_average_spectrum2 = np.zeros([naxis3])
+    # Return the peak SN value corresponding to the pixel number threshold
+    if peak_sn_1d.shape[0] > 0:
+        return peak_sn_1d[pix_num_threshold]
+    else:
+        return 0.
+
+
+def _get_mask_map_and_average_spectrum(cube_regrid: np.array,
+                                       naxis: NAxis,
+                                       peak_sn: np.array,
+                                       peak_sn_threshold: float) -> Tuple[np.array, np.array]:
+    """
+    Get mask map and masked average spectrum based on peak SN threshold.
+
+    This function creates a mask map and a masked average spectrum using the provided peak SN threshold.
+    Pixels in the mask map are set to 1.0 if the corresponding peak SN value is below the threshold.
+
+    Args:
+        cube_regrid (np.array): 3D data cube containing the image data.
+        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.
+        peak_sn (np.array): 2D array containing the peak SN ratio for each pixel.
+        peak_sn_threshold (float): Threshold value for the peak SN.
+
+    Returns:
+        Tuple[np.array, np.array]:
+            mask_map: 2D array where each pixel is set to 1.0 if the corresponding peak SN value is below the threshold.
+            masked_average_spectrum: 1D array representing the average spectrum of the masked regions.
+    """
+    # Initialize the mask map and masked average spectrum with zeros
+    mask_map = np.zeros([naxis.y, naxis.x])
+    masked_average_spectrum = np.zeros([naxis.sp])
+
+    # Create a boolean mask based on the peak SN threshold
     peak_sn2_judge = (peak_sn < peak_sn_threshold)
-    for i in range(naxis1):
-        for j in range(naxis2):
+
+    # Iterate over the data cube and update the mask map and masked average spectrum
+    for i in range(naxis.x):
+        for j in range(naxis.y):
             if str(peak_sn2_judge[j, i]) == "True":
-                masked_average_spectrum2 = masked_average_spectrum2 + cube_regrid[:, j, i]
-                mask_map2[j, i] = 1.0
+                masked_average_spectrum = masked_average_spectrum + cube_regrid[:, j, i]
+                mask_map[j, i] = 1.0
 
-    masked_average_spectrum2 = masked_average_spectrum2 / np.nansum(mask_map2)
-    mask_map = mask_map2
-    masked_average_spectrum = masked_average_spectrum2
+    # Normalize the masked average spectrum by the sum of the mask map
+    masked_average_spectrum /= np.nansum(mask_map)
 
-    # Make figures
-    make_figures(peak_sn, mask_map, rms_threshold, rms_map,
-                 masked_average_spectrum, all_average_spectrum,
-                 naxis3, peak_sn_threshold, spectrum_at_peak, idy, idx, output_name,
-                 fspec, dspec)
-
-    # warn if absorption feature is detected
-    warn_deep_absorption_feature(masked_average_spectrum, imageitem)
+    return mask_map, masked_average_spectrum
