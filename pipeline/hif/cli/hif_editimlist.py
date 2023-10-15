@@ -11,6 +11,7 @@ def hif_editimlist(imagename=None,
                    conjbeams=None,
                    cyclefactor=None,
                    cycleniter=None,
+                   nmajor=None,
                    datatype=None,
                    datacolumn=None,
                    deconvolver=None,
@@ -43,6 +44,7 @@ def hif_editimlist(imagename=None,
                    uvtaper=None,
                    uvrange=None,
                    width=None,
+                   vlass_plane_reject=None,
                    dryrun=None,
                    acceptresults=None):
 
@@ -71,6 +73,7 @@ def hif_editimlist(imagename=None,
     conjbeams            Use conjugate frequency in tclean for wideband A-terms.
     cyclefactor          Controls the depth of clean in minor cycles based on PSF.
     cycleniter           Controls max number of minor cycle iterations in a single major cycle.
+    nmajor               Controls the maximum number of major cycles to evaluate.
     datatype             Data type(s) to image. The default '' selects the best
                          available data type (e.g. selfcal over regcal) with
                          an automatic fallback to the next available data type.
@@ -113,15 +116,23 @@ def hif_editimlist(imagename=None,
     uvtaper              Used to set a uv-taper during clean.
     uvrange              Set of data selection uv ranges, \'\' for all.
     width                Channel width
+    vlass_plane_reject   Only used for the 'VLASS-SE-CUBE' imaging mode. default: True
+                         If True, reject VLASS Coarse Cube planes with high flagging percentages (see the heuristics details below)
+                         If False, do not perform flagging-based VLASS Coarse Cube plane rejection.
+                         If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.
+                         The optional keys are:
+                         - exclude_spw, default: ''
+                            Spectral windows to be excluded from the VLASS Coarse Cube plane rejection consideration, i.e. always preserve.
+                         - flagpct_thresh, default: 0.9
+                            Flagging percentage threshold per field for the plane rejection.
+                         - nfield_thresh: default: 12 
+                            A minimal number of fields above the flagging percentage threshold is required for the plane rejection.
     dryrun               Run the task (False) or display the command(True)
     acceptresults        Add the results to the pipeline context
-
+    
     --------- examples -----------------------------------------------------------
 
     
-    
-
-
     """
 
 

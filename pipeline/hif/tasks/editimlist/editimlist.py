@@ -31,18 +31,21 @@ Todo:
 
 """
 import ast
-import os
 import copy
+import os
+
+import numpy as np
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.infrastructure.utils import utils
 from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimlist.cleantarget import CleanTarget
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.infrastructure.utils import utils
+
 from .resultobjects import EditimlistResult
 
 LOG = infrastructure.get_logger(__name__)
@@ -58,6 +61,7 @@ class EditimlistInputs(vdp.StandardInputs):
     cfcache_nowb = vdp.VisDependentProperty(default='')
     cyclefactor = vdp.VisDependentProperty(default=-999.)
     cycleniter = vdp.VisDependentProperty(default=-999)
+    nmajor = vdp.VisDependentProperty(default=None)
     datatype = vdp.VisDependentProperty(default='')
     datacolumn = vdp.VisDependentProperty(default='')
     deconvolver = vdp.VisDependentProperty(default='')
@@ -92,6 +96,8 @@ class EditimlistInputs(vdp.StandardInputs):
     clean_no_mask_selfcal_image = vdp.VisDependentProperty(default=False)
     # VLASS-SE-CONT specific option: user settable cycleniter in cleaning without mask in final imaging stage
     cycleniter_final_image_nomask = vdp.VisDependentProperty(default=None)
+    # VLASS-SE-CUBE plane rejection parameters
+    vlass_plane_reject = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
     def cell(self):
@@ -131,6 +137,17 @@ class EditimlistInputs(vdp.StandardInputs):
             val = [val]
         return val
 
+    @vlass_plane_reject.postprocess
+    def vlass_plane_reject(self, unprocessed):
+        """Convert the allowed argument input datatype to the dictionary form used by the task."""
+        vlass_plane_reject_dict = {'apply': True, 'exclude_spw': '', 'flagpct_thresh': 0.9, 'nfield_thresh': 12}
+        if isinstance(unprocessed, dict):
+            vlass_plane_reject_dict.update(unprocessed)
+        if isinstance(unprocessed, bool):
+            vlass_plane_reject_dict['apply'] = unprocessed
+        LOG.debug("convert the task input of vlass_plane_reject from %r to %r.", unprocessed, vlass_plane_reject_dict)
+        return vlass_plane_reject_dict
+
     @vdp.VisDependentProperty
     def spw(self):
         return ''
@@ -142,7 +159,7 @@ class EditimlistInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None, vis=None,
                  search_radius_arcsec=None, cell=None, cfcache=None, conjbeams=None,
-                 cyclefactor=None, cycleniter=None, datatype=None, datacolumn=None, deconvolver=None,
+                 cyclefactor=None, cycleniter=None, nmajor=None, datatype=None, datacolumn=None, deconvolver=None,
                  editmode=None, field=None, imaging_mode=None,
                  imagename=None, imsize=None, intent=None, gridder=None,
                  mask=None, pbmask=None, nbin=None, nchan=None, niter=None, nterms=None,
@@ -150,6 +167,7 @@ class EditimlistInputs(vdp.StandardInputs):
                  robust=None, scales=None, specmode=None, spw=None,
                  start=None, stokes=None, threshold=None, nsigma=None,
                  uvtaper=None, uvrange=None, width=None, sensitivity=None, clean_no_mask_selfcal_image=None,
+                 vlass_plane_reject=None,
                  cycleniter_final_image_nomask=None):
 
         super(EditimlistInputs, self).__init__()
@@ -163,6 +181,7 @@ class EditimlistInputs(vdp.StandardInputs):
         self.conjbeams = conjbeams
         self.cyclefactor = cyclefactor
         self.cycleniter = cycleniter
+        self.nmajor = nmajor
         self.datatype = datatype
         self.datacolumn = datacolumn
         self.deconvolver = deconvolver
@@ -198,13 +217,14 @@ class EditimlistInputs(vdp.StandardInputs):
         self.sensitivity = sensitivity
         self.clean_no_mask_selfcal_image = clean_no_mask_selfcal_image
         self.cycleniter_final_image_nomask = cycleniter_final_image_nomask
+        self.vlass_plane_reject = vlass_plane_reject
 
         keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datatype', 'datacolumn', 'deconvolver', 'imsize',
                             'phasecenter', 'specmode', 'gridder', 'imagename', 'scales', 'cfcache',
                             'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
-                            'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
+                            'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'nmajor', 'mask',
                             'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
-                            'editmode', 'nsigma', 'pblimit',
+                            'editmode', 'nsigma', 'pblimit', 'vlass_plane_reject',
                             'sensitivity', 'conjbeams', 'clean_no_mask_selfcal_image', 'cycleniter_final_image_nomask')
 
         self.keys_to_change = []
@@ -342,7 +362,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['phasecenter'] = inpdict['phasecenter']
 
         iph = imageparams_factory.ImageParamsHeuristicsFactory()
-        
+
         # note: heuristics.imageparams_base expects 'spw' to be a selection string.
         # For VLASS-SE-CUBE, 'spw' is the representational string of spw group list, e.g. spw="['1,2','3,4,5']"
         th = imlist_entry['heuristics'] = iph.getHeuristics(vislist=inp.vis, spw=str(imlist_entry['spw']),
@@ -384,6 +404,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['niter'] = th.niter() if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = inpdict['cyclefactor']
         imlist_entry['cycleniter'] = inpdict['cycleniter']
+        imlist_entry['nmajor'] = inpdict['nmajor']
         imlist_entry['cfcache'], imlist_entry['cfcache_nowb'] = th.get_cfcaches(inpdict['cfcache'])
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
         imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters
@@ -398,8 +419,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         LOG.info('RADIUS')
         LOG.info(repr(inpdict['search_radius_arcsec']))
         LOG.info('default={d}'.format(d=not inpdict['search_radius_arcsec']
-                                        and not isinstance(inpdict['search_radius_arcsec'], float)
-                                        and not isinstance(inpdict['search_radius_arcsec'], int)))
+                                      and not isinstance(inpdict['search_radius_arcsec'], float)
+                                      and not isinstance(inpdict['search_radius_arcsec'], int)))
         buffer_arcsec = th.buffer_radius() \
             if (not inpdict['search_radius_arcsec']
                 and not isinstance(inpdict['search_radius_arcsec'], float)
@@ -439,8 +460,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         # ---------------------------------------------------------------------------------- set imsize (VLA)
         if img_mode == 'VLA' and imlist_entry['specmode'] == 'cont':
             imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
-                                               primary_beam=largest_primary_beam,
-                                               spwspec=imlist_entry['spw'], intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
+                                               primary_beam=largest_primary_beam, spwspec=imlist_entry['spw'],
+                                               intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
         # ------------------------------
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']
@@ -469,9 +490,20 @@ class Editimlist(basetask.StandardTaskTemplate):
                 dist = (mosaic_side_arcsec / 2.) + float(buffer_arcsec)
                 dist_arcsec = str(dist) + 'arcsec'
                 LOG.info("{k} = {v}".format(k='dist_arcsec', v=dist_arcsec))
-                found_fields = th.find_fields(distance=dist_arcsec,
-                                              phase_center=imlist_entry['phasecenter'],
-                                              matchregex=['^0', '^1', '^2'])
+
+                # PIPE-1948/PIPE-2004: we updated the field select algorithm for VLASS-PL2023.
+                # * restrict field intents to 'TARGET'
+                # * restrict field names to beginning with '0', '1', '2', or 'T' (e.g. the NCP field 'T32t02.NCP')
+                #   note: we also consider rge double quote possibility because field names might be protected in
+                #   the name strings of Field domain objects.
+                # * use spherical sky offsets to select fields based on positions.
+                found_fields = th.select_fields(offsets=dist_arcsec,
+                                                intent='TARGET',
+                                                phasecenter=imlist_entry['phasecenter'],
+                                                name='0*,"0*,1*,"1*,2*,"2*,T*,"T*')
+                # for the existing VLASS workflow, only one MS is used, though this might change in the future.
+                found_fields = found_fields[0]
+
                 if found_fields:
                     imlist_entry['field'] = ','.join(str(x) for x in found_fields)  # field ids, not names
 
@@ -542,7 +574,8 @@ class Editimlist(basetask.StandardTaskTemplate):
             if imlist_entry['datatype'].lower().startswith('regcal'):
                 datatype_suffix = 'regcal'
 
-        imlist_entry['gridder'] = th.gridder(imlist_entry['intent'], imlist_entry['field']) if not inpdict['gridder'] else inpdict['gridder']
+        imlist_entry['gridder'] = th.gridder(imlist_entry['intent'], imlist_entry['field']
+                                             ) if not inpdict['gridder'] else inpdict['gridder']
         imlist_entry['imagename'] = th.imagename(intent=imlist_entry['intent'], field=imlist_entry['field'],
                                                  spwspec=imlist_entry['spw'], specmode=imlist_entry['specmode'],
                                                  band=None, datatype=datatype_suffix) if not inpdict['imagename'] else inpdict['imagename']
@@ -567,42 +600,8 @@ class Editimlist(basetask.StandardTaskTemplate):
 
         try:
             if imlist_entry['field']:
-                if img_mode == 'VLASS-SE-CUBE':
-                    # For the "coarse cube" mode, we perform the following operations:
-                    # - loop over individual spw groups
-                    # - generate conresponsding clean targetusing a modified copy of the base CleanTarget object template
-                    # - aggregate clean targets list
-                    #   note: the initial 'spw'  is expected to be a list here.
-
-                    # For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.
-                    result.targets_reffreq = []
-                    result.targets_spw = []
-                    result.targets_imagename = []
-
-                    for spw in imlist_entry['spw']:
-                        imlist_entry_per_spwgroup = copy.deepcopy(imlist_entry)
-                        imlist_entry_per_spwgroup['spw'] = spw
-                        imlist_entry_per_spwgroup['imagename'] = imlist_entry['imagename'] + \
-                            '.spw' + spw.replace('~', '-').replace(',', '_')
-                        imlist_entry_per_spwgroup['reffreq'] = th.meanfreq_spwgroup(spw)
-                        flagpct = th.flagpct_spwgroup(results_list=inp.context.results, spw_selection=spw)
-
-                        flagpct_threshold = 1.0
-                        if flagpct is None or flagpct < flagpct_threshold:
-                            if flagpct is None:
-                                LOG.info(
-                                    f'Can not find previous flagging summary for spw={spw!r}, but we will still add it as an imaging target.')
-                            else:
-                                LOG.info(
-                                    f'VLASS Data for spw={spw!r} is {flagpct*100:.2f}% flagged, and we will skip it as an imaging target.')
-                            result.targets_reffreq.append(imlist_entry_per_spwgroup['reffreq'])
-                            result.targets_spw.append(imlist_entry_per_spwgroup['spw'])
-                            result.targets_imagename.append(os.path.basename(imlist_entry_per_spwgroup['imagename']))
-                            result.add_target(imlist_entry_per_spwgroup)
-                        else:
-                            LOG.warning(
-                                f'VLASS Data for spw={spw!r} is {flagpct*100:.2f}% flagged, and we will skip it as an imaging target.')
-
+                if result.img_mode == 'VLASS-SE-CUBE':
+                    result = self._add_vlasscube_targets(result, imlist_entry)
                 else:
                     result.add_target(imlist_entry)
             else:
@@ -621,3 +620,123 @@ class Editimlist(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
+
+    def _add_vlasscube_targets(self, result, imlist_entry):
+        """Add multiple clean targtes for the VLASS-SE-CUBE mode.
+        
+        For the "coarse cube" mode, we perform the following operations:
+            - loop over individual spw groups
+            - generate conresponsding clean target using a modified copy of the base CleanTarget object template
+            - aggregate clean targets list after the VLASS-SE-CUBE plane rejection criteria is applied.
+        note: the initial 'spw' from the base CleanTarget object template, i.e., imlist_entry['spw'], is expected to be a list here.
+        For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.        
+        """
+
+        vlass_plane_reject_keys_allowed = ['apply', 'exclude_spw', 'flagpct_thresh', 'nfield_thresh']
+
+        for k in self.inputs.vlass_plane_reject:
+            if k not in vlass_plane_reject_keys_allowed:
+                LOG.warning("The key %r in the 'vlass_plane_reject' task input dictionary.", k)
+
+        result.targets_reffreq = []
+        result.targets_spw = []
+        result.targets_imagename = []
+        th = imlist_entry['heuristics']
+
+        vlass_flag_stats = self._vlass_plane_rejection(imlist_entry)
+        result.vlass_flag_stats = vlass_flag_stats
+
+        for idx, spw in enumerate(imlist_entry['spw']):
+
+            imlist_entry_per_spwgroup = copy.deepcopy(imlist_entry)
+            imlist_entry_per_spwgroup['spw'] = spw
+            imlist_entry_per_spwgroup['imagename'] = imlist_entry['imagename'] + \
+                '.spw' + spw.replace('~', '-').replace(',', '_')
+            imlist_entry_per_spwgroup['reffreq'] = th.meanfreq_spwgroup(spw)
+            # flagpct within the 1de^2 box
+            imlist_entry_per_spwgroup['flagpct'] = vlass_flag_stats['flagpct_spwgroup'][idx]
+            # flagpct over the entire mosaic
+            flagpct = th.flagpct_spwgroup(results_list=self.inputs.context.results, spw_selection=spw)
+            flagpct_threshold = 1.0
+
+            if flagpct is None:
+                LOG.warning('Can not find previous flagging summary for spw=%r, but we will still add it as an imaging target.', spw)
+            else:
+                if flagpct >= flagpct_threshold:
+                    LOG.warning('VLASS Data for spw=%r is %.2f%% flagged, and we will skip it as an imaging target.', spw, flagpct*100)
+                    continue
+
+            if vlass_flag_stats['spwgroup_reject'][idx]:
+                LOG.warning(
+                    'VLASS Data for spw=%r meets the plane rejection ceritera: nfield>=%i with flagpct>=%.2f%%.',
+                    spw, self.inputs.vlass_plane_reject['nfield_thresh'], self.inputs.vlass_plane_reject['flagpct_thresh'] * 100)
+                continue
+
+            result.targets_reffreq.append(imlist_entry_per_spwgroup['reffreq'])
+            result.targets_spw.append(imlist_entry_per_spwgroup['spw'])
+            result.targets_imagename.append(os.path.basename(imlist_entry_per_spwgroup['imagename']))
+            result.add_target(imlist_entry_per_spwgroup)
+
+        return result
+
+    def _vlass_plane_rejection(self, imlist_entry):
+        """Decide whether to reject a spw group based on the number of high-flagging-percentage fields."""
+
+        vis_name = self.inputs.vis[-1]
+
+        msobj = self.inputs.context.observing_run.get_ms(vis_name)
+        job = casa_tasks.flagdata(vis=vis_name, mode='summary', fieldcnt=True)
+        flag_stats = self._executor.execute(job)
+
+        # PIPE-1800: for plane-rejection, we restrict the flagging stats evaluation within the
+        # 1deg^2 box based on the cutout layout.
+        mosaic_side_arcsec = 3600  # 1 degree
+        dist = (mosaic_side_arcsec / 2.)
+        dist_arcsec = str(dist) + 'arcsec'
+
+        fid_list = imlist_entry['heuristics'].select_fields(offsets=dist_arcsec,
+                                                            intent='TARGET',
+                                                            phasecenter=imlist_entry['phasecenter'],
+                                                            name='0*,"0*,1*,"1*,2*,"2*,T*,"T*')
+        # for the existing VLASS workflow, only one MS is used, though this might change in the future.
+        fid_list = fid_list[0]
+
+        field_objs = msobj.get_fields(field_id=fid_list)
+        n_spwgroup = len(imlist_entry['spw'])
+        n_flagged_field_spwgroup = np.zeros((len(field_objs), n_spwgroup))
+        n_total_field_spwgroup = np.zeros((len(field_objs), n_spwgroup))
+        scan_list = np.zeros(len(field_objs))
+        fname_list = []
+
+        for field_idx, field_obj in enumerate(field_objs):
+            fname_list.append(field_obj.name)
+            for spwgroup_idx, spwgroup_sel in enumerate(imlist_entry['spw']):
+                n_flagged = n_total = 0.0
+                spw_list = spwgroup_sel.split(',')
+                for spw_str in spw_list:
+                    n_flagged += flag_stats[field_obj.name]['spw'][spw_str]['flagged']
+                    n_total += flag_stats[field_obj.name]['spw'][spw_str]['total']
+                n_flagged_field_spwgroup[field_idx, spwgroup_idx] = n_flagged
+                n_total_field_spwgroup[field_idx, spwgroup_idx] = n_total
+                scan_list[field_idx] = list(flag_stats[field_obj.name]['scan'].keys())[0]
+
+        nfield_above_flagpct = np.sum(n_flagged_field_spwgroup/n_total_field_spwgroup >
+                                      self.inputs.vlass_plane_reject['flagpct_thresh'], axis=0)
+        spwgroup_reject = [False]*n_spwgroup
+        for idx, nfield in enumerate(nfield_above_flagpct):
+            is_spwgroup_excluded = set(imlist_entry['spw'][idx].split(',')) & set(self.inputs.vlass_plane_reject['exclude_spw'].split(','))
+            if self.inputs.vlass_plane_reject['apply'] and nfield >= self.inputs.vlass_plane_reject['nfield_thresh'] and not is_spwgroup_excluded:
+                spwgroup_reject[idx] = True
+
+        vlass_flag_stats = {}
+        vlass_flag_stats['spwgroup_list'] = imlist_entry['spw']
+        vlass_flag_stats['scan_list'] = scan_list
+        vlass_flag_stats['fname_list'] = fname_list
+        vlass_flag_stats['flagpct_field_spwgroup'] = n_flagged_field_spwgroup/n_total_field_spwgroup
+        vlass_flag_stats['flagpct_spwgroup'] = np.sum(n_flagged_field_spwgroup, axis=0)/np.sum(n_total_field_spwgroup, axis=0)
+        vlass_flag_stats['nfield_above_flagpct'] = nfield_above_flagpct
+        vlass_flag_stats['flagpct_thresh'] = self.inputs.vlass_plane_reject['flagpct_thresh']
+        vlass_flag_stats['nfield_thresh'] = self.inputs.vlass_plane_reject['nfield_thresh']
+        vlass_flag_stats['spwgroup_reject'] = spwgroup_reject
+
+        return vlass_flag_stats

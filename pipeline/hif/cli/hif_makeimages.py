@@ -78,6 +78,17 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                             exported to the products/ directory. The first exported
                             product retains the same name.  Additional products start
                             counting with 'v2', 'v3', etc.
+    vlass_plane_reject      Only used for the 'VLASS-SE-CUBE' imaging mode. default: True
+                            If True, reject VLASS Coarse Cube planes with high flagging percentages or outlier beam sizes (see the heuristics details below)
+                            If False, do not perform the post-imaging VLASS Coarse Cube plane rejection.
+                            If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.
+                            The optional keys could be:
+                            - exclude_spw, default: ''
+                                Spectral windows to be excluded from the VLASS Coarse Cube post-imaging plane rejection consideration, i.e. always preserve.
+                            - flagpct_thresh, default: 0.8
+                                The flagging percentage across the entire mosaic to be considered to be high flagging level for the plane rejection.
+                            - beamdev_thresh: default: 0.2
+                                Threshold for the fractional beam deviation from the expected value required for the plane rejection.                                  
     parallel                Clean images using MPI cluster
     dryrun                  Run the task (False) or just display the command (True)
     acceptresults           Add the results to the pipeline context
