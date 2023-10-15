@@ -1,19 +1,16 @@
 import ast
+import collections
 import math
 import os
-import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
-from pipeline.domain import DataType
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import task_registry
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.utils import imstat_items
-from pipeline.infrastructure.utils import get_stokes
+import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+from pipeline.infrastructure.utils import get_stokes, imstat_items
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -59,6 +56,7 @@ class MakecutoutimagesResults(basetask.Results):
                     spwlist=subitem['spwlist'], specmode=subitem['specmode'],
                     sourcetype=subitem['sourcetype'],
                     multiterm=subitem['multiterm'],
+                    metadata=subitem['metadata'],
                     imageplot=subitem['imageplot'])
                 if 'TARGET' in subitem['sourcetype']:
                     context.subimlist.add_item(imageitem)
@@ -92,6 +90,7 @@ class MakecutoutimagesInputs(vdp.StandardInputs):
 @task_registry.set_equivalent_casa_task('hif_makecutoutimages')
 class Makecutoutimages(basetask.StandardTaskTemplate):
     Inputs = MakecutoutimagesInputs
+    is_multi_vis_task = True
 
     def prepare(self):
 
@@ -103,7 +102,7 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
             if self.inputs.context.imaging_mode.startswith('VLASS-SE-CONT'):
                 is_vlass_se_cont = True
             if self.inputs.context.imaging_mode.startswith('VLASS-SE-CUBE'):
-                is_vlass_se_cube = True                
+                is_vlass_se_cube = True
         except Exception:
             pass
 

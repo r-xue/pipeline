@@ -10,9 +10,11 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import sky as sky
 from pipeline.infrastructure import casa_tools
-from .plot_spectra import plot_spectra
-from .plot_beams import plot_beams
 from pipeline.infrastructure.utils import get_stokes
+
+from .plot_beams import plot_beams
+from .plot_beams_vlasscube import plot_beams_vlasscube
+from .plot_spectra import plot_spectra
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -323,3 +325,35 @@ class TcleanMajorCycleSummaryFigure(object):
         return logger.Plot(self.figfile,
                            x_axis=self.xlabel,
                            y_axis='/'.join(self.ylabel))
+
+
+class VlassCubeSummary:
+    def __init__(self, context, result):
+        self.context = context
+        self.result = result  # a MakeImagesResult object
+
+    def plot(self):
+        """Generate plots for the vlass cube summary."""
+        plot_wrappers = []
+
+        stage_dir = os.path.join(self.context.report_dir,
+                                 'stage%d' % self.result.stage_number)
+        if not os.path.exists(stage_dir):
+            os.mkdir(stage_dir)
+
+        figfile = os.path.join(stage_dir, 'vlass_cube_summary.png')
+        try:
+
+            plot_beams_vlasscube(self.result.metadata['vlass_cube_metadata'], figfile)
+            plot = logger.Plot(figfile,
+                               x_axis='Spw Group',
+                               y_axis='Beam/Flagpct',
+                               parameters={})
+
+            plot_wrappers.append(plot)
+
+        except Exception as ex:
+            LOG.warning('Could not create plot %s', figfile)
+            LOG.warning(ex)
+
+        return plot_wrappers

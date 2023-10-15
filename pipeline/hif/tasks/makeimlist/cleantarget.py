@@ -38,6 +38,7 @@ class CleanTarget(dict):
         self['niter'] = None           # int
         self['cycleniter'] = None      # int
         self['cyclefactor'] = None     # float
+        self['nmajor'] = None          # int
         self['sensitivity'] = None     # string
         self['threshold'] = None       # string
         self['reffreq'] = None         # string
@@ -48,6 +49,7 @@ class CleanTarget(dict):
         self['usepointing'] = None     # boolean
         self['mosweight'] = None       # boolean
         self['drcorrect'] = None       # float
+        self['flagpct'] = None         # float
 
         dict.__init__(self, *args, **kwargs)
 

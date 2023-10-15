@@ -72,7 +72,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean reffreq parameter heuristics."""
         return '3.0GHz'
 
-    def cyclefactor(self, iteration: int) -> float:
+    def cyclefactor(self, iteration: int, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None) -> float:
         """Tclean cyclefactor parameter heuristics."""
         return 3.0
 
@@ -95,9 +95,14 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return 5000
 
+    def nmajor(self, iteration: int) -> int:
+        """Tclean nmajor parameter heuristics."""
+        return None
+
     def scales(self, iteration: Union[int, None] = None) -> Union[list, None]:
         """Tclean scales parameter heuristics."""
-        if not iteration: return None
+        if not iteration:
+            return None
         if self.vlass_stage == 3 and iteration in [1, 2, 3]:
             return [0, 5, 12]
         else:
@@ -108,7 +113,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         if self.vlass_stage == 3:
             return ''
         else:
-            # PIPE-1679: the previous default value of '3arcsec' has been changed to '3/(pi/(4ln(2)))arcsec' 
+            # PIPE-1679: the previous default value of '3arcsec' has been changed to '3/(pi/(4ln(2)))arcsec'
             # since CASA ver>=6.5.3 to maintain the beam size consistency due to the math correction from CAS-13260.
             return ['2.6476arcsec']
 
@@ -128,7 +133,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
                 result_meta = result.read()
                 if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith(
                         'hifv_vlassmasking'):
-                    mask_list = [r.combinedmask for r in result_meta][0]
+                    mask_list = result_meta.combinedmask
 
         # Add 'pb' string as a placeholder for cleaning without mask (pbmask only, see PIPE-977). This should
         # always stand at the last place in the mask list.
@@ -359,7 +364,6 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return 5.0
 
     def get_autobox_params(self, iteration: int, intent: str, specmode: str, robust: float) -> tuple:
-
         """Default auto-boxing parameters."""
 
         sidelobethreshold = None
@@ -593,7 +597,6 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
         return [12500, 12500]
 
     def mosweight(self, intent, field) -> bool:
-
         """tclean flag to use mosaic weighting."""
 
         # Currently only ALMA has decided to use this flag (CAS-11840). So
