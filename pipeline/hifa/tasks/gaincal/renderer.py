@@ -4,11 +4,9 @@ Created on 29 Oct 2014
 @author: sjw
 """
 import collections
-import copy
 import os
 
 import pipeline.infrastructure
-import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
@@ -150,6 +148,23 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result,
                                                                           result.phaseoffsetresult.final, '')
                 diagnostic_phaseoffset_vs_time_summaries[vis] = plotter.plot()
+
+                # PIPE-1762: add information about spw mapping (if any)
+                spwmapping = None
+                for ifld, spwmap in ms.spwmaps.items():
+                    if ifld.intent != 'PHASE':
+                        continue
+                    if spwmap.combine:
+                        spwmapping = 'combined'
+                    elif spwmap.spwmap:
+                        spwmapping = spwmap.spwmap
+                if spwmapping:
+                    for plot in diagnostic_phaseoffset_vs_time_summaries[vis]:
+                        if spwmapping != 'combined' and spwmapping[plot.parameters['spw']] == plot.parameters['spw']:
+                            continue  # don't add the message if the spw is mapped onto itself
+                        plot.parameters['spwmapmessage'] = 'This spw is calibrated using the phase solution for ' + (
+                            'all spws combined.' if spwmapping == 'combined'
+                            else 'spw {}.'.format(spwmapping[plot.parameters['spw']]))
 
             # Generate detailed plots and render corresponding sub-pages.
             if pipeline.infrastructure.generate_detail_plots(result):
