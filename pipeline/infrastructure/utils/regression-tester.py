@@ -622,6 +622,20 @@ def data_directory(scope="module") -> str:
         print("Using: {} for data directory".format(big_data_dir))
     return big_data_dir
 
+def setup_flux_antennapos(test_directory, output_dir):
+    # Copy flux.csv and antennapos.csv into the working directory
+    flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
+    anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
+
+    try:
+        os.mkdir(f'{output_dir}/working/')
+    except FileExistsError:
+        pass
+
+    shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{output_dir}/working/flux.csv'))
+    shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{output_dir}/working/antennapos.csv'))
+
+
 @pytest.mark.slow
 class TestSlowerRegression:
 
@@ -637,21 +651,11 @@ class TestSlowerRegression:
         ref_directory = 'pl-regressiontest/2019.1.01094.S/'
 
         pr = PipelineRegression(input_dir=test_directory,
-                                visname=['uid___A002_Xecbc07_X6b0e', 'uid___A002_Xecf7c7_X1d83'], 
+                                visname=['uid___A002_Xecbc07_X6b0e', 'uid___A002_Xecf7c7_X1d83'],
                                 project_id="2019_1_01094_S",
                                 expectedoutput_dir=ref_directory)
 
-        #TODO: flux.csv missing for this one.
-
-        # Copy flux.csv and antennapos.csv into the working directory
-        #flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-        #anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
-        #try:
-        #    os.mkdir(f'{pr.output_dir}/working/')
-        #except FileExistsError:
-        #    pass
-        #shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/flux.csv'))
-        #shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/antennapos.csv'))
+        setup_flux_antennapos(test_directory, pr.output_dir)
 
         pr.run(ppr=(test_directory + 'PPR.xml'))
 
@@ -670,17 +674,7 @@ class TestSlowerRegression:
                                 project_id="E2E9_1_00061_S",
                                 expectedoutput_dir=ref_directory)
 
-        # Copy flux.csv and antennapos.csv into the working directory
-        flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-        anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
-
-        try:
-            os.mkdir(f'{pr.output_dir}/working/')
-        except FileExistsError:
-            pass
-
-        shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/flux.csv'))
-        shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/antennapos.csv'))
+        setup_flux_antennapos(test_directory, pr.output_dir)
 
         pr.run(ppr=(test_directory + 'PPR.xml'))
 
@@ -698,17 +692,8 @@ class TestSlowerRegression:
                                 visname=['uid___A002_Xe0e4ca_Xb18', 'uid___A002_Xeb9695_X2fe5'],
                                 project_id="2018_1_01255_S",
                                 expectedoutput_dir=ref_directory)
-        # Copy flux.csv and antennapos.csv into the working directory
-        flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-        anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
-
-        try:
-            os.mkdir(f'{pr.output_dir}/working/')
-        except FileExistsError:
-            pass
-    
-        shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/flux.csv'))
-        shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/antennapos.csv'))
+        
+        setup_flux_antennapos(test_directory, pr.output_dir)
         
         pr.run(ppr=(test_directory + 'PPR.xml'))
 
@@ -727,17 +712,7 @@ class TestSlowerRegression:
                                 project_id="2017_1_00912_S",
                                 expectedoutput_dir=ref_directory)
 
-        # Copy flux.csv and antennapos.csv into the working directory
-        flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-        anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
-
-        try:
-            os.mkdir(f'{pr.output_dir}/working/')
-        except FileExistsError:
-            pass
-
-        shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/flux.csv'))
-        shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/antennapos.csv'))
+        setup_flux_antennapos(test_directory, pr.output_dir)
 
         pr.run(ppr=(test_directory + 'PPR.xml'))
 
@@ -756,17 +731,7 @@ class TestSlowerRegression:
                                 project_id="2019_1_01184_S",
                                 expectedoutput_dir=ref_directory)
         
-        # Copy flux.csv and antennapos.csv into the working directory
-        flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-        anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
-
-        try:
-            os.mkdir(f'{pr.output_dir}/working/')
-        except FileExistsError:
-            pass
-
-        shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/flux.csv'))
-        shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/antennapos.csv'))
+        setup_flux_antennapos(test_directory, pr.output_dir)
 
         pr.run(ppr=(test_directory + 'PPR.xml'))
 
@@ -785,17 +750,7 @@ class TestSlowerRegression:
                                 visname=['uid___A002_Xe6a684_X7c41'],
                                 expectedoutput_dir=ref_directory)
 
-        # Copy flux.csv and antennapos.csv into the working directory
-        flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-        anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
-
-        try:
-            os.mkdir(f'{pr.output_dir}/working/')
-        except FileExistsError:
-            pass
-
-        shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/flux.csv'))
-        shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/antennapos.csv'))
+        setup_flux_antennapos(test_directory, pr.output_dir)
 
         pr.run(ppr=(test_directory + 'PPR.xml'))
 
@@ -814,17 +769,7 @@ class TestSlowerRegression:
                                 visname=['uid___A002_Xca8fbf_X5733'],
                                 expectedoutput_dir=ref_directory)
 
-        # Copy flux.csv and antennapos.csv into the working directory
-        flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-        anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
-
-        try:
-            os.mkdir(f'{pr.output_dir}/working/')
-        except FileExistsError:
-            pass
-
-        shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/flux.csv'))
-        shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/antennapos.csv'))
+        setup_flux_antennapos(test_directory, pr.output_dir)
         
         pr.run(ppr=(test_directory + 'PPR.xml'))
 
@@ -844,17 +789,7 @@ class TestSlowerRegression:
                                 visname=['uid___A002_Xe1f219_X1457', 'uid___A002_Xe1f219_X9dbf', 'uid___A002_Xe27761_X74f8'],
                                 expectedoutput_dir=ref_directory)
         
-        # Copy flux.csv and antennapos.csv into the working directory
-        flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-        anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
-
-        try:
-            os.mkdir(f'{pr.output_dir}/working/')
-        except FileExistsError:
-            pass
-
-        shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/flux.csv'))
-        shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/antennapos.csv'))
+        setup_flux_antennapos(test_directory, pr.output_dir)
 
         pr.run(ppr=(test_directory + 'PPR.xml'))
 
@@ -875,17 +810,7 @@ class TestSlowerRegression:
                                 visname=['uid___A002_Xe44309_X7d94', 'uid___A002_Xe45e29_X59ee', 'uid___A002_Xe45e29_X6666', 'uid___A002_Xe48598_X8697'],
                                 expectedoutput_dir=ref_directory)
         
-        # Copy flux.csv and antennapos.csv into the working directory
-        flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-        anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
-
-        try:
-            os.mkdir(f'{pr.output_dir}/working/')
-        except FileExistsError:
-            pass
-
-        shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/flux.csv'))
-        shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/antennapos.csv'))
+        setup_flux_antennapos(test_directory, pr.output_dir)
 
         pr.run(ppr=(test_directory + 'PPR.xml'))
 
@@ -902,22 +827,12 @@ class TestSlowerRegression:
         ref_directory = 'pl-regressiontest/2019.1.01056.S/'
 
         pr = PipelineRegression(input_dir=test_directory,
-                                visname=['uid___A002_Xe1f219_X6d0b', 'uid___A002_Xe1f219_X7ee8'], 
+                                visname=['uid___A002_Xe1f219_X6d0b', 'uid___A002_Xe1f219_X7ee8'],
                                 project_id="2019_1_01056_S",
-                                expectedoutput_file=(f'{ref_directory}' + 
+                                expectedoutput_file=(f'{ref_directory}' +
                                                 'uid___A002_Xe1f219_X6d0b.casa-6.5.4-2-pipeline-2023.0.0.17.results.txt'))
         
-        # Copy flux.csv and antennapos.csv into the working directory
-        flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-        anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
-
-        try:
-            os.mkdir(f'{pr.output_dir}/working/')
-        except FileExistsError:
-            pass
-
-        shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/flux.csv'))
-        shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/antennapos.csv'))
+        setup_flux_antennapos(test_directory, pr.output_dir)
         
         pr.run(ppr=(test_directory + 'PPR.xml'))
 
