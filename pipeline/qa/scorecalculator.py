@@ -580,7 +580,7 @@ def score_parallactic_range(
             metric_score=coverage,
             metric_units='degrees'
         )
-        score = pqa.QAScore(0.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+        score = pqa.QAScore(0.6, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
                             weblog_location=pqa.WebLogLocation.BANNER,
                             applies_to=pqa.TargetDataSelection(session={session_name}))
         scores.append(score)

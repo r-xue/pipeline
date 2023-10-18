@@ -1,17 +1,18 @@
 # Started from jmaster's create_docs.py.
-# Modified by kberry to work with post-removal of the task interface.
+# Modified by kberry to work post-removal of the task interface.
 
 import argparse
 import inspect
 import os
 import sys
 from collections import namedtuple
-from typing import Tuple
+from typing import Dict,Tuple
 
 from mako.template import Template
 
 Task = namedtuple('Task', 'name short description parameters examples')
 
+# Task groups and their names
 task_groups = {"h": "Generic",
                "hif": "Interferometry Generic",
                "hifa": "Interferometry ALMA",
@@ -20,47 +21,22 @@ task_groups = {"h": "Generic",
                "hsd": "Single Dish",
                "hsdn": "Nobeyama"}
 
-# Tasks to exclude from the reference manual
-# hifv tasks confirmed by John Tobin via email 20230911
-# h tasks requested by Remy via email 20230921
-tasks_to_exclude = ['h_applycal',
-                    'h_export_calstate',
-                    'h_exportdata',
-                    'h_import_calstate',
-                    'h_importdata',
-                    'h_mssplit',
-                    'h_restoredata',
-                    'h_show_calstate',
-                    'hifv_targetflag',
-                    'hifv_gaincurves',
-                    'hifv_opcal',
-                    'hifv_rqcal',
-                    'hifv_swpowcal',
-                    'hifv_tecmaps']
 
-pdict = {"h": [],
-         "hif": [],
-         "hifa": [],
-         "hifas": [],
-         "hifv": [],
-         "hsd": [],
-         "hsdn": []}
-
-
-def check_dirs(filename):
-    """pre-check/create the ancestry directories of a given file path."""
+def check_dirs(filename: str):
+    """Pre-check/create the ancestry directories of a given file path."""
     filedir = os.path.dirname(filename)
     if not os.path.exists(filedir):
         os.makedirs(filedir)
 
 
-def write_out(pdict, rst_file="pipeline_new_tasks.rst", outdir=None):
+def write_landing_page(pdict, rst_file="pipeline_new_tasks.rst",
+                       mako_template="pipeline_tasks.mako", outdir=None):
     """Creates reST file for the "landing page" for the tasks.
     """
     script_path = os.path.dirname(os.path.realpath(__file__))
-    task_template = Template(filename=os.path.join(script_path, 'pipeline_tasks.mako'))
+    task_template = Template(filename=os.path.join(script_path, mako_template))
 
-    # Write the information from into a rst file that can be rendered by sphinx as html/pdf/etc.
+    # Write the information into a rst file that can be rendered by sphinx as html/pdf/etc.
 
     output_dir = script_path if outdir is None else outdir
     rst_file_full_path = os.path.join(output_dir, rst_file)
@@ -70,7 +46,7 @@ def write_out(pdict, rst_file="pipeline_new_tasks.rst", outdir=None):
         fd.writelines(rst_text)
 
 
-def write_tasks_out(pdict, outdir=None):
+def write_task_pages(pdict, outdir=None):
     """Creates reST files for each task.
     """
     script_path = os.path.dirname(os.path.realpath(__file__))
@@ -88,102 +64,161 @@ def write_tasks_out(pdict, outdir=None):
                 fd.writelines(rst_text)
 
 
-# TODO: Pull out excess whitespace
-def docstring_parse(docstring: str) -> Tuple[str, str, str, str, str]:
-    """ Does its best to parse the docstring for each python task.
-        Example of docstring-format that this will parse:
-        #FIXME: add
+def _parse_description(description_section: str) -> Tuple[str, str]:
+    """ Parse the short and long descriptions from the docstring """
+    short_description = ""
+    long_description = ""
+
+    index = 0
+    lines = description_section.split("\n")
+    if len(lines) > 1:
+        short_description = lines[1].split(" ---- ")
+        if len(short_description) > 1:
+            if short_description[1] != '':
+                short_description = short_description[1]
+                index = 2
+            else:
+                # hifa_wvrgcal and hifa_wvrgcal flag have longer short
+                # descriptions that extend onto the next line
+                short_description = lines[2].strip() + "\n" + lines[3].strip()
+                index = 4
+
+    long_description = description_section
+
+    # Better format long description:
+    long_split = long_description.split('\n')[index:]
+    long_split_stripped = [line[4:] for line in long_split]
+    long_description = "\n".join(long_split_stripped).strip("\n")
+
+    return short_description, long_description
+
+
+def _parse_parameters(parameters_section: str) -> Dict[str, str]:
     """
+    Parse the parameters section of the docstring and return a
+    dict of {'parameter': 'description'}.
+    """
+    parms_split = parameters_section.split("\n")
+
+    parameters_dict = {}  # format is {'parameter': 'description'}
+    current_parm_desc = None
+    parameter_name = ""
+    for line in parms_split:
+        if len(line) > 4:
+            if not line[4].isspace():
+                if current_parm_desc is not None:
+                    parameters_dict[parameter_name] = current_parm_desc
+                parameter_name = line.split()[0]
+                index = line.find(parameter_name)
+                description_line_one = line[index+len(parameter_name):].strip()
+                current_parm_desc = description_line_one
+            else:
+                if current_parm_desc is not None:
+                    new_line = line.strip()
+                    # Don't add totally empty lines:
+                    if not new_line.isspace():
+                        current_parm_desc = current_parm_desc + " " + new_line + "\n"
+
+    # Add the information for the last parameter
+    if parameter_name != "" and current_parm_desc is not None:
+        parameters_dict[parameter_name] = current_parm_desc
+
+    return parameters_dict
+
+
+def _parse_examples(examples_section: str) -> str:
+    """ Parse examples section from the docstring """
+    examples = examples_section.strip("\n")
+
+    # There are 4 spaces before the text on each line begins for the
+    # examples and there can be leading and trailing lines with only
+    # newlines, which are stripped out.
+    examples = "\n".join([line[4:] for line in examples.split("\n")]).strip("\n")
+    return examples
+
+
+def docstring_parse(docstring: str) -> Tuple[str, str, str, dict]:
+    """ Parses the docstring for each pipeline task.
+
+        This will parse the non-standard docstring format currently used
+        for pipeline tasks and return the short description, the long
+        description, the examples, and a dictionary of
+        {'parameter name' : 'parameter description'}
+
+        If parsing something fails, it will continue and a warning message will
+        be printed to stdout.
+
+        Example of the non-standard docstring-format that this will parse:
+
+            h_example_task ---- An example task short description
+
+            h_example task is an example task that serves as an example of
+            the non-standard docstring format parsed by this script, and this
+            is the long description.
+
+            --------- parameter descriptions ---------------------------------------------
+
+            filename            A filename that could be set as input if this were a real
+                                task.
+                                example: filename='filename.txt'
+            optional            An optional parameter that can be set. This does nothing.
+                                example: optional=True
+
+            --------- examples -----------------------------------------------------------
+
+            1. Run the example task
+
+            >>> h_example_task()
+
+            2. Run the example task with the ``optional`` parameter set
+
+            >>> h_example_task(optional=True)
+
+            --------- issues -----------------------------------------------------------
+
+            This is an example task, but if it had any known issues, they would be here.
+    """
+    # Strings that delimit the different sections of the pipeline task docstrings:
     parameter_delimiter = "--------- parameter descriptions ---------------------------------------------"
     examples_delimiter = "--------- examples -----------------------------------------------------------"
     issues_delimiter = "--------- issues -----------------------------------------------------------"
 
-    short = ""
-    long = ""
-    examples = ""
-    parameters = ""
-    parameters_dict = {}
-
     try:
-        beginning_half, end_half = docstring.split(parameter_delimiter)
+        description_section, rest_of_docstring = docstring.split(parameter_delimiter)
 
-        index = 0
+        short_description, long_description = _parse_description(description_section)
 
-        lines = beginning_half.split("\n")
-        if len(lines) > 1:
-            short = lines[1].split(" ---- ")
-            if len(short) > 1:
-                if short[1] != '':
-                    short = short[1]
-                    index = 2
-                else:
-                    # hifa_wvrgcal and hifa_wvrgcal flag have longer short descriptions that
-                    # extend onto the next line
-                    short = lines[2].strip() + "\n" + lines[3].strip()
-                    index = 4
+        parameters_section, examples_section = rest_of_docstring.split(examples_delimiter)
 
-        long = beginning_half
-        # Better format long description:
-        long_split = long.split('\n')[index:]
-        long_split_stripped = [line[4:] for line in long_split]
-        long = "\n".join(long_split_stripped).strip("\n")
+        parameters_dict = _parse_parameters(parameters_section)
 
-        second_split = end_half.split(examples_delimiter)
-
-        parameters = second_split[0]
-        # Better format parameters:
-
-        # FIXME: This is still a "rough draft" that needs updating and verifying
-        parms_split = parameters.split("\n")
-
-        parameters_dict = {}  # format is {'param': 'description'}
-        current_parm_desc = None
-        parameter_name = ""
-        for line in parms_split:
-            if len(line) > 4:
-                if not line[4].isspace():
-                    if current_parm_desc is not None:
-                        parameters_dict[parameter_name] = current_parm_desc
-                    parameter_name = line.split()[0]
-                    index = line.find(parameter_name)
-                    description_line_one = line[index+len(parameter_name):].strip()
-                    current_parm_desc = description_line_one
-                else:
-                    if current_parm_desc is not None:
-                        new_line = line.strip()
-                        # Don't add totally empty lines:
-                        if not new_line.isspace():
-                            current_parm_desc = current_parm_desc + " " + new_line + "\n"
-
-        # Add the information for the last parameter
-        if parameter_name != "" and current_parm_desc is not None:
-            parameters_dict[parameter_name] = current_parm_desc
-
-        # Remove "dryrun" from dict as it is not wanted in the Reference Manual
+        # Remove "dryrun" and "acceptresults" from parameters dict as they are
+        # not wanted in the Reference Manual
         exclude_parameters = ["dryrun", "acceptresults"]
         for parm_to_exclude in exclude_parameters:
             if parm_to_exclude in parameters_dict:
                 del parameters_dict[parm_to_exclude]
+        
+        # The "issues" section is excluded from the output docs and is not
+        # always present. If present, it will always be the last
+        # section.
+        if issues_delimiter in examples_section:
+            temp_split = examples_section.split(issues_delimiter)
+            examples_section = temp_split[0]
 
-        examples = second_split[1].strip("\n")
-
-        if issues_delimiter in examples:
-            temp_split = examples.split(issues_delimiter)
-            examples = temp_split[0]
-
-        examples = "\n".join([line[4:] for line in examples.split("\n")]).strip("\n")
-
-        return short, long, examples, parameters_dict
+        examples = _parse_examples(examples_section)
 
     except Exception as e:
-        print("FAILED to PARSE DOCSTRING. Error: {}".format(e))
+        print("Failed to parse docstring. Error: {}".format(e))
         print("Failing docstring: {}".format(docstring))
-        return short, long, examples, parameters_dict
+
+    return short_description, long_description, examples, parameters_dict
 
 
-def create_docs(missing_report=True, outdir=None, srcdir=None):
+def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude=None):
     """
-    Walks through the pipeline and creates documentation for each pipeline task.
+    Walks through the pipeline and creates reST documentation for each pipeline task, including an
+    overall landing page.
 
     Optionally generates and outputs lists of tasks with missing examples, parameters, and
     longer descriptions.
@@ -193,29 +228,59 @@ def create_docs(missing_report=True, outdir=None, srcdir=None):
         sys.path.insert(0, srcdir)
         import pipeline
 
+    # Dict which stores { 'task group' : [list of Tasks in that group]}
+    tasks_by_group = {"h": [],
+                      "hif": [],
+                      "hifa": [],
+                      "hifas": [],
+                      "hifv": [],
+                      "hsd": [],
+                      "hsdn": []}
+
+    if not tasks_to_exclude:
+        # Tasks to exclude from the reference manual
+        # hifv tasks confirmed by John Tobin via email 20230911
+        # h tasks requested by Remy via email 20230921
+        tasks_to_exclude = ['h_applycal',
+                            'h_export_calstate',
+                            'h_exportdata',
+                            'h_import_calstate',
+                            'h_importdata',
+                            'h_mssplit',
+                            'h_restoredata',
+                            'h_show_calstate',
+                            'hifv_targetflag',
+                            'hifv_gaincurves',
+                            'hifv_opcal',
+                            'hifv_rqcal',
+                            'hifv_swpowcal',
+                            'hifv_tecmaps']
+
     # Lists of cli PL tasks that are missing various pieces:
     missing_example = []
     missing_description = []
     missing_parameters = []
 
-    for name, obj in inspect.getmembers(pipeline):
-        if name in task_groups.keys():
-            for name2, obj2 in inspect.getmembers(obj):
-                if 'cli' in name2:
-                    for task_name, task_func in inspect.getmembers(obj2):
+    # Walk through the whole pipeline and generate documentation for cli pipeline tasks
+    for group_name, obj in inspect.getmembers(pipeline):
+        if group_name in task_groups.keys():
+            for folder_name, sub_obj in inspect.getmembers(obj):
+                if 'cli' in folder_name:
+                    for task_name, task_func in inspect.getmembers(sub_obj):
                         if '__' not in task_name and task_name is not None and task_name[0] == 'h':
                             docstring = task_func.__doc__
-                            short, long, examples, parameters = docstring_parse(docstring)
+                            short_description, long_description, examples, parameters = docstring_parse(docstring)
 
-                            if not examples:
-                                missing_example.append(task_name)
-                            if not long:
-                                missing_description.append(task_name)
-                            if not parameters:
-                                missing_parameters.append(task_name)
+                            if missing_report:
+                                if not examples:
+                                    missing_example.append(task_name)
+                                if not long_description:
+                                    missing_description.append(task_name)
+                                if not parameters:
+                                    missing_parameters.append(task_name)
 
                             if task_name not in tasks_to_exclude:
-                                pdict[name].append(Task(task_name, short, long, parameters, examples))
+                                tasks_by_group[group_name].append(Task(task_name, short_description, long_description, parameters, examples))
                             else:
                                 print("Excluding task: {}".format(task_name))
 
@@ -228,31 +293,30 @@ def create_docs(missing_report=True, outdir=None, srcdir=None):
         print("The following tasks are missing descriptons:")
         for name in missing_description:
             print(name)
-
         print("\n")
 
         print("The following tasks are missing parameters:")
         for name in missing_parameters:
             print(name)
-            print("\n")
+        print("\n")
 
     # Write out "landing page"
-    write_out(pdict, outdir=outdir)
+    write_landing_page(tasks_by_group, outdir=outdir)
 
     # Write individual task pages
-    write_tasks_out(pdict, outdir=outdir)
+    write_task_pages(tasks_by_group, outdir=outdir)
 
 
 def cli_command():
     """CLI interface of create_docs.py.
-    
+
     try `python create_docs.py --help`
     """
 
     # insert the pipeline source directory in case it's not visual to the in-use interpreter.
     if os.getenv('pipeline_dir') is not None:
         # use the env variable "pipeline_dir" to look for the Pipeline source code.
-        pipeline_src = os.path.abspath(pipeline_dir)
+        pipeline_src = os.path.abspath('pipeline_dir')
     else:
         # use the ancestry path if "pipeline_dir" is not set.
         pipeline_src = os.path.abspath('../../pipeline')
@@ -263,7 +327,7 @@ def cli_command():
 
     args = parser.parse_args()
 
-    create_docs(missing_report=True, outdir=args.outdir, srcdir=args.srcdir)
+    create_docs(outdir=args.outdir, srcdir=args.srcdir, missing_report=True)
 
 
 if __name__ == "__main__":
