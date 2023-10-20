@@ -2,7 +2,7 @@
 Pipeline Regression framework.
 
 PipelineRegression class runs on pytest framework, so it needs to implement
-test_* methods for testing. 
+test_* methods for testing.
 """
 
 import shutil
@@ -12,10 +12,10 @@ import os
 import platform
 import pytest
 import re
-from packaging import version 
+from packaging import version
 from typing import Tuple, Optional, List
 
-import casatasks.private.tec_maps as tec_maps 
+import casatasks.private.tec_maps as tec_maps
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tools as casa_tools
@@ -41,7 +41,7 @@ class PipelineRegression(object):
             input_dir: path to directory contains input files
             visname: list of names of MeadurementSets
             expectedoutput_file: path to a file that defines expected output of a test. Will override expectedoutput_dir if that is 
-                                 also specified. 
+                                 also specified.
             expectedoutput_dir: path to a directory which contains 1 or more expected output files. Not used if expectedoutput_file
                                 is specified.
             output_dir: path to directory to output. If None, it sets visname
@@ -53,8 +53,8 @@ class PipelineRegression(object):
         if expectedoutput_file: 
             self.expectedoutput_file = casa_tools.utils.resolve(expectedoutput_file)
         else:
-            # Find the newest reference file in expectedoutput_dir and use that. 
-            if expectedoutput_dir: 
+            # Find the newest reference file in expectedoutput_dir and use that.
+            if expectedoutput_dir:
                 reference_data_files = glob.glob(casa_tools.utils.resolve(expectedoutput_dir)+'/*.results.txt')
                 if reference_data_files:
                     # Pick the reference result file with the highest PL version number
@@ -167,7 +167,7 @@ class PipelineRegression(object):
         # set datapath in ~/.casa/config.py, e.g. datapath = ['/users/jmasters/pl-testdata.git']
         input_vis = [casa_tools.utils.resolve(testinput) for testinput in self.testinput]
 
-        if not(self.compare_only):
+        if not self.compare_only:
             # optionally set OpenMP nthreads to a specified value.
             if omp_num_threads is not None:
                 # casa_tools.casalog.ompGetNumThreads() and get_casa_session_details()['omp_num_threads'] are equivalent.
@@ -223,20 +223,19 @@ class PipelineRegression(object):
             self.__compare_results(new_file, default_relative_tolerance)
 
         finally:
-            if not(self.compare_only):
+            if not self.compare_only:
                 # restore the default logfile state
                 self.__reset_logfiles(casa_logfile=last_casa_logfile)
 
             os.chdir(self.current_path)
             
             # clean up if requested
-            if not(self.compare_only) and self.remove_workdir and os.path.isdir(self.output_dir):
+            if not self.compare_only and self.remove_workdir and os.path.isdir(self.output_dir):
                 shutil.rmtree(self.output_dir)
         
         # restore the OpenMP nthreads to the value saved before the Pipeline ppr/reducer call.
-        if not(self.compare_only) and omp_num_threads is not None:
+        if not self.compare_only and omp_num_threads is not None:
             casa_tools.casalog.ompSetNumThreads(default_nthreads)
-
 
     def __compare_results(self, new_file: str, relative_tolerance: float): 
         """
@@ -290,7 +289,6 @@ class PipelineRegression(object):
                 pytest.fail("Failed to match {0} result value{1} within tolerance{1} :\n{2}".format(
                     n_errors, '' if n_errors == 1 else 's', '\n'.join(errors)), pytrace=True)
 
-
     def __save_new_results_to(self, new_file: str, new_results: List[str]):
         """
         Compare results between new one and old one, both results are loaded from specified files.
@@ -302,7 +300,6 @@ class PipelineRegression(object):
         with open(new_file, 'w') as fd:
             fd.writelines([str(x) + '\n' for x in new_results])
 
-
     def __get_results_of_from_current_context(self) -> List[str]:
         """
         Get results of current execution from context.
@@ -312,7 +309,6 @@ class PipelineRegression(object):
         context = pipeline.Pipeline(context='last').context
         new_results = sorted(regression.extract_regression_results(context))
         return new_results
-
 
     def __run_ppr(self, input_vis: List[str], ppr: str, telescope: str):
         """
@@ -622,6 +618,7 @@ def data_directory(scope="module") -> str:
         print("Using: {} for data directory".format(big_data_dir))
     return big_data_dir
 
+
 def setup_flux_antennapos(test_directory, output_dir):
     # Copy flux.csv and antennapos.csv into the working directory
     flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
@@ -700,7 +697,7 @@ class TestSlowerRegression:
     @pytest.mark.alma
     @pytest.mark.twelve
     def test_2017_1_00912_S__uid___A002_Xc74b5b_X316a_regression(self, data_directory):
-        """Run longer regression test on this ALMA if dataset 
+        """Run longer regression test on this ALMA if dataset
         
         Dataset: 2017.1.00912.S: uid___A002_Xe6a684_X7c41
         """
@@ -798,7 +795,7 @@ class TestSlowerRegression:
     def test_2019_1_00994_S__uid___A002_Xe44309_X7d94__PPR__regression(self, data_directory):
         """Run longer regression test on this ALMA IF dataset
         
-        ALMA 7m 
+        ALMA 7m
 
         Dataset: 2019.1.00994.S: uid___A002_Xe44309_X7d94, uid___A002_Xe45e29_X59ee, uid___A002_Xe45e29_X6666, uid___A002_Xe48598_X8697
         """
@@ -871,6 +868,8 @@ class TestSlowerRegression:
                                 visname=['uid___A002_Xe1d2cb_X110f1', 'uid___A002_Xe1d2cb_X11d0a', 'uid___A002_Xe1f219_X6eeb'], 
                                 project_id="2019_1_01056_S",
                                 expectedoutput_file=f'{ref_directory}uid___A002_Xe1d2cb_X110f1.casa-6.5.4-2-pipeline-2023.0.0.17.results.txt')
+
+        setup_flux_antennapos(test_directory, pr.output_dir)
         pr.run()
 
     @pytest.mark.alma
@@ -890,7 +889,6 @@ class TestSlowerRegression:
                                 project_id="2016_1_01489_T",
                                 expectedoutput_dir=ref_directory)
         pr.run()
-
 
     # VLA Section
     @pytest.mark.vla
