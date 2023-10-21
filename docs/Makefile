@@ -4,7 +4,7 @@
 #	export pythonbin=${casa_dir}/bin/python3
 PYTHON := $(if $(pythonbin),$(pythonbin),python3)
 
-SPHINXOPTS    = -v -j 12
+SPHINXOPTS    = -v -j auto
 SPHINXBUILD   = ${PYTHON} -msphinx
 #SPHINXOPTS    = -v -j auto -b coverage
 SPHINXPROJ    = pipeline_docs
@@ -24,11 +24,11 @@ help:
 
 # options:
 #
-#	html:	for html (do not refresh the costly apidoc)
-#	latex:	for latex
-#	pdf:	for latex+pdf
-#	docs:	for both html and latex+pdf
-#
+#	html:			for html (do not refresh the costly apidoc)
+#	latex:			for latex
+#	pdf:			for latex+pdf
+#	docs:			for both html and latex+pdf
+#	pdf_taskdocs: 	make the Pipeline task reference manual pdf file: _build/latex/taskdocs.pdf
 
 apidoc:
 	@rm -rf ./source/_apidoc 
@@ -41,19 +41,18 @@ taskapidoc:
 
 
 taskdocs:
-	@rm -rf ./source/pipeline_tasks/h*/*.rst
-	@${PYTHON} ./source/pipeline_tasks/create_docs.py 
+	@rm -rf ${SOURCEDIR}/_taskdocs
+	@${PYTHON} ./source/pipeline_tasks/create_docs.py --outdir ${SOURCEDIR}/_taskdocs --srcdir ../
 
-
-# for CI docs build (no ipynb copying)
-docs:
+html_docs:
 	@make taskdocs
 	@make apidoc
-	@rm -rf html latex doctrees source/_autosummary
+	@rm -rf ${BUILDDIR}/html ${BUILDDIR}/doctrees ${SOURCEDIR}/_autosummary
 	@make html
-	@rm -rf casa-*.log source/casa-*.log	
+	@rm -rf casa-*.log ${SOURCEDIR}/casa-*log
 
-pdf:
+pdf_taskdocs:
 	@make taskdocs
-	@rm -rf latex/*
+	@rm -rf ${BUILDDIR}/latex ${BUILDDIR}/doctrees
 	@make latexpdf
+	@rm -rf casa-*.log ${SOURCEDIR}/casa-*log

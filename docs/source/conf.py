@@ -20,12 +20,12 @@ from datetime import datetime
 import os
 import sys
 
-pipeline_dir = os.getenv('pipeline_dir')
-if pipeline_dir is not None:
-    # Use the env variable "pipeline_dir" to look for Pipeline if it's specified.
-    sys.path.insert(0, os.path.abspath(pipeline_dir))
+pipeline_src = os.getenv('pipeline_src')
+if pipeline_src is not None:
+    # Use the env variable "pipeline_src" to look for Pipeline if it's specified.
+    sys.path.insert(0, os.path.abspath(pipeline_src))
 else:
-    # Use the ancestry path if "pipeline_dir" is not set.
+    # Use the ancestry path if "pipeline_src" is not set.
     sys.path.insert(0, os.path.abspath('../../'))
 
 try:
@@ -194,7 +194,7 @@ latex_use_modindex = True
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    ('pipeline_tasks/pipeline_new_tasks', 'pipeline.tex',
+    ('_taskdocs/taskdocs', 'taskdocs.tex',
      'Pipeline Tasks Reference Manual',
      'pipeline team', 'manual'),
 ]
