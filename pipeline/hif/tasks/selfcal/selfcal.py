@@ -705,7 +705,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         avgarray = [1]*len(bwarray)
         for idx, bw in enumerate(bwarray):
             nchan = bw/chanwidth
-            nchan = np.round(nchan)
+            nchan = max(np.round(nchan), 1.0)
             avgarray[idx] = int(chanarray[idx]/nchan)
             if avgarray[idx] < 1.0:
                 avgarray[idx] = 1
