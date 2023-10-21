@@ -327,7 +327,7 @@ def cli_command():
         # use the env variable "pipeline_src" for the Pipeline source code path.
         srcdir = os.path.abspath(env_pipeline_src)
 
-    # the secondary fallback default of the pipeline source directory.
+    # the secondary fallback default of the Pipeline source directory.
     if srcdir is None:
         # use the ancestry path if "pipeline_dir" is not set.
         srcdir = os.path.abspath('../../pipeline')
