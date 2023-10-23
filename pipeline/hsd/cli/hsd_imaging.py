@@ -23,7 +23,7 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None,
 
     --------- parameter descriptions ---------------------------------------------
 
-    mode          imaging mode controls imaging parameters in the task.
+    mode          Imaging mode controls imaging parameters in the task.
                   Accepts either "line" (spectral line imaging) or "ampcal"
                   (image settings for amplitude calibrator)
     restfreq      Rest frequency
@@ -33,7 +33,7 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None,
                   example: vis=['uid___A002_X85c183_X36f.ms', 
                                 'uid___A002_X85c183_X60b.ms']
     field         Data selection by field names or ids.
-                  example: "*Sgr*,M100"
+                  example: "`*Sgr*,M100`"
     spw           Data selection by spw ids.
                   example: "3,4" (generate images for spw 3 and 4)
     dryrun        Run the commands (True) or generate the commands to be 
@@ -43,8 +43,13 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None,
 
     --------- examples -----------------------------------------------------------
 
+    1. Generate images with default settings and context
     
+    >>> hsd_imaging()
 
+    2. Generate images with amplitude calibrator and specific parameters
+    
+    >>> hsd_imaging(mode='ampcal', field='*Sgr*,M100', spw='17,19')
 
     """
 

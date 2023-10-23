@@ -16,11 +16,11 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
     """
     hif_makeimages ---- Compute clean map
 
-    
+
     Compute clean results from a list of specified targets.
-    
+
     Output:
-    
+
     results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
@@ -28,7 +28,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
     vis                     The list of input MeasurementSets. Defaults to the list of
                             MeasurementSets specified in the h_init or hif_importdata task.
                             '': use all MeasurementSets in the context
-                            
+
                             Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     target_list             Dictionary specifying targets to be imaged; blank will read list from context
     hm_masking              Clean masking mode. Options are 'centralregion', 'auto',
@@ -40,17 +40,17 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
     hm_minbeamfrac          Minimum beam fraction for pruning
     hm_growiterations       Number of binary dilation iterations for growing the mask
     hm_dogrowprune          Do pruning on the grow mask
-                            
+
                             Defaults to '' to enable the automatic heuristics calculation.
                             Can be set to True or False manually.
     hm_minpercentchange     Mask size change threshold
     hm_fastnoise            Faster noise calculation for automask or nsigma stopping
-                            
+
                             Defaults to '' to enable the automatic heuristics calculation.
                             Can be set to True or False manually.
     hm_nsigma               Multiplicative factor for rms-based threshold stopping
     hm_perchanweightdensity Calculate the weight density for each channel independently
-                            
+
                             Defaults to '' to enable the automatic heuristics calculation.
                             Can be set to True or False manually.
     hm_npixels              Number of pixels to determine uv-cell size for super-uniform weighting
@@ -65,7 +65,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
     cleancontranges         Clean continuum frequency ranges in cubes
     calcsb                  Force (re-)calculation of sensitivities and beams
     hm_mosweight            Mosaic weighting
-                            
+
                             Defaults to '' to enable the automatic heuristics calculation.
                             Can be set to True or False manually.
     overwrite_on_export     Replace existing image products when h/hifa/hifv_exportdata is
@@ -84,7 +84,13 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
 
     --------- examples -----------------------------------------------------------
 
-    
+    1. Compute clean results for all imaging targets defined in a previous hif_makeimlist or hif_editimlist call:
+
+    >>> hif_makeimages()
+
+    2. Compute clean results overriding automatic masking choice:
+
+    >>> hif_makeimages(hm_masking='centralregion')
 
 
     """

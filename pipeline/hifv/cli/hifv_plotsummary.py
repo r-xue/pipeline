@@ -10,6 +10,10 @@ def hifv_plotsummary(vis=None, dryrun=None, acceptresults=None):
     hifv_plotsummary ---- Create pipeline summary plots
 
     Create pipeline summary plots
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -20,19 +24,11 @@ def hifv_plotsummary(vis=None, dryrun=None, acceptresults=None):
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Execute the pipeline plotting task.
     
-    hifv_plotsummary()
+    >>> hifv_plotsummary()
 
 
     """

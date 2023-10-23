@@ -8,6 +8,12 @@ def hifv_swpowcal(vis=None, caltable=None, spw=None, dryrun=None, acceptresults=
 
     """
     hifv_swpowcal ---- Runs gencal in swpow mode
+    
+    Runs gencal in swpow mode
+
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -20,19 +26,11 @@ def hifv_swpowcal(vis=None, caltable=None, spw=None, dryrun=None, acceptresults=
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     
-    hifv_swpowcal()
+    >>> hifv_swpowcal()
 
 
     """

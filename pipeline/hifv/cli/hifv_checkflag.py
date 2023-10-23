@@ -10,12 +10,16 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_model
     """
     hifv_checkflag ---- Run RFI flagging using flagdata in various modes
 
+    Run RFI flagging using flagdata in various modes
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
-    vis                List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                       MSes, or tar files of MSes, If ASDM files are specified, they will be
-                       converted  to MS format.
-                       example: vis=['X227.ms', 'asdms.tar.gz']
+    vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                       specified in the h_init or hifv_importdata task.     
     checkflagmode      -- Standard VLA modes with improved RFI flagging heuristics: 'bpd-vla', 'allcals-vla', 'target-vla'
                        -- blank string default use of rflag on bandpass and delay calibrators
                        -- use string 'semi' after hifv_semiFinalBPdcals() for executing rflag on calibrators
@@ -53,19 +57,11 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_model
                        reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Run RFLAG with associated heuristics in the VLA CASA pipeline.
     
-    hifv_checkflag()
+    >>> hifv_checkflag()
 
 
     """

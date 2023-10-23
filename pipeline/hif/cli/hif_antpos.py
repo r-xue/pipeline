@@ -35,11 +35,6 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
     visibilities for imaging.
     
     
-    Issues
-    
-    The hm_antpos 'online' option will be implemented when the observing system
-    provides an antenna position determination service.
-    
     Output
     
     results -- The results object for the pipeline task is returned.
@@ -74,16 +69,20 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
     1. Correct the position of antenna 5 for all the visibility files in a single
     pipeline run:
     
-    hif_antpos(antenna='DV05', offsets=[0.01, 0.02, 0.03])
+    >>> hif_antpos(antenna='DV05', offsets=[0.01, 0.02, 0.03])
     
     2. Correct the position of antennas for all the visibility files in a single
     pipeline run using antenna positions files on disk. These files are assumed
-    to conform to a default naming scheme if 'antposfile' is unspecified by the
+    to conform to a default naming scheme if ``antposfile`` is unspecified by the
     user:
     
-    hif_antpos(hm_antpos='file', antposfile='myantposfile.csv')
+    >>> hif_antpos(hm_antpos='file', antposfile='myantposfile.csv')
 
-
+    --------- issues -----------------------------------------------------------
+    
+    The hm_antpos 'online' option will be implemented when the observing system
+    provides an antenna position determination service.
+    
     """
 
 
