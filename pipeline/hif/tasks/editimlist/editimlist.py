@@ -425,7 +425,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                         uvtaper=imlist_entry['uvtaper'],
                                                         pixperbeam=ppb,
                                                         known_beams=inp.context.synthesized_beams,
-                                                        force_calc=False)
+                                                        force_calc=False, shift=True)
         else:
             synthesized_beam = None
         imlist_entry['cell'] = th.cell(beam=synthesized_beam,
