@@ -287,7 +287,7 @@ class Lowgainflag(basetask.StandardTaskTemplate):
                 else:
                     # Log a warning if any antennas are to be demoted from
                     # the refant list.
-                    LOG.warning(
+                    LOG.attention(
                         '{} - the following antennas have been fully flagged '
                         'in one or more spws, and moved to the end '
                         'of the refant list: {}'.format(ms.basename, ant_msg))
