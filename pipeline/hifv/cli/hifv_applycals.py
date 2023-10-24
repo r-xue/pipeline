@@ -18,12 +18,14 @@ def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, ap
     Users can interact with the pipeline calibration state using the tasks
     h_export_calstate and h_import_calstate.
 
+    Output:
+    
+    results -- The results object for the pipeline task is returne
+    
     --------- parameter descriptions ---------------------------------------------
 
-    vis             List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                    MSes, or tar files of MSes, If ASDM files are specified, they will be
-                    converted  to MS format.
-                    example: vis=['X227.ms', 'asdms.tar.gz']
+    vis             The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                    specified in the h_init or hifv_importdata task.     
     field           A string containing the list of field names or field ids to which
                     the calibration will be applied. Defaults to all fields in the pipeline
                     context.
@@ -31,7 +33,7 @@ def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, ap
     intent          A string containing the list of intents against which the
                     selected fields will be matched. Defaults to all supported intents
                     in the pipeline context.
-                    example: '*TARGET*'
+                    example: `'*TARGET*'`
     spw             The list of spectral windows and channels to which the calibration
                     will be applied. Defaults to all science windows in the pipeline.
                     example: '17', '11, 15'
@@ -57,30 +59,20 @@ def hifv_applycals(vis=None, field=None, intent=None, spw=None, antenna=None, ap
                     reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
+    
+    
+    1. Run the final applycals stage of the VLA CASA pipeline.
+    
+    >>> hifv_applycals()
 
-    
-    
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned
-    
-    Issues
-    
+    --------- issues -----------------------------------------------------------
+
     There is some discussion about the appropriate values of calwt. Given
     properly scaled data, the correct value should be the CASA default of True.
     However at the current time ALMA is suggesting that calwt be set to True for
     applying observatory calibrations, e.g. antenna positions, WVR, and system
     temperature corrections, and to False for applying instrument calibrations,
     e.g. bandpass, gain, and flux.
-    
-    
-    Examples
-    
-    1. Run the final applycals stage of the VLA CASA pipeline.
-    
-    hifv_applycals()
-
 
     """
 

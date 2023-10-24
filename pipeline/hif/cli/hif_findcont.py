@@ -15,7 +15,7 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
 
     If the cont.dat file is not already present in the working directory, then dirty image
     cubes are created for each spectral window of each science target at the native channel
-    resolution unless the nbins parameter was used in the preceding hif_makeimlist stage.
+    resolution unless the ``nbins`` parameter was used in the preceding hif_makeimlist stage.
     Robust=1 Briggs weighting is used for optimal line sensitivity, even if a different
     robust had been chosen in hifa_imageprecheck to match the PI requested angular resolution.
     Using moment0 and moment8 images of each cube, SNR-based masks are created, and the mean
@@ -59,7 +59,9 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
 
     --------- examples -----------------------------------------------------------
 
+    1. Perform continuum frequency range detection for all science targets and spws:
 
+    >>> hif_findcont()
 
 
     """

@@ -20,24 +20,27 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     hifv_restoredata assumes that the following entities are available in the raw
     data directory
     
-    o the ASDMs to be restored
-    o for each ASDM in the input list
-    o a compressed tar file of the final flagversions file, e.g.
-    uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
-    o a text file containing the applycal instructions, e.g.
-    uid___A002_X30a93d_X43e.ms.calapply.txt
-    o a compressed tar file containing the caltables for the parent session,
-    e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
-    
+    - the ASDMs to be restored
+    - for each ASDM in the input list:
+
+        - a compressed tar file of the final flagversions file, e.g.
+          uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
+          
+        - a text file containing the applycal instructions, e.g.
+          uid___A002_X30a93d_X43e.ms.calapply.txt
+          
+        - a compressed tar file containing the caltables for the parent session,
+          e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
+          
     hifv_restoredata performs the following operations
     
-    o imports the ASDM(s))
-    o removes the default MS.flagversions directory created by the filler
-    o restores the final MS.flagversions directory stored by the pipeline
-    o restores the final set of pipeline flags to the MS
-    o restores the final calibration state of the MS
-    o restores the final calibration tables for each MS
-    o applies the calibration tables to each MS
+    - imports the ASDM(s))
+    - removes the default MS.flagversions directory created by the filler
+    - restores the final MS.flagversions directory stored by the pipeline
+    - restores the final set of pipeline flags to the MS
+    - restores the final calibration state of the MS
+    - restores the final calibration tables for each MS
+    - applies the calibration tables to each MS
     
     Output:
     
@@ -72,13 +75,11 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Examples
     
     1. Restore the pipeline results for a single ASDM in a single session
     
-    hifv_restoredata (vis=['myVLAsdm'], session=['session_1'], ocorr_mode='ca')
+    >>> hifv_restoredata (vis=['myVLAsdm'], session=['session_1'], ocorr_mode='ca')
 
 
     """

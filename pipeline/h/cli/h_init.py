@@ -33,11 +33,10 @@ def h_init(loglevel='info', plotlevel='default', weblog=True):
     --------- examples -----------------------------------------------------------
 
     
-    Examples
     
     1. Create the pipeline context
     
-    h_init()
+    >>> h_init()
 
 
     """

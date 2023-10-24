@@ -23,8 +23,6 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
 
     results -- The results object for the pipeline task is returned.
 
-    Issues
-
     --------- parameter descriptions ---------------------------------------------
 
     vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
@@ -49,10 +47,10 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
                   example: 'DV05'
     geometry      Score antenna by proximity to the center of the array. This
                   option is quick as only the ANTENNA table must be read.
-                  Parameter is available when hm_refant='automatic'.
+                  Parameter is available when ``hm_refant``='automatic'.
     flagging      Score antennas by percentage of unflagged data.  This option
                   requires computing flagging statistics.
-                  Parameter is available when hm_refant='automatic'.
+                  Parameter is available when ``hm_refant``='automatic'.
     parallel      Execute using CASA HPC functionality, if available.
                   options: 'automatic', 'true', 'false', True, False
                   default: None (equivalent to False)
@@ -68,7 +66,7 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
 
     1. Compute the references antennas to be used for bandpass and gain calibration.
 
-    hif_refant()
+    >>> hif_refant()
 
 
     """
