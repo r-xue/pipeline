@@ -11,12 +11,14 @@ def hifv_finalcals(vis=None, dryrun=None, acceptresults=None, weakbp=None, refan
 
     Compute final gain calibration tables
 
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                  MSes, or tar files of MSes, If ASDM files are specified, they will be
-                  converted  to MS format.
-                  example: vis=['X227.ms', 'asdms.tar.gz']
+     vis          The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                  specified in the h_init or hifv_importdata task.     
     dryrun        Run the commands (True) or generate the commands to be run but
                   do not execute (False).  This is a pipeline task execution mode.
     acceptresults Add the results of the task to the pipeline context (True) or
@@ -25,18 +27,11 @@ def hifv_finalcals(vis=None, dryrun=None, acceptresults=None, weakbp=None, refan
     refantignore  String list of antennas to ignore
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Create the final calibration tables to be applied to the data in the VLA CASA pipeline.
     
-    hifv_finalcals()
+    >>> hifv_finalcals()
 
 
     """

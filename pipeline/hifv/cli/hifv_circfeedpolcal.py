@@ -16,6 +16,10 @@ def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_
     or 3C286 as polarization angle. Requires that all polarization intents are
     properly set during observation.
 
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
     vis             List of input visibility data
@@ -30,19 +34,11 @@ def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_
                     reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Basic circfeedpolcal task
     
-    hifv_circfeedpolcal()
+    >>> hifv_circfeedpolcal()
 
 
     """

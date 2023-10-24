@@ -8,55 +8,38 @@ def hifv_vlassmasking(vis=None, vlass_ql_database=None, maskingmode=None, catalo
                       dryrun=None, acceptresults=None):
 
     """
-    hifv_vlassmasking ---- Create clean masks for VLASS SE images
+    hifv_vlassmasking ---- Create clean masks for VLASS Single Epoch (SE) images
 
     Create clean masks for VLASS SE images
 
-    --------- parameter descriptions ---------------------------------------------
-
-    vis                 List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                        MSes, or tar files of MSes, If ASDM files are specified, they will be
-                        converted  to MS format.
-                        example: vis=['X227.ms', 'asdms.tar.gz']
-    vlass_ql_database   vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits
-    maskingmode         maskingmode options are vlass-se-tier-1 or vlass-se-tier-2
-    catalog_search_size catalog_search_size in units of degrees
-    dryrun              Run the commands (True) or generate the commands to be run but
-                        do not execute (False).  This is a pipeline task execution mode.
-    acceptresults       Add the results of the task to the pipeline context (True) or
-                        reject them (False).  This is a pipeline task execution mode.
-
-    --------- examples -----------------------------------------------------------
-
-    
-    The hifv_vlassmasking task
-    
-    Keyword arguments:
-    
-    vis -- List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
-    MSs, or tar files of MSs, If ASDM files are specified, they will be
-    converted  to MS format.
-    default: []
-    example: vis=['X227.ms', 'asdms.tar.gz']
-
-    dryrun -- Run the commands (True) or generate the commands to be run but
-    do not execute (False).
-    default: True
-    
-    acceptresults -- Add the results of the task to the pipeline context (True) or
-    reject them (False).
-    default: True
-    
     Output:
     
     results -- The results object for the pipeline task is returned.
     
     
-    Examples
+    --------- parameter descriptions ---------------------------------------------
+
+    vis                 The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                        specified in the h_init or hifv_importdata task.
+    vlass_ql_database   vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits
+    maskingmode         maskingmode options are vlass-se-tier-1 or vlass-se-tier-2
+    catalog_search_size catalog_search_size in units of degrees
+    dryrun              Run the commands (True) or generate the commands to be run but
+                        do not execute (False). This is a pipeline task execution mode.
+
+                        default: True
+
+    acceptresults       Add the results of the task to the pipeline context (True) or
+                        reject them (False).  This is a pipeline task execution mode.
+                        
+                        default: True
+
+    --------- examples -----------------------------------------------------------
+    
     
     1. Basic vlassmasking task
     
-    hifv_vlassmasking()
+    >>> hifv_vlassmasking()
 
 
     """
