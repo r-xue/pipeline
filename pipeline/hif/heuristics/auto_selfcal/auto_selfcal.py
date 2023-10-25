@@ -13,6 +13,7 @@ from pipeline.infrastructure import casa_tools, utils
 from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.tablereader import MeasurementSetReader
 from pipeline.infrastructure import logging
+from pipeline.infrastructure import filenamer
 
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
@@ -21,7 +22,7 @@ from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               get_nterms, get_sensitivity, get_SNR_self,
                               get_SNR_self_update, get_solints_simple,
                               get_spw_bandwidth, get_uv_range, importdata,
-                              rank_refants, sanitize_string)
+                              rank_refants)
 
 # from pipeline.infrastructure.utils import request_omp_threading
 
@@ -306,7 +307,7 @@ class SelfcalHeuristics(object):
         # based on the achieved S/N in the real data
         ##
         for target in all_targets:
-            sani_target = sanitize_string(target)
+            sani_target = filenamer.sanitize(target)
             for band in selfcal_library[target].keys():
                 # make images using the appropriate tclean heuristics for each telescope
                 if os.path.exists(sani_target+'_'+band+'_dirty.image.tt0'):
@@ -438,7 +439,7 @@ class SelfcalHeuristics(object):
 
         if self.check_all_spws:
             for target in all_targets:
-                sani_target = sanitize_string(target)
+                sani_target = filenamer.sanitize(target)
                 for band in selfcal_library[target].keys():
                     vislist = selfcal_library[target][band]['vislist'].copy()
                     # potential place where diff spws for different VLA EBs could cause problems
@@ -609,7 +610,7 @@ class SelfcalHeuristics(object):
         ##
         iterjump = -1   # useful if we want to jump iterations
         for target in all_targets:
-            sani_target = sanitize_string(target)
+            sani_target = filenamer.sanitize(target)
             for band in selfcal_library[target].keys():
                 vislist = selfcal_library[target][band]['vislist'].copy()
                 LOG.info('Starting selfcal procedure on: '+target+' '+band)
@@ -1107,7 +1108,7 @@ class SelfcalHeuristics(object):
         # Make a final image per target to assess overall improvement
         ##
         for target in all_targets:
-            sani_target = sanitize_string(target)
+            sani_target = filenamer.sanitize(target)
             for band in selfcal_library[target].keys():
                 vislist = selfcal_library[target][band]['vislist'].copy()
                 nfsnr_modifier = selfcal_library[target][band]['RMS_NF_curr'] / selfcal_library[target][band]['RMS_curr']
@@ -1163,7 +1164,7 @@ class SelfcalHeuristics(object):
         ##
         if self.check_all_spws:
             for target in all_targets:
-                sani_target = sanitize_string(target)
+                sani_target = filenamer.sanitize(target)
                 for band in selfcal_library[target].keys():
                     vislist = selfcal_library[target][band]['vislist'].copy()
                     spwlist = self.spw_virtual.split(',')
@@ -1261,7 +1262,7 @@ class SelfcalHeuristics(object):
         #
         if self.check_all_spws:
             for target in all_targets:
-                sani_target = sanitize_string(target)
+                sani_target = filenamer.sanitize(target)
                 for band in selfcal_library[target].keys():
                     vislist = selfcal_library[target][band]['vislist'].copy()
                     spwlist = selfcal_library[target][band][vis]['spws'].split(',')

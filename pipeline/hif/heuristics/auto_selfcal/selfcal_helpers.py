@@ -140,7 +140,7 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
             # scansdict[vis][target].sort()
             # only valid because we are assuming vislist is a single band/field
             scansdict[vis][target] = list(set(scansforfield))
-            scansdict[vis][target].sort()            
+            scansdict[vis][target].sort()
         for target in targets:
             mosaic_field[target] = {}
             mosaic_field[target]['field_ids'] = []
@@ -1209,12 +1209,6 @@ def get_uv_range(band, band_properties, vislist):
     else:
         uvrange = ''
     return uvrange
-
-
-def sanitize_string(string):
-    sani_string = string.replace('-', '_').replace(' ', '_').replace('+', '_')
-    sani_string = 'Target_'+sani_string
-    return sani_string
 
 
 def compare_beams(image1, image2):
