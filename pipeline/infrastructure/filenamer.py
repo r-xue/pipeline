@@ -259,7 +259,6 @@ def sort_spws(unsorted):
 
 class NamingTemplate(object):
     """Base class used for all naming templates."""
-    dry_run = True
     task = None
 
     def __init__(self):
@@ -270,7 +269,7 @@ class NamingTemplate(object):
         filename_components = self._associations.build()
         filename = '.'.join([filename_components])
 
-        if delete and not NamingTemplate.dry_run:
+        if delete:
             # .. and remove any old table with this name
             shutil.rmtree(filename, ignore_errors=True)
 

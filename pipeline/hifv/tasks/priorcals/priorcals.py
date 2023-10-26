@@ -3,7 +3,7 @@ Example usage:
 
 inputs = pipeline.vla.tasks.priorcals.Priorcals.Inputs(context)
 task = pipeline.vla.tasks.priorcals.Priocals(inputs)
-result = task.exectue()
+result = task.execute()
 result.accept(context)
 
 """

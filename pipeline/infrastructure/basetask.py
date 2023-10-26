@@ -729,9 +729,6 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
             # restore the context to the original context
             self.inputs = original_inputs
 
-            # now the task has completed, we tell the namer not to delete again
-            filenamer.NamingTemplate.dry_run = True
-
             # delete the task name once the top-level task is complete
             if utils.is_top_level_task():
                 filenamer.NamingTemplate.task = None

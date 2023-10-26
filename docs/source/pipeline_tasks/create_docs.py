@@ -192,13 +192,6 @@ def docstring_parse(docstring: str) -> Tuple[str, str, str, dict]:
 
         parameters_dict = _parse_parameters(parameters_section)
 
-        # Remove "dryrun" and "acceptresults" from parameters dict as they are
-        # not wanted in the Reference Manual
-        exclude_parameters = ["dryrun", "acceptresults"]
-        for parm_to_exclude in exclude_parameters:
-            if parm_to_exclude in parameters_dict:
-                del parameters_dict[parm_to_exclude]
-        
         # The "issues" section is excluded from the output docs and is not
         # always present. If present, it will always be the last
         # section.
