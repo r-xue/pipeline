@@ -6,7 +6,7 @@ import inspect
 import os
 import sys
 from collections import namedtuple
-from typing import Dict,Tuple
+from typing import Dict, Tuple
 
 from mako.template import Template
 
@@ -29,10 +29,9 @@ def check_dirs(filename: str):
         os.makedirs(filedir)
 
 
-def write_landing_page(pdict, rst_file="pipeline_new_tasks.rst",
+def write_landing_page(pdict, rst_file="taskdocs.rst",
                        mako_template="pipeline_tasks.mako", outdir=None):
-    """Creates reST file for the "landing page" for the tasks.
-    """
+    """Creates reST file for the "landing page" for the tasks."""
     script_path = os.path.dirname(os.path.realpath(__file__))
     task_template = Template(filename=os.path.join(script_path, mako_template))
 
@@ -216,10 +215,12 @@ def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude
     Optionally generates and outputs lists of tasks with missing examples, parameters, and
     longer descriptions.
     """
-
     if srcdir is not None and os.path.exists(srcdir):
         sys.path.insert(0, srcdir)
-        import pipeline
+    try:
+        import pipeline.cli
+    except ImportError:
+        raise ImportError("Can not import the Pipeline package to inspect the task docs.")
 
     # Dict which stores { 'task group' : [list of Tasks in that group]}
     tasks_by_group = {"h": [],
@@ -273,7 +274,8 @@ def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude
                                     missing_parameters.append(task_name)
 
                             if task_name not in tasks_to_exclude:
-                                tasks_by_group[group_name].append(Task(task_name, short_description, long_description, parameters, examples))
+                                tasks_by_group[group_name].append(
+                                    Task(task_name, short_description, long_description, parameters, examples))
                             else:
                                 print("Excluding task: {}".format(task_name))
 
@@ -306,21 +308,25 @@ def cli_command():
     try `python create_docs.py --help`
     """
 
-    # insert the pipeline source directory in case it's not visual to the in-use interpreter.
-    if os.getenv('pipeline_dir') is not None:
-        # use the env variable "pipeline_dir" to look for the Pipeline source code.
-        pipeline_src = os.path.abspath('pipeline_dir')
-    else:
-        # use the ancestry path if "pipeline_dir" is not set.
-        pipeline_src = os.path.abspath('../../pipeline')
-
     parser = argparse.ArgumentParser(description='Generate Pipeline task .RST files')
     parser.add_argument('--outdir', '-o', type=str, default=None, help='Output path of the RST files/subdirectories')
-    parser.add_argument('--srcdir', '-s', type=str, default=pipeline_src, help='Path of the Pipeline source code')
+    parser.add_argument('--srcdir', '-s', type=str, default=None, help='Path of the Pipeline source code')
 
     args = parser.parse_args()
+    srcdir = args.scrdir
 
-    create_docs(outdir=args.outdir, srcdir=args.srcdir, missing_report=True)
+    # the primary fallback default of the pipeline source directory.
+    env_pipeline_src = os.getenv('pipeline_src')
+    if srcdir is None and env_pipeline_src:
+        # use the env variable "pipeline_src" for the Pipeline source code path.
+        srcdir = os.path.abspath(env_pipeline_src)
+
+    # the secondary fallback default of the Pipeline source directory.
+    if srcdir is None:
+        # use the ancestry path if "pipeline_dir" is not set.
+        srcdir = os.path.abspath('../../pipeline')
+
+    create_docs(outdir=args.outdir, srcdir=srcdir, missing_report=True)
 
 
 if __name__ == "__main__":

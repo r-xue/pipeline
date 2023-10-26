@@ -368,19 +368,22 @@ class Plot(object):
                   THUMBNAIL_CMD, self.abspath, thumb_file)
         cmd = THUMBNAIL_CMD(self.abspath, thumb_file)
 
+        env_no_ld_library_path = os.environ.copy()
+        env_no_ld_library_path.pop('LD_LIBRARY_PATH', None)
+
         try:
             with open(os.devnull, 'w') as dev_null:
-                ret = subprocess.call(cmd, stdout=dev_null, stderr=dev_null)
+                ret = subprocess.call(cmd, stdout=dev_null, stderr=dev_null, env=env_no_ld_library_path)
             if ret == 0:
                 # return code is 0: thumbnail file successfully created
                 return thumb_file
             else:
-                LOG.warning('Error creating thumbnail for %s' % 
+                LOG.warning('Error creating thumbnail for %s' %
                             os.path.basename(self.abspath))
-                return self.abspath   
+                return self.abspath
         except OSError as e:
             # command not available. Return the full-sized image filename
-            LOG.warning('Error creating thumbnail for %s: %s' % 
+            LOG.warning('Error creating thumbnail for %s: %s' %
                         (os.path.basename(self.abspath), e))
             return self.abspath
 
