@@ -72,7 +72,7 @@ def _parse_description(description_section: str) -> Tuple[str, str]:
     index = 0
     lines = description_section.split("\n")
     if len(lines) > 1:
-        short_description = lines[1].split(" ---- ")
+        short_description = lines[1].split(" ----")
         if len(short_description) > 1:
             if short_description[1] != '':
                 short_description = short_description[1]
