@@ -58,13 +58,13 @@ CASA <3>: pipeline.infrastructure.utils.enable_memstats()
 We can also turn weblog and plotting off:
 
 ```python
-CASA <1>: h_init(loglevel="info",plotlevel="summary",output_dir="./",weblog=False,overwrite=True,acceptresults=True)
+CASA <1>: h_init(loglevel="info",plotlevel="summary",output_dir="./",weblog=False,overwrite=True)
 ```
 
 Or we can turn debug mode on, weblog off:
 
 ```python
-CASA <1>: h_init(loglevel="debug",plotlevel="summary",output_dir="./",weblog=True,overwrite=True,acceptresults=True)
+CASA <1>: h_init(loglevel="debug",plotlevel="summary",output_dir="./",weblog=True,overwrite=True)
 ```
 
 Full example of running Pipeline importdata task on CASA prompt:
