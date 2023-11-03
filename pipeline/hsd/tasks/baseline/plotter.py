@@ -492,36 +492,16 @@ class BaselineSubtractionDataManager(object):
             rowmap: Row mapping between original (calibrated) MS and the MS
                     specified by infile. Defaults to None.
         """
-
         infile = self.prefit_data
-        map_data_storage = self.prefit_storage.map_data
-        map_mask_storage = self.prefit_storage.map_mask
-
         if self.prefit_averaged_data is not None:
             pass
         else:
             # default rowmap is EchoDictionary
             if rowmap is None:
                 rowmap = utils.EchoDictionary()
-
-            map_shape = (num_ra, num_dec, num_pol, num_chan)
-
             num_accumulated = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=int)
-
-            if map_data_storage is not None:
-                assert map_data_storage.shape == map_shape
-                assert map_data_storage.dtype == float
-                map_data = map_data_storage
-                map_data[:] = 0.0
-            else:
-                map_data = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float)
-            if map_mask_storage is not None:
-                assert map_mask_storage.shape == map_shape
-                assert map_mask_storage.dtype == bool
-                map_mask = map_mask_storage
-                map_mask[:] = False
-            else:
-                map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
+            map_data = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float)
+            map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
 
             # column name for spectral data
             with casa_tools.TableReader(infile) as tb:
@@ -1099,9 +1079,9 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         self.binned_data = None
 
     def analyze_flatness(self, spectrum: List[float], frequency: List[float],
-                      line_range: Optional[List[Tuple[float, float]]],
-                      deviation_mask: Optional[List[Tuple[int, int]]],
-                      edge: Tuple[int, int]) -> BinnedStat:
+                         line_range: Optional[List[Tuple[float, float]]],
+                         deviation_mask: Optional[List[Tuple[int, int]]],
+                         edge: Tuple[int, int]) -> BinnedStat:
         """
         Create a data of baseline flatness of a spectrum.
 

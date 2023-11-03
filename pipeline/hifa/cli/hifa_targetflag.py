@@ -5,7 +5,6 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_targetflag(vis=None, dryrun=None, acceptresults=None):
-
     """
     hifa_targetflag ---- Flag target source outliers
 
@@ -28,29 +27,37 @@ def hifa_targetflag(vis=None, dryrun=None, acceptresults=None):
     Also, to avoid confusion in mosaics and single field surveys, the amp vs. uv distance
     plots only show field IDs with new flags.
 
+    Output:
+
+        results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
-    vis           The list of input MeasurementSets. Defaults to the list of
+    vis
+                  The list of input MeasurementSets. Defaults to the list of
                   MeasurementSets specified in the h_init or hif_importdata task.
                   '': use all MeasurementSets in the context
                   
                   Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    dryrun        Run the task (False) or display task command (True)
-    acceptresults Add the results of the task to the pipeline context (True) or
+    dryrun
+                  Run the task (False) or display task command (True)
+    acceptresults
+                  Add the results of the task to the pipeline context (True) or
                   reject them (False).
 
     --------- examples -----------------------------------------------------------
 
-    
+    1. Run with recommended settings to flag outliers in science target(s):
 
+    >>> hifa_targetflag()
 
     """
-
-
+    ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #
     #                                                                        #
+    ##########################################################################
 
     # create a dictionary containing all the arguments given in the
     # constructor
