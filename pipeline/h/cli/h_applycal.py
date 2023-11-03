@@ -36,7 +36,7 @@ def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, parang
     intent          A string containing the list of intents against which the
                     selected fields will be matched. Defaults to all supported intents
                     in the pipeline context.
-                    example: '*TARGET*'
+                    example: `'*TARGET*'`
     spw             The list of spectral windows and channels to which the calibration
                     will be applied. Defaults to all science windows in the pipeline
                     context.
@@ -71,7 +71,7 @@ def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, parang
 
     1. Apply the calibration to the target data
 
-    hif_applycal (intent='TARGET')
+    >>> hif_applycal (intent='TARGET')
 
 
     """

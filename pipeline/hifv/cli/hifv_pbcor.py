@@ -11,6 +11,11 @@ def hifv_pbcor(vis=None, dryrun=None, acceptresults=None):
 
     Apply primary beam correction to VLA and VLASS images
 
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+    
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of input visibility data
@@ -20,18 +25,11 @@ def hifv_pbcor(vis=None, dryrun=None, acceptresults=None):
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Basic pbcor task
     
-    hifv_pbcor()
+    >>> hifv_pbcor()
 
 
     """

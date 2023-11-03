@@ -1,3 +1,5 @@
+"""Interferometry VLA Tasks
+"""
 from .hifv_analyzestokescubes import hifv_analyzestokescubes
 from .hifv_applycals import hifv_applycals
 from .hifv_checkflag import hifv_checkflag
@@ -31,3 +33,37 @@ from .hifv_tecmaps import hifv_tecmaps
 from .hifv_testBPdcals import hifv_testBPdcals
 from .hifv_vlasetjy import hifv_vlasetjy
 from .hifv_vlassmasking import hifv_vlassmasking
+
+__all__ = ['hifv_analyzestokescubes',
+           'hifv_applycals',
+           'hifv_checkflag',
+           'hifv_circfeedpolcal',
+           'hifv_exportdata',
+           'hifv_exportvlassdata',
+           'hifv_finalcals',
+           'hifv_fixpointing',
+           'hifv_flagcal',
+           'hifv_flagdata',
+           'hifv_flagtargetsdata',
+           'hifv_fluxboot',
+           'hifv_gaincurves',
+           'hifv_hanning',
+           'hifv_importdata',
+           'hifv_opcal',
+           'hifv_pbcor',
+           'hifv_plotsummary',
+           'hifv_priorcals',
+           'hifv_restoredata',
+           'hifv_restorepims',
+           'hifv_rqcal',
+           'hifv_selfcal',
+           'hifv_semiFinalBPdcals',
+           'hifv_solint',
+           'hifv_statwt',
+           'hifv_swpowcal',
+           'hifv_syspower',
+           'hifv_targetflag',
+           'hifv_tecmaps',
+           'hifv_testBPdcals',
+           'hifv_vlasetjy',
+           'hifv_vlassmasking']

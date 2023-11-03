@@ -39,7 +39,7 @@ def hif_makecutoutimages(vis=None, offsetblc=None, offsettrc=None, dryrun=None, 
     
     1. Basic makecutoutimages task
     
-    hif_makecutoutimages()
+    >>> hif_makecutoutimages()
 
 
     """

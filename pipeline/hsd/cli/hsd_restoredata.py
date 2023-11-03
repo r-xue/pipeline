@@ -10,9 +10,6 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
     """
     hsd_restoredata ---- Restore flagged and calibration single dish data from a pipeline run
 
-    The hsd_restoredata task restores flagged and calibrated MeasurementSets
-    from archived ASDMs and pipeline flagging and calibration date products.
-    
     The hsd_restoredata task restores flagged and calibrated data from archived
     ASDMs and pipeline flagging and calibration data products. Pending archive
     retrieval support hsd_restoredata assumes that the required products
@@ -22,24 +19,27 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
     hsd_restoredata assumes that the following entities are available in the raw
     data directory:
     
-    o the ASDMs to be restored
-    o for each ASDM in the input list:
-    o a compressed tar file of the final flagversions file, e.g.
-    uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
-    o a text file containing the applycal instructions, e.g.
-    uid___A002_X30a93d_X43e.ms.calapply.txt
-    o a compressed tar file containing the caltables for the parent session,
-    e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
-    
+    - the ASDMs to be restored
+    - for each ASDM in the input list:
+
+        - a compressed tar file of the final flagversions file, e.g.
+          uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
+          
+        - a text file containing the applycal instructions, e.g.
+          uid___A002_X30a93d_X43e.ms.calapply.txt
+          
+        - a compressed tar file containing the caltables for the parent session,
+          e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
+          
     hsd_restoredata performs the following operations:
     
-    o imports the ASDM(s)
-    o removes the default MS.flagversions directory created by the filler
-    o restores the final MS.flagversions directory stored by the pipeline
-    o restores the final set of pipeline flags to the MS
-    o restores the final calibration state of the MS
-    o restores the final calibration tables for each MS
-    o applies the calibration tables to each MS
+    - imports the ASDM(s)
+    - removes the default MS.flagversions directory created by the filler
+    - restores the final MS.flagversions directory stored by the pipeline
+    - restores the final set of pipeline flags to the MS
+    - restores the final calibration state of the MS
+    - restores the final calibration tables for each MS
+    - applies the calibration tables to each MS
     
     When importing the ASDM and converting it to a Measurement Set (MS), if the
     output MS already exists in the output directory, then the importasdm
@@ -96,7 +96,7 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
     
     1. Restore the pipeline results for a single ASDM in a single session
     
-    hsd_restoredata (vis=['uid___A002_X30a93d_X43e'], session=['session_1'], ocorr_mode='ao')
+    >>> hsd_restoredata (vis=['uid___A002_X30a93d_X43e'], session=['session_1'], ocorr_mode='ao')
 
 
     """

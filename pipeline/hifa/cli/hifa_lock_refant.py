@@ -5,31 +5,41 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_lock_refant(vis=None, dryrun=None, acceptresults=None):
-
     """
     hifa_lock_refant ---- Lock reference antenna list
 
-    hifa_lock_refant locks the reference antenna list, preventing
-    modification of the refant list by subsequent tasks. After
-    executing hifa_lock_refant, the default gaincal refantmode is
-    set to 'strict'.
+    hifa_lock_refant marks the reference antenna list as "locked" for specified
+    measurement sets, preventing modification of the refant list by subsequent
+    tasks.
+
+    After executing hifa_lock_refant, all subsequent gaincal calls will by
+    default be executed with refantmode='strict'.
+
+    The refant list can be unlocked with the hifa_unlock_refant task.
+
+    Output:
+
+        results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of input MeasurementSets. Defaults to the list of
+    vis
+                  List of input MeasurementSets. Defaults to the list of
                   MeasurementSets specified in the pipeline context.
                   
                   Example: vis=['ngc5921.ms']
-    dryrun        Run the task (False) or display task command (True)
-    acceptresults Add the results into the pipeline context
+    dryrun
+                  Run the task (False) or display task command (True).
+    acceptresults
+                  Add the results into the pipeline context.
 
     --------- examples -----------------------------------------------------------
 
-    
+    1. Lock the refant list for all MSes in pipeline context:
 
+    >>> hifa_lock_refant()
 
     """
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

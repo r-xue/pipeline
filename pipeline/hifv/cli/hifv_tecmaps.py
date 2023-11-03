@@ -14,23 +14,19 @@ def hifv_tecmaps(vis=None, dryrun=None, acceptresults=None):
 
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                  MSes, or tar files of MSes, If ASDM files are specified, they will be
-                  converted  to MS format.
-                  example: vis=['X227.ms', 'asdms.tar.gz']
+    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                  specified in the h_init or hifv_importdata task.
     dryrun        Run the commands (True) or generate the commands to be run but
                   do not execute (False).  This is a pipeline task execution mode.
     acceptresults Add the results of the task to the pipeline context (True) or
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Examples
     
     1. Basic tecmaps task
     
-    hifv_tecmaps()
+    >>> hifv_tecmaps()
 
 
     """
