@@ -80,6 +80,7 @@ class ImagePreCheckInputs(vdp.StandardInputs):
     calcsb = vdp.VisDependentProperty(default=False)
     parallel = vdp.VisDependentProperty(default='automatic')
     desired_angular_resolution = vdp.VisDependentProperty(default='')
+    
     def __init__(self, context, vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
         self.context = context
         self.vis = vis

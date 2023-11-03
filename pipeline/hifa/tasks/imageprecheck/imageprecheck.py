@@ -1,8 +1,8 @@
 import copy
+import math
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
-#import pipeline.infrastructure.api as api
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
@@ -20,7 +20,9 @@ class ImagePreCheckResults(basetask.Results):
     def __init__(self, real_repr_target=False, repr_target='', repr_source='', repr_spw=None,
                  reprBW_mode=None, reprBW_nbin=None,
                  minAcceptableAngResolution='0.0arcsec', maxAcceptableAngResolution='0.0arcsec',
-                 maxAllowedBeamAxialRatio=0.0, sensitivityGoal='0mJy', hm_robust=0.5, hm_uvtaper=[],
+                 maxAllowedBeamAxialRatio=0.0, user_minAcceptableAngResolution='0.0arcsec',
+                 user_maxAcceptableAngResolution='0.0arcsec', user_maxAllowedBeamAxialRatio=0.0,
+                 sensitivityGoal='0mJy', hm_robust=0.5, hm_uvtaper=[],
                  sensitivities=None, sensitivity_bandwidth=None, score=None, single_continuum=False,
                  per_spw_cont_sensitivities_all_chan=None, synthesized_beams=None, beamRatios=None,
                  error=False, error_msg=None):
@@ -52,12 +54,24 @@ class ImagePreCheckResults(basetask.Results):
         self.error = error
         self.error_msg = error_msg
 
+        # Update these values for the weblog
+        self.user_minAcceptableAngResolution = user_minAcceptableAngResolution
+        self.user_maxAcceptableAngResolution = user_maxAcceptableAngResolution
+        self.user_maxAllowedBeamAxialRatio = user_maxAllowedBeamAxialRatio
+
     def merge_with_context(self, context):
         """
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
         """
-
         # Store imaging parameters in context
+
+        # Added for SRDP support
+        # Store uvtaper parameter in context
+        if 'uvtaper' in context.imaging_parameters.keys():
+            del context.imaging_parameters['uvtaper']
+        if self.hm_uvtaper != []:
+            context.imaging_parameters['uvtaper'] = self.hm_uvtaper
+        # end added for SRDP support
 
         # Calculated sensitivities for later stages
         if self.per_spw_cont_sensitivities_all_chan is not None:
@@ -101,9 +115,12 @@ class ImagePreCheckInputs(vdp.StandardInputs):
 
     calcsb = vdp.VisDependentProperty(default=False)
     parallel = vdp.VisDependentProperty(default='automatic')
-    def __init__(self, context, vis=None, calcsb=None, parallel=None):
+    desired_angular_resolution = vdp.VisDependentProperty(default='')
+
+    def __init__(self, context, vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
         self.context = context
         self.vis = vis
+        self.desired_angular_resolution = desired_angular_resolution
         self.calcsb = calcsb
         self.parallel = parallel
 
@@ -148,6 +165,41 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         )
 
         repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = image_heuristics.representative_target()
+
+        # PIPE-708, used only for SRDP
+        if inputs.desired_angular_resolution not in [None, '']:
+            # Parse user angular resolution goal
+            if type(inputs.desired_angular_resolution) is str:
+                userAngResolution = cqa.quantity(inputs.desired_angular_resolution)
+            else:
+                userAngResolution = cqa.quantity('%.3garcsec' % inputs.desired_angular_resolution)
+            # Assume symmetric beam for now
+            user_desired_beam = {'minor': cqa.convert(userAngResolution, 'arcsec'),
+                                 'major': cqa.convert(userAngResolution, 'arcsec'),
+                                 'positionangle': '0.0deg'}
+            # Determine
+            userAngResolution = cqa.sqrt(cqa.div(cqa.add(cqa.pow(user_desired_beam['minor'],2),
+                                                         cqa.pow(user_desired_beam['major'],2)),
+                                                 2.0))
+            LOG.info('Setting user specified desired angular resolution to %s' % cqa.tos(userAngResolution))
+        else:
+            userAngResolution = cqa.quantity('%.3garcsec' % 0.0)
+
+        # Store PI selected angular resolution
+        pi_minAcceptableAngResolution = minAcceptableAngResolution
+        pi_maxAcceptableAngResolution = maxAcceptableAngResolution
+        pi_maxAllowedBeamAxialRatio = maxAllowedBeamAxialRatio
+
+        # Store user selected angular resolution
+        user_minAcceptableAngResolution = cqa.mul(userAngResolution, 0.8)
+        user_maxAcceptableAngResolution = cqa.mul(userAngResolution, 1.2)
+        user_maxAllowedBeamAxialRatio = maxAllowedBeamAxialRatio
+
+        # Use user selected angular resolution for calculation, if specified
+        if cqa.getvalue(userAngResolution)[0] != 0.0:
+            minAcceptableAngResolution = user_minAcceptableAngResolution
+            maxAcceptableAngResolution = user_maxAcceptableAngResolution
+            maxAllowedBeamAxialRatio = user_maxAllowedBeamAxialRatio
 
         repr_field = list(image_heuristics.field_intent_list('TARGET', repr_source))[0][0]
 
@@ -351,6 +403,31 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             (2.0, str(default_uvtaper)): beamRatio_2p0
             }
 
+        # Determine non-default UV taper value if the best robust is 2.0 and the user requested resolution parameter
+        # (desired_angular_resolution) is set (SRDP). (PIPE-708)
+        #
+        # Compute uvtaper for representative targets and also if representative target cannot be determined
+        # (real_repr_target = False) for representative targets and if user set angular resolution goal.
+        #
+        # Note that uvtaper is not computed for the ACA (7m) array, because robust of 2.0 is not in the checked range
+        # (see robust_values_to_check).
+        if hm_robust == 2.0 and cqa.getvalue(userAngResolution)[0] != 0.0:
+            # Calculate the length of the 190th baseline, used to set the upper limit on uvtaper. See PIPE-1104.
+            length_of_190th_baseline = image_heuristics.calc_length_of_nth_baseline(190)
+            reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
+            # self.calc_uvtaper method is only available in hifas_imageprecheck
+            try:
+                hm_uvtaper = self.calc_uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
+                                               beam_user=user_desired_beam,
+                                               tapering_limit=length_of_190th_baseline, repr_freq=repr_freq)
+            except:
+                hm_uvtaper = []
+
+
+
+
+
+
         if real_repr_target:
             # Determine heuristic UV taper value
             #
@@ -467,7 +544,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             minAcceptableAngResolution = cqa.quantity(0.0, 'arcsec')
             maxAcceptableAngResolution = cqa.quantity(0.0, 'arcsec')
 
-        hm_uvtaper = default_uvtaper
+        hm_uvtaper = default_uvtaper # Right now ALMA IF PI (non-SRDP) always uses the default_uvtaper
 
         return ImagePreCheckResults(
             real_repr_target,
@@ -476,9 +553,12 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             repr_spw,
             reprBW_mode,
             nbin,
-            minAcceptableAngResolution=minAcceptableAngResolution,
-            maxAcceptableAngResolution=maxAcceptableAngResolution,
-            maxAllowedBeamAxialRatio=maxAllowedBeamAxialRatio,
+            minAcceptableAngResolution=pi_minAcceptableAngResolution,
+            maxAcceptableAngResolution=pi_maxAcceptableAngResolution,
+            maxAllowedBeamAxialRatio=pi_maxAllowedBeamAxialRatio,
+            user_minAcceptableAngResolution=user_minAcceptableAngResolution,
+            user_maxAcceptableAngResolution=user_maxAcceptableAngResolution,
+            user_maxAllowedBeamAxialRatio=user_maxAllowedBeamAxialRatio,
             sensitivityGoal=sensitivityGoal,
             hm_robust=hm_robust,
             hm_uvtaper=hm_uvtaper,
@@ -493,3 +573,65 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
     def analyse(self, results):
         return results
+
+    def calc_uvtaper(self, beam_natural=None,  beam_user=None, tapering_limit=None, repr_freq=None):
+        """
+        This code will take a given beam and a desired beam size and calculate the necessary
+        UV-tapering parameters needed for tclean to recreate that beam.
+
+        UV-tapering parameter larger than the 80 percentile baseline is not allowed.
+
+        :param beam_natural: natural beam, dictionary with major, minor and positionangle keywords
+        :param beam_user: desired beam, dictionary with major, minor and positionangle keywords
+        :param tapering_limit: 190th baseline in meters. uvtaper larger than this baseline is not allowed
+        :param repr_freq: representative frequency, dictionary with unit and value keywords.
+        :return: uv_taper needed to recreate user_beam in tclean
+        """
+        if beam_natural is None:
+            return []
+        if beam_user is None:
+            return []
+        if tapering_limit is None:
+            return []
+        if repr_freq is None:
+            return []
+
+        # Determine uvtaper based on equations from Ryan Loomis,
+        # https://open-confluence.nrao.edu/display/NAASC/Data+Processing%3A+Imaging+Tips
+        # See PIPE-704.
+        cqa = casa_tools.quanta
+
+        bmajor = 1.0 / cqa.getvalue(cqa.convert(beam_natural['major'], 'arcsec'))
+        bminor = 1.0 / cqa.getvalue(cqa.convert(beam_natural['minor'], 'arcsec'))
+
+        des_bmajor = 1.0 / cqa.getvalue(cqa.convert(beam_user['major'], 'arcsec'))
+        des_bminor = 1.0 / cqa.getvalue(cqa.convert(beam_user['minor'], 'arcsec'))
+
+        if (des_bmajor > bmajor) or (des_bminor > bminor):
+            LOG.warning('uvtaper cannot be calculated for beam_user (%.2farcsec) larger than beam_natural (%.2farcsec)' % (
+                1.0 / des_bmajor, 1.0 / bmajor))
+            return []
+
+        tap_bmajor = 1.0 / (bmajor * des_bmajor / (math.sqrt(bmajor ** 2 - des_bmajor ** 2)))
+        tap_bminor = 1.0 / (bminor * des_bminor / (math.sqrt(bminor ** 2 - des_bminor ** 2)))
+
+        # Assume symmetric beam
+        tap_angle = math.sqrt( (tap_bmajor ** 2 + tap_bminor ** 2) / 2.0 )
+
+        # Convert angle to baseline
+        ARCSEC_PER_RAD = 206264.80624709636
+        uvtaper_value = ARCSEC_PER_RAD / tap_angle
+        LOG.info('uvtaper needed to achive user specified angular resolution is %.2fklambda' %
+                 utils.round_half_up(uvtaper_value / 1000., 2))
+
+        # Determine maximum allowed uvtaper
+        # PIPE-1104: Limit such that the image includes the baselines from at least 20 antennas.
+        # Limit should be set to: (N*(N-1)/2)=the length of the 190th baseline.
+        uvtaper_limit = tapering_limit / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
+                        cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
+        # Limit uvtaper
+        if uvtaper_value < uvtaper_limit:
+            uvtaper_value = uvtaper_limit
+            LOG.warning('uvtaper is smaller than allowed limit of %.2fklambda, the length of the 190th baseline, using the limit value' %
+                        utils.round_half_up(uvtaper_limit / 1000., 2))
+        return ['%.2fklambda' % utils.round_half_up(uvtaper_value / 1000., 2)]

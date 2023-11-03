@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_imageprecheck(vis=None, calcsb=None, parallel=None, dryrun=None, acceptresults=None):
+def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, parallel=None, dryrun=None, acceptresults=None):
 
     """
     hifa_imageprecheck ---- Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.
@@ -24,16 +24,19 @@ def hifa_imageprecheck(vis=None, calcsb=None, parallel=None, dryrun=None, accept
 
     --------- parameter descriptions ---------------------------------------------
 
-    vis           The list of input MeasurementSets. Defaults to the list of
-                  MeasurementSets specified in the h_init or hif_importdata task.
-                  '': use all MeasurementSets in the context
-                  
-                  Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    calcsb        Force (re-)calculation of sensitivities and beams
-    parallel      Use MPI cluster where possible
-    dryrun        Run the task (False) or just display the command (True)
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
+    vis                        The list of input MeasurementSets. Defaults to the list of
+                               MeasurementSets specified in the h_init or hif_importdata task.
+                               '': use all MeasurementSets in the context
+                                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+    desired_angular_resolution User specified angular resolution goal string.
+                               '': automatic from performance parameters (default)
+                               
+                               Example: '1.0arcsec'              
+    calcsb                     Force (re-)calculation of sensitivities and beams
+    parallel                   Use MPI cluster where possible
+    dryrun                     Run the task (False) or just display the command (True)
+    acceptresults              Add the results of the task to the pipeline context (True) or
+                               reject them (False).
 
     --------- examples -----------------------------------------------------------
 
