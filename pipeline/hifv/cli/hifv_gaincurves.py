@@ -9,9 +9,13 @@ def hifv_gaincurves(vis=None, caltable=None, dryrun=None, acceptresults=None):
     """
     hifv_gaincurves ---- Runs gencal in gc mode
 
+    Runs gencal in gc mode
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
     
     
-
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of input visibility data
@@ -22,18 +26,11 @@ def hifv_gaincurves(vis=None, caltable=None, dryrun=None, acceptresults=None):
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     
-    hifv_gaincurves()
+    >>> hifv_gaincurves()
     
     
     

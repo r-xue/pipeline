@@ -5,6 +5,7 @@ from inspect import signature
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
+import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.pipelineqa as pqa
@@ -157,9 +158,13 @@ class MakeImages(basetask.StandardTaskTemplate):
                 try:
                     worker_result = task.get_result()
                 except exceptions.PipelineException as ex:
-                    result.add_result(TcleanResult(), target, outcome='failure')
-                    LOG.error('Cleaning failure for field {!s} spw {!s} specmode {!s}.\nException from hif_tclean: {!s}'.format(
-                        target['field'], target['spw'], target['specmode'], ex))
+                    error_msg = ('Cleaning failure for field {!s}, intent {!s}, specmode {!s}, spw {!s}. '
+                                 'Exception from hif_tclean: {!s}'.format(
+                                 target['field'], target['intent'], target['specmode'], target['spw'], ex))
+                    worker_result = TcleanResult()
+                    worker_result.qa.pool.append(pqa.QAScore(0.34, longmsg=error_msg, shortmsg='Cleaning failure'))
+                    result.add_result(worker_result, target, outcome='failure')
+                    LOG.error(error_msg)
                 else:
                     # Note add_result() removes 'heuristics' from worker_result
                     heuristics = target['heuristics']

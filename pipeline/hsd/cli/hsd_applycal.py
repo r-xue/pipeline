@@ -13,7 +13,7 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
 
     Apply the calibration to the data.
 
-    hif_applycal applies the precomputed calibration tables stored in the pipeline
+    hsd_applycal applies the precomputed calibration tables stored in the pipeline
     context to the set of visibility files using predetermined field and
     spectral window maps and default values for the interpolation schemes.
 
@@ -35,7 +35,7 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
     intent        A string containing the list of intents against which the
                   selected fields will be matched. Defaults to all supported intents
                   in the pipeline context.
-                  example: '*TARGET*'
+                  example: `'*TARGET*'`
     spw           The list of spectral windows and channels to which the calibration
                   will be applied. Defaults to all science windows in the pipeline context.
                   example: '17', '11, 15'
@@ -52,7 +52,7 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
                         unavailable in one or more tables
                     'calonly': calibrate data only, flags from solutions NOT applied
     calwt         Calibrate the weights as well as the data.
-    flagbackup    Backup the flags before the applyBackup the flags before the apply.
+    flagbackup    Backup the flags before the apply.
     parallel      Execute using CASA HPC functionality, if available.
                   options: 'automatic', 'true', 'false', True, False
                   default: None (equivalent to 'automatic')
@@ -63,13 +63,15 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
     --------- examples -----------------------------------------------------------
 
 
-
     1. Apply the calibration to the target data
 
-    hsd_applycal (intent='TARGET')
+    >>> hsd_applycal (intent='TARGET')
 
+    2. Specify fields and spectral windows
 
-    Issues
+    >>> hsd_applycal(field='3C279, M82', spw='17', intent='TARGET')
+
+    --------- issues -----------------------------------------------------------
 
     There is some discussion about the appropriate values of calwt. Given
     properly scaled data, the correct value should be the CASA default of True.
