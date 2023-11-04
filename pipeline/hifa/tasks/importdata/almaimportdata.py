@@ -41,7 +41,7 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
     createmms = vdp.VisDependentProperty(default='false')
     # sets threshold for polcal parallactic angle coverage. See PIPE-597
     minparang = vdp.VisDependentProperty(default=0.0)
-    parallel = sessionutils.parallel_inputs_impl()
+    parallel = sessionutils.parallel_inputs_impl(default=False)
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, dbservice=None,
