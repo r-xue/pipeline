@@ -17,10 +17,8 @@ def hifv_selfcal(vis=None, dryrun=None, acceptresults=None, refantignore=None,
 
     --------- parameter descriptions ---------------------------------------------
 
-    vis                List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                       MSes, or tar files of MSes, If ASDM files are specified, they will be
-                       converted  to MS format.
-                       example: vis=['X227.ms', 'asdms.tar.gz']
+    vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                    specified in the h_init or hifv_importdata task.
     dryrun             Run the commands (True) or generate the commands to be run but
                        do not execute (False).  This is a pipeline task execution mode.
     acceptresults      Add the results of the task to the pipeline context (True) or
@@ -41,17 +39,15 @@ def hifv_selfcal(vis=None, dryrun=None, acceptresults=None, refantignore=None,
     overwrite_modelcol Always write the model column, even if it already exists
 
     --------- examples -----------------------------------------------------------
-
     
-    Examples
     
     1. Basic selfcal task
     
-    hifv_selfcal()
+    >>> hifv_selfcal()
     
     2. VLASS-SE selfcal usage
     
-    hifv_selfcal(selfcalmode='VLASS-SE', combine='field,spw')
+    >>> hifv_selfcal(selfcalmode='VLASS-SE', combine='field,spw')
 
 
     """

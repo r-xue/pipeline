@@ -74,7 +74,7 @@ def hif_editimlist(imagename=None,
     datatype             Data type(s) to image. The default '' selects the best
                          available data type (e.g. selfcal over regcal) with
                          an automatic fallback to the next available data type.
-                         With the datatype parameter of 'regcal' or 'selfcal', one 
+                         With the ``datatype`` parameter of 'regcal' or 'selfcal', one 
                          can force the use of only given data type(s).
                          Note that this parameter is only for non-VLASS data when the datacolumn 
                          is not explictly set by user or imaging heuristics.  

@@ -21,11 +21,11 @@ def h_resume(filename=None):
     
     1. Resume the last saved session
     
-    h_resume()
+    >>> h_resume()
     
     2. Resume the named saved session
     
-    h_resume(filename='context.s3.2012-02-13T10:49:11')
+    >>> h_resume(filename='context.s3.2012-02-13T10:49:11')
 
 
     """

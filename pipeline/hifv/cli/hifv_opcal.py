@@ -8,6 +8,12 @@ def hifv_opcal(vis=None, caltable=None, dryrun=None, acceptresults=None):
 
     """
     hifv_opcal ---- Runs gencal in opac mode
+    
+    Runs gencal in opac mode
+
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -18,18 +24,11 @@ def hifv_opcal(vis=None, caltable=None, dryrun=None, acceptresults=None):
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     
-    hifv_opcal()
+    >>> hifv_opcal()
 
 
     """

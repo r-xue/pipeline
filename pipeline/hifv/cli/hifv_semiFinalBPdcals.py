@@ -9,12 +9,16 @@ def hifv_semiFinalBPdcals(vis=None, dryrun=None, acceptresults=None, weakbp=None
     """
     hifv_semiFinalBPdcals ---- Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging
 
-    --------- parameter descriptions ---------------------------------------------
+    Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging
 
-    vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                  MSes, or tar files of MSes, If ASDM files are specified, they will be
-                  converted  to MS format.
-                  example: vis=['X227.ms', 'asdms.tar.gz']
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+
+    --------- parameter descriptions ---------------------------------------------
+    
+    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                  specified in the h_init or hifv_importdata task.
     dryrun        Run the commands (True) or generate the commands to be run but
                   do not execute (False).  This is a pipeline task execution mode.
     acceptresults Add the results of the task to the pipeline context (True) or
@@ -23,18 +27,11 @@ def hifv_semiFinalBPdcals(vis=None, dryrun=None, acceptresults=None, weakbp=None
     refantignore  String list of antennas to ignore
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Heuristic flagging
     
-    hifv_semiFinalBPdcals()
+    >>> hifv_semiFinalBPdcals()
 
 
     """
