@@ -5,6 +5,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
+from pipeline.infrastructure.refantflag import format_fully_flagged_antenna_notification
 from . import resultobjects
 
 LOG = logging.get_logger(__name__)
@@ -35,6 +36,19 @@ class LowgainflagQAHandler(pqa.QAPlugin):
         score2.origin = new_origin
 
         scores = [score1, score2]
+
+        try:
+            if result.fully_flagged_antenna_notifications:
+                for notification in result.fully_flagged_antenna_notifications:
+                    score = pqa.QAScore(
+                        0.8,
+                        longmsg=format_fully_flagged_antenna_notification(result.inputs['vis'], notification),
+                        shortmsg='Fully flagged antennas',
+                        vis=result.inputs['vis'])
+                    scores.append(score)
+        except AttributeError:
+            LOG.error('Unable to find the list of fully flagged antennas')
+
         result.qa.pool[:] = scores
 
 

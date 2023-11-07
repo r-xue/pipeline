@@ -1394,13 +1394,6 @@ def score_wvrgcal(ms_name, dataresult):
     if dataresult.suggest_remcloud:
         qa_messages.append('Remcloud suggested')
 
-    if len(flagant_list) == 1:
-        flagged_antennas_message = 'Flagged antenna {}'.format(flagant_list[0])
-    elif len(flagant_list) > 1:
-        flagged_antennas_message = 'Flagged antennas {}'.format(', '.join(map(str, flagant_list)))
-    else:
-        flagged_antennas_message = ''
-
     if score > 1.0:
         # if nothing else score passes will be >1.0
         # truncate to 1.0 - ratio_score now holding improvement 
@@ -1414,7 +1407,7 @@ def score_wvrgcal(ms_name, dataresult):
             score = score - reduceBy
             # Crude check for the message - check if flag or disc/rms
             if len(flagant_list) > 0:
-                qa_messages.append(flagged_antennas_message)
+                qa_messages.append('Flagged antenna(s)')
             if len(disc_limit) > 0:
                 qa_messages.append('Elevated disc value(s)')
             if len(rms_limit) > 0:
@@ -1442,7 +1435,7 @@ def score_wvrgcal(ms_name, dataresult):
             qa_messages.append('Elevated disc/rms value(s) - Check atmospheric phase stability')
             if len(flagant_list) > 0:
                 reduceBy = len(disc_limit)*0.1
-                qa_messages.append(flagged_antennas_message)
+                qa_messages.append('Flagged antenna(s)')
                 score = score - reduceBy
             score = linear_score(score, 0.0, 0.33, 0.0, 0.33)
             # i.e. inputs will be truncated to between 0.0 and 0.33, linfited to be then between 0.0 and 0.33 RED
@@ -1458,7 +1451,7 @@ def score_wvrgcal(ms_name, dataresult):
                 score = score - reduceBy
                 # Crude check for the message - check if flag or disc/rms
                 if len(flagant_list) > 0:
-                    qa_messages.append(flagged_antennas_message)
+                    qa_messages.append('Flagged antenna(s)')
                 if len(disc_limit) > 0:
                     qa_messages.append('Elevated disc value(s)')
                 if len(rms_limit) > 0:
