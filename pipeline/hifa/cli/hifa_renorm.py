@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None, excludechan=None,
-                atm_auto_exclude=None, bwthreshspw=None, dryrun=None, acceptresults=None):
+                atm_auto_exclude=None, bwthreshspw=None, dryrun=None, acceptresults=None, parallel=None):
     """
     hifa_renorm ---- ALMA renormalization task
 
@@ -90,6 +90,8 @@ def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None,
                      Run the task (False) or display task command (True)
     acceptresults
                      Add the results into the pipeline context
+    parallel
+                     Execute using CASA HPC functionality, if available.
 
     --------- examples -----------------------------------------------------------
 
