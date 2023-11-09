@@ -9,9 +9,9 @@ import resource
 import subprocess
 import sys
 
-import pkg_resources
 from importlib.metadata import version, PackageNotFoundError
 from importlib import resources
+import pkg_resources
 
 from .infrastructure import mpihelpers
 from .infrastructure.mpihelpers import MPIEnvironment
