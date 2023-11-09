@@ -182,7 +182,8 @@ def log_host_environment():
             if dep_detail is None:
                 LOG.debug('  {!s} : {!s}'.format(dep_name, 'not found'))
             else:
-                LOG.debug('  {!s} = {!s} : {!s}'.format(dep_name, dep_detail['version'], dep_detail['path']))
+                LOG.debug('  {!s} = {!s} : {!s}'.format(
+                    dep_name, dep_detail['version'], dep_detail['path']))
     except NotImplemented:
         pass
 
