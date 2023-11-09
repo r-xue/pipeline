@@ -1,12 +1,11 @@
 import sys
 
-from casatasks import casalog
-
 from . import utils
 
 
+@utils.cli_wrapper
 def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, pprfile=None, calintents=None,
-                 calimages=None, targetimages=None, products_dir=None, pipelinemode=None, dryrun=None,
+                 calimages=None, targetimages=None, products_dir=None, dryrun=None,
                  acceptresults=None):
 
     """
@@ -19,18 +18,67 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
     
     The current version of the task exports the following products
     
-    o an XML file containing the pipeline processing request
-    o a tar file per ASDM / MS containing the final flags version
-    o a text file per ASDM / MS containing the final calibration apply list
-    o a FITS image for each selected calibrator source image
-    o a FITS image for each selected science target source image
-    o a tar file per session containing the caltables for that session
-    o a tar file containing the file web log
-    o a text file containing the final list of CASA commands
+    - an XML file containing the pipeline processing request
+    - a tar file per ASDM / MS containing the final flags version
+    - a text file per ASDM / MS containing the final calibration apply list
+    - a FITS image for each selected calibrator source image
+    - a FITS image for each selected science target source image
+    - a tar file per session containing the caltables for that session
+    - a tar file containing the file web log
+    - a text file containing the final list of CASA commands
+    
+    Returns
+    
+    The results object for the pipeline task is returned.
+
+    --------- parameter descriptions ---------------------------------------------
+
+    vis                   List of visibility data files for which flagging and calibration
+                          information will be exported. Defaults to the list maintained in the
+                          pipeline context.
+                          example: vis=['X227.ms', 'X228.ms']
+    session               session -- List of sessions one per visibility file. Defaults
+                          to a single virtual session containing all the visibility files in vis.
+                          example: session=['session1', 'session2']
+    imaging_products_only Export the science target image products only
+    exportmses            Export MeasurementSets defined in vis instead of flags,
+                          caltables, and calibration instructions.
+                          example: exportmses = True
+    pprfile               Name of the pipeline processing request to be exported. Defaults
+                          to a file matching the template 'PPR_*.xml'.
+                          example: pprfile=['PPR_GRB021004.xml']
+    calintents            calintents -- List of calibrator image types to be exported. Defaults to
+                          all standard calibrator intents 'BANDPASS', 'PHASE', 'FLUX'
+                          example: calintents='PHASE'
+    calimages             List of calibrator images to be exported. Defaults to all
+                          calibrator images recorded in the pipeline context.
+                          example: calimages=['3C454.3.bandpass', '3C279.phase']
+    targetimages          List of science target images to be exported.
+                          Science target images recorded in the pipeline context.
+                          example: targetimages=['NGC3256.band3', 'NGC3256.band6']
+    products_dir          Name of the data products subdirectory.
+                          example: products_dir='../products'
+    dryrun                Run the task (False) or display task command (True)
+    acceptresults         Add the results into the pipeline context
+
+    --------- examples -----------------------------------------------------------
+
     
     
-    Issues
+    1. Export the pipeline results for a single session to the data products
+    directory
     
+    >>> !mkdir ../products
+    >>> hif_exportdata (products_dir='../products')
+    
+    2. Export the pipeline results to the data products directory specify that
+    only the gain calibrator images be saved.
+    
+    >>> !mkdir ../products
+    >>> hif_exportdata (products_dir='../products', calintents='*PHASE*')
+
+    --------- issues -----------------------------------------------------------
+
     Support for merging the calibration state information into the pipeline
     context / results structure and retrieving it still needs to be added.
     
@@ -43,72 +91,6 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
     Session information is not currently handled by the pipeline context.
     By default all ASDMs are combined into one session.
     
-    Returns
-    
-    If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-
-    --------- parameter descriptions ---------------------------------------------
-
-    vis                   List of visibility data files for which flagging and calibration
-                          information will be exported. Defaults to the list maintained in the
-                          pipeline context.
-                          Can only be set in pipelinemode='interactive'
-                          example: vis=['X227.ms', 'X228.ms']
-    session               session -- List of sessions one per visibility file. Defaults
-                          to a single virtual session containing all the visibility files in vis. 
-                          Can only be set in pipelinemode='interactive'
-                          example: session=['session1', 'session2']
-    imaging_products_only Export the science target image products only
-    exportmses            Export MeasurementSets defined in vis instead of flags,
-                          caltables, and calibration instructions.
-                          Can only be set in pipelinemode='interactive'
-                          example: exportmses = True
-    pprfile               Name of the pipeline processing request to be exported. Defaults
-                          to a file matching the template 'PPR_*.xml'.
-                          Can only be set in pipelinemode='interactive'
-                          example: pprfile=['PPR_GRB021004.xml']
-    calintents            calintents -- List of calibrator image types to be exported. Defaults to
-                          all standard calibrator intents 'BANDPASS', 'PHASE', 'FLUX'
-                          Can only be set in pipelinemode='interactive'
-                          example: calintents='PHASE'
-    calimages             List of calibrator images to be exported. Defaults to all
-                          calibrator images recorded in the pipeline context.
-                          Can only be set in pipelinemode='interactive'
-                          example: calimages=['3C454.3.bandpass', '3C279.phase']
-    targetimages          List of science target images to be exported.
-                          Science target images recorded in the pipeline context.
-                          Can only be set in pipelinemode='interactive'
-                          example: targetimages=['NGC3256.band3', 'NGC3256.band6']
-    products_dir          Name of the data products subdirectory.
-                          Can only be set in pipelinemode='interactive'
-                          example: products_dir='../products'
-    pipelinemode          The pipeline operating mode. In 'automatic' mode the pipeline
-                          determines the values of all context defined pipeline inputs automatically.
-                          In 'interactive' mode the user can set the pipeline context defined
-                          parameters manually.  In 'getinputs' mode the user can check the settings
-                          of all pipeline parameters without running the task.
-    dryrun                Run the task (False) or display task command (True)
-    acceptresults         Add the results into the pipeline context
-
-    --------- examples -----------------------------------------------------------
-
-    
-    Examples
-    
-    1. Export the pipeline results for a single session to the data products
-    directory
-    
-    !mkdir ../products
-    hif_exportdata (products_dir='../products')
-    
-    2. Export the pipeline results to the data products directory specify that
-    only the gain calibrator images be saved.
-    
-    !mkdir ../products
-    hif_exportdata (products_dir='../products', calintents='*PHASE*')
-
-
     """
 
     ##########################################################################

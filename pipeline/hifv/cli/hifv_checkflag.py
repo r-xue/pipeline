@@ -1,22 +1,25 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
-def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, pipelinemode=None, overwrite_modelcol=None,
+@utils.cli_wrapper
+def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_modelcol=None,
                    dryrun=None, acceptresults=None):
 
     """
     hifv_checkflag ---- Run RFI flagging using flagdata in various modes
 
+    Run RFI flagging using flagdata in various modes
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
-    vis                List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                       MSes, or tar files of MSes, If ASDM files are specified, they will be
-                       converted  to MS format.
-                       example: vis=['X227.ms', 'asdms.tar.gz']
+    vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                       specified in the h_init or hifv_importdata task.     
     checkflagmode      -- Standard VLA modes with improved RFI flagging heuristics: 'bpd-vla', 'allcals-vla', 'target-vla'
                        -- blank string default use of rflag on bandpass and delay calibrators
                        -- use string 'semi' after hifv_semiFinalBPdcals() for executing rflag on calibrators
@@ -47,12 +50,6 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, pipelinemode=No
     growflags          Grow flags in time at the end of the following checkflagmodes:
                        default=True, for 'bpd-vla', 'allcals-vla', 'bpd', and 'allcals'  
                        default=False, for '' and 'semi'
-    pipelinemode       The pipeline operating mode. In 'automatic' mode the pipeline
-                       determines the values of all context defined pipeline inputs
-                       automatically.  In 'interactive' mode the user can set the pipeline
-                       context defined parameters manually.  In 'getinputs' mode the user
-                       can check the settings of all pipeline parameters without running
-                       the task.
     overwrite_modelcol Always write the model column, even if it already exists
     dryrun             Run the commands (True) or generate the commands to be run but
                        do not execute (False).  This is a pipeline task execution mode.
@@ -60,20 +57,11 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, pipelinemode=No
                        reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    
-    Output:
-    
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Run RFLAG with associated heuristics in the VLA CASA pipeline.
     
-    hifv_checkflag()
+    >>> hifv_checkflag()
 
 
     """

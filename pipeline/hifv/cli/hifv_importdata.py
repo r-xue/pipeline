@@ -1,11 +1,10 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
-def hifv_importdata(vis=None, session=None, pipelinemode=None, asis=None, overwrite=None, nocopy=None, createmms=None,
+@utils.cli_wrapper
+def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=None, createmms=None,
                     ocorr_mode=None, datacolumns=None, dryrun=None, acceptresults=None):
 
     """
@@ -13,6 +12,10 @@ def hifv_importdata(vis=None, session=None, pipelinemode=None, asis=None, overwr
 
     The hifv_importdata task loads the specified visibility data into the pipeline
     context unpacking and / or converting it as necessary.
+        
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -24,19 +27,13 @@ def hifv_importdata(vis=None, session=None, pipelinemode=None, asis=None, overwr
                   to a single session containing all the visibility files, otherwise
                   a session must be assigned to each vis file.
                   example: session=['Session_1', 'Sessions_2']
-    pipelinemode  The pipeline operating mode. In 'automatic' mode the pipeline
-                  determines the values of all context defined pipeline inputs
-                  automatically.  In 'interactive' mode the user can set the pipeline
-                  context defined parameters manually.  In 'getinputs' mode the user
-                  can check the settings of all pipeline parameters without running
-                  the task.
-    asis          ASDM to convert as is 
-                  Only can be set in pipelinemode='interactive'
+    asis          Creates verbatim copies of the ASDM tables in the output MS.
+                  The value given to this option must be a list of table names
+                  separated by space characters.
                   examples: 'Receiver CalAtmosphere'
                   'Receiver', ''
-    overwrite     Only can be set in pipelinemode='interactive'
+    overwrite     Overwrite existing files on import.
     nocopy        When importing an MS, disable copying of the MS to the working directory.
-                  Only can be set in pipelinemode='interactive'
     createmms     Create a multi-MeasurementSet ('true') ready for parallel
                   processing, or a standard MeasurementSet ('false'). The default setting
                   ('automatic') creates an MMS if running in a cluster environment.
@@ -78,49 +75,29 @@ def hifv_importdata(vis=None, session=None, pipelinemode=None, asis=None, overwr
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     
-    hifv_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e',
-    '../rawdata/uid_A002_x30a93d_X44e'])
+    >>> hifv_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e', '../rawdata/uid_A002_x30a93d_X44e'])
     
     2. Load an MS in the current directory into the context.
     
-    hifv_importdata (vis=[uid___A002_X30a93d_X43e.ms])
+    >>> hifv_importdata (vis=[uid___A002_X30a93d_X43e.ms])
     
     3. Load a tarred ASDM in ../rawdata into the context.
     
-    hifv_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
+    >>> hifv_importdata (vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
     
     4. Check the hifv_importdata inputs, then import the data
     
-    myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
-    hifv_importdata(vis=myvislist, pipelinemode='getinputs')
-    hifv_importdata(vis=myvislist)
+    >>> myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
+    >>> hifv_importdata(vis=myvislist)
     
-    5. Load an ASDM but check the results before accepting them into the context.
+    5. Run with explicit setting of data column types:
     
-    results = hifv_importdata (vis=['uid___A002_X30a93d_X43e.ms'],
-    acceptresults=False)
-    results.accept()
-    
-    6. Run in  dryrun mode before running for real
-    results = hifv_importdata (vis=['uid___A002_X30a93d_X43e.ms'], dryrun=True)
-    results = hifv_importdata (vis=['uid___A002_X30a93d_X43e.ms'])
-    
-    7. Run with explicit setting of data column types:
-    
-    hifv_importdata(vis=['uid___A002_X30a93d_X43e_targets.ms'], datacolumns={'data': 'regcal_contline'})
-    hifv_importdata(vis=['uid___A002_X30a93d_X43e_targets_line.ms'], datacolumns={'data': 'regcal_line', 'corrected': 'selfcal_line'})
+    >>> hifv_importdata(vis=['uid___A002_X30a93d_X43e_targets.ms'], datacolumns={'data': 'regcal_contline'})
+    >>> hifv_importdata(vis=['uid___A002_X30a93d_X43e_targets_line.ms'], datacolumns={'data': 'regcal_line', 'corrected': 'selfcal_line'})
 
 
     """

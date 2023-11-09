@@ -2,38 +2,39 @@ import sys
 
 import pipeline.h.cli.utils as utils
 
+
+@utils.cli_wrapper
 def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                   scannumber=None, quack=None, clip=None, baseband=None,
                   intents=None, edgespw=None, fracspw=None,
                   online=None, fileonline=None, template=None,
                   filetemplate=None, hm_tbuff=None, tbuff=None,
-                  pipelinemode=None, flagbackup=None, dryrun=None,
+                  flagbackup=None, dryrun=None,
                   acceptresults=None):
 
     """
     hifv_flagdata ---- Do basic deterministic flagging of a list of MeasurementSets
 
-    The hifv_flagdata task performs basic flagging operations on a list of
-    MeasurementSets.
+    The hifv_flagdata task performs basic flagging operations on a list of MeasurementSets including:
     
-    The hifv_flagdata task performs basic flagging operations on a list of measurements including:
+    - autocorrelation data flagging
+    - shadowed antenna data flagging
+    - scan based flagging
+    - edge channel flagging
+    - baseband edge flagging
+    - applying online flags
+    - applying a flagging template
+    - quack, shadow, and basebands
+    - Antenna not-on-source (ANOS)
     
-    o autocorrelation data flagging
-    o shadowed antenna data flagging
-    o scan based flagging
-    o edge channel flagging
-    o baseband edge flagging
-    o applying online flags
-    o applying a flagging template
-    o quack, shadow, and basebands
-    o Antenna not-on-source (ANOS)
-
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+    
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                  MSes, or tar files of MSes, If ASDM files are specified, they will be
-                  converted  to MS format.
-                  example: vis=['X227.ms', 'asdms.tar.gz']
+    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                  specified in the h_init or hifv_importdata task.
     autocorr      Flag autocorrelation data
     shadow        Flag shadowed antennas
     scan          Flag specified scans
@@ -44,7 +45,7 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     baseband      Flag 20MHz of each edge of basebands
     intents       A string containing a comma delimited list of intents against
                   which the scans to be flagged are matched.
-                  example: '*BANDPASS*'
+                  example: `'*BANDPASS*'`
     edgespw       Fraction of the baseline correlator TDM edge channels to be flagged.
     fracspw       Fraction of baseline correlator edge channels to be flagged
     online        Apply the online flags
@@ -57,36 +58,23 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                   is undefined a name of the form 'msname.flagtemplate.txt' is assumed.
     hm_tbuff      The time buffer computation heuristic
     tbuff         List of time buffers (sec) to pad timerange in flag commands
-    pipelinemode  The pipeline operating mode. In 'automatic' mode the pipeline
-                  determines the values of all context defined pipeline inputs automatically.
-                  In interactive mode the user can set the pipeline context defined parameters
-                  manually.  In 'getinputs' mode the user can check the settings of all
-                  pipeline parameters without running the task.
-    flagbackup    Backup pre-existing flags before applying new ones. Only can be set in 
-                  pipelinemode='interactive'.
+    flagbackup    Backup pre-existing flags before applying new ones.
     dryrun        Run the commands (True) or generate the commands to be run but
                   do not execute (False).  This is a pipeline task execution mode.
     acceptresults Add the results of the task to the pipeline context (True) or
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-    
-    Examples
     
     1. Do basic flagging on a MeasurementSet
     
-    hifv_flagdata()
+    >>> hifv_flagdata()
     
     2. Do basic flagging on a MeasurementSet as well as flag pointing and
     atmosphere data
     
-    hifv_flagdata(scan=True intent='*BANDPASS*')
+    >>> hifv_flagdata(scan=True intent='*BANDPASS*')
 
 
     """

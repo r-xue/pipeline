@@ -1,13 +1,12 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, antenna=None, phaseup=None,
                  phaseupsolint=None, phaseupbw=None, solint=None, combine=None, refant=None, solnorm=None,
-                 minblperant=None, minsnr=None, pipelinemode=None, dryrun=None, acceptresults=None):
+                 minblperant=None, minsnr=None, dryrun=None, acceptresults=None):
 
     """
     hif_bandpass ---- Compute bandpass calibration solutions
@@ -18,9 +17,6 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
     
     Previous calibration can be applied on the fly.
     
-    
-    Description
-    
     hif_bandpass computes a bandpass solution for every specified science
     spectral window. By default a 'phaseup' pre-calibration is performed
     and applied on the fly to the data, before the bandpass is computed.
@@ -29,17 +25,9 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
     reference antennas.
     
     
-    Issues
-    
-    The specified minsnr parameter is currently applied to the bandpass
-    solution computation but not the 'phaseup' computation. Some noisy
-    solutions in the phaseup may not be properly rejected.
-    
-    
     Output
     
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -60,7 +48,7 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
                   which the selected fields are matched.  Defaults to all data
                   with bandpass intent.
                   
-                  Example: intent='*PHASE*'
+                  Example: intent='`*PHASE*`'
     spw           The list of spectral windows and channels for which bandpasses
                   are computed. Defaults to all science spectral windows.
                   
@@ -94,13 +82,6 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
                   solve. Antennas with fewer baselines are excluded from
                   solutions.
     minsnr        Reject solutions below this SNR
-    pipelinemode  The pipeline operating mode.
-                  In 'automatic' mode the pipeline determines the values of all
-                  context defined pipeline inputs automatically.
-                  In 'interactive' mode the user can set the pipeline context
-                  defined parameters manually.
-                  In 'getinputs' mode the user can check the settings of all
-                  pipeline parameters without running the task.
     dryrun        Run the task (False) or just display the command (True)
     acceptresults Add the results of the task to the pipeline context (True) or
                   reject them (False).
@@ -111,14 +92,19 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
     1. Compute a channel bandpass for all visibility files in the pipeline
     context using the CASA reference antenna determination scheme:
     
-    hif_bandpass()
+    >>> hif_bandpass()
     
     2. Same as the above but precompute a prioritized reference antenna list:
     
-    hif_refant()
-    hif_bandpass()
+    >>> hif_refant()
+    >>> hif_bandpass()
 
-
+    --------- issues -----------------------------------------------------------
+    
+    The specified minsnr parameter is currently applied to the bandpass
+    solution computation but not the 'phaseup' computation. Some noisy
+    solutions in the phaseup may not be properly rejected.
+    
     """
 
 

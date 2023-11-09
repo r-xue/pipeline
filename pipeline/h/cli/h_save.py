@@ -1,7 +1,5 @@
 import datetime
 
-from casatasks import casalog
-
 from . import utils
 
 
@@ -25,11 +23,11 @@ def h_save(filename=None):
     
     1. Save the current state in the default file
     
-    h_save()
+    >>> h_save()
     
     2. Save the current state to a file called 'savestate_1'
     
-    h_save(filename='savestate_1')
+    >>> h_save(filename='savestate_1')
 
 
     """

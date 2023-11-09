@@ -1,46 +1,36 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
-def hifv_swpowcal(vis=None, caltable=None, spw=None, pipelinemode=None, dryrun=None, acceptresults=None):
+@utils.cli_wrapper
+def hifv_swpowcal(vis=None, caltable=None, spw=None, dryrun=None, acceptresults=None):
 
     """
     hifv_swpowcal ---- Runs gencal in swpow mode
+    
+    Runs gencal in swpow mode
+
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of input visibility data
     caltable      String name of caltable
     spw           Spectral-window/frequency/channel: '' ==> all, spw="0:17~19"
-    pipelinemode  The pipeline operating mode. In 'automatic' mode the pipeline
-                  determines the values of all context defined pipeline inputs
-                  automatically.  In 'interactive' mode the user can set the pipeline
-                  context defined parameters manually.  In 'getinputs' mode the user
-                  can check the settings of all pipeline parameters without running
-                  the task.
     dryrun        Run the commands (True) or generate the commands to be run but
                   do not execute (False).  This is a pipeline task execution mode.
     acceptresults Add the results of the task to the pipeline context (True) or
                   reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    
-    Output:
-    
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context.
     
-    hifv_swpowcal()
+    >>> hifv_swpowcal()
 
 
     """

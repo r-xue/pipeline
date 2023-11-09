@@ -1,27 +1,24 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
-def hifv_semiFinalBPdcals(vis=None, pipelinemode=None, dryrun=None, acceptresults=None, weakbp=None, refantignore=None):
+@utils.cli_wrapper
+def hifv_semiFinalBPdcals(vis=None, dryrun=None, acceptresults=None, weakbp=None, refantignore=None):
 
     """
     hifv_semiFinalBPdcals ---- Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging
 
-    --------- parameter descriptions ---------------------------------------------
+    Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging
 
-    vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                  MSes, or tar files of MSes, If ASDM files are specified, they will be
-                  converted  to MS format.
-                  example: vis=['X227.ms', 'asdms.tar.gz']
-    pipelinemode  The pipeline operating mode. In 'automatic' mode the pipeline
-                  determines the values of all context defined pipeline inputs
-                  automatically.  In 'interactive' mode the user can set the pipeline
-                  context defined parameters manually.  In 'getinputs' mode the user
-                  can check the settings of all pipeline parameters without running
-                  the task.
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+
+    --------- parameter descriptions ---------------------------------------------
+    
+    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                  specified in the h_init or hifv_importdata task.
     dryrun        Run the commands (True) or generate the commands to be run but
                   do not execute (False).  This is a pipeline task execution mode.
     acceptresults Add the results of the task to the pipeline context (True) or
@@ -30,19 +27,11 @@ def hifv_semiFinalBPdcals(vis=None, pipelinemode=None, dryrun=None, acceptresult
     refantignore  String list of antennas to ignore
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Heuristic flagging
     
-    hifv_semiFinalBPdcals()
+    >>> hifv_semiFinalBPdcals()
 
 
     """

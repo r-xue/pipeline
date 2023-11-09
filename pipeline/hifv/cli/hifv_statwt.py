@@ -1,11 +1,10 @@
 import sys
 
-from casatasks import casalog
-
 import pipeline.h.cli.utils as utils
 
 
-def hifv_statwt(vis=None, datacolumn=None, pipelinemode=None, overwrite_modelcol=None,
+@utils.cli_wrapper
+def hifv_statwt(vis=None, datacolumn=None, overwrite_modelcol=None,
                 statwtmode=None, dryrun=None, acceptresults=None):
 
     """
@@ -13,21 +12,18 @@ def hifv_statwt(vis=None, datacolumn=None, pipelinemode=None, overwrite_modelcol
 
     Compute statistical weights and write them to measurement set
 
+    
+    Output:
+    
+    results -- The results object for the pipeline task is returned.
+    
     --------- parameter descriptions ---------------------------------------------
 
-    vis                List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                       MSes, or tar files of MSes, If ASDM files are specified, they will be
-                       converted  to MS format.
-                       example: vis=['X227.ms', 'asdms.tar.gz']
+    vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                       specified in the h_init or hifv_importdata task.
     datacolumn         Data column used to compute weights. Supported values are
                        "data", "corrected", "residual", and "residual_data"
                        (case insensitive, minimum match supported).
-    pipelinemode       The pipeline operating mode. In 'automatic' mode the pipeline
-                       determines the values of all context defined pipeline inputs
-                       automatically.  In 'interactive' mode the user can set the pipeline
-                       context defined parameters manually.  In 'getinputs' mode the user
-                       can check the settings of all pipeline parameters without running
-                       the task.
     overwrite_modelcol Always write the model column, even if it already exists
     statwtmode         Sets the weighting parameters for general VLA ('VLA') or VLASS
                        Single Epoch ('VLASS-SE') use case. Note that the 'VLASS-SE'
@@ -39,23 +35,15 @@ def hifv_statwt(vis=None, datacolumn=None, pipelinemode=None, overwrite_modelcol
                        reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
-
     
-    Output:
-    
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
-    
-    
-    Examples
     
     1. Statistical weighting of the visibilities:
     
-    hifv_statwt()
+    >>> hifv_statwt()
     
     2. Statistical weighting of the visibilities in the Very Large Array Sky Survey Single Epoch use case:
     
-    hifv_statwt(mode='vlass-se', datacolumn='residual_data')
+    >>> hifv_statwt(mode='vlass-se', datacolumn='residual_data')
 
 
     """

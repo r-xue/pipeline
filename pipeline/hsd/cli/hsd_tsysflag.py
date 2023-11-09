@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hsd_tsysflag(vis=None, caltable=None,
                  flag_nmedian=None, fnm_limit=None, fnm_byfield=None,
                  flag_derivative=None, fd_max_limit=None,
@@ -11,20 +12,14 @@ def hsd_tsysflag(vis=None, caltable=None,
                  flag_birdies=None, fb_sharps_limit=None,
                  flag_toomany=None, tmf1_limit=None, tmef1_limit=None,
                  metric_order=None, normalize_tsys=None, filetemplate=None,
-                 pipelinemode=None, dryrun=None, acceptresults=None):
+                 dryrun=None, acceptresults=None):
 
     """
     hsd_tsysflag ---- Flag deviant system temperature measurements
 
     
-    Flag deviant system temperatures for single dish measurements. This is done by running a
-    sequence of flagging subtasks, each looking for a different type of possible error.
-    
-    Flag deviant system temperatures for single dish measurements.
-    
-    Flag all deviant system temperature measurements in the system temperature
-    calibration table by running a sequence of flagging tests, each designed
-    to look for a different type of error.
+    Flag deviant system temperature measurements for single dish measurements. This is done by running a
+    sequence of flagging sub-tasks (tests), each looking for a different type of possible error.
     
     If a file with manual Tsys flags is provided with the 'filetemplate'
     parameter, then these flags are applied prior to the evaluation of the
@@ -32,29 +27,28 @@ def hsd_tsysflag(vis=None, caltable=None,
     
     The tests are:
     
-    1. Flag Tsys spectra with high median values
+      1. Flag Tsys spectra with high median values
     
-    2. Flag Tsys spectra with high median derivatives. This is meant to spot
-    spectra that are 'ringing'.
+      2. Flag Tsys spectra with high median derivatives. This is meant to spot
+        spectra that are 'ringing'.
     
-    3. Flag the edge channels of the Tsys spectra in each SpW.
+      3. Flag the edge channels of the Tsys spectra in each SpW.
     
-    4. Flag Tsys spectra whose shape is different from that associated with
-    the BANDPASS intent.
+      4. Flag Tsys spectra whose shape is different from that associated with
+        the BANDPASS intent.
     
-    5. Flag 'birdies'.
+      5. Flag 'birdies'.
     
-    6. Flag the Tsys spectra of all antennas in a timestamp and spw if
-    proportion of antennas already flagged in this timestamp and spw exceeds
-    a threshold, and flag Tsys spectra for all antennas and all timestamps
-    in a spw, if proportion of antennas that are already entirely flagged
-    in all timestamps exceeds a threshold.
+      6. Flag the Tsys spectra of all antennas in a timestamp and spw if
+        proportion of antennas already flagged in this timestamp and spw exceeds
+        a threshold, and flag Tsys spectra for all antennas and all timestamps
+        in a spw, if proportion of antennas that are already entirely flagged
+        in all timestamps exceeds a threshold.
     
     
     Output
     
-    results -- If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -91,7 +85,7 @@ def hsd_tsysflag(vis=None, caltable=None,
                     in a spw, if proportion of antennas that are already entirely flagged
                     in all timestamps exceeds tmef1_limit.
     metric_order    Order in which to evaluate the flagging metrics that are
-                    enables. Disabled metrics are skipped.
+                    enabled. Disabled metrics are skipped.
     normalize_tsys  True to create a normalized Tsys table that is used to
                     evaluate the Tsys flagging metrics. All newly found flags are also applied
                     to the original Tsys caltable that continues to be used for subsequent
@@ -99,11 +93,6 @@ def hsd_tsysflag(vis=None, caltable=None,
     filetemplate    The name of a text file that contains the manual Tsys flagging
                     template. If the template flags file is undefined, a name of the form
                     'msname.flagtsystemplate.txt' is assumed.
-    pipelinemode    The pipeline operating mode. In 'automatic' mode the pipeline
-                    determines the values of all context defined pipeline inputs automatically.
-                    In interactive mode the user can set the pipeline context defined
-                    parameters manually.  In 'getinputs' mode the user can check the settings
-                    of all pipeline parameters without running the task.
     dryrun          Run the commands (True) or generate the commands to be run but
                     do not execute (False).
     acceptresults   Add the results of the task to the pipeline context (True) or
@@ -114,12 +103,12 @@ def hsd_tsysflag(vis=None, caltable=None,
     
     1. Flag Tsys measurements using currently recommended tests:
     
-    hsd_tsysflag()
+    >>> hsd_tsysflag()
     
     2. Flag Tsys measurements using all recommended tests apart from that
     using the 'fieldshape' metric:
     
-    hsd_tsysflag(flag_fieldshape=False)
+    >>> hsd_tsysflag(flag_fieldshape=False)
 
 
     """

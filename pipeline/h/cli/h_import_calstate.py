@@ -1,14 +1,10 @@
-from casatasks import casalog
-
 from . import utils
 
 
 def h_import_calstate(filename):
-
     """
     h_import_calstate ---- Import a calibration state from disk
 
-    
     h_import_calstate clears and then recreates the pipeline calibration state
     based on the set of applycal calls given in the named file. The applycal
     statements are interpreted in additive fashion; for identically specified
@@ -17,19 +13,15 @@ def h_import_calstate(filename):
 
     --------- parameter descriptions ---------------------------------------------
 
-    filename Name of the saved calibration state
+    filename
+                Name of the saved calibration state
 
     --------- examples -----------------------------------------------------------
 
-    
-    Example
-    
     1. Import a calibration state from disk.
     
-    h_import_calstate(filename='aftergaincal.calstate')
-
+    >>> h_import_calstate(filename='aftergaincal.calstate')
 
     """
-
     context = utils.get_context()  
     context.callibrary.import_state(filename)

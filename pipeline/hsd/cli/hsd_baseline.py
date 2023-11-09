@@ -3,11 +3,12 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                  linewindow=None, linewindowmode=None, edge=None, broadline=None,
-                 clusteringalgorithm=None, deviationmask=None, pipelinemode=None,
+                 clusteringalgorithm=None, deviationmask=None, parallel=None,
                  infiles=None, field=None, antenna=None, spw=None, pol=None,
-                 dryrun=None, acceptresults=None, parallel=None):
+                 dryrun=None, acceptresults=None):
 
     """
     hsd_baseline ---- Detect and validate spectral lines, subtract baseline by masking detected lines
@@ -31,10 +32,10 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     two spectral windows (0 and 1) and hsd_baseline is executed
     separately for each spw as below,
 
-    hsd_baseline(pipelinemode="interactive", spw="0")
-    hsd_baseline(pipelinemode="interactive", spw="1")
-    hsd_blflag(pipelinemode="automatic")
-    hsd_imaging(pipelinemode="automatic")
+    >>> hsd_baseline(spw='0')
+    >>> hsd_baseline(spw='1')
+    >>> hsd_blflag()
+    >>> hsd_imaging()
 
     Since the second run of hsd_baseline overwrites the result for
     spw 0 with the data before baseline subtraction, this will not
@@ -42,17 +43,15 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     case is to process each spw to the imaging stage separately,
     which looks like as follows:
 
-    hsd_baseline(pipelinemode="interactive", spw="0")
-    hsd_blflag(pipelinemode="interactive", spw="0")
-    hsd_imaging(pipelinemode="interactive", spw="0"))
-    hsd_baseline(pipelinemode="interactive", spw="1")
-    hsd_blflag(pipelinemode="interactive", spw="1")
-    hsd_imaging(pipelinemode="interactive", spw="1")
+    >>> hsd_baseline(spw='0')
+    >>> hsd_blflag(spw='0')
+    >>> hsd_imaging(spw='0'))
+    >>> hsd_baseline(spw='1')
+    >>> hsd_blflag(spw='1')
+    >>> hsd_imaging(spw='1')
 
     Output:
-    results -- If pipeline mode is 'getinputs' then None is returned.
-    Otherwise the results object for the pipeline task is
-    returned.
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -126,7 +125,7 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                         None is allowed as a value of dictionary input to indicate that
                         no line detection/validation is required even if manually specified
                         line window does not exist. When None is given as a value and if
-                        linewindowmode is 'replace', line detection/validation is not performed
+                        ``linewindowmode`` is 'replace', line detection/validation is not performed
                         for the corresponding spw. For example, suppose the following parameters
                         are given for the data with four science spws, 17, 19, 21, and 23.
                             linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}
@@ -152,7 +151,7 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                         In case if no linewindow nor line detection/validation
                         are necessary, you should set linewindowmode to 'replace'
                         and specify None as a value of the linewindow dictionary
-                        for the spw to apply. See parameter description of linewindow
+                        for the spw to apply. See parameter description of ``linewindow``
                         for detail.
 
     edge                Number of edge channels to be dropped from baseline
@@ -173,13 +172,9 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     deviationmask       Apply deviation mask in addition to masks determined by
                         the automatic line detection.
 
-    pipelinemode        The pipeline operating mode. In 'automatic' mode the
-                        pipeline determines the values of all context defined
-                        pipeline inputs  automatically.  In 'interactive' mode
-                        the user can set the pipeline context defined parameters
-                        manually.  In 'getinputs' mode the user can check the
-                        settings of all pipeline parameters without running the
-                        task.
+    parallel            Execute using CASA HPC functionality, if available.
+                        options: 'automatic', 'true', 'false', True, False
+                        default: None (equivalent to 'automatic')
 
     infiles             List of data files. These must be a name of
                         MeasurementSets that are registered to context via
@@ -212,12 +207,22 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     acceptresults       Add the results of the task to the pipeline context (True)
                         or reject them (False).
 
-    parallel            Execute using CASA HPC functionality, if available.
-
     --------- examples -----------------------------------------------------------
 
+    1. Basic usage with automatic line detection and validation
 
+    >>> hsd_baseline(antenna='PM03', spw='17,19')
 
+    2. Using pre-defined line windows without automatic line detection
+       and edge channels
+
+    >>> hsd_baseline(linewindow=[[100, 200], [1200, 1400]],
+                     linewindowmode='replace', edge=[10, 10])
+
+    3. Using per spw pre-defined line windows with automatic line detection
+
+    >>> hsd_baseline(linewindow={19: [[390, 550]], 23: [[100, 200], [1200, 1400]]},
+                     linewindowmode='merge')
 
     """
 

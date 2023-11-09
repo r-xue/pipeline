@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+@utils.cli_wrapper
 def hif_editimlist(imagename=None,
                    search_radius_arcsec=None,
                    cell=None,
@@ -10,6 +11,7 @@ def hif_editimlist(imagename=None,
                    conjbeams=None,
                    cyclefactor=None,
                    cycleniter=None,
+                   datatype=None,
                    datacolumn=None,
                    deconvolver=None,
                    editmode=None,
@@ -41,7 +43,6 @@ def hif_editimlist(imagename=None,
                    uvtaper=None,
                    uvrange=None,
                    width=None,
-                   pipelinemode=None,
                    dryrun=None,
                    acceptresults=None):
 
@@ -52,8 +53,7 @@ def hif_editimlist(imagename=None,
     Add to a list of images to be produced with hif_makeimages(), which uses hif_tclean() to invoke CASA tclean.
     Many of the hif_editimlist() inputs map directly to tclean parameters.
     
-    If pipeline mode is 'getinputs' then None is returned. Otherwise
-    the results object for the pipeline task is returned.
+    The results object for the pipeline task is returned.
     
 
     --------- parameter descriptions ---------------------------------------------
@@ -71,7 +71,14 @@ def hif_editimlist(imagename=None,
     conjbeams            Use conjugate frequency in tclean for wideband A-terms.
     cyclefactor          Controls the depth of clean in minor cycles based on PSF.
     cycleniter           Controls max number of minor cycle iterations in a single major cycle.
-    datacolumn           Data column to image
+    datatype             Data type(s) to image. The default '' selects the best
+                         available data type (e.g. selfcal over regcal) with
+                         an automatic fallback to the next available data type.
+                         With the ``datatype`` parameter of 'regcal' or 'selfcal', one 
+                         can force the use of only given data type(s).
+                         Note that this parameter is only for non-VLASS data when the datacolumn 
+                         is not explictly set by user or imaging heuristics.  
+    datacolumn           Data column to image; this will take precedence over the datatype parameter.
     deconvolver          Minor cycle algorithm (multiscale or mtmfs)
     editmode             The edit mode of the task ('add' or 'replace'). Defaults to 'add'.
     field                Set of data selection field names or ids.
@@ -100,17 +107,12 @@ def hif_editimlist(imagename=None,
                          Starts at first input channel of the spw.
                          example: '22.3GHz'
     stokes               Stokes Planes to make
-    sensitivity          
+    sensitivity          Theoretical sensitivity (override internal calculation)
     threshold            Stopping threshold (number in units of Jy, or string)
     nsigma               Multiplicative factor for rms-based threshold stopping
     uvtaper              Used to set a uv-taper during clean.
     uvrange              Set of data selection uv ranges, \'\' for all.
     width                Channel width
-    pipelinemode         The pipeline operating mode. In 'automatic' mode the pipeline
-                         determines the values of all context defined pipeline inputs automatically.
-                         In 'interactive' mode the user can set the pipeline context defined
-                         parameters manually. In 'getinputs' mode the user can check the settings
-                         of all pipeline parameters without running the task.
     dryrun               Run the task (False) or display the command(True)
     acceptresults        Add the results to the pipeline context
 
