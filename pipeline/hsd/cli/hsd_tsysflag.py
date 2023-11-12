@@ -18,14 +18,8 @@ def hsd_tsysflag(vis=None, caltable=None,
     hsd_tsysflag ---- Flag deviant system temperature measurements
 
     
-    Flag deviant system temperatures for single dish measurements. This is done by running a
-    sequence of flagging subtasks, each looking for a different type of possible error.
-    
-    Flag deviant system temperatures for single dish measurements.
-    
-    Flag all deviant system temperature measurements in the system temperature
-    calibration table by running a sequence of flagging tests, each designed
-    to look for a different type of error.
+    Flag deviant system temperature measurements for single dish measurements. This is done by running a
+    sequence of flagging sub-tasks (tests), each looking for a different type of possible error.
     
     If a file with manual Tsys flags is provided with the 'filetemplate'
     parameter, then these flags are applied prior to the evaluation of the
@@ -33,23 +27,23 @@ def hsd_tsysflag(vis=None, caltable=None,
     
     The tests are:
     
-    1. Flag Tsys spectra with high median values
+      1. Flag Tsys spectra with high median values
     
-    2. Flag Tsys spectra with high median derivatives. This is meant to spot
-    spectra that are 'ringing'.
+      2. Flag Tsys spectra with high median derivatives. This is meant to spot
+        spectra that are 'ringing'.
     
-    3. Flag the edge channels of the Tsys spectra in each SpW.
+      3. Flag the edge channels of the Tsys spectra in each SpW.
     
-    4. Flag Tsys spectra whose shape is different from that associated with
-    the BANDPASS intent.
+      4. Flag Tsys spectra whose shape is different from that associated with
+        the BANDPASS intent.
     
-    5. Flag 'birdies'.
+      5. Flag 'birdies'.
     
-    6. Flag the Tsys spectra of all antennas in a timestamp and spw if
-    proportion of antennas already flagged in this timestamp and spw exceeds
-    a threshold, and flag Tsys spectra for all antennas and all timestamps
-    in a spw, if proportion of antennas that are already entirely flagged
-    in all timestamps exceeds a threshold.
+      6. Flag the Tsys spectra of all antennas in a timestamp and spw if
+        proportion of antennas already flagged in this timestamp and spw exceeds
+        a threshold, and flag Tsys spectra for all antennas and all timestamps
+        in a spw, if proportion of antennas that are already entirely flagged
+        in all timestamps exceeds a threshold.
     
     
     Output
@@ -109,12 +103,12 @@ def hsd_tsysflag(vis=None, caltable=None,
     
     1. Flag Tsys measurements using currently recommended tests:
     
-    hsd_tsysflag()
+    >>> hsd_tsysflag()
     
     2. Flag Tsys measurements using all recommended tests apart from that
     using the 'fieldshape' metric:
     
-    hsd_tsysflag(flag_fieldshape=False)
+    >>> hsd_tsysflag(flag_fieldshape=False)
 
 
     """
