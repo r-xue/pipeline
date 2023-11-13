@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None, excludechan=None,
-                atm_auto_exclude=None, bwthreshspw=None):
+                atm_auto_exclude=None, bwthreshspw=None, parallel=None):
     """
     hifa_renorm ---- ALMA renormalization task
 
@@ -86,6 +86,8 @@ def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None,
                      have very different SPW bandwidths.
 
                      Example: bwthreshspw={'16: 64e6, '22: 64e6}
+    parallel
+                     Execute using CASA HPC functionality, if available.
 
     --------- examples -----------------------------------------------------------
 

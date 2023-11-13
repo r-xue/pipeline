@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None):
+def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None, parallel=None):
     """
     hif_uvcontsub ---- Fit and subtract continuum from the data
 
@@ -39,6 +39,7 @@ def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None):
                   spws. If an explicit dictionary is given then all unspecified
                   selections still default to 1.
                   Example: {'3C279': {'15': 1, '17': 2}, 'M82': {'13': 2}}
+    parallel      Execute using CASA HPC functionality, if available.
 
     --------- examples -----------------------------------------------------------
 
