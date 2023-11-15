@@ -98,6 +98,7 @@ class SDBaselineInputs(vdp.StandardInputs):
                  linewindowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
                  broadline: Optional[bool] = None,
+                 hm_linefinder: Optional[str] = None,
                  fitorder: Optional[int] = None,
                  fitfunc: Optional[str] = None,
                  switchpoly: Optional[bool] = None,
@@ -146,6 +147,7 @@ class SDBaselineInputs(vdp.StandardInputs):
         self.linewindowmode = linewindowmode
         self.edge = edge
         self.broadline = broadline
+        self.hm_linefinder = hm_linefinder
         self.fitorder = fitorder
         self.fitfunc = fitfunc
         self.switchpoly = switchpoly
@@ -311,6 +313,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         LOG.info('{}: window={}, windowmode={}'.format(self.__class__.__name__, window, windowmode))
         edge = inputs.edge
         broadline = inputs.broadline
+        hm_linefinder = inputs.hm_linefinder
         fitorder = 'automatic' if inputs.fitorder is None or inputs.fitorder < 0 else inputs.fitorder
         switchpoly = inputs.switchpoly
         clusteringalgorithm = inputs.clusteringalgorithm
@@ -432,7 +435,8 @@ class SDBaseline(basetask.StandardTaskTemplate):
             # Spectral Line Detection and Validation
             # MaskLine will update DataTable.MASKLIST column
             maskline_inputs = maskline.MaskLine.Inputs(context, iteration, group_id, member_list,
-                                                       window, windowmode, edge, broadline, clusteringalgorithm)
+                                                       window, windowmode, edge, broadline,
+                                                       hm_linefinder, clusteringalgorithm)
             maskline_task = maskline.MaskLine(maskline_inputs)
             maskline_result = self._executor.execute(maskline_task, merge=False)
             grid_table = maskline_result.outcome['grid_table']

@@ -60,9 +60,24 @@ class DetectLineInputs(vdp.StandardInputs):
         Raises:
             ValueError: Invalid windowmode value.
         """
-        if value not in ['replace', 'merge']:
+        _value = 'replace' if value is None else value
+
+        if _value not in ['replace', 'merge']:
             raise ValueError("linewindowmode must be either 'replace' or 'merge'.")
-        self._windowmode = value
+        self._windowmode = _value
+
+    @property
+    def hm_linefinder(self) -> str:
+        return self._hm_linefinder
+
+    @hm_linefinder.setter
+    def hm_linefinder(self, value: Optional[str]):
+        _value = 'zerocross' if value is None else value
+
+        if _value not in ['threshold', 'zerocross']:
+            raise ValueError("hm_linefinder must be either 'threshold' or 'zerocross'")
+
+        self._hm_linefinder = _value
 
     def __init__(self,
                  context: 'Context',
@@ -70,7 +85,8 @@ class DetectLineInputs(vdp.StandardInputs):
                  window: Optional[LineWindow] = None,
                  windowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
-                 broadline: Optional[bool] = None) -> None:
+                 broadline: Optional[bool] = None,
+                 hm_linefinder: Optional[str] = None) -> None:
         """Construct DetectLineInputs instance.
 
         Args:
@@ -93,6 +109,7 @@ class DetectLineInputs(vdp.StandardInputs):
         self.windowmode = windowmode
         self.edge = edge
         self.broadline = broadline
+        self.hm_linefinder = hm_linefinder
 
 
 class DetectLineResults(common.SingleDishResults):
@@ -144,7 +161,8 @@ class DetectLine(basetask.StandardTaskTemplate):
     """Spectral line detection task."""
 
     Inputs = DetectLineInputs
-    LineFinder = heuristics.HeuristicsLineFinder
+    LineFinderThrehsold = heuristics.HeuristicsLineFinder
+    LineFinderZeroCross = heuristics.ZeroCrossLineFinder
     ThresholdFactor = 3.0
 
     def __init__(self, inputs: DetectLineInputs) -> None:
@@ -157,7 +175,6 @@ class DetectLine(basetask.StandardTaskTemplate):
             inputs: DetectLineInputs instance.
         """
         super(DetectLine, self).__init__(inputs)
-        self.line_finder = self.LineFinder()
 
     def prepare(self,
                 datatable_dict: dict,
@@ -184,6 +201,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         windowmode = self.inputs.windowmode
         edge = self.inputs.edge
 #         broadline = self.inputs.broadline #Not used anymore
+        hm_linefinder = self.inputs.hm_linefinder
 
         detect_signal = collections.OrderedDict()
 
@@ -233,6 +251,7 @@ class DetectLine(basetask.StandardTaskTemplate):
 
         LOG.info('Search regions for protection against the background subtraction...')
         LOG.info('DetectLine: Processing %s spectra...', nrow)
+        LOG.info('DetectLine: number of channels is %s', nchan)
 
         # Set edge mask region
         (EdgeL, EdgeR) = common.parseEdge(edge)
@@ -258,7 +277,20 @@ class DetectLine(basetask.StandardTaskTemplate):
         Timer = common.ProgressTimer(80, nrow, LOG.level)
         # 100.0: minimum number of channels for binned spectrum to detect lines
         MinChanBinSp = 50.0
-        TmpRange = [4**i for i in range(int(math.ceil(math.log(len(spectra[0])/MinChanBinSp)/math.log(4))))]
+
+        LOG.info(f'Line finding algorithm is "{hm_linefinder}"')
+        if hm_linefinder == 'zerocross':
+            self.line_finder = self.LineFinderZeroCross()
+
+            # disable channel binning
+            TmpRange = [1]
+        elif hm_linefinder == 'threshold':
+            self.line_finder = self.LineFinderThrehsold()
+
+            TmpRange = [4**i for i in range(int(math.ceil(math.log(len(spectra[0])/MinChanBinSp)/math.log(4))))]
+        else:
+            raise RuntimeError(f'Wrong value for hm_linefinder ({hm_linefinder}). Should be either "threshold" or "zerocross".')
+
         BinningRange = []
         for i in TmpRange:
             BinningRange.append([i, 0])
@@ -277,9 +309,10 @@ class DetectLine(basetask.StandardTaskTemplate):
             else:
                 LOG.debug('Start Row %s', row)
                 for [BINN, offset] in BinningRange:
+                    LOG.info('Binning %s with offset %s', BINN, offset)
                     SP = self.SpBinning(spectra[row], BINN, offset)
                     MSK = self.MaskBinning(masks[row], BINN, offset)
-
+                    LOG.info('Resulting spectral number of channels: %s', len(SP))
                     protected = self._detect(spectrum=SP,
                                              mask=MSK,
                                              threshold=Thre+math.sqrt(BINN)-1.0,
@@ -425,9 +458,9 @@ class DetectLine(basetask.StandardTaskTemplate):
         LOG.trace('threshold (S/N per channel)=%s, channels, edges to be dropped=[%s, %s]',
                   threshold, EdgeL, EdgeR)
         line_ranges = self.line_finder(spectrum=spectrum,
+                                       mask=mask,
                                        threshold=threshold,
                                        tweak=True,
-                                       mask=mask,
                                        edge=(int(EdgeL), int(EdgeR)))
         # line_ranges = [line0L, line0R, line1L, line1R, ...]
         nlines = len(line_ranges) // 2

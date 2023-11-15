@@ -64,6 +64,7 @@ class MaskLineInputs(vdp.StandardInputs):
                  windowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
                  broadline: Optional[bool] = None,
+                 hm_linefinder: Optional[str] = None,
                  clusteringalgorithm: Optional[str] = None) -> None:
         """Construct MaskLineInputs instance.
 
@@ -93,6 +94,7 @@ class MaskLineInputs(vdp.StandardInputs):
         self.windowmode = windowmode
         self.edge = edge
         self.broadline = broadline
+        self.hm_linefinder = hm_linefinder
         self.clusteringalgorithm = clusteringalgorithm
 
 
@@ -203,6 +205,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         LOG.debug('{}: window={}, windowmode={}'.format(self.__class__.__name__, window, windowmode))
         edge = self.inputs.edge
         broadline = self.inputs.broadline
+        hm_linefinder = self.inputs.hm_linefinder
         clusteringalgorithm = self.inputs.clusteringalgorithm
         beam_size = casa_tools.quanta.convert(reference_data.beam_sizes[reference_antenna][reference_spw], 'deg')['value']
         observing_pattern = reference_data.observing_pattern[reference_antenna][reference_spw][reference_field]
@@ -254,7 +257,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         # line finding
         t0 = time.time()
         detection_inputs = detection.DetectLine.Inputs(context, group_id, parsed_window, windowmode,
-                                                       edge, broadline)
+                                                       edge, broadline, hm_linefinder)
         line_finder = detection.DetectLine(detection_inputs)
         detection_result = self._executor.execute(line_finder, merge=False,
                                                   datatable_dict=dt_dict,

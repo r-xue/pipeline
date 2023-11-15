@@ -11,4 +11,5 @@ from .caltable import WvrgCaltable
 from .echoheuristic import EchoHeuristic
 from .fieldnames import IntentFieldnames
 from .linefinder import HeuristicsLineFinder
+from .linefinder_lfg import ZeroCrossLineFinder
 from .tsysspwmap import tsysspwmap
