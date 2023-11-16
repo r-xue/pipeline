@@ -356,12 +356,20 @@ class SDMomentMapDisplay(SDImageDisplay):
                     with casa_tools.ImageReader(imagename) as ia:
                         # cf. hif/tasks/tclean/tclean.py mom8_stats
                         stats = ia.statistics(robust=True, stretch=True)
-                    tmin = stats['median'][0] - stats['medabsdevmed'][0]
 
-                    per_channel_stats = self.inputs.compute_per_channel_stats()
-                    line_free_channels = self.inputs.get_line_free_channels()
-                    sigma = numpy.median(per_channel_stats['sigma'][line_free_channels])
-                    tmax = 10 * sigma
+                    # set initial tmin to be larger than tmax to fallback
+                    # to default value in case if we failed to get statistics
+                    tmin = 1.0
+                    tmax = 0.0
+
+                    if len(stats['median']) > 0:
+                        # it seems that we get statistics successfully
+                        tmin = stats['median'][0] - stats['medabsdevmed'][0]
+
+                        per_channel_stats = self.inputs.compute_per_channel_stats()
+                        line_free_channels = self.inputs.get_line_free_channels()
+                        sigma = numpy.median(per_channel_stats['sigma'][line_free_channels])
+                        tmax = 10 * sigma
 
                     # Since there is no guarantee in the above logic that tmax
                     # is always larger than tmin, or both tmin and tmax are
