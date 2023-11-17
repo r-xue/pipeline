@@ -25,10 +25,10 @@ class TimegaincalQAPool(pqa.QAScorePool):
         'PHASE_SCORE_X2X1': 'X2-X1 deviation'
     }
 
-    def __init__(self, phase_qa_results_dict, phase_offsets_qa_results_dict):
+    def __init__(self, phase_qa_results_dict, phase_offsets_qa_results_list):
         super(TimegaincalQAPool, self).__init__()
         self.phase_qa_results_dict = phase_qa_results_dict
-        self.phase_offsets_qa_results_dict = phase_offsets_qa_results_dict
+        self.phase_offsets_qa_results_list = phase_offsets_qa_results_list
 
     def update_scores(self, ms, refant):
         # Phase offsets scores
@@ -90,7 +90,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
             hidden_phase_offsets_scores = []
             public_phase_offsets_scores = []
             subscores = {}
-            for gaintable in self.phase_offsets_qa_results_dict:
+            for gaintable in self.phase_offsets_qa_results_list:
                 tbTool.open(gaintable)
                 # Get phase offsets in degrees, obeying any flags.
                 phase_offsets = np.rad2deg(np.ma.angle(np.ma.array(tbTool.getcol('CPARAM'), mask=tbTool.getcol('FLAG'))))
@@ -102,15 +102,16 @@ class TimegaincalQAPool(pqa.QAScorePool):
                 good_spw_ids = set()
                 noisy_spw_ids = set()
                 outlier_spws = {}
-                # PIPE-1762: add information about spw mapping (if any)
-                mapped_spws = {}
+                # PIPE-1762: add information about spw mapping (if any):
+                # the set contains all spws that are not mapped to itself in any field with intent=="PHASE"
+                mapped_spws = set()
                 for ifld, spwmap in ms.spwmaps.items():
                     if ifld.intent != 'PHASE':
                         continue
                     if spwmap.combine:
-                        mapped_spws = set(spw_ids)  # all spws are mapped
+                        mapped_spws.update(set(spw_ids))  # all spws are mapped
                     elif spwmap.spwmap:
-                        mapped_spws = set(spw for spw in spw_ids if spwmap.spwmap[spw] != spw)
+                        mapped_spws.update(set(spw for spw in spw_ids if spwmap.spwmap[spw] != spw))
 
                 for spw_id in sorted(set(spw_ids)):
                     subscores[gaintable][spw_id] = {}
@@ -119,7 +120,8 @@ class TimegaincalQAPool(pqa.QAScorePool):
                     # Estimate of the overall noise (all ant, pol, solutions) for a given EB and SPW
                     selection = phase_offsets[:, 0,
                         np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids == spw_id) & (ant_ids != refant_id))]
-                    # MAD multiplied by a fudge factor that makes it equivalent to standard deviation if the input values are normally distributed
+                    # MAD multiplied by a fudge factor that makes it equivalent to standard deviation
+                    # if the input values are normally distributed
                     Stot = 1.4826 * np.ma.median(np.ma.abs(selection - np.ma.median(selection)))
                     if Stot > NoiseThresh:
                         # Noise too high for further evaluation
@@ -133,12 +135,14 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                 subscores[gaintable][spw_id][ant_id][pol_id] = {}
                                 for scorekey in ['QA1', 'QA2', 'QA3']:
                                     score = NOISY
-                                    longmsg = f'Phase offsets too noisy to usefully evaluate {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name}'
+                                    longmsg = (f'Phase offsets too noisy to usefully evaluate {ms.basename} SPW {spw_id} '
+                                               f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name}')
                                     shortmsg = 'Phase offsets too noisy'
                                     origin = pqa.QAOrigin(metric_name='Stot(EB, spw)',
                                                           metric_score=Stot,
                                                           metric_units='degrees')
-                                    data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={pol_name})
+                                    data_selection = pqa.TargetDataSelection(
+                                        vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={pol_name})
                                     weblog_location = pqa.WebLogLocation.HIDDEN
                                     subscores[gaintable][spw_id][ant_id][pol_id][scorekey] = pqa.QAScore(score=score,
                                         longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin,
@@ -147,7 +151,8 @@ class TimegaincalQAPool(pqa.QAScorePool):
                     else:
                         for ant_id in sorted(set(ant_ids)-{refant_id}):
                             subscores[gaintable][spw_id][ant_id] = {}
-                            for pol_id, pol_name in enumerate(corr_type):  # PIPE-1628: loop over available polarizations, which could be fewer than the number of columns in the table
+                            # PIPE-1628: loop over available polarizations, which could be fewer than the number of columns in the table
+                            for pol_id, pol_name in enumerate(corr_type):
                                 subscores[gaintable][spw_id][ant_id][pol_id] = {}
                                 selection = phase_offsets[pol_id, 0,
                                     np.ma.where((np.isin(scan_numbers, phase_scan_ids)) & (spw_ids == spw_id) & (ant_ids == ant_id))]
@@ -158,7 +163,8 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     MaxOff = np.ma.max(np.ma.abs(selection))
                                 else:
                                     # PIPE-1707: no data for the given pol/ant/spw combination exists - skip further evaluation
-                                    LOG.info(f'No data to evaluate phase offsets for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name}')
+                                    LOG.info(f'No data to evaluate phase offsets for {ms.basename} SPW {spw_id} '
+                                             f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name}')
                                     for key in ['QA1', 'QA2', 'QA3']:
                                         subscores[gaintable][spw_id][ant_id][pol_id][key] = pqa.QAScore(score=GOOD,
                                             longmsg='No data', shortmsg='No data', vis=ms.basename, origin=pqa.QAOrigin(
@@ -167,20 +173,24 @@ class TimegaincalQAPool(pqa.QAScorePool):
 
                                 # Mean test
                                 QA1_score = GOOD
-                                QA1_longmsg = f'Phase offsets mean for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} within range'
+                                QA1_longmsg = (f'Phase offsets mean for {ms.basename} SPW {spw_id} '
+                                               f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} within range')
                                 QA1_shortmsg = 'Phase offsets mean within range'
                                 if np.abs(M) > max(QA1_Thresh1, QA1_Factor * Stot / np.sqrt(N)):
                                     QA1_score = OUTLIER1
-                                    QA1_longmsg = f'Phase offsets mean for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding first threshold'
+                                    QA1_longmsg = (f'Phase offsets mean for {ms.basename} SPW {spw_id} '
+                                                   f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding first threshold')
                                     QA1_shortmsg = 'Phase offsets mean too large'
                                 if np.abs(M) > max(QA1_Thresh2, QA1_Factor * Stot / np.sqrt(N)):
                                     QA1_score = OUTLIER2
-                                    QA1_longmsg = f'Phase offsets mean for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding second threshold'
+                                    QA1_longmsg = (f'Phase offsets mean for {ms.basename} SPW {spw_id} '
+                                                   f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding second threshold')
                                     QA1_shortmsg = 'Phase offsets mean too large'
                                 QA1_origin = pqa.QAOrigin(metric_name='phase offsets mean',
                                                           metric_score=M,
                                                           metric_units='degrees')
-                                QA1_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={pol_name})
+                                QA1_data_selection = pqa.TargetDataSelection(
+                                    vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={pol_name})
                                 QA1_weblog_location = pqa.WebLogLocation.HIDDEN
                                 subscores[gaintable][spw_id][ant_id][pol_id]['QA1'] = pqa.QAScore(score=QA1_score,
                                     longmsg=QA1_longmsg, shortmsg=QA1_shortmsg, vis=ms.basename, origin=QA1_origin,
@@ -192,7 +202,8 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                     # and add a dummy GOOD score to the QA score pool as per PIPE-1762
                                     # (need to add _something_ because the subsequent code still checks these scores)
                                     QA2_score = GOOD
-                                    QA2_longmsg = f'Phase offsets with poor statistics for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name}'
+                                    QA2_longmsg = (f'Phase offsets with poor statistics for {ms.basename} SPW {spw_id} '
+                                                   f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name}')
                                     QA2_shortmsg = 'Poor phase offsets statistics'
                                     QA2_origin = pqa.QAOrigin(metric_name='Number of solutions',
                                                           metric_score=N,
@@ -200,20 +211,24 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                 else:
                                     # Standard deviation test
                                     QA2_score = GOOD
-                                    QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} within range'
+                                    QA2_longmsg = (f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} '
+                                                   f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} within range')
                                     QA2_shortmsg = 'Phase offsets standard deviation within range'
                                     if S > max(QA2_Thresh1, QA2_Factor1 * Stot):
                                         QA2_score = OUTLIER1
-                                        QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding first threshold'
+                                        QA2_longmsg = (f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} '
+                                                       f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding first threshold')
                                         QA2_shortmsg = 'Phase offsets standard deviation too large'
                                     if S > max(QA2_Thresh2, QA2_Factor2 * Stot):
                                         QA2_score = OUTLIER2
-                                        QA2_longmsg = f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding second threshold'
+                                        QA2_longmsg = (f'Phase offsets standard deviation for {ms.basename} SPW {spw_id} '
+                                                       f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding second threshold')
                                         QA2_shortmsg = 'Phase offsets standard deviation too large'
                                     QA2_origin = pqa.QAOrigin(metric_name='phase offsets standard deviation',
                                                               metric_score=S,
                                                               metric_units='degrees')
-                                QA2_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={pol_name})
+                                QA2_data_selection = pqa.TargetDataSelection(
+                                    vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={pol_name})
                                 QA2_weblog_location = pqa.WebLogLocation.HIDDEN
                                 subscores[gaintable][spw_id][ant_id][pol_id]['QA2'] = pqa.QAScore(score=QA2_score,
                                     longmsg=QA2_longmsg, shortmsg=QA2_shortmsg, vis=ms.basename, origin=QA2_origin,
@@ -222,20 +237,24 @@ class TimegaincalQAPool(pqa.QAScorePool):
 
                                 # Maximum test
                                 QA3_score = GOOD
-                                QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} within range'
+                                QA3_longmsg = (f'Phase offsets maximum for {ms.basename} SPW {spw_id} '
+                                               f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} within range')
                                 QA3_shortmsg = 'Phase offsets maximum within range'
                                 if np.abs(MaxOff) > max(QA3_Thresh1, QA3_Factor * Stot):
                                     QA3_score = OUTLIER1
-                                    QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding first threshold'
+                                    QA3_longmsg = (f'Phase offsets maximum for {ms.basename} SPW {spw_id} '
+                                                   f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding first threshold')
                                     QA3_shortmsg = 'Phase offsets maximum too large'
                                 if np.abs(MaxOff) > max(QA3_Thresh2, QA3_Factor * Stot):
                                     QA3_score = OUTLIER2
-                                    QA3_longmsg = f'Phase offsets maximum for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding second threshold'
+                                    QA3_longmsg = (f'Phase offsets maximum for {ms.basename} SPW {spw_id} '
+                                                   f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name} exceeding second threshold')
                                     QA3_shortmsg = 'Phase offsets maximum too large'
                                 QA3_origin = pqa.QAOrigin(metric_name='phase offsets maximum',
                                                           metric_score=MaxOff,
                                                           metric_units='degrees')
-                                QA3_data_selection = pqa.TargetDataSelection(vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={pol_name})
+                                QA3_data_selection = pqa.TargetDataSelection(
+                                    vis={ms.basename}, spw={spw_id}, intent={'PHASE'}, ant={ant_id}, pol={pol_name})
                                 QA3_weblog_location = pqa.WebLogLocation.HIDDEN
                                 subscores[gaintable][spw_id][ant_id][pol_id]['QA3'] = pqa.QAScore(score=QA3_score,
                                     longmsg=QA3_longmsg, shortmsg=QA3_shortmsg, vis=ms.basename, origin=QA3_origin,
@@ -267,8 +286,10 @@ class TimegaincalQAPool(pqa.QAScorePool):
                             # in the hidden_phase_offsets_scores list.
                             EB_spw_QA_scores.append(subscores[gaintable][spw_id][ant_id][pol_id]['QA'])
                             if QA_score <= OUTLIER1:
-                                LOG.info(f'Poor phase offsets score for {ms.basename} SPW {spw_id} Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name}: '
-                                         f'QA score = {QA_score:.1f}, mean phase offset = {subscores[gaintable][spw_id][ant_id][pol_id]["QA1"].origin.metric_score:.1f} deg, '
+                                LOG.info(f'Poor phase offsets score for {ms.basename} SPW {spw_id} '
+                                         f'Antenna {antenna_id_to_name[ant_id]} Polarization {pol_name}: '
+                                         f'QA score = {QA_score:.1f}, '
+                                         f'mean phase offset = {subscores[gaintable][spw_id][ant_id][pol_id]["QA1"].origin.metric_score:.1f} deg, '
                                          f'standard deviation = {subscores[gaintable][spw_id][ant_id][pol_id]["QA2"].origin.metric_score:.1f} deg, '
                                          f'max offset = {subscores[gaintable][spw_id][ant_id][pol_id]["QA3"].origin.metric_score:.1f} deg')
                     # Minimum of per aggregated ant/pol scores as per EB/spw score
@@ -422,8 +443,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
         total_ant_name = 'N/A'
         total_spw_name = 'N/A'
 
-        for table_name in self.phase_qa_results_dict:
-            qa_result = self.phase_qa_results_dict[table_name]
+        for table_name, qa_result in self.phase_qa_results_dict.items():
             for field_id in phase_field_ids:
                 qa_context_score = qa_result['QASCORES']['SCORES'][field_id][score_key]
                 if qa_context_score['SCORE'] != 'C/C':
@@ -454,7 +474,7 @@ class TimegaincalQAHandler(pqa.QAPlugin):
             os.makedirs(qa_dir)
 
         phase_qa_results_dict = {}
-        phase_offsets_qa_results_dict = {}
+        phase_offsets_qa_results_list = []
 
         try:
             # Get phase cal tables
@@ -466,9 +486,9 @@ class TimegaincalQAHandler(pqa.QAPlugin):
 
             # Get phase offsets tables
             for calapp in result.phaseoffsetresult.final:
-                phase_offsets_qa_results_dict[calapp.gaintable] = True
+                phase_offsets_qa_results_list.append(calapp.gaintable)
 
-            result.qa = TimegaincalQAPool(phase_qa_results_dict, phase_offsets_qa_results_dict)
+            result.qa = TimegaincalQAPool(phase_qa_results_dict, phase_offsets_qa_results_list)
             result.qa.update_scores(ms, result.inputs['refant'])
         except Exception as e:
             LOG.error('Problem occurred running QA analysis. QA results will not be available for this task')

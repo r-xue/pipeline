@@ -150,21 +150,32 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 diagnostic_phaseoffset_vs_time_summaries[vis] = plotter.plot()
 
                 # PIPE-1762: add information about spw mapping (if any)
-                spwmapping = None
-                for ifld, spwmap in ms.spwmaps.items():
-                    if ifld.intent != 'PHASE':
-                        continue
-                    if spwmap.combine:
-                        spwmapping = 'combined'
-                    elif spwmap.spwmap:
-                        spwmapping = spwmap.spwmap
-                if spwmapping:
-                    for plot in diagnostic_phaseoffset_vs_time_summaries[vis]:
-                        if spwmapping != 'combined' and spwmapping[plot.parameters['spw']] == plot.parameters['spw']:
-                            continue  # don't add the message if the spw is mapped onto itself
-                        plot.parameters['spwmapmessage'] = 'This spw is calibrated using the phase solution for ' + (
-                            'all spws combined.' if spwmapping == 'combined'
-                            else 'spw {}.'.format(spwmapping[plot.parameters['spw']]))
+                for plot in diagnostic_phaseoffset_vs_time_summaries[vis]:
+                    plotspw = plot.parameters['spw']
+                    spw_combined = []  # list of fields in which the spws are combined
+                    spw_mapped = []  # list of target spws and fields in which plotspw is mapped to a target spw
+                    num_fields_with_phase_intent = 0
+                    for ifld, spwmap in ms.spwmaps.items():
+                        if ifld.intent != 'PHASE':
+                            continue
+                        num_fields_with_phase_intent += 1
+                        if spwmap.combine:
+                            spw_combined.append(ifld.field)
+                        elif spwmap.spwmap and spwmap.spwmap[plotspw] != plotspw:
+                            # only add the message if the spw is not mapped onto itself
+                            spw_mapped.append((spwmap.spwmap[plotspw], ifld.field))
+                    # add a message to the caption of diagnostic phase offset plot in case that the spw is mapped.
+                    # in the case of more than one phase calibrator, append the field name in brackets to the spw name.
+                    spwmapmessage = []
+                    for targetspw, field in spw_mapped:
+                        spwmapmessage.append('spw {}{}'.format(
+                            targetspw, ' ({})'.format(field) if num_fields_with_phase_intent > 1 else ''))
+                    if spw_combined:
+                        spwmapmessage.append('all spws combined{}'.format(
+                            ' ({})'.format(', '.join(spw_combined)) if num_fields_with_phase_intent > 1 else ''))
+                    if spwmapmessage:
+                        plot.parameters['spwmapmessage'] = ('This spw is calibrated using the phase solution for {}.'.
+                                                            format(', '.join(spwmapmessage)))
 
             # Generate detailed plots and render corresponding sub-pages.
             if pipeline.infrastructure.generate_detail_plots(result):
