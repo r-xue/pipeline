@@ -910,7 +910,7 @@ def plot_elevation_difference(
                 xoff = sd_display.mjd_to_plotval(eld.timecal)
                 for a in [a0, a2]:
                     a.plot(xon, eld.elon, '.', color='black', mew=0)
-                    a.plot(xoff, eld.elcal, '.-', color='blue', mew=0)
+                    a.plot(xoff, eld.elcal, '.', color='blue', mew=0)
 
                 # Elevation Difference vs. Time
                 time0 = eld.time0
