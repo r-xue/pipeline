@@ -98,12 +98,9 @@ def detect_contamination(context: 'Context',
     rms_map, peak_sn, spectrum_at_peak, idx, idy = \
         _calculate_rms_and_peak_sn(cube_regrid, naxis, is_frequency_channel_reversed)
 
-    # Generate the count map
-    count_map = _generate_count_map(cube_regrid, naxis)
-
     # Determine peak SN threshold
     # In the case that pixel number is fewer than the mask threshold (mask_num_thresh).
-    peak_sn_threshold = _determine_peak_sn_threshold(cube_regrid, rms_map, count_map)
+    peak_sn_threshold = _determine_peak_sn_threshold(cube_regrid, rms_map)
 
     # Update the mask map and calculate the masked average spectrum
     mask_map, masked_average_spectrum = _get_mask_map_and_average_spectrum(cube_regrid, naxis,
@@ -628,37 +625,32 @@ def _calculate_rms_and_peak_sn(cube_regrid: 'sdtyping.NpArray3D',
     return rms_map, peak_sn, spectrum_at_peak, idx, idy
 
 
-def _generate_count_map(cube_regrid: 'sdtyping.NpArray3D',
-                        naxis: NAxis) -> np.array:
+def _count_valid_pixels(cube_regrid: 'sdtyping.NpArray3D') -> int:
     """
-    Generate a count map for the given data cube.
+    Count valid pixels for the given data cube.
 
-    This function creates a count map where each pixel is set to 1.0 if the corresponding pixel
-    in the data cube has a valid value (not NaN).
+    This function counts amount of pixels in the data cube has a valid value (not NaN).
 
     Args:
         cube_regrid (sdtyping.NpArray3D): 3D data cube containing the image data.
-        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.
 
     Returns:
-        2D array where each pixel is set to 1.0 if the corresponding pixel
-        in the data cube has a valid value.
+        amount of pixels in the data cube has a valid value.
     """
-    # Initialize the count map with zeros
-    count_map = np.zeros([naxis.y, naxis.x])
+    total_pix = 0
+    _, ny, nx = cube_regrid.shape
 
-    # Iterate over the data cube and update the count map
-    for i in range(naxis.x):
-        for j in range(naxis.y):
+    # Iterate over the data cube and count valid pixels
+    for i in range(nx):
+        for j in range(ny):
             if not np.isnan(np.nanmax(cube_regrid[:, j, i])):
-                count_map[j, i] = 1.0
+                total_pix += 1
 
-    return count_map
+    return total_pix
 
 
 def _determine_peak_sn_threshold(cube_regrid: 'sdtyping.NpArray3D',
-                                 rms_map: np.array,
-                                 count_map: np.array) -> float:
+                                 rms_map: np.array) -> float:
     """Determine the peak SN threshold.
 
     This function calculates the peak SN for each pixel in the image and then determines a threshold
@@ -667,7 +659,6 @@ def _determine_peak_sn_threshold(cube_regrid: 'sdtyping.NpArray3D',
     Args:
         cube_regrid (sdtyping.NpArray3D): 3D data cube containing the image data.
         rms_map (np.array): 2D array containing the root mean square (RMS) values for each pixel.
-        count_map (np.array): 2D array indicating the presence (1.) or absence (0.) of valid data for each pixel.
 
     Returns:
         The calculated peak SN threshold.
@@ -683,7 +674,7 @@ def _determine_peak_sn_threshold(cube_regrid: 'sdtyping.NpArray3D',
     percent_threshold = 10.  # %
 
     # Calculate the number of pixels corresponding to the percentage threshold
-    total_pix = np.sum(count_map)
+    total_pix = _count_valid_pixels(cube_regrid)
     pix_num_threshold = int(total_pix * percent_threshold / 100.)
 
     # Return the peak SN value corresponding to the pixel number threshold
