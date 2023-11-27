@@ -262,7 +262,7 @@ def _plot_peak_SN_map(fig: 'matplotlib.Figure',
                       scy: float,
                       kw: Dict[str, Union[float, Tuple[float, float]]]) -> None:
     """
-    Plot the Peak Signal-to-Noise (SN) map with specified parameters.
+    Plot the Peak Signal-to-Noise ratio (SN) map with specified parameters.
 
     Args:
         plot (Axes): The matplotlib Axes object to be used for plotting.
@@ -321,7 +321,7 @@ def _plot_mask_map(fig: 'matplotlib.Figure',
     Args:
         plot (Axes): The matplotlib Axes object to be used for plotting.
         mask_map (NpArray2D): The data representing the mask map.
-        peak_sn_threshold (float): The threshold for the peak SN ratio.
+        peak_sn_threshold (float): The threshold for the peak of signal-to-noise.
         dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
         kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().
     """
@@ -359,7 +359,7 @@ def _plot_masked_averaged_spectrum(fig: 'matplotlib.Figure',
     Args:
         rms_map (NpArray2D): The data representing the RMS map.
         masked_average_spectrum (NpArray1D): 1D array representing the average spectrum of the masked regions.
-        peak_sn_threshold (float): The threshold for the peak signal-to-noise ratio.
+        peak_sn_threshold (float): The threshold for the peak signal-to-noise.
         spectrum_at_peak (NpArray1D): The spectrum data at the peak.
         freq_spec (Optional[FrequencySpec]): Frequency specifications. Defaults to None.
     """
