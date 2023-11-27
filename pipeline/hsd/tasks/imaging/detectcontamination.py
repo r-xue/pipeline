@@ -98,9 +98,6 @@ def detect_contamination(context: 'Context',
     rms_map, peak_sn, spectrum_at_peak, idx, idy = \
         _calculate_rms_and_peak_sn(cube_regrid, naxis, is_frequency_channel_reversed)
 
-    # Initialize the mask map
-    mask_map = np.zeros([naxis.y, naxis.x])
-
     # Generate the count map
     count_map = _generate_count_map(cube_regrid, naxis)
 
