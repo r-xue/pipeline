@@ -166,9 +166,9 @@ def _slice_and_calc_RMS_of_cube_regrid(naxis: NAxis,
         RMS array of the squared standard deviation and mean for the sliced cube.
     """
     # calculate start and end positions for slicing the cube
-    _func = ceil if is_frequency_channel_reversed else int
-    start_rms_ch = _func(naxis.sp * pos / N_SLICES)
-    end_rms_ch = _func(naxis.sp * (pos + 1) / N_SLICES)
+    _to_int_func = ceil if is_frequency_channel_reversed else int
+    start_rms_ch = _to_int_func(naxis.sp * pos / N_SLICES)
+    end_rms_ch = _to_int_func(naxis.sp * (pos + 1) / N_SLICES)
 
     # extract a slice from the cube based on the calculated positions
     sliced_cube = cube_regrid[start_rms_ch:end_rms_ch, :, :]
