@@ -202,8 +202,8 @@ def _make_figures(peak_sn: 'sdtyping.NpArray2D',
         masked_average_spectrum (NpArray1D): Array representing the masked average spectrum.
         peak_sn_threshold (float): Threshold value for the peak SN ratio.
         spectrum_at_peak (NpArray1D): Array representing the spectrum at the peak.
-        idy (int64): Y-axis index of the pixel (spatial direction).
-        idx (int64): X-axis index of the pixel (spatial direction).
+        idy (int64): Y-axis (latitude) index of the pixel.
+        idx (int64): X-axis (longitude) index of the pixel.
         output_name (str): Name of the output file.
         freq_spec (FrequencySpec, optional): Frequency specification. Defaults to None.
         dir_spec (DirectionSpec, optional): Direction specification. Defaults to None.
