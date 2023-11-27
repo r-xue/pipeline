@@ -512,8 +512,6 @@ def _read_fits(input: str) -> Tuple['sdtyping.NpArray3D', NAxis]:
     # Extract data chunk and coordinate system from the FITS file
     with casa_tools.ImageReader(input) as ia:
         cube = ia.getchunk()
-        csys = ia.coordsys()
-        csys.done()
 
     # Reorder the axes of the cube for further processing
     cube_regrid = np.swapaxes(cube[:, :, 0, :], 2, 0)
