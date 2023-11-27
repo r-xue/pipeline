@@ -218,8 +218,8 @@ def _make_figures(peak_sn: 'sdtyping.NpArray2D',
 
     # Check if direction specification is provided
     if dir_spec is not None:
-        _set_plot_spec(peak_sn_plot, dir_spec)
-        _set_plot_spec(mask_map_plot, dir_spec)
+        _configure_plot_spec(peak_sn_plot, dir_spec)
+        _configure_plot_spec(mask_map_plot, dir_spec)
         dir_unit = dir_spec.ref
 
         # Convert pixel coordinates to axes coordinates
@@ -420,8 +420,8 @@ def _plot_masked_averaged_spectrum(fig: 'matplotlib.Figure',
         plot.text(minabc + w * 2. / 5., -5. * stddev, "Warning!!", fontsize=25, color="Orange")
 
 
-def _set_plot_spec(plot: 'Axes',
-                   dir_spec: DirectionSpec):
+def _configure_plot_spec(plot: 'Axes',
+                         dir_spec: DirectionSpec):
     """
     Configure the plot specifications based on the provided direction specifications.
 
