@@ -358,7 +358,7 @@ def _plot_masked_averaged_spectrum(fig: 'matplotlib.Figure',
 
     Args:
         rms_map (NpArray2D): The data representing the RMS map.
-        masked_average_spectrum (NpArray1D): The masked averaged spectrum data.
+        masked_average_spectrum (NpArray1D): 1D array representing the average spectrum of the masked regions.
         peak_sn_threshold (float): The threshold for the peak signal-to-noise ratio.
         spectrum_at_peak (NpArray1D): The spectrum data at the peak.
         freq_spec (Optional[FrequencySpec]): Frequency specifications. Defaults to None.
@@ -472,7 +472,7 @@ def _warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D',
     If detected, it logs a warning message with details about the image item (if provided).
 
     Args:
-        masked_average_spectrum (NpArray1D): Array representing the masked average spectrum.
+        masked_average_spectrum (NpArray1D): 1D array representing the average spectrum of the masked regions.
         imageitem (Optional['ImageItem']): ImageItem object containing details about the image. Defaults to None.
     """
     # Calculate the standard deviation of the masked average spectrum
@@ -586,7 +586,8 @@ def _get_frequency_spec(naxis: NAxis,
 
 def _calculate_rms_and_peak_sn(cube_regrid: 'sdtyping.NpArray3D',
                                naxis: NAxis,
-                               is_frequency_channel_reversed: bool) -> Tuple[np.array, np.array, np.array, int, int]:
+                               is_frequency_channel_reversed: bool) \
+        -> Tuple['sdtyping.NpArray2D', 'sdtyping.NpArray2D', 'sdtyping.NpArray1D', np.int64, np.int64]:
     """Calculate the RMS (Root Mean Square) and Peak SN maps for the given data cube.
 
     This function computes the RMS map for the data cube and then calculates the peak SN for each pixel.
@@ -598,7 +599,7 @@ def _calculate_rms_and_peak_sn(cube_regrid: 'sdtyping.NpArray3D',
         is_frequency_channel_reversed (bool): Indicates if the frequency channels are in reversed order.
 
     Returns:
-        Tuple[np.array, np.array, np.array, int, int]:
+        Tuple[NpArray2D, NpArray2D, NpArray1D, np.int64, np.int64]:
             - rms_map: 2D array containing the RMS values for each pixel.
             - peak_sn: 2D array containing the peak SN values for each pixel.
             - spectrum_at_peak: 1D array containing the spectrum at the location of the maximum peak SN.
@@ -628,7 +629,7 @@ def _count_valid_pixels(cube_regrid: 'sdtyping.NpArray3D') -> int:
     This function counts amount of pixels in the data cube has a valid value (not NaN).
 
     Args:
-        cube_regrid (sdtyping.NpArray3D): 3D data cube containing the image data.
+        cube_regrid (NpArray3D): 3D data cube containing the image data.
 
     Returns:
         amount of pixels in the data cube has a valid value.
@@ -646,15 +647,15 @@ def _count_valid_pixels(cube_regrid: 'sdtyping.NpArray3D') -> int:
 
 
 def _determine_peak_sn_threshold(cube_regrid: 'sdtyping.NpArray3D',
-                                 rms_map: np.array) -> float:
+                                 rms_map: 'sdtyping.NpArray2D') -> float:
     """Determine the peak SN threshold.
 
     This function calculates the peak SN for each pixel in the image and then determines a threshold
     based on a certain percentage of the total number of valid pixels.
 
     Args:
-        cube_regrid (sdtyping.NpArray3D): 3D data cube containing the image data.
-        rms_map (np.array): 2D array containing the root mean square (RMS) values for each pixel.
+        cube_regrid (NpArray3D): 3D data cube containing the image data.
+        rms_map (NpArray2D): 2D array containing the root mean square (RMS) values for each pixel.
 
     Returns:
         The calculated peak SN threshold.
@@ -680,10 +681,10 @@ def _determine_peak_sn_threshold(cube_regrid: 'sdtyping.NpArray3D',
         return 0.
 
 
-def _get_mask_map_and_average_spectrum(cube_regrid: np.array,
+def _get_mask_map_and_average_spectrum(cube_regrid: 'sdtyping.NpArray3D',
                                        naxis: NAxis,
-                                       peak_sn: np.array,
-                                       peak_sn_threshold: float) -> Tuple[np.array, np.array]:
+                                       peak_sn: 'sdtyping.NpArray2D',
+                                       peak_sn_threshold: float) -> Tuple['sdtyping.NpArray2D', 'sdtyping.NpArray1D']:
     """
     Get mask map and masked average spectrum based on peak SN threshold.
 
@@ -691,13 +692,13 @@ def _get_mask_map_and_average_spectrum(cube_regrid: np.array,
     Pixels in the mask map are set to 1.0 if the corresponding peak SN value is below the threshold.
 
     Args:
-        cube_regrid (np.array): 3D data cube containing the image data.
+        cube_regrid (NpArray3D): 3D data cube containing the image data.
         naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.
-        peak_sn (np.array): 2D array containing the peak SN ratio for each pixel.
+        peak_sn (NpArray2D): 2D array containing the peak SN ratio for each pixel.
         peak_sn_threshold (float): Threshold value for the peak SN.
 
     Returns:
-        Tuple[np.array, np.array]:
+        Tuple[NpArray2D, NpArray1D]:
             mask_map: 2D array where each pixel is set to 1.0 if the corresponding peak SN value is below the threshold.
             masked_average_spectrum: 1D array representing the average spectrum of the masked regions.
     """
@@ -708,14 +709,14 @@ def _get_mask_map_and_average_spectrum(cube_regrid: np.array,
     # Create a boolean mask based on the peak SN threshold
     peak_sn2_judge = (peak_sn < peak_sn_threshold)
 
-    # Iterate over the data cube and update the mask map and masked average spectrum
+    # Iterate over the data cube and update the mask map and masked_average_spectrum
     for i in range(naxis.x):
         for j in range(naxis.y):
             if str(peak_sn2_judge[j, i]) == "True":
                 masked_average_spectrum = masked_average_spectrum + cube_regrid[:, j, i]
                 mask_map[j, i] = 1.0
 
-    # Normalize the masked average spectrum by the sum of the mask map
+    # Normalize the masked_average_spectrum by the sum of the mask map
     masked_average_spectrum /= np.nansum(mask_map)
 
     return mask_map, masked_average_spectrum
