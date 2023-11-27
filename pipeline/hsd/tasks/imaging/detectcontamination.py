@@ -89,7 +89,7 @@ def detect_contamination(context: 'Context',
     LOG.info(output_name)
 
     # Read FITS and its header
-    cube_regrid, naxis = _read_fits(item.imagename)
+    cube_regrid, naxis = _read_image(item.imagename)
     image_obj = sd_display.SpectralImage(item.imagename)
     freq_spec = _get_frequency_spec(naxis, image_obj)
     dir_spec = _get_direction_spec(image_obj)
@@ -495,21 +495,21 @@ def _warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D',
         LOG.warning(warning_sentence)
 
 
-def _read_fits(input: str) -> Tuple['sdtyping.NpArray3D', NAxis]:
+def _read_image(input: str) -> Tuple['sdtyping.NpArray3D', NAxis]:
     """
-    Read FITS file and extract its header information using casatools.
+    Read image file (FITS or CASA image) and extract its header information using casatools.
 
     Args:
-        input (str): Path to the FITS image file.
+        input (str): Path to the image file.
 
     Returns:
         Tuple containing:
-        - Data chunk extracted from the FITS file.
+        - Data chunk extracted from the image.
         - Sizes of axes of 3D image cube.
     """
     LOG.info(f"FITS: {input}")
 
-    # Extract data chunk and coordinate system from the FITS file
+    # Extract data chunk and coordinate system from the image file
     with casa_tools.ImageReader(input) as ia:
         cube = ia.getchunk()
 
