@@ -399,7 +399,7 @@ def _plot_masked_averaged_spectrum(fig: 'matplotlib.Figure',
     plot.plot(_edge, [np.nanmean(rms_map) * 1., np.nanmean(rms_map) * 1], "--", color="blue")
     plot.plot(_edge, [np.nanmean(rms_map) * (-1.), np.nanmean(rms_map) * (-1.)], "--", color="blue")
 
-    # Check if the standard deviation is above the threshold and plot additional lines and annotations
+    # Plot additional lines and annotations if the standard deviation is above the threshold
     if stddev * (7.) >= np.nanmean(rms_map) * peak_sn_threshold:
         plot.plot(_edge,
                   [np.nanmean(rms_map) * peak_sn_threshold, np.nanmean(rms_map) * peak_sn_threshold],
