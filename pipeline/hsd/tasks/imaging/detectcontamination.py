@@ -534,12 +534,9 @@ def _get_direction_spec(image_obj: 'sd_display.SpectralImage') -> DirectionSpec:
     Returns:
         DirectionSpec object.
     """
-    # Initialize CASA quanta tool for unit conversion
-    qa = casa_tools.quanta
-
     # Convert RA and DEC values from the image object to degrees
-    minra, maxra = _convert_to_degrees(image_obj.ra_min, image_obj.ra_max, qa)
-    mindec, maxdec = _convert_to_degrees(image_obj.dec_min, image_obj.dec_max, qa)
+    minra, maxra = _convert_to_degrees(image_obj.ra_min, image_obj.ra_max)
+    mindec, maxdec = _convert_to_degrees(image_obj.dec_min, image_obj.dec_max)
 
     # The grid size is obtained by dividing the beam size by 3.
     grid_size = image_obj.beam_size / 3
@@ -551,19 +548,20 @@ def _get_direction_spec(image_obj: 'sd_display.SpectralImage') -> DirectionSpec:
 
 
 def _convert_to_degrees(min_value: float,
-                        max_value: float,
-                        qa: 'casa_tools.quanta') -> Tuple[float, float]:
+                        max_value: float) -> Tuple[float, float]:
     """
     Convert given values to degrees using CASA quanta tool.
 
     Args:
         min_value (float): Minimum value to convert.
         max_value (float): Maximum value to convert.
-        qa (quanta): quanta object for unit conversion.
 
     Returns:
         Tuple containing the converted minimum and maximum values in degrees.
     """
+    # Initialize CASA quanta tool for unit conversion
+    qa = casa_tools.quanta
+
     return qa.convert(min_value, 'deg')['value'], qa.convert(max_value, 'deg')['value']
 
 
