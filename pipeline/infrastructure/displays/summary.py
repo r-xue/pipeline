@@ -1153,8 +1153,6 @@ class SpwIdVsFreqChart(object):
             for band in banddict:
                 for baseband in banddict[band]:
                     spw = []
-                    minfreqs = []
-                    maxfreqs = []
                     list_spwids = []
                     for spwitem in banddict[band][baseband]:
                         spw.append(next(iter(spwitem)))
@@ -1167,11 +1165,10 @@ class SpwIdVsFreqChart(object):
                 list_all_fmins.append(fmin)
             ax_spw.barh(list_all_indices, list_all_bws, height=0.4, left=list_all_fmins)
         else:  # For ALMA and NRO
-            list_id = [spw.id for spw in scan_spws]
-            list_bw = [float(spw.bandwidth.value)/1.0e9 for spw in scan_spws]  # GHz
-            list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in scan_spws]  # GHz
-            for id, bw, fmin in zip(list_id, list_bw, list_fmin):
-                dict_spwid_freq[id] = [bw, fmin]
+            for spw in scan_spws:
+                bw = float(spw.bandwidth.value)/1.0e9  # GHz
+                fmin = float(spw.min_frequency.value)/1.0e9  # GHz
+                dict_spwid_freq[spw.id] = [bw, fmin]
             for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
                 list_indices = [i + len(list_all_spwids) for i in range(len(list_spwids))]
                 list_all_spwids.extend(list_spwids)
@@ -1196,7 +1193,7 @@ class SpwIdVsFreqChart(object):
 
         # Annotate
         if self.context.project_summary.telescope in ('VLA', 'EVLA') and \
-            len(list_all_spwids) >= 16:  # For VLA with many spws
+                len(list_all_spwids) >= 16:  # For VLA with many spws
             list_all_spwids = []
             for list_spwids in list_spwids_baseband:
                 list_indices = [i + len(list_all_spwids) for i in range(len(list_spwids))]
@@ -1207,7 +1204,7 @@ class SpwIdVsFreqChart(object):
                     bw, fmin = dict_spwid_freq[id]
                     list_bws.append(bw)
                     list_fmins.append(fmin)
-                step = max(len(list_spwids) - 1, 1)
+                step = max(list_spwids[-1] - list_spwids[0], 1)
                 for f, w, spwid, index in zip(list_fmins[::step], list_bws[::step], list_spwids[::step], list_indices[::step]):
                     ax_spw.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
         else:  # For ALMA, NRO and VLA with moderate spws
@@ -1215,7 +1212,7 @@ class SpwIdVsFreqChart(object):
                 ax_spw.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
 
         # Make a plot of frequency vs. atm transmission
-        # For VLA data it is out of scope in PIPE-1415 and will be implemented in PIPE-1873. 
+        # For VLA data it is out of scope in PIPE-1415 and will be implemented in PIPE-1873.
         if self.context.project_summary.telescope not in ('VLA', 'EVLA'):  # For ALMA and NRO
             atm_color = 'm'
             ax_atm = ax_spw.twinx()
