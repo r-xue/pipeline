@@ -68,7 +68,7 @@ def detect_contamination(context: 'Context',
                          item: 'ImageItem',
                          is_frequency_channel_reversed: Optional[bool]=False):
     """
-    Detect contamination in the given image item.
+    Detect contamination (extra emissions and absorptions which affect the data quality) in the given image item.
 
     This function is the main routine of the module. It detects contamination in the provided image item
     and generates a contamination report.
