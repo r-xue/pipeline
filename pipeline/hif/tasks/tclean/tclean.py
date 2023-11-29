@@ -1,6 +1,8 @@
 import os
 import re
 
+from typing import Optional, Union
+
 import numpy as np
 from scipy.ndimage import label
 
@@ -945,9 +947,9 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
-            self._update_miscinfo(result.image.replace('.image', '.image' + extension),
-                                  max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
-                                  pbcor_image_min, pbcor_image_max, nonpbcor_image_non_cleanmask_rms, inputs.stokes)
+            self._update_miscinfo(imagename=result.image.replace('.image', '.image' + extension),
+                                  nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
+                                  datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes)
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)
@@ -1091,9 +1093,9 @@ class Tclean(cleanbase.CleanBase):
 
         # All continuum
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
-            self._update_miscinfo(result.image.replace('.image', '.image'+extension),
-                                  max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
-                                  pbcor_image_min, pbcor_image_max, nonpbcor_image_non_cleanmask_rms, inputs.stokes)
+            self._update_miscinfo(imagename=result.image.replace('.image', '.image'+extension),
+                                  nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
+                                  datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes)
 
             result.set_image_min(pbcor_image_min)
             result.set_image_min_iquv(pbcor_image_min_iquv)
@@ -1210,9 +1212,9 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
-            self._update_miscinfo(result.image.replace('.image', '.image'+extension),
-                                  max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
-                                  pbcor_image_min, pbcor_image_max, nonpbcor_image_non_cleanmask_rms, inputs.stokes)
+            self._update_miscinfo(imagename=result.image.replace('.image', '.image'+extension),
+                                  nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
+                                  datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,
@@ -1702,16 +1704,20 @@ class Tclean(cleanbase.CleanBase):
         # Update the result.
         result.set_mom8(maxiter, mom8_name)
 
-    def _update_miscinfo(self, imagename, nfield, datamin, datamax, datarms, stokes):
+    def _update_miscinfo(self, imagename: str, nfield: Optional[int] = None, datamin: Optional[float] = None,
+                         datamax: Optional[float] = None, datarms: Optional[float] = None,
+                         stokes: Optional[str] = None, effbw: Optional[str] = None,
+                         level: Optional[str] = None, ctrfrq: Optional[Union[str, dict]] = None,
+                         obspatt: Optional[str] = None, arrays: Optional[str] = None,
+                         modifier: Optional[str] = None, session: Optional[str] = None):
 
         # Update metadata
         with casa_tools.ImageReader(imagename) as image:
             info = image.miscinfo()
 
-            info['nfield'] = nfield
-            info['datamin'] = datamin
-            info['datamax'] = datamax
-            info['datarms'] = datarms
-            info['stokes'] = stokes
+            keywords = ['nfield', 'datamin', 'datamax', 'datarms', 'stokes', 'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays', 'modifier', 'session']
+            for keyword in keywords:
+                if eval(keyword) is not None:
+                    info[keyword] = eval(keyword)
 
             image.setmiscinfo(info)
