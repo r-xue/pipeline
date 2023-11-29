@@ -731,6 +731,11 @@ class Tclean(cleanbase.CleanBase):
         """
         inputs = self.inputs
 
+        # Items for image header for manifest
+        obspatt = 'mos' if self.image_heuristics.is_mosaic(inputs.field, inputs.intent) else 'sf'
+        arrays = self.image_heuristics.arrays()
+        session = inputs.context.observing_run.get_ms(inputs.vis[0]).session
+
         # Local list from input masks
         if type(inputs.mask) is list:
             vlass_masks = inputs.mask
@@ -949,7 +954,8 @@ class Tclean(cleanbase.CleanBase):
 
             self._update_miscinfo(imagename=result.image.replace('.image', '.image' + extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
-                                  datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes)
+                                  datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
+                                  level='member', obspatt=obspatt, arrays=arrays, session=session)
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)
@@ -1027,6 +1033,11 @@ class Tclean(cleanbase.CleanBase):
 
         inputs = self.inputs
 
+        # Items for image header for manifest
+        obspatt = 'mos' if self.image_heuristics.is_mosaic(inputs.field, inputs.intent) else 'sf'
+        arrays = self.image_heuristics.arrays()
+        session = inputs.context.observing_run.get_ms(inputs.vis[0]).session
+
         # Compute the dirty image
         LOG.info('Compute the dirty image')
         iteration = 0
@@ -1095,7 +1106,8 @@ class Tclean(cleanbase.CleanBase):
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
             self._update_miscinfo(imagename=result.image.replace('.image', '.image'+extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
-                                  datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes)
+                                  datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
+                                  level='member', obspatt=obspatt, arrays=arrays, session=session)
 
             result.set_image_min(pbcor_image_min)
             result.set_image_min_iquv(pbcor_image_min_iquv)
@@ -1214,7 +1226,8 @@ class Tclean(cleanbase.CleanBase):
 
             self._update_miscinfo(imagename=result.image.replace('.image', '.image'+extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
-                                  datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes)
+                                  datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
+                                  level='member', obspatt=obspatt, arrays=arrays, session=session)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,

@@ -6,7 +6,7 @@ import os.path
 import re
 import shutil
 import uuid
-from typing import Union
+from typing import List, Union, Optional
 
 import numpy as np
 
@@ -2111,6 +2111,12 @@ class ImageParamsHeuristics(object):
                                                            if antenna.diameter == majority_diameter]
 
         return majority_antenna_ids
+
+    def arrays(self, vislist: Optional[List[str]] = None) -> str:
+
+        """Return the array descriptions."""
+
+        return None
 
     def antenna_ids(self, intent, vislist=None):
 
