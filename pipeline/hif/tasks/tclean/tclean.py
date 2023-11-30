@@ -1,7 +1,7 @@
 import os
 import re
 
-from typing import Optional, Union
+from typing import Optional
 
 import numpy as np
 from scipy.ndimage import label
@@ -730,6 +730,7 @@ class Tclean(cleanbase.CleanBase):
          is removed.
         """
         inputs = self.inputs
+        qaTool = casa_tools.quanta
 
         # Items for image header for manifest
         obspatt = 'mos' if self.image_heuristics.is_mosaic(inputs.field, inputs.intent) else 'sf'
@@ -952,10 +953,13 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+
             self._update_miscinfo(imagename=result.image.replace('.image', '.image' + extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
-                                  level='member', obspatt=obspatt, arrays=arrays, session=session)
+                                  level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)
@@ -1032,6 +1036,7 @@ class Tclean(cleanbase.CleanBase):
     def _do_iterative_imaging(self, sequence_manager):
 
         inputs = self.inputs
+        qaTool = casa_tools.quanta
 
         # Items for image header for manifest
         obspatt = 'mos' if self.image_heuristics.is_mosaic(inputs.field, inputs.intent) else 'sf'
@@ -1104,10 +1109,13 @@ class Tclean(cleanbase.CleanBase):
 
         # All continuum
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+
             self._update_miscinfo(imagename=result.image.replace('.image', '.image'+extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
-                                  level='member', obspatt=obspatt, arrays=arrays, session=session)
+                                  level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
 
             result.set_image_min(pbcor_image_min)
             result.set_image_min_iquv(pbcor_image_min_iquv)
@@ -1224,10 +1232,13 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+
             self._update_miscinfo(imagename=result.image.replace('.image', '.image'+extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
-                                  level='member', obspatt=obspatt, arrays=arrays, session=session)
+                                  level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,
@@ -1719,18 +1730,39 @@ class Tclean(cleanbase.CleanBase):
 
     def _update_miscinfo(self, imagename: str, nfield: Optional[int] = None, datamin: Optional[float] = None,
                          datamax: Optional[float] = None, datarms: Optional[float] = None,
-                         stokes: Optional[str] = None, effbw: Optional[str] = None,
-                         level: Optional[str] = None, ctrfrq: Optional[Union[str, dict]] = None,
+                         stokes: Optional[str] = None, effbw: Optional[float] = None,
+                         level: Optional[str] = None, ctrfrq: Optional[float] = None,
                          obspatt: Optional[str] = None, arrays: Optional[str] = None,
                          modifier: Optional[str] = None, session: Optional[str] = None):
+        """
+        Update image header keywords.
 
-        # Update metadata
+        Args:
+            imagename (str): image name
+            nfield (int): number of mosaic fields
+            datamin (float): minimum image value
+            datamax (float): maximum image value
+            datarms (float): rms image value
+            stokes (str): Stokes parameter
+            effbw (float): effective bandwidth in Hz
+            level (str): OUS kind (member, group)
+            obspatt (str): observing pattern (mos, sf, sd)
+            ctrfrq: Image center frequency in Hz
+            modifier (str): image name modifier (binnedN?)
+            session (str): session name
+        Returns:
+            None
+        """
+
         with casa_tools.ImageReader(imagename) as image:
+            # Get current header
             info = image.miscinfo()
 
+            # Update given keywords
             keywords = ['nfield', 'datamin', 'datamax', 'datarms', 'stokes', 'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays', 'modifier', 'session']
             for keyword in keywords:
                 if eval(keyword) is not None:
                     info[keyword] = eval(keyword)
 
+            # Save header back to image
             image.setmiscinfo(info)
