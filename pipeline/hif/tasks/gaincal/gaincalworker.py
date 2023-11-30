@@ -1,3 +1,6 @@
+import os
+import shutil
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
@@ -75,6 +78,8 @@ class GaincalWorker(basetask.StandardTaskTemplate):
         # subsequently append calibrations for each spectral window to the one
         # table
         inputs.caltable = inputs.caltable
+        if os.path.exists(inputs.caltable):
+            shutil.rmtree(inputs.caltable, ignore_errors=True)
 
         # make a memo of the original spw input. These are the spws we will
         # apply the resultant caltable to
