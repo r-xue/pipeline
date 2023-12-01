@@ -1,14 +1,14 @@
 """
 recipereducer is a utility to reduce data using a standard pipeline procedure.
 It parses a XML reduction recipe, converts it to pipeline tasks, and executes
-the tasks for the given data. It was written to give pipeline developers 
+the tasks for the given data. It was written to give pipeline developers
 without access to PPRs and/or a PPR generator a way to reduce data using the
 latest standard recipe.
 
 Note: multiple input datasets can be specified. Doing so will reduce the data
       as part of the same session.
 
-Example #1: process uid123.tar.gz using the standard recipe. 
+Example #1: process uid123.tar.gz using the standard recipe.
 
     import pipeline.recipereducer
     pipeline.recipereducer.reduce(vis=['uid123.tar.gz'])
@@ -16,24 +16,24 @@ Example #1: process uid123.tar.gz using the standard recipe.
 Example #2: process uid123.tar.gz using a named recipe.
 
     import pipeline.recipereducer
-    pipeline.recipereducer.reduce(vis=['uid123.tar.gz'], 
+    pipeline.recipereducer.reduce(vis=['uid123.tar.gz'],
                                   procedure='procedure_hif.xml')
 
 Example #3: process uid123.tar.gz and uid124.tar.gz using the standard recipe.
 
     import pipeline.recipereducer
-    pipeline.recipereducer.reduce(vis=['uid123.tar.gz', 'uid124.tar.gz']) 
+    pipeline.recipereducer.reduce(vis=['uid123.tar.gz', 'uid124.tar.gz'])
 
 Example #4: process uid123.tar.gz, naming the context 'testrun', thus
-            directing all weblog output to a directory called 'testrun'. 
+            directing all weblog output to a directory called 'testrun'.
 
     import pipeline.recipereducer
-    pipeline.recipereducer.reduce(vis=['uid123.tar.gz'], name='testrun') 
-    
+    pipeline.recipereducer.reduce(vis=['uid123.tar.gz'], name='testrun')
+
 Example #5: process uid123.tar.gz with a log level of TRACE
 
     import pipeline.recipereducer
-    pipeline.recipereducer.reduce(vis=['uid123.tar.gz'], loglevel='trace') 
+    pipeline.recipereducer.reduce(vis=['uid123.tar.gz'], loglevel='trace')
 
 """
 import ast
@@ -44,10 +44,11 @@ import xml.etree.ElementTree as ElementTree
 
 import pkg_resources
 
+import pipeline.cli as cli
+import pipeline.h.cli.cli as h_cli
 import pipeline.infrastructure.launcher as launcher
 import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import exceptions, task_registry, utils
+from pipeline.infrastructure import exceptions, utils
 
 LOG = logging.get_logger(__name__)
 
@@ -57,8 +58,20 @@ TaskArgs = collections.namedtuple('TaskArgs', 'vis infiles session')
 
 
 def _create_context(loglevel, plotlevel, name):
-    return launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
-                             name=name).context
+    # TODO The following implementation is TBD.
+    # Pipeline context must be registered manually for Pipeline
+    # CLI tasks. This is usually done by h_init or h_resume
+    # when we work on Pipeline CLI tasks. However, we cannot use
+    # them because they don't support usecase required here.
+    # So, we should choose either (1) to use launcher directly or
+    # (2) to update h_init and h_resume to support the needs.
+    # Another option would be (3) to give up including recipe
+    # name in the Pipeline context name (current context name is
+    # something like pipeline-procedure_hifa_calimage).
+    pipeline = launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
+                                 name=name)
+    h_cli.stack[h_cli.PIPELINE_NAME] = pipeline
+    return pipeline.context
 
 
 def _get_context_name(procedure):
@@ -111,8 +124,6 @@ def _get_tasks(context, args, procedure):
                 and cli_command == 'hif_exportdata':
             continue
 
-        task_class = task_registry.get_pipeline_class_for_task(cli_command)
-
         task_args = {}
 
         if cli_command in ['hif_importdata',
@@ -135,12 +146,10 @@ def _get_tasks(context, args, procedure):
                 argval = parameter.findtext('Value')
                 task_args[argname] = string_to_val(argval)
 
-        task_inputs = vdp.InputsContainer(task_class, context, **task_args)
-        task = task_class(task_inputs)
-        task._hif_call = _as_task_call(task_class, task_args)
         # we yield rather than return so that the context can be updated
-        # between task executions 
-        yield task
+        # between task executions
+        task = cli.get_pipeline_task_with_name(cli_command)
+        yield task, task_args
 
 
 def string_to_val(s):
@@ -195,15 +204,14 @@ def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
     try:
         procedure_stage_nr = 0
         while True:
-            task = next(task_generator)
+            task, task_args = next(task_generator)
             procedure_stage_nr += 1
             if procedure_stage_nr < startstage:
                 continue
-            LOG.info('Executing pipeline task %s' % task._hif_call)
+            LOG.info('Executing pipeline task %s' % _as_task_call(task, task_args))
 
             try:
-                result = task.execute(dry_run=False)
-                result.accept(context)
+                result = task(**task_args)
             except Exception as ex:
                 # Log message if an exception occurred that was not handled by
                 # standardtask template (not turned into failed task result).
@@ -222,6 +230,6 @@ def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
         pass
     finally:
         LOG.info('Saving context...')
-        context.save()
+        cli.h_save()
 
     return context

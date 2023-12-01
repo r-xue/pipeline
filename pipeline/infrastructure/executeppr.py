@@ -14,15 +14,11 @@ import traceback
 
 from ..extern import XmlObjectifier
 
-from . import argmapper
 from . import casa_tools
 from . import exceptions
 from . import filenamer
-from . import Pipeline
 from . import project
-from . import task_registry
 from . import utils
-from . import vdp
 
 
 def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
@@ -64,6 +60,12 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
        Resume execution from the 'breakpoint' in PPR.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='resume')
     """
+    # TODO: This line is TBD.
+    # Currently cli module is imported here to avoid circular imports.
+    # Another option would be to move executeppr to upper directory
+    # (just like recipereducer).
+    from .. import cli
+
     # Useful mode parameters
     echo_to_screen = interactive
     workingDir = None
@@ -91,10 +93,10 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
         # Get the pipeline context
         #     Resumes from the last context. Consider adding name
         if bpset and bpaction == 'resume':
-            context = Pipeline(context='last').context
+            context = cli.h_resume(filename='last')
             casa_tools.post_to_log("    Resuming from last context", echo_to_screen=echo_to_screen)
         else:
-            context = Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
+            context = cli.h_init(loglevel=loglevel, plotlevel=plotlevel)
             casa_tools.post_to_log("    Creating new pipeline context", echo_to_screen=echo_to_screen)
 
     except Exception:
@@ -194,10 +196,10 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
     casa_tools.post_to_log("Procedure name: " + procedureName + "\n", echo_to_screen=echo_to_screen)
 
     # Names of import tasks that need special treatment:
-    import_tasks = ('ImportData', 'ALMAImportData', 'VLAImportData', 'SDImportData',
-                    'NROImportData')
-    restore_tasks = ('RestoreData', 'ALMARestoreData', 'VLARestoreData', 'SDRestoreData',
-                     'NRORestoreData')
+    import_tasks = ('h_importdata', 'hifa_importdata', 'hifv_importdata',
+                    'hsd_importdata', 'hsdn_importdata')
+    restore_tasks = ('h_restoredata', 'hifa_restoredata', 'hifv_restoredata',
+                     'hsd_restoredata', 'hsdn_restoredata')
 
     # Loop over the commands
     errstr = ''
@@ -207,9 +209,9 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
     for command in commandsList:
 
         # Get task name and arguments lists.
-        casa_task = command[0]
+        pipeline_task_name = command[0]
         task_args = command[1]
-        casa_tools.set_log_origin(fromwhere=casa_task)
+        casa_tools.set_log_origin(fromwhere=pipeline_task_name)
 
         # Handle break point if one is set
         if bpset:
@@ -218,31 +220,29 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
             #    Ignore it  or
             #    Break the loop or
             #    Resume execution
-            if casa_task == breakpoint:
+            if pipeline_task_name == breakpoint:
                 foundbp = True
                 if bpaction == 'ignore':
-                    casa_tools.post_to_log("Ignoring breakpoint " + casa_task, echo_to_screen=echo_to_screen)
+                    casa_tools.post_to_log("Ignoring breakpoint " + pipeline_task_name, echo_to_screen=echo_to_screen)
                     continue
                 elif bpaction == 'break':
-                    casa_tools.post_to_log("Terminating execution at breakpoint " + casa_task,
+                    casa_tools.post_to_log("Terminating execution at breakpoint " + pipeline_task_name,
                                            echo_to_screen=echo_to_screen)
                     break
                 elif bpaction == 'resume':
-                    casa_tools.post_to_log("Resuming execution after breakpoint " + casa_task,
+                    casa_tools.post_to_log("Resuming execution after breakpoint " + pipeline_task_name,
                                            echo_to_screen=echo_to_screen)
                     continue
             # Not the break point so check the resume case
             elif not foundbp and bpaction == 'resume':
-                casa_tools.post_to_log("Skipping task " + casa_task, echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("Skipping task " + pipeline_task_name, echo_to_screen=echo_to_screen)
                 continue
 
         # Execute the command
-        casa_tools.post_to_log("Executing command ..." + casa_task, echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Executing command ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
         pipeline_task_name = "Unknown"
         try:
-            pipeline_task_class = task_registry.get_pipeline_class_for_task(casa_task)
-            pipeline_task_name = pipeline_task_class.__name__
-            casa_tools.post_to_log("    Using python class ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
+            pipeline_task = cli.get_pipeline_task_with_name(pipeline_task_name)
 
             # List parameters
             for keyword, value in task_args.items():
@@ -253,18 +253,8 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
                 task_args['vis'] = files
                 task_args['session'] = sessions
 
-            remapped_args = argmapper.convert_args(pipeline_task_class, task_args, convert_nulls=False)
-            inputs = vdp.InputsContainer(pipeline_task_class, context, **remapped_args)
-            task = pipeline_task_class(inputs)
-            results = task.execute(dry_run=False)
+            results = pipeline_task(**task_args)
             casa_tools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
-
-            try:
-                results.accept(context)
-            except Exception:
-                casa_tools.post_to_log("Error: Failed to update context for " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
-                raise
 
             if importonly and pipeline_task_name in import_tasks:
                 casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
@@ -294,7 +284,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
             export_on_exception(context, errorfile)
 
             # Save the context
-            context.save()
+            cli.h_save()
             casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
             casa_tools.set_log_origin(fromwhere='')
 
@@ -302,7 +292,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
             raise exceptions.PipelineException(previous_tracebacks_as_string)
 
     # Save the context
-    context.save()
+    cli.h_save()
     casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
     casa_tools.set_log_origin(fromwhere='')
 
