@@ -100,19 +100,19 @@ def detect_contamination(context: 'Context',
     dir_spec = _get_direction_spec(image_obj)
 
     # Calculate RMS and Peak SN maps
-    rms_map, peak_sn, spectrum_at_peak, idx, idy = \
-        _calculate_rms_and_peak_sn(cube_regrid, naxis, is_frequency_channel_reversed)
+    rms_map, peak_sn_map, spectrum_at_peak, idx, idy = \
+        _calculate_rms_and_peak_sn_map(cube_regrid, naxis, is_frequency_channel_reversed)
 
     # Determine peak SN threshold
     # In the case that pixel number is fewer than the mask threshold (mask_num_thresh).
     peak_sn_threshold = _determine_peak_sn_threshold(cube_regrid, rms_map)
 
-    # Update the mask map and calculate the masked average spectrum
-    mask_map, masked_average_spectrum = _get_mask_map_and_average_spectrum(cube_regrid, naxis,
-                                                                           peak_sn, peak_sn_threshold)
+    # Calculate the mask map and the masked average spectrum
+    mask_map = np.where(peak_sn_map < peak_sn_threshold, 1.0, 0.0)
+    masked_average_spectrum = np.nanmean(np.where(mask_map == 1.0, cube_regrid, np.nan), axis=(1, 2))
 
     # Generate the contamination report figures
-    _make_figures(peak_sn, mask_map, rms_map, masked_average_spectrum,
+    _make_figures(peak_sn_map, mask_map, rms_map, masked_average_spectrum,
                   peak_sn_threshold, spectrum_at_peak, idy, idx, output_name,
                   freq_spec, dir_spec)
 
@@ -186,7 +186,7 @@ def _slice_and_calc_RMS_of_cube_regrid(naxis: NAxis,
     return np.sqrt(stddevsq + meansq)
 
 
-def _make_figures(peak_sn: 'sdtyping.NpArray2D',
+def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
                   mask_map: 'sdtyping.NpArray2D',
                   rms_map: 'sdtyping.NpArray2D',
                   masked_average_spectrum: 'sdtyping.NpArray1D',
@@ -201,7 +201,7 @@ def _make_figures(peak_sn: 'sdtyping.NpArray2D',
     Create figures to visualize contamination.
 
     Args:
-        peak_sn (NpArray2D): Array representing the peak SN ratio.
+        peak_sn_map (NpArray2D): Array representing the peak SN ratio.
         mask_map (NpArray2D): Array representing the mask map.
         rms_map (NpArray2D): Array representing the RMS map.
         masked_average_spectrum (NpArray1D): Array representing the masked average spectrum.
@@ -228,8 +228,8 @@ def _make_figures(peak_sn: 'sdtyping.NpArray2D',
         dir_unit = dir_spec.ref
 
         # Convert pixel coordinates to axes coordinates
-        scx = (idx + 0.5) / peak_sn.shape[1]
-        scy = (idy + 0.5) / peak_sn.shape[0]
+        scx = (idx + 0.5) / peak_sn_map.shape[1]
+        scy = (idy + 0.5) / peak_sn_map.shape[0]
 
         # Set aspect ratio based on DEC correction factor
         kw['aspect'] = 1.0 / np.cos((dir_spec.mindec + dir_spec.maxdec) / 2 / 180 * np.pi)
@@ -241,10 +241,10 @@ def _make_figures(peak_sn: 'sdtyping.NpArray2D',
     else:
         dir_unit = 'pixel'
         scx = idx
-        scy = peak_sn.shape[0] - 1 - idy
+        scy = peak_sn_map.shape[0] - 1 - idy
 
     # Plot the peak SN map, mask map, and masked averaged spectrum
-    _plot_peak_SN_map(_figure, peak_sn_plot, peak_sn, dir_unit, dir_spec is not None, scx, scy, kw)
+    _plot_peak_SN_map(_figure, peak_sn_plot, peak_sn_map, dir_unit, dir_spec is not None, scx, scy, kw)
     _plot_mask_map(_figure, mask_map_plot, mask_map, peak_sn_threshold, dir_unit, kw)
     _plot_masked_averaged_spectrum(_figure, rms_map, masked_average_spectrum, peak_sn_threshold,
                                    spectrum_at_peak, freq_spec)
@@ -260,7 +260,7 @@ def _make_figures(peak_sn: 'sdtyping.NpArray2D',
 
 def _plot_peak_SN_map(fig: 'matplotlib.Figure',
                       plot: 'Axes',
-                      peak_sn: 'sdtyping.NpArray2D',
+                      peak_sn_map: 'sdtyping.NpArray2D',
                       dir_unit: str,
                       has_dir_spec: bool,
                       scx: float,
@@ -270,6 +270,7 @@ def _plot_peak_SN_map(fig: 'matplotlib.Figure',
     Plot the Peak Signal-to-Noise ratio (SN) map with specified parameters.
 
     Args:
+        fig (Figure): the instance of matplotlib.Figure.
         plot (Axes): The matplotlib Axes object to be used for plotting.
         peak_sn (NpArray2D): The data representing the peak signal-to-noise ratio.
         dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
@@ -290,10 +291,10 @@ def _plot_peak_SN_map(fig: 'matplotlib.Figure',
     plot.set_ylabel(f"DEC [{dir_unit}]")
 
     # Log the shape of the peak SN data
-    LOG.debug('peak_sn.shape = {}'.format(peak_sn.shape))
+    LOG.debug('peak_sn.shape = {}'.format(peak_sn_map.shape))
 
     # Display the peak SN data as an image with the specified colormap and keyword arguments
-    plot.imshow(np.flipud(peak_sn), cmap=DEFAULT_COLORMAP, **kw)
+    plot.imshow(np.flipud(peak_sn_map), cmap=DEFAULT_COLORMAP, **kw)
 
     # Log the y-axis limits
     ylim = plot.get_ylim()
@@ -302,7 +303,7 @@ def _plot_peak_SN_map(fig: 'matplotlib.Figure',
     # Display a colorbar for the image
     plot.colorbar = fig.colorbar(
         matplotlib.cm.ScalarMappable(
-            matplotlib.colors.Normalize(np.nanmin(peak_sn), np.nanmax(peak_sn)),
+            matplotlib.colors.Normalize(np.nanmin(peak_sn_map), np.nanmax(peak_sn_map)),
             DEFAULT_COLORMAP),
         shrink=0.9, ax=plot)
 
@@ -324,6 +325,7 @@ def _plot_mask_map(fig: 'matplotlib.Figure',
     Plot the mask map with specified parameters.
 
     Args:
+        fig (Figure): the instance of matplotlib.Figure.
         plot (Axes): The matplotlib Axes object to be used for plotting.
         mask_map (NpArray2D): The data representing the mask map.
         peak_sn_threshold (float): The threshold for the peak of signal-to-noise.
@@ -362,6 +364,7 @@ def _plot_masked_averaged_spectrum(fig: 'matplotlib.Figure',
     Plot the masked-averaged spectrum with specified parameters.
 
     Args:
+        fig (Figure): the instance of matplotlib.Figure.
         rms_map (NpArray2D): The data representing the RMS map.
         masked_average_spectrum (NpArray1D): 1D array representing the average spectrum of the masked regions.
         peak_sn_threshold (float): The threshold for the peak signal-to-noise.
@@ -589,9 +592,9 @@ def _get_frequency_spec(naxis: NAxis,
     return FrequencySpec(unit='GHz', data=frequency)
 
 
-def _calculate_rms_and_peak_sn(cube_regrid: 'sdtyping.NpArray3D',
-                               naxis: NAxis,
-                               is_frequency_channel_reversed: bool) \
+def _calculate_rms_and_peak_sn_map(cube_regrid: 'sdtyping.NpArray3D',
+                                   naxis: NAxis,
+                                   is_frequency_channel_reversed: bool) \
         -> Tuple['sdtyping.NpArray2D', 'sdtyping.NpArray2D', 'sdtyping.NpArray1D', np.int64, np.int64]:
     """Calculate the RMS (Root Mean Square) and Peak SN maps for the given data cube.
 
@@ -606,7 +609,7 @@ def _calculate_rms_and_peak_sn(cube_regrid: 'sdtyping.NpArray3D',
     Returns:
         Tuple[NpArray2D, NpArray2D, NpArray1D, np.int64, np.int64]:
             - rms_map: 2D array containing the RMS values for each pixel.
-            - peak_sn: 2D array containing the peak SN values for each pixel.
+            - peak_sn_map: 2D array containing the peak SN values for each pixel.
             - spectrum_at_peak: 1D array containing the spectrum at the location of the maximum peak SN.
             - idx: x-coordinate of the maximum peak SN location.
             - idy: y-coordinate of the maximum peak SN location.
@@ -615,16 +618,16 @@ def _calculate_rms_and_peak_sn(cube_regrid: 'sdtyping.NpArray3D',
     rms_map = _decide_rms(naxis, cube_regrid, is_frequency_channel_reversed)
 
     # Calculate the peak SN for each pixel
-    peak_sn = (np.nanmax(cube_regrid, axis=0)) / rms_map
+    peak_sn_map = (np.nanmax(cube_regrid, axis=0)) / rms_map
 
     # Identify the location of the maximum peak SN in the image
-    idy, idx = np.unravel_index(np.nanargmax(peak_sn), peak_sn.shape)
+    idy, idx = np.unravel_index(np.nanargmax(peak_sn_map), peak_sn_map.shape)
     LOG.debug(f'idx {idx}, idy {idy}')
 
     # Extract the spectrum at the location of the maximum peak SN
     spectrum_at_peak = cube_regrid[:, idy, idx]
 
-    return rms_map, peak_sn, spectrum_at_peak, idx, idy
+    return rms_map, peak_sn_map, spectrum_at_peak, idx, idy
 
 
 def _count_valid_pixels(cube_regrid: 'sdtyping.NpArray3D') -> int:
@@ -684,44 +687,3 @@ def _determine_peak_sn_threshold(cube_regrid: 'sdtyping.NpArray3D',
         return peak_sn_1d[pix_num_threshold]
     else:
         return 0.
-
-
-def _get_mask_map_and_average_spectrum(cube_regrid: 'sdtyping.NpArray3D',
-                                       naxis: NAxis,
-                                       peak_sn: 'sdtyping.NpArray2D',
-                                       peak_sn_threshold: float) -> Tuple['sdtyping.NpArray2D', 'sdtyping.NpArray1D']:
-    """
-    Get mask map and masked average spectrum based on peak SN threshold.
-
-    This function creates a mask map and a masked average spectrum using the provided peak SN threshold.
-    Pixels in the mask map are set to 1.0 if the corresponding peak SN value is below the threshold.
-
-    Args:
-        cube_regrid (NpArray3D): 3D data cube containing the image data.
-        naxis (NAxis) : namedtuple of the sizes of each axis in a image cube.
-        peak_sn (NpArray2D): 2D array containing the peak SN ratio for each pixel.
-        peak_sn_threshold (float): Threshold value for the peak SN.
-
-    Returns:
-        Tuple[NpArray2D, NpArray1D]:
-            mask_map: 2D array where each pixel is set to 1.0 if the corresponding peak SN value is below the threshold.
-            masked_average_spectrum: 1D array representing the average spectrum of the masked regions.
-    """
-    # Initialize the mask map and masked average spectrum with zeros
-    mask_map = np.zeros([naxis.y, naxis.x])
-    masked_average_spectrum = np.zeros([naxis.sp])
-
-    # Create a boolean mask based on the peak SN threshold
-    peak_sn2_judge = (peak_sn < peak_sn_threshold)
-
-    # Iterate over the data cube and update the mask map and masked_average_spectrum
-    for i in range(naxis.x):
-        for j in range(naxis.y):
-            if str(peak_sn2_judge[j, i]) == "True":
-                masked_average_spectrum = masked_average_spectrum + cube_regrid[:, j, i]
-                mask_map[j, i] = 1.0
-
-    # Normalize the masked_average_spectrum by the sum of the mask map
-    masked_average_spectrum /= np.nansum(mask_map)
-
-    return mask_map, masked_average_spectrum
