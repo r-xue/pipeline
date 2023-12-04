@@ -58,7 +58,7 @@ DirectionSpec = namedtuple('DirectionSpec', ['ref', 'minra', 'maxra', 'mindec', 
 
 # Define a named tuple to represent the sizes of each axis in a image cube.
 #  x: Represents the size of the X-axis (typically the RA direction in astronomical images).
-#  y: Represents the size of the Y-axis (typically the DEC direction in astronomical images).
+#  y: Represents the size of the Y-axis (typically the Dec direction in astronomical images).
 #  sp: Represents the size of the spectral axis (e.g., frequency or velocity).
 NAxis = namedtuple('NAxis', ['x', 'y', 'sp'])
 
