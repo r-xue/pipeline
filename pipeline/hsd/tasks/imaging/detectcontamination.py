@@ -32,7 +32,6 @@ if TYPE_CHECKING:
 LOG = infrastructure.get_logger(__name__)
 
 # Global parameters
-MATPLOTLIB_FIGURE_NUM = 6666  # Unique identifier for matplotlib figures
 STD_THRESHOLD = 4.  # Threshold for standard deviation to detect absorption features
 
 # Parameters for slicing the cube image and determining the scope of processing
