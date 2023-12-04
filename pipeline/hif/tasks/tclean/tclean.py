@@ -567,7 +567,7 @@ class Tclean(cleanbase.CleanBase):
             inputs.spwsel_all_cont = all_continuum
 
         # Get TOPO frequency ranges for all MSs
-        (spw_topo_freq_param, _, _, spw_topo_chan_param_dict, _, _, aggregate_lsrk_bw) = self.image_heuristics.calc_topo_ranges(inputs)
+        (spw_topo_freq_param, _, _, spw_topo_chan_param_dict, _, _, self.aggregate_lsrk_bw) = self.image_heuristics.calc_topo_ranges(inputs)
 
         # Save continuum frequency ranges for later.
         if (inputs.specmode == 'cube') and (inputs.spwsel_lsrk.get('spw%s' % inputs.spw, None) not in (None,
@@ -701,7 +701,7 @@ class Tclean(cleanbase.CleanBase):
         # Record aggregate LSRK bandwidth and mosaic field sensitivities for weblog
         # TODO: Record total bandwidth as opposed to range
         #       Save channel selection in result for weblog.
-        result.set_aggregate_bw(aggregate_lsrk_bw)
+        result.set_aggregate_bw(self.aggregate_lsrk_bw)
         result.set_eff_ch_bw(self.eff_ch_bw)
 
         result.synthesized_beams = self.known_synthesized_beams
@@ -953,13 +953,20 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
+            # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
             ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
                          +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            if inputs.specmode in ('mfs', 'cont'):
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+            else:
+                effbw = abs(self.eff_ch_bw)
+                if inputs.nbin is not None:
+                    effbw = effbw * inputs.nbin
 
             self._update_miscinfo(imagename=result.image.replace('.image', '.image' + extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
-                                  effbw=self.eff_ch_bw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
+                                  effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)
@@ -1109,13 +1116,20 @@ class Tclean(cleanbase.CleanBase):
 
         # All continuum
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+            # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
             ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
                          +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            if inputs.specmode in ('mfs', 'cont'):
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+            else:
+                effbw = abs(self.eff_ch_bw)
+                if inputs.nbin is not None:
+                    effbw = effbw * inputs.nbin
 
             self._update_miscinfo(imagename=result.image.replace('.image', '.image'+extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
-                                  effbw=self.eff_ch_bw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
+                                  effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
 
             result.set_image_min(pbcor_image_min)
             result.set_image_min_iquv(pbcor_image_min_iquv)
@@ -1232,13 +1246,20 @@ class Tclean(cleanbase.CleanBase):
                                                   pblimit_cleanmask=self.pblimit_cleanmask,
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
+            # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
             ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
                          +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            if inputs.specmode in ('mfs', 'cont'):
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+            else:
+                effbw = abs(self.eff_ch_bw)
+                if inputs.nbin is not None:
+                    effbw = effbw * inputs.nbin
 
             self._update_miscinfo(imagename=result.image.replace('.image', '.image'+extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
-                                  effbw=self.eff_ch_bw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
+                                  effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,
