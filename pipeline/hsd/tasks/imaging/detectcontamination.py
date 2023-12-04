@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 LOG = infrastructure.get_logger(__name__)
 
 # Global parameters
-STD_THRESHOLD = 4.  # Threshold for standard deviation to detect absorption features
+STD_THRESHOLD = 4.  # Threshold in terms of standard deviation to detect strong absorption features
 
 # Parameters for slicing the cube image and determining the scope of processing
 N_SLICES = 10  # Total number of slices
