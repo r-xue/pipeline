@@ -43,23 +43,23 @@ N_REMAINING = N_SLICES - N_EDGE * 2  # Number of slices remaining after excludin
 DEFAULT_COLORMAP = "rainbow"
 
 # Define a named tuple to represent the frequency specification.
-#  unit: Represents the unit of the frequency (e.g., pixel, Hz, MHz).
-#  data: Represents the actual frequency data or values.
+#  unit: The unit of the frequency (e.g., pixel, Hz, MHz).
+#  data: The actual frequency data or values.
 FrequencySpec = namedtuple('FrequencySpec', ['unit', 'data'])
 
 # Define a named tuple to represent the direction specification in astronomical images.
-#  ref: Represents the reference frame (e.g., J2000, B1950).
-#  minra: Represents the minimum right ascension value.
-#  maxra: Represents the maximum right ascension value.
-#  mindec: Represents the minimum declination value.
-#  maxdec: Represents the maximum declination value.
-#  resolution: Represents the resolution of the image in the direction axes.
+#  ref: The reference frame (e.g., J2000, B1950).
+#  minra: The minimum right ascension value.
+#  maxra: The maximum right ascension value.
+#  mindec: The minimum declination value.
+#  maxdec: The maximum declination value.
+#  resolution: The resolution of the image in the direction axes.
 DirectionSpec = namedtuple('DirectionSpec', ['ref', 'minra', 'maxra', 'mindec', 'maxdec', 'resolution'])
 
 # Define a named tuple to represent the sizes of each axis in a image cube.
-#  x: Represents the size of the X-axis (typically the RA direction in astronomical images).
-#  y: Represents the size of the Y-axis (typically the Dec direction in astronomical images).
-#  sp: Represents the size of the spectral axis (e.g., frequency or velocity).
+#  x: The size of the X-axis (typically the RA direction in astronomical images).
+#  y: The size of the Y-axis (typically the Dec direction in astronomical images).
+#  sp: The size of the spectral axis (e.g., frequency or velocity).
 NAxis = namedtuple('NAxis', ['x', 'y', 'sp'])
 
 
