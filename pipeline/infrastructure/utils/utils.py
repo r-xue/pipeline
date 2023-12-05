@@ -792,7 +792,7 @@ def open_with_lock(filename, mode='r'):
             LOG.info('acquired lock on %s', filename)
         except OSError as e:
             LOG.warning('failed to acquire file lock due to the filesystem limitation,'
-                        'which might cause racing conditions if multiple processes access % s simultaneously.',
+                        'which might cause racing conditions if multiple processes access %s simultaneously.',
                         filename)
 
         yield fd
@@ -801,7 +801,7 @@ def open_with_lock(filename, mode='r'):
             LOG.info('released lock on %s', filename)
         except OSError as e:
             LOG.warning('failed to acquire file lock due to the filesystem limitation,'
-                        'which might cause racing conditions if multiple processes access % s simultaneously.',
+                        'which might cause racing conditions if multiple processes access %s simultaneously.',
                         filename)
 
 def ensure_products_dir_exists(products_dir):
