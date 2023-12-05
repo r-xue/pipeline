@@ -1,3 +1,6 @@
+import os
+import shutil
+
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure as infrastructure
@@ -77,6 +80,11 @@ class BandpassWorker(basetask.StandardTaskTemplate):
         # subsequently append calibrations for each spectral window to the one
         # table
         inputs.caltable = inputs.caltable
+
+        # Delete a pre-existing table if append it not set. This is to
+        # replicate the somewhat convoluted old filenamer "dry_run" logic.
+        if os.path.exists(inputs.caltable) and not inputs.append:
+            shutil.rmtree(inputs.caltable, ignore_errors=True)
 
         # create a job for each CalTo data selection
         calto = callibrary.get_calto_from_inputs(inputs)

@@ -78,7 +78,10 @@ class GaincalWorker(basetask.StandardTaskTemplate):
         # subsequently append calibrations for each spectral window to the one
         # table
         inputs.caltable = inputs.caltable
-        if os.path.exists(inputs.caltable):
+
+        # Delete a pre-existing table if append it not set. This is to
+        # replicate the somewhat convoluted old filenamer "dry_run" logic.
+        if os.path.exists(inputs.caltable) and not inputs.append:
             shutil.rmtree(inputs.caltable, ignore_errors=True)
 
         # make a memo of the original spw input. These are the spws we will

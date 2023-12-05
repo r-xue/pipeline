@@ -1,5 +1,6 @@
 import copy
 import os
+import shutil
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -133,6 +134,11 @@ class PolcalWorker(basetask.StandardTaskTemplate):
 
         # Set caltable to itself to generate a permanent caltable name.
         inputs.caltable = inputs.caltable
+
+        # Delete a pre-existing table if append it not set. This is to
+        # replicate the somewhat convoluted old filenamer "dry_run" logic.
+        if os.path.exists(inputs.caltable) and not inputs.append:
+            shutil.rmtree(inputs.caltable, ignore_errors=True)
 
         # Retrieve original Spw input, to attach to final CalApplication.
         origin = [callibrary.CalAppOrigin(task=PolcalWorker, inputs=inputs.to_casa_args())]
