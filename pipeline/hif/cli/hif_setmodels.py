@@ -18,7 +18,7 @@ def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, trans
     
     Built-in lookup tables are used to compute models for solar system object calibrators.
     Point source models are used for other calibrators with flux densities provided in the reference file.
-    Normalized fluxes are computed for transfer sources if the normfluxes parameter is
+    Normalized fluxes are computed for transfer sources if the ``normfluxes`` parameter is
     set to True.
     
     The default reference file is 'flux.csv' in the current working directory.
@@ -73,7 +73,7 @@ def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, trans
     
     1. Set model fluxes for the flux, bandpass, phase, and check sources.
     
-    hif_setmodels()
+    >>> hif_setmodels()
 
 
     """

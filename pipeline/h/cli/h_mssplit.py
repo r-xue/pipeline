@@ -50,11 +50,10 @@ def h_mssplit(vis=None, outputvis=None, field=None, intent=None, spw=None, datac
     --------- examples -----------------------------------------------------------
 
     
-    Examples
     
     1. Create a 4X channel smoothed output MS from the input MS
     
-    h_mssplit(chanbin=4)
+    >>> h_mssplit(chanbin=4)
 
 
     """

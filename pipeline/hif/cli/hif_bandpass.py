@@ -17,22 +17,12 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
     
     Previous calibration can be applied on the fly.
     
-    
-    Description
-    
     hif_bandpass computes a bandpass solution for every specified science
     spectral window. By default a 'phaseup' pre-calibration is performed
     and applied on the fly to the data, before the bandpass is computed.
     
     The hif_refant task may be used to precompute a prioritized list of
     reference antennas.
-    
-    
-    Issues
-    
-    The specified minsnr parameter is currently applied to the bandpass
-    solution computation but not the 'phaseup' computation. Some noisy
-    solutions in the phaseup may not be properly rejected.
     
     
     Output
@@ -58,7 +48,7 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
                   which the selected fields are matched.  Defaults to all data
                   with bandpass intent.
                   
-                  Example: intent='*PHASE*'
+                  Example: intent='`*PHASE*`'
     spw           The list of spectral windows and channels for which bandpasses
                   are computed. Defaults to all science spectral windows.
                   
@@ -102,14 +92,19 @@ def hif_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, ant
     1. Compute a channel bandpass for all visibility files in the pipeline
     context using the CASA reference antenna determination scheme:
     
-    hif_bandpass()
+    >>> hif_bandpass()
     
     2. Same as the above but precompute a prioritized reference antenna list:
     
-    hif_refant()
-    hif_bandpass()
+    >>> hif_refant()
+    >>> hif_bandpass()
 
-
+    --------- issues -----------------------------------------------------------
+    
+    The specified minsnr parameter is currently applied to the bandpass
+    solution computation but not the 'phaseup' computation. Some noisy
+    solutions in the phaseup may not be properly rejected.
+    
     """
 
 

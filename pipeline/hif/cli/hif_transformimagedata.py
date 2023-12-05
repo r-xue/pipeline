@@ -50,7 +50,7 @@ def hif_transformimagedata(vis=None, outputvis=None, field=None, intent=None, sp
     
     1. Basic transformimagedata task
     
-    hif_transformimagedata()
+    >>> hif_transformimagedata()
 
 
     """

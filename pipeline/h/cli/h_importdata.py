@@ -15,7 +15,7 @@ def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, over
     The h_importdata task loads the specified visibility data into the pipeline
     context unpacking and / or converting it as necessary.
     
-    If the 'overwrite' input parameter is set to False and the task is
+    If the ``overwrite`` input parameter is set to False and the task is
     asked to convert an input ASDM input to an MS, then when the output
     MS already exists in the output directory, the importasdm
     conversion step is skipped, and the existing MS will be imported
@@ -59,37 +59,24 @@ def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, over
     --------- examples -----------------------------------------------------------
 
     
-    Examples
     
     1. Load an ASDM list in the ../rawdata subdirectory into the context"
     
-    h_importdata(vis=['../rawdata/uid___A002_X30a93d_X43e',
-    '../rawdata/uid_A002_x30a93d_X44e'])
+    >>> h_importdata(vis=['../rawdata/uid___A002_X30a93d_X43e', '../rawdata/uid_A002_x30a93d_X44e'])
     
     2. Load an MS in the current directory into the context:
     
-    h_importdata(vis=[uid___A002_X30a93d_X43e.ms])
+    >>> h_importdata(vis=[uid___A002_X30a93d_X43e.ms])
     
     3. Load a tarred ASDM in ../rawdata into the context:
     
-    h_importdata(vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
+    >>> h_importdata(vis=['../rawdata/uid___A002_X30a93d_X43e.tar.gz'])
     
     4. Import a list of MeasurementSets:
     
-    myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
-    h_importdata(vis=myvislist)
+    >>> myvislist = ['uid___A002_X30a93d_X43e.ms', 'uid_A002_x30a93d_X44e.ms']
+    >>> h_importdata(vis=myvislist)
     
-    5. Load an ASDM but check the results before accepting them into the context.
-    results = h_importdata(vis=['uid___A002_X30a93d_X43e.ms']
-                           acceptresults=False)
-    results.accept()
-    
-    6. Run in dryrun mode before running for real
-    results = h_importdata(vis=['uid___A002_X30a93d_X43e.ms'], dryrun=True)
-    results = h_importdata(vis=['uid___A002_X30a93d_X43e.ms'])
-
-    --------- examples -----------------------------------------------------------
-
     """
 
     ##########################################################################

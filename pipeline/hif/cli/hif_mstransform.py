@@ -60,12 +60,12 @@ def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None,
     
     1. Create a science target MS from the corrected column in the input MS.
     
-    hif_mstransform()
+    >>> hif_mstransform()
     
     2. Make a phase and bandpass calibrator targets MS from the corrected
     column in the input MS.
     
-    hif_mstransform(intent='PHASE,BANDPASS')
+    >>> hif_mstransform(intent='PHASE,BANDPASS')
 
 
     """
