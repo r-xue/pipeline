@@ -189,6 +189,12 @@ def mark_antennas_for_refant_update(
     if not fully_flagged_antennas:  # nothing to do
         return result
 
+    if not(hasattr(ms, 'reference_antenna')) or not isinstance(ms.reference_antenna, str):
+        LOG.warning(
+            '{0} - no reference antennas found in MS, cannot update '
+            'the reference antenna list.'.format(ms.basename))
+        return result
+
     # Assemble the dict of antennas that are fully flagged in all spws:
     # each element (antenna name) is a set containing all intents in which this antenna
     # is fully flagged in all spws.
@@ -210,13 +216,6 @@ def mark_antennas_for_refant_update(
                 fully_flagged_antennas_in_all_spws[antenna].add(intent)
 
     # Obtain the current list of reference antennas from the MS.
-    if not(hasattr(ms, 'reference_antenna')) or not isinstance(ms.reference_antenna, str):
-        LOG.warning(
-            '{0} - no reference antennas found in MS, cannot update '
-            'the reference antenna list.'.format(ms.basename))
-        return result
-
-    # Create list of current refants.
     refant = ms.reference_antenna.split(',')
 
     # Sets of candidate antennas for demotion and removal from the refant list.

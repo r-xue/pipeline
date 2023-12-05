@@ -13,7 +13,8 @@ from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import correctedampflag
 from pipeline.hif.tasks import gaincal
 from pipeline.infrastructure.refantflag import identify_fully_flagged_antennas_from_flagcmds, \
-    mark_antennas_for_refant_update, aggregate_fully_flagged_antenna_notifications
+    mark_antennas_for_refant_update, aggregate_fully_flagged_antenna_notifications, FullyFlaggedAntennasNotification
+from typing import List, Set
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -26,12 +27,14 @@ class PolcalflagResults(basetask.Results):
         self.cafresult = None
         self.plots = dict()
 
-        # list of antennas that should be moved to the end
-        # of the refant list
-        self.refants_to_demote = set()
+        # Set of antennas that should be moved to the end of the refant list.
+        self.refants_to_demote: Set[str] = set()
 
-        # list of entirely flagged antennas that should be removed from refants
-        self.refants_to_remove = set()
+        # Set of entirely flagged antennas that should be removed from refants.
+        self.refants_to_remove: Set[str] = set()
+
+        # further information about entirely flagged antennas used in QA scoring
+        self.fully_flagged_antenna_notifications: List[FullyFlaggedAntennasNotification] = []
 
         # records callibrary files used in applycal calls
         self.callib_map = {}

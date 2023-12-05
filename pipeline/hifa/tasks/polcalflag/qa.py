@@ -41,14 +41,13 @@ class PolcalflagListQAHandler(pqa.QAPlugin):
         for result in results:
             scores.append(result.qa.pool)
             try:
-                if result.fully_flagged_antenna_notifications:
-                    for notification in result.fully_flagged_antenna_notifications:
-                        score = pqa.QAScore(
-                            0.8,
-                            longmsg=format_fully_flagged_antenna_notification(result.inputs['vis'], notification),
-                            shortmsg='Fully flagged antennas',
-                            vis=result.inputs['vis'])
-                        scores.append(score)
+                for notification in result.fully_flagged_antenna_notifications:
+                    score = pqa.QAScore(
+                        0.8,
+                        longmsg=format_fully_flagged_antenna_notification(result.inputs['vis'], notification),
+                        shortmsg='Fully flagged antennas',
+                        vis=result.inputs['vis'])
+                    scores.append(score)
             except AttributeError:
                 LOG.error('Unable to find the list of fully flagged antennas')
 

@@ -3,7 +3,6 @@ import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common import commonresultobjects
 
 LOG = infrastructure.get_logger(__name__)

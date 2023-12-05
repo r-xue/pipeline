@@ -217,8 +217,6 @@ class FlagCmd(object):
                     flagcmd += " antenna='%s'" % ax_antenna_name
                 else:
                     flagcmd += " antenna='%s'" % ax_antenna
-                # make sure that the "antenna" field matches the actual flagging command
-                self.antenna = ax_antenna
 
             # Time-based flags
             flag_time = None

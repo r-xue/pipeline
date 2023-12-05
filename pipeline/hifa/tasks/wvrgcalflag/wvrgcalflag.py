@@ -162,8 +162,6 @@ class Wvrgcalflag(basetask.StandardTaskTemplate):
             # the result so that it cannot be accepted into the context. 
             elif result.flaggerresult.dataresult.qa_wvr.overall_score is not None \
                     and result.flaggerresult.dataresult.qa_wvr.overall_score < inputs.accept_threshold:
-                # Modified for PIPE-1837 to have a variable warning according to the
-                # phase rms return from dataresult.BPgood (see wvrgcal/wvrg_qa.py)
                 result.flaggerresult.dataresult.final = []
 
         return result

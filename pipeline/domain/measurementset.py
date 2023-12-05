@@ -1291,9 +1291,9 @@ class MeasurementSet(object):
 
         # Return early if no refants are registered (None, or empty string).
         if not (self.reference_antenna and self.reference_antenna.strip()):
-            LOG.warning("No reference antennas registered set for MS {} ({}), "
-                        "cannot update its reference antenna list."
-                        "".format(self.basename, id(self)))
+            LOG.warning('No reference antennas registered set for MS {} ({}), '
+                        'cannot update its reference antenna list.'.
+                        format(self.basename, hex(id(self))))
             return
 
         previous_reference_antenna = self.reference_antenna
@@ -1313,7 +1313,7 @@ class MeasurementSet(object):
         self.reference_antenna = ','.join(refants_to_keep)
 
         LOG.info('ms.update_reference_antennas for MS {} ({}): previous list={}, removed={}, demoted={}, new list={}'.
-                 format(self.basename, id(self), previous_reference_antenna,
+                 format(self.basename, hex(id(self)), previous_reference_antenna,
                         ','.join(sorted(ants_to_remove)) if ants_to_remove else 'none',
                         ','.join(sorted(ants_to_demote)) if ants_to_remove else 'none',
                         self.reference_antenna))

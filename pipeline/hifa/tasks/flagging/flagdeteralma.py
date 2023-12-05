@@ -110,7 +110,7 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
     _max_frac_low_trans = 0.6
 
     def prepare(self):
-        # PIPE=1759: this list collects the spws with missing basebands subsequently used to create a QA score
+        # PIPE-1759: this list collects the spws with missing basebands subsequently used to create a QA score
         self.missing_baseband_spws = []
 
         # Wrap results from parent in hifa_flagdata specific result to enable
@@ -125,8 +125,9 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
     def get_fracspw(self, spw):
         # From T. Hunter on PIPE-425: in early ALMA Cycles, the ACA
         # correlator's frequency profile synthesis (fps) algorithm produced TDM
-        # spws that had 62 channels in full-polarisation, 124 channels in dual
+        # spws that had 64 channels in full-polarisation, 124 channels in dual
         # pol, and 248 channels in single-pol.
+        # TODO: find out whether it should be 62 (as in code) or 64 (as per above comment)
         #
         # By comparison, the baseline correlator (BLC) standard values are 128
         # channels for dual pol, and 256 channels for single pol, and in more
