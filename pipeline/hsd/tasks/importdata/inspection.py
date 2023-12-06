@@ -70,7 +70,7 @@ class SDInspection(object):
         LOG.debug('table_name=%s' % table_name)
 
         # worker.set_name(ms.name)
-        org_directions = worker.execute()
+        org_directions = worker.execute() if os.path.exists(self.ms.name) else None
 
         datatable = worker.get_datatable()
         datatable.exportdata(minimal=False)
