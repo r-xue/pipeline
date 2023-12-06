@@ -136,8 +136,10 @@ class PolcalWorker(basetask.StandardTaskTemplate):
         inputs.caltable = inputs.caltable
 
         # Delete a pre-existing table if append it not set. This is to
-        # replicate the somewhat convoluted old filenamer "dry_run" logic.
+        # replicate the somewhat convoluted old filenamer "dry_run" logic
+        # (see PIPE-1688).
         if os.path.exists(inputs.caltable) and not inputs.append:
+            LOG.debug(f'Deleting existing calibration table {inputs.caltable)')
             shutil.rmtree(inputs.caltable, ignore_errors=True)
 
         # Retrieve original Spw input, to attach to final CalApplication.
