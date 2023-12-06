@@ -32,7 +32,7 @@ LOG = logging.get_logger(__file__)
 VisResultTuple = collections.namedtuple('VisResultTuple', 'vis inputs result')
 
 
-def parallel_inputs_impl():
+def parallel_inputs_impl(default='automatic'):
     """
     Get a vis-independent property implementation for a parallel
     Inputs argument.
@@ -46,7 +46,7 @@ def parallel_inputs_impl():
 
     def fset(self, value):
         if value is None:
-            value = 'automatic'
+            value = default
         else:
             allowed = ('true', 'false', 'automatic', True, False)
             if value not in allowed:
