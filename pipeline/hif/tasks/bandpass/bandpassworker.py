@@ -85,7 +85,7 @@ class BandpassWorker(basetask.StandardTaskTemplate):
         # replicate the somewhat convoluted old filenamer "dry_run" logic
         # (see PIPE-1688).
         if os.path.exists(inputs.caltable) and not inputs.append:
-            LOG.debug(f'Deleting existing calibration table {inputs.caltable)')
+            LOG.debug(f'Deleting existing calibration table {inputs.caltable}')
             shutil.rmtree(inputs.caltable, ignore_errors=True)
 
         # create a job for each CalTo data selection
