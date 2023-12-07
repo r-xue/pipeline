@@ -10,8 +10,8 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                    hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                    hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
                    hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
-                   cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, parallel=None,
-                   dryrun=None, acceptresults=None):
+                   cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, vlass_plane_reject_im=None,
+                   parallel=None, dryrun=None, acceptresults=None):
 
     """
     hif_makeimages ---- Compute clean map
@@ -78,7 +78,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                             exported to the products/ directory. The first exported
                             product retains the same name.  Additional products start
                             counting with 'v2', 'v3', etc.
-    vlass_plane_reject      Only used for the 'VLASS-SE-CUBE' imaging mode. default: True
+    vlass_plane_reject_im   Only used for the 'VLASS-SE-CUBE' imaging mode. default: True
                             If True, reject VLASS Coarse Cube planes with high flagging percentages or outlier beam sizes (see the heuristics details below)
                             If False, do not perform the post-imaging VLASS Coarse Cube plane rejection.
                             If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.

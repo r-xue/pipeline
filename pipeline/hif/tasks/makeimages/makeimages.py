@@ -49,17 +49,19 @@ class MakeImagesInputs(vdp.StandardInputs):
     tlimit = vdp.VisDependentProperty(default=2.0)
     drcorrect = vdp.VisDependentProperty(default=-999.0)
     overwrite_on_export = vdp.VisDependentProperty(default=True)
-    vlass_plane_reject = vdp.VisDependentProperty(default=True)
+    vlass_plane_reject_im = vdp.VisDependentProperty(default=True)
 
-    @vlass_plane_reject.postprocess
-    def vlass_plane_reject(self, unprocessed):
+    @vlass_plane_reject_im.postprocess
+    def vlass_plane_reject_im(self, unprocessed):
         """Convert the allowed argument input datatype to the dictionary form used by the task."""
-        vlass_plane_reject_dict = {'apply': True, 'exclude_spw': '', 'flagpct_thresh': 0.8, 'beamdev_thresh': 0.2}
+        vlass_plane_reject_dict = {
+            'apply': True, 'exclude_spw': '', 'flagpct_thresh': 0.8, 'beamdev_thresh': 0.2}
         if isinstance(unprocessed, dict):
             vlass_plane_reject_dict.update(unprocessed)
         if isinstance(unprocessed, bool):
             vlass_plane_reject_dict['apply'] = unprocessed
-        LOG.debug("convert the task input of 'vlass_plane_reject' from %r to %r.", unprocessed, vlass_plane_reject_dict)
+        LOG.debug("convert the task input of 'vlass_plane_reject_im' from %r to %r.",
+                  unprocessed, vlass_plane_reject_dict)
         return vlass_plane_reject_dict
 
     @vdp.VisDependentProperty(null_input=['', None, {}])
@@ -79,7 +81,7 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                  hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
-                 cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, vlass_plane_reject=None,
+                 cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, vlass_plane_reject_im=None,
                  parallel=None,
                  # Extra parameters
                  ):
@@ -114,7 +116,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_mosweight = hm_mosweight
         self.parallel = parallel
         self.overwrite_on_export = overwrite_on_export
-        self.vlass_plane_reject = vlass_plane_reject
+        self.vlass_plane_reject_im = vlass_plane_reject_im
 
 
 # tell the infrastructure to give us mstransformed data when possible by
@@ -203,15 +205,15 @@ class MakeImages(basetask.StandardTaskTemplate):
     def _add_vlass_se_cube_metadata(self, result):
         """Attach extra imaging metadata to Tclean results for the VLASS Coarse Cube imaging."""
 
-        vlass_plane_reject_keys_allowed = ['apply', 'exclude_spw', 'flagpct_thresh', 'beamdev_thresh']
-        self.inputs.vlass_plane_reject
+        vlass_plane_reject_keys_allowed = [
+            'apply', 'exclude_spw', 'flagpct_thresh', 'beamdev_thresh']
 
-        for k in self.inputs.vlass_plane_reject:
+        for k in self.inputs.vlass_plane_reject_im:
             if k not in vlass_plane_reject_keys_allowed:
-                LOG.warning("The key %r in the 'vlass_plane_reject' task input dictionary.", k)
+                LOG.warning("The key %r in the 'vlass_plane_reject_im' task input dictionary is not expected and will be ignored.", k)
 
-        beamdev_thresh = self.inputs.vlass_plane_reject['beamdev_thresh']
-        flagpct_thresh = self.inputs.vlass_plane_reject['flagpct_thresh']
+        beamdev_thresh = self.inputs.vlass_plane_reject_im['beamdev_thresh']
+        flagpct_thresh = self.inputs.vlass_plane_reject_im['flagpct_thresh']
 
         bmajor_list = []
         bminor_list = []
@@ -268,8 +270,8 @@ class MakeImages(basetask.StandardTaskTemplate):
             spwgroup_keep = [False]*len(spwgroup_list)
             for idx, spwgroup in enumerate(spwgroup_list):
                 is_spwgroup_excluded = set(map(str.strip, spwgroup.split(','))) & set(
-                    map(str.strip, self.inputs.vlass_plane_reject['exclude_spw'].split(',')))
-                if is_spwgroup_excluded or not self.inputs.vlass_plane_reject['apply']:
+                    map(str.strip, self.inputs.vlass_plane_reject_im['exclude_spw'].split(',')))
+                if is_spwgroup_excluded or not self.inputs.vlass_plane_reject_im['apply']:
                     spwgroup_keep[idx] = True
 
             plane_keep = c1 & c2 & c3 & c4 & c5 | np.array(spwgroup_keep)
