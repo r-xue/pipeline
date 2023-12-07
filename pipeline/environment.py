@@ -10,7 +10,7 @@ import subprocess
 import sys
 
 from importlib.metadata import version, PackageNotFoundError
-from importlib import resources
+from importlib.util import find_spec
 import pkg_resources
 
 from .infrastructure import mpihelpers
@@ -233,13 +233,12 @@ def _get_dependency_details(package_list=None):
                         'casampi', 'casaplotms']
 
     package_details = dict.fromkeys(package_list)
-    for r in package_list:
+    for package in package_list:
         try:
-            package_version = version(r)
-            with resources.path(r, '') as p:
-                package_path = p
-            package_details[r] = {
-                'version': package_version, 'path': package_path}
+            package_version = version(package)
+            module_spec = find_spec(package)
+            if module_spec is not None:
+                package_details[package] = {'version': package_version, 'path': os.path.dirname(module_spec.origin)}
         except PackageNotFoundError:
             pass
     return package_details
