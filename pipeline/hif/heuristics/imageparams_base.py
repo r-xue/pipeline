@@ -496,6 +496,10 @@ class ImageParamsHeuristics(object):
                         if self.is_eph_obj(field):
                             phasecenter = 'TRACKFIELD'
                         else:
+                            # Note that the local phasecenter variable is intentionally set to the
+                            # second return parameter which is psf_phasecenter. In case "shift" is
+                            # True this may be a different coordinate of the mosaic pointing closest
+                            # to the original phase center value.
                             _, phasecenter = self.phasecenter(field_ids, vislist=valid_vis_list, shift_to_nearest_field=shift,
                                                               primary_beam=largest_primary_beam_size, intent=intent)
                         do_parallel = mpihelpers.parse_mpi_input_parameter(parallel)

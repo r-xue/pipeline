@@ -302,14 +302,17 @@ class FindCont(basetask.StandardTaskTemplate):
                     # used in heuristics methods upstream.
                     if image_heuristics.is_eph_obj(target['field']):
                         phasecenter = 'TRACKFIELD'
-                        psf_phasecenter = ''
+                        psf_phasecenter = None
                         # 'REST' does not yet work (see CAS-8965, CAS-9997)
                         #outframe = 'REST'
                         outframe = ''
                         specmode = 'cubesource'
                     else:
                         phasecenter = target['phasecenter']
-                        psf_phasecenter = target['psf_phasecenter']
+                        if gridder == 'mosaic' and target['psf_phasecenter'] != target['phasecenter']:
+                            psf_phasecenter = target['psf_phasecenter']
+                        else:
+                            psf_phasecenter = None
                         outframe = 'LSRK'
                         specmode = 'cube'
 
