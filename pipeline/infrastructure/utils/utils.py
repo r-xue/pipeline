@@ -786,10 +786,10 @@ def open_with_lock(filename, mode='r'):
 
     with open(filename, mode) as fd:
 
-        LOG.info('acquiring lock on %s', filename)
+        LOG.debug('acquiring lock on %s', filename)
         try:
             fcntl.flock(fd, fcntl.LOCK_EX)
-            LOG.info('acquired lock on %s', filename)
+            LOG.debug('acquired lock on %s', filename)
         except OSError as e:
             LOG.warning('failed to acquire file lock due to the filesystem limitation,'
                         'which might cause racing conditions if multiple processes access %s simultaneously.',
@@ -798,7 +798,7 @@ def open_with_lock(filename, mode='r'):
         yield fd
         try:
             fcntl.flock(fd, fcntl.LOCK_UN)
-            LOG.info('released lock on %s', filename)
+            LOG.debug('released lock on %s', filename)
         except OSError as e:
             LOG.warning('failed to acquire file lock due to the filesystem limitation,'
                         'which might cause racing conditions if multiple processes access %s simultaneously.',
