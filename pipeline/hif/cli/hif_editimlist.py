@@ -2,7 +2,7 @@ import sys
 
 import pipeline.h.cli.utils as utils
 
-
+   
 @utils.cli_wrapper
 def hif_editimlist(imagename=None,
                    search_radius_arcsec=None,
@@ -44,7 +44,7 @@ def hif_editimlist(imagename=None,
                    uvtaper=None,
                    uvrange=None,
                    width=None,
-                   vlass_plane_reject=None,
+                   vlass_plane_reject_ms=None,
                    dryrun=None,
                    acceptresults=None):
 
@@ -116,7 +116,8 @@ def hif_editimlist(imagename=None,
     uvtaper              Used to set a uv-taper during clean.
     uvrange              Set of data selection uv ranges, \'\' for all.
     width                Channel width
-    vlass_plane_reject   Only used for the 'VLASS-SE-CUBE' imaging mode. default: True
+    vlass_plane_reject_ms
+                         Only used for the 'VLASS-SE-CUBE' imaging mode. default: True
                          If True, reject VLASS Coarse Cube planes with high flagging percentages (see the heuristics details below)
                          If False, do not perform flagging-based VLASS Coarse Cube plane rejection.
                          If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.
