@@ -319,7 +319,7 @@ def cli_command():
     parser.add_argument('--srcdir', '-s', type=str, default=None, help='Path of the Pipeline source code')
 
     args = parser.parse_args()
-    srcdir = args.scrdir
+    srcdir = args.srcdir
 
     # the primary fallback default of the pipeline source directory.
     env_pipeline_src = os.getenv('pipeline_src')
