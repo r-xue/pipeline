@@ -1,4 +1,4 @@
-In_pipeline : bool = True         # Set this boolean parameter to True 'In_pipeline'. 
+In_pipeline : bool = True         # Set this boolean parameter to True 'In_pipeline'.
 
 sigma_sp :float          #STD, most important parameter estimated in this module
 local_std :float         #local_std
@@ -8,7 +8,7 @@ e_std :int
 thr_rmg = 2.25          #Main requirement for the estimation termination is relative_mean_gap < thr_rmg.
 forced_level_down = 0.1 #When cut_level[est] is not effective in the iterative exclusions, cut_level is reduced forced_level_down
 
-Baseline_estimtion = True     # If True, baseline estimation is effective.
+Baseline_estimation = True     # If True, baseline estimation is effective.
 Baseline_inclination = True   # If False, horizontal baseline is assumed.
 thr_ss = 128                        # Inclination is effective for dmax > thr_ss
 thr_rpg = 0.5                       # Inclination is effective when abs(relative_pos_gap) > thr_rpg
@@ -168,8 +168,8 @@ def find_edges_a(i, sp_bl_a, ib_lim, ie_lim):
         ie += 1
     return ib,ie
 
-def parameter_set2(sign_dist) :   
-    if sign_dist > 10.0: 
+def parameter_set2(sign_dist) :
+    if sign_dist > 10.0:
         thr_f1 = 1.5   # very sensitive for mean_height in positive side
         thr_f2 = 3
     elif sign_dist > 2.0:
@@ -568,7 +568,7 @@ def iterative_2s_exclusions(_spectrum,mean_level,cut_level):
                 cut_level[e_std]=mean_sp+sigma_sp*thr_level
                 upper_part = np.where(_spectrum1>cut_level[e_std])
             lower_part = np.where(_spectrum1<=cut_level[e_std])   # lower_part is selected
-  
+
         else:                                      # Exclude from lower part
             cut_level[e_std]=mean_sp-sigma_sp*2
             lower_part = np.where(_spectrum1<cut_level[e_std])    # lower_part is selected
@@ -588,7 +588,7 @@ def iterative_2s_exclusions(_spectrum,mean_level,cut_level):
         mean_gap = upper_mean - lower_mean
         relative_mean_gap = mean_gap/sigma_sp
         print('statistics0:',e_std,mean_gap,sigma_sp,relative_mean_gap,mean_level[e_std],cut_level[e_std])
-        
+
         # Update mean_sp and sigma_sp
         if height_sp > depth_sp:
             sigma_sp = np.ma.std(_spectrum1[lower_part])
@@ -647,7 +647,7 @@ def line_finder(sp, sp_mask = False):
     cut_level = np.arange(e_std_max,dtype=float)
     sigma_sp,mean_sp,_spectrum1 = iterative_2s_exclusions(_spectrum,mean_level,cut_level)
     print('sigma_sp,mean_sp',sigma_sp,mean_sp)
-    
+
     # Baseline estimation by Geman-McClure function
     baseline = np.ma.arange(dmax,dtype=float)
     X_ = np.ma.arange(dmax).reshape(-1,1)
@@ -655,7 +655,7 @@ def line_finder(sp, sp_mask = False):
     # Preparation for lfr.GM()
     displacement_effective = False
     if Baseline_estimation:                # Baseline_estimation is used for the future alternative, e.g. Gaussian-subtraction
-        if Baseline_inclination and (dmax > thr_ss):         # Baseline_inclination is not effective for short spectrum  
+        if Baseline_inclination and (dmax > thr_ss):         # Baseline_inclination is not effective for short spectrum
 
             # SLOPE is estimated from mean_left and mean_right
             half_pos = len(_spectrum)//2
@@ -667,7 +667,7 @@ def line_finder(sp, sp_mask = False):
             # SLOPE is effective when abs(relative_pos_gap) is not too small
             displacement_effective = (abs(relative_pos_gap) > thr_rpg)
             if displacement_effective:   # in case of inclined baseline
-                # Make displacement for inclination compensation  
+                # Make displacement for inclination compensation
                 displacement = np.ma.arange(dmax,dtype=float)
                 #print ('displacement',displacement)
                 slope = 2*(mean_right-mean_left)/len(_spectrum)
@@ -694,7 +694,7 @@ def line_finder(sp, sp_mask = False):
         regressor =lfr.GM(t=t_param, g=gm_param, y_list=yc_list,model=lfr.LinearRegressor0(), loss=lfr.gm_error_loss, metric=lfr.mean_gm_error)
         print ('t,g:',t_param,gm_param)
         #print (X_.shape,_spectrum_.shape)
-        
+
         # Horizintal baseline estimation
         ones = np.ones((len(X_), 1))
         aaa=regressor.fit(X_,_spectrum_,ones)
@@ -714,7 +714,7 @@ def line_finder(sp, sp_mask = False):
         _spectrum_bl[min_X:max_X] = _spectrum[min_X:max_X]
         baseline[min_X:max_X] = 0
 
-    # Line detection scheme 
+    # Line detection scheme
     ## Preparation for parallel processings
     # sgzx_list is generated
     sgzx_list = []
@@ -723,7 +723,7 @@ def line_finder(sp, sp_mask = False):
             sgzx_list += [2 ** (ii+1)]
     #print ('sgzx_list',sgzx_list)
 
-    # arangement of g_ave, signal and coeff 
+    # arangement of g_ave, signal and coeff
     sgzxmaxp1= sgzxmax + 1
     g_ave = np.ma.arange(sgzxmaxp1*dmax,dtype=float).reshape(sgzxmaxp1,dmax)   # for Graphic use
     signal = np.ma.arange(sgzxmaxp1*dmax,dtype=float).reshape(sgzxmaxp1,dmax)
@@ -760,11 +760,11 @@ def line_finder(sp, sp_mask = False):
         #setting parameters
         sigma = sgzx_list[sgzx]
         wl_analysis = (sgzx >= sgzxmax - wl_mask_index)       # wl_analysis is controled by wl_mask_index.
-        
+
         # call detect_lines()
         new_lines = detect_lines(_spectrum_bl,sigma,signal[sgzx,:],coeff[sgzx,:],wl_flag,wl_analysis)
 
-        # detected line-list is appended to lines_detected 
+        # detected line-list is appended to lines_detected
         lines_detected.append(new_lines)
         print ('lines_detected',sgzx,len(lines_detected[sgzx]),lines_detected[sgzx])
 
@@ -888,7 +888,7 @@ if __name__ == "__main__":
 
             ## setting for line_finder()
             if _bl_selector:             # spectrum data before baseline subtraction
-                Baseline_estimation = False 
+                Baseline_estimation = False
             else:
                 Baseline_estimation = True         # lf_gm is called for baseline estimation
             if 1:   # line_finder works for spetrum with mask
