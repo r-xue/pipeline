@@ -321,7 +321,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                                 antenna_names_list.append(antenna_id_to_name[ant_id])
                             else:
                                 # should not have gotten here - debugging trap
-                                raise RuntimeError(f'Unexpected QA score {per_antenna_score} for {ms.basename} '
+                                LOG.error(f'Unexpected QA score {per_antenna_score} for {ms.basename} '
                                     f'SPW {spw_id} Antenna {antenna_id_to_name[ant_id]}')
                         # PIPE-1762: aggregate the QA scores and messages about potential phase outliers.
                         # One or more spws sharing the same unique set of antennas generates one message.
@@ -342,7 +342,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                             }
                     else:
                         # should not have gotten here - the previous conditions check all possible cases
-                        raise RuntimeError(f'Unexpected QA score {EB_spw_QA_score} for {ms.basename} SPW {spw_id}')
+                        LOG.error(f'Unexpected QA score {EB_spw_QA_score} for {ms.basename} SPW {spw_id}')
 
                 if good_spw_ids:
                     # Add aggregated score for good spws

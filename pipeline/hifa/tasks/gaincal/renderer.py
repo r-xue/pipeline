@@ -166,16 +166,16 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                             spw_mapped.append((spwmap.spwmap[plotspw], ifld.field))
                     # add a message to the caption of diagnostic phase offset plot in case that the spw is mapped.
                     # in the case of more than one phase calibrator, append the field name in brackets to the spw name.
-                    spwmapmessage = []
+                    captionmessage = []
                     for targetspw, field in spw_mapped:
-                        spwmapmessage.append('spw {}{}'.format(
+                        captionmessage.append('spw {}{}'.format(
                             targetspw, ' ({})'.format(field) if num_fields_with_phase_intent > 1 else ''))
                     if spw_combined:
-                        spwmapmessage.append('all spws combined{}'.format(
-                            ' ({})'.format(', '.join(spw_combined)) if num_fields_with_phase_intent > 1 else ''))
-                    if spwmapmessage:
-                        plot.parameters['spwmapmessage'] = ('This spw is calibrated using the phase solution for {}.'.
-                                                            format(', '.join(spwmapmessage)))
+                        captionmessage.append('all spws combined' + (' ({})'.format(', '.join(spw_combined))
+                                                                     if num_fields_with_phase_intent > 1 else ''))
+                    if captionmessage:
+                        plot.captionmessage = ('This spw is calibrated using the phase solution for {}.'.format(
+                            ', '.join(captionmessage)))
 
             # Generate detailed plots and render corresponding sub-pages.
             if pipeline.infrastructure.generate_detail_plots(result):
