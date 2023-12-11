@@ -39,7 +39,7 @@ N_SLICES = 10  # Total number of slices
 N_EDGE = 2  # Number of edge slices to be excluded from processing
 N_REMAINING = N_SLICES - N_EDGE * 2  # Number of slices remaining after excluding edges
 
-# Default colormap of graphs
+# Default color map for peak SN map and mask map
 DEFAULT_COLORMAP = "rainbow"
 
 # Define a named tuple to represent the frequency specification.
