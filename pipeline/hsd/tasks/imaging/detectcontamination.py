@@ -89,9 +89,9 @@ def detect_contamination(context: 'Context',
     stage_dir = os.path.join(context.report_dir, f'stage{context.task_counter}')
     os.makedirs(stage_dir, exist_ok=True)
 
-    # Define the output name for the contamination report
+    # Define the output file name for the contamination report
     output_name = os.path.join(stage_dir, item.imagename.rstrip('/') + '.contamination.png')
-    LOG.info(output_name)
+    LOG.info(f'The output file name for the contamination report: {output_name}')
 
     # Read FITS and its header
     cube_regrid, naxis = _read_image(item.imagename)
