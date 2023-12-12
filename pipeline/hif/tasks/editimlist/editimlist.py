@@ -650,6 +650,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         vlass_flag_stats = self._vlass_plane_rejection(imlist_entry)
         result.vlass_flag_stats = vlass_flag_stats
 
+        spwgroup_reject_list = []
+
         for idx, spw in enumerate(imlist_entry['spw']):
 
             imlist_entry_per_spwgroup = copy.deepcopy(imlist_entry)
@@ -664,22 +666,31 @@ class Editimlist(basetask.StandardTaskTemplate):
             flagpct_threshold = 1.0
 
             if flagpct is None:
-                LOG.warning('Can not find previous flagging summary for spw=%r, but we will still add it as an imaging target.', spw)
+                LOG.warning(
+                    'Can not find previous flagging summary for spw=%r, but we will still add it as an imaging target.',
+                    spw)
             else:
                 if flagpct >= flagpct_threshold:
-                    LOG.warning('VLASS Data for spw=%r is %.2f%% flagged, and we will skip it as an imaging target.', spw, flagpct*100)
+                    LOG.warning(
+                        'VLASS Data for spw=%r is %.2f%% flagged, and we will skip it as an imaging target.', spw,
+                        flagpct * 100)
                     continue
 
             if vlass_flag_stats['spwgroup_reject'][idx]:
-                LOG.warning(
-                    'VLASS Data for spw=%r meets the plane rejection ceritera: nfield>=%i with flagpct>=%.2f%%.',
-                    spw, self.inputs.vlass_plane_reject_ms['nfield_thresh'], self.inputs.vlass_plane_reject_ms['flagpct_thresh'] * 100)
+                spwgroup_reject_list.append(spw)
                 continue
 
             result.targets_reffreq.append(imlist_entry_per_spwgroup['reffreq'])
             result.targets_spw.append(imlist_entry_per_spwgroup['spw'])
             result.targets_imagename.append(os.path.basename(imlist_entry_per_spwgroup['imagename']))
             result.add_target(imlist_entry_per_spwgroup)
+
+        if spwgroup_reject_list:
+            LOG.warning(
+                'VLASS Data for spw=%r meets the plane rejection criteria: nfield>=%i with flagpct>=%.2f%%.', ','.join(
+                    spwgroup_reject_list),
+                self.inputs.vlass_plane_reject_ms['nfield_thresh'],
+                self.inputs.vlass_plane_reject_ms['flagpct_thresh'] * 100)
 
         return result
 
