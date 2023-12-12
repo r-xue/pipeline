@@ -311,7 +311,7 @@ class RestoreData(basetask.StandardTaskTemplate):
                         'threshold': kwargs['threshold'],
                         'excludechan': kwargs['excludechan'],
                         'correct_atm': kwargs['correctATM'],
-                        'atm_auto_exclude': kwargs['atm_auto_exclude'],
+                        'atm_auto_exclude': kwargs.get('atm_auto_exclude', True),
                         'bwthreshspw': kwargs.get('bwthreshspw', {}),
                     }
 
