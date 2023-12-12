@@ -312,7 +312,7 @@ class RestoreData(basetask.StandardTaskTemplate):
                         'excludechan': kwargs['excludechan'],
                         'correct_atm': kwargs['correctATM'],
                         'atm_auto_exclude': kwargs['atm_auto_exclude'],
-                        'bwthreshspw': kwargs['bwthreshspw'],
+                        'bwthreshspw': kwargs.get('bwthreshspw', {}),
                     }
 
                     try:
