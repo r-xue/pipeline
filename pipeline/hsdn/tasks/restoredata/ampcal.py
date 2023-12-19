@@ -12,9 +12,9 @@ LOG = infrastructure.get_logger(__name__)
 
 class SDAmpCalInputs(vdp.StandardInputs):
     """
-    Original is pipeline.hsd.tasks.k2jycal.k2jycal.py. 
-    This ampcal.py is modified specially for NRO data 
-    to correct scale differences between beams of FOREST. 
+    Original is pipeline.hsd.tasks.k2jycal.k2jycal.py.
+    This ampcal.py is modified specially for NRO data
+    to correct scale differences between beams of FOREST.
     """
     reffile = vdp.VisDependentProperty(default='')
 
@@ -141,12 +141,10 @@ class SDAmpCal(basetask.StandardTaskTemplate):
         # caltable as the best result
 
         # double-check that the caltable was actually generated
-        on_disk = [ca for ca in result.pool
-                   if ca.exists() or self._executor._dry_run]
+        on_disk = [ca for ca in result.pool if ca.exists()]
         result.final[:] = on_disk
 
-        missing = [ca for ca in result.pool
-                   if ca not in on_disk and not self._executor._dry_run]
+        missing = [ca for ca in result.pool if ca not in on_disk]
         result.error.clear()
         result.error.update(missing)
 
