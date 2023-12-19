@@ -30,21 +30,9 @@ class ApplycalInputs(vdp.StandardInputs):
     """
     ApplycalInputs defines the inputs for the Applycal pipeline task.
     """
-    # parallel = sessionutils.parallel_inputs_impl()
-    @property
-    def parallel(self):
-        return self._parallel
-
-    @parallel.setter
-    def parallel(self, value):
-        if value is None:
-            value = False
-        else:
-            allowed = ('true', 'false', 'automatic', True, False)
-            if value not in allowed:
-                m = ', '.join(('{!r}'.format(i) for i in allowed))
-                raise ValueError('Value not in allowed value set ({!s}): {!r}'.format(m, value))
-        self._parallel = value
+    # PIPE-1691: hif_applycal is now implicitly a parallel task, but by default
+    # running with parallel=False.
+    parallel = sessionutils.parallel_inputs_impl(default=False)
 
     @vdp.VisDependentProperty
     def antenna(self):

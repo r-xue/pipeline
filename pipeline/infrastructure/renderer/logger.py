@@ -35,36 +35,32 @@ LOG = logging.get_logger(__name__)
 # thumbnails will be generated 
 THUMBNAIL_CMD = None 
 
-if platform.system() == 'Darwin':
-    # Look for sips rather than ImageMagick on OS X. sips is a system
-    # executable that should be available on all OS X systems.
+
+# first try to find ImageMagick's 'mogrify' command. We assume that
+# ImageMagick's 'convert' commnand can be found in the same directory. We
+# do not search for 'convert' directly as some utilities also provide a
+# 'convert' command which may come earlier on the PATH. 
+mogrify_path = spawn.find_executable('mogrify')
+if mogrify_path:
+    bin_dir = os.path.dirname(mogrify_path)
+    convert_path = os.path.join(bin_dir, 'convert')
+    if os.path.exists(convert_path):
+        LOG.trace('Using convert executable at \'%s\' to generate '
+                  'thumbnails' % convert_path)
+        THUMBNAIL_CMD = lambda full, thumb : (convert_path, full, '-thumbnail', '250x188', thumb)
+
+if THUMBNAIL_CMD is None and platform.system() == 'Darwin':
+    # macOS only: fallback to sips if ImageMagick, e.g. from MacPorts or Homebrew is not found on macOS. sips is a system
+    # executable that should be available on all macOS systems.
     sips_path = spawn.find_executable('sips')
     if sips_path:
-        LOG.trace('Using sips executable at \'%s\' to generate thumbnails' 
+        LOG.trace('Using sips executable at \'%s\' to generate thumbnails'
                   % sips_path)
-        THUMBNAIL_CMD = lambda full, thumb : (sips_path, '-z', '188', '250',
-                                              '--out', thumb, full)
-else:
-    # .. otherwise try to find ImageMagick's 'mogrify' command. We assume that
-    # ImageMagick's 'convert' commnand can be found in the same directory. We
-    # do not search for 'convert' directly as some utilities also provide a
-    # 'convert' command which may come earlier on the PATH.      
-    mogrify_path = spawn.find_executable('mogrify')
-    if mogrify_path:
-        bin_dir = os.path.dirname(mogrify_path)
-        convert_path = os.path.join(bin_dir, 'convert')
-        if os.path.exists(convert_path):
-            LOG.trace('Using convert executable at \'%s\' to generate '
-                      'thumbnails' % convert_path)
-            THUMBNAIL_CMD = lambda full, thumb : (convert_path, full, 
-                    '-thumbnail', '250x188', thumb)
-        else:
-            LOG.warning('Could not find ImageMagick \'convert\' command. '
-                        'Thumbnails will not be generated, leading to slower '
-                        'web logs.')
-    else:
-        LOG.warning('ImageMagick is not installed. Thumbnails will not be '
-                    'generated, leading to slower web logs.')
+        THUMBNAIL_CMD = lambda full, thumb : (sips_path, '-Z', '250', '--out', thumb, full)
+
+if THUMBNAIL_CMD is None:
+    LOG.warning('Could not find the ImageMagick \'convert\' or macOS \'sips\' command. '
+                'Thumbnails will not be generated, leading to slower web logs.')
 
 
 def getPath(filename):
@@ -266,16 +262,21 @@ class Selector(object):
 
 class Plot(object):
     def __init__(self, filename, x_axis='Unknown', y_axis='Unknown', 
-                 field=None, parameters=None, qa_score=None, command=None):
+                 field=None, parameters=None, qa_score=None, command=None, captionmessage=''):
         """
         Plot(filename, x_axis, y_axis, field, parameters)
 
-        filename - the filename of the plot
-        x_axis - what the X axis of this plot measures
-        y_axis - what the Y axis of this plot measures
-        field - the name of the source or field which this data corresponds to
-        parameters - a dictionary of parameters, eg. { 'ant' : 1, 'spw' : 2 }. These
-            parameters should be known to the logging.Parameters class.
+        Args:
+            filename: the filename of the plot.
+            x_axis: what the X axis of this plot measures.
+            y_axis: what the Y axis of this plot measures.
+            field: the name of the source or field which this data corresponds to.
+            parameters: a dictionary of parameters, eg. { 'ant' : 1, 'spw' : 2 }.
+                These parameters should be known to the logging.Parameters class.
+            qa_score: additional property of the plot.
+            command: plotting command.
+            captionmessage: additional text in caption (its appearance is
+                determined by the mako template in which this plot appears).
         """
         if parameters is None:
             parameters = {}
@@ -290,6 +291,7 @@ class Plot(object):
             self.parameters['field'] = field
         self.qa_score = qa_score
         self.command = command
+        self.captionmessage = captionmessage
 
     @property
     def css_class(self):
