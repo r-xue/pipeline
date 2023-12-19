@@ -116,6 +116,15 @@ xvfb-run casa --nogui --nologger --log2term --agg -c \
 
 The `--longtests` option enables the longer tests to be run. When this option is not specified, only the quicker set of tests will be run. 
 
+The `--data-directory` option allows the specification of the directory where the larger input data files are stored. If not specified, this defaults to 
+`/lustre/cv/projects/pipeline-test-data/regression-test-data/` which requires the tests to be run somewhere with access to lustre.
+
+```console
+xvfb-run casa --nogui --nologger --log2term --agg -c \
+    "import pytest; pytest.main(['-vv', '-m alma and slow', '--data-directory=/users/kberry/big_data_directory/', '<pipeline_dir>/pipeline/infrastructure/utils/regression-tester.py'])"
+```
+
+
 ## Custom markers
 
 There are several custom markers used for the pipeline regression tests. These are specified in pytest.ini and also listed below: 

@@ -1,6 +1,5 @@
 import pipeline.h.tasks.applycal.applycal as applycal
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import task_registry
 
@@ -12,22 +11,6 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class IFApplycalInputs(applycal.ApplycalInputs):
-    # parallel = sessionutils.parallel_inputs_impl()
-    @property
-    def parallel(self):
-        return self._parallel
-
-    @parallel.setter
-    def parallel(self, value):
-        if value is None:
-            value = False
-        else:
-            allowed = ('true', 'false', 'automatic', True, False)
-            if value not in allowed:
-                m = ', '.join(('{!r}'.format(i) for i in allowed))
-                raise ValueError('Value not in allowed value set ({!s}): {!r}'.format(m, value))
-        self._parallel = value
-
     flagdetailedsum = vdp.VisDependentProperty(default=True)
 
     # PIPE-600: Overrides h_applycal default, adding polarisation to
