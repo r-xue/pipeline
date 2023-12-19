@@ -1430,19 +1430,21 @@ def bpcal_score_SNR(SNR):
 # ------------------------------------------------------------------------------
 def bpcal_score_flatness(values):
 
-    # Need to avoid zero mean as it would cause a division exception
-    if numpy.ma.mean(values) == 0.0:
-        if (values == 0.0).all():
+    if numpy.ma.all(numpy.ma.getmaskarray(values)):
+        wEntropy = 1.0e10
+    elif numpy.ma.mean(values) == 0.0:
+        # Need to avoid zero mean as it would cause a division exception
+        if numpy.ma.all(values == 0.0):
             wEntropy = 1.0
         else:
             wEntropy = 1.0e10
     else:
         # Geometrical mean can not be calculated for vectors <= 0.0 for any
         # elements.
-        if (values < 0.0).all():
+        if numpy.ma.all(values < 0.0):
             # All negative -> just invert the spectrum to estimate the flatness
             wEntropy = scipy.stats.mstats.gmean(-values)/numpy.ma.mean(-values)
-        elif (values <= 0.0).any():
+        elif numpy.ma.any(values <= 0.0):
             # Some negative, some positive values (like in a phase spectrum)
             # -> push to slightly positiv numbers. Since gmean returns 0.0 if
             # at least one value of the spectrum is 0.0, we offset with the
