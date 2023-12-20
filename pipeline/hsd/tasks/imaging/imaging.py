@@ -258,6 +258,7 @@ class SDImaging(basetask.StandardTaskTemplate):
     def _finalize_worker_result(cls,
                                 context: 'Context',
                                 result: 'SDImagingResults',
+                                session: str,
                                 sourcename: str,
                                 spwlist: List[int],
                                 antenna: str,
@@ -284,6 +285,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         Args:
             context            : Pipeline context
             result             : SDImagingResults instance
+            session            : Session name
             sourcename         : Name of the source
             spwlist            : List of SpWs
             antenna            : Antenna name
@@ -371,6 +373,13 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             info['stokes'] = stokes
 
+            info['effbw'] = 'N/A'
+            info['level'] = 'member'
+            info['obspatt'] = 'sd'
+            info['arrays'] = 'TP'
+            info['modifier'] = ''
+            info['session'] = session
+
             image.setmiscinfo(info)
 
         # finally replace task attribute with the top-level one
@@ -409,6 +418,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             restfreq_list=self.inputs.restfreq,
             ms_list=self.inputs.ms,
             ms_names=[msobj.name for msobj in self.inputs.ms],
+            session_names=[msobj.session for msobj in self.inputs.ms],
             args_spw=sdutils.convert_spw_virtual2real(self.inputs.context, self.inputs.spw),
             in_field=self.inputs.field,
             imagemode=self.inputs.mode.upper(),
@@ -811,7 +821,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.info("The spectral line and deviation mask frequency ranges = {}".format(str(__rms_exclude_freq)))
         _rgp.combined.rms_exclude.extend(__rms_exclude_freq)
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _cp.infiles]
-        self._finalize_worker_result(self.inputs.context, _rgp.imager_result, sourcename=_rgp.source_name,
+        self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=_cp.session_names[0], sourcename=_rgp.source_name,
                                      spwlist=_rgp.v_spwids, antenna=_rgp.ant_name, specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=self.stokes,
                                      datatype=self.inputs.datatype, datamin=None, datamax=None, datarms=None,
@@ -835,7 +845,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp.tocombine.org_directions_nro.append(_rgp.org_direction)
             _rgp.tocombine.specmodes.append(_rgp.specmode)
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _cp.infiles]
-        self._finalize_worker_result(self.inputs.context, _rgp.imager_result_nro, sourcename=_rgp.source_name,
+        self._finalize_worker_result(self.inputs.context, _rgp.imager_result_nro, session=_cp.session_names[0], sourcename=_rgp.source_name,
                                      spwlist=_rgp.v_spwids, antenna=_rgp.ant_name, specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=_rgp.stokes_list[1],
                                      datatype=self.inputs.datatype, datamin=None, datamax=None, datarms=None,
@@ -1042,7 +1052,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                           bandwidth=__bw, bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
                                           sensitivity=_pp.theoretical_rms)
         __sensitivity_info = SensitivityInfo(__sensitivity, _pp.stat_freqs, (_cp.is_not_nro()))
-        self._finalize_worker_result(self.inputs.context, _rgp.imager_result, sourcename=_rgp.source_name,
+        self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=_cp.session_names[0], sourcename=_rgp.source_name,
                                      spwlist=_rgp.combined.v_spws, antenna='COMBINED', specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=self.stokes,
                                      datatype=self.inputs.datatype, datamin=_pp.image_min, datamax=_pp.image_max,
@@ -1083,7 +1093,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         if _rgp.imager_result.outcome is not None:
             # Imaging was successful, proceed following steps
             __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _rgp.combined.infiles]
-            self._finalize_worker_result(self.inputs.context, _rgp.imager_result, sourcename=_rgp.source_name,
+            self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=_cp.session_names[0], sourcename=_rgp.source_name,
                                          spwlist=_rgp.combined.v_spws, antenna='COMBINED', specmode=_rgp.specmode,
                                          imagemode=_cp.imagemode, stokes=_rgp.stokes_list[1],
                                          datatype=self.inputs.datatype, datamin=_pp.image_min, datamax=_pp.image_max,
