@@ -717,8 +717,9 @@ class CleanBase(basetask.StandardTaskTemplate):
     def _copy_restoringbeam_from_psf(self, imagename):
         """Copy the per-plane beam set from .psf image to .image/.residual.
 
-        Note: this is a short-term workaround for CAS-13401, in which CASA/tclean(stokes='IQUV') doesn't save
+        Note: this is a workaround for CAS-13401, in which CASA/tclean(stokes='IQUV') doesn't save
               the per-plane restoring beam information into the residual and restored images.
+              For CASA ver>=6.6.0 (after the CAS-13401 implementation), this block should act as a no-op.
         """
         bm_src = '.psf'
         bm_src_ext_try = ['', '.tt0']
@@ -743,17 +744,20 @@ class CleanBase(basetask.StandardTaskTemplate):
                 for bm_ext0 in bm_dst_ext:
                     if os.path.exists(imagename+bm_dst0+bm_ext0):
                         with casa_tools.ImageReader(imagename+bm_dst0+bm_ext0) as bm_dst_im:
-                            LOG.info(f'Copy the per-plane beam set to {imagename+bm_dst0+bm_ext0}')
-                            dst_shape = bm_dst_im.shape()
-                            if (dst_shape == src_shape).all():
+                            if (bm_dst_im.shape() == src_shape).all() and not bm_dst_im.restoringbeam():
+                                # PIPE-2061: we only copy the beam info if the target and source images have the same shape
+                                # and the target image doesn't have a beam.
+                                LOG.info(f'Copy the per-plane beam set to {imagename+bm_dst0+bm_ext0}')
                                 for idx_c in range(src_shape[3]):
                                     for idx_p in range(src_shape[2]):
                                         LOG.debug(f'working on idx_chan={idx_c}, idx_pol={idx_p}')
                                         bm = bm_src_im.restoringbeam(channel=idx_c, polarization=idx_p)
                                         bm_dst_im.setrestoringbeam(beam=bm, channel=idx_c, polarization=idx_p)
                             else:
-                                LOG.warning(
-                                    'The restoring beam information source and destination images have different shapes. We will not copy the per-plane beam set.')
+                                LOG.info(
+                                    'The restoring beam copying source and target images have different shapes or the target '
+                                    'image already has a beam. We will skip copying the restoring beam')
+
 
 def rename_image(old_name, new_name, extensions=['']):
     """
