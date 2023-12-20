@@ -735,6 +735,7 @@ class Tclean(cleanbase.CleanBase):
         # Items for image header for manifest
         obspatt = 'mos' if self.image_heuristics.is_mosaic(inputs.field, inputs.intent) else 'sf'
         arrays = self.image_heuristics.arrays()
+        modifier = ''
         session = inputs.context.observing_run.get_ms(inputs.vis[0]).session
 
         # Local list from input masks
@@ -959,14 +960,14 @@ class Tclean(cleanbase.CleanBase):
             if inputs.specmode in ('mfs', 'cont'):
                 effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
             else:
-                effbw = abs(self.eff_ch_bw)
-                if inputs.nbin is not None:
-                    effbw = effbw * inputs.nbin
+                msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
+                nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
+                _, _, _, effbw = self.image_heuristics.get_bw_corr_factor(msobj, inputs.spw, nbin)
 
             self._update_miscinfo(imagename=result.image.replace('.image', '.image' + extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
-                                  effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
+                                  effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, modifier=modifier, session=session)
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)
@@ -1048,6 +1049,7 @@ class Tclean(cleanbase.CleanBase):
         # Items for image header for manifest
         obspatt = 'mos' if self.image_heuristics.is_mosaic(inputs.field, inputs.intent) else 'sf'
         arrays = self.image_heuristics.arrays()
+        modifier = ''
         session = inputs.context.observing_run.get_ms(inputs.vis[0]).session
 
         # Compute the dirty image
@@ -1122,14 +1124,14 @@ class Tclean(cleanbase.CleanBase):
             if inputs.specmode in ('mfs', 'cont'):
                 effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
             else:
-                effbw = abs(self.eff_ch_bw)
-                if inputs.nbin is not None:
-                    effbw = effbw * inputs.nbin
+                msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
+                nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
+                _, _, _, effbw = self.image_heuristics.get_bw_corr_factor(msobj, inputs.spw, nbin)
 
             self._update_miscinfo(imagename=result.image.replace('.image', '.image'+extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
-                                  effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
+                                  effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, modifier=modifier, session=session)
 
             result.set_image_min(pbcor_image_min)
             result.set_image_min_iquv(pbcor_image_min_iquv)
@@ -1252,14 +1254,14 @@ class Tclean(cleanbase.CleanBase):
             if inputs.specmode in ('mfs', 'cont'):
                 effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
             else:
-                effbw = abs(self.eff_ch_bw)
-                if inputs.nbin is not None:
-                    effbw = effbw * inputs.nbin
+                msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
+                nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
+                _, _, _, effbw = self.image_heuristics.get_bw_corr_factor(msobj, inputs.spw, nbin)
 
             self._update_miscinfo(imagename=result.image.replace('.image', '.image'+extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
-                                  effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, session=session)
+                                  effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, modifier=modifier, session=session)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,
