@@ -86,6 +86,7 @@ def gaussian_average(_spectrum, sigma: float):
 
 def med_bl_a(sig, ib, ibmin, ibmax):    # median of sig[ib0:ib1] is calculated
     global median_iw
+    median_iw = 0
     ib0 = max(ibmin,ib-median_iw)
     ib1 = min(ibmax,ib+median_iw+1)
     return np.ma.median(sig[ib0:ib1])
@@ -151,7 +152,7 @@ def detect_lines(sp_bl, sigma, signal, coeff, wl_flag, wl_analysis):
 def find_edges_e(i, sp_bl_a, ib_lim, ie_lim):
     global min_X,max_X
     ib = i
-    ie = i                    # lower/upper bounds of the line
+    ie = i + 1                   # lower/upper bounds of the line
     while med_bl_a(sp_bl_a, ib, min_X, max_X) > 0 and ib > ib_lim:  # Detect left zero-crossing of sp_bl_a
         ib -= 1
     while med_bl_a(sp_bl_a, ie, min_X, max_X) > 0 and ie < ie_lim:  # Detect right zero-crossing of sp_bl_a
@@ -161,7 +162,7 @@ def find_edges_e(i, sp_bl_a, ib_lim, ie_lim):
 def find_edges_a(i, sp_bl_a, ib_lim, ie_lim):
     global min_X,max_X
     ib = i
-    ie = i                    # lower/upper bounds of the line
+    ie = i + 1                   # lower/upper bounds of the line
     while med_bl_a(sp_bl_a, ib, min_X, max_X) < 0 and ib > ib_lim:  # Detect left zero-crossing of sp_bl_a
         ib -= 1
     while med_bl_a(sp_bl_a, ie, min_X, max_X) < 0 and ie < ie_lim:  # Detect right zero-crossing of sp_bl_a
@@ -622,13 +623,13 @@ def line_finder(sp, sp_mask = False):
 
     # effective signal range is set to [min_X max_X]
     min_X = 0
-    max_X = dmax
+    max_X = dmax -1
     if _spectrum.mask.shape != ():        ### even when == (), this code works
         while _spectrum.mask[min_X] :     ### otherwise, min_X and max_X are adjusted to mask data
             if min_X == dmax - 1:
                 break
             min_X += 1
-        while _spectrum.mask[max_X-1] :
+        while _spectrum.mask[max_X] :
             if max_X == 0:
                 break
             max_X -= 1
