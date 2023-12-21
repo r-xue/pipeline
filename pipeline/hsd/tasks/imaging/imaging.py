@@ -278,7 +278,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                                 assoc_fields: List[int],
                                 assoc_spws: List[int],
                                 sensitivity_info: Optional[SensitivityInfo]=None,
-                                theoretical_rms: Optional[Dict]=None):
+                                theoretical_rms: Optional[Dict]=None,
+                                effbw: Optional[float]=None):
         """
         Fanalize the worker result.
 
@@ -306,6 +307,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             assoc_spws         : List of associated SpWs
             sensitivity_info   : Sensitivity information
             theoretical_rms    : Theoretical RMS
+            effbw              : Effective channel bandwidth in Hz
         Returns:
             (none)
         """
@@ -373,7 +375,9 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             info['stokes'] = stokes
 
-            info['effbw'] = 'N/A'
+            if effbw:
+                info['effbw'] = effbw
+
             info['level'] = 'member'
             info['obspatt'] = 'sd'
             info['arrays'] = 'TP'
@@ -812,6 +816,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             _cp : Common parameter object of prepare()
             _rgp : Reduction group parameter object of prepare()
         """
+        __cqa = casa_tools.quanta
+
         LOG.info("Calculate spectral line and deviation mask frequency ranges in image.")
         with casa_tools.ImageReader(_rgp.imagename) as ia:
             __cs = ia.coordsys()
@@ -821,6 +827,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.info("The spectral line and deviation mask frequency ranges = {}".format(str(__rms_exclude_freq)))
         _rgp.combined.rms_exclude.extend(__rms_exclude_freq)
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _cp.infiles]
+        __spwid = str(_rgp.combined.v_spws[REF_MS_ID])
+        __spwobj = _rgp.ref_ms.get_spectral_window(__spwid)
+        __effective_bw = __cqa.quantity(__spwobj.channels.chan_effbws[0], 'Hz')
+        effbw = float(__cqa.getvalue(__effective_bw))
         self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=_cp.session_names[0], sourcename=_rgp.source_name,
                                      spwlist=_rgp.v_spwids, antenna=_rgp.ant_name, specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=self.stokes,
@@ -828,7 +838,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                      validsp=_rgp.validsps,
                                      rms=_rgp.rmss, edge=_cp.edge, reduction_group_id=_rgp.group_id,
                                      file_index=__file_index, assoc_antennas=_rgp.antids, assoc_fields=_rgp.fieldids,
-                                     assoc_spws=_rgp.v_spwids)
+                                     assoc_spws=_rgp.v_spwids, effbw=effbw)
 
     def __additional_imaging_process_for_nro(self, _cp: imaging_params.CommonParameters,
                                              _rgp: imaging_params.ReductionGroupParameters):
@@ -838,6 +848,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             _cp : Common parameter object of prepare()
             _rgp : Reduction group parameter object of prepare()
         """
+        __cqa = casa_tools.quanta
+
         # Imaging was successful, proceed following steps
         # add image list to combine
         if os.path.exists(_rgp.imagename_nro) and os.path.exists(_rgp.imagename_nro + '.weight'):
@@ -845,6 +857,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp.tocombine.org_directions_nro.append(_rgp.org_direction)
             _rgp.tocombine.specmodes.append(_rgp.specmode)
         __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _cp.infiles]
+        __spwid = str(_rgp.combined.v_spws[REF_MS_ID])
+        __spwobj = _rgp.ref_ms.get_spectral_window(__spwid)
+        __effective_bw = __cqa.quantity(__spwobj.channels.chan_effbws[0], 'Hz')
+        effbw = float(__cqa.getvalue(__effective_bw))
         self._finalize_worker_result(self.inputs.context, _rgp.imager_result_nro, session=_cp.session_names[0], sourcename=_rgp.source_name,
                                      spwlist=_rgp.v_spwids, antenna=_rgp.ant_name, specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=_rgp.stokes_list[1],
@@ -852,7 +868,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                      validsp=_rgp.validsps,
                                      rms=_rgp.rmss, edge=_cp.edge, reduction_group_id=_rgp.group_id,
                                      file_index=__file_index, assoc_antennas=_rgp.antids, assoc_fields=_rgp.fieldids,
-                                     assoc_spws=_rgp.v_spwids)
+                                     assoc_spws=_rgp.v_spwids, effbw=effbw)
         _cp.results.append(_rgp.imager_result_nro)
 
     def __make_post_grid_table(self, _cp: imaging_params.CommonParameters,
@@ -1052,6 +1068,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                           bandwidth=__bw, bwmode='cube', beam=_pp.beam, cell=_pp.qcell,
                                           sensitivity=_pp.theoretical_rms)
         __sensitivity_info = SensitivityInfo(__sensitivity, _pp.stat_freqs, (_cp.is_not_nro()))
+        effbw = float(__cqa.getvalue(__effective_bw))
         self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=_cp.session_names[0], sourcename=_rgp.source_name,
                                      spwlist=_rgp.combined.v_spws, antenna='COMBINED', specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=self.stokes,
@@ -1060,7 +1077,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                      edge=_cp.edge, reduction_group_id=_rgp.group_id, file_index=__file_index,
                                      assoc_antennas=_rgp.combined.antids, assoc_fields=_rgp.combined.fieldids,
                                      assoc_spws=_rgp.combined.v_spws, sensitivity_info=__sensitivity_info,
-                                     theoretical_rms=__theoretical_noise)
+                                     theoretical_rms=__theoretical_noise, effbw=effbw)
 
     def __execute_combine_images_for_nro(self, _cp: imaging_params.CommonParameters,
                                          _rgp: imaging_params.ReductionGroupParameters,
@@ -1074,6 +1091,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         Returns:
             False if a valid image to combine does not exist for a specified source or spw.
         """
+        __cqa = casa_tools.quanta
+
         if len(_rgp.tocombine.images_nro) == 0:
             LOG.warning("No valid image to combine for Source {}, Spw {:d}".format(_rgp.source_name, _rgp.spwids[0]))
             return False
@@ -1093,6 +1112,10 @@ class SDImaging(basetask.StandardTaskTemplate):
         if _rgp.imager_result.outcome is not None:
             # Imaging was successful, proceed following steps
             __file_index = [common.get_ms_idx(self.inputs.context, name) for name in _rgp.combined.infiles]
+            __spwid = str(_rgp.combined.v_spws[REF_MS_ID])
+            __spwobj = _rgp.ref_ms.get_spectral_window(__spwid)
+            __effective_bw = __cqa.quantity(__spwobj.channels.chan_effbws[0], 'Hz')
+            effbw = float(__cqa.getvalue(__effective_bw))
             self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=_cp.session_names[0], sourcename=_rgp.source_name,
                                          spwlist=_rgp.combined.v_spws, antenna='COMBINED', specmode=_rgp.specmode,
                                          imagemode=_cp.imagemode, stokes=_rgp.stokes_list[1],
@@ -1100,7 +1123,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                          datarms=_pp.image_rms, validsp=_pp.validsps,
                                          rms=_pp.rmss, edge=_cp.edge, reduction_group_id=_rgp.group_id,
                                          file_index=__file_index, assoc_antennas=_rgp.combined.antids,
-                                         assoc_fields=_rgp.combined.fieldids, assoc_spws=_rgp.combined.v_spws)
+                                         assoc_fields=_rgp.combined.fieldids, assoc_spws=_rgp.combined.v_spws, effbw=effbw)
             _cp.results.append(_rgp.imager_result)
         return True
 
