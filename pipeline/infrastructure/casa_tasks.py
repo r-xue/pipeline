@@ -338,7 +338,7 @@ class CasaTasks:
             # Executions will be logged in casacalls-.txt
             @functools.wraps(fn)
             def func(*args, **kwargs):
-                return fn(*args, **kwargs).execute(dry_run=False)
+                return fn(*args, **kwargs).execute()
             return func
         else:
             # Executions will be logged in both casacalls-.txt and casa-command.txt

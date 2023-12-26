@@ -9,15 +9,17 @@ import resource
 import subprocess
 import sys
 
+from importlib.metadata import version, PackageNotFoundError
+from importlib.util import find_spec
 import pkg_resources
 
-import casalith
 from .infrastructure import mpihelpers
 from .infrastructure.mpihelpers import MPIEnvironment
 from .infrastructure import utils
+from .infrastructure import casa_tools
 
-__all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'cpu_type', 'hostname', 'host_distribution', 'logical_cpu_cores',
-           'memory_size', 'pipeline_revision', 'role', 'cluster_details']
+__all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'cpu_type', 'hostname', 'host_distribution',
+           'logical_cpu_cores', 'memory_size', 'pipeline_revision', 'role', 'cluster_details', 'dependency_details']
 
 
 def _cpu_type():
@@ -114,18 +116,6 @@ def _memory_size():
 
 # Determine pipeline version from Git or package.
 def _pipeline_revision():
-
-    def str_encode(s):
-        return bytes(s,sys.getdefaultencoding())
-    def str_decode(bs):
-        return bs.decode(sys.getdefaultencoding(),"strict")
-    def pipe_decode(output):
-        if isinstance(output,bytes) or isinstance(output,bytearray):
-            return str_decode(output)
-        elif isinstance(output,tuple):
-            return (str_decode(output[0]),str_decode(output[1]))
-        else:
-            return ("","")
     """
     Get a string describing the pipeline revision and branch of the executing
     pipeline distribution if executing from a Git repo; as a fall-back,
@@ -155,19 +145,18 @@ def _pipeline_revision():
     except (FileNotFoundError, subprocess.CalledProcessError):
         pass
 
-    if git_branch != None and (git_branch == "main" or git_branch.startswith("release/")):
-        proc = subprocess.Popen( [ pl_path + "/infrastructure/version" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=pl_path )
-        out,err = pipe_decode(proc.communicate( ))
-        #print(out)
-        releasetag = out.split(" ")[1].strip()
-        dirty=""
-        version = releasetag
-        if (len(out.split(" ")) == 3):
-            #print("Latest commit doesn't have a tag. Adding -dirty flag to version string.")
-            dirty="+" + out.split(" ")[2].strip() # "+" denotes local version identifier as described in PEP440
-            version = version + dirty
-        return version
-    else: 
+    if git_branch is not None and (git_branch == "main" or git_branch.startswith("release/")):
+        from pipeline.infrastructure.version import get_version
+        ver = get_version(pl_path)
+        # Output of the version.py script is a string with two or three space-separated elements:
+        # last branch tag (possibly empty), last release tag, and possibly a "dirty" suffix.
+        releasetag = ver[1]
+        if len(ver) >= 3:
+            dirty = ver[2]
+            return releasetag + '+' + dirty  # "+" denotes local version identifier as described in PEP440
+        else:
+            return releasetag
+    else:
         # Consolidate into single version string.
         if commit_hash is None:
             # If no Git commit info could be found, then attempt to load version
@@ -228,9 +217,33 @@ def _cluster_details():
     return env_details
 
 
-casa_version = casalith.version()
-casa_version_string = casalith.version_string()
-compare_casa_version = casalith.compare_version
+casa_version = casa_tools.utils.version()
+casa_version_string = casa_tools.utils.version_string()
+compare_casa_version = casa_tools.utils.compare_version
+
+
+def _get_dependency_details(package_list=None):
+    """Get dependency package version/path.
+
+    See https://docs.python.org/3.8/library/importlib.metadata.html#metadata
+    """
+    if package_list is None:
+        package_list = ['numpy', 'scipy', 'matplotlib', 'astropy', 'bdsf',
+                        'casatools', 'casatasks', 'almatasks', 'casadata',
+                        'casampi', 'casaplotms']
+
+    package_details = dict.fromkeys(package_list)
+    for package in package_list:
+        try:
+            package_version = version(package)
+            module_spec = find_spec(package)
+            if module_spec is not None:
+                package_details[package] = {'version': package_version, 'path': os.path.dirname(module_spec.origin)}
+        except PackageNotFoundError:
+            pass
+    return package_details
+
+
 cpu_type = _cpu_type()
 hostname = _hostname()
 host_distribution = _host_distribution()
@@ -240,6 +253,7 @@ memory_size = _memory_size()
 role = _role()
 pipeline_revision = _pipeline_revision()
 ulimit = _ulimit()
+dependency_details = _get_dependency_details()
 
 node_details = {
     'cpu': cpu_type,
