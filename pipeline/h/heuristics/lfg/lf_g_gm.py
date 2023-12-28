@@ -1,4 +1,21 @@
-In_pipeline : bool = True         # Set this boolean parameter to True 'In_pipeline'.
+#!/usr/bin/env python
+# coding: utf-8
+
+In_pipeline : bool = True    # Set this boolean parameter to True 'In_pipeline'.
+
+# Find indices of lines from spectrum data.
+"""
+    lf_g_gm.py (v.4.2)
+    This module provides a line finder based on Gaussian filter along with baseline estimator using Geman-McClure function.
+
+    line_finder() is a main function of this module, which serves as a line finder for a given spectrum data.
+
+    Abstract of line_finder() is as folows:
+    0)Rough estimation of mean and std of Baseline by Iterative 2-sigma exclusions: (iterative_2s_exclusions())
+    1)Baseline estimation by Geman-McClure function: (lf_gmb.py)
+    2)Wide line detection by zero-crossings of first derivative of Gaussian average of SIGNAL_BL: (line_detection2())
+    3)Narrow line detection by zero-crossings of the first derivative of Gaussian average on SIGNAL_BL: (line_detection())
+    4)Indices of the detected lines are made: (in line_finder())"""
 
 sigma_sp :float          #STD, most important parameter estimated in this module
 local_std :float         #local_std
@@ -8,27 +25,26 @@ e_std :int
 thr_rmg = 2.25          #Main requirement for the estimation termination is relative_mean_gap < thr_rmg.
 forced_level_down = 0.1 #When cut_level[est] is not effective in the iterative exclusions, cut_level is reduced forced_level_down
 
-Baseline_estimation = True     # If True, baseline estimation is effective.
-Baseline_inclination = True   # If False, horizontal baseline is assumed.
+Baseline_estimation :bool = True    # If True, baseline estimation is effective.
+Baseline_inclination :bool = True   # If False, horizontal baseline is assumed.
 thr_ss = 128                        # Inclination is effective for dmax > thr_ss
 thr_rpg = 0.5                       # Inclination is effective when abs(relative_pos_gap) > thr_rpg
-Gaussian_subtraction = False  # Not effective in this version, but I hope this boolen parameter works in future version
+Gaussian_subtraction:bool = False  # Not effective in this version, but I hope this boolen parameter works in future version
 
 # Baseline estimation by Geman-McClure function
 gm_param = 4                         # In Geman-McClure function, parameter c is defined by STD/gm_param.
 
 # Line/WideLine detection
-sgzxmax=3             # 3: 1 See details in line_finder()
+sgzxmax=3             # 3: See details in line_finder()
 wl_mask_index = 1     # 1: 0 through 3 are effective, wl_mask_index indicates a number of effective sigma's
 thr_c = 0.01          # 0.01, fixed empirically, used in detect_lines()
 thr_h = 40            # 40, fixed empirically, used in detect_lines2()
 thr_fgh = 100         # 100, fixed empirically, used in detect_lines2()
 
-# Line Width estimation<br>
+# Line Width estimation
 Gaussian_sp_bl :bool   # When True, zero-crosings of Median of Gaussian (with sigma=1) of signal_bl is used for edge estimation
                        # Otherwise, zero-crossings of signal_bl is used.
 median_iw :int         # global parameter controled by Gaussian_sp_bl
-
 thr_Gsb = 20.0         # Threshold for determining Gaussian_sp_bl:      Gaussian_sp_bl = (max_height/sigma_sp < thr_Gsb)
 
 # Other global parameters
@@ -40,7 +56,6 @@ min_height : int     # minimum height of signal_bl
 sign_dist : int      # automatically set to max_height/abs(min_height) in line_finder()
 
 thr_d : float         # automatically tuned by Gaussian_sp_bl in detect_lines()
-
 thr_f1 : float        # automatically tuned by sign_dist in detect_lines2()
 thr_f2 : float        # automatically tuned by sign_dist in detect_lines2()
 thr_g1 : float         # automatically tuned to thr_d in detect_lines2()
@@ -57,26 +72,76 @@ import numpy as np
 from math import pi, sqrt, exp, log, isnan
 import copy
 from typing import List, Optional
-#from numpy.typing import NDArray
 if In_pipeline:
     from . import lf_gmb as lfr   # bitbucket (pipeline)
+    Draw_graph = False
 else:
     import lf_gmb as lfr          # jupyternote (version-4.2 uses lf_gmb module)
 
-def gaussian(n, sigma):
+np_signal = 'np.ndarray[float]'
+line_list = List[List[int]]
+ranges = List[int]
+kernel = List[float]
+odd = int
+
+def gaussian(n: odd, sigma: float) -> kernel:
+    """
+    Make a Gaussian kernel.
+    Args:
+        n: Filter size (odd number)
+        sigma: Gaussian parameter (real number)
+    Returns:
+        kernel: A list of real numbers used for Gaussian averaging:
+                    Real numbers are in the order of [value(-m) value(-m+1) ... value(m)] when n = 2m + 1.
+    """
     r = range(-int(n/2),int(n/2)+1)
     return [1 / (sigma * sqrt(2*pi)) *exp(-float(x)**2/(2*sigma**2)) for x in r]
-def derivative_of_gaussian(n, sigma):
+def derivative_of_gaussian(n: odd, sigma: float) -> kernel:
+    """
+    Make a Gaussian derivative kernal for the first floor derivative of Gaussian.
+    Args:
+        n: Filter size (odd number)
+        sigma: Gaussian parameter (real number)
+    Returns:
+        kernel: A list of real numbers for making the first floor derivative of Gaussian:
+                    Real numbers are in the order of [value(-m) value(-m+1) ... value(m)] when n = 2m + 1.
+    """
     r = range(-int(n/2),int(n/2)+1)
     return [-x / (sigma**3 * sqrt(2*pi)) *exp(-float(x)**2/(2*sigma**2)) for x in r]
-def second_floor_derivative_of_gaussian(n, sigma):
+def second_floor_derivative_of_gaussian(n: odd, sigma: float) -> kernel:
+    """
+    Make a Gaussian derivative kernal for the second floor derivative of Gaussian.
+    Args:
+        n: Filter size (odd number)
+        sigma: Gaussian parameter (real number)
+    Returns:
+        kernel: A list of real numbers for making the second floor derivative of Gaussian:
+                    Real numbers are in the order of [value(-m) value(-m+1) ... value(m)] when n = 2m + 1.
+    """
     r = range(-int(n/2),int(n/2)+1)
     return [1 / (sigma**5 * sqrt(2*pi)) *(x**2 - sigma**2) * exp(-float(x)**2/(2*sigma**2)) for x in r]
-def third_floor_derivative_of_gaussian(n, sigma):
+def third_floor_derivative_of_gaussian(n: odd, sigma: float) -> kernel:
+    """
+    Make a Gaussian derivative kernal for the third floor derivative of Gaussian.
+    Args:
+        n: Filter size (odd number)
+        sigma: Gaussian parameter (real number)
+    Returns:
+        kernel: A list of real numbers for making the third floor derivative of Gaussian:
+                    Real numbers are in the order of [value(-m) value(-m+1) ... value(m)] when n = 2m + 1.
+    """
     r = range(-int(n/2),int(n/2)+1)
     return [1 / (sigma**7 * sqrt(2*pi)) *(-x**2 + 3*sigma**2) * x * exp(-float(x)**2/(2*sigma**2)) for x in r]
 
-def gaussian_average(_spectrum, sigma: float):
+def gaussian_average(_spectrum :np_signal, sigma: float) -> np_signal:
+    """
+    Make a Gaussian averaged signal from an input signal.
+    Args:
+        _spectrum: np.ndarray
+        sigma: Gaussian parameter used for Gaussian averaging
+    Returns:
+        spectrum: np.ndarray made by covolusion of _spectrum and Gaussian kernel.
+    """
     k_edge = int(sigma * 3)
     ksize= 2 * k_edge + 1
     _g = np.array(gaussian(ksize,sigma))      # normalization
@@ -84,14 +149,41 @@ def gaussian_average(_spectrum, sigma: float):
     _g /= _g_total
     return(np.ma.convolve(_spectrum, _g, propagate_mask=False)[k_edge:-k_edge])
 
-def med_bl_a(sig, ib, ibmin, ibmax):    # median of sig[ib0:ib1] is calculated
+def med_bl_a(sig :np_signal, ib:int, ibmin:int, ibmax:int) -> float:    # median of sig[ib0:ib1] is calculated
+    """
+    Make a median signal at a channel from an input signal.
+    Args:
+        sig: np.ndarray
+        ib: channel number(integer)
+        ibmin: minimum limit
+        ibmax: maximum limit
+    Returns:
+        real number: median of sig[ib+ib0:ib+ib1]
+    """
     global median_iw
     median_iw = 0
     ib0 = max(ibmin,ib-median_iw)
     ib1 = min(ibmax,ib+median_iw+1)
     return np.ma.median(sig[ib0:ib1])
 
-def detect_lines(sp_bl, sigma, signal, coeff, wl_flag, wl_analysis):
+def detect_lines(sp_bl:np_signal, sigma:float, signal:np_signal, coeff:np_signal, wl_flag:'np.ndarray[int]', wl_analysis:bool) ->line_list:
+    """
+    Detect narrow lines from a baseline-subtracted signal using zero-crossings of the first derivative of Gaussian average.
+    Qualification check is made by using the second derivative and baseline-subtracted signal.
+    Args:
+        sp_bl: np.ndarray representing a baseline-subtracted signal
+        sigma: Gaussian parameter used for Gaussian averaging
+        signal: np.ndarray representing the first floor derivative of Gaussian average of sp_bl
+        coeff: np.ndarray representing the second floor derivative of Gaussian average of sp_bl
+        wl_flag: np.ndarray[int] reprisenting whether each channel is included in wide-lines
+        wl_analysis: bool representing effectiveness of the narrow-line detection in the wide-line ranges
+    Requirements for narrow lines (effective when (not wl_flag[i] or wl_analysis) == True)
+        1) -coeff[i] > thr_c (emission line)       coeff[i] > thr_c (absorption line)
+        2) sp_bl[i] > thr_d1 * sigma_sp            sp_bl[i] < -sigma_sp *thrt_d2
+    Returns:
+        line_list: A list of list representing peak, start and end indices of spectral lines. The indices of
+                    lines are in the order of, e.g., [[peak1, start1, end1], ..., [peakN, startN, endN]].
+    """
     global sigma_sp, Gaussian_sp_bl, thr_c, thr_d
     global min_X,max_X,max_height,min_height
     global median_iw
@@ -149,7 +241,18 @@ def detect_lines(sp_bl, sigma, signal, coeff, wl_flag, wl_analysis):
                     detected_lines.append([i,ib,ie])
     return(detected_lines)
 
-def find_edges_e(i, sp_bl_a, ib_lim, ie_lim):
+def find_edges_e(i:int, sp_bl_a:np_signal, ib_lim:int, ie_lim:int) -> 'int,int':
+    """
+    Detect edges of emissional line in the both sides of location i.
+    Args:
+        i: channel number in the line
+        sp_bl_a: np.ndarray representing a baseline-subtracted signal or its Gaussian average
+        ib_lim: limit of left side
+        ie_lim: limit of right side
+    Returns:
+        ib: location of left edge
+        ie: location of right edge
+    """
     global min_X,max_X
     ib = i
     ie = i + 1                   # lower/upper bounds of the line
@@ -159,7 +262,18 @@ def find_edges_e(i, sp_bl_a, ib_lim, ie_lim):
         ie += 1
     return ib,ie
 
-def find_edges_a(i, sp_bl_a, ib_lim, ie_lim):
+def find_edges_a(i:int, sp_bl_a:np_signal, ib_lim:int, ie_lim:int) -> 'int,int':
+    """
+    Detect edges of absorption line in the both sides of location i.
+    Args:
+        i: channel number in the line
+        sp_bl_a: np.ndarray representing a baseline-subtracted signal or its Gaussian average
+        ib_lim: limit of left side
+        ie_lim: limit of right side
+    Returns:
+        ib: location of left edge
+        ie: location of right edge
+    """
     global min_X,max_X
     ib = i
     ie = i + 1                   # lower/upper bounds of the line
@@ -169,7 +283,15 @@ def find_edges_a(i, sp_bl_a, ib_lim, ie_lim):
         ie += 1
     return ib,ie
 
-def parameter_set2(sign_dist) :
+def parameter_set2(sign_dist :float) -> 'float, float':
+    """
+    Set thresholds, thr_f1 and thr_f2, for detect_lines2().
+    Args:
+        sign_dist: indicating max_height/abs(min_height)
+    Returns:
+        thr_f1: threshold for emissional lines
+        thr_f2: threshold for absortion lines
+    """
     if sign_dist > 10.0:
         thr_f1 = 1.5   # very sensitive for mean_height in positive side
         thr_f2 = 3
@@ -187,18 +309,36 @@ def parameter_set2(sign_dist) :
         thr_f2 = 1.5   # very sensitive for mean_height in negative side
     return(thr_f1,thr_f2)
 
-def detect_lines2(sp_bl,sigma,signal,coeff):
+def detect_lines2(sp_bl:np_signal,sigma:float,signal:np_signal,coeff:np_signal) ->line_list:
+    """
+    Detect wide lines from a baseline-subtracted signal using zero-crossings of the first derivative of Gaussian average.
+    Qualification check is made by using the second derivative and baseline-subtracted signal.
+    Args:
+        sp_bl: np.ndarray representing a baseline-subtracted signal
+        sigma: Gaussian parameter used for Gaussian averaging
+        signal: np.ndarray representing the first floor derivative of Gaussian average of sp_bl
+        coeff: np.ndarray representing the second floor derivative of Gaussian average of sp_bl
+
+    Requirements for wide lines:
+      (mean_g > thr_f*sigma_sp) or (max_g > thr_g*sigma_sp) or (area_g > thr_h*sigma_sp) or (prod_coeff > thr_fgh)   #emissional
+      (mean_g < -thr_f*sigma_sp) or (min_g < -thr_g*sigma_sp) or (area_g > thr_h*sigma_sp) or (prod_coeff > thr_fgh) #absorption
+    where mean_g = np.mean(sp_bl[ib:ie]) if ie > ib+2 else 0
+          max_g = np.max(sp_bl[ib:ie])
+          area_g = mean_g *min(ie-ib,100) #if mean_g > 1.0 else 0
+          prod_coeff = (mean_g * max_g * area_g)/sigma_sp**3
+    Returns:
+        line_list: A list of list representing peak, start and end indices of spectral lines. The indices of
+                    lines are in the order of, e.g., [[peak1, start1, end1], ..., [peakN, startN, endN]].
+    """
     global sigma_sp, Gaussian_sp_bl,thr_c,thr_f1,thr_f2,thr_g1,thr_h,thr_fgh,sign_dist
     global min_X,max_X
     global median_iw
     k_edge = int(sigma * 3)
     ksize= 2 * k_edge + 1
-    #_g1 = np.array(gaussian(ksize,sigma))
     _dg1 = np.array(derivative_of_gaussian(ksize,sigma))
     _cf1 = np.array(second_floor_derivative_of_gaussian(ksize,sigma))
 
     #print(sp_bl[min_X:max_X].shape, _cf2.shape, np.ma.convolve(sp_bl[min_X:max_X], _cf2).shape)
-    #g_ave[min_X:max_X] = np.ma.convolve(sp_bl[min_X:max_X], _g1)[k_edge:-k_edge]     #length is adjusted after the convolution
     signal[min_X:max_X] = np.ma.convolve(sp_bl[min_X:max_X], _dg1)[k_edge:-k_edge]
     coeff[min_X:max_X] = np.ma.convolve(sp_bl[min_X:max_X], _cf1)[k_edge:-k_edge]
     std_coeff = np.std(coeff[min_X:max_X])
@@ -222,7 +362,6 @@ def detect_lines2(sp_bl,sigma,signal,coeff):
         thr_g1 = 4.0
     thr_f1,thr_f2 = parameter_set2(sign_dist)
 
-    #sgzx = sgzxmax
     print('sign_dist,thr_f1,thr_f2',sign_dist,thr_f1,thr_f2)
     print('thr_c,f1,f2,g1,h,fgh',thr_c,thr_f1,thr_f2,thr_g1,thr_h,thr_fgh)
     first_spbl = sp_bl[min_X]
@@ -251,7 +390,7 @@ def detect_lines2(sp_bl,sigma,signal,coeff):
                 max_g = np.max(sp_bl[ib:ie])
                 area_g = mean_g *min(ie-ib,100) #if mean_g > 1.0 else 0
                 prod_coeff = (mean_g * max_g * area_g)/sigma_sp**3
-                if (mean_g > thr_f*sigma_sp) or (max_g > thr_g*sigma_sp) or (area_g > thr_h*sigma_sp) or (prod_coeff > thr_fgh):  ##>> ?logic
+                if (mean_g > thr_f*sigma_sp) or (max_g > thr_g*sigma_sp) or (area_g > thr_h*sigma_sp) or (prod_coeff > thr_fgh):
                     ic = ib + np.argmax(sp_bl[ib:ie])  #(ib+ie)//2
                     detected_lines.append([ic,ib,ie])
                     last_registered = [ic,ib,ie]
@@ -276,7 +415,14 @@ def detect_lines2(sp_bl,sigma,signal,coeff):
                     last_registered = [ic,ib,ie]
     return(detected_lines)
 
-def make_g_ave(sp_bl,sigma,g_ave):
+def make_g_ave(sp_bl:np_signal, sigma:float, g_ave:np_signal):
+    """
+    Make Gaussian average of a given signal.
+    Args:
+        sp_bl: baseline-subtracted spectrum
+        sigma: parameter for Gaussian averaging
+        g_ave: Gaussian average of sp_bl is made in this np.ndarray
+    """
     k_edge = int(sigma * 3)
     ksize= 2 * k_edge + 1
     # Prepare kernels of Gaussian and Gaussian derivatives
@@ -285,7 +431,14 @@ def make_g_ave(sp_bl,sigma,g_ave):
     g_ave[min_X:max_X] = np.ma.convolve(sp_bl[min_X:max_X], _g1)[k_edge:-k_edge]
     return
 
-def merge_detected_lines(lines_lists):            # merge sorted lists generated by detect_lines() and detect_lines2()
+def merge_detected_lines(lines_lists :List[line_list]) ->line_list:
+    """
+    Merge sorted lists generated by detect_lines() and detect_lines2().
+    Args:
+        lines_list: list of line lists generated by detect_lines() and detect_lines2()
+    Return:
+        'line list': merged list of lines
+    """
     num_lists = len(lines_lists)
     merged_lines_list = [] if num_lists == 0 else copy.copy(lines_lists[num_lists-2])
     if num_lists > 1:
@@ -296,7 +449,7 @@ def merge_detected_lines(lines_lists):            # merge sorted lists generated
             j = 0
             m = 0
             #print(i,ii,m,mmax,j,jmax)
-            while j < jmax:                        # while loop is used for easy imlementation
+            while j < jmax:                        # while loop is used for easy implementation
                 #print(i,ii,m,mmax,j)
                 if m == mmax:
                     for jt in range(j,jmax):                           # append the rest of the line lists
@@ -352,7 +505,16 @@ def merge_detected_lines(lines_lists):            # merge sorted lists generated
         #print('mdl',i,ii,merged_lines_list)
     return(merged_lines_list)
 
-def pipeline_format_lines(lines_merged):
+def pipeline_format_lines(lines_merged :line_list) ->ranges:
+    """
+    Convert a line list to a list in pipeline format.
+
+    Args:
+        lines_merged: line_list
+    Return:
+        ranges: A list of start and end indices of spectral lines. The indices of
+                    lines are in the order of, e.g., [start1, end1, ..., startN, endN].
+    """
     num_list = len(lines_merged)
     formatted_list = [] if num_list == 0 else copy.copy(lines_merged[0][1:])
     if num_list > 1:
@@ -370,7 +532,13 @@ def pipeline_format_lines(lines_merged):
             #formatted_list.append(new_member[1])
     return(formatted_list)
 
-def draw_graph_gmr(_spectrum,baseline,_spectrum_bl,signal,coeff,g_ave,lines_detected,lines_merged,sgzx_list,mean_level,cut_level):
+def draw_graph_gmr(_spectrum:np_signal,baseline,_spectrum_bl:np_signal,signal:np_signal,
+                   coeff:np_signal,g_ave:np_signal,lines_detected:List[line_list],
+                   lines_merged:line_list,sgzx_list:List[int],mean_level:np_signal,cut_level:np_signal):
+    """
+    Draw graphs when Draw_graph == True.
+    This is not used in the pipeline.
+    """
     import matplotlib.pyplot as plt
     global thr_c,thr_d,thr_f1,thr_f2,thr_rmg,gm_param,sigma_sp
     global dmax,min_X,max_X
@@ -541,12 +709,39 @@ def draw_graph_gmr(_spectrum,baseline,_spectrum_bl,signal,coeff,g_ave,lines_dete
     #plt.close()
     return
 
-def local_sigma(_spectrum,gaussian_sgm):
+def local_sigma(_spectrum:np_signal,gaussian_sgm:float) -> float:
+    """
+    local_std is calculated for Gaussian-subtracted spectrum data.
+
+    Args:
+        _spectrum: a given spectrum data
+        gaussian_sgm: sigma parameter of Gaussian filter
+    Return:
+        std is calculated after Gaussian subtraction
+    """
     global min_X,max_X
     delta=gaussian_sgm*3
     return(np.ma.std(_spectrum[min_X+delta:max_X-delta]-gaussian_average(_spectrum,gaussian_sgm)[min_X+delta:max_X-delta]))
 
-def iterative_2s_exclusions(_spectrum,mean_level,cut_level):
+def iterative_2s_exclusions(_spectrum:np_signal,mean_level:np_signal,cut_level:np_signal):
+    """
+    Provide rough estimations of mean and std of Baseline by Iterative 2-sigma exclusions.
+
+    Args:
+        _spectrum: a given spectrum data
+        mean_level: mean_level table
+        cut_level: cut_level table
+    Algorithm:
+      *0 Regard the original set as SET
+      *1 Calculate mean and std of SET
+      *2 Devide SET into Upperset(more than mean+2std) and Lowerset(the rest)
+      *3 Calculate means and stds in the two sets
+      *4 Calculate relative_mean_gap = (mean_upper - mean_lower)/ std_lower
+      *5 If relative_mean_gap < thr(2.25), mean_lower and std_lower indicate rough estimation of MEAN and STD.
+         Otherwise, regard the Lowerset as SET, and goto *2
+    Note:
+        The std_lower is used as STD (No correction is made in the current version.)
+    """
     global e_std_max, e_std, local_std
     # Preparations
     mean_sp = np.ma.mean(_spectrum)
@@ -614,7 +809,19 @@ def iterative_2s_exclusions(_spectrum,mean_level,cut_level):
         #print('statistics1:',e_std,mean_gap,sigma_sp,relative_mean_gap)
     return(sigma_sp,mean_sp,_spectrum1)
 
-def line_finder(sp, sp_mask = False):
+def line_finder(sp:np_signal, sp_mask:'np.ndarray[bool]' = False) -> ranges:
+    """Line finder based on Gaussian filter along with baseline estimator using Geman-McClure function.
+
+    This function consists of five subtasks as follows:
+        0)Rough estimation of mean and std of Baseline by Iterative 2-sigma exclusions (iterative_2s_exclusions())
+        1)Baseline estimation by Geman-McClure function: (lf_gmb.py)
+        2)Wide line detection by zero-crossings of first derivative of Gaussian average of SIGNAL_BL: (line_detection2())
+        3)Narrow line detection by zero-crossings of the first derivative of Gaussian average on SIGNAL_BL: (line_detection())
+
+    Returns:
+        ranges: A list of start and end indices of spectral lines. The indices of
+                    lines are in the order of, e.g., [start1, end1, ..., startN, endN].
+    """
     global sigma_sp, local_std, Gaussian_sp_bl, thr_rmg, sign_dist
     global dmax, min_X, max_X, max_height, min_height
     global Draw_graph, Baseline_estimation, Baseline_inclination
@@ -623,7 +830,7 @@ def line_finder(sp, sp_mask = False):
 
     # effective signal range is set to [min_X max_X]
     min_X = 0
-    max_X = dmax -1
+    max_X = dmax - 1
     if _spectrum.mask.shape != ():        ### even when == (), this code works
         while _spectrum.mask[min_X] :     ### otherwise, min_X and max_X are adjusted to mask data
             if min_X == dmax - 1:
@@ -765,7 +972,7 @@ def line_finder(sp, sp_mask = False):
         # call detect_lines()
         new_lines = detect_lines(_spectrum_bl,sigma,signal[sgzx,:],coeff[sgzx,:],wl_flag,wl_analysis)
 
-        # detected line-list is appended to lines_detected
+        # detected line_list is appended to lines_detected
         lines_detected.append(new_lines)
         print ('lines_detected',sgzx,len(lines_detected[sgzx]),lines_detected[sgzx])
 
@@ -785,8 +992,9 @@ def line_finder(sp, sp_mask = False):
             sigma = sgzx_list[sgzx]
             make_g_ave(_spectrum_bl,sigma,g_ave[sgzx,:])
         make_g_ave(_spectrum_bl,sigma_p,g_ave[sgzxmax,:])
-        draw_graph_gmr(_spectrum,baseline,_spectrum_bl,signal,coeff,g_ave,lines_detected,lines_merged,sgzx_list, mean_level[0:e_std+2], cut_level[0:e_std+1]) #sigma_rest #t_param
-    return(lines_final,baseline[0],baseline[0]/sigma_sp) #sigma_rest  #t_param
+        draw_graph_gmr(_spectrum,baseline,_spectrum_bl,signal,coeff,g_ave,lines_detected,lines_merged,
+                       sgzx_list, mean_level[0:e_std+2], cut_level[0:e_std+1])
+    return(lines_final,baseline[0],baseline[0]/sigma_sp)
 
 if __name__ == "__main__":
     Database_selector = 6
