@@ -478,7 +478,7 @@ class CheckProductSizeHeuristics(object):
                 original_imsize.append(imsize_request)
 
             # Get original maximum cube and product sizes for compatibility
-            cubesizes, maxcubesize, productsizes, im_productsize = self.calculate_sizes([im])
+            _, _, _, im_productsize = self.calculate_sizes([im])
             original_productsize += im_productsize
 
             LOG.info('Default imaging leads to image pixel count of %s for target %s' % (imsize_request, im['field']))

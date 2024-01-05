@@ -68,7 +68,6 @@ class EditimlistInputs(vdp.StandardInputs):
     gridder = vdp.VisDependentProperty(default='')
     mask = vdp.VisDependentProperty(default=None)
     pbmask = vdp.VisDependentProperty(default=None)
-    nbin = vdp.VisDependentProperty(default=-1)
     nchan = vdp.VisDependentProperty(default=-1)
     niter = vdp.VisDependentProperty(default=0)
     nterms = vdp.VisDependentProperty(default=0)
@@ -96,6 +95,8 @@ class EditimlistInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def cell(self):
         # mutable object, so should not use VisDependentProperty(default=[])
+        if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
+            return self.context.size_mitigation_parameters['hm_cell']
         return []
 
     @cell.convert
@@ -107,6 +108,8 @@ class EditimlistInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def imsize(self):
         # mutable object, so should not use VisDependentProperty(default=[])
+        if 'TARGET' in self.intent and 'hm_imsize' in self.context.size_mitigation_parameters:
+            return self.context.size_mitigation_parameters['hm_imsize']
         return []
 
     @imsize.convert
@@ -130,6 +133,12 @@ class EditimlistInputs(vdp.StandardInputs):
         if not isinstance(val, list):
             val = [val]
         return val
+
+    @vdp.VisDependentProperty
+    def nbin(self):
+        if 'TARGET' in self.intent and 'nbins' in self.context.size_mitigation_parameters:
+            return self.context.size_mitigation_parameters['nbins']
+        return -1
 
     @vdp.VisDependentProperty
     def spw(self):
@@ -257,7 +266,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                         # use this information to change the values in inputs
                         LOG.debug("Setting inputdict['{k}'] to {v} {t}".format(k=parameter, v=value, t=type(value)))
                         inpdict[parameter] = value
-                        inp.keys_to_change.append(parameter)
+                        inp.keys_to_change.append(parameter) # Is this used anywhere?
             else:
                 LOG.error('Input parameter file is not readable: {fname}'.format(fname=inp.parameter_file))
 
