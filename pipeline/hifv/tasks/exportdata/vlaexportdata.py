@@ -51,7 +51,9 @@ class VLAExportData(exportdata.ExportData):
     Inputs = VLAExportDataInputs
 
     def prepare(self):
-        results = super().prepare()
+        results = super().prepare(
+            export_final_flags=['Applycal_Final', 'hifv_checkflag_target-vla', 'statwt_1', 'Pipeline_Final']
+        )
 
         # PIPE-1205
         PbcorFits = collections.namedtuple('PbcorFits', 'pbcorimage pbcorfits nonpbcor_fits')

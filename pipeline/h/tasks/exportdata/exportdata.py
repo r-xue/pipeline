@@ -173,7 +173,7 @@ class ExportDataInputs(vdp.StandardInputs):
         self.targetimages = targetimages
         self.products_dir = products_dir
         self.imaging_products_only = imaging_products_only
-
+        self.export_final_flags = ['Pipeline_Final']
 
 class ExportDataResults(basetask.Results):
     def __init__(self, pprequest='', sessiondict=None, msvisdict=None, calvisdict=None, calimages=None, targetimages=None, weblog='',
@@ -240,7 +240,7 @@ class ExportData(basetask.StandardTaskTemplate):
     # name builder
     NameBuilder = PipelineProductNameBuilder
 
-    def prepare(self):
+    def prepare(self, export_final_flags=['Pipeline_Final']):
         """
         Prepare and execute an export data job appropriate to the
         task inputs.
@@ -248,6 +248,7 @@ class ExportData(basetask.StandardTaskTemplate):
         # Create a local alias for inputs, so we're not saying
         # 'self.inputs' everywhere
         inputs = self.inputs
+        self.export_final_flags = export_final_flags
 
         # Create products directory if necessary.
         utils.ensure_products_dir_exists(inputs.products_dir)
@@ -788,28 +789,31 @@ class ExportData(basetask.StandardTaskTemplate):
         LOG.info('Saving flag version list')
 
         # PIPE-1553: additional flag versions requested
-        flag_version_names = dict()
         flag_dict = dict()
         with open(flag_version_list) as f:
             for key, entry in [x.replace('\n', '').split(" : ", 1) for x in f.readlines()]:
                 flag_dict[key] = entry
-        applycal_flag_key = [x for x in flag_dict.keys() if 'applycal' in x]
-        if applycal_flag_key:
-            flag_version_names['Applycal_Final'] = flag_dict[applycal_flag_key[-1]]
-            LOG.info('Renaming final applycal flags for %s to Applycal_Final', os.path.basename(vis))
-            task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=applycal_flag_key[-1], versionname='Applycal_Final', comment=flag_dict[applycal_flag_key[-1]])
-            self._executor.execute(task)
-        target_RFI_key = [x for x in flag_dict.keys() if 'checkflag_target-vla' in x]
-        if target_RFI_key:
-            flag_version_names['hifv_checkflag_target-vla'] = flag_dict[target_RFI_key[-1]]
-            LOG.info('Renaming target RFI flags for %s to hifv_checkflag_target-vla', os.path.basename(vis))
-            task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=target_RFI_key[-1], versionname='hifv_checkflag_target-vla', comment=flag_dict[target_RFI_key[-1]])
-            self._executor.execute(task)
-        if flag_dict['statwt_1']: flag_version_names['statwt_1'] = flag_dict['statwt_1']
-        if flag_dict['Pipeline_Final']: flag_version_names['Pipeline_Final'] = flag_dict['Pipeline_Final']
+        export_final_flags_dict = dict()
+        for flag_version_name in self.export_final_flags:
+            if flag_version_name == 'Applycal_Final':
+                applycal_flag_key = [x for x in flag_dict.keys() if 'applycal' in x]
+                if applycal_flag_key:
+                    export_final_flags_dict[flag_version_name] = flag_dict[applycal_flag_key[-1]]
+                    task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=applycal_flag_key[-1], versionname=flag_version_name, comment=flag_dict[applycal_flag_key[-1]])
+                    self._executor.execute(task)
+            elif flag_version_name == 'hifv_checkflag_target-vla':
+                target_RFI_key = [x for x in flag_dict.keys() if flag_version_name in x]
+                if target_RFI_key:
+                    export_final_flags_dict[flag_version_name] = flag_dict[target_RFI_key[-1]]
+                    task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=target_RFI_key[-1], versionname=flag_version_name, comment=flag_dict[target_RFI_key[-1]])
+                    self._executor.execute(task)
+            elif flag_dict[flag_version_name]:
+                export_final_flags_dict[flag_version_name] = flag_dict[flag_version_name]
+            else:
+                LOG.info('%s flags do not exist, skipping.', flag_version_name)
 
         line = ""
-        for flag_version_name, flag_version_comment in flag_version_names.items():
+        for flag_version_name, flag_version_comment in export_final_flags_dict.items():
             # Define the directory to be saved, and where to store in tar archive.
             flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
             flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
