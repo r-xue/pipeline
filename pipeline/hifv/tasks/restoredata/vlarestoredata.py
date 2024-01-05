@@ -79,7 +79,7 @@ class VLARestoreData(restoredata.RestoreData):
             hanning_results = self._do_hanningsmooth()
 
         # Restore final MS.flagversions and flags
-        flag_version_name = 'Pipeline_Final'
+        flag_version_name = 'statwt_1'  # PIPE-1555
         flag_version_list = self._do_restore_flags(pipemanifest, flag_version_name=flag_version_name)
 
         # Get the session list and the visibility files associated with
