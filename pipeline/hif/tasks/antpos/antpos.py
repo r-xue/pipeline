@@ -58,7 +58,7 @@ class AntposInputs(vdp.StandardInputs):
     antenna = vdp.VisDependentProperty(default='')
     antposfile = vdp.VisDependentProperty(default='antennapos.csv')
     hm_antpos = vdp.VisDependentProperty(default='manual')
-
+    ant_pos_time_limit  = vdp.VisDependentProperty(default=False)
     @vdp.VisDependentProperty
     def offsets(self):
         return []
@@ -76,7 +76,7 @@ class AntposInputs(vdp.StandardInputs):
         return namer.calculate(output_dir=self.output_dir, stage=self.context.stage, **casa_args)
 
     def __init__(self, context, output_dir=None, vis=None, caltable=None, hm_antpos=None, antposfile=None, antenna=None,
-                 offsets=None):
+                 offsets=None, ant_pos_time_limit=None):
         super(AntposInputs, self).__init__()
 
         # pipeline inputs
@@ -94,6 +94,9 @@ class AntposInputs(vdp.StandardInputs):
         self.hm_antpos = hm_antpos
         self.offsets = offsets
 
+        #antenna position time limit, requires CASA>=6.6.1-5. PIPE-2052
+        self.ant_pos_time_limit=ant_pos_time_limit
+
     def to_casa_args(self):
         # Get the antenna and offset lists.
         if self.hm_antpos == 'manual':
@@ -110,7 +113,8 @@ class AntposInputs(vdp.StandardInputs):
         return {'vis': self.vis,
                 'caltable': self.caltable,
                 'antenna': antenna,
-                'parameter': offsets}
+                'parameter': offsets,
+                'ant_pos_time_limit':self.ant_pos_time_limit}
 
     @staticmethod
     def _read_antpos_csvfile(filename, msbasename):

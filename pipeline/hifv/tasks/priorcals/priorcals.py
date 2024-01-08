@@ -27,7 +27,7 @@ from . import resultobjects
 LOG = infrastructure.get_logger(__name__)
 
 
-def correct_ant_posns(vis_name, print_offsets=False):
+def correct_ant_posns(vis_name, print_offsets=False, time_limit=0):
     """
     Given an input visibility MS name (vis_name), find the antenna
     position offsets that should be applied.  This application should
@@ -191,9 +191,25 @@ def correct_ant_posns(vis_name, print_offsets=False):
                     ant_num_stas[ant_ind][5] = 0.0
             if put_time > obs_time and not ant_num_stas[ant_ind][6] and pad == ant_num_stas[ant_ind][2]:
                 # it's the right antenna/pad; add the offsets to those already accumulated
-                ant_num_stas[ant_ind][3] += Bx
-                ant_num_stas[ant_ind][4] += By
-                ant_num_stas[ant_ind][5] += Bz
+            
+                #Code added for PIPE 2052, reference CAS-14200
+                #Below code is copied from correct_ant_pos_evla.py under casatasks
+
+                # Time limit for antenna corrections in days
+                put_time_str = str(put_time)
+                put_time_str = put_time_str[:4]+'/'+put_time_str[4:6]+'/'+put_time_str[6:8]
+
+                obs_time_str = str(obs_time)
+                obs_time_str = obs_time_str[:4]+'/'+obs_time_str[4:6]+'/'+obs_time_str[6:8]
+
+                time_diff = casa_tools.quanta.quantity(put_time_str)['value'] - casa_tools.quanta.quantity(obs_time_str)['value']
+
+                if time_limit <= 0 or ( time_diff < time_limit ):
+                    #print("put seperated: " put_time % 10000, )
+                    #print("put time MJD, antenna, pad, offsets = %f  %d  %s  %f %f %f" % (put_time_MJD,ant_num_stas[ant_ind][0],ant_num_stas[ant_ind][2],Bx,By,Bz))
+                    ant_num_stas[ant_ind][3] += Bx
+                    ant_num_stas[ant_ind][4] += By
+                    ant_num_stas[ant_ind][5] += Bz
 
     ants = []
     parms = []
@@ -221,8 +237,8 @@ class PriorcalsInputs(vdp.StandardInputs):
     swpow_spw = vdp.VisDependentProperty(default='')
     show_tec_maps = vdp.VisDependentProperty(default=True)
     apply_tec_correction = vdp.VisDependentProperty(default=False)
-
-    def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None):
+    ant_pos_time_limit  = vdp.VisDependentProperty(default=False)
+    def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None, ant_pos_time_limit=150):
         """
         Args:
             context (:obj:): Pipeline context
@@ -232,12 +248,14 @@ class PriorcalsInputs(vdp.StandardInputs):
                                    executed and the resulting table applied
             swpow_spw(str):  spws for switched power
 
-        """
+        """        
+
         self.context = context
         self.vis = vis
         self.show_tec_maps = show_tec_maps
         self.apply_tec_correction = apply_tec_correction
         self.swpow_spw = swpow_spw
+        self.ant_pos_time_limit =  ant_pos_time_limit
 
     def to_casa_args(self):
         raise NotImplementedError
@@ -302,14 +320,13 @@ class Priorcals(basetask.StandardTaskTemplate):
 
     def _do_swpowcal(self):
         """Run switched power task"""
-
         inputs = Swpowcal.Inputs(self.inputs.context, vis=self.inputs.vis, spw=self.inputs.swpow_spw)
         task = Swpowcal(inputs)
         return self._executor.execute(task)
 
     def _do_antpos(self):
         """Run hif_antpos to correct for antenna positions"""
-        inputs = Antpos.Inputs(self.inputs.context, vis=self.inputs.vis)
+        inputs = Antpos.Inputs(self.inputs.context, vis=self.inputs.vis, ant_pos_time_limit=self.inputs.ant_pos_time_limit)
         task = Antpos(inputs)
         result = self._executor.execute(task)
 
@@ -319,7 +336,8 @@ class Priorcals(basetask.StandardTaskTemplate):
             antpos_caltable = result.final[0].gaintable
             if os.path.exists(antpos_caltable):
                 LOG.info("Start antenna position corrections")
-                antparamlist = correct_ant_posns(inputs.vis, print_offsets=False)
+                #check here
+                antparamlist = correct_ant_posns(inputs.vis, print_offsets=False, time_limit=inputs.ant_pos_time_limit)
                 LOG.info("End antenna position corrections")
 
                 self._check_tropdelay(antpos_caltable)
