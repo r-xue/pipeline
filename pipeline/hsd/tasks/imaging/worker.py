@@ -603,7 +603,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         self._executor.execute(image_job)
         # tsdimaging changes the image filename, workaround to revert it
         imagename_tmp = imagename + '.image'
-        os.rename( imagename_tmp, imagename )
+        os.rename(imagename_tmp, imagename)
 
         # check imaging result
         imagename = image_args['outfile']
