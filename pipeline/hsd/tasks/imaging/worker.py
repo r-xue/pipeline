@@ -598,8 +598,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         LOG.debug('Executing sdimaging task: args=%s' % (image_args))
 
         # execute job
-        # tentative soltion for tsdimaging speed issue
-        image_args['specmode'] = specmode   # tsdimaging specific parameter
+        image_args['specmode'] = specmode
         image_job = casa_tasks.tsdimaging(**image_args)
         self._executor.execute(image_job)
         # tsdimaging changes the image filename, workaround to revert it
