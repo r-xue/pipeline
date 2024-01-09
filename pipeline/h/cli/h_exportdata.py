@@ -5,45 +5,29 @@ from . import utils
 
 @utils.cli_wrapper
 def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, pprfile=None, calintents=None,
-                 calimages=None, targetimages=None, products_dir=None, dryrun=None,
-                 acceptresults=None):
+                 calimages=None, targetimages=None, products_dir=None):
 
     """
     h_exportdata ---- Prepare interferometry data for export
 
-    
+
     The hif_exportdata task exports the data defined in the pipeline context
     and exports it to the data products directory, converting and or
     packing it as necessary.
-    
+
     The current version of the task exports the following products
-    
-    o an XML file containing the pipeline processing request
-    o a tar file per ASDM / MS containing the final flags version
-    o a text file per ASDM / MS containing the final calibration apply list
-    o a FITS image for each selected calibrator source image
-    o a FITS image for each selected science target source image
-    o a tar file per session containing the caltables for that session
-    o a tar file containing the file web log
-    o a text file containing the final list of CASA commands
-    
-    
-    Issues
-    
-    Support for merging the calibration state information into the pipeline
-    context / results structure and retrieving it still needs to be added.
-    
-    Support for merging the clean results into the pipeline context / results
-    structure and retrieving it still needs to be added.
-    
-    Support for creating the final pipeline results entity still needs to
-    be added.
-    
-    Session information is not currently handled by the pipeline context.
-    By default all ASDMs are combined into one session.
-    
+
+    - an XML file containing the pipeline processing request
+    - a tar file per ASDM / MS containing the final flags version
+    - a text file per ASDM / MS containing the final calibration apply list
+    - a FITS image for each selected calibrator source image
+    - a FITS image for each selected science target source image
+    - a tar file per session containing the caltables for that session
+    - a tar file containing the file web log
+    - a text file containing the final list of CASA commands
+
     Returns
-    
+
     The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
@@ -73,26 +57,36 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
                           example: targetimages=['NGC3256.band3', 'NGC3256.band6']
     products_dir          Name of the data products subdirectory.
                           example: products_dir='../products'
-    dryrun                Run the task (False) or display task command (True)
-    acceptresults         Add the results into the pipeline context
 
     --------- examples -----------------------------------------------------------
 
-    
-    Examples
-    
+
+
     1. Export the pipeline results for a single session to the data products
     directory
-    
-    !mkdir ../products
-    hif_exportdata (products_dir='../products')
-    
+
+    >>> !mkdir ../products
+    >>> hif_exportdata (products_dir='../products')
+
     2. Export the pipeline results to the data products directory specify that
     only the gain calibrator images be saved.
-    
-    !mkdir ../products
-    hif_exportdata (products_dir='../products', calintents='*PHASE*')
 
+    >>> !mkdir ../products
+    >>> hif_exportdata (products_dir='../products', calintents='*PHASE*')
+
+    --------- issues -----------------------------------------------------------
+
+    Support for merging the calibration state information into the pipeline
+    context / results structure and retrieving it still needs to be added.
+
+    Support for merging the clean results into the pipeline context / results
+    structure and retrieving it still needs to be added.
+
+    Support for creating the final pipeline results entity still needs to
+    be added.
+
+    Session information is not currently handled by the pipeline context.
+    By default all ASDMs are combined into one session.
 
     """
 

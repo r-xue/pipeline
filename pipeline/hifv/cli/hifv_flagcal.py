@@ -4,34 +4,29 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_flagcal(vis=None, caltable=None, clipminmax=None, dryrun=None, acceptresults=None):
+def hifv_flagcal(vis=None, caltable=None, clipminmax=None):
 
     """
     hifv_flagcal ---- Flagcal task
+
+    Flagcal task
+
+    Output:
+
+    results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
     vis           List of input visibility data
     caltable      String name of the caltable
     clipminmax    Range to use for clipping
-    dryrun        Run the commands (True) or generate the commands to be run but
-                  do not execute (False).  This is a pipeline task execution mode.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
-    
+
     1. Flag existing caltable
-    
-    hifv_flagcal()
+
+    >>> hifv_flagcal()
 
 
     """

@@ -7,8 +7,7 @@ import pipeline.h.cli.utils as utils
 def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                  linewindow=None, linewindowmode=None, edge=None, broadline=None,
                  clusteringalgorithm=None, deviationmask=None, parallel=None,
-                 infiles=None, field=None, antenna=None, spw=None, pol=None,
-                 dryrun=None, acceptresults=None):
+                 infiles=None, field=None, antenna=None, spw=None, pol=None):
 
     """
     hsd_baseline ---- Detect and validate spectral lines, subtract baseline by masking detected lines
@@ -32,10 +31,10 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     two spectral windows (0 and 1) and hsd_baseline is executed
     separately for each spw as below,
 
-    hsd_baseline(spw='0')
-    hsd_baseline(spw='1')
-    hsd_blflag()
-    hsd_imaging()
+    >>> hsd_baseline(spw='0')
+    >>> hsd_baseline(spw='1')
+    >>> hsd_blflag()
+    >>> hsd_imaging()
 
     Since the second run of hsd_baseline overwrites the result for
     spw 0 with the data before baseline subtraction, this will not
@@ -43,12 +42,12 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     case is to process each spw to the imaging stage separately,
     which looks like as follows:
 
-    hsd_baseline(spw='0')
-    hsd_blflag(spw='0')
-    hsd_imaging(spw='0'))
-    hsd_baseline(spw='1')
-    hsd_blflag(spw='1')
-    hsd_imaging(spw='1')
+    >>> hsd_baseline(spw='0')
+    >>> hsd_blflag(spw='0')
+    >>> hsd_imaging(spw='0'))
+    >>> hsd_baseline(spw='1')
+    >>> hsd_blflag(spw='1')
+    >>> hsd_imaging(spw='1')
 
     Output:
     results -- The results object for the pipeline task is returned.
@@ -125,7 +124,7 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                         None is allowed as a value of dictionary input to indicate that
                         no line detection/validation is required even if manually specified
                         line window does not exist. When None is given as a value and if
-                        linewindowmode is 'replace', line detection/validation is not performed
+                        ``linewindowmode`` is 'replace', line detection/validation is not performed
                         for the corresponding spw. For example, suppose the following parameters
                         are given for the data with four science spws, 17, 19, 21, and 23.
                             linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}
@@ -151,7 +150,7 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                         In case if no linewindow nor line detection/validation
                         are necessary, you should set linewindowmode to 'replace'
                         and specify None as a value of the linewindow dictionary
-                        for the spw to apply. See parameter description of linewindow
+                        for the spw to apply. See parameter description of ``linewindow``
                         for detail.
 
     edge                Number of edge channels to be dropped from baseline
@@ -201,16 +200,22 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                                  ['0~1','0'] (pol 0 and 1 for first data, only 0 for second)
                                  '' (all polarizations)
 
-    dryrun              Run the commands (True) or generate the commands to be
-                        run but do not execute (False).
-
-    acceptresults       Add the results of the task to the pipeline context (True)
-                        or reject them (False).
-
     --------- examples -----------------------------------------------------------
 
+    1. Basic usage with automatic line detection and validation
 
+    >>> hsd_baseline(antenna='PM03', spw='17,19')
 
+    2. Using pre-defined line windows without automatic line detection
+       and edge channels
+
+    >>> hsd_baseline(linewindow=[[100, 200], [1200, 1400]],
+                     linewindowmode='replace', edge=[10, 10])
+
+    3. Using per spw pre-defined line windows with automatic line detection
+
+    >>> hsd_baseline(linewindow={19: [[390, 550]], 23: [[100, 200], [1200, 1400]]},
+                     linewindowmode='merge')
 
     """
 

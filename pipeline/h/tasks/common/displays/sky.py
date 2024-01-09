@@ -210,7 +210,7 @@ class SkyDisplay(object):
                     #       always have to be written to disk.
                     tmpfile = f'{os.path.basename(result)}_mom0_tmp.img'
                     job = casa_tasks.immoments(imagename=result, moments=[0], outfile=tmpfile, stokes=stokes_select)
-                    job.execute(dry_run=False)
+                    job.execute()
                     assert os.path.exists(tmpfile)
                     collapsed = image.newimagefromimage(infile=tmpfile)
                     shutil.rmtree(tmpfile)
