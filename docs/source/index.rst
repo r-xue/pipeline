@@ -5,24 +5,24 @@ Pipeline Documentation
    :maxdepth: 2
    :caption: Developer Notes (from .md)
 
-   notemd/ways_to_run_the_pipeline.md
-   notemd/comparing_pipeline_executions.md
-   notemd/building_the_pipeline.md
+   develdocmd/ways_to_run_the_pipeline.md
+   develdocmd/comparing_pipeline_executions.md
+   develdocmd/building_the_pipeline.md
 
-   notemd/FlaggingTasks.md   
-   notemd/ALMA-Imaging-Workflow.md
-   
-   notemd/VLA-Imaging-Workflow.md   
-   notemd/VLASS-SE-CONT-Imaging-Workflow.md
-   notemd/VLASS-SE-CUBE-Imaging-Workflow.md
-   notemd/selfcal_workflow.md  
+   develdocmd/FlaggingTasks.md
+   develdocmd/ALMA-Imaging-Workflow.md
 
-   notemd/pipeline_tests.md   
-   notemd/DataType_Testing.md
-   notemd/QA_scores.md
-   notemd/DeveloperDocumentation.md
- 
-   notemd/python3_conversion_notes.md     
+   develdocmd/VLA-Imaging-Workflow.md
+   develdocmd/VLASS-SE-CONT-Imaging-Workflow.md
+   develdocmd/VLASS-SE-CUBE-Imaging-Workflow.md
+   develdocmd/selfcal_workflow.md
+
+   develdocmd/pipeline_tests.md
+   develdocmd/DataType_Testing.md
+   develdocmd/QA_scores.md
+   develdocmd/DeveloperDocumentation.md
+
+   develdocmd/python3_conversion_notes.md
 
 .. toctree::
    :maxdepth: 2
