@@ -55,6 +55,12 @@ Pipeline Documentation
    pipeline.hsd.cli
    pipeline.hsdn.cli
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Notes on Pipeline Heuristics
+
+   heuristics/field_parameter.md
+
 Indices and tables
 ==================
 * :ref:`genindex`
