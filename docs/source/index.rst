@@ -9,9 +9,7 @@ Pipeline Documentation
    develdocmd/comparing_pipeline_executions.md
    develdocmd/building_the_pipeline.md
 
-   develdocmd/FlaggingTasks.md
    develdocmd/ALMA-Imaging-Workflow.md
-
    develdocmd/VLA-Imaging-Workflow.md
    develdocmd/VLASS-SE-CONT-Imaging-Workflow.md
    develdocmd/VLASS-SE-CUBE-Imaging-Workflow.md
@@ -60,6 +58,7 @@ Pipeline Documentation
    :caption: Notes on Pipeline Heuristics
 
    heuristics/field_parameter.md
+   heuristics/FlaggingTasks.md
 
 Indices and tables
 ==================
