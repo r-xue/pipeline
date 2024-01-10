@@ -3,6 +3,31 @@ Pipeline Documentation
 
 .. toctree::
    :maxdepth: 2
+   :caption: Pipeline Tasks
+
+   pipeline_tasks/pipeline_tasks.rst
+
+.. autosummary::
+   :toctree: _autosummary
+   :caption: Pipeline Task Docs (from sphinx-autosummary)
+
+   pipeline.h.cli
+   pipeline.hif.cli
+   pipeline.hifa.cli
+   pipeline.hifas.cli
+   pipeline.hifv.cli
+   pipeline.hsd.cli
+   pipeline.hsdn.cli
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Notes on Pipeline Heuristics
+
+   heuristics/field_parameter.md
+   heuristics/FlaggingTasks.md
+
+.. toctree::
+   :maxdepth: 2
    :caption: Developer Notes (from .md)
 
    develdocmd/ways_to_run_the_pipeline.md
@@ -33,32 +58,6 @@ Pipeline Documentation
    :caption: Notebook (from Jupyter Notebooks)
 
    test
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Pipeline Tasks (New)
-
-   pipeline_tasks/pipeline_tasks.rst
-   pipeline_tasks/pipeline_new_tasks.rst
-
-.. autosummary::
-   :toctree: _autosummary
-   :caption: Pipeline Task Docs (from sphinx-autosummary)
-
-   pipeline.h.cli
-   pipeline.hif.cli
-   pipeline.hifa.cli
-   pipeline.hifas.cli
-   pipeline.hifv.cli
-   pipeline.hsd.cli
-   pipeline.hsdn.cli
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Notes on Pipeline Heuristics
-
-   heuristics/field_parameter.md
-   heuristics/FlaggingTasks.md
 
 Indices and tables
 ==================
