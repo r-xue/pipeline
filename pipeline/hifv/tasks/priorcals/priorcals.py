@@ -237,8 +237,8 @@ class PriorcalsInputs(vdp.StandardInputs):
     swpow_spw = vdp.VisDependentProperty(default='')
     show_tec_maps = vdp.VisDependentProperty(default=True)
     apply_tec_correction = vdp.VisDependentProperty(default=False)
-    ant_pos_time_limit  = vdp.VisDependentProperty(default=False)
-    def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None, ant_pos_time_limit=150):
+    ant_pos_time_limit  = vdp.VisDependentProperty(default=150)
+    def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None, ant_pos_time_limit=None):
         """
         Args:
             context (:obj:): Pipeline context
@@ -249,7 +249,6 @@ class PriorcalsInputs(vdp.StandardInputs):
             swpow_spw(str):  spws for switched power
 
         """        
-
         self.context = context
         self.vis = vis
         self.show_tec_maps = show_tec_maps
@@ -269,7 +268,7 @@ class Priorcals(basetask.StandardTaskTemplate):
 
     """
     Inputs = PriorcalsInputs
-
+    
     def prepare(self):
 
         callist = []

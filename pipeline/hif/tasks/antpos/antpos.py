@@ -58,7 +58,7 @@ class AntposInputs(vdp.StandardInputs):
     antenna = vdp.VisDependentProperty(default='')
     antposfile = vdp.VisDependentProperty(default='antennapos.csv')
     hm_antpos = vdp.VisDependentProperty(default='manual')
-    ant_pos_time_limit  = vdp.VisDependentProperty(default=False)
+    ant_pos_time_limit  = vdp.VisDependentProperty(default=150)
     @vdp.VisDependentProperty
     def offsets(self):
         return []
