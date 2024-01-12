@@ -368,6 +368,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['phasecenter'] = inputs.phasecenter
             if inputs.gridder == 'mosaic' and inputs.psf_phasecenter != inputs.phasecenter:
                 tclean_job_parameters['psfphasecenter'] = inputs.psf_phasecenter
+                result.used_psfphasecenter = True
             else:
                 tclean_job_parameters['psfphasecenter'] = None
             tclean_job_parameters['outframe'] = inputs.outframe

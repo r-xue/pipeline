@@ -347,8 +347,11 @@ class Tclean(cleanbase.CleanBase):
 
         # Determine the phase center
         if inputs.phasecenter in ('', None):
-            field_id = self.image_heuristics.field(inputs.intent, inputs.field)
-            inputs.phasecenter, inputs.psf_phasecenter = self.image_heuristics.phasecenter(field_id)
+            field_ids = self.image_heuristics.field(inputs.intent, inputs.field)
+            # TODO: This call will no longer work as expected after the PIPE-98 changes
+            #       (missing primary beam size and shift parameter compared to hif_makeimlist).
+            #       Need to decide whether to remove all hif_tclean fallback heuristics.
+            inputs.phasecenter, inputs.psf_phasecenter = self.image_heuristics.phasecenter(field_ids)
 
         # If imsize not set then use heuristic code to calculate the
         # centers for each field  / spw

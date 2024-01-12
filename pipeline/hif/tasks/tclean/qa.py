@@ -111,6 +111,16 @@ class TcleanQAHandler(pqa.QAPlugin):
             # Add score to pool
             result.qa.pool.append(pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=data_selection))
 
+            # psfphasecenter usage score
+            # PIPE-98 asked for a QA score of 0.9 when the psfphasecenter parameter
+            # is used in the tclean calls for odd-shaped mosaics.
+            if result.used_psfphasecenter:
+                psfpc_score = 0.9
+                longmsg = 'Odd-shaped mosaic - setting the psf phase center to be within the primary beam of a pointing near center'
+                shortmsg = 'Odd-shaped mosaic'
+                origin = pqa.QAOrigin(metric_name='psfphasecenter', metric_score='N/A', metric_units='N/A')
+                result.qa.pool.append(pqa.QAScore(psfpc_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=data_selection))
+
             # MOM8_FC based score
             if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None:
                 try:

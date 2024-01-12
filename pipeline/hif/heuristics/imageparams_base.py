@@ -830,10 +830,6 @@ class ImageParamsHeuristics(object):
                     m1 = cqa.angle(m1, prec=9)[0]
                     psf_phase_center = '%s %s %s' % (ref, m0, m1)
                     LOG.info('New PSF phasecenter: {}'.format(phase_center))
-                    # TODO: Is this warning still needed with PIPE-98?
-                    LOG.warning('Source {src} is an odd-shaped mosaic -- there is no mosaic field at the image '
-                                'phasecenter and imaging is likely to fail. The PSF phasecenter of nearest pointing to '
-                                'the image center is {pc}'.format(src=field_names[0], pc=psf_phase_center))
             else:
                 LOG.warning('No primary beam supplied.  Will not attempt to shift PSF phasecenter to '
                             'nearest field w/o a primary beam distance check.')
