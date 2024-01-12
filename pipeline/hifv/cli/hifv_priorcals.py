@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None,ant_pos_time_limit=None):
+def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None, ant_pos_time_limit=None):
 
     """
     hifv_priorcals ---- Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.
