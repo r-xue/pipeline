@@ -120,6 +120,8 @@ class EditimlistInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def field(self):
+        if 'TARGET' in self.intent and 'field' in self.context.size_mitigation_parameters:
+            return self.context.size_mitigation_parameters['field']
         # mutable object, so should not use VisDependentProperty(default=[])
         return []
 
