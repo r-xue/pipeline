@@ -452,9 +452,6 @@ class RestoreData(basetask.StandardTaskTemplate):
                 tar.extractall(path=inputs.output_dir)
 
             # Restore final flags version using flagmanager
-            if not os.path.exists(os.path.join(flagversionpath, 'flags.{}'.format(flag_version_name))):
-                LOG.info('%s flags do not exist. Defaulting to Pipeline_Final flags.' % flag_version_name)
-                flag_version_name = 'Pipeline_Final'
             LOG.info('Restoring final flags for %s from flag version %s' % (ms.basename, flag_version_name))
             task = casa_tasks.flagmanager(vis=ms.name,
                                           mode='restore',
