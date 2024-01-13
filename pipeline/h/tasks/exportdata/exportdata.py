@@ -173,7 +173,7 @@ class ExportDataInputs(vdp.StandardInputs):
         self.targetimages = targetimages
         self.products_dir = products_dir
         self.imaging_products_only = imaging_products_only
-        self.export_final_flags = ['Pipeline_Final']
+
 
 class ExportDataResults(basetask.Results):
     def __init__(self, pprequest='', sessiondict=None, msvisdict=None, calvisdict=None, calimages=None, targetimages=None, weblog='',
@@ -240,7 +240,7 @@ class ExportData(basetask.StandardTaskTemplate):
     # name builder
     NameBuilder = PipelineProductNameBuilder
 
-    def prepare(self, export_final_flags=['Pipeline_Final']):
+    def prepare(self):
         """
         Prepare and execute an export data job appropriate to the
         task inputs.
@@ -248,7 +248,6 @@ class ExportData(basetask.StandardTaskTemplate):
         # Create a local alias for inputs, so we're not saying
         # 'self.inputs' everywhere
         inputs = self.inputs
-        self.export_final_flags = export_final_flags
 
         # Create products directory if necessary.
         utils.ensure_products_dir_exists(inputs.products_dir)
@@ -467,11 +466,9 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Copy the final flag versions to the data products directory
         # and tar them up.
-
-        # PIPE-1553: requested additional flag versions
         flag_version_list = []
         for visfile in vislist:
-            flag_version_file = self._export_final_flagversion(visfile, products_dir)
+            flag_version_file = self._export_final_flagversion(visfile, flag_version_name, products_dir)
             flag_version_list.append(flag_version_file)
 
         # Loop over the measurements sets in the working directory, and
@@ -768,10 +765,10 @@ class ExportData(basetask.StandardTaskTemplate):
         """
 
         LOG.info('Saving final flags for %s in flag version %s', os.path.basename(vis), flag_version_name)
-        task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name, comment='Final pipeline flags')
+        task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name)
         self._executor.execute(task)
 
-    def _export_final_flagversion(self, vis, products_dir):
+    def _export_final_flagversion(self, vis, flag_version_name, products_dir):
         """
         Save the final flags version to a compressed tarfile in products.
         """
@@ -780,49 +777,21 @@ class ExportData(basetask.StandardTaskTemplate):
         tarfilename = visname + '.flagversions.tgz'
         LOG.info('Storing final flags for %s in %s', visname, tarfilename)
 
-        # Create the tar file
-        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+        # Define the directory to be saved, and where to store in tar archive.
+        flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
+        flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
+        LOG.info('Saving flag version %s', flag_version_name)
 
         # Define the versions list file to be saved
         flag_version_list = os.path.join(visname + '.flagversions', 'FLAG_VERSION_LIST')
         ti = tarfile.TarInfo(flag_version_list)
+        line = "{} : Final pipeline flags\n".format(flag_version_name).encode(sys.stdout.encoding)
+        ti.size = len(line)
         LOG.info('Saving flag version list')
 
-        # PIPE-1553: additional flag versions requested
-        flag_dict = dict()
-        with open(flag_version_list) as f:
-            for key, entry in [x.replace('\n', '').split(" : ", 1) for x in f.readlines()]:
-                flag_dict[key] = entry
-        export_final_flags_dict = dict()
-        for flag_version_name in self.export_final_flags:
-            if flag_version_name == 'Applycal_Final':
-                applycal_flag_key = [x for x in flag_dict.keys() if 'applycal' in x]
-                if applycal_flag_key:
-                    export_final_flags_dict[flag_version_name] = flag_dict[applycal_flag_key[-1]]
-                    task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=applycal_flag_key[-1], versionname=flag_version_name, comment=flag_dict[applycal_flag_key[-1]])
-                    self._executor.execute(task)
-            elif flag_version_name == 'hifv_checkflag_target-vla':
-                target_RFI_key = [x for x in flag_dict.keys() if flag_version_name in x]
-                if target_RFI_key:
-                    export_final_flags_dict[flag_version_name] = flag_dict[target_RFI_key[-1]]
-                    task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=target_RFI_key[-1], versionname=flag_version_name, comment=flag_dict[target_RFI_key[-1]])
-                    self._executor.execute(task)
-            elif flag_dict[flag_version_name]:
-                export_final_flags_dict[flag_version_name] = flag_dict[flag_version_name]
-            else:
-                LOG.info('%s flags do not exist, skipping.', flag_version_name)
-
-        line = ""
-        for flag_version_name, flag_version_comment in export_final_flags_dict.items():
-            # Define the directory to be saved, and where to store in tar archive.
-            flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
-            flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
-            LOG.info('Saving flag version %s', flag_version_name)
-            tar.add(flagsname, arcname=flagsarcname)
-            line += "{} : {}\n".format(flag_version_name, flag_version_comment)
-
-        line = line.encode(sys.stdout.encoding)
-        ti.size = len(line)
+        # Create the tar file
+        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+        tar.add(flagsname, arcname=flagsarcname)
         tar.addfile(ti, io.BytesIO(line))
         tar.close()
 
