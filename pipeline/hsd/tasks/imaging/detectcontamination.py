@@ -109,7 +109,7 @@ def detect_contamination(context: 'Context',
 
     # Calculate the mask map and the masked average spectrum
     mask_map = np.where(peak_sn_map < peak_sn_threshold, 1.0, 0.0)
-    masked_average_spectrum = np.nanmean(np.where(mask_map == 1.0, cube_regrid, np.nan), axis=(1, 2))
+    masked_average_spectrum = np.nanmean(np.where(mask_map > 0.5, cube_regrid, np.nan), axis=(1, 2))
 
     # Generate the contamination report figures
     _make_figures(peak_sn_map, mask_map, rms_map, masked_average_spectrum,
