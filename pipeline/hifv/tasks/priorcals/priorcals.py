@@ -3,7 +3,7 @@ Example usage:
 
 inputs = pipeline.vla.tasks.priorcals.Priorcals.Inputs(context)
 task = pipeline.vla.tasks.priorcals.Priocals(inputs)
-result = task.exectue(dry_run=False)
+result = task.execute()
 result.accept(context)
 
 """
@@ -38,8 +38,8 @@ def correct_ant_posns(vis_name, print_offsets=False):
     runs silently.
 
     A list is returned where the first element is the returned error
-    code, the second element is a string of the antennas, and the 
-    third element is a list of antenna Bx,By,Bz offsets.  An example 
+    code, the second element is a string of the antennas, and the
+    third element is a list of antenna Bx,By,Bz offsets.  An example
     return list might look like:
     [ 0, 'ea01,ea19', [0.0184, -0.0065, 0.005, 0.0365, -0.0435, 0.0543] ]
 
