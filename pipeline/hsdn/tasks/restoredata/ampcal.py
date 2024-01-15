@@ -98,8 +98,6 @@ class SDAmpCalResults(basetask.Results):
         return s
 
 
-@task_registry.set_equivalent_casa_task('hsd_k2jycal')
-@task_registry.set_casa_commands_comment('The calibration tables to correct scale differences between beams are generated.')
 class SDAmpCal(basetask.StandardTaskTemplate):
     Inputs = SDAmpCalInputs
 
