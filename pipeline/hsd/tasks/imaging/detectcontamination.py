@@ -103,8 +103,7 @@ def detect_contamination(context: 'Context',
     rms_map, peak_sn_map, spectrum_at_peak, idx, idy = \
         _calculate_rms_and_peak_sn_map(cube_regrid, naxis, is_frequency_channel_reversed)
 
-    # Determine the threshold of Peak S/N
-    # In the case that pixel number is fewer than the mask threshold (mask_num_thresh).
+    # Determine the threshold of Peak S/N map for the mask map calculation
     peak_sn_threshold = _determine_peak_sn_threshold(cube_regrid, rms_map)
 
     # Calculate the mask map and the masked average spectrum
