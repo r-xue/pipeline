@@ -4,7 +4,6 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
-from pipeline.infrastructure import task_registry
 from . import csvfilereader
 from . import worker
 
