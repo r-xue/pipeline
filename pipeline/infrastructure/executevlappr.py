@@ -11,14 +11,10 @@ import os
 import sys
 import traceback
 
-from . import argmapper
 from . import casa_tools
 from . import exceptions
-from . import Pipeline
 from . import project
-from . import task_registry
 from . import utils
-from . import vdp
 from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getPprObject
 
 
@@ -41,6 +37,12 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
             'summary'
         interactive: If True, print pipeline log to STDOUT.
     """
+    # TODO: This line is TBD.
+    # Currently cli module is imported here to avoid circular imports.
+    # Another option would be to move executevlappr to upper directory
+    # (just like recipereducer).
+    from .. import cli
+
     # Useful mode parameters
     echo_to_screen = interactive
     workingDir = None
@@ -56,7 +58,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
         rawDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"), relativePath, "rawdata")
 
         # Get the pipeline context
-        context = Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
+        context = cli.h_init(loglevel=loglevel, plotlevel=plotlevel)
 
     except Exception:
         casa_tools.post_to_log("Beginning pipeline run ...", echo_to_screen=echo_to_screen)
@@ -137,23 +139,21 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
     casa_tools.post_to_log("Procedure name: " + procedureName + "\n", echo_to_screen=echo_to_screen)
 
     # Names of import tasks that need special treatment:
-    import_tasks = ('ImportData', 'ALMAImportData', 'VLAImportData')
-    restore_tasks = ('RestoreData', 'VLARestoreData')
+    import_tasks = ('h_importdata', 'hifa_importdata', 'hifv_importdata')
+    restore_tasks = ('h_restoredata', 'hifv_restoredata')
 
     # Loop over the commands
     for command in commandsList:
 
         # Get task name and arguments lists.
-        casa_task = command[0]
+        pipeline_task_name = command[0]
         task_args = command[1]
-        casa_tools.set_log_origin(fromwhere=casa_task)
+        casa_tools.set_log_origin(fromwhere=pipeline_task_name)
 
         # Execute the command
-        casa_tools.post_to_log("Executing command ..." + casa_task, echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Executing command ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
         try:
-            pipeline_task_class = task_registry.get_pipeline_class_for_task(casa_task)
-            pipeline_task_name = pipeline_task_class.__name__
-            casa_tools.post_to_log("    Using python class ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
+            pipeline_task = cli.get_pipeline_task_with_name(pipeline_task_name)
 
             # List parameters
             for keyword, value in task_args.items():
@@ -170,18 +170,8 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
                 casa_tools.post_to_log("SPECTRAL_MODE=True.  Hanning smoothing will not be executed.")
                 continue
 
-            remapped_args = argmapper.convert_args(pipeline_task_class, task_args, convert_nulls=False)
-            inputs = vdp.InputsContainer(pipeline_task_class, context, **remapped_args)
-            task = pipeline_task_class(inputs)
-            results = task.execute()
+            results = pipeline_task(**task_args)
             casa_tools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
-
-            try:
-                results.accept(context)
-            except Exception:
-                casa_tools.post_to_log("Error: Failed to update context for " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
-                raise
 
             if importonly and pipeline_task_name in import_tasks:
                 casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
@@ -203,7 +193,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
         tracebacks = utils.get_tracebacks(results)
         if len(tracebacks) > 0:
             # Save the context
-            context.save()
+            cli.h_save()
 
             casa_tools.set_log_origin(fromwhere='')
 
@@ -212,7 +202,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
             raise exceptions.PipelineException(previous_tracebacks_as_string)
 
     # Save the context
-    context.save()
+    cli.h_save()
 
     casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
 
