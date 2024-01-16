@@ -735,8 +735,11 @@ class Tclean(cleanbase.CleanBase):
         # Items for image header for manifest
         obspatt = 'mos' if self.image_heuristics.is_mosaic(inputs.field, inputs.intent) else 'sf'
         arrays = self.image_heuristics.arrays()
-        modifier = ''
-        session = inputs.context.observing_run.get_ms(inputs.vis[0]).session
+        if inputs.nbin not in (None, -1):
+            modifier = f'binned{inputs.nbin}'
+        else:
+            modifier = ''
+        session = ','.join(inputs.context.observing_run.get_ms(_vis).session for _vis in inputs.vis)
 
         # Local list from input masks
         if type(inputs.mask) is list:
@@ -1049,8 +1052,11 @@ class Tclean(cleanbase.CleanBase):
         # Items for image header for manifest
         obspatt = 'mos' if self.image_heuristics.is_mosaic(inputs.field, inputs.intent) else 'sf'
         arrays = self.image_heuristics.arrays()
-        modifier = ''
-        session = inputs.context.observing_run.get_ms(inputs.vis[0]).session
+        if inputs.nbin not in (None, -1):
+            modifier = f'binned{inputs.nbin}'
+        else:
+            modifier = ''
+        session = ','.join(inputs.context.observing_run.get_ms(_vis).session for _vis in inputs.vis)
 
         # Compute the dirty image
         LOG.info('Compute the dirty image')

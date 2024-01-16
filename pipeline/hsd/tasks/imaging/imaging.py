@@ -831,7 +831,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         __spwobj = _rgp.ref_ms.get_spectral_window(__spwid)
         __effective_bw = __cqa.quantity(__spwobj.channels.chan_effbws[0], 'Hz')
         effbw = float(__cqa.getvalue(__effective_bw))
-        self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=_cp.session_names[0], sourcename=_rgp.source_name,
+        self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=','.join(_cp.session_names), sourcename=_rgp.source_name,
                                      spwlist=_rgp.v_spwids, antenna=_rgp.ant_name, specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=self.stokes,
                                      datatype=self.inputs.datatype, datamin=None, datamax=None, datarms=None,
@@ -861,7 +861,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         __spwobj = _rgp.ref_ms.get_spectral_window(__spwid)
         __effective_bw = __cqa.quantity(__spwobj.channels.chan_effbws[0], 'Hz')
         effbw = float(__cqa.getvalue(__effective_bw))
-        self._finalize_worker_result(self.inputs.context, _rgp.imager_result_nro, session=_cp.session_names[0], sourcename=_rgp.source_name,
+        self._finalize_worker_result(self.inputs.context, _rgp.imager_result_nro, session=','.join(_cp.session_names), sourcename=_rgp.source_name,
                                      spwlist=_rgp.v_spwids, antenna=_rgp.ant_name, specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=_rgp.stokes_list[1],
                                      datatype=self.inputs.datatype, datamin=None, datamax=None, datarms=None,
@@ -1069,7 +1069,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                           sensitivity=_pp.theoretical_rms)
         __sensitivity_info = SensitivityInfo(__sensitivity, _pp.stat_freqs, (_cp.is_not_nro()))
         effbw = float(__cqa.getvalue(__effective_bw))
-        self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=_cp.session_names[0], sourcename=_rgp.source_name,
+        self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=','.join(_cp.session_names), sourcename=_rgp.source_name,
                                      spwlist=_rgp.combined.v_spws, antenna='COMBINED', specmode=_rgp.specmode,
                                      imagemode=_cp.imagemode, stokes=self.stokes,
                                      datatype=self.inputs.datatype, datamin=_pp.image_min, datamax=_pp.image_max,
@@ -1116,7 +1116,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             __spwobj = _rgp.ref_ms.get_spectral_window(__spwid)
             __effective_bw = __cqa.quantity(__spwobj.channels.chan_effbws[0], 'Hz')
             effbw = float(__cqa.getvalue(__effective_bw))
-            self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=_cp.session_names[0], sourcename=_rgp.source_name,
+            self._finalize_worker_result(self.inputs.context, _rgp.imager_result, session=','.join(_cp.session_names), sourcename=_rgp.source_name,
                                          spwlist=_rgp.combined.v_spws, antenna='COMBINED', specmode=_rgp.specmode,
                                          imagemode=_cp.imagemode, stokes=_rgp.stokes_list[1],
                                          datatype=self.inputs.datatype, datamin=_pp.image_min, datamax=_pp.image_max,
