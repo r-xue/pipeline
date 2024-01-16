@@ -237,7 +237,7 @@ class PriorcalsInputs(vdp.StandardInputs):
     swpow_spw = vdp.VisDependentProperty(default='')
     show_tec_maps = vdp.VisDependentProperty(default=True)
     apply_tec_correction = vdp.VisDependentProperty(default=False)
-    ant_pos_time_limit  = vdp.VisDependentProperty(default=150)
+    ant_pos_time_limit = vdp.VisDependentProperty(default=150)
     def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None, ant_pos_time_limit=None):
         """
         Args:
@@ -254,7 +254,7 @@ class PriorcalsInputs(vdp.StandardInputs):
         self.show_tec_maps = show_tec_maps
         self.apply_tec_correction = apply_tec_correction
         self.swpow_spw = swpow_spw
-        self.ant_pos_time_limit =  ant_pos_time_limit
+        self.ant_pos_time_limit = ant_pos_time_limit
 
     def to_casa_args(self):
         raise NotImplementedError
@@ -335,7 +335,6 @@ class Priorcals(basetask.StandardTaskTemplate):
             antpos_caltable = result.final[0].gaintable
             if os.path.exists(antpos_caltable):
                 LOG.info("Start antenna position corrections")
-                #check here
                 antparamlist = correct_ant_posns(inputs.vis, print_offsets=False, time_limit=inputs.ant_pos_time_limit)
                 LOG.info("End antenna position corrections")
 
