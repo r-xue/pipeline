@@ -293,7 +293,8 @@ def get_median_elevation(vis: str, antenna_id: int) -> float:
 
     Returns:
         The median of elevation of selected antenna (unit: degree).
-        Rerun 45.0 if DIRECTION is not in AZELGEO.
+        Return 45.0 if DIRECTION is not in AZELGEO or the value is
+        negative or greater than 90.0.
 
     Raises:
         RuntimeError: An error when DIRECTION column has unsupported coodinate
@@ -310,9 +311,44 @@ def get_median_elevation(vis: str, antenna_id: int) -> float:
                     if not (colkeywords['QuantumUnits'] == 'rad').all():
                         raise RuntimeError('The unit must be radian. Got {}'.format(str(colkeywords['QuantumUnits'])))
                     elevation_list = tsel.getcol('DIRECTION')[1][0]
-                    elevation = np.median(elevation_list) * 180.0 / math.pi
+                    median_elevation = np.median(elevation_list) * 180.0 / math.pi
+
+                    # check if the value is in reasonable range
+                    if 0.0 <= median_elevation and median_elevation <= 90.0:
+                        elevation = median_elevation
         finally:
             tsel.close()
+
+    return elevation
+
+
+def get_representative_elevation(vis, antenna_id: int) -> float:
+    """Return representative elevation value computed from phasecenter.
+
+    Args:
+        vis: Path to MeasurementSet.
+        antenna_id: The antenna ID to select.
+
+    Returns:
+        Elevation value in degree.
+    """
+    myqa = casa_tools.quanta
+    myme = casa_tools.measures
+
+    # correct necessary information using msmd tool
+    with casa_tools.MSMDReader(vis) as mymsmd:
+        mposition = mymsmd.antennaposition(antenna_id)
+        target_field = mymsmd.fieldsforintent('OBSERVE_TARGET*')[0]
+        # assuming msmd returns time values in sec
+        mepoch = myme.epoch(mymsmd.timesforfield(target_field), 's')
+        mdirection = mymsmd.phasecenter(target_field)
+
+    # convert phasecenter to AZEL
+    myme.done()
+    myme.doframe(mepoch)
+    myme.doframe(mposition)
+    azel = myme.measure(mdirection, 'AZELGEO')
+    elevation = myqa.convert(azel['m1'], 'deg')
 
     return elevation
 
@@ -342,7 +378,12 @@ def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
         frequency.
     """
     center_freq, nchan, resolution = get_spw_spec(vis, spw_id)
-    elevation = get_median_elevation(vis, antenna_id)
+    # first try computing elevation value from phasecenter
+    # if it fails, inspect POINTING table
+    try:
+        elevation = get_representative_elevation(vis, antenna_id)
+    except Exception:
+        elevation = get_median_elevation(vis, antenna_id)
 
     # set pwv to 1.0
     #pwv = 1.0
