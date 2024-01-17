@@ -355,6 +355,19 @@ def get_representative_elevation(vis, antenna_id: int) -> float:
 
 
 def get_altitude(vis: str) -> float:
+    """Return observatory-dependent altitude in meter.
+
+    This method gets observatory name from MS, and return
+    appropriate altitude value depending on the observatory
+    name.
+
+    Args:
+        vis: Path to MeasurementSet.
+
+    Returns:
+        Altitude value in meter. It only supports ALMA, VLA, and NRO.
+        Otherwise, the method returns default value, 5000m.
+    """
     with casa_tools.MSMDReader(vis) as mymsmd:
         observatory = mymsmd.observatorynames()[0]
 
