@@ -14,7 +14,6 @@ import urllib
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.hif.tasks.antpos import Antpos
 from pipeline.hifv.tasks.gaincurves import GainCurves
 from pipeline.hifv.tasks.opcal import Opcal
 from pipeline.hifv.tasks.rqcal import Rqcal
@@ -23,7 +22,7 @@ from pipeline.hifv.tasks.tecmaps import TecMaps
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from . import resultobjects
-
+from . import vlaantpos
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -191,9 +190,8 @@ def correct_ant_posns(vis_name, print_offsets=False, time_limit=0):
                     ant_num_stas[ant_ind][5] = 0.0
             if put_time > obs_time and not ant_num_stas[ant_ind][6] and pad == ant_num_stas[ant_ind][2]:
                 # it's the right antenna/pad; add the offsets to those already accumulated
-            
-                #Code added for PIPE 2052, reference CAS-14200
-                #Below code is copied from correct_ant_pos_evla.py under casatasks
+                # Code added for PIPE 2052, reference CAS-14200
+                # Below code is copied from correct_ant_pos_evla.py under casatasks
 
                 # Time limit for antenna corrections in days
                 put_time_str = str(put_time)
@@ -204,9 +202,9 @@ def correct_ant_posns(vis_name, print_offsets=False, time_limit=0):
 
                 time_diff = casa_tools.quanta.quantity(put_time_str)['value'] - casa_tools.quanta.quantity(obs_time_str)['value']
 
-                if time_limit <= 0 or ( time_diff < time_limit ):
-                    #print("put seperated: " put_time % 10000, )
-                    #print("put time MJD, antenna, pad, offsets = %f  %d  %s  %f %f %f" % (put_time_MJD,ant_num_stas[ant_ind][0],ant_num_stas[ant_ind][2],Bx,By,Bz))
+                if time_limit <= 0 or (time_diff < time_limit):
+                    # print("put seperated: " put_time % 10000, )
+                    # print("put time MJD, antenna, pad, offsets = %f  %d  %s %f %f %f" % (put_time_MJD,ant_num_stas[ant_ind][0],ant_num_stas[ant_ind][2],Bx,By,Bz))
                     ant_num_stas[ant_ind][3] += Bx
                     ant_num_stas[ant_ind][4] += By
                     ant_num_stas[ant_ind][5] += Bz
@@ -238,6 +236,7 @@ class PriorcalsInputs(vdp.StandardInputs):
     show_tec_maps = vdp.VisDependentProperty(default=True)
     apply_tec_correction = vdp.VisDependentProperty(default=False)
     ant_pos_time_limit = vdp.VisDependentProperty(default=150)
+
     def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None, ant_pos_time_limit=None):
         """
         Args:
@@ -248,7 +247,7 @@ class PriorcalsInputs(vdp.StandardInputs):
                                    executed and the resulting table applied
             swpow_spw(str):  spws for switched power
 
-        """        
+        """
         self.context = context
         self.vis = vis
         self.show_tec_maps = show_tec_maps
@@ -268,7 +267,7 @@ class Priorcals(basetask.StandardTaskTemplate):
 
     """
     Inputs = PriorcalsInputs
-    
+
     def prepare(self):
 
         callist = []
@@ -283,9 +282,9 @@ class Priorcals(basetask.StandardTaskTemplate):
             tecmaps_result = self._do_tecmaps(show_tec_maps=self.inputs.show_tec_maps,
                                               apply_tec_correction=self.inputs.apply_tec_correction)
 
-        #try:
+        # try:
         #    antpos_result.merge_withcontext(self.inputs.context)
-        #except:
+        # except:
         #    LOG.error('No antenna position corrections.')
 
         return resultobjects.PriorcalsResults(pool=callist, gc_result=gc_result,
@@ -325,8 +324,8 @@ class Priorcals(basetask.StandardTaskTemplate):
 
     def _do_antpos(self):
         """Run hif_antpos to correct for antenna positions"""
-        inputs = Antpos.Inputs(self.inputs.context, vis=self.inputs.vis, ant_pos_time_limit=self.inputs.ant_pos_time_limit)
-        task = Antpos(inputs)
+        inputs = vlaantpos.VLAAntpos.Inputs(self.inputs.context, vis=self.inputs.vis, ant_pos_time_limit=self.inputs.ant_pos_time_limit)
+        task = vlaantpos.VLAAntpos(inputs)
         result = self._executor.execute(task)
 
         antcorrect = {}
@@ -341,7 +340,7 @@ class Priorcals(basetask.StandardTaskTemplate):
                 self._check_tropdelay(antpos_caltable)
 
                 antList = antparamlist[1].split(',')
-                N=3
+                N = 3
                 subList = [antparamlist[2][n:n+N] for n in range(0, len(antparamlist[2]), N)]
                 antcorrect = dict(zip(antList, subList))
         except Exception as ex:
