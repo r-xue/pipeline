@@ -340,7 +340,7 @@ def get_representative_elevation(vis, antenna_id: int) -> float:
         mposition = mymsmd.antennaposition(antenna_id)
         target_field = mymsmd.fieldsforintent('OBSERVE_TARGET*')[0]
         # assuming msmd returns time values in sec
-        mepoch = myme.epoch(mymsmd.timesforfield(target_field), 's')
+        mepoch = myme.epoch('UTC', myqa.quantity(np.median(mymsmd.timesforfield(target_field)), 's'))
         mdirection = mymsmd.phasecenter(target_field)
 
     # convert phasecenter to AZEL
@@ -348,7 +348,8 @@ def get_representative_elevation(vis, antenna_id: int) -> float:
     myme.doframe(mepoch)
     myme.doframe(mposition)
     azel = myme.measure(mdirection, 'AZELGEO')
-    elevation = myqa.convert(azel['m1'], 'deg')
+    elevation = myqa.convert(azel['m1'], 'deg')['value']
+    myme.done()
 
     return elevation
 
