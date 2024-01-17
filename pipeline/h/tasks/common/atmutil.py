@@ -354,6 +354,23 @@ def get_representative_elevation(vis, antenna_id: int) -> float:
     return elevation
 
 
+def get_altitude(vis: str) -> float:
+    with casa_tools.MSMDReader(vis) as mymsmd:
+        observatory = mymsmd.observatorynames()[0]
+
+    if observatory.find('ALMA') != -1 or observatory.find('ACA') != -1:
+        altitude = 5059
+    elif observatory.find('VLA') != -1:
+        altitude = 2124
+    elif observatory.find('NRO') != -1 or observatory.find('Nobeyama') != -1:
+        altitude = 1300
+    else:
+        # default value is 5000m
+        altitude = 5000
+
+    return altitude
+
+
 def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
                      doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
     """
@@ -391,9 +408,12 @@ def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
     # get median PWV using Todd's script
     (pwv, pwvmad) = adopted.getMedianPWV(vis=vis)
 
+    altitude = get_altitude(vis)
+
     myat = casa_tools.atmosphere
     myqa = casa_tools.quanta
-    init_at(myat, fcenter=center_freq, nchan=nchan, resolution=resolution)
+    init_at(myat, fcenter=center_freq, nchan=nchan, resolution=resolution,
+            altitude=altitude)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
 
     airmass = calc_airmass(elevation)
