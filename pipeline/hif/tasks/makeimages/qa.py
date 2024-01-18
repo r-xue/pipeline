@@ -1,3 +1,4 @@
+import copy
 import collections
 from functools import reduce
 
@@ -9,7 +10,7 @@ from . import resultobjects
 LOG = logging.get_logger(__name__)
 
 
-class MakeImagesQAHandler(pqa.QAPlugin):    
+class MakeImagesQAHandler(pqa.QAPlugin):
     result_cls = resultobjects.MakeImagesResult
     child_cls = None
 
@@ -19,8 +20,34 @@ class MakeImagesQAHandler(pqa.QAPlugin):
             result.qa.pool[:] = [pqa.QAScore(0.0, longmsg='Size mitigation error. No targets were processed.',
                                              shortmsg='Size mitigation error')]
         elif len(result.results) > 0:
+            # Collect all hif_tclean QA score pools
             score_objects = reduce(lambda x, y: x+y, [item.qa.pool for item in result.results])
             result.qa.pool[:] = score_objects
+
+            # Aggregate psfphasecenter QA scores by spws per field
+            field_spw_score_info = dict()
+            for qa_score in result.qa.pool:
+                if qa_score.origin.metric_name == 'psfphasecenter':
+                    # applies_to parameters are sets
+                    _field = ''.join(str(item) for item in qa_score.applies_to.field)
+                    _spw = ''.join(str(item) for item in qa_score.applies_to.spw)
+                    if _field in field_spw_score_info:
+                        field_spw_score_info[_field]['spws'].append(_spw)
+                    else:
+                        field_spw_score_info[_field] = dict()
+                        field_spw_score_info[_field]['spws'] = [_spw]
+                        field_spw_score_info[_field]['template_score'] = copy.deepcopy(qa_score)
+
+            if field_spw_score_info:
+                for _field in field_spw_score_info:
+                    agg_qa_score = field_spw_score_info[_field]['template_score']
+                    agg_qa_score.weblog_location = pqa.WebLogLocation.UNSET
+                    if len(field_spw_score_info[_field]['spws']) > 1:
+                        _spws = ', '.join(field_spw_score_info[_field]['spws'][:-1])+f" and {field_spw_score_info[_field]['spws'][-1]}"
+                        agg_qa_score.longmsg = agg_qa_score.longmsg.replace(f"spw {field_spw_score_info[_field]['spws'][0]}", f"spws {_spws}")
+                        # Note the {} since set() would split the text into individual characters
+                        agg_qa_score.applies_to.spw = {_spws}
+                    result.qa.pool.append(agg_qa_score)
         else:
             if len(result.targets) == 0:
                 result.qa.pool[:] = [pqa.QAScore(None, longmsg='No imaging targets were defined',
@@ -40,5 +67,5 @@ class MakeImagesListQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
-        collated = utils.flatten([r.qa.pool for r in result]) 
+        collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated

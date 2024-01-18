@@ -794,7 +794,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                     else:
                         filtered_spwlist_local = filtered_spwlist
                         # PIPE-1900: Counting flagged spws as expected imaging targets.
-                        expected_num_targets = expected_num_targets + len(list(map(str, observed_spwids_list))) - len(filtered_spwlist)
+                        if len(filtered_spwlist) != 0:
+                            expected_num_targets = expected_num_targets + len(list(map(str, observed_spwids_list))) - len(filtered_spwlist)
 
                     if filtered_spwlist_local == [] or filtered_spwlist_local == ['']:
                         LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
