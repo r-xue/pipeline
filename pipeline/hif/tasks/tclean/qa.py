@@ -116,7 +116,7 @@ class TcleanQAHandler(pqa.QAPlugin):
             # is used in the tclean calls for odd-shaped mosaics.
             if result.used_psfphasecenter:
                 psfpc_score = 0.9
-                longmsg = f"Odd-shaped mosaic for field {result.sourcename} spw {result.spw} - setting the psf phase center to be within the primary beam of a pointing near center"
+                longmsg = f"Field {result.sourcename} has an odd-shaped mosaic - setting the psf phase center to be within the primary beam of a pointing near the phase center for spw {result.spw}"
                 shortmsg = 'Odd-shaped mosaic'
                 origin = pqa.QAOrigin(metric_name='psfphasecenter', metric_score='N/A', metric_units='N/A')
                 # Add a hidden QA score. The psfphasecenter scores are aggregated in hif_makeimages to create
