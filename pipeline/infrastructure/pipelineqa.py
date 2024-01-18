@@ -276,7 +276,7 @@ class QAPlugin(object, metaclass=abc.ABCMeta):
             return True
 
         try:
-            if all([isinstance(r, self.child_cls) and 
+            if all([isinstance(r, self.child_cls) and
                     (self.generating_task is None or r.task is self.generating_task)
                     for r in result]):
                 return True
