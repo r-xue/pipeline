@@ -1205,8 +1205,6 @@ def bpcal_score(bpcal_stats):
             bpcal_scores['PHASE_SCORE_RMS'][s][k] = \
                 bpcal_score_RMS(math.sqrt(phase[s][k]['resVar']), 0.05)
 
-            # PIPE-2035: offset the phase by 90deg so the inputs of bpcal_score_flatness() will never
-            # go negative.
             bpcal_scores['PHASE_SCORE_FN'][s][k] = \
                 bpcal_score_flatness(bpcal_stats['PHASE'][s][k])
 
