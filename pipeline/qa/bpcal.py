@@ -1446,7 +1446,7 @@ def bpcal_score_flatness(values):
             wEntropy = scipy.stats.mstats.gmean(-values)/numpy.ma.mean(-values)
         elif numpy.ma.any(values <= 0.0):
             # Some negative, some positive values (like in a phase spectrum)
-            # -> push to slightly positiv numbers. Since gmean returns 0.0 if
+            # -> push to slightly positive numbers. Since gmean returns 0.0 if
             # at least one value of the spectrum is 0.0, we offset with the
             # minimum plus a small positive number.
             wEntropy = scipy.stats.mstats.gmean(values-numpy.ma.min(values)+1e-10)/numpy.ma.mean(values-numpy.ma.min(values)+1e-10)
