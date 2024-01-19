@@ -200,22 +200,29 @@ class VersionCommand(distutils.cmd.Command):
 def _get_git_version():
     # Retrieve info about current branch.
     git_branch = None
+    ver_from_script = []
     try:
         git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'],
                                              stderr=subprocess.DEVNULL).decode().strip()
+
+        # Output of the version.py script is a string with two or three space-separated elements:
+        # last branch tag (possibly empty), last release tag, and possibly a "dirty" suffix.
+        # For example:
+        # 2024.0.0.3 2024.0.0.3
+        # or
+        # '' 2024.0.0.3 dirty
+        ver_from_script = subprocess.check_output([sys.executable, 'pipeline/infrastructure/version.py'],
+                                             stderr=subprocess.DEVNULL).decode().rstrip().split(' ')
     except (FileNotFoundError, subprocess.CalledProcessError):
         # FileNotFoundError: if git is not on PATH.
         # subprocess.CalledProcessError: if git command returns error; for example, current checkout
         #   may have a detached HEAD pointing at a specific tag (not pointing to a branch).
         pass
+
     if git_branch is not None and (git_branch == 'main' or git_branch.startswith('release/')):
-        ver = subprocess.check_output([sys.executable, 'pipeline/infrastructure/version.py'],
-                                      stderr=subprocess.DEVNULL).decode().rstrip().split(' ')
-        # Output of the version.py script is a string with two or three space-separated elements:
-        # last branch tag (possibly empty), last release tag, and possibly a "dirty" suffix.
         # Version string returned by this routine contains the latest release tag and optionally
         # a local version identifier ("dirty") as described in PEP440, separated by "+".
-        return '+'.join(ver[1:])
+        return '+'.join(ver_from_script[1:])
     else:
         # Retrieve info about current commit.
         try:
@@ -226,13 +233,21 @@ def _get_git_version():
             # FileNotFoundError: if git is not on PATH.
             # subprocess.CalledProcessError: if git command returns error.
             commit_hash = None
-        # Consolidate into single version string.
+
+        # Populate the hash, branch, and version from the script if any are unset:
         if commit_hash is None:
-            version = "unknown"
-        elif git_branch is None:
-            version = commit_hash
-        else:
-            version = "{}-{}".format(commit_hash, git_branch)
+            commit_hash = "unknown.hash"
+
+        if git_branch is None:
+            git_branch = "unknown.branch"
+
+        if len(ver_from_script) < 2:
+            version_number = '0.0.0.0'
+        else: 
+            version_number = ver_from_script[1]
+
+        # Consolidate into single version string.
+        version = "{}+{}.{}".format(version_number, commit_hash, git_branch)
 
         return version
 
