@@ -33,6 +33,5 @@ class VLAAntposInputs(antpos.AntposInputs):
         return gencal_args
 
 
-@task_registry.set_equivalent_casa_task('hif_antpos')
 class VLAAntpos(antpos.Antpos):
     Inputs = VLAAntposInputs
