@@ -2,6 +2,7 @@ import collections
 import distutils.cmd
 import distutils.log
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -237,13 +238,19 @@ def _get_git_version():
         # Populate the hash, branch, and version from the script if any are unset:
         if commit_hash is None:
             commit_hash = "unknown.hash"
+        else:
+            # Only ASCII numbers, letters, and '.' are allowed in the local version label
+            commit_hash = re.sub(r'[\W_]+', '.', commit_hash)
 
         if git_branch is None:
             git_branch = "unknown.branch"
+        else:
+            # Only ASCII numbers, letters, and '.' are allowed in the local version label
+            git_branch = re.sub(r'[\W_]+', '.', git_branch)
 
         if len(ver_from_script) < 2:
             version_number = '0.0.0.0'
-        else: 
+        else:
             version_number = ver_from_script[1]
 
         # Consolidate into single version string.
