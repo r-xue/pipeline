@@ -240,7 +240,6 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
 
         # Execute the command
         casa_tools.post_to_log("Executing command ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
-        pipeline_task_name = "Unknown"
         try:
             pipeline_task = cli.get_pipeline_task_with_name(pipeline_task_name)
 
