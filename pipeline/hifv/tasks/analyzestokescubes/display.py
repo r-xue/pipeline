@@ -51,7 +51,11 @@ class VlassCubeStokesSummary(object):
                 cmap = cm.get_cmap('rainbow_r')
                 for idx in range(len(x)):
                     color_idx = idx/len(x)
-                    ax.scatter(x[idx], y[idx], color=cmap(color_idx),
+                    if 'rejected' in label_full[idx]:
+                        facecolors = 'none'
+                    else:
+                        facecolors = cmap(color_idx)
+                    ax.scatter(x[idx], y[idx], facecolors=facecolors,
                                label=label_full[idx], edgecolors='black', alpha=0.7, s=300.)
                     text = ax.annotate(label_spw[idx], (x[idx], y[idx]), ha='center', va='center', fontsize=9.)
                     text.set_alpha(.7)
@@ -128,8 +132,8 @@ class VlassCubeFluxSummary(object):
                 y_rms = np.array(roi_stats['rms'])[:, 0]*1e3
 
                 fig, ax = plt.subplots(figsize=(10, 7))
-                ax.scatter(x, y, label='Observed (rejected)', color='black', facecolors='none')
-                ax.scatter(x[idx_keep], y[idx_keep], label='Observed', color='black')
+                ax.scatter(x, y, label='Observed (rejected)', color='black', facecolors='none',s=10**2)
+                ax.scatter(x[idx_keep], y[idx_keep], label='Observed', color='black',s=10**2)
 
                 ax.set_xlabel('Freq [GHz]')
                 ax.set_ylabel('Flux [mJy/beam]')
