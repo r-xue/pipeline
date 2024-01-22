@@ -166,7 +166,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
 
             # If spectral mode is set to True, skip the Hanning task.
             spectral_mode = intentsDict.get('SPECTRAL_MODE', False)
-            if spectral_mode and pipeline_task_name == 'Hanning':
+            if spectral_mode and pipeline_task_name == 'hifv_hanning':
                 casa_tools.post_to_log("SPECTRAL_MODE=True.  Hanning smoothing will not be executed.")
                 continue
 
