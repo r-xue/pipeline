@@ -8,7 +8,7 @@ the 2022 and 2023 F2F meetings, see also the tickets PIPE-1666 and PIPE-1887.
 
 * The MeasurementSet v2 definition from January 2020: https://casa.nrao.edu/Memos/229.html
 specifies the following: fields are stored in the MeasurementSet in the FIELD table.
-The field ID is implicitly set by the row nr., while field name is an explicit
+The field ID is implicitly set by the row number, while field name is an explicit
 column NAME, with value specified by the PI. The table also supports a SOURCE_ID
 column to point each field to an entry in the optional SOURCE subtable.
 
