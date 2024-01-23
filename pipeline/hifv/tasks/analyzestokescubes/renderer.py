@@ -53,7 +53,10 @@ class T2_4MDetailsAnalyzestokesCubeRenderer(basetemplates.T2_4MDetailsDefaultRen
                             'hif_makecutoutimages'):
                         r_makecutoutimages_copy = copy.deepcopy(result_meta)
             r_makecutoutimages_copy.stage_number = result.stage_number
-            plotter = VlassCubeCutoutRmsSummary(context, r_makecutoutimages_copy)
+            info_dict = {}
+            for sci_im in r_makecutoutimages_copy.subimagelist:
+                info_dict[sci_im['metadata']['spw']] = sci_im['metadata'].get('keep', True)
+            plotter = VlassCubeCutoutRmsSummary(context, r_makecutoutimages_copy, info_dict)
             rmsplots = {'Rms Summary Plot': plotter.plot(improp_list=[('rms', 'Median')])}
 
         except Exception as e:
