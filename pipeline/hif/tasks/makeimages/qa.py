@@ -22,6 +22,7 @@ class MakeImagesQAHandler(pqa.QAPlugin):
         elif len(result.results) > 0:
             # Collect all hif_tclean QA score pools
             score_objects = reduce(lambda x, y: x+y, [item.qa.pool for item in result.results])
+            all_spws = set(r.spw for r in result.results)
             result.qa.pool[:] = score_objects
 
             # Aggregate psfphasecenter QA scores by spws per field
@@ -36,17 +37,26 @@ class MakeImagesQAHandler(pqa.QAPlugin):
                     else:
                         field_spw_score_info[_field] = dict()
                         field_spw_score_info[_field]['spws'] = [_spw]
+                        # Save first spw's score as template for the aggregate score
                         field_spw_score_info[_field]['template_score'] = copy.deepcopy(qa_score)
 
             if field_spw_score_info:
                 for _field in field_spw_score_info:
                     agg_qa_score = field_spw_score_info[_field]['template_score']
                     agg_qa_score.weblog_location = pqa.WebLogLocation.UNSET
-                    if len(field_spw_score_info[_field]['spws']) > 1:
-                        _spws = ', '.join(field_spw_score_info[_field]['spws'][:-1])+f" and {field_spw_score_info[_field]['spws'][-1]}"
-                        agg_qa_score.longmsg = agg_qa_score.longmsg.replace(f"spw {field_spw_score_info[_field]['spws'][0]}", f"spws {_spws}")
-                        # Note the {} since set() would split the text into individual characters
-                        agg_qa_score.applies_to.spw = {_spws}
+
+                    # Replace individual spw text with appropriate aggregated message
+                    if set(field_spw_score_info[_field]['spws']) == all_spws:
+                        agg_qa_score.longmsg = agg_qa_score.longmsg.replace(f"for SPW {field_spw_score_info[_field]['spws'][0]}", f"for all SPWs")
+                    elif len(field_spw_score_info[_field]['spws']) > 1:
+                        _spws_msg = ', '.join(field_spw_score_info[_field]['spws'][:-1])+f" and {field_spw_score_info[_field]['spws'][-1]}"
+                        agg_qa_score.longmsg = agg_qa_score.longmsg.replace(f"for SPW {field_spw_score_info[_field]['spws'][0]}", f"for SPWs {_spws_msg}")
+
+                    # Replace spw data selection text
+                    _spws_sel = ', '.join(field_spw_score_info[_field]['spws'])
+                    # Note the {} since set() would split the text into individual characters
+                    agg_qa_score.applies_to.spw = {_spws_sel}
+
                     result.qa.pool.append(agg_qa_score)
         else:
             if len(result.targets) == 0:
