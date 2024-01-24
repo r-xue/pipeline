@@ -8,10 +8,11 @@ For more details, refer to PIPE-251.
 from collections import namedtuple
 from math import ceil
 import os
-from typing import Dict, Optional, Tuple, TYPE_CHECKING, Union
+from typing import Any, Dict, Optional, Tuple, TYPE_CHECKING, Union
 
 import matplotlib
-import matplotlib.figure as figure
+from matplotlib import figure
+from matplotlib import gridspec
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -214,10 +215,16 @@ def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
     """
     # Initialize the figure with a specified size
     _figure = figure.Figure(figsize=(20, 5))
+    _grid = gridspec.GridSpec( 1, 3, width_ratios=[1,1,1])
 
     # Create subplots(Axes) for peak S/N map, mask map, and masked averaged spectrum
-    peak_sn_plot = _figure.add_subplot(1, 3, 1)
-    mask_map_plot = _figure.add_subplot(1, 3, 2)
+    peak_sn_plot, peak_sn_colorbar = \
+        map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=[20,1],
+                                                                  subplot_spec=_grid[0]))
+    mask_map_plot, mask_map_colorbar = \
+        map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=[20,1],
+                                                                  subplot_spec=_grid[1]))
+    masked_avg_sp_plot = _figure.add_subplot(_grid[2])
     kw = {}
 
     # Check if direction specification is provided
@@ -243,22 +250,19 @@ def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
         scy = peak_sn_map.shape[0] - 1 - idy
 
     # Plot the peak S/N map, mask map, and masked averaged spectrum
-    _plot_peak_SN_map(_figure, peak_sn_plot, peak_sn_map, dir_unit, dir_spec is not None, scx, scy, kw)
-    _plot_mask_map(_figure, mask_map_plot, mask_map, peak_sn_threshold, dir_unit, kw)
-    _plot_masked_averaged_spectrum(_figure, rms_map, masked_average_spectrum, peak_sn_threshold,
-                                   spectrum_at_peak, freq_spec)
-
-    # Disable the use of offset on axis labels
-    _figure.gca().get_xaxis().get_major_formatter().set_useOffset(False)
-    _figure.gca().get_yaxis().get_major_formatter().set_useOffset(False)
+    _plot_peak_SN_map(peak_sn_plot, peak_sn_colorbar, peak_sn_map,
+                      dir_unit, dir_spec is not None, scx, scy, kw)
+    _plot_mask_map(mask_map_plot, mask_map_colorbar, mask_map,
+                   peak_sn_threshold, dir_unit, kw)
+    _plot_masked_averaged_spectrum(masked_avg_sp_plot, rms_map, masked_average_spectrum,
+                                   peak_sn_threshold, spectrum_at_peak, freq_spec)
 
     # Save the figure to the specified output file
     _figure.savefig(output_name, bbox_inches="tight")
-    _figure.clf()
 
 
-def _plot_peak_SN_map(fig: 'matplotlib.Figure',
-                      plot: 'Axes',
+def _plot_peak_SN_map(plot: 'Axes',
+                      colorbar: 'Axes',
                       peak_sn_map: 'sdtyping.NpArray2D',
                       dir_unit: str,
                       has_dir_spec: bool,
@@ -269,8 +273,8 @@ def _plot_peak_SN_map(fig: 'matplotlib.Figure',
     Plot the Peak Signal-to-Noise ratio (Peak S/N) map with specified parameters.
 
     Args:
-        fig (Figure): the instance of matplotlib.Figure.
         plot (Axes): The matplotlib Axes object to be used for plotting.
+        colorbar (Axes): The matplotlib Axes object to be used for colorbar.
         peak_sn (NpArray2D): The data representing the peak S/N.
         dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
         has_dir_spec (bool): Flag indicating if a direction specification is provided.
@@ -278,44 +282,27 @@ def _plot_peak_SN_map(fig: 'matplotlib.Figure',
         scy (float): The y-coordinate for the scatter plot marker.
         kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().
     """
-    # Log the scatter plot coordinates
+    # Log the plotting data
     LOG.debug(f'scx = {scx}, scy = {scy}')
-
-    # Set the current Axes object to the provided plot
-    fig.sca(plot)
-
-    # Set the title and axis labels for the plot
-    plot.set_title("Peak S/N map")
-    plot.set_xlabel(f"RA [{dir_unit}]")
-    plot.set_ylabel(f"DEC [{dir_unit}]")
-
-    # Log the shape of the peak S/N data
     LOG.debug('peak_sn.shape = {}'.format(peak_sn_map.shape))
+    LOG.debug('ylim = {}'.format(list(plot.get_ylim())))
+    
+    # plot the peak S/N map
+    _plot_map(plot, "Peak S/N map", peak_sn_map, dir_unit, kw)
 
-    # Display the peak S/N data as an image with the specified colormap and keyword arguments
-    plot.imshow(np.flipud(peak_sn_map), cmap=DEFAULT_COLORMAP, **kw)
-
-    # Log the y-axis limits
-    ylim = plot.get_ylim()
-    LOG.debug('ylim = {}'.format(list(ylim)))
-
-    # Display a colorbar for the image
-    plot.colorbar = fig.colorbar(
-        matplotlib.cm.ScalarMappable(
-            matplotlib.colors.Normalize(np.nanmin(peak_sn_map), np.nanmax(peak_sn_map)),
-            DEFAULT_COLORMAP),
-        shrink=0.9, ax=plot)
+    # display a colorbar for the image
+    _display_colorbar(plot, colorbar, peak_sn_map)
 
     # Determine the transformation for the scatter plot marker based on the presence of a direction specification
-    trans = fig.gca().transAxes if has_dir_spec else None
+    trans = plot.transAxes if has_dir_spec else None
 
     # Plot a scatter marker at the specified coordinates
     plot.scatter(scx, scy, s=300, marker="o", facecolors='none',
                  edgecolors='grey', linewidth=5, transform=trans)
 
 
-def _plot_mask_map(fig: 'matplotlib.Figure',
-                   plot: 'Axes',
+def _plot_mask_map(plot: 'Axes',
+                   colorbar: 'Axes',
                    mask_map: 'sdtyping.NpArray2D',
                    peak_sn_threshold: float,
                    dir_unit: str,
@@ -324,36 +311,78 @@ def _plot_mask_map(fig: 'matplotlib.Figure',
     Plot the mask map with specified parameters.
 
     Args:
-        fig (Figure): the instance of matplotlib.Figure.
         plot (Axes): The matplotlib Axes object to be used for plotting.
+        colorbar (Axes): The matplotlib Axes object to be used for colorbar.
         mask_map (NpArray2D): The data representing the mask map.
         peak_sn_threshold (float): The threshold for the peak of signal-to-noise.
         dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
         kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().
     """
-    # Set the current Axes object to the provided plot
-    fig.sca(plot)
+    # plot the mask map
+    _plot_map(plot, f"Mask map (1: S/N<{peak_sn_threshold})", mask_map, dir_unit, kw)
+    
+    # display the colorbar
+    _display_colorbar(plot, colorbar, mask_map,
+                      {'ticks': [0, 1],
+                       'format': matplotlib.ticker.FixedFormatter(['Masked', 'Unmasked'])})
 
+
+def _plot_map(plot: 'Axes',
+              title: str,
+              map: 'sdtyping.NpArray2D',
+              dir_unit: str,
+              kw: Dict[str, Union[float, Tuple[float, float]]]):
+    """Plot map data.
+
+    Args:
+        plot (Axes): The matplotlib Axes object to be used for plotting.
+        title (str): The title of the graph.
+        map (NpArray2D): The data for plotting.
+        dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
+        kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().
+    """
     # Set the title and axis labels for the plot
-    plot.set_title(f"Mask map (1: S/N<{peak_sn_threshold})")
+    plot.set_title(title)
     plot.set_xlabel(f"RA [{dir_unit}]")
     plot.set_ylabel(f"DEC [{dir_unit}]")
 
-    # Display the mask map data as an image with the specified colormap and keyword arguments
-    plot.imshow(np.flipud(mask_map), vmin=0, vmax=1, cmap=DEFAULT_COLORMAP, **kw)
+    # Display the map as an image with the specified colormap and keyword arguments
+    plot.imshow(np.flipud(map), cmap=DEFAULT_COLORMAP, **kw)
 
-    # Define a custom formatter for the colorbar labels
-    formatter = matplotlib.ticker.FixedFormatter(['Masked', 'Unmasked'])
 
-    # Display a colorbar for the image with the custom formatter
-    plot.colorbar = fig.colorbar(
-        matplotlib.cm.ScalarMappable(
-            matplotlib.colors.Normalize(np.nanmin(mask_map), np.nanmax(mask_map)),
+def _display_colorbar(plot: 'Axes',
+                      colorbar: 'Axes',
+                      map: 'sdtyping.NpArray2D',
+                      options: Optional[Dict[str, Any]] = {}):
+    """
+    Display a colorbar for the plot.
+
+    Args:
+        plot (Axes): The matplotlib Axes object to be used for plotting.
+        colorbar (Axes): The matplotlib Axes object to be used for colorbar.
+        map (NpArray2D): 2D array for plotting.
+        options (Optional[Dict[str, Any]], optional): Additional keyword arguments for
+            matplotlib.colorbar.Colorbar. Defaults to {}.
+    """
+    # do not use offset notation
+    colorbar.get_xaxis().get_major_formatter().set_useOffset(False)
+    colorbar.get_yaxis().get_major_formatter().set_useOffset(False)
+
+    # display the colorbar of DEFAULT_COLORMAP colored
+    matplotlib.colorbar.Colorbar(ax=colorbar, 
+        mappable=matplotlib.cm.ScalarMappable(
+            matplotlib.colors.Normalize(np.nanmin(map), np.nanmax(map)), 
             DEFAULT_COLORMAP),
-        shrink=0.9, ticks=[0, 1], format=formatter, ax=plot)
+        **options)
+    
+    # set position of the colorbar
+    ipos = plot.get_position()
+    cpos = colorbar.get_position()
+    colorbar.set_position([cpos.x0 - cpos.width * 2.0, ipos.y0 + ipos.height * 0.05, 
+            cpos.width, ipos.height * 0.9])
 
 
-def _plot_masked_averaged_spectrum(fig: 'matplotlib.Figure',
+def _plot_masked_averaged_spectrum(plot: 'Axes',
                                    rms_map: 'sdtyping.NpArray2D',
                                    masked_average_spectrum: 'sdtyping.NpArray1D',
                                    peak_sn_threshold: float,
@@ -363,7 +392,7 @@ def _plot_masked_averaged_spectrum(fig: 'matplotlib.Figure',
     Plot the masked-averaged spectrum with specified parameters.
 
     Args:
-        fig (Figure): the instance of matplotlib.Figure.
+        plot (Axes): The matplotlib Axes object to be used for plotting.
         rms_map (NpArray2D): The data representing the RMS map.
         masked_average_spectrum (NpArray1D): 1D array representing the average spectrum of the masked regions.
         peak_sn_threshold (float): The threshold for the peak signal-to-noise.
@@ -374,7 +403,6 @@ def _plot_masked_averaged_spectrum(fig: 'matplotlib.Figure',
     stddev = np.nanstd(masked_average_spectrum)
 
     # Create a subplot for the masked-averaged spectrum
-    plot = fig.add_subplot(1, 3, 3)
     plot.set_title("Masked-averaged spectrum")
 
     if freq_spec is not None:
