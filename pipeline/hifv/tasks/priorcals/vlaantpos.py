@@ -22,13 +22,13 @@ class VLAAntposInputs(antpos.AntposInputs):
 
     def __init__(self, context, output_dir=None, vis=None,
                  ant_pos_time_limit=None):
-        super(VLAAntposInputs, self).__init__(
+        super().__init__(
             context, output_dir=output_dir, vis=vis)
         # Antenna position time limit, requires CASA>=6.6.1-5. PIPE-2052
         self.ant_pos_time_limit = ant_pos_time_limit
 
     def to_casa_args(self):
-        gencal_args = super(VLAAntposInputs, self).to_casa_args()
+        gencal_args = super().to_casa_args()
         gencal_args['ant_pos_time_limit'] = self.ant_pos_time_limit
         return gencal_args
 

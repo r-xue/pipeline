@@ -33,7 +33,7 @@ def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, swpo
 
 
     """
-    
+
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
