@@ -1223,7 +1223,6 @@ class SpwIdVsFreqChart(object):
                 k += 1
             fmin_list_all.extend(fmin_list)
         xmin = min(fmin_list_all)-(max(fmin_list_all)-min(fmin_list_all))/15
-        LOG.info("xmin = {}".format(xmin))
         ax_spw.set_xlim(xmin)
         ax_spw.invert_yaxis()
         ax_spw.set_ylim(float(maxnum), -1.0)
