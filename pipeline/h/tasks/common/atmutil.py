@@ -320,15 +320,11 @@ def get_median_elevation(vis: str, antenna_id: int) -> float:
 def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
                      doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Calculate atmospheric transmission of an antenna and spectral window.
+    Calculate atmospheric transmission of an antenna and a spectral window.
 
     Calculate the atmospheric transmission of a given spectral window for an
     elevation angle corresponding to pointings of a given antenna in a
     MeasurementSet.
-    The median of elevations in all pointings of the selected antenna is used
-    in calculation. The atmospheric profile is constructed by default site
-    parameters of the function, init_at. The median of zenith water vapor
-    column (pwv) is used to calculate the transmission.
 
     Args:
         vis: Path to MeasurementSet.
@@ -344,6 +340,35 @@ def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
     center_freq, nchan, resolution = get_spw_spec(vis, spw_id)
     elevation = get_median_elevation(vis, antenna_id)
 
+    return get_transmission_for_range(vis, center_freq, nchan, resolution, elevation, doplot)
+
+
+def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, elevation: float, doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Calculate atmospheric transmission covering a range of frequency.
+
+    Calculate the atmospheric transmission from a center frequency,
+    a number of channels and a resolution of a frequency range
+    and the median elevation.
+    The atmospheric profile is constructed by default site parameters of
+    the function, init_at. The median of zenith water vapor column (pwv)
+    is used to calculate the transmission.
+
+    Args:
+        vis: Path to MeasurementSet.
+        center_freq: The center frequency (unit: GHz) of a frequency range
+                     given by (maximum frequency - minimum frequency)/2.
+        nchan: The number of channels given by
+               (maximum frequency - minimum frequency)/resolution.
+        resolution: The channel width of a spectral window (unit: GHz).
+        elevation: The median of elevation of selected antenna (unit: degree).
+        doplot: If True, plot the atmospheric transmission and opacities.
+
+    Returns:
+        A tuple of 2 arrays. The first one is an array of frequencies in the
+        unit of GHz, and the other is the atmospheric transmission at each
+        frequency.
+    """
     # set pwv to 1.0
     #pwv = 1.0
     # get median PWV using Todd's script
