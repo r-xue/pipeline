@@ -21,7 +21,7 @@ from pipeline.hifv.tasks.swpowcal import Swpowcal
 from pipeline.hifv.tasks.tecmaps import TecMaps
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from casatasks.private import correct_ant_posns_evla as correct_ant_posns
+from casatasks.private.correct_ant_posns_evla import correct_ant_posns_evla as correct_ant_posns
 from . import resultobjects
 from . import vlaantpos
 

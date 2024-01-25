@@ -13,7 +13,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class VLAAntposInputs(antpos.AntposInputs):
     """
-    VLAAntposInputs defines the inputs for the priporcals pipeline task.
+    VLAAntposInputs defines the inputs for the priorcals pipeline task.
     """
     # These are VLA specific settings and override the defaults in
     # the base class.
