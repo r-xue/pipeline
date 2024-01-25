@@ -1136,13 +1136,12 @@ class SpwIdVsFreqChart(object):
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
         scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
-        list_bw = [float(spw.bandwidth.value)/1.0e9 for spw in request_spws]  # GHz
-        list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in request_spws]  # GHz
-        list_fmax = [float(spw.max_frequency.value)/1.0e9 for spw in request_spws]  # GHz
         list_all_spwids = []
         list_indices = []
         list_all_indices = []
         if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
+            list_bw = [float(spw.bandwidth.value)/1.0e9 for spw in request_spws]  # GHz
+            list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in request_spws]  # GHz
             banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
             list_spwids_baseband = []
             for band in banddict:
@@ -1158,6 +1157,8 @@ class SpwIdVsFreqChart(object):
             list_all_indices = list(range(len(list_all_spwids)))
             ax_spw.barh(list_all_indices, list_bw, height=0.4, left=list_fmin)
         else:  # For ALMA and NRO
+            list_bw = [float(spw.bandwidth.value)/1.0e9 for spw in scan_spws]  # GHz
+            list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in scan_spws]  # GHz
             for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
                 shift = len(list_all_spwids)
                 list_indices = [list_spwids.index(spwid)+shift for spwid in list_spwids]
@@ -1168,7 +1169,6 @@ class SpwIdVsFreqChart(object):
                 fmins = list_fmin[start:end]
                 bws = list_bw[start:end]
                 ax_spw.barh(list_indices, bws, height=0.4, left=fmins)
-
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
         ax_spw.invert_yaxis()
@@ -1198,7 +1198,7 @@ class SpwIdVsFreqChart(object):
                 ax_spw.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
 
         # Make a plot of frequency vs. atm transmission
-        # For VLA data it is out of scope in PIPE-1415 and will be implemented in PIPE-1873. 
+        # For VLA data it is out of scope in PIPE-1415 and will be implemented in PIPE-1873.
         if self.context.project_summary.telescope not in ('VLA', 'EVLA'):  # For ALMA and NRO
             atm_color = 'm'
             ax_atm = ax_spw.twinx()
@@ -1210,11 +1210,14 @@ class SpwIdVsFreqChart(object):
             antid = 0
             if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
                 antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
-
-            for spwid in list_all_spwids:
-                atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
-                ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=4, linestyle='-')
-
+            data = atmutil.get_spw_spec(vis=ms.name, spw_id=list_all_spwids[0])
+            resolution = abs(data[2])
+            idx = list_fmin.index(max(list_fmin))
+            center_freq = (min(list_fmin) + max(list_fmin) + list_bw[idx]) / 2.0
+            nchan = round((max(list_fmin) + list_bw[idx] - min(list_fmin)) / resolution)
+            elevation = atmutil.get_median_elevation(ms.name, antid)
+            atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, elevation=elevation, doplot=False)
+            ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=4, linestyle='-')
         fig.savefig(filename)
         return self._get_plot_object()
 
