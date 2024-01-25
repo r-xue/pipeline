@@ -115,7 +115,7 @@ def _memory_size():
 
 
 # Determine pipeline version from Git or package.
-def _pipeline_revision():
+def _pipeline_revision() -> str:
     """
     Get a string describing the pipeline revision and branch of the executing
     pipeline distribution if executing from a Git repo; as a fall-back,

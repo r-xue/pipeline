@@ -198,7 +198,7 @@ class VersionCommand(distutils.cmd.Command):
             f.write('\n')
 
 
-def _get_git_version():
+def _get_git_version() -> str:
     # Retrieve info about current branch.
     git_branch = None
     ver_from_script = []
@@ -237,24 +237,25 @@ def _get_git_version():
 
         # Populate the hash, branch, and version from the script if any are unset:
         if commit_hash is None:
-            commit_hash = "unknown.hash"
+            commit_hash = "unknown_hash"
         else:
-            # Only ASCII numbers, letters, and '.' are allowed in the local version label
-            commit_hash = re.sub(r'[\W_]+', '.', commit_hash)
+            # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label
+            commit_hash = re.sub(r'[^\w_\-\.]+', '.', commit_hash)
 
         if git_branch is None:
-            git_branch = "unknown.branch"
+            git_branch = "unknown_branch"
         else:
-            # Only ASCII numbers, letters, and '.' are allowed in the local version label
-            git_branch = re.sub(r'[\W_]+', '.', git_branch)
+            # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label
+            git_branch = re.sub(r'[^\w_\-\.]+', '.', git_branch)
 
         if len(ver_from_script) < 2:
-            version_number = '0.0.0.0'
+            # Invalid version number:
+            version_number = '0.0.dev0'
         else:
             version_number = ver_from_script[1]
 
         # Consolidate into single version string.
-        version = "{}+{}.{}".format(version_number, commit_hash, git_branch)
+        version = "{}+{}-{}".format(version_number, commit_hash, git_branch)
 
         return version
 
