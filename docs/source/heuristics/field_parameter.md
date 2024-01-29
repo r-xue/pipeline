@@ -90,8 +90,8 @@ create a bandpass correction from scans taken with the BANDPASS intent.
 
 There are a number of Pipeline tasks that expose "field" as an input parameter.
 For these, field is set by default to an empty string to signify that it will be
-auto-populated based on intent (and MS being processed), but "field" is available
-for user-override.
+automatically populated based on intent (and MS being processed), but "field" is
+available for user-override.
 
 The use-case for what should happen when a user overrides the "field" parameter
 will naturally vary from task to task, and this behaviour is currently not
@@ -273,12 +273,12 @@ performs further explicit data selection by restricting to both field and intent
 Used by:
 * hif_mstransform
 
-This is a variation on earlier patterns. It identifies field for given
-inputs.intent, but in addition filters out any field that does not have an
-associated "source", and filters out any field that does not cover any of the
-requested SpWs specified in inputs.spw. It then performs the same check as above
-w.r.t. whether nr. of unique field names is same as nr. of field IDs. If so, it
-returns fields by name, otherwise by field ID.
+This is a variation on earlier patterns. It identifies fields for the given
+inputs.intent, but in addition filters out the last field (i.e. field with highest ID)
+if that field does not have an associated "source" or if that field does not cover
+any of the requested SpWs specified in inputs.spw. It then performs the same check
+as above w.r.t. whether nr. of unique field names is same as nr. of field IDs.
+If so, it returns fields by name, otherwise by field ID.
 
 ### Intent-to-field pattern 6:
 
@@ -294,7 +294,7 @@ that use e.g.:
         for field in inputs.ms.get_fields(intent=intent): 
 
 or some variation, and subsequently may use field.name inside the loop.
-This approaches bypasses the sanity check (seen in above mentioned approaches)
+This approach bypasses the sanity check (seen in above-mentioned approaches)
 of whether a field name is unique for that intent.
 
 As an aside: these tasks usually do still support a top-level "intent" and
