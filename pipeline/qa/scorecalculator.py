@@ -1109,8 +1109,12 @@ def countbaddelays(m, delaytable, delaymax):
     with casa_tools.TableReader(delaytable) as tb:
         spws = np.unique(tb.getcol('SPECTRAL_WINDOW_ID'))
         for ispw in spws:
+<<<<<<< HEAD
             # byspw table must be written to disk in outer layer to avoid 'Table does not exist' error
             tbspw = tb.query(query='SPECTRAL_WINDOW_ID==' + str(ispw), name='byspw')
+=======
+            tbspw = tb.query(query='SPECTRAL_WINDOW_ID==' + str(ispw))
+>>>>>>> 9e9d913f30053c09c07b9de95db0b5fd5008c5ed
             ants = np.unique(tbspw.getcol('ANTENNA1'))
             for iant in ants:
                 tbant = tbspw.query(query='ANTENNA1==' + str(iant))
