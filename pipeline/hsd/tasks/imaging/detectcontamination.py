@@ -672,7 +672,7 @@ def _count_valid_pixels(cube_regrid: 'sdtyping.NpArray3D') -> int:
         cube_regrid (NpArray3D): 3D data cube containing the image data.
 
     Returns:
-        amount of pixels in the data cube has a valid value.
+        Number of pixels with a valid value.
     """
     total_pix = 0
     _, ny, nx = cube_regrid.shape
