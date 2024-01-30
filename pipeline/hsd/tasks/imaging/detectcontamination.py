@@ -646,7 +646,7 @@ def _calculate_rms_and_peak_sn_map(cube_regrid: 'sdtyping.NpArray3D',
             - idx: x-coordinate of the maximum peak S/N location.
             - idy: y-coordinate of the maximum peak S/N location.
     """
-    # Decide the lower RMS map for the data cube
+    # Decide the lower RMS map of the data cube
     rms_map = _pick_quiet_slice(naxis, cube_regrid, is_frequency_channel_reversed)
 
     # Calculate the peak S/N for each pixel
