@@ -83,8 +83,8 @@ def detect_contamination(context: 'Context',
     Args:
         context (Context): The pipeline context object.
         item (ImageItem): The image item object to be analyzed.
-        is_frequency_channel_reversed (bool, optional): The flag that is True if the order of frequency
-            channels had been reversed in the imaging process (see worker.py). Defaults to False.
+        is_frequency_channel_reversed (bool, optional): True if the frequency axis is flipped (case for LSB)
+            by the imaging process (see worker.py). Defaults to False.
     """
     LOG.info("=================")
 
