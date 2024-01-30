@@ -26,7 +26,8 @@ not safe to do.
 and/or field names; it includes regular expression syntax that means that
 certain special characters should not be part of a field name.
   * As a consequence of accepting field IDs, CASA cannot accept a field name
-  that's purely numerical.
+  that's purely numerical. For reference, see the note at the bottom of "field"
+  section at https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter.
 
 * In the ALMA Observing Tool (OT), a mosaic can be defined in two ways:
   1. for a given source, one can set target type = "rectangular field", resulting
