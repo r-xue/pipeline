@@ -207,8 +207,8 @@ def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
         masked_average_spectrum (NpArray1D): Array representing the masked average spectrum.
         peak_sn_threshold (float): Threshold value for the peak S/N.
         spectrum_at_peak (NpArray1D): Array representing the spectrum at the peak.
-        idy (int64): Y-axis (latitude) index of the pixel.
-        idx (int64): X-axis (longitude) index of the pixel.
+        idy (int64): Y-axis (latitude) index of the maximum peak S/N location.
+        idx (int64): X-axis (longitude) index of the maximum peak S/N location.
         output_name (str): Name of the output file.
         freq_spec (FrequencySpec, optional): Frequency specification. Defaults to None.
         dir_spec (DirectionSpec, optional): Direction specification. Defaults to None.
@@ -278,8 +278,8 @@ def _plot_peak_SN_map(plot: 'Axes',
         peak_sn (NpArray2D): The data representing the peak S/N.
         dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
         has_dir_spec (bool): Flag indicating if a direction specification is provided.
-        scx (float): The x-coordinate for the scatter plot marker.
-        scy (float): The y-coordinate for the scatter plot marker.
+        scx (float): The x-coordinate of the maximum peak S/N location.
+        scy (float): The y-coordinate of the maximum peak S/N location.
         kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().
     """
     # Log the plotting data
@@ -296,7 +296,7 @@ def _plot_peak_SN_map(plot: 'Axes',
     # Determine the transformation for the scatter plot marker based on the presence of a direction specification
     trans = plot.transAxes if has_dir_spec else None
 
-    # Plot a scatter marker at the specified coordinates
+    # Plot a scatter marker at the specified coordinates of the maximum peak S/N location.
     plot.scatter(scx, scy, s=300, marker="o", facecolors='none',
                  edgecolors='grey', linewidth=5, transform=trans)
     
