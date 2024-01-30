@@ -33,7 +33,9 @@ if TYPE_CHECKING:
 LOG = infrastructure.get_logger(__name__)
 
 # Global parameters
-STD_THRESHOLD = 4.  # Threshold in terms of standard deviation to detect strong absorption features
+STDDEV_THRESHOLD_FACTOR = -4.0  # Threshold factor in terms of standard deviation to detect strong absorption features
+UPPER_INTENSITY_LIMIT_FACTOR = 7.0   # Upper intensity factor of Masked-avedaged spectrum plot (Y-axis)
+LOWER_INTENSITY_LIMIT_FACTOR = -7.0  # Lower intensity factor of Masked-avedaged spectrum plot (Y-axis)
 
 # Parameters for slicing the cube image and determining the scope of processing
 N_SLICES = 10  # Total number of slices
@@ -424,7 +426,7 @@ def _plot_masked_averaged_spectrum(plot: 'Axes',
 
     # Set y-axis label and limits
     plot.set_ylabel("Intensity [K]")
-    plot.set_ylim(stddev * (-7.), stddev * 7.)
+    plot.set_ylim(stddev * LOWER_INTENSITY_LIMIT_FACTOR, stddev * UPPER_INTENSITY_LIMIT_FACTOR)
 
     # Plot the spectrum at the peak and the masked averaged spectrum
     plot.plot(abc, spectrum_at_peak, "-", color="grey", label="spectrum at peak", alpha=0.5)
@@ -435,12 +437,12 @@ def _plot_masked_averaged_spectrum(plot: 'Axes',
 
     # Plot horizontal lines for reference
     plot.plot(_edge, [0, 0], "-", color="black")
-    plot.plot(_edge, [-4. * stddev, -4. * stddev], "--", color="red")
+    plot.plot(_edge, [STDDEV_THRESHOLD_FACTOR * stddev, STDDEV_THRESHOLD_FACTOR * stddev], "--", color="red")
     plot.plot(_edge, [np.nanmean(rms_map) * 1., np.nanmean(rms_map) * 1], "--", color="blue")
     plot.plot(_edge, [np.nanmean(rms_map) * (-1.), np.nanmean(rms_map) * (-1.)], "--", color="blue")
 
     # Plot additional lines and annotations if the standard deviation is above the threshold
-    if stddev * (7.) >= np.nanmean(rms_map) * peak_sn_threshold:
+    if stddev * UPPER_INTENSITY_LIMIT_FACTOR >= np.nanmean(rms_map) * peak_sn_threshold:
         plot.plot(_edge,
                   [np.nanmean(rms_map) * peak_sn_threshold, np.nanmean(rms_map) * peak_sn_threshold],
                   "--", color="green")
@@ -450,13 +452,13 @@ def _plot_masked_averaged_spectrum(plot: 'Axes',
     # Add text annotations for the plotted lines
     plot.text(minabc + w * 0.1, np.nanmean(rms_map) * 1., "1.0 x rms", fontsize=18, color="blue")
     plot.text(minabc + w * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue", va='top')
-    plot.text(minabc + w * 0.6, -4. * stddev, "-4.0 x std", fontsize=18, color="red")
+    plot.text(minabc + w * 0.6, STDDEV_THRESHOLD_FACTOR * stddev, f"{STDDEV_THRESHOLD_FACTOR} x std", fontsize=18, color="red")
 
     # Display the legend
     plot.legend()
 
     # Add a warning text if the minimum of the masked averaged spectrum is below the threshold
-    if np.nanmin(masked_average_spectrum) <= (-1.) * stddev * STD_THRESHOLD:
+    if np.nanmin(masked_average_spectrum) <= STDDEV_THRESHOLD_FACTOR * stddev:
         plot.text(minabc + w * 2. / 5., -5. * stddev, "Warning!!", fontsize=25, color="Orange")
 
 
@@ -519,7 +521,7 @@ def _warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D',
     std_value = np.nanstd(masked_average_spectrum)
 
     # Determine if the spectrum has a strong absorption feature
-    _has_strong_absorption = np.nanmin(masked_average_spectrum) <= (-1.) * std_value * STD_THRESHOLD
+    _has_strong_absorption = np.nanmin(masked_average_spectrum) <= STDDEV_THRESHOLD_FACTOR * std_value
 
     # If a strong absorption feature is detected, log a warning message
     if _has_strong_absorption:
