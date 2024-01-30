@@ -666,7 +666,7 @@ def _count_valid_pixels(cube_regrid: 'sdtyping.NpArray3D') -> int:
     """
     Count valid pixels for the given data cube.
 
-    This function counts amount of pixels in the data cube has a valid value (not NaN).
+    This function counts the pixels with a valid value (not NaN) in the data cube.
 
     Args:
         cube_regrid (NpArray3D): 3D data cube containing the image data.
