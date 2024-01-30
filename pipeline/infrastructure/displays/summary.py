@@ -1,4 +1,5 @@
 import datetime
+import itertools
 import math
 import operator
 import os
@@ -1130,7 +1131,8 @@ class SpwIdVsFreqChart(object):
 
         fig = figure.Figure(figsize=(9.6, 7.2))
         ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-
+        colorlist = ["navy", "tab:red", "darkgreen", "gold", "tab:cyan", "tab:brown", "tab:gray", "blue", "tab:orange", "darkred", "tab:olive"]
+        colorcycle = itertools.cycle(colorlist)
         # Make a plot of frequency vs. spwid
         ms = self.inputs.ms
         request_spws = ms.get_spectral_windows()
@@ -1155,7 +1157,8 @@ class SpwIdVsFreqChart(object):
                     list_spwids_baseband.append(spw)
             list_all_spwids = [spwid for list_spwids in list_spwids_baseband for spwid in list_spwids]
             list_all_indices = list(range(len(list_all_spwids)))
-            ax_spw.barh(list_all_indices, list_bw, height=0.4, left=list_fmin)
+#            ax_spw.barh(list_all_indices, list_bw, height=0.4, left=list_fmin)
+            ax_spw.barh(list_all_indices, list_bw, height=0.4, left=list_fmin, color=next(colorcycle))
         else:  # For ALMA and NRO
             list_bw = [float(spw.bandwidth.value)/1.0e9 for spw in scan_spws]  # GHz
             list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in scan_spws]  # GHz
@@ -1168,7 +1171,8 @@ class SpwIdVsFreqChart(object):
                 list_all_indices.extend(list_indices)
                 fmins = list_fmin[start:end]
                 bws = list_bw[start:end]
-                ax_spw.barh(list_indices, bws, height=0.4, left=fmins)
+#                ax_spw.barh(list_indices, bws, height=0.4, left=fmins)
+                ax_spw.barh(list_indices, bws, height=0.4, left=fmins, color=next(colorcycle))
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
         ax_spw.invert_yaxis()
@@ -1200,7 +1204,8 @@ class SpwIdVsFreqChart(object):
         # Make a plot of frequency vs. atm transmission
         # For VLA data it is out of scope in PIPE-1415 and will be implemented in PIPE-1873.
         if self.context.project_summary.telescope not in ('VLA', 'EVLA'):  # For ALMA and NRO
-            atm_color = 'm'
+            atm_color = 'gray'
+#            atm_color = 'm'
             ax_atm = ax_spw.twinx()
             ax_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
             ax_atm.set_ylim(0, 1.05)
