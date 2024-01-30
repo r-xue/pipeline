@@ -456,7 +456,7 @@ def _plot_masked_averaged_spectrum(plot: 'Axes',
     plot.legend()
 
     # Add a warning text if the minimum of the masked averaged spectrum is below the threshold
-    if np.nanmin(masked_average_spectrum) <= (-1) * stddev * STD_THRESHOLD:
+    if np.nanmin(masked_average_spectrum) <= (-1.) * stddev * STD_THRESHOLD:
         plot.text(minabc + w * 2. / 5., -5. * stddev, "Warning!!", fontsize=25, color="Orange")
 
 
@@ -519,7 +519,7 @@ def _warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D',
     std_value = np.nanstd(masked_average_spectrum)
 
     # Determine if the spectrum has a strong absorption feature
-    _has_strong_absorption = np.nanmin(masked_average_spectrum) <= (-1) * std_value * STD_THRESHOLD
+    _has_strong_absorption = np.nanmin(masked_average_spectrum) <= (-1.) * std_value * STD_THRESHOLD
 
     # If a strong absorption feature is detected, log a warning message
     if _has_strong_absorption:
