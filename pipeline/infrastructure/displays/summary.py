@@ -2,7 +2,7 @@ import datetime
 import math
 import operator
 import os
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 import matplotlib.dates as dates
 import matplotlib.figure as figure
@@ -1117,7 +1117,14 @@ class SpwIdVsFreqChart(object):
         self.inputs = inputs
         self.context = context
 
-    def _extract_spwdata_vla(self):
+    def _extract_spwdata_vla(self) -> Tuple[List[Dict[str, Union[List[int], List[float]]]], int]:
+        """Extract SPW data of VLA from measurement set.
+
+        Returns:
+            Tuple containing a list of dictionary and a total number of SPW IDs.
+            The dictionary contains list of SPW IDs, list of bandwidth (GHz unit) for
+            each SPW ID and list of minimum frequency for each SPW ID.
+        """
         ms = self.inputs.ms
         request_spws = ms.get_spectral_windows()
         dict_spwid_bw = {}
@@ -1127,7 +1134,7 @@ class SpwIdVsFreqChart(object):
             dict_spwid_bw[spw.id] = float(spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
             dict_spwid_fmin[spw.id] = float(spw.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
         spwdb = []
-        maxnum = 0
+        totalnum = 0
         for band in banddict:
             for baseband in banddict[band]:
                 spw_list = [list(spwitem.keys())[0] for spwitem in banddict[band][baseband]]
@@ -1136,11 +1143,18 @@ class SpwIdVsFreqChart(object):
                 for id in spw_list:
                     bw_list.append(dict_spwid_bw[id])
                     fmin_list.append(dict_spwid_fmin[id])
-                    maxnum += 1
+                    totalnum += 1
                 spwdb.append({'spwid': spw_list, 'bw': bw_list, 'fmin': fmin_list})
-        return spwdb, maxnum
+        return spwdb, totalnum
 
-    def _extract_spwdata_alma_nro(self):
+    def _extract_spwdata_alma_nro(self) -> Tuple[List[Dict[str, Union[List[int], List[float]]]], int]:
+        """Extract SPW data of ALMA or NRO from measurement set.
+
+        Returns:
+            Tuple containing a list of dictionary and a total number of SPW IDs.
+            The dictionary contains list of SPW IDs, list of bandwidth (GHz unit) for
+            each SPW ID and list of minimum frequency for each SPW ID.
+        """
         ms = self.inputs.ms
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
@@ -1151,16 +1165,16 @@ class SpwIdVsFreqChart(object):
         for spw in scan_spws:
             dict_spwid_bw[spw.id] = float(spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
             dict_spwid_fmin[spw.id] = float(spw.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
-        maxnum = 0
+        totalnum = 0
         for spwid_list in utils.get_spectralspec_to_spwid_map(scan_spws).values():
             bw_list = []
             fmin_list = []
             for id in spwid_list:
                 bw_list.append(dict_spwid_bw[id])
                 fmin_list.append(dict_spwid_fmin[id])
-                maxnum += 1
+                totalnum += 1
             spwdb.append({'spwid': spwid_list, 'bw': bw_list, 'fmin': fmin_list})
-        return spwdb, maxnum
+        return spwdb, totalnum
 
     def plot(self) -> logger.Plot:
         """Create the plot.
@@ -1183,9 +1197,9 @@ class SpwIdVsFreqChart(object):
         yspace = 0.3
         many = 32
         if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
-            spwdb, maxnum = self._extract_spwdata_vla()
+            spwdb, totalnum = self._extract_spwdata_vla()
         else:  # for ALMA and NRO
-            spwdb, maxnum = self._extract_spwdata_alma_nro()
+            spwdb, totalnum = self._extract_spwdata_alma_nro()
         j = 0
         for one in spwdb:
             spwid_list = one['spwid']
@@ -1204,7 +1218,7 @@ class SpwIdVsFreqChart(object):
             indice_to_annotate = []
             bw_to_annotate = []
             fmin_to_annotate = []
-            if maxnum >= many:
+            if totalnum >= many:
                 spw_to_annotate = [spwid_list[0]] + ([spwid_list[-1]] if len(spwid_list) > 1 else [])
                 indice_to_annotate = [indice_list[0]] + ([indice_list[-1]] if len(indice_list) > 1 else [])
                 bw_to_annotate = [bw_list[0]] + ([bw_list[-1]] if len(bw_list) > 1 else [])
@@ -1225,7 +1239,7 @@ class SpwIdVsFreqChart(object):
         xmin = min(fmin_list_all)-(max(fmin_list_all)-min(fmin_list_all))/15
         ax_spw.set_xlim(xmin)
         ax_spw.invert_yaxis()
-        ax_spw.set_ylim(float(maxnum), -1.0)
+        ax_spw.set_ylim(float(totalnum), -1.0)
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
         ax_spw.grid(axis='x')
@@ -1238,18 +1252,6 @@ class SpwIdVsFreqChart(object):
         ax_atm.yaxis.tick_right()
         fig.savefig(filename)
         return self._get_plot_object()
-
-    def _get_figfile(self) -> str:
-        """Get filepath of output PNG file.
-
-        Returns:
-            Filepath of output PNG file
-        """
-        session_part = self.inputs.ms.session
-        ms_part = self.inputs.ms.basename
-        return os.path.join(self.context.report_dir,
-                            'session%s' % session_part,
-                            ms_part, 'spwid_vs_freq.png')
 
     def _get_plot_object(self) -> logger.Plot:
         """Get plot object.
