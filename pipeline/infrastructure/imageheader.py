@@ -61,6 +61,7 @@ def set_miscinfo(name, spw=None, virtspw=True, field=None, nfield=None, datatype
         info = image.miscinfo()
         if name is not None:
             # PIPE-533, limiting 'filnamXX' keyword length to 68 characters
+            # due to FITS header keyword string length limit.
             filename_components = wrap(os.path.basename(name), 68)
             info['nfilnam'] = len(filename_components)
             for i, filename_component in enumerate(filename_components):
