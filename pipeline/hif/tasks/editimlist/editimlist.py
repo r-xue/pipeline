@@ -95,7 +95,7 @@ class EditimlistInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def cell(self):
         # mutable object, so should not use VisDependentProperty(default=[])
-        if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
+        if 'hm_cell' in self.context.size_mitigation_parameters:
             return self.context.size_mitigation_parameters['hm_cell']
         return []
 
@@ -103,12 +103,16 @@ class EditimlistInputs(vdp.StandardInputs):
     def cell(self, val):
         if isinstance(val, str):
             val = [val]
+        for item in val:
+            if isinstance(item, str):
+                if 'ppb' in item:
+                    return item
         return val
 
     @vdp.VisDependentProperty
     def imsize(self):
         # mutable object, so should not use VisDependentProperty(default=[])
-        if 'TARGET' in self.intent and 'hm_imsize' in self.context.size_mitigation_parameters:
+        if 'hm_imsize' in self.context.size_mitigation_parameters:
             return self.context.size_mitigation_parameters['hm_imsize']
         return []
 
@@ -116,11 +120,16 @@ class EditimlistInputs(vdp.StandardInputs):
     def imsize(self, val):
         if not isinstance(val, list):
             val = [val]
+
+        for item in val:
+            if isinstance(item, str):
+                if 'pb' in item:
+                    return item
         return val
 
     @vdp.VisDependentProperty
     def field(self):
-        if 'TARGET' in self.intent and 'field' in self.context.size_mitigation_parameters:
+        if 'field' in self.context.size_mitigation_parameters:
             return self.context.size_mitigation_parameters['field']
         # mutable object, so should not use VisDependentProperty(default=[])
         return []
@@ -138,7 +147,7 @@ class EditimlistInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def nbin(self):
-        if 'TARGET' in self.intent and 'nbins' in self.context.size_mitigation_parameters:
+        if 'nbins' in self.context.size_mitigation_parameters:
             return self.context.size_mitigation_parameters['nbins']
         return -1
 
@@ -439,14 +448,24 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                         force_calc=False)
         else:
             synthesized_beam = None
+
+        if inpdict['cell']:
+            ppb = float(inpdict['cell'].split('ppb')[0])
+            inpdict['cell'] = []
+
         imlist_entry['cell'] = th.cell(beam=synthesized_beam,
                                        pixperbeam=ppb) if not inpdict['cell'] else inpdict['cell']
         # ----------------------------------------------------------------------------------  set imsize (SRDP ALMA)
         largest_primary_beam = th.largest_primary_beam_size(spwspec=imlist_entry['spw'], intent='TARGET')
         fieldids = th.field('TARGET', fieldnames)
+        if isinstance(inpdict['imsize'], str):
+            sfpblimit = float(inpdict['imsize'].split('pb')[0])
+            inpdict['imsize'] = []
+        else:
+            sfpblimit = 0.2
         imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                            primary_beam=largest_primary_beam,
-                                           sfpblimit=0.2, intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
+                                           sfpblimit=sfpblimit, intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
         # ---------------------------------------------------------------------------------- set imsize (VLA)
         if img_mode == 'VLA' and imlist_entry['specmode'] == 'cont':
             imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
