@@ -60,7 +60,7 @@ FrequencySpec = namedtuple('FrequencySpec', ['unit', 'data'])
 DirectionSpec = namedtuple('DirectionSpec', ['ref', 'minra', 'maxra', 'mindec', 'maxdec', 'resolution'])
 
 # Define a named tuple to represent the sizes of each axis in a image cube.
-#  x: The size of the X-axis (typically the RA direction in astronomical images).
+#  x: The size of the X-axis (typically the R.A. direction in astronomical images).
 #  y: The size of the Y-axis (typically the Dec direction in astronomical images).
 #  sp: The size of the spectral axis (e.g., frequency or velocity).
 NAxis = namedtuple('NAxis', ['x', 'y', 'sp'])
@@ -239,7 +239,7 @@ def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
         scx = (idx + 0.5) / peak_sn_map.shape[1]
         scy = (idy + 0.5) / peak_sn_map.shape[0]
 
-        # Set aspect ratio based on DEC correction factor
+        # Set aspect ratio based on Dec correction factor
         kw['aspect'] = 1.0 / np.cos((dir_spec.mindec + dir_spec.maxdec) / 2 / 180 * np.pi)
 
         # Set extent for the plot
@@ -278,7 +278,7 @@ def _plot_peak_SN_map(plot: 'Axes',
         plot (Axes): The matplotlib Axes object to be used for plotting.
         colorbar (Axes): The matplotlib Axes object to be used for colorbar.
         peak_sn (NpArray2D): The data representing the peak S/N.
-        dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
+        dir_unit (str): The unit for the R.A. (Right Ascension) and Dec (Declination) axis labels.
         has_dir_spec (bool): Flag indicating if a direction specification is provided.
         scx (float): The x-coordinate of the maximum peak S/N location.
         scy (float): The y-coordinate of the maximum peak S/N location.
@@ -322,7 +322,7 @@ def _plot_mask_map(plot: 'Axes',
         colorbar (Axes): The matplotlib Axes object to be used for colorbar.
         mask_map (NpArray2D): The data representing the mask map.
         peak_sn_threshold (float): The threshold for the peak of signal-to-noise.
-        dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
+        dir_unit (str): The unit for the R.A. (Right Ascension) and Dec (Declination) axis labels.
         kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().
     """
     # plot the mask map
@@ -345,13 +345,13 @@ def _plot_map(plot: 'Axes',
         plot (Axes): The matplotlib Axes object to be used for plotting.
         title (str): The title of the graph.
         map (NpArray2D): The data for plotting.
-        dir_unit (str): The unit for the RA (Right Ascension) and DEC (Declination) axis labels.
+        dir_unit (str): The unit for the R.A. (Right Ascension) and Dec (Declination) axis labels.
         kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().
     """
     # Set the title and axis labels for the plot
     plot.set_title(title)
-    plot.set_xlabel(f"RA [{dir_unit}]")
-    plot.set_ylabel(f"DEC [{dir_unit}]")
+    plot.set_xlabel(f"R.A. [{dir_unit}]")
+    plot.set_ylabel(f"Dec [{dir_unit}]")
 
     # Display the map as an image with the specified colormap and keyword arguments
     plot.imshow(np.flipud(map), cmap=DEFAULT_COLORMAP, **kw)
@@ -469,22 +469,22 @@ def _configure_plot_spec(plot: 'Axes',
 
     This function adjusts the x and y axis labels, ticks, and rotations based on the provided
     direction specifications. It uses the pointing module to determine the appropriate formatting
-    and rotation for the RA and DEC labels.
+    and rotation for the R.A. and Dec labels.
 
     Args:
         plot (Axes): The plot object to be configured.
-        dir_spec (DirectionSpec): The direction specifications containing details about RA and DEC.
+        dir_spec (DirectionSpec): The direction specifications containing details about R.A. and Dec.
     """
-    # Calculate the span based on the maximum and minimum RA and DEC values, and the resolution
+    # Calculate the span based on the maximum and minimum R.A. and Dec values, and the resolution
     _span = max(dir_spec.maxra - dir_spec.minra + dir_spec.resolution,
                 dir_spec.maxdec - dir_spec.mindec + dir_spec.resolution)
 
-    # Get the appropriate locators and formatters for RA and DEC based on the span and reference
-    RAlocator, DEClocator, RAformatter, DECformatter = pointing.XYlabel(_span, dir_spec.ref)
+    # Get the appropriate locators and formatters for R.A. and Dec based on the span and reference
+    RAlocator, Declocator, RAformatter, Decformatter = pointing.XYlabel(_span, dir_spec.ref)
 
-    # Configure the x-axis (RA) and y-axis (DEC) with the obtained formatters, locators, and rotations
+    # Configure the x-axis (R.A.) and y-axis (Dec) with the obtained formatters, locators, and rotations
     _configure_axis(plot.xaxis, RAformatter, RAlocator, pointing.RArotation)
-    _configure_axis(plot.yaxis, DECformatter, DEClocator, pointing.DECrotation)
+    _configure_axis(plot.yaxis, Decformatter, Declocator, pointing.DECrotation)
 
 
 def _configure_axis(axis: 'Axis',
@@ -574,7 +574,7 @@ def _get_direction_spec(image_obj: 'sd_display.SpectralImage') -> DirectionSpec:
     Returns:
         DirectionSpec object.
     """
-    # Convert RA and DEC values from the image object to degrees
+    # Convert R.A. and Dec values from the image object to degrees
     minra, maxra = _convert_to_degrees(image_obj.ra_min, image_obj.ra_max)
     mindec, maxdec = _convert_to_degrees(image_obj.dec_min, image_obj.dec_max)
 
