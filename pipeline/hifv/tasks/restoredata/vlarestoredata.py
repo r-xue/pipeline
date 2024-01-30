@@ -1,9 +1,12 @@
 import os
+import shutil
+import tarfile
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.restoredata import restoredata
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks
 from ..finalcals import applycals
 from ..hanning import hanning
 from ..importdata import importdata
@@ -109,6 +112,55 @@ class VLARestoreData(restoredata.RestoreData):
             asis=inputs.asis, ocorr_mode=inputs.ocorr_mode)
         importdata_task = importdata.VLAImportData(container)
         return self._executor.execute(importdata_task, merge=True)
+
+    def _do_restore_flags(self, pipemanifest, flag_version_name='Pipeline_Final'):
+        inputs = self.inputs
+        flagversionlist = []
+        if pipemanifest is not None:
+            ouss = pipemanifest.get_ous()
+        else:
+            ouss = None
+
+        # Loop over MS list in working directory
+        for ms in inputs.context.observing_run.measurement_sets:
+
+            # Remove imported MS.flagversions from working directory
+            flagversion = ms.basename + '.flagversions'
+            flagversionpath = os.path.join(inputs.output_dir, flagversion)
+            if os.path.exists(flagversionpath):
+                LOG.info('Removing default flagversion for %s' % ms.basename)
+                shutil.rmtree(flagversionpath)
+
+            # Untar MS.flagversions file in rawdata_dir to output_dir
+            if ouss is not None:
+                tarfilename = os.path.join(inputs.rawdata_dir,
+                                           pipemanifest.get_final_flagversions(ouss)[ms.basename])
+            else:
+                tarfilename = os.path.join(inputs.rawdata_dir,
+                                           ms.basename + '.flagversions.tgz')
+            LOG.info('Extracting %s' % flagversion)
+            LOG.info('    From %s' % tarfilename)
+            LOG.info('    Into %s' % inputs.output_dir)
+            with tarfile.open(tarfilename, 'r:gz') as tar:
+                tar.extractall(path=inputs.output_dir)
+
+            # Restore final flags version using flagmanager
+            if not os.path.exists(os.path.join(flagversionpath, 'flags.{}'.format(flag_version_name))):
+                LOG.info('%s flags do not exist. Defaulting to Pipeline_Final flags.' % flag_version_name)
+                flag_version_name = 'Pipeline_Final'
+            LOG.info('Restoring final flags for %s from flag version %s' % (ms.basename, flag_version_name))
+            task = casa_tasks.flagmanager(vis=ms.name,
+                                          mode='restore',
+                                          versionname=flag_version_name)
+            try:
+                self._executor.execute(task)
+            except Exception:
+                LOG.error("Application of final flags failed for %s" % ms.basename)
+                raise
+
+            flagversionlist.append(flagversionpath)
+
+        return flagversionlist
 
     def _do_hanningsmooth(self):
         container = vdp.InputsContainer(hanning.Hanning, self.inputs.context)
