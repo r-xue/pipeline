@@ -1123,10 +1123,10 @@ def countbaddelays(m, delaytable, delaymax):
                              + str((absdel > delaymax).sum()))
                 tbant.close()
             tbspw.close()
-        # clean up byspw table after each iteration
-        byspw = os.getcwd() + '/byspw'
-        if os.path.exists(byspw):
-            shutil.rmtree(byspw)
+            # clean up byspw table after each iteration
+            byspw = os.getcwd() + '/byspw'
+            if os.path.exists(byspw):
+                shutil.rmtree(byspw)
 
     return delaydict
 
