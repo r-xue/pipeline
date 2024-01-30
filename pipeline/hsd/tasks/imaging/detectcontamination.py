@@ -203,12 +203,12 @@ def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
     Create figures to visualize contamination.
 
     Args:
-        peak_sn_map (NpArray2D): Array representing the peak S/N.
-        mask_map (NpArray2D): Array representing the mask map.
-        rms_map (NpArray2D): Array representing the RMS map.
-        masked_average_spectrum (NpArray1D): Array representing the masked average spectrum.
+        peak_sn_map (NpArray2D): Array of the peak S/N.
+        mask_map (NpArray2D): Array of the mask map.
+        rms_map (NpArray2D): Array of the RMS map.
+        masked_average_spectrum (NpArray1D): Array of the masked average spectrum.
         peak_sn_threshold (float): Threshold value for the peak S/N.
-        spectrum_at_peak (NpArray1D): Array representing the spectrum at the peak.
+        spectrum_at_peak (NpArray1D): Array of the spectrum at the peak.
         idy (int64): Y-axis (latitude) index of the maximum peak S/N location.
         idx (int64): X-axis (longitude) index of the maximum peak S/N location.
         output_name (str): Name of the output file.
