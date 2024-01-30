@@ -299,6 +299,11 @@ def _plot_peak_SN_map(plot: 'Axes',
     # Plot a scatter marker at the specified coordinates
     plot.scatter(scx, scy, s=300, marker="o", facecolors='none',
                  edgecolors='grey', linewidth=5, transform=trans)
+    
+    # dummy scatter to display a legend
+    plot.scatter([], [], s=50, marker='o', facecolors='none',
+                 edgecolors='grey', linewidth=3, label="Max PS/N")
+    plot.legend(bbox_to_anchor=(1.13, 0.99), loc='lower right', columnspacing=0.8)
 
 
 def _plot_mask_map(plot: 'Axes',
