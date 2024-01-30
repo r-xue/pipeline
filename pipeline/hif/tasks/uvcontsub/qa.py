@@ -12,7 +12,7 @@ LOG = logging.get_logger(__name__)
 class UVcontSubQAHandler(pqa.QAPlugin):
     result_cls = uvcontsub.UVcontSubResults
     child_cls = None
-    generating_task = uvcontsub.UVcontSub
+    generating_task = uvcontsub.SerialUVcontSub
 
     def handle(self, context, result):
 
@@ -33,7 +33,7 @@ class UVcontSubListQAHandler(pqa.QAPlugin):
     """
     result_cls = collections.Iterable
     child_cls = uvcontsub.UVcontSubResults
-    generating_task = uvcontsub.UVcontSub
+    generating_task = uvcontsub.SerialUVcontSub
 
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our

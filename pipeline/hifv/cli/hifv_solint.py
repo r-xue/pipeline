@@ -4,26 +4,25 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_solint(vis=None, dryrun=None, acceptresults=None, limit_short_solint=None,
-                refantignore=None):
+def hifv_solint(vis=None, limit_short_solint=None, refantignore=None):
 
     """
     hifv_solint ---- Determines different solution intervals
 
-    
+
     The hifv_solint task determines different solution intervals. Note that the short solint value is switched to 'int' when
     the minimum solution interval corresponds to one integration.
 
+
+    Output:
+
+    results -- The results object for the pipeline task is returned.
+
+
     --------- parameter descriptions ---------------------------------------------
 
-    vis                List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                       MSes, or tar files of MSes, If ASDM files are specified, they will be
-                       converted  to MS format.
-                       example: vis=['X227.ms', 'asdms.tar.gz']
-    dryrun             Run the commands (True) or generate the commands to be run but
-                       do not execute (False).  This is a pipeline task execution mode.
-    acceptresults      Add the results of the task to the pipeline context (True) or
-                       reject them (False).  This is a pipeline task execution mode.
+    vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                       specified in the h_init or hifv_importdata task.
     limit_short_solint Keyword argument in units of seconds to limit the short solution interval.
                        Can be a string or float numerical value in units of seconds of '0.45' or 0.45.
                        Can be set to a string value of 'int'.
@@ -32,17 +31,10 @@ def hifv_solint(vis=None, dryrun=None, acceptresults=None, limit_short_solint=No
 
     --------- examples -----------------------------------------------------------
 
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
-    
+
     1. Determines different solution intervals:
-    
-    hifv_solint()
+
+    >>> hifv_solint()
 
 
     """

@@ -5,8 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
-                     bdfflags=None, ocorr_mode=None, gainmap=None, asis=None, dryrun=None,
-                     acceptresults=None):
+                     bdfflags=None, ocorr_mode=None, gainmap=None, asis=None):
 
     """
     hifv_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run
@@ -16,31 +15,34 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     retrieval support hifv_restoredata assumes that the required products
     are available in the rawdata_dir in the format produced by the
     hifv_exportdata task.
-    
+
     hifv_restoredata assumes that the following entities are available in the raw
     data directory
-    
-    o the ASDMs to be restored
-    o for each ASDM in the input list
-    o a compressed tar file of the final flagversions file, e.g.
-    uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
-    o a text file containing the applycal instructions, e.g.
-    uid___A002_X30a93d_X43e.ms.calapply.txt
-    o a compressed tar file containing the caltables for the parent session,
-    e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
-    
+
+    - the ASDMs to be restored
+    - for each ASDM in the input list:
+
+        - a compressed tar file of the final flagversions file, e.g.
+          uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
+
+        - a text file containing the applycal instructions, e.g.
+          uid___A002_X30a93d_X43e.ms.calapply.txt
+
+        - a compressed tar file containing the caltables for the parent session,
+          e.g. uid___A001_X74_X29.session_3.caltables.tar.gz
+
     hifv_restoredata performs the following operations
-    
-    o imports the ASDM(s))
-    o removes the default MS.flagversions directory created by the filler
-    o restores the final MS.flagversions directory stored by the pipeline
-    o restores the final set of pipeline flags to the MS
-    o restores the final calibration state of the MS
-    o restores the final calibration tables for each MS
-    o applies the calibration tables to each MS
-    
+
+    - imports the ASDM(s))
+    - removes the default MS.flagversions directory created by the filler
+    - restores the final MS.flagversions directory stored by the pipeline
+    - restores the final set of pipeline flags to the MS
+    - restores the final calibration state of the MS
+    - restores the final calibration tables for each MS
+    - applies the calibration tables to each MS
+
     Output:
-    
+
     results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
@@ -66,19 +68,13 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     gainmap       If True, map gainfields to a particular list of scans when
                   applying calibration tables.
     asis          List of tables to import asis.
-    dryrun        Run the commands (True) or generate the commands to be run but
-                  do not execute (False).  This is a pipeline task execution mode.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 
-    
-    Examples
-    
+
     1. Restore the pipeline results for a single ASDM in a single session
-    
-    hifv_restoredata (vis=['myVLAsdm'], session=['session_1'], ocorr_mode='ca')
+
+    >>> hifv_restoredata (vis=['myVLAsdm'], session=['session_1'], ocorr_mode='ca')
 
 
     """
