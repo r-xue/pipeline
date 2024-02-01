@@ -12,7 +12,7 @@ from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable, DataType
 from pipeline.h.heuristics import caltable as caltable_heuristic
-from pipeline.hsd.heuristics import CubicSplineFitParamConfig
+from pipeline.hsd.heuristics import BaselineFitParamConfig
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -155,6 +155,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
 
     vis = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     plan = vdp.VisDependentProperty(default=None)
+    fit_func = vdp.VisDependentProperty(default='cspline')
     fit_order = vdp.VisDependentProperty(default='automatic')
     switchpoly = vdp.VisDependentProperty(default=True)
     edge = vdp.VisDependentProperty(default=(0, 0))
@@ -254,6 +255,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         context: 'Context',
         vis: Optional[Union[str, List[str]]] = None,
         plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
+        fit_func: Optional[str] = None,
         fit_order: Optional[int] = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,
@@ -300,6 +302,7 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         self.vis = vis
         self.plan = plan
         self.fit_order = fit_order
+        self.fit_func = fit_func
         self.switchpoly = switchpoly
         self.edge = edge
         self.deviationmask = deviationmask
@@ -314,17 +317,6 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
     """Abstract worker class for baseline subtraction."""
 
     Inputs = BaselineSubtractionWorkerInputs
-
-    @abc.abstractproperty
-    def Heuristics(self) -> Type['Heuristic']:
-        """Return heuristics class.
-
-        This abstract property must be implemented in each subclass.
-
-        Returns:
-            A reference to the :class:`Heuristic` class.
-        """
-        raise NotImplementedError
 
     is_multi_vis_task = False
 
@@ -375,6 +367,9 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                   antenna_id_list,
                   spw_id_list)
 
+        # blparam heuristics
+        blparam_heuristic = BaselineFitParamConfig(fitfunc=self.inputs.fit_func, switchpoly=self.inputs.switchpoly)
+
         # initialization of blparam file
         # blparam file needs to be removed before starting iteration through
         # reduction group
@@ -389,7 +384,6 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
             else:
                 deviationmask = None
-            blparam_heuristic = self.Heuristics(switchpoly=self.inputs.switchpoly)
             formatted_edge = list(common.parseEdge(edge))
             out_blparam = blparam_heuristic(self.datatable, ms, rowmap,
                                             antenna_id, field_id, spw_id,
@@ -504,20 +498,6 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         return results
 
 
-# Worker class for cubic spline fit
-class SerialCubicSplineBaselineSubtractionWorker(SerialBaselineSubtractionWorker):
-    """Worker class of cspline baseline subtraction.
-
-    This is an implementation of BaselineSubtractionWorker class based on
-    segmented cubic spline fitting. Heuristics property returns
-    CubicSplineFitParamConfig heuristics class.
-    """
-
-    Inputs = BaselineSubtractionWorkerInputs
-    Heuristics = CubicSplineFitParamConfig
-
-
-# This is abstract class since Task is not specified yet
 class BaselineSubtractionWorker(sessionutils.ParallelTemplate):
     """Template class for parallel baseline subtraction task.
 
@@ -531,12 +511,4 @@ class BaselineSubtractionWorker(sessionutils.ParallelTemplate):
     """
 
     Inputs = BaselineSubtractionWorkerInputs
-
-
-class CubicSplineBaselineSubtractionWorker(BaselineSubtractionWorker):
-    """Parallel processing task for cspline baseline subtraction.
-
-    This executes CubicSplineBaselineSubtractionWorker in parallel.
-    """
-
-    Task = SerialCubicSplineBaselineSubtractionWorker
+    Task = SerialBaselineSubtractionWorker

@@ -75,17 +75,27 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     MaxPolynomialOrder = 'none'  # 'none', 0, 1, 2,...
     PolynomialOrder = 'automatic'  # 'automatic', 0, 1, 2, ...
 
-    def __init__(self, switchpoly: bool = True):
+    def __init__(self, fitfunc='cspline', switchpoly: bool = True):
         """
         Construct BaselineFitParamConfig instance
         """
         super(BaselineFitParamConfig, self).__init__()
+        self.fitfunc = fitfunc
         self.paramdict = {}
         self.heuristics_engine = fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic()
         if switchpoly is True:
             self.switching_heuristic = do_switching
         else:
             self.switching_heuristic = no_switching
+
+        if self.fitfunc.lower() in ('polynomial', 'poly'):
+            LOG.info('Baseline parameter is optimized for polynomial fitting')
+            self.paramdict[BLP.FUNC] = 'poly'
+        else:
+            LOG.info('Baseline parameter is optimized for segmented cubic spline fitting')
+            self.paramdict[BLP.FUNC] = 'TBD'
+        self.paramdict[BLP.CLIPNITER] = self.ClipCycle
+        self.paramdict[BLP.CLIPTHRESH] = 5.0
 
     # readonly attributes
     @property
@@ -418,22 +428,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return as_maskstring(fit_channel_list)
 
-
-    @abc.abstractmethod
-    def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, mask_array):
-        raise NotImplementedError
-
-
-class CubicSplineFitParamConfig(BaselineFitParamConfig):
-
-    def __init__(self, switchpoly=True):
-        super(CubicSplineFitParamConfig, self).__init__(switchpoly)
-
-        # constant stuff
-        #self.paramdict[BLP.FUNC] = 'cspline'
-        self.paramdict[BLP.CLIPNITER] = self.ClipCycle
-        self.paramdict[BLP.CLIPTHRESH] = 5.0
-
     def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, mask_array):
         num_nomask = nchan_without_edge - nchan_masked
         num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
@@ -443,14 +437,17 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         self.paramdict[BLP.POL] = pol
         self.paramdict[BLP.NPIECE] = num_pieces
 
-        fitfunc, order = self.switching_heuristic(
-            self.heuristics_engine,
-            nchan,
-            edge,
-            num_pieces,
-            mask_array
-        )
-        self.paramdict[BLP.FUNC] = fitfunc
+        order = polyorder
+        if self.paramdict[BLP.FUNC] == 'TBD':
+            fitfunc, order = self.switching_heuristic(
+                self.heuristics_engine,
+                nchan,
+                edge,
+                num_pieces,
+                mask_array
+            )
+            self.paramdict[BLP.FUNC] = fitfunc
+
         self.paramdict[BLP.ORDER] = order
 
         return self.paramdict

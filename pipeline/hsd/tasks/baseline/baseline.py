@@ -312,6 +312,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         edge = inputs.edge
         broadline = inputs.broadline
         fitorder = 'automatic' if inputs.fitorder is None or inputs.fitorder < 0 else inputs.fitorder
+        fitfunc = inputs.fitfunc
         switchpoly = inputs.switchpoly
         clusteringalgorithm = inputs.clusteringalgorithm
         deviationmask = inputs.deviationmask
@@ -482,9 +483,10 @@ class SDBaseline(basetask.StandardTaskTemplate):
         deviationmask_list = [deviation_mask[ms.basename] for ms in registry]
         # 21/05/2018 TN temporal workaround
         # I don't know how to use vdp.ModeInputs so directly specify worker task class here
-        worker_cls = worker.CubicSplineBaselineSubtractionWorker
+        worker_cls = worker.BaselineSubtractionWorker
         fitter_inputs = vdp.InputsContainer(worker_cls, context,
                                             vis=vislist, plan=plan,
+                                            fit_func=fitfunc,
                                             fit_order=fitorder, switchpoly=switchpoly,
                                             edge=edge, blparam=blparam,
                                             deviationmask=deviationmask_list,

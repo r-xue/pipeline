@@ -10,5 +10,5 @@ from .sdcaltype import CalibrationTypeHeuristics
 from .fitorder import FitOrderHeuristics
 from .tsysspwmap import TsysSpwMapHeuristics
 from .MaskDeviation import MaskDeviationHeuristic
-from .baselineparamconfig import CubicSplineFitParamConfig
+from .baselineparamconfig import BaselineFitParamConfig
 from .rasterscan import RasterScanHeuristic
