@@ -299,42 +299,26 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             #irow = len(row_list_total)+len(row_list)
                             #irow = len(index_list_total) + i
                             irow = row
-                            param = self._calc_baseline_param(irow, pol, polyorder, nchan, edge, _masklist, mask_array)
-                            # MASK, in short, fit_channel_list in _calc_baseline_param() contains lists of indices [start, end+1]
-                            param[BLP.MASK] = [[start, end - 1] for [start, end] in param[BLP.MASK]]
-                            param[BLP.MASK] = as_maskstring(param[BLP.MASK])
+                            param = self._calc_baseline_param(irow, pol, polyorder, nchan, edge, mask_array, _masklist)
                             if TRACE():
                                 LOG.trace('Row {}: param={}'.format(row, param))
                             write_blparam(blparamfileobj, param)
 
         return blparam
 
-    def _calc_baseline_param(self, row_idx, pol, polyorder, nchan, edge, masklist, mask):
+    def _calc_baseline_param(self, row_idx, pol, polyorder, nchan, edge, mask_array, mask_list):
         # Create mask for line protection
-        nchan_without_edge = nchan - sum(edge)
-        #LOG.info('__ mask (before) = {}'.format(''.join(map(str, mask))))
-
-        # a stuff of masklist is a list of index [start, end]
-        if isinstance(masklist, (list, numpy.ndarray)):
-            for [m0, m1] in masklist:
-                mask[max(0, m0):min(nchan, m1 + 1)] = 0
-        else:
-            LOG.critical('Invalid masklist')
-
-        #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask))))
-        num_mask = int(nchan_without_edge - numpy.sum(mask[edge[0]:nchan - edge[1]] * 1.0))
-        # here meaning of "masklist" is changed
-        #         masklist: list of channel ranges to be *excluded* from the fit
-        # fit_channel_list: list of channel ranges to be *included* in the fit
-        fit_channel_list = self.__convert_mask_to_masklist(mask)
-        #LOG.info('__ masklist (before)= {}'.format(masklist))
-        #LOG.info('__ masklist (after) = {}'.format(fit_channel_list))
+        effective_nchan = nchan - sum(edge)
+        mask_array = self.__apply_masklist(mask_array, mask_list)
+        num_mask = int(effective_nchan - numpy.sum(mask_array[edge[0]:nchan - edge[1]] * 1.0))
 
         if TRACE():
-            LOG.trace('nchan_without_edge, num_mask, diff={}, {}'.format(
-                nchan_without_edge, num_mask))
+            LOG.trace('effective_nchan, num_mask, diff={}, {}'.format(
+                effective_nchan, num_mask))
 
-        outdata = self._get_param(row_idx, pol, polyorder, nchan, edge, nchan_without_edge, num_mask, fit_channel_list)
+        outdata = self._get_param(row_idx, pol, polyorder, nchan, edge, effective_nchan, num_mask, mask_array)
+
+        outdata[BLP.MASK] = self.__as_maskstring(mask_array)
 
         if TRACE():
             LOG.trace('outdata={}'.format(outdata))
@@ -408,8 +392,35 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             r.append([idx[-1], len(mask)])
         return [[start, end - end_offset] for start, end in r]
 
+    def __apply_masklist(self, mask_array, mask_list):
+        # a stuff of masklist is a list of index [start, end]
+        if isinstance(mask_list, (list, numpy.ndarray)):
+            #LOG.info('__ mask (before) = {}'.format(''.join(map(str, mask_array))))
+            nchan = len(mask_array)
+            for [m0, m1] in mask_list:
+                mask_array[max(0, m0):min(nchan, m1 + 1)] = 0
+            #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask_array))))
+        else:
+            LOG.critical('Invalid masklist')
+
+        return mask_array
+
+    def __as_maskstring(self, mask_array):
+        # here meaning of "masklist" is changed
+        #         masklist: list of channel ranges to be *excluded* from the fit
+        # fit_channel_list: list of channel ranges to be *included* in the fit
+        #LOG.info('__ masklist (before)= {}'.format(masklist))
+        fit_channel_list = self.__convert_mask_to_masklist(mask_array)
+        #LOG.info('__ masklist (after) = {}'.format(fit_channel_list))
+
+        # MASK, in short, fit_channel_list contains lists of indices [start, end+1]
+        fit_channel_list = [[start, end - 1] for [start, end] in fit_channel_list]
+
+        return as_maskstring(fit_channel_list)
+
+
     @abc.abstractmethod
-    def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, masklist):
+    def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, mask_array):
         raise NotImplementedError
 
 
@@ -423,14 +434,13 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         self.paramdict[BLP.CLIPNITER] = self.ClipCycle
         self.paramdict[BLP.CLIPTHRESH] = 5.0
 
-    def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, masklist):
+    def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, mask_array):
         num_nomask = nchan_without_edge - nchan_masked
         num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
         if TRACE():
             LOG.trace('Cubic Spline Fit: Number of Sections = {}'.format(num_pieces))
         self.paramdict[BLP.ROW] = idx
         self.paramdict[BLP.POL] = pol
-        self.paramdict[BLP.MASK] = masklist
         self.paramdict[BLP.NPIECE] = num_pieces
 
         fitfunc, order = self.switching_heuristic(
@@ -438,7 +448,7 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
             nchan,
             edge,
             num_pieces,
-            masklist
+            mask_array
         )
         self.paramdict[BLP.FUNC] = fitfunc
         self.paramdict[BLP.ORDER] = order

@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
@@ -48,20 +48,20 @@ class FitOrderHeuristics(api.Heuristic):
         for irow in range(nrow):
             spectrum = data[irow]
             flag = mask_maker.get_mask(irow)
-            if numpy.any( flag == 1 ):
-                average = numpy.average( spectrum, weights=flag )
+            if np.any( flag == 1 ):
+                average = np.average( spectrum, weights=flag )
                 spectrum = (spectrum - average) * flag
 
                 # Apply FFT to the spectrum
-                power_spectrum.append(numpy.abs(numpy.fft.rfft(spectrum)))
+                power_spectrum.append(np.abs(np.fft.rfft(spectrum)))
 
         # return None if all rows are completely masked
         if len(power_spectrum) == 0:
             return None
 
         # Average seems to be better than median
-        #power = numpy.median(power_spectrum, axis=0)
-        power = numpy.average(power_spectrum, axis=0)
+        #power = np.median(power_spectrum, axis=0)
+        power = np.average(power_spectrum, axis=0)
 
         max_freq = max(int(self.MaxDominantFreq * effective_nchan / 2048.0), 1)
 
@@ -98,7 +98,7 @@ class FitOrderHeuristics(api.Heuristic):
 
 class MaskMakerNoLine(object):
     def __init__(self, nchan, edge):
-        self.flag = numpy.ones( nchan, dtype=numpy.int8 )
+        self.flag = np.ones( nchan, dtype=np.int8 )
         self.flag[:edge[0]] = 0
         self.flag[(nchan-edge[1]):] = 0
 
@@ -120,13 +120,12 @@ class MaskMaker(MaskMakerNoLine):
 
 
 class SwitchPolynomialWhenLargeMaskAtEdgeHeuristic(api.Heuristic):
-    def calculate(self, nchan, edge, num_pieces, masklist):
+    def calculate(self, nchan, edge, num_pieces, mask):
         # fit function heuristics
         # nchan: total number of channels
         # nchan_segment: number of channels in one segment
         # edge: number of channels from the edges to be excluded from the fit [C0, C1]
         # mask: mask array (0->rejected, 1->adopted)
-        # masklist: list of fit ranges (included in the fit) [[C0, C1], [C2, C3], ...]
         # nchan_edge: max number of consecutive masked channels from edges
         # if nchan_edge >= nchan/2:
         #     fitfunc='poly'
@@ -136,20 +135,21 @@ class SwitchPolynomialWhenLargeMaskAtEdgeHeuristic(api.Heuristic):
         #     order=2
         # else:
         #     fitfunc='cspline'
-        if len(masklist) == 0:
+        assert edge[0] >= 0
+        assert edge[1] >= 0
+        if not np.any(mask[edge[0]:nchan - edge[1]]):
             # special case: all channels are excluded from the fit
             nchan_edge0 = nchan
             nchan_edge1 = nchan
         else:
-            # number of masked edge channels: Left side
-            edge_mask0 = list(map(min, masklist))
-            assert edge[0] >= 0
-            nchan_edge0 = max(min(edge_mask0), edge[0]) if len(edge_mask0) > 0 else edge[0]
-            # number of masked edge channels: Right side
-            edge_mask1 = list(map(max, masklist))
-            assert edge[1] >= 0
-            nchan_edge1 = max(nchan - 1 - max(edge_mask1), edge[1]) if len(edge_mask1) > 0 else edge[1]
-            # merge result
+            nchan_edge0 = edge[0]
+            while not mask[nchan_edge0]:
+                nchan_edge0 += 1
+
+            nchan_edge1 = nchan - edge[1] - 1
+            while not mask[nchan_edge1]:
+                nchan_edge1 -= 1
+
         nchan_edge = max(nchan_edge0, nchan_edge1)
         nchan_segment = int(round(float(nchan) / num_pieces))
         nchan_half = nchan // 2 + nchan % 2
@@ -165,7 +165,7 @@ class SwitchPolynomialWhenLargeMaskAtEdgeHeuristic(api.Heuristic):
             order = 0  # not used
 
         LOG.debug('DEBUGGING INFORMATION:')
-        LOG.debug('inclusive masklist={}'.format(masklist))
+        LOG.debug('mask array=%s' % mask)
         LOG.debug('edge = {}'.format(list(edge)))
         LOG.debug('nchan_edge = {} (left {} right {})'.format(nchan_edge, nchan_edge0, nchan_edge1))
         LOG.debug('nchan = {}, num_pieces = {} => nchan_segment = {}, nchan_half = {}'.format(nchan, num_pieces, nchan_segment, nchan_half))
