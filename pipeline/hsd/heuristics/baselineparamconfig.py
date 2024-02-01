@@ -10,7 +10,6 @@ import pipeline.infrastructure.logging as logging
 from pipeline.domain import DataTable, MeasurementSet
 from pipeline.infrastructure import casa_tools
 from pipeline.hsd.heuristics import fitorder
-from pipeline.hsd.heuristics import fragmentation
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -144,7 +143,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             Name of the BLParam file
         """
         LOG.debug('Starting BaselineFitParamConfig')
-        fragmentation_heuristic = fragmentation.FragmentationHeuristics()
 
         # fitting order
         if fit_order == 'automatic':
@@ -260,9 +258,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                         #LOG.debug('time group {} pol {}: fitting order={}'.format(
                         #            y, pol, averaged_polyorder))
 
-                        # calculate fragmentation
-                        (fragment, nwindow, win_polyorder) = fragmentation_heuristic(averaged_polyorder, nchan, edge)
-
                         nrow = len(rows)
                         if DEBUG() or TRACE():
                             LOG.debug('nrow = {}'.format(nrow))
@@ -304,8 +299,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             #irow = len(row_list_total)+len(row_list)
                             #irow = len(index_list_total) + i
                             irow = row
-                            param = self._calc_baseline_param(irow, pol, polyorder, nchan, 0, edge, _masklist,
-                                                              win_polyorder, fragment, nwindow, mask_array)
+                            param = self._calc_baseline_param(irow, pol, polyorder, nchan, edge, _masklist, mask_array)
                             # MASK, in short, fit_channel_list in _calc_baseline_param() contains lists of indices [start, end+1]
                             param[BLP.MASK] = [[start, end - 1] for [start, end] in param[BLP.MASK]]
                             param[BLP.MASK] = as_maskstring(param[BLP.MASK])
@@ -315,8 +309,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return blparam
 
-    def _calc_baseline_param(self, row_idx, pol, polyorder, nchan, modification, edge, masklist, win_polyorder,
-                             fragment, nwindow, mask):
+    def _calc_baseline_param(self, row_idx, pol, polyorder, nchan, edge, masklist, mask):
         # Create mask for line protection
         nchan_without_edge = nchan - sum(edge)
         #LOG.info('__ mask (before) = {}'.format(''.join(map(str, mask))))
@@ -341,8 +334,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             LOG.trace('nchan_without_edge, num_mask, diff={}, {}'.format(
                 nchan_without_edge, num_mask))
 
-        outdata = self._get_param(row_idx, pol, polyorder, nchan, mask, edge, nchan_without_edge, num_mask, fragment,
-                                  nwindow, win_polyorder, fit_channel_list)
+        outdata = self._get_param(row_idx, pol, polyorder, nchan, edge, nchan_without_edge, num_mask, fit_channel_list)
 
         if TRACE():
             LOG.trace('outdata={}'.format(outdata))
@@ -417,8 +409,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         return [[start, end - end_offset] for start, end in r]
 
     @abc.abstractmethod
-    def _get_param(self, idx, pol, polyorder, nchan, mask, edge, nchan_without_edge, nchan_masked, fragment, nwindow,
-                   win_polyorder, masklist):
+    def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, masklist):
         raise NotImplementedError
 
 
@@ -432,8 +423,7 @@ class CubicSplineFitParamConfig(BaselineFitParamConfig):
         self.paramdict[BLP.CLIPNITER] = self.ClipCycle
         self.paramdict[BLP.CLIPTHRESH] = 5.0
 
-    def _get_param(self, idx, pol, polyorder, nchan, mask, edge, nchan_without_edge, nchan_masked, fragment, nwindow,
-                   win_polyorder, masklist):
+    def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, masklist):
         num_nomask = nchan_without_edge - nchan_masked
         num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
         if TRACE():
