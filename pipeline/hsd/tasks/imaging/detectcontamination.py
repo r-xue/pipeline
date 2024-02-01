@@ -304,7 +304,7 @@ def _plot_peak_SN_map(plot: 'Axes',
     
     # dummy scatter to display a legend
     plot.scatter([], [], s=50, marker='o', facecolors='none',
-                 edgecolors='grey', linewidth=3, label="Max PS/N")
+                 edgecolors='grey', linewidth=3, label="Max")
     plot.legend(bbox_to_anchor=(1.13, 0.99), loc='lower right', columnspacing=0.8)
 
 
