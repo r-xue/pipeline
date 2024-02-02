@@ -332,11 +332,21 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             LOG.trace('effective_nchan, num_mask, diff={}, {}'.format(
                 effective_nchan, num_mask))
 
-        outdata = self._get_fit_param(polyorder, nchan, edge, effective_nchan, num_mask, mask_list)
+        # here meaning of "masklist" is changed
+        #         masklist: list of channel ranges to be *excluded* from the fit
+        # fit_channel_list: list of channel ranges to be *included* in the fit
+        #LOG.info('__ masklist (before)= {}'.format(masklist))
+        #LOG.info('__ masklist (after) = {}'.format(fit_channel_list))
+        fit_channel_list = self.__convert_mask_to_masklist(mask_array)
+
+        outdata = self._get_fit_param(polyorder, nchan, edge, effective_nchan, num_mask, fit_channel_list)
 
         self.paramdict[BLP.ROW] = row_idx
         self.paramdict[BLP.POL] = pol
-        outdata[BLP.MASK] = self.__as_maskstring(mask_array)
+
+        # MASK, in short, fit_channel_list contains lists of indices [start, end+1]
+        fit_channel_list = [[start, end - 1] for [start, end] in fit_channel_list]
+        outdata[BLP.MASK] = as_maskstring(fit_channel_list)
 
         if TRACE():
             LOG.trace('outdata={}'.format(outdata))
@@ -422,19 +432,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             LOG.critical('Invalid masklist')
 
         return mask_array
-
-    def __as_maskstring(self, mask_array):
-        # here meaning of "masklist" is changed
-        #         masklist: list of channel ranges to be *excluded* from the fit
-        # fit_channel_list: list of channel ranges to be *included* in the fit
-        #LOG.info('__ masklist (before)= {}'.format(masklist))
-        fit_channel_list = self.__convert_mask_to_masklist(mask_array)
-        #LOG.info('__ masklist (after) = {}'.format(fit_channel_list))
-
-        # MASK, in short, fit_channel_list contains lists of indices [start, end+1]
-        fit_channel_list = [[start, end - 1] for [start, end] in fit_channel_list]
-
-        return as_maskstring(fit_channel_list)
 
     def _get_fit_param(self, polyorder, nchan, edge, nchan_without_edge, nchan_masked, mask_list):
         if self._is_polynomial_fit():
