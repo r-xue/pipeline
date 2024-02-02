@@ -1,5 +1,6 @@
 import os
 import re
+import inspect
 
 from typing import Optional
 
@@ -286,6 +287,7 @@ class Tclean(cleanbase.CleanBase):
         self.width_as_velocity = None
         self.start_as_frequency = None
         self.width_as_frequency = None
+        self.aggregate_lsrk_bw = None
 
         # delete any old files with this naming root. One of more
         # of these (don't know which) will interfere with this run.
@@ -580,10 +582,10 @@ class Tclean(cleanbase.CleanBase):
         if inputs.sensitivity is not None:
             # Override with manually set value
             sensitivity = qaTool.convert(inputs.sensitivity, 'Jy')['value']
-            self.eff_ch_bw = 1.0
+            eff_ch_bw = 1.0
         else:
             # Get a noise estimate from the CASA sensitivity calculator
-            (sensitivity, self.eff_ch_bw, _, per_spw_cont_sensitivities_all_chan) = \
+            (sensitivity, eff_ch_bw, _, per_spw_cont_sensitivities_all_chan) = \
                 self.image_heuristics.calc_sensitivities(inputs.vis, inputs.field, inputs.intent, inputs.spw,
                                                          inputs.nbin, spw_topo_chan_param_dict, inputs.specmode,
                                                          inputs.gridder, inputs.cell, inputs.imsize, inputs.weighting,
@@ -702,7 +704,7 @@ class Tclean(cleanbase.CleanBase):
         # TODO: Record total bandwidth as opposed to range
         #       Save channel selection in result for weblog.
         result.set_aggregate_bw(self.aggregate_lsrk_bw)
-        result.set_eff_ch_bw(self.eff_ch_bw)
+        result.set_eff_ch_bw(eff_ch_bw)
 
         result.synthesized_beams = self.known_synthesized_beams
 
@@ -1787,13 +1789,12 @@ class Tclean(cleanbase.CleanBase):
             # Get current header
             info = image.miscinfo()
 
-            # Update given keywords
-            keywords = ['nfield', 'datamin', 'datamax', 'datarms', 'stokes',
-                        'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays',
-                        'modifier', 'session']
+            # Update keywords that are not None
+            frame = inspect.currentframe()
+            keywords, _, _, values = inspect.getargvalues(frame)
             for keyword in keywords:
-                if eval(keyword) is not None:
-                    info[keyword] = eval(keyword)
+                if keyword != 'self' and values[keyword] is not None:
+                    info[keyword] = values[keyword]
 
             # Save header back to image
             image.setmiscinfo(info)
