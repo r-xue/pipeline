@@ -75,6 +75,12 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     MaxPolynomialOrder = 'none'  # 'none', 0, 1, 2,...
     PolynomialOrder = 'automatic'  # 'automatic', 0, 1, 2, ...
 
+    def _is_polynomial_fit(self):
+        return self.fitfunc.lower() in ('polynomial', 'poly')
+
+    def _is_cubic_spline_fit(self):
+        return self.fitfinc.lower() in ('spline', 'cspline')
+
     def __init__(self, fitfunc='cspline', switchpoly: bool = True):
         """
         Construct BaselineFitParamConfig instance
@@ -88,12 +94,12 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         else:
             self.switching_heuristic = no_switching
 
-        if self.fitfunc.lower() in ('polynomial', 'poly'):
+        if self._is_polynomial_fit():
             LOG.info('Baseline parameter is optimized for polynomial fitting')
             self.paramdict[BLP.FUNC] = 'poly'
         else:
             LOG.info('Baseline parameter is optimized for segmented cubic spline fitting')
-            self.paramdict[BLP.FUNC] = 'TBD'
+            self.paramdict[BLP.FUNC] = 'cspline'
         self.paramdict[BLP.CLIPNITER] = self.ClipCycle
         self.paramdict[BLP.CLIPTHRESH] = 5.0
 
@@ -326,8 +332,10 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             LOG.trace('effective_nchan, num_mask, diff={}, {}'.format(
                 effective_nchan, num_mask))
 
-        outdata = self._get_param(row_idx, pol, polyorder, nchan, edge, effective_nchan, num_mask, mask_list)
+        outdata = self._get_fit_param(polyorder, nchan, edge, effective_nchan, num_mask, mask_list)
 
+        self.paramdict[BLP.ROW] = row_idx
+        self.paramdict[BLP.POL] = pol
         outdata[BLP.MASK] = self.__as_maskstring(mask_array)
 
         if TRACE():
@@ -428,17 +436,17 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return as_maskstring(fit_channel_list)
 
-    def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, mask_list):
-        num_nomask = nchan_without_edge - nchan_masked
-        num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
-        if TRACE():
-            LOG.trace('Cubic Spline Fit: Number of Sections = {}'.format(num_pieces))
-        self.paramdict[BLP.ROW] = idx
-        self.paramdict[BLP.POL] = pol
-        self.paramdict[BLP.NPIECE] = num_pieces
+    def _get_fit_param(self, polyorder, nchan, edge, nchan_without_edge, nchan_masked, mask_list):
+        if self._is_polynomial_fit():
+            self.paramdict[BLP.FUNC] = 'poly'
+            self.paramdict[BLP.ORDER] = polyorder
+        elif self._is_cubic_spline_fit():
+            num_nomask = nchan_without_edge - nchan_masked
+            num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
+            if TRACE():
+                LOG.trace('Cubic Spline Fit: Number of Sections = {}'.format(num_pieces))
+            self.paramdict[BLP.NPIECE] = num_pieces
 
-        order = polyorder
-        if self.paramdict[BLP.FUNC] == 'TBD':
             fitfunc, order = self.switching_heuristic(
                 self.heuristics_engine,
                 nchan,
@@ -447,7 +455,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 mask_list
             )
             self.paramdict[BLP.FUNC] = fitfunc
-
-        self.paramdict[BLP.ORDER] = order
+            self.paramdict[BLP.ORDER] = order
 
         return self.paramdict
