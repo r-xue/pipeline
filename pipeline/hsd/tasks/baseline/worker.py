@@ -1,5 +1,4 @@
 """Worker task for baseline subtraction."""
-import abc
 import numpy
 import os
 
@@ -23,130 +22,18 @@ from ..common import utils
 if TYPE_CHECKING:
     import numpy as np
 
-    from pipeline.infrastructure.api import Heuristic
     from pipeline.infrastructure.launcher import Context
     from pipeline.hsd.tasks.common.utils import RGAccumulator
 
 LOG = infrastructure.get_logger(__name__)
 
 
-class BaselineSubtractionInputsBase(vdp.StandardInputs):
-    """Base class of inputs for baseline subtraction task."""
-
-    # Search order of input vis
-    processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
+    """Inputs class for baseline subtraction tasks."""
 
     DATACOLUMN = {'CORRECTED_DATA': 'corrected',
                   'DATA': 'data',
                   'FLOAT_DATA': 'float_data'}
-
-    @vdp.VisDependentProperty
-    def colname(self) -> str:
-        """Return name of existing data column in MS.
-
-        The following column names are examined in order, and return
-        the name if the column exists in MS. If multiple columns exist,
-        the following list shows the priority.
-
-            - CORRECTED_DATA
-            - DATA
-            - FLOAT_DATA
-
-        For example, if MS has CORRECTED_DATA and DATA columns,
-        CORRECTED_DATA will be returned.
-
-        Returns:
-            Data column name
-        """
-        colname = ''
-        if isinstance(self.vis, str):
-            with casa_tools.TableReader(self.vis) as tb:
-                candidate_names = ['CORRECTED_DATA',
-                                   'DATA',
-                                   'FLOAT_DATA']
-                for name in candidate_names:
-                    if name in tb.colnames():
-                        colname = name
-                        break
-        return colname
-
-    def to_casa_args(self) -> dict:
-        """Convert Inputs instance to the list of keyword arguments for sdbaseline.
-
-        Note that core parameters such as blfunc will be set dynamically through
-        the heuristics or inside task.
-
-        Returns:
-            Keyword arguments for sdbaseline
-        """
-        args = super(BaselineSubtractionInputsBase, self).to_casa_args()  # {'vis': self.vis}
-        prefix = os.path.basename(self.vis.rstrip('/'))
-
-        # blparam
-        if self.blparam is None or len(self.blparam) == 0:
-            args['blparam'] = relative_path(os.path.join(self.output_dir, prefix + '_blparam.txt'))
-        else:
-            args['blparam'] = self.blparam
-
-        # baseline caltable filename
-        if self.bloutput is None or len(self.bloutput) == 0:
-            namer = caltable_heuristic.SDBaselinetable()
-            bloutput = relative_path(namer.calculate(output_dir=self.output_dir,
-                                                            stage=self.context.stage,
-                                                            **args))
-            args['bloutput'] = bloutput
-        else:
-            args['bloutput'] = self.bloutput
-
-        # outfile
-        if ('outfile' not in args or
-                args['outfile'] is None or
-                len(args['outfile']) == 0):
-            args['outfile'] = relative_path(os.path.join(self.output_dir, prefix + '_bl'))
-
-        args['datacolumn'] = self.DATACOLUMN[self.colname]
-
-        return args
-
-
-class BaselineSubtractionResults(common.SingleDishResults):
-    """Results class to hold the result of baseline subtraction."""
-
-    def __init__(self,
-                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
-                 success: Optional[bool] = None,
-                 outcome: Any = None) -> None:
-        """Construct BaselineSubtractionResults instance.
-
-        Args:
-            task: Task class that produced the result.
-            success: Whether task execution is successful or not.
-            outcome: Outcome of the task execution.
-        """
-        super(BaselineSubtractionResults, self).__init__(task, success, outcome)
-
-    def merge_with_context(self, context: 'Context') -> None:
-        """Merge result instance into context.
-
-        No specific merge operation is done.
-
-        Args:
-            context: Pipeline context.
-        """
-        super(BaselineSubtractionResults, self).merge_with_context(context)
-
-    def _outcome_name(self) -> str:
-        """Return string representation of outcome.
-
-        Returns:
-            Name of the blparam file with its format
-        """
-        # outcome should be a name of blparam text file
-        return 'blparam: "%s" bloutput: "%s"' % (self.outcome['blparam'], self.outcome['bloutput'])
-
-
-class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
-    """Inputs class for baseline subtraction tasks."""
 
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
@@ -250,6 +137,36 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         """
         return self.plan.get_channelmap_range_list()
 
+    @vdp.VisDependentProperty
+    def colname(self) -> str:
+        """Return name of existing data column in MS.
+
+        The following column names are examined in order, and return
+        the name if the column exists in MS. If multiple columns exist,
+        the following list shows the priority.
+
+            - CORRECTED_DATA
+            - DATA
+            - FLOAT_DATA
+
+        For example, if MS has CORRECTED_DATA and DATA columns,
+        CORRECTED_DATA will be returned.
+
+        Returns:
+            Data column name
+        """
+        colname = ''
+        if isinstance(self.vis, str):
+            with casa_tools.TableReader(self.vis) as tb:
+                candidate_names = ['CORRECTED_DATA',
+                                   'DATA',
+                                   'FLOAT_DATA']
+                for name in candidate_names:
+                    if name in tb.colnames():
+                        colname = name
+                        break
+        return colname
+
     def __init__(
         self,
         context: 'Context',
@@ -311,8 +228,81 @@ class BaselineSubtractionWorkerInputs(BaselineSubtractionInputsBase):
         self.org_directions_dict = org_directions_dict
         self.parallel = parallel
 
+    def to_casa_args(self) -> dict:
+        """Convert Inputs instance to the list of keyword arguments for sdbaseline.
 
-# Base class for workers
+        Note that core parameters such as blfunc will be set dynamically through
+        the heuristics or inside task.
+
+        Returns:
+            Keyword arguments for sdbaseline
+        """
+        args = super().to_casa_args()  # {'vis': self.vis}
+        prefix = os.path.basename(self.vis.rstrip('/'))
+
+        # blparam
+        if self.blparam is None or len(self.blparam) == 0:
+            args['blparam'] = relative_path(os.path.join(self.output_dir, prefix + '_blparam.txt'))
+        else:
+            args['blparam'] = self.blparam
+
+        # baseline caltable filename
+        if self.bloutput is None or len(self.bloutput) == 0:
+            namer = caltable_heuristic.SDBaselinetable()
+            bloutput = relative_path(namer.calculate(output_dir=self.output_dir,
+                                                            stage=self.context.stage,
+                                                            **args))
+            args['bloutput'] = bloutput
+        else:
+            args['bloutput'] = self.bloutput
+
+        # outfile
+        if ('outfile' not in args or
+                args['outfile'] is None or
+                len(args['outfile']) == 0):
+            args['outfile'] = relative_path(os.path.join(self.output_dir, prefix + '_bl'))
+
+        args['datacolumn'] = self.DATACOLUMN[self.colname]
+
+        return args
+
+
+class BaselineSubtractionResults(common.SingleDishResults):
+    """Results class to hold the result of baseline subtraction."""
+
+    def __init__(self,
+                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
+                 success: Optional[bool] = None,
+                 outcome: Any = None) -> None:
+        """Construct BaselineSubtractionResults instance.
+
+        Args:
+            task: Task class that produced the result.
+            success: Whether task execution is successful or not.
+            outcome: Outcome of the task execution.
+        """
+        super(BaselineSubtractionResults, self).__init__(task, success, outcome)
+
+    def merge_with_context(self, context: 'Context') -> None:
+        """Merge result instance into context.
+
+        No specific merge operation is done.
+
+        Args:
+            context: Pipeline context.
+        """
+        super(BaselineSubtractionResults, self).merge_with_context(context)
+
+    def _outcome_name(self) -> str:
+        """Return string representation of outcome.
+
+        Returns:
+            Name of the blparam file with its format
+        """
+        # outcome should be a name of blparam text file
+        return 'blparam: "%s" bloutput: "%s"' % (self.outcome['blparam'], self.outcome['bloutput'])
+
+
 class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
     """Abstract worker class for baseline subtraction."""
 

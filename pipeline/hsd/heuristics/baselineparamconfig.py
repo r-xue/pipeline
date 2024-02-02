@@ -79,7 +79,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         return self.fitfunc.lower() in ('polynomial', 'poly')
 
     def _is_cubic_spline_fit(self):
-        return self.fitfinc.lower() in ('spline', 'cspline')
+        return self.fitfunc.lower() in ('spline', 'cspline')
 
     def __init__(self, fitfunc='cspline', switchpoly: bool = True):
         """
