@@ -45,12 +45,12 @@ N_REMAINING = N_SLICES - N_EDGE * 2  # Number of slices remaining after excludin
 # Default color map for peak S/N map and mask map
 DEFAULT_COLORMAP = "rainbow"
 
-# Define a named tuple to represent the frequency specification.
+# Define a named tuple of the frequency specification.
 #  unit: The unit of the frequency (e.g., pixel, Hz, MHz).
 #  data: The actual frequency data or values.
 FrequencySpec = namedtuple('FrequencySpec', ['unit', 'data'])
 
-# Define a named tuple to represent the direction specification in astronomical images.
+# Define a named tuple of the direction specification in astronomical images.
 #  ref: The reference frame (e.g., J2000, B1950).
 #  minra: The minimum right ascension value.
 #  maxra: The maximum right ascension value.
@@ -59,7 +59,7 @@ FrequencySpec = namedtuple('FrequencySpec', ['unit', 'data'])
 #  resolution: The resolution of the image in the direction axes.
 DirectionSpec = namedtuple('DirectionSpec', ['ref', 'minra', 'maxra', 'mindec', 'maxdec', 'resolution'])
 
-# Define a named tuple to represent the sizes of each axis in a image cube.
+# Define a named tuple of the sizes of each axis in a image cube.
 #  x: The size of the X-axis (typically the R.A. direction in astronomical images).
 #  y: The size of the Y-axis (typically the Dec direction in astronomical images).
 #  sp: The size of the spectral axis (e.g., frequency or velocity).
@@ -277,7 +277,7 @@ def _plot_peak_SN_map(plot: 'Axes',
     Args:
         plot (Axes): The matplotlib Axes object to be used for plotting.
         colorbar (Axes): The matplotlib Axes object to be used for colorbar.
-        peak_sn (NpArray2D): The data representing the peak S/N.
+        peak_sn (NpArray2D): The data of the peak S/N.
         dir_unit (str): The unit for the R.A. (Right Ascension) and Dec (Declination) axis labels.
         has_dir_spec (bool): Flag indicating if a direction specification is provided.
         scx (float): The x-coordinate of the maximum peak S/N location.
@@ -320,7 +320,7 @@ def _plot_mask_map(plot: 'Axes',
     Args:
         plot (Axes): The matplotlib Axes object to be used for plotting.
         colorbar (Axes): The matplotlib Axes object to be used for colorbar.
-        mask_map (NpArray2D): The data representing the mask map.
+        mask_map (NpArray2D): The data of the mask map.
         peak_sn_threshold (float): The threshold for the peak of signal-to-noise.
         dir_unit (str): The unit for the R.A. (Right Ascension) and Dec (Declination) axis labels.
         kw (Dict[str, Union[float, Tuple[float, float]]]): Additional keyword arguments for the imshow().
@@ -400,8 +400,8 @@ def _plot_masked_averaged_spectrum(plot: 'Axes',
 
     Args:
         plot (Axes): The matplotlib Axes object to be used for plotting.
-        rms_map (NpArray2D): The data representing the RMS map.
-        masked_average_spectrum (NpArray1D): 1D array representing the average spectrum of the masked regions.
+        rms_map (NpArray2D): The data of the RMS map.
+        masked_average_spectrum (NpArray1D): 1D array of the average spectrum of the masked regions.
         peak_sn_threshold (float): The threshold for the peak signal-to-noise.
         spectrum_at_peak (NpArray1D): The spectrum data at the peak.
         freq_spec (Optional[FrequencySpec]): Frequency specifications. Defaults to None.
@@ -514,7 +514,7 @@ def _warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D',
     If detected, it logs a warning message with details about the image item (if provided).
 
     Args:
-        masked_average_spectrum (NpArray1D): 1D array representing the average spectrum of the masked regions.
+        masked_average_spectrum (NpArray1D): 1D array of the average spectrum of the masked regions.
         imageitem (Optional['ImageItem']): ImageItem object containing details about the image. Defaults to None.
     """
     # Calculate the standard deviation of the masked average spectrum
