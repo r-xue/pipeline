@@ -735,7 +735,7 @@ class Tclean(cleanbase.CleanBase):
         qaTool = casa_tools.quanta
 
         # Items for image header for manifest
-        obspatt = 'mos' if self.image_heuristics.is_mosaic(inputs.field, inputs.intent) else 'sf'
+        obspatt = None
         arrays = self.image_heuristics.arrays()
         if inputs.nbin not in (None, -1):
             modifier = f'binned{inputs.nbin}'
@@ -972,7 +972,7 @@ class Tclean(cleanbase.CleanBase):
             self._update_miscinfo(imagename=result.image.replace('.image', '.image' + extension),
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
-                                  effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, modifier=modifier, session=session)
+                                  effbw=effbw, ctrfrq=ctrfrq)
 
             # Keep image cleanmask area min and max and non-cleanmask area RMS for weblog and QA
             result.set_image_min(pbcor_image_min)
