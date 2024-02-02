@@ -326,7 +326,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             LOG.trace('effective_nchan, num_mask, diff={}, {}'.format(
                 effective_nchan, num_mask))
 
-        outdata = self._get_param(row_idx, pol, polyorder, nchan, edge, effective_nchan, num_mask, mask_array)
+        outdata = self._get_param(row_idx, pol, polyorder, nchan, edge, effective_nchan, num_mask, mask_list)
 
         outdata[BLP.MASK] = self.__as_maskstring(mask_array)
 
@@ -428,7 +428,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return as_maskstring(fit_channel_list)
 
-    def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, mask_array):
+    def _get_param(self, idx, pol, polyorder, nchan, edge, nchan_without_edge, nchan_masked, mask_list):
         num_nomask = nchan_without_edge - nchan_masked
         num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
         if TRACE():
@@ -444,7 +444,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 nchan,
                 edge,
                 num_pieces,
-                mask_array
+                mask_list
             )
             self.paramdict[BLP.FUNC] = fitfunc
 
