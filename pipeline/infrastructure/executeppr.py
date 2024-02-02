@@ -26,7 +26,7 @@ from . import vdp
 
 
 def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
-               loglevel: str = 'info', plotlevel: str = 'default', interactive: bool = True):
+               loglevel: str = 'info', plotlevel: str = 'default', interactive: bool = True, proc_rootdir: str = None):
     """
     Runs Pipeline Processing Request (PPR).
 
@@ -50,6 +50,9 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
         plotlevel: A plot level. Available levels are, 'all', 'default', and
             'summary'
         interactive: If True, print pipeline log to STDOUT.
+        proc_rootdir: Override the default data processing root dir that is typically 
+            constructed from the shell env variable $SCIPIPE_ROOTDIR and PPR <RelativePath> 
+            field valuel only used for development and testing.
 
     Examples:
        Only import EBs.
@@ -75,8 +78,12 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
             _getFirstRequest(pprXmlFile)
 
         # Set the directories
-        workingDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"), relativePath, "working")
-        rawDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"), relativePath, "rawdata")
+        if isinstance(proc_rootdir, str):
+            workingDir = os.path.join(proc_rootdir, "working")
+            rawDir = os.path.join(proc_rootdir, "rawdata")
+        else:
+            workingDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"), relativePath, "working")
+            rawDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"), relativePath, "rawdata")
 
         # Check for the breakpoint
         bpset = False

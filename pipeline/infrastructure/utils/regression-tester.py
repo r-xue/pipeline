@@ -331,13 +331,10 @@ class PipelineRegression(object):
         ppr_local = f'../{os.path.basename(ppr_path)}'
         shutil.copyfile(ppr_path, ppr_local)
 
-        # executeppr expects this environment avariable pointing to "working/".
-        os.environ['SCIPIPE_ROOTDIR'] = os.getcwd()
-
         if telescope == 'alma':
-            almappr.executeppr(ppr_local, importonly=False)
+            almappr.executeppr(ppr_local, importonly=False, proc_rootdir='..')
         elif telescope == 'vla':
-            vlappr.executeppr(ppr_local, importonly=False)
+            vlappr.executeppr(ppr_local, importonly=False, proc_rootdir='..')
         else:
             LOG.error("Telescope is not 'alma' or 'vla'.  Can't run executeppr.")
 
