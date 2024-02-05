@@ -11,7 +11,6 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
-from numbers import Integral
 from pipeline.domain import DataType
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.hsd.heuristics import MaskDeviationHeuristic
@@ -481,8 +480,6 @@ class SDBaseline(basetask.StandardTaskTemplate):
         plan = [registry[ms] for ms in registry]
         blparam = [blparam_file(ms) for ms in registry]
         deviationmask_list = [deviation_mask[ms.basename] for ms in registry]
-        # 21/05/2018 TN temporal workaround
-        # I don't know how to use vdp.ModeInputs so directly specify worker task class here
         worker_cls = worker.BaselineSubtractionWorker
         fitter_inputs = vdp.InputsContainer(worker_cls, context,
                                             vis=vislist, plan=plan,
