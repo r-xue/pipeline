@@ -201,11 +201,18 @@ class VersionCommand(distutils.cmd.Command):
 def _get_git_version() -> str:
     # Retrieve info about current branch.
     git_branch = None
-    ver_from_script = []
     try:
         git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'],
                                              stderr=subprocess.DEVNULL).decode().strip()
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        # FileNotFoundError: if git is not on PATH.
+        # subprocess.CalledProcessError: if git command returns error; for example, current checkout
+        #   may have a detached HEAD pointing at a specific tag (not pointing to a branch).
+        pass
 
+    # Try to get version information
+    ver_from_script = []
+    try:
         # Output of the version.py script is a string with two or three space-separated elements:
         # last branch tag (possibly empty), last release tag, and possibly a "dirty" suffix.
         # For example:
