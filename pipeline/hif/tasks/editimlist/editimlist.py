@@ -95,8 +95,9 @@ class EditimlistInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def cell(self):
         # mutable object, so should not use VisDependentProperty(default=[])
-        if 'hm_cell' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['hm_cell']
+        if 'ALMA' in self.imaging_mode:
+            if 'hm_cell' in self.context.size_mitigation_parameters:
+                return self.context.size_mitigation_parameters['hm_cell']
         return []
 
     @cell.convert
@@ -112,8 +113,9 @@ class EditimlistInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def imsize(self):
         # mutable object, so should not use VisDependentProperty(default=[])
-        if 'hm_imsize' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['hm_imsize']
+        if 'ALMA' in self.imaging_mode:
+            if 'hm_imsize' in self.context.size_mitigation_parameters:
+                return self.context.size_mitigation_parameters['hm_imsize']
         return []
 
     @imsize.convert
@@ -129,8 +131,9 @@ class EditimlistInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def field(self):
-        if 'field' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['field']
+        if 'ALMA' in self.imaging_mode:
+            if 'field' in self.context.size_mitigation_parameters:
+                return self.context.size_mitigation_parameters['field']
         # mutable object, so should not use VisDependentProperty(default=[])
         return []
 
@@ -147,8 +150,9 @@ class EditimlistInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def nbin(self):
-        if 'nbins' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['nbins']
+        if 'ALMA' in self.imaging_mode:
+            if 'nbins' in self.context.size_mitigation_parameters:
+                return self.context.size_mitigation_parameters['nbins']
         return -1
 
     @vdp.VisDependentProperty
@@ -458,14 +462,25 @@ class Editimlist(basetask.StandardTaskTemplate):
         # ----------------------------------------------------------------------------------  set imsize (SRDP ALMA)
         largest_primary_beam = th.largest_primary_beam_size(spwspec=imlist_entry['spw'], intent='TARGET')
         fieldids = th.field('TARGET', fieldnames)
+
+        # Fail if there is no field to image. This can occur if a mitigated field was specified as input.
+        # th.field will return [''] if no fields were found in the MS that match any input fields and intents
+        if fieldids[0] == '':
+            msg = "Field(s): {} not present in MS: {}".format(','.join(fieldnames), ms.name)
+            LOG.error(msg)
+
         if isinstance(inpdict['imsize'], str):
             sfpblimit = float(inpdict['imsize'].split('pb')[0])
             inpdict['imsize'] = []
         else:
             sfpblimit = 0.2
-        imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
-                                           primary_beam=largest_primary_beam,
-                                           sfpblimit=sfpblimit, intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
+
+        if fieldids[0] != '':
+            imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
+                                            primary_beam=largest_primary_beam,
+                                            sfpblimit=sfpblimit, intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
+        else:
+            imlist_entry['imsize'] = None
         # ---------------------------------------------------------------------------------- set imsize (VLA)
         if img_mode == 'VLA' and imlist_entry['specmode'] == 'cont':
             imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
@@ -478,7 +493,13 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['width'] = inpdict['width']
 
         # for VLASS phasecenter is required user input (not determined by heuristics)
-        imlist_entry['phasecenter'] = th.phasecenter(fieldids) if not inpdict['phasecenter'] else inpdict['phasecenter']
+        if not inpdict['phasecenter']:
+            if fieldids[0] != '':
+                imlist_entry['phasecenter'] = th.phasecenter(fieldids)
+            else:
+                imlist_entry['phasecenter'] = None
+        else:
+            inpdict['phasecenter']
 
         # set the field name list in the image list target
         if fieldnames:
