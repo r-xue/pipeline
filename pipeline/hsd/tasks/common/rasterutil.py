@@ -375,7 +375,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         dtrowdict[key] = dtrow_list
 
         # typical number of data per raster row
-        num_data_per_raster_row = [len(x) for x in itertools.chain(*dtrowdict.values())]
+        num_data_per_raster_row = [len(x) for x in dtrow_list]
         spectralspec = ms.get_spectral_window(spw_id).spectralspec
         new_key = (field_id, spectralspec)
         ndrowdict.setdefault(new_key, [])
