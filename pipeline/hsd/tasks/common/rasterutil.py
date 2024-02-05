@@ -362,6 +362,10 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
     spw_list = get_science_spectral_windows(metadata)
     antenna_list = np.unique(metadata.antenna)
 
+    # function to get key with spectralspec
+    def get_key_with_spectralspec(field_id, spectralspec):
+        return (field_id, spectralspec) if spectralspec else field_id
+
     # use timetable (output of grouping heuristics) to distinguish raster rows
     dtrowdict = {}
     ndrowdict = {}
@@ -377,7 +381,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         # typical number of data per raster row
         num_data_per_raster_row = [len(x) for x in dtrow_list]
         spectralspec = ms.get_spectral_window(spw_id).spectralspec
-        new_key = (field_id, spectralspec)
+        new_key = get_key_with_spectralspec(field_id, spectralspec)
         ndrowdict.setdefault(new_key, [])
         ndrowdict[new_key].extend(num_data_per_raster_row)
 
@@ -408,7 +412,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         field_id = key[0]
         spw_id = key[1]
         spectralspec = ms.get_spectral_window(spw_id).spectralspec
-        new_key = (field_id, spectralspec)
+        new_key = get_key_with_spectralspec(field_id, spectralspec)
         ndmapdict.setdefault(new_key, [])
         ndmapdict[new_key].extend(list(map(len, idx_list)))
 
