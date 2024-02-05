@@ -2,7 +2,7 @@ import os
 import numpy
 import collections
 import abc
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Sequence, Tuple, Union
 
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
@@ -75,13 +75,23 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     MaxPolynomialOrder = 'none'  # 'none', 0, 1, 2,...
     PolynomialOrder = 'automatic'  # 'automatic', 0, 1, 2, ...
 
-    def _is_polynomial_fit(self):
+    def _is_polynomial_fit(self) -> bool:
+        """Test if fitting function is polynomial.
+
+        Returns:
+            True if fitting function is polynomial, False otherwise.
+        """
         return self.fitfunc.lower() in ('polynomial', 'poly')
 
-    def _is_cubic_spline_fit(self):
+    def _is_cubic_spline_fit(self) -> bool:
+        """Test if fitting function is cubic spline.
+
+        Returns:
+            True if fitting function is cubic spline, False otherwise.
+        """
         return self.fitfunc.lower() in ('spline', 'cspline')
 
-    def __init__(self, fitfunc='cspline', switchpoly: bool = True):
+    def __init__(self, fitfunc: str = 'cspline', switchpoly: bool = True):
         """
         Construct BaselineFitParamConfig instance
         """
@@ -317,14 +327,29 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             #irow = len(row_list_total)+len(row_list)
                             #irow = len(index_list_total) + i
                             irow = row
-                            param = self._calc_baseline_param(irow, pol, polyorder, nchan, edge, mask_array, _masklist)
+                            param = self._configure_baseline_param(irow, pol, polyorder, nchan, edge, mask_array, _masklist)
                             if TRACE():
                                 LOG.trace('Row {}: param={}'.format(row, param))
                             write_blparam(blparamfileobj, param)
 
         return blparam
 
-    def _calc_baseline_param(self, row_idx, pol, polyorder, nchan, edge, mask, mask_list):
+    def _configure_baseline_param(self, row_idx: int, pol: int, polyorder: int, nchan: int, edge: List[int], mask: Sequence[bool], mask_list: [List[List[int]]]) -> dict:
+        """Configure baseline parameter values for given row and polarization incides.
+
+        Args:
+            row_idx: Row index
+            pol: Polarization index (0: XX/RR, 1: YY/LL)
+            polyorder: Polynomial fitting order
+            nchan: Number of channels
+            edge: Number of edge channels to be excluded from the fit
+            mask: Boolean mask array
+            mask_list: List of detected lines. Lines are excluded from the fit to protect them.
+                       Lines are expressed as [start_channel, end_channel].
+
+        Returns:
+            Baseline fitting parameters as a dictionary
+        """
         # Create mask for line protection
         effective_nchan = nchan - sum(edge)
         #LOG.info('__ mask (before) = {}'.format(''.join(map(str, mask))))
@@ -431,7 +456,31 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             r.append([idx[-1], len(mask)])
         return [[start, end - end_offset] for start, end in r]
 
-    def _get_fit_param(self, polyorder, nchan, edge, nchan_without_edge, nchan_masked, masklist):
+    def _get_fit_param(self, polyorder: int, nchan: int, edge: List[int], nchan_without_edge: int, nchan_masked: int, masklist: List[List[int]]):
+        """Configure fitting parameter values except mask.
+
+        This method constructs dictionary that holds baseline parameters
+        specific to fitting. For polynomial fitting, fitting function and
+        fitting order are included in the dictionary. For cubic spline
+        (cspline) fitting, number of segments in addition to fitting function
+        and fitting order are included. Fitting function can fallback to 'poly'
+        even if input fitting function is 'cspline' when too many edge channels
+        are flagged and user instructs to do so. Please see the implementation
+        of SwitchPolynomialWhenLargeMaskAtEdgeHeuristic for detail about
+        fallback.
+
+        Args:
+            polyorder: Polynomial fitting order
+            nchan: Number of channels
+            edge: Number of edge channels to be excluded from the fit
+            nchan_without_edge: Effective number of channels
+            nchan_masked: Number of masked channels
+            masklist: List of detected lines. Lines are excluded from the fit to protect them.
+                       Lines are expressed as [start_channel, end_channel].
+
+        Returns:
+            Baseline fitting parameter dictionary
+        """
         if self._is_polynomial_fit():
             self.paramdict[BLP.FUNC] = 'poly'
             self.paramdict[BLP.ORDER] = polyorder
