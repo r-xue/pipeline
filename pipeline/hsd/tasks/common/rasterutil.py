@@ -376,7 +376,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
 
         # typical number of data per raster row
         num_data_per_raster_row = [len(x) for x in itertools.chain(*dtrowdict.values())]
-        spectralspec = ms.get_spectral_window(id=spw_id).spectralspec
+        spectralspec = ms.get_spectral_window(spw_id).spectralspec
         new_key = (field_id, spectralspec)
         ndrowdict.setdefault(new_key, [])
         ndrowdict[new_key].extend(num_data_per_raster_row)
@@ -407,7 +407,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         # compute number of data per raster map
         field_id = key[0]
         spw_id = key[1]
-        spectralspec = ms.get_spectral_window(id=spw_id).spectralspec
+        spectralspec = ms.get_spectral_window(spw_id).spectralspec
         new_key = (field_id, spectralspec)
         ndmapdict.setdefault(new_key, [])
         ndmapdict[new_key].extend(list(map(len, idx_list)))
@@ -434,7 +434,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
 
         # nominal number of data per row and per raster map
         field_id, spw_id, antenna_id = key
-        spectralspec = ms.get_spectral_window(id=spw_id).spectralspec
+        spectralspec = ms.get_spectral_window(spw_id).spectralspec
         nd_per_raster_rep = repmapdict[(field_id, spectralspec)]['map']
         nd_per_row_rep = repmapdict[(field_id, spectralspec)]['row']
 
