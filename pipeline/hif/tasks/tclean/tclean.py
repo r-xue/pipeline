@@ -1793,7 +1793,7 @@ class Tclean(cleanbase.CleanBase):
             frame = inspect.currentframe()
             keywords, _, _, values = inspect.getargvalues(frame)
             for keyword in keywords:
-                if keyword != 'self' and values[keyword] is not None:
+                if keyword not in ('self', 'imagename') and values[keyword] is not None:
                     info[keyword] = values[keyword]
 
             # Save header back to image
