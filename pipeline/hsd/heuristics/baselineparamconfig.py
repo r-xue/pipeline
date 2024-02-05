@@ -96,10 +96,12 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         if self._is_polynomial_fit():
             LOG.info('Baseline parameter is optimized for polynomial fitting')
-            self.paramdict[BLP.FUNC] = 'poly'
-        else:
+        elif self._is_cubic_spline_fit():
             LOG.info('Baseline parameter is optimized for segmented cubic spline fitting')
-            self.paramdict[BLP.FUNC] = 'cspline'
+        else:
+            error_msg = f'Invalid fitting function: {self.fitfunc}'
+            LOG.error(error_msg)
+            raise RuntimeError(error_msg)
         self.paramdict[BLP.CLIPNITER] = self.ClipCycle
         self.paramdict[BLP.CLIPTHRESH] = 5.0
 
@@ -322,22 +324,31 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return blparam
 
-    def _calc_baseline_param(self, row_idx, pol, polyorder, nchan, edge, mask_array, mask_list):
+    def _calc_baseline_param(self, row_idx, pol, polyorder, nchan, edge, mask, mask_list):
         # Create mask for line protection
         effective_nchan = nchan - sum(edge)
-        mask_array = self.__apply_masklist(mask_array, mask_list)
-        num_mask = int(effective_nchan - numpy.sum(mask_array[edge[0]:nchan - edge[1]] * 1.0))
+        #LOG.info('__ mask (before) = {}'.format(''.join(map(str, mask))))
 
-        if TRACE():
-            LOG.trace('effective_nchan, num_mask, diff={}, {}'.format(
-                effective_nchan, num_mask))
+        # a stuff of masklist is a list of index [start, end]
+        if isinstance(mask_list, (list, numpy.ndarray)):
+            for [m0, m1] in mask_list:
+                mask[max(0, m0):min(nchan, m1 + 1)] = 0
+        else:
+            LOG.critical('Invalid masklist')
+
+        #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask))))
+        num_mask = int(effective_nchan - numpy.sum(mask[edge[0]:nchan - edge[1]] * 1.0))
 
         # here meaning of "masklist" is changed
         #         masklist: list of channel ranges to be *excluded* from the fit
         # fit_channel_list: list of channel ranges to be *included* in the fit
+        fit_channel_list = self.__convert_mask_to_masklist(mask)
         #LOG.info('__ masklist (before)= {}'.format(masklist))
         #LOG.info('__ masklist (after) = {}'.format(fit_channel_list))
-        fit_channel_list = self.__convert_mask_to_masklist(mask_array)
+
+        if TRACE():
+            LOG.trace('effective_nchan, num_mask, diff={}, {}'.format(
+                effective_nchan, num_mask))
 
         outdata = self._get_fit_param(polyorder, nchan, edge, effective_nchan, num_mask, fit_channel_list)
 
@@ -420,20 +431,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             r.append([idx[-1], len(mask)])
         return [[start, end - end_offset] for start, end in r]
 
-    def __apply_masklist(self, mask_array, mask_list):
-        # a stuff of masklist is a list of index [start, end]
-        if isinstance(mask_list, (list, numpy.ndarray)):
-            #LOG.info('__ mask (before) = {}'.format(''.join(map(str, mask_array))))
-            nchan = len(mask_array)
-            for [m0, m1] in mask_list:
-                mask_array[max(0, m0):min(nchan, m1 + 1)] = 0
-            #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask_array))))
-        else:
-            LOG.critical('Invalid masklist')
-
-        return mask_array
-
-    def _get_fit_param(self, polyorder, nchan, edge, nchan_without_edge, nchan_masked, mask_list):
+    def _get_fit_param(self, polyorder, nchan, edge, nchan_without_edge, nchan_masked, masklist):
         if self._is_polynomial_fit():
             self.paramdict[BLP.FUNC] = 'poly'
             self.paramdict[BLP.ORDER] = polyorder
@@ -449,7 +447,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 nchan,
                 edge,
                 num_pieces,
-                mask_list
+                masklist
             )
             self.paramdict[BLP.FUNC] = fitfunc
             self.paramdict[BLP.ORDER] = order
