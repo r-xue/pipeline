@@ -339,8 +339,11 @@ def get_raster_flag_list(flagged1: List[int], flagged2: List[int], raster_index_
 
 class FieldSpectralSpecKey:
     """Functions to compose/decompose key with spectralspec."""
+
+    NO_SPECTRALSPEC = 'none'
+
     @staticmethod
-    def compose(field_id: int, spectralspec: Optional[str]) -> Union[Tuple[int, str], int]:
+    def compose(field_id: int, spectralspec: Optional[str]) -> Tuple[int, str]:
         """Compose key.
 
         Args:
@@ -348,9 +351,9 @@ class FieldSpectralSpecKey:
             spectralspec: SpectralSpec string or None if it isn't set
 
         Returns:
-            Tuple of (field_id, spectralspec) or field_id if spectralspec is None
+            Tuple of (field_id, spectralspec) or (field_id, 'none') if spectralspec is None
         """
-        return (field_id, spectralspec) if spectralspec else field_id
+        return (field_id, spectralspec) if spectralspec else (field_id, FieldSpectralSpecKey.NO_SPECTRALSPEC)
 
     @staticmethod
     def decompose(key: Union[Tuple[int, str], int]) -> Tuple[int, str]:
@@ -360,9 +363,9 @@ class FieldSpectralSpecKey:
             key: Key object. It must be the value returned by compose method.
 
         Returns:
-            Tuple of (field_id, spectralspec). If spectralspec is None, 'none' is set.
+            Tuple of (field_id, spectralspec). If spectralspec is unspecified, 'none' is set.
         """
-        return key if isinstance(key, tuple) and len(key) == 2 else key, 'none'
+        return key if isinstance(key, tuple) and len(key) == 2 else (key, FieldSpectralSpecKey.NO_SPECTRALSPEC)
 
 
 def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]:
