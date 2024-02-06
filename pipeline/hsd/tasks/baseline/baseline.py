@@ -121,10 +121,11 @@ class SDBaselineInputs(vdp.StandardInputs):
             edge: Edge channels to exclude. Defaults to None, which means that all channels are processed.
             broadline: Detect broadline component or not. Defaults to True if None is given.
             fitorder: Manual fit order. If None is given, run heuristics to determine fit order.
-            fitfunc: Fit function to use. Only cubic spline ('spline' or 'cspline') is available
-                     so far.
+            fitfunc: Fit function to use. Cubic spline ('spline' or 'cspline') and polynomial
+                     ('poly' or 'polynomial') are available. Default is 'cspline'.
             switchpoly: Whther or not fall back to low order polynomial fit when large mask
-                        exist at the edge of spw. Defaults to True if None is given.
+                        exist at the edge of spw if fitfunc is either 'cspline' or 'spline'.
+                        Defaults to True if None is given.
             clusteringalgorithm: Clustering algorithm to use. Choices are 'kmean', 'hierarchy',
                                  or 'both', which merges results from two clustering algorithms.
                                  Defaults to 'hierarchy' if None is given.

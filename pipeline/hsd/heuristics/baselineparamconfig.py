@@ -92,8 +92,18 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         return self.fitfunc.lower() in ('spline', 'cspline')
 
     def __init__(self, fitfunc: str = 'cspline', switchpoly: bool = True):
-        """
-        Construct BaselineFitParamConfig instance
+        """Construct BaselineFitParamConfig instance.
+
+        Args:
+            fitfunc: Fit function to use. Cubic spline ('spline' or 'cspline')
+                     and polynomial ('poly' or 'polynomial') are available.
+                     Default is 'cspline'.
+            switchpoly: Whether or not fall back to low order polynomial fit
+                        when large mask exist at the edge of spw if fitfunc
+                        is either 'cspline' or 'spline'. Defaults to True.
+
+        Raises:
+            RuntimeError: Invalid fitting function was specified.
         """
         super(BaselineFitParamConfig, self).__init__()
         self.fitfunc = fitfunc
