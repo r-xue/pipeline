@@ -379,11 +379,11 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         dtrowdict[key] = dtrow_list
 
         # typical number of data per raster row
+        # result is consolicated per field and spectralspec (PIPE-1990)
         num_data_per_raster_row = [len(x) for x in dtrow_list]
         spectralspec = ms.get_spectral_window(spw_id).spectralspec
-        new_key = get_key_with_spectralspec(field_id, spectralspec)
-        ndrowdict.setdefault(new_key, [])
-        ndrowdict[new_key].extend(num_data_per_raster_row)
+        result_key = get_key_with_spectralspec(field_id, spectralspec)
+        ndrowdict.setdefault(result_key, []).extend(num_data_per_raster_row)
 
     # rastergapdict stores list of datatable row ids per raster map
     rastergapdict = {}
@@ -409,12 +409,12 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         rastergapdict[key] = idx_list
 
         # compute number of data per raster map
+        # result is consolicated per field and spectralspec (PIPE-1990)
         field_id = key[0]
         spw_id = key[1]
         spectralspec = ms.get_spectral_window(spw_id).spectralspec
-        new_key = get_key_with_spectralspec(field_id, spectralspec)
-        ndmapdict.setdefault(new_key, [])
-        ndmapdict[new_key].extend(list(map(len, idx_list)))
+        result_key = get_key_with_spectralspec(field_id, spectralspec)
+        ndmapdict.setdefault(result_key, []).extend(list(map(len, idx_list)))
 
     repmapdict = {}
     for key, ndmap in ndmapdict.items():
@@ -437,10 +437,12 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         LOG.debug('Processing FIELD %s, SPW %s, ANTENNA %s', *key)
 
         # nominal number of data per row and per raster map
+        # these numbers depend on field as well as spectral spec (PIPE-1990)
         field_id, spw_id, antenna_id = key
         spectralspec = ms.get_spectral_window(spw_id).spectralspec
-        nd_per_raster_rep = repmapdict[(field_id, spectralspec)]['map']
-        nd_per_row_rep = repmapdict[(field_id, spectralspec)]['row']
+        result_key = get_key_with_spectralspec(field_id, spectralspec)
+        nd_per_raster_rep = repmapdict[result_key]['map']
+        nd_per_row_rep = repmapdict[result_key]['row']
 
         # flag incomplete raster map
         flag_raster1 = flag_incomplete_raster(idx_list, nd_per_raster_rep, nd_per_row_rep)
