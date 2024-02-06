@@ -15,7 +15,7 @@ import pipeline.domain.datatable as datatable
 from pipeline.domain.datatable import DataTableImpl
 import pipeline.infrastructure.logging as logging
 from pipeline.infrastructure import casa_tools
-from typing import TYPE_CHECKING, Generator, List, Optional, Tuple
+from typing import TYPE_CHECKING, Generator, List, Optional, Tuple, Union
 
 from ...heuristics import rasterscan
 
@@ -337,6 +337,34 @@ def get_raster_flag_list(flagged1: List[int], flagged2: List[int], raster_index_
     return data_ids
 
 
+class FieldSpectralSpecKey:
+    """Functions to compose/decompose key with spectralspec."""
+    @staticmethod
+    def compose(field_id: int, spectralspec: Optional[str]) -> Union[Tuple[int, str], int]:
+        """Compose key.
+
+        Args:
+            field_id: Field ID
+            spectralspec: SpectralSpec string or None if it isn't set
+
+        Returns:
+            Tuple of (field_id, spectralspec) or field_id if spectralspec is None
+        """
+        return (field_id, spectralspec) if spectralspec else field_id
+
+    @staticmethod
+    def decompose(key: Union[Tuple[int, str], int]) -> Tuple[int, str]:
+        """Decompose key into elements.
+
+        Args:
+            key: Key object. It must be the value returned by compose method.
+
+        Returns:
+            Tuple of (field_id, spectralspec). If spectralspec is None, 'none' is set.
+        """
+        return key if isinstance(key, tuple) and len(key) == 2 else key, 'none'
+
+
 def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]:
     """
     Return list of index to be flagged by flagging heuristics for raster scan.
@@ -362,10 +390,6 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
     spw_list = get_science_spectral_windows(metadata)
     antenna_list = np.unique(metadata.antenna)
 
-    # function to get key with spectralspec
-    def get_key_with_spectralspec(field_id, spectralspec):
-        return (field_id, spectralspec) if spectralspec else field_id
-
     # use timetable (output of grouping heuristics) to distinguish raster rows
     dtrowdict = {}
     ndrowdict = {}
@@ -382,7 +406,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         # result is consolicated per field and spectralspec (PIPE-1990)
         num_data_per_raster_row = [len(x) for x in dtrow_list]
         spectralspec = ms.get_spectral_window(spw_id).spectralspec
-        result_key = get_key_with_spectralspec(field_id, spectralspec)
+        result_key = FieldSpectralSpecKey.compose(field_id, spectralspec)
         ndrowdict.setdefault(result_key, []).extend(num_data_per_raster_row)
 
     # rastergapdict stores list of datatable row ids per raster map
@@ -413,13 +437,13 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         field_id = key[0]
         spw_id = key[1]
         spectralspec = ms.get_spectral_window(spw_id).spectralspec
-        result_key = get_key_with_spectralspec(field_id, spectralspec)
+        result_key = FieldSpectralSpecKey.compose(field_id, spectralspec)
         ndmapdict.setdefault(result_key, []).extend(list(map(len, idx_list)))
 
     repmapdict = {}
     for key, ndmap in ndmapdict.items():
         ndrow = ndrowdict[key]
-        field_id, spectralspec = key
+        field_id, spectralspec = FieldSpectralSpecKey.decompose(key)
         LOG.trace('FIELD %s spectralSpec %s: Number of data per raster row = %s', field_id, spectralspec, ndrow)
         nd_per_row_rep = find_most_frequent(ndrow)
         LOG.debug('FIELD %s spectralSpec %s: number of raster row = %s', field_id, spectralspec, len(ndrow))
@@ -440,7 +464,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         # these numbers depend on field as well as spectral spec (PIPE-1990)
         field_id, spw_id, antenna_id = key
         spectralspec = ms.get_spectral_window(spw_id).spectralspec
-        result_key = get_key_with_spectralspec(field_id, spectralspec)
+        result_key = FieldSpectralSpecKey.compose(field_id, spectralspec)
         nd_per_raster_rep = repmapdict[result_key]['map']
         nd_per_row_rep = repmapdict[result_key]['row']
 
