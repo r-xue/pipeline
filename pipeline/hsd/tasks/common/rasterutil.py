@@ -15,7 +15,7 @@ import pipeline.domain.datatable as datatable
 from pipeline.domain.datatable import DataTableImpl
 import pipeline.infrastructure.logging as logging
 from pipeline.infrastructure import casa_tools
-from typing import TYPE_CHECKING, Generator, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Generator, List, Optional, Tuple
 
 from ...heuristics import rasterscan
 
