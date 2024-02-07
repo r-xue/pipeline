@@ -122,7 +122,7 @@ def calc_airmass(elevation: float = 45.0) -> float:
     Returns:
         The relative airmass to the one at zenith.
     """
-    return 1.0 / math.cos((90.0 - elevation) * math.pi / 180.)
+    return 1.0 / math.cos(math.radians(90.0 - elevation))
 
 
 def calc_transmission(airmass: float, dry_opacity: Union[float, np.ndarray],
@@ -311,7 +311,7 @@ def get_median_elevation(vis: str, antenna_id: int) -> float:
                     if not (colkeywords['QuantumUnits'] == 'rad').all():
                         raise RuntimeError('The unit must be radian. Got {}'.format(str(colkeywords['QuantumUnits'])))
                     elevation_list = tsel.getcol('DIRECTION')[1][0]
-                    median_elevation = np.median(elevation_list) * 180.0 / math.pi
+                    median_elevation = math.degrees(np.median(elevation_list))
 
                     # check if the value is in reasonable range
                     if 0.0 <= median_elevation and median_elevation <= 90.0:
