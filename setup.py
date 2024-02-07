@@ -198,7 +198,7 @@ class VersionCommand(distutils.cmd.Command):
             f.write('\n')
 
 
-def _get_git_version(pep440=False) -> str:
+def _get_git_version() -> str:
     # Retrieve info about current branch.
     git_branch = None
     try:
@@ -242,40 +242,28 @@ def _get_git_version(pep440=False) -> str:
             # subprocess.CalledProcessError: if git command returns error.
             commit_hash = None
 
-        if pep440:
-            # Populate the hash, branch, and version from the script if any are unset:
-            if commit_hash is None:
-                commit_hash = "unknown_hash"
-            else:
-                # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label
-                commit_hash = re.sub(r'[^\w_\-\.]+', '.', commit_hash)
-
-            if git_branch is None:
-                git_branch = "unknown_branch"
-            else:
-                # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label
-                git_branch = re.sub(r'[^\w_\-\.]+', '.', git_branch)
-
-            if len(ver_from_script) < 2:
-                # Invalid version number:
-                version_number = '0.0.dev0'
-            else:
-                version_number = ver_from_script[1]
-            if len(ver_from_script) < 2:
-                # Invalid version number:
-                version_number = '0.0.dev0'
-            else:
-                version_number = ver_from_script[1]
-
-            # Consolidate into single version string.
-            version = "{}+{}-{}".format(version_number, commit_hash, git_branch)
+        # Populate the hash, branch, and version from the script if any are unset:
+        if commit_hash is None:
+            commit_hash = "unknown_hash"
         else:
-            if commit_hash is None:
-                version = "unknown"
-            elif git_branch is None:
-                version = commit_hash
-            else:
-                version = "{}-{}".format(commit_hash, git_branch)
+            # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label
+            commit_hash = re.sub(r'[^\w_\-\.]+', '.', commit_hash)
+
+        if git_branch is None:
+            git_branch = "unknown_branch"
+        else:
+            # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label
+            git_branch = re.sub(r'[^\w_\-\.]+', '.', git_branch)
+
+        if len(ver_from_script) < 2:
+            # Invalid version number:
+            version_number = '0.0.dev0'
+        else:
+            version_number = ver_from_script[1]
+
+        # Consolidate into single version string.
+        version = "{}+{}-{}".format(version_number, commit_hash, git_branch)
+
         return version
 
 
@@ -302,7 +290,7 @@ packages = setuptools.PEP420PackageFinder().find(exclude=['build*', 'doc*'])
 
 setuptools.setup(
     name='Pipeline',
-    version=_get_git_version(pep440=True),
+    version=_get_git_version(),
     description='CASA pipeline',
     cmdclass={
         'build_py': PipelineBuildPyCommand,
