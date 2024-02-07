@@ -14,6 +14,8 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.filenamer import fitsname
 from . import vlaifaqua
 
+from casatasks import flagmanager
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -256,35 +258,48 @@ finally:
         LOG.info('Saving flag version list')
 
         # retrieve all flagversions saved
-        flag_dict = dict()
-        with open(flag_version_list) as f:
-            for key, entry in [x.replace('\n', '').split(" : ", 1) for x in f.readlines()]:
-                flag_dict[key] = entry
+        flag_dict = flagmanager(vis=visname, mode='list')
+        flag_keys = [y['name'] for y in flag_dict.values() if type(y) == dict]
 
         # rename flagversions to make them more deterministic
         export_final_flags_dict = dict()
-        applycal_flag_key = [x for x in flag_dict.keys() if 'applycal' in x]
-        export_final_flags_dict['Applycal_Final'] = flag_dict[applycal_flag_key[-1]]
-        task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=applycal_flag_key[-1], versionname='Applycal_Final', comment=flag_dict[applycal_flag_key[-1]])
-        self._executor.execute(task)
+        flag_version_dict = [y for y in flag_dict.values() if type(y) == dict and y['name'] == flag_version_name]
+        if flag_version_name in flag_keys:
+            export_final_flags_dict[flag_version_name] = flag_version_dict[0]['comment']
 
-        target_RFI_key = [x for x in flag_dict.keys() if 'hifv_checkflag_target-vla' in x]
-        export_final_flags_dict['hifv_checkflag_target-vla'] = flag_dict[target_RFI_key[-1]]
-        task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=target_RFI_key[-1], versionname='hifv_checkflag_target-vla', comment=flag_dict[target_RFI_key[-1]])
-        self._executor.execute(task)
+        applycal_flags = sorted([y for y in flag_dict.values() if type(y) == dict and 'applycal' in y['name']],
+                                key=lambda x: x['name'])
+        if 'Applycal_Final' not in flag_keys:
+            if applycal_flags:
+                export_final_flags_dict['Applycal_Final'] = applycal_flags[-1]['comment']
+                task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=applycal_flags[-1]['name'], versionname='Applycal_Final',
+                                            comment=applycal_flags[-1]['comment'])
+                self._executor.execute(task)
+        else:
+            export_final_flags_dict['Applycal_Final'] = flag_dict['Applycal_Final']
 
-        export_final_flags_dict['Pipeline_Final'] = flag_dict['Pipeline_Final']
-        export_final_flags_dict['statwt_1'] = flag_dict['statwt_1']
+        target_RFI_key = [y for y in flag_dict.values() if type(y) == dict and 'hifv_checkflag_target-vla' in y['name']]
+        if 'hifv_checkflag_target-vla' not in flag_keys:
+            if target_RFI_key:
+                export_final_flags_dict['hifv_checkflag_target-vla'] = target_RFI_key[-1]['comment']
+                task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=target_RFI_key[-1]['name'], versionname='hifv_checkflag_target-vla',
+                                            comment=target_RFI_key[-1]['comment'])
+                self._executor.execute(task)
+        else:
+            export_final_flags_dict['hifv_checkflag_target-vla'] = flag_dict['hifv_checkflag_target']
+
+        if 'statwt_1' in flag_keys: 
+            export_final_flags_dict['statwt_1'] = [y for y in flag_dict.values() if type(y) == dict and y['name'] == 'statwt_1'][0]
 
         # recreate tar file
         line = ""
-        for flag_version_name, flag_version_comment in export_final_flags_dict.items():
+        for flag_version, flag_version_comment in export_final_flags_dict.items():
             # Define the directory to be saved, and where to store in tar archive.
-            flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
-            flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
-            LOG.info('Saving flag version %s', flag_version_name)
+            flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version)
+            flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version)
+            LOG.info('Saving flag version %s', flag_version)
             tar.add(flagsname, arcname=flagsarcname)
-            line += "{} : {}\n".format(flag_version_name, flag_version_comment)
+            line += "{} : {}\n".format(flag_version, flag_version_comment)
 
         line = line.encode(sys.stdout.encoding)
         ti.size = len(line)
