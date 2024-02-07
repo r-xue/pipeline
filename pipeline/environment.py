@@ -115,7 +115,7 @@ def _memory_size():
 
 
 # Determine pipeline version from Git or package.
-def _pipeline_revision() -> str:
+def _pipeline_revision():
     """
     Get a string describing the pipeline revision and branch of the executing
     pipeline distribution if executing from a Git repo; as a fall-back,
@@ -142,19 +142,12 @@ def _pipeline_revision() -> str:
     try:
         git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'], cwd=pl_path,
                                              stderr=subprocess.DEVNULL).decode().strip()
-
     except (FileNotFoundError, subprocess.CalledProcessError):
         pass
 
-    # Try to get the version
-    ver = None
-    try:
+    if git_branch is not None and (git_branch == "main" or git_branch.startswith("release/")):
         from pipeline.infrastructure.version import get_version
         ver = get_version(pl_path)
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        pass
-
-    if git_branch is not None and ver is not None and (git_branch == "main" or git_branch.startswith("release/")):
         # Output of the version.py script is a string with two or three space-separated elements:
         # last branch tag (possibly empty), last release tag, and possibly a "dirty" suffix.
         releasetag = ver[1]
@@ -166,34 +159,23 @@ def _pipeline_revision() -> str:
     else:
         # Consolidate into single version string.
         if commit_hash is None:
-            commit_hash = "unknown_hash"
             # If no Git commit info could be found, then attempt to load version
             # from the _version module that is created when pipeline package is
             # built.
             try:
                 from pipeline._version import version
-                ver = version
             except ModuleNotFoundError:
-                ver = "0.0.dev0"
-
-        if git_branch is None:
-            git_branch = "unknown_branch"
-
-        # this isn't available here
-        if ver is None or len(ver) < 2:
-            # Invalid version number:
-            ver = "0.0.dev0"
+                version = "unknown"
+        elif git_branch is None:
+            # If info on Git commit is available, but no info on Git branch, then
+            # this checkout may have a detached HEAD pointing at a specific tag, so
+            # just report the Git commit/tag info.
+            version = commit_hash
         else:
-            ver = ver[1]
+            # If both Git commit and branch info are available, then use both.
+            version = "{}-{}".format(commit_hash, git_branch)
 
-        # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label (anything after the +)
-        commit_hash = re.sub(r'[^\w_\-\.]+', '.', commit_hash)
-        git_branch = re.sub(r'[^\w_\-\.]+', '.', git_branch)
-
-        # Consolidate into single version string.
-        version_str = "{}+{}-{}".format(ver, commit_hash, git_branch)
-
-        return version_str
+        return version
 
 
 def _ulimit():
