@@ -8,7 +8,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks, task_registry
-from pipeline.infrastructure.executeppr import _sanitize_for_ms
+from pipeline.infrastructure.filenamer import _sanitize_for_ms
 
 LOG = infrastructure.get_logger(__name__)
 

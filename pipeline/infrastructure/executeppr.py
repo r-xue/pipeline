@@ -19,6 +19,7 @@ from . import exceptions
 from . import filenamer
 from . import project
 from . import utils
+from .. import cli
 
 
 def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
@@ -60,12 +61,6 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
        Resume execution from the 'breakpoint' in PPR.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='resume')
     """
-    # TODO: This line is TBD.
-    # Currently cli module is imported here to avoid circular imports.
-    # Another option would be to move executeppr to upper directory
-    # (just like recipereducer).
-    from .. import cli
-
     # Useful mode parameters
     echo_to_screen = interactive
     workingDir = None
@@ -180,7 +175,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
         session = defsession
 
         for key, value in sessionsDict.items():
-            if _sanitize_for_ms(asdm[1]) in value:
+            if filenamer._sanitize_for_ms(asdm[1]) in value:
                 session = key.lower()
                 break
 
@@ -676,12 +671,3 @@ def _getParameters(ppsetObject):
                 search = 0
 
     return numParams, paramsDict
-
-
-# Allow _target.ms, _targets.ms or .ms endings: needed to import
-# Measurement Sets (see PIPE-579, PIPE-1082, PIPE-1112, PIPE-1544)
-def _sanitize_for_ms(vis_name):
-    for msend in ('_target.ms', '_targets.ms', '.ms'):
-        if vis_name.endswith(msend):
-            return _sanitize_for_ms(vis_name[:-len(msend)])
-    return vis_name

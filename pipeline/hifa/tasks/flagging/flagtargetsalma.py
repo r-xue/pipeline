@@ -10,7 +10,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
-from pipeline.infrastructure.executeppr import _sanitize_for_ms
+from pipeline.infrastructure.filenamer import _sanitize_for_ms
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)

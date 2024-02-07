@@ -1,7 +1,7 @@
 import pytest
 
 from io import StringIO
-from .executeppr import _sanitize_for_ms
+from .filenamer import _sanitize_for_ms
 from .executeppr import _getFirstRequest
 
 test_params = [('uid__A002_target.msXd3e89f_Xc53e', 'uid__A002_target.msXd3e89f_Xc53e'),
@@ -98,7 +98,7 @@ def create_example_alma_ppr(input_parameter_str):
                     <Value>(1,2,3)</Value>
                     </Parameter>
                 </ParameterSet>
-                </ProcessingCommand>                                    
+                </ProcessingCommand>
             </ProcessingProcedure>
             <DataSet>
                 <SchedBlockSet>
