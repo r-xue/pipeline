@@ -9,9 +9,15 @@ import sys
 import types
 from inspect import signature
 
-import almatasks
-import casaplotms
 import casatasks
+import casaplotms
+
+if hasattr(casatasks, 'wvrgcal'):
+    # wvrgcal was migrated into the casatasks package via CAS-14218
+    almatasks = casatasks
+else:
+    # before CAS-14218, the task wvrgcal was under the almatasks package
+    import almatasks
 
 from . import logging, utils
 
@@ -308,7 +314,7 @@ def get_fn_name(fn):
     Note: as of CASA ver6.5, all genuine CASA tasks are callable class instances, rather than Python functions.
     """
 
-    for m in (almatasks, casatasks, casaplotms):
+    for m in (casatasks, casaplotms, almatasks):
         for k in m.__all__:
             v = getattr(m, k)
             if v == fn and not isinstance(fn, types.FunctionType):
