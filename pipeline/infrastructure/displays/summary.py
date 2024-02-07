@@ -1131,8 +1131,6 @@ class SpwIdVsFreqChart(object):
 
         fig = figure.Figure(figsize=(9.6, 7.2))
         ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-        colorlist = ["navy", "tab:red", "darkgreen", "gold", "tab:cyan", "tab:brown", "tab:gray", "blue", "tab:orange", "darkred", "tab:olive"]
-        colorcycle = itertools.cycle(colorlist)
         # Make a plot of frequency vs. spwid
         ms = self.inputs.ms
         request_spws = ms.get_spectral_windows()
@@ -1157,8 +1155,7 @@ class SpwIdVsFreqChart(object):
                     list_spwids_baseband.append(spw)
             list_all_spwids = [spwid for list_spwids in list_spwids_baseband for spwid in list_spwids]
             list_all_indices = list(range(len(list_all_spwids)))
-#            ax_spw.barh(list_all_indices, list_bw, height=0.4, left=list_fmin)
-            ax_spw.barh(list_all_indices, list_bw, height=0.4, left=list_fmin, color=next(colorcycle))
+            ax_spw.barh(list_all_indices, list_bw, height=0.4, left=list_fmin)
         else:  # For ALMA and NRO
             list_bw = [float(spw.bandwidth.value)/1.0e9 for spw in scan_spws]  # GHz
             list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in scan_spws]  # GHz
@@ -1171,8 +1168,7 @@ class SpwIdVsFreqChart(object):
                 list_all_indices.extend(list_indices)
                 fmins = list_fmin[start:end]
                 bws = list_bw[start:end]
-#                ax_spw.barh(list_indices, bws, height=0.4, left=fmins)
-                ax_spw.barh(list_indices, bws, height=0.4, left=fmins, color=next(colorcycle))
+                ax_spw.barh(list_indices, bws, height=0.4, left=fmins)
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
         ax_spw.invert_yaxis()
@@ -1204,14 +1200,9 @@ class SpwIdVsFreqChart(object):
         # Make a plot of frequency vs. atm transmission
         # For VLA data it is out of scope in PIPE-1415 and will be implemented in PIPE-1873.
         if self.context.project_summary.telescope not in ('VLA', 'EVLA'):  # For ALMA and NRO
-            atm_color = 'gray'
-#            atm_color = 'm'
+            atm_color1 = [0.17, 0.17, 0.17, 0.6]  # gray, alpha=0.6 for plot
+            atm_color2 = [0.17, 0.17, 0.17, 1.0]  # gray, alpha=1.0 for tick and label
             ax_atm = ax_spw.twinx()
-            ax_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
-            ax_atm.set_ylim(0, 1.05)
-            ax_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
-            ax_atm.yaxis.set_major_formatter(ticker.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
-            ax_atm.yaxis.tick_right()
             antid = 0
             if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
                 antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
@@ -1222,7 +1213,13 @@ class SpwIdVsFreqChart(object):
             nchan = round((max(list_fmin) + list_bw[idx] - min(list_fmin)) / resolution)
             elevation = atmutil.get_median_elevation(ms.name, antid)
             atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, elevation=elevation, doplot=False)
-            ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=4, linestyle='-')
+            ax_atm.plot(atm_freq, atm_transmission, color=atm_color1, linestyle='-', linewidth=2.5)
+            ax_atm.set_ylabel('ATM Transmission', color=atm_color2, labelpad=2, fontsize=14)
+            ax_atm.set_ylim(0, 1.05)
+            ax_atm.tick_params(direction='out', colors=atm_color2, labelsize=13)
+            ax_atm.yaxis.set_major_formatter(ticker.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
+            ax_atm.yaxis.tick_right()
+
         fig.savefig(filename)
         return self._get_plot_object()
 
