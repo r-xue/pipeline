@@ -317,7 +317,7 @@ def get_median_elevation(vis: str, antenna_id: int) -> float:
                     median_elevation = math.degrees(np.median(elevation_list))
 
                     # check if the value is in reasonable range
-                    if 0.0 <= median_elevation and median_elevation <= 90.0:
+                    if 0.0 < median_elevation and median_elevation <= 90.0:
                         elevation = median_elevation
                     else:
                         LOG.attention(
