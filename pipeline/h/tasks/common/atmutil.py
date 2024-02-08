@@ -348,7 +348,7 @@ def get_representative_elevation(vis, antenna_id: int) -> float:
         mposition = mymsmd.antennaposition(antenna_id)
         target_field = mymsmd.fieldsforintent('OBSERVE_TARGET*')[0]
         time_range = mymsmd.timerangeforobs(0)
-        for i in range(1, mymsmd.nobervations()):
+        for i in range(1, mymsmd.nobservations()):
             another_time_range = mymsmd.timerangeforobs(i)
             if myqa.lt(another_time_range['begin']['m0'], time_range['begin']['m0']):
                 time_range['begin'] = another_time_range['begin']
