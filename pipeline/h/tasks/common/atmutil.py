@@ -333,6 +333,12 @@ def get_median_elevation(vis: str, antenna_id: int) -> float:
 def get_representative_elevation(vis, antenna_id: int) -> float:
     """Return representative elevation value computed from phasecenter.
 
+    Representative elevation value is defined as the median elevation
+    of the first science field during the observation.
+    If there are multiple observations (OBSERVATION rows) in the MS,
+    start/end times of the observation are determined by the min/max
+    of time ranges of all observations.
+
     Args:
         vis: Path to MeasurementSet.
         antenna_id: The antenna ID to select.
