@@ -293,8 +293,8 @@ def get_median_elevation(vis: str, antenna_id: int) -> float:
 
     Returns:
         The median of elevation of selected antenna (unit: degree).
-        Return 45.0 if DIRECTION is not in AZELGEO or the value is
-        negative or greater than 90.0.
+        Returns 45.0 if DIRECTION is not in AZELGEO or the value is invalid
+        i.e. not within [0.0, 90.0].
 
     Raises:
         RuntimeError: An error when DIRECTION column has unsupported coodinate
