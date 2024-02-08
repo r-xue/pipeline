@@ -82,8 +82,7 @@ class VLARestoreData(restoredata.RestoreData):
             hanning_results = self._do_hanningsmooth()
 
         # Restore final MS.flagversions and flags
-        flag_version_name = 'statwt_1'  # PIPE-1555
-        flag_version_list = self._do_restore_flags(pipemanifest, flag_version_name=flag_version_name)
+        self._do_restore_flags(pipemanifest)
 
         # Get the session list and the visibility files associated with
         # each session.
@@ -113,9 +112,12 @@ class VLARestoreData(restoredata.RestoreData):
         importdata_task = importdata.VLAImportData(container)
         return self._executor.execute(importdata_task, merge=True)
 
-    def _do_restore_flags(self, pipemanifest, flag_version_name='Pipeline_Final'):
+    def _do_restore_flags(self, pipemanifest, flag_version_name=None):
+        if flag_version_name is None:
+            try_flag_version_names = ['statwt_1', 'Pipeline_Final']
+        else:
+            try_flag_version_names = [flag_version_name]
         inputs = self.inputs
-        flagversionlist = []
         if pipemanifest is not None:
             ouss = pipemanifest.get_ous()
         else:
@@ -145,22 +147,19 @@ class VLARestoreData(restoredata.RestoreData):
                 tar.extractall(path=inputs.output_dir)
 
             # Restore final flags version using flagmanager
-            if not os.path.exists(os.path.join(flagversionpath, 'flags.{}'.format(flag_version_name))):
-                LOG.info('%s flags do not exist. Defaulting to Pipeline_Final flags.' % flag_version_name)
-                flag_version_name = 'Pipeline_Final'
-            LOG.info('Restoring final flags for %s from flag version %s' % (ms.basename, flag_version_name))
+            try_index = 0
+            for flagname in try_flag_version_names:
+                if not os.path.exists(os.path.join(flagversionpath, 'flags.{}'.format(flagname))):
+                    try_index += 1
+            LOG.info('Restoring final flags for %s from flag version %s' % (ms.basename, try_flag_version_names[try_index]))
             task = casa_tasks.flagmanager(vis=ms.name,
                                           mode='restore',
-                                          versionname=flag_version_name)
+                                          versionname=try_flag_version_names[try_index])
             try:
                 self._executor.execute(task)
             except Exception:
                 LOG.error("Application of final flags failed for %s" % ms.basename)
                 raise
-
-            flagversionlist.append(flagversionpath)
-
-        return flagversionlist
 
     def _do_hanningsmooth(self):
         container = vdp.InputsContainer(hanning.Hanning, self.inputs.context)
