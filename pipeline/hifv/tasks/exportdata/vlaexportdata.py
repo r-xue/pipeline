@@ -276,7 +276,7 @@ finally:
                                             comment=applycal_flags[-1]['comment'])
                 self._executor.execute(task)
         else:
-            export_final_flags_dict['Applycal_Final'] = flag_dict['Applycal_Final']
+            export_final_flags_dict['Applycal_Final'] = [y for y in flag_dict.values() if type(y) == dict and y['name'] == 'Applycal_Final'][0]
 
         target_RFI_key = [y for y in flag_dict.values() if type(y) == dict and 'hifv_checkflag_target-vla' in y['name']]
         if 'hifv_checkflag_target-vla' not in flag_keys:
@@ -286,7 +286,7 @@ finally:
                                             comment=target_RFI_key[-1]['comment'])
                 self._executor.execute(task)
         else:
-            export_final_flags_dict['hifv_checkflag_target-vla'] = flag_dict['hifv_checkflag_target']
+            export_final_flags_dict['hifv_checkflag_target-vla'] = [y for y in flag_dict.values() if type(y) == dict and y['name'] == 'hifv_checkflag_target-vla'][0]
 
         if 'statwt_1' in flag_keys: 
             export_final_flags_dict['statwt_1'] = [y for y in flag_dict.values() if type(y) == dict and y['name'] == 'statwt_1'][0]
