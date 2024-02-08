@@ -72,10 +72,9 @@ def detect_contamination(context: 'Context',
     """
     Detect contamination (the emission at OFF position, which affects the data quality) in the given image item.
 
-    The primary purpose of this module is to find strong absorption feature in the map.
-    Assumption here would be that the target object is an emitter rather than absorber.
-    Based on this assumption, strong absorption feature is not intrinsic to the object
-    but is kind of an artifact that is created by the emission from the OFF source
+    This method defines 'contamination' as a deep absorption feature, which is in most cases
+    due to a strong emission feature in the OFF position. Note that a strong absorption feature
+    in the ON position may also be warned as well.
 
     This function is the main routine of the module. It detects contamination in the provided image item
     and generates a contamination report.
