@@ -347,19 +347,34 @@ def get_representative_elevation(vis, antenna_id: int) -> float:
     with casa_tools.MSMDReader(vis) as mymsmd:
         mposition = mymsmd.antennaposition(antenna_id)
         target_field = mymsmd.fieldsforintent('OBSERVE_TARGET*')[0]
-        # assuming msmd returns time values in sec
-        mepoch = myme.epoch('UTC', myqa.quantity(np.median(mymsmd.timesforfield(target_field)), 's'))
+        time_range = mymsmd.timerangeforobs(0)
+        for i in range(1, mymsmd.nobervations()):
+            another_time_range = mymsmd.timerangeforobs(i)
+            if myqa.lt(another_time_range['begin']['m0'], time_range['begin']['m0']):
+                time_range['begin'] = another_time_range['begin']
+            if myqa.gt(another_time_range['end']['m0'], time_range['end']['m0']):
+                time_range['end'] = another_time_range['end']
+        start_time = myqa.convert(time_range['begin']['m0'], 's')['value']
+        end_time = myqa.convert(time_range['end']['m0'], 's')['value']
         mdirection = mymsmd.phasecenter(target_field)
 
-    # convert phasecenter to AZEL
-    myme.done()
-    myme.doframe(mepoch)
-    myme.doframe(mposition)
-    azel = myme.measure(mdirection, 'AZELGEO')
-    elevation = myqa.convert(azel['m1'], 'deg')['value']
-    myme.done()
+    # convert phasecenter to AZEL and return elevation in degree
+    def _elevation_at(time_in_sec: float) -> float:
+        myme.done()
+        mepoch = myme.epoch('UTC', myqa.quantity(time_in_sec, 's'))
+        myme.doframe(mepoch)
+        myme.doframe(mposition)
+        azel = myme.measure(mdirection, 'AZELGEO')
+        myme.done()
+        elevation = myqa.convert(azel['m1'], 'deg')['value']
+        return elevation
 
-    return elevation
+    # compute elevation value at 1 min (=60sec) interval
+    # and take median of computed list of elevations
+    elevation_list = [_elevation_at(t) for t in np.arange(start_time, end_time, 60)]
+    median_elevation = np.median(elevation_list)
+
+    return median_elevation
 
 
 def get_altitude(vis: str) -> float:
