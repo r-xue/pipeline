@@ -14,7 +14,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import pipeline.extern.adopted as adopted
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tools, get_logger
+
+
+LOG = get_logger(__name__)
 
 
 class AtmType(object):
@@ -316,6 +319,11 @@ def get_median_elevation(vis: str, antenna_id: int) -> float:
                     # check if the value is in reasonable range
                     if 0.0 <= median_elevation and median_elevation <= 90.0:
                         elevation = median_elevation
+                    else:
+                        LOG.attention(
+                            f'Encountered invalid median elevation value, {median_elevation:.4g}deg. '
+                            f'Use {elevation:.2g}deg instead.'
+                        )
         finally:
             tsel.close()
 
