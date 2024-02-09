@@ -214,22 +214,16 @@ class JobRequest(object):
         self._keyword = [FunctionArg(name, kw[name]) for name in argnames if name in kw]
         self._nameless = [NamelessArg(a) for a in args[argcount:]]
 
-    def execute(self, dry_run=False, verbose=False):
+    def execute(self, verbose=False):
         """
         Execute this job, returning any result to the caller.
 
-        :param dry_run: True if the job should be logged rather than executed\
-            (default: False)
-        :type dry_run: boolean
         :param verbose: True if the complete invocation, including all default\
             variables and arguments, should be logged instead of just those\
             explicitly given (default: False)
         :type verbose: boolean
         """
         msg = self._get_fn_msg(verbose, sort_args=False)
-        if dry_run:
-            sys.stdout.write('Dry run: %s\n' % msg)
-            return
 
         for hook in PREHOOKS:
             hook(self)
