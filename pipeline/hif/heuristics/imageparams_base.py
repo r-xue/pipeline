@@ -6,7 +6,7 @@ import os.path
 import re
 import shutil
 import uuid
-from typing import Union
+from typing import Union, Optional
 
 import numpy as np
 
@@ -2061,7 +2061,7 @@ class ImageParamsHeuristics(object):
     def uvrange(self, field=None, spwspec=None):
         return None, None
 
-    def reffreq(self):
+    def reffreq(self, deconvolver: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         return None
 
     def restfreq(self):

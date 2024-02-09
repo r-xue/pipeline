@@ -1,3 +1,4 @@
+import re
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -5,6 +6,8 @@ import pipeline.infrastructure.utils as utils
 import pipeline.domain.measures as measures
 from pipeline.infrastructure import casa_tools
 from .imageparams_base import ImageParamsHeuristics
+
+from typing import Optional
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -470,3 +473,35 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return True
 
+    def reffreq(self, deconvolver: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
+        """Tclean reffreq parameter heuristics."""
+
+        if deconvolver != 'mtmfs':
+            return None
+
+        if spwsel in (None, ''):
+            LOG.attention('Cannot calculate reference frequency for mtmfs cleaning.')
+            return None
+
+        qaTool = casa_tools.quanta
+
+        n_sum = 0.0
+        d_sum = 0.0
+        p = re.compile(r'([\d.]*\s*)(~\s*)([\d.]*\s*)([A-Za-z]*\s*)(;?)')
+        for spwsel_v in spwsel.values():
+            freq_ranges, frame = spwsel_v.rsplit(' ', maxsplit=1)
+            freq_intervals = p.findall(freq_ranges)
+            for freq_interval in freq_intervals:
+                f_low = qaTool.quantity(float(freq_interval[0]), freq_interval[3])
+                f_low_v = float(qaTool.getvalue(qaTool.convert(f_low, 'GHz')))
+                f_high = qaTool.quantity(float(freq_interval[2]), freq_interval[3])
+                f_high_v = float(qaTool.getvalue(qaTool.convert(f_high, 'GHz')))
+                n_sum += f_high_v**2-f_low_v**2
+                d_sum += f_high_v-f_low_v
+        d_sum *= 2
+
+        if d_sum != 0.0:
+            return qaTool.quantity(n_sum/d_sum, 'GHz')
+        else:
+            LOG.attentation('Reference frequency calculation led to zero denominator.')
+            return None
