@@ -234,7 +234,7 @@ class QAPlugin(object, metaclass=abc.ABCMeta):
 
         # This will process the container
         MyTaskContainerQAPlugin(QAHandler):
-            result_cls =ResultsList
+            result_cls = ResultsList
             child_cls = MyTaskResults
 
     Within QAPlugin.handle(context, result), a QA Handler can analyse, modify,

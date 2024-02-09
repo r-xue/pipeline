@@ -26,7 +26,7 @@ class UVcontSubInputs(vdp.StandardInputs):
 
     fitorder = vdp.VisDependentProperty(default={})
     intent = vdp.VisDependentProperty(default='TARGET')
-
+    field = vdp.VisDependentProperty(default='')
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     def __init__(self, context, output_dir=None, vis=None, field=None,
@@ -260,7 +260,7 @@ class UVcontSubResults(basetask.Results):
         self.mitigation_error = False
         self.vis = None
         self.outputvis = None
-        self.field_intent_spw_list = None
+        self.field_intent_spw_list = []
         self.topo_freq_fitorder_dict = None
         self.line_mses = []
         self.casa_uvcontsub_result = None
