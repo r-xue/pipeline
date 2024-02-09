@@ -17,6 +17,7 @@ from .infrastructure import mpihelpers
 from .infrastructure.mpihelpers import MPIEnvironment
 from .infrastructure import utils
 from .infrastructure import casa_tools
+from .infrastructure.version import get_version
 
 __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'cpu_type', 'hostname', 'host_distribution',
            'logical_cpu_cores', 'memory_size', 'pipeline_revision', 'role', 'cluster_details', 'dependency_details']
@@ -149,7 +150,6 @@ def _pipeline_revision() -> str:
     # Try to get the version
     ver = None
     try:
-        from pipeline.infrastructure.version import get_version
         ver = get_version(pl_path)
     except (FileNotFoundError, subprocess.CalledProcessError):
         pass
