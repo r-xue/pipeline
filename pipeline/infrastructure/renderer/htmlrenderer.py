@@ -396,18 +396,13 @@ class T1_1Renderer(RendererBase):
                 time_on_source = utils.total_time_on_source(target_scans)
             time_on_source = utils.format_timedelta(time_on_source)
 
-            baseline_min = ms.antenna_array.min_baseline.length
-            baseline_max = ms.antenna_array.max_baseline.length
+            baseline_min = ms.antenna_array.baseline_min.length
+            baseline_max = ms.antenna_array.baseline_max.length
 
-            # compile a list of primitive numbers representing the baseline 
-            # lengths in metres..
-            bls = [bl.length.to_units(measures.DistanceUnits.METRE)
-                   for bl in ms.antenna_array.baselines]
-            # .. so that we can calculate the RMS baseline length with 
-            # consistent units
-            baseline_rms = math.sqrt(sum(bl**2 for bl in bls)/len(bls))
-            baseline_rms = measures.Distance(baseline_rms,
-                                             units=measures.DistanceUnits.METRE)
+            baseline_rms = measures.Distance(
+                value=numpy.sqrt(numpy.mean(numpy.square(ms.antenna_array.baselines_m))),
+                units=measures.DistanceUnits.METRE
+            )
 
             science_spws = ms.get_spectral_windows(science_windows_only=True)
             receivers = sorted(set(spw.band for spw in science_spws))
@@ -560,18 +555,13 @@ class T1_2Renderer(RendererBase):
             time_on_source = utils.total_time_on_source(target_scans)
             time_on_source = utils.format_timedelta(time_on_source)
 
-            baseline_min = ms.antenna_array.min_baseline.length
-            baseline_max = ms.antenna_array.max_baseline.length
+            baseline_min = ms.antenna_array.baseline_min.length
+            baseline_max = ms.antenna_array.baseline_max.length
 
-            # compile a list of primitive numbers representing the baseline 
-            # lengths in metres..
-            bls = [bl.length.to_units(measures.DistanceUnits.METRE)
-                   for bl in ms.antenna_array.baselines]
-            # .. so that we can calculate the RMS baseline length with 
-            # consistent units
-            baseline_rms = math.sqrt(sum(bl**2 for bl in bls)/len(bls))
-            baseline_rms = measures.Distance(baseline_rms,
-                                             units=measures.DistanceUnits.METRE)
+            baseline_rms = measures.Distance(
+                value=numpy.sqrt(numpy.mean(numpy.square(ms.antenna_array.baselines_m))),
+                units=measures.DistanceUnits.METRE
+            )
 
             science_spws = ms.get_spectral_windows(science_windows_only=True)
             receivers = sorted(set(spw.band for spw in science_spws))
@@ -789,8 +779,8 @@ class T2_1DetailsRenderer(object):
 
         calibrators = sorted({source.name for source in ms.sources if 'TARGET' not in source.intents})
 
-        baseline_min = ms.antenna_array.min_baseline.length
-        baseline_max = ms.antenna_array.max_baseline.length
+        baseline_min = ms.antenna_array.baseline_min.length
+        baseline_max = ms.antenna_array.baseline_max.length
 
         num_antennas = len(ms.antennas)
         num_baselines = int(num_antennas * (num_antennas-1) / 2)
