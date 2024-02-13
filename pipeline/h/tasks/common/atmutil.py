@@ -16,7 +16,6 @@ import numpy as np
 import pipeline.extern.adopted as adopted
 from pipeline.infrastructure import casa_tools
 
-
 class AtmType(object):
     """Atmosphere type enum class."""
 
@@ -370,7 +369,7 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
         frequency.
     """
     # set pwv to 1.0
-    #pwv = 1.0
+    # pwv = 1.0
     # get median PWV using Todd's script
     (pwv, pwvmad) = adopted.getMedianPWV(vis=vis)
 
@@ -380,7 +379,6 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
 
     airmass = calc_airmass(elevation)
-
     dry_opacity = get_dry_opacity(myat)
     wet_opacity = get_wet_opacity(myat)
     transmission = calc_transmission(airmass, dry_opacity, wet_opacity)
@@ -390,5 +388,4 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
         plot(frequency, dry_opacity, wet_opacity, transmission)
 
     myat.done()
-
     return frequency, transmission
