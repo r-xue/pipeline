@@ -95,9 +95,13 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return 5000
 
-    def nmajor(self, iteration: int) -> int:
+    def nmajor(self, iteration: int) -> Union[None, int]:
         """Tclean nmajor parameter heuristics."""
-        return None
+        if iteration == 0:
+            return None
+        else:
+            # PIPE-1745: default value of nmajor=220 for all editimlist stages of the VLASS QL/SE imaging workflow
+            return 220
 
     def scales(self, iteration: Union[int, None] = None) -> Union[list, None]:
         """Tclean scales parameter heuristics."""
