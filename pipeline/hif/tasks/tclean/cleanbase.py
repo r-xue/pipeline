@@ -627,6 +627,9 @@ class CleanBase(basetask.StandardTaskTemplate):
                 LOG.warning('tclean exit status 0 for Field: %s SPW: %s: the image may not be cleaned as expected.' %
                             (inputs.field, inputs.spw))
 
+            if tclean_stopcode == 9:
+                LOG.warning('tclean reached major-cycle limit nmajor=%s for Field: %s SPW: %s.', inputs.nmajor, inputs.field, inputs.spw)
+
             if tclean_stopcode == 1:
                 result.error = CleanBaseError('tclean reached niter limit. Field: %s SPW: %s' %
                                               (inputs.field, inputs.spw), 'Reached niter limit')
