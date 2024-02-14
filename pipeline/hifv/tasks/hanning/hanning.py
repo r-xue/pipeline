@@ -7,6 +7,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from casatools import ms
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -90,7 +91,8 @@ class Hanning(basetask.StandardTaskTemplate):
             HanningResults() type object
         """
 
-        if self._checkpreaveraged():
+        spw_preaverage = self._getpreaveraged()
+        if not spw_preaverage:
             try:
                 self._do_hanningsmooth()
                 LOG.info("Removing original VIS " + self.inputs.vis)
@@ -100,7 +102,11 @@ class Hanning(basetask.StandardTaskTemplate):
             except Exception as ex:
                 LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
         else:
-            LOG.warning("Data in this MS are pre-averaged.  CASA task hanningsmooth() was not executed.")
+            smoothing_windows = self._getsmoothingwindows(spw_preaverage)
+            with casa_tools.MSReader(self.inputs.vis, nomodify=False) as ms:
+                staql = {'spw': ",".join(smoothing_windows)}
+                ms.select(staql)
+                ms.hanningsmooth('data')
 
         return HanningResults()
 
@@ -130,12 +136,39 @@ class Hanning(basetask.StandardTaskTemplate):
                                         outputvis='temphanning.ms')
 
         return self._executor.execute(task)
+    
+    def _getsmoothingwindows(self, spw_preaverage):
+        """Retrieve a list of windows that are not pre-averaged and should be hanning-smoothed
 
-    def _checkpreaveraged(self):
-        """Examine to see if the SDM_NUM_BIN value from the SPECTRAL_WINDOW table is greater than 1.
+        Args:
+            spw_preaverage(dict): SDM_NUM_BIN column from SPECTRAL_WINDOW table of vis
 
-        Return: Boolean
-            False if sdm_num_bin > 1; True otherwise
+        Return: List
+            Spectral window IDs that need to be hanning smoothed
+        """
+
+        smooth_windows = list()
+        with casa_tools.MSReader(self.inputs.vis) as ms:
+            spws = ms.getspectralwindowinfo()
+        for key, value in spw_preaverage.items():
+            spw = str(int(key.split("r")[1]) - 1)
+            if value > 1:
+                info = spws[spw]
+                freq1 = info['Chan1Freq'] / 1e6
+                freq2 = freq1 + (info['TotalWidth'] / 1e6)
+                if self._checkmaserline(freq1, freq2):
+                    smooth_windows.append(spw)
+            else:
+                smooth_windows.append(spw)
+
+        assert smooth_windows  # throws error if list is empty
+
+        return smooth_windows
+
+    def _getpreaveraged(self):
+        """Return SDM_NUM_BIN table row if it exists. Empty dict signifies to smooth all windows.
+
+        Return: Dict
         """
 
         with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
@@ -143,14 +176,50 @@ class Hanning(basetask.StandardTaskTemplate):
             # resolution = table.getvarcol('RESOLUTION')
             try:
                 sdm_num_bin = table.getvarcol('SDM_NUM_BIN')
-                max_sdm_num_bin = max([sdm_num_bin[key][0] for key in sdm_num_bin])
+                # max_sdm_num_bin = max([sdm_num_bin[key][0] for key in sdm_num_bin])
             except Exception as e:
-                max_sdm_num_bin = 1
+                # max_sdm_num_bin = 1
+                sdm_num_bin = dict()
                 LOG.debug('Column SDM_NUM_BIN was not found in the SDM.  Proceeding with hanning smoothing.')
+
+        return sdm_num_bin
 
         # return not(resolution['r1'][0][0] < effective_bw['r1'][0][0])
 
-        if max_sdm_num_bin > 1:
-            return False
-        else:
+        # if max_sdm_num_bin > 1:
+        #     return False
+        # else:
+        #     return True
+
+    def _checkmaserline(self, freq1, freq2):
+        """Confirm if known maser line(s) appear in frequency range of spectral window
+
+        Args:
+            freq1(float): frequency in MHz of the beginning of spectral window
+            freq2(float): frequency in MHz of the end of spectral window
+
+        Return: Boolean
+            True if maser line may exist in window; False otherwise
+        """
+
+        maser_dict = {
+            'OH (1)': 1612.2310,
+            'OH (2)': 1665.4018,
+            'OH (3)': 1667.3590,
+            'OH (4)': 1720.5300,
+            'H2O': 22235.08,
+            'CH3OH (1)': 6668.5192,
+            'CH3OH (2)':  12178.597,
+            'SiOv0': 43423.858,
+            'SiOv1': 43122.079,
+            'SiOv2': 42820.582,
+            'SiOv3': 42519.373,
+            '29SiOv0': 42879.916,
+            '30SiOv0': 42373.359,
+            'SiS': 18154.880,
+        }
+        maser_list = [x for x in maser_dict.values() if min(freq1,freq2) < x < max(freq1,freq2)]
+
+        if len(maser_list) > 0:
             return True
+        return False
