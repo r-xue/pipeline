@@ -1142,13 +1142,12 @@ class SpwIdVsFreqChart(object):
         if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
             list_bw = [float(spw.bandwidth.value)/1.0e9 for spw in request_spws]  # GHz
             list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in request_spws]  # GHz
+            list_fmax = [float(spw.max_frequency.value)/1.0e9 for spw in request_spws]  # GHz
             banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
             list_spwids_baseband = []
             for band in banddict:
                 for baseband in banddict[band]:
                     spw = []
-                    minfreqs = []
-                    maxfreqs = []
                     list_spwids = []
                     for spwitem in banddict[band][baseband]:
                         spw.append(next(iter(spwitem)))
@@ -1159,6 +1158,7 @@ class SpwIdVsFreqChart(object):
         else:  # For ALMA and NRO
             list_bw = [float(spw.bandwidth.value)/1.0e9 for spw in scan_spws]  # GHz
             list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in scan_spws]  # GHz
+            list_fmax = [float(spw.max_frequency.value)/1.0e9 for spw in scan_spws]  # GHz
             for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
                 shift = len(list_all_spwids)
                 list_indices = [list_spwids.index(spwid)+shift for spwid in list_spwids]
@@ -1180,7 +1180,7 @@ class SpwIdVsFreqChart(object):
 
         # Annotate
         if self.context.project_summary.telescope in ('VLA', 'EVLA') and \
-            len(list_all_spwids) >= 16:  # For VLA with many spws
+           len(list_all_spwids) >= 16:  # For VLA with many spws
             list_all_spwids = []
             for list_spwids in list_spwids_baseband:
                 shift = len(list_all_spwids)
@@ -1206,11 +1206,11 @@ class SpwIdVsFreqChart(object):
             antid = 0
             if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
                 antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
-            data = atmutil.get_spw_spec(vis=ms.name, spw_id=list_all_spwids[0])
+            idx = list_fmax.index(max(list_fmax))
+            data = atmutil.get_spw_spec(vis=ms.name, spw_id=list_all_spwids[idx])
             resolution = abs(data[2])
-            idx = list_fmin.index(max(list_fmin))
-            center_freq = (min(list_fmin) + max(list_fmin) + list_bw[idx]) / 2.0
-            nchan = round((max(list_fmin) + list_bw[idx] - min(list_fmin)) / resolution)
+            center_freq = (min(list_fmin) + max(list_fmax)) / 2.0
+            nchan = round((max(list_fmax) - min(list_fmin)) / resolution)
             elevation = atmutil.get_median_elevation(ms.name, antid)
             atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, elevation=elevation, doplot=False)
             ax_atm.plot(atm_freq, atm_transmission, color=atm_color1, linestyle='-', linewidth=2.5)
