@@ -332,9 +332,9 @@ class PipelineRegression(object):
         shutil.copyfile(ppr_path, ppr_local)
 
         if telescope == 'alma':
-            almappr.executeppr(ppr_local, importonly=False, proc_rootdir='..')
+            almappr.executeppr(ppr_local, importonly=False)
         elif telescope == 'vla':
-            vlappr.executeppr(ppr_local, importonly=False, proc_rootdir='..')
+            vlappr.executeppr(ppr_local, importonly=False)
         else:
             LOG.error("Telescope is not 'alma' or 'vla'.  Can't run executeppr.")
 
