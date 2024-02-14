@@ -52,7 +52,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
         interactive: If True, print pipeline log to STDOUT.
         proc_rootdir: Override the default data processing root dir that is typically 
             constructed from the shell env variable $SCIPIPE_ROOTDIR and PPR <RelativePath> 
-            field valuel only used for development and testing.
+            field value only used for development and testing.
 
     Examples:
        Only import EBs.
