@@ -105,12 +105,19 @@ class T2_4MDetailsWvrgcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 baseline_plotter = display.WVRPhaseVsBaselineChart(context, result.flaggerresult)
                 baseline_detail_plots[vis] = baseline_plotter.plot()
 
-                # get the first scan for the QA intent(s)
+                # PIPE-851: get the first scan for the QA intent(s) with SpW
+                # matching the gaintable SpW.
                 qa_intent = set(result.flaggerresult.dataresult.inputs['qa_intent'].split(','))
-                qa_scan = sorted([scan.id for scan in ms.scans 
-                                  if not qa_intent.isdisjoint(scan.intents)])[0]
-                # scan parameter on plot is comma-separated string 
-                qa_scan = str(qa_scan)            
+                if not result.flaggerresult.dataresult.qa_wvr.qa_spw:
+                    # If no valid QA SpW was set for this data result, then no
+                    # valid matching scans can be found.
+                    qa_scan = ''
+                else:
+                    qa_spw = int(result.flaggerresult.dataresult.qa_wvr.qa_spw)
+                    qa_scan = sorted(scan.id for scan in ms.scans if not qa_intent.isdisjoint(scan.intents)
+                                     for scan_spw in scan.spws if scan_spw.id == qa_spw)[0]
+                    # scan parameter on plot is comma-separated string
+                    qa_scan = str(qa_scan)
                 LOG.trace('Using scan %s for phase vs baseline summary plots', qa_scan)
                 baseline_summary_plots[vis] = [p for p in baseline_detail_plots[vis]
                                                if qa_scan in set(p.parameters['scan'].split(','))]
