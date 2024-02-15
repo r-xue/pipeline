@@ -67,13 +67,14 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
     refantignore = vdp.VisDependentProperty(default='')
     leakage_poltype = vdp.VisDependentProperty(default='')
     mbdkcross = vdp.VisDependentProperty(default=True)
+    run_setjy = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
     def clipminmax(self):
         return [0.0, 0.25]
 
     def __init__(self, context, vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None,
-                 mbdkcross=None, clipminmax=None):
+                 mbdkcross=None, clipminmax=None, run_setjy=None):
         super(CircfeedpolcalInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -82,7 +83,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
         self.leakage_poltype = leakage_poltype
         self.mbdkcross = mbdkcross
         self.clipminmax = clipminmax
-
+        self.run_setjy = run_setjy
 
 @task_registry.set_equivalent_casa_task('hifv_circfeedpolcal')
 class Circfeedpolcal(polarization.Polarization):
@@ -518,9 +519,10 @@ class Circfeedpolcal(polarization.Polarization):
             else:
                 LOG.error("No known flux calibrator found - please check the data.")
 
-            job = casa_tasks.setjy(**task_args)
-
-            self._executor.execute(job)
+            # PIPE-1750, added an option to disable setjy call
+            if self.inputs.run_setjy:
+                job = casa_tasks.setjy(**task_args)
+                self._executor.execute(job)
         except Exception as ex:
             LOG.warning("Exception: Problem with circfeedpolcal setjy. {!s}".format(str(ex)))
             return None
