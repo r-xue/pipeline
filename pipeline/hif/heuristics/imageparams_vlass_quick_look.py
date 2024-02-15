@@ -62,12 +62,20 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         else:
             return 2.
 
-    def cycleniter(self, iteration: int ) -> int:
+    def cycleniter(self, iteration: int) -> int:
         """Tclean cycleniter parameter heuristics."""
         if iteration == 0:
             return -1
         else:
             return 500
+
+    def nmajor(self, iteration: int) -> Union[None, int]:
+        """Tclean nmajor parameter heuristics."""
+        if iteration == 0:
+            return None
+        else:
+            # PIPE-1745: default value of nmajor=220 for all editimlist stages of the VLASS QL/SE imaging workflow
+            return 220
 
     def scales(self, iteration: Union[int, None] = None) -> list:
         """Tclean scales parameter heuristics."""

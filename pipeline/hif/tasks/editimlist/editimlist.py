@@ -97,7 +97,7 @@ class EditimlistInputs(vdp.StandardInputs):
     # VLASS-SE-CONT specific option: user settable cycleniter in cleaning without mask in final imaging stage
     cycleniter_final_image_nomask = vdp.VisDependentProperty(default=None)
     # VLASS-SE-CUBE plane rejection parameters
-    vlass_plane_reject = vdp.VisDependentProperty(default=True)
+    vlass_plane_reject_ms = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
     def cell(self):
@@ -137,15 +137,17 @@ class EditimlistInputs(vdp.StandardInputs):
             val = [val]
         return val
 
-    @vlass_plane_reject.postprocess
-    def vlass_plane_reject(self, unprocessed):
+    @vlass_plane_reject_ms.postprocess
+    def vlass_plane_reject_ms(self, unprocessed):
         """Convert the allowed argument input datatype to the dictionary form used by the task."""
-        vlass_plane_reject_dict = {'apply': True, 'exclude_spw': '', 'flagpct_thresh': 0.9, 'nfield_thresh': 12}
+        vlass_plane_reject_dict = {
+            'apply': True, 'exclude_spw': '', 'flagpct_thresh': 0.9, 'nfield_thresh': 12}
         if isinstance(unprocessed, dict):
             vlass_plane_reject_dict.update(unprocessed)
         if isinstance(unprocessed, bool):
             vlass_plane_reject_dict['apply'] = unprocessed
-        LOG.debug("convert the task input of vlass_plane_reject from %r to %r.", unprocessed, vlass_plane_reject_dict)
+        LOG.debug("convert the task input of vlass_plane_reject_ms from %r to %r.",
+                  unprocessed, vlass_plane_reject_dict)
         return vlass_plane_reject_dict
 
     @vdp.VisDependentProperty
@@ -167,7 +169,7 @@ class EditimlistInputs(vdp.StandardInputs):
                  robust=None, scales=None, specmode=None, spw=None,
                  start=None, stokes=None, threshold=None, nsigma=None,
                  uvtaper=None, uvrange=None, width=None, sensitivity=None, clean_no_mask_selfcal_image=None,
-                 vlass_plane_reject=None,
+                 vlass_plane_reject_ms=None,
                  cycleniter_final_image_nomask=None):
 
         super(EditimlistInputs, self).__init__()
@@ -217,14 +219,14 @@ class EditimlistInputs(vdp.StandardInputs):
         self.sensitivity = sensitivity
         self.clean_no_mask_selfcal_image = clean_no_mask_selfcal_image
         self.cycleniter_final_image_nomask = cycleniter_final_image_nomask
-        self.vlass_plane_reject = vlass_plane_reject
+        self.vlass_plane_reject_ms = vlass_plane_reject_ms
 
         keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datatype', 'datacolumn', 'deconvolver', 'imsize',
                             'phasecenter', 'specmode', 'gridder', 'imagename', 'scales', 'cfcache',
                             'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
                             'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'nmajor', 'mask',
                             'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
-                            'editmode', 'nsigma', 'pblimit', 'vlass_plane_reject',
+                            'editmode', 'nsigma', 'pblimit', 'vlass_plane_reject_ms',
                             'sensitivity', 'conjbeams', 'clean_no_mask_selfcal_image', 'cycleniter_final_image_nomask')
 
         self.keys_to_change = []
@@ -622,21 +624,23 @@ class Editimlist(basetask.StandardTaskTemplate):
         return result
 
     def _add_vlasscube_targets(self, result, imlist_entry):
-        """Add multiple clean targtes for the VLASS-SE-CUBE mode.
+        """Add multiple clean targets for the VLASS-SE-CUBE mode.
         
         For the "coarse cube" mode, we perform the following operations:
             - loop over individual spw groups
-            - generate conresponsding clean target using a modified copy of the base CleanTarget object template
+            - generate corresponding clean target using a modified copy of the base CleanTarget object template
             - aggregate clean targets list after the VLASS-SE-CUBE plane rejection criteria is applied.
         note: the initial 'spw' from the base CleanTarget object template, i.e., imlist_entry['spw'], is expected to be a list here.
         For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.        
         """
 
-        vlass_plane_reject_keys_allowed = ['apply', 'exclude_spw', 'flagpct_thresh', 'nfield_thresh']
+        vlass_plane_reject_keys_allowed = [
+            'apply', 'exclude_spw', 'flagpct_thresh', 'nfield_thresh']
 
-        for k in self.inputs.vlass_plane_reject:
+        for k in self.inputs.vlass_plane_reject_ms:
             if k not in vlass_plane_reject_keys_allowed:
-                LOG.warning("The key %r in the 'vlass_plane_reject' task input dictionary.", k)
+                LOG.warning(
+                    "The key %r in the 'vlass_plane_reject_ms' task input dictionary is not expected and will be ignored.", k)
 
         result.targets_reffreq = []
         result.targets_spw = []
@@ -645,6 +649,8 @@ class Editimlist(basetask.StandardTaskTemplate):
 
         vlass_flag_stats = self._vlass_plane_rejection(imlist_entry)
         result.vlass_flag_stats = vlass_flag_stats
+
+        spwgroup_reject_list = []
 
         for idx, spw in enumerate(imlist_entry['spw']):
 
@@ -657,25 +663,38 @@ class Editimlist(basetask.StandardTaskTemplate):
             imlist_entry_per_spwgroup['flagpct'] = vlass_flag_stats['flagpct_spwgroup'][idx]
             # flagpct over the entire mosaic
             flagpct = th.flagpct_spwgroup(results_list=self.inputs.context.results, spw_selection=spw)
+            # PIPE-1800: flagpct_threshold here is the flag percent rejection threshold across the entire mosaic.
+            # We hardcode the value to 1.0 which means we reject any spw that is completely flagged.
+            # Note that this is different from vlass_plane_reject_ms['flagpct_thresh'] which is a per-field flagging threshold to 
+            # define "bad" fields.
             flagpct_threshold = 1.0
 
             if flagpct is None:
-                LOG.warning('Can not find previous flagging summary for spw=%r, but we will still add it as an imaging target.', spw)
+                LOG.warning(
+                    'Can not find previous flagging summary for spw=%r, but we will still add it as an imaging target.',
+                    spw)
             else:
                 if flagpct >= flagpct_threshold:
-                    LOG.warning('VLASS Data for spw=%r is %.2f%% flagged, and we will skip it as an imaging target.', spw, flagpct*100)
+                    LOG.warning(
+                        'VLASS Data for spw=%r is %.2f%% flagged, and we will skip it as an imaging target.', spw,
+                        flagpct * 100)
                     continue
 
             if vlass_flag_stats['spwgroup_reject'][idx]:
-                LOG.warning(
-                    'VLASS Data for spw=%r meets the plane rejection ceritera: nfield>=%i with flagpct>=%.2f%%.',
-                    spw, self.inputs.vlass_plane_reject['nfield_thresh'], self.inputs.vlass_plane_reject['flagpct_thresh'] * 100)
+                spwgroup_reject_list.append(spw)
                 continue
 
             result.targets_reffreq.append(imlist_entry_per_spwgroup['reffreq'])
             result.targets_spw.append(imlist_entry_per_spwgroup['spw'])
             result.targets_imagename.append(os.path.basename(imlist_entry_per_spwgroup['imagename']))
             result.add_target(imlist_entry_per_spwgroup)
+
+        if spwgroup_reject_list:
+            LOG.warning(
+                'VLASS Data for spw=%r meets the plane rejection criteria: nfield>=%i with flagpct>=%.2f%%.', ','.join(
+                    spwgroup_reject_list),
+                self.inputs.vlass_plane_reject_ms['nfield_thresh'],
+                self.inputs.vlass_plane_reject_ms['flagpct_thresh'] * 100)
 
         return result
 
@@ -721,22 +740,25 @@ class Editimlist(basetask.StandardTaskTemplate):
                 scan_list[field_idx] = list(flag_stats[field_obj.name]['scan'].keys())[0]
 
         nfield_above_flagpct = np.sum(n_flagged_field_spwgroup/n_total_field_spwgroup >
-                                      self.inputs.vlass_plane_reject['flagpct_thresh'], axis=0)
+                                      self.inputs.vlass_plane_reject_ms['flagpct_thresh'], axis=0)
         spwgroup_reject = [False]*n_spwgroup
         for idx, nfield in enumerate(nfield_above_flagpct):
-            is_spwgroup_excluded = set(imlist_entry['spw'][idx].split(',')) & set(self.inputs.vlass_plane_reject['exclude_spw'].split(','))
-            if self.inputs.vlass_plane_reject['apply'] and nfield >= self.inputs.vlass_plane_reject['nfield_thresh'] and not is_spwgroup_excluded:
+            is_spwgroup_excluded = set(imlist_entry['spw'][idx].split(',')) & set(
+                self.inputs.vlass_plane_reject_ms['exclude_spw'].split(','))
+            if self.inputs.vlass_plane_reject_ms['apply'] and nfield >= self.inputs.vlass_plane_reject_ms['nfield_thresh'] and not is_spwgroup_excluded:
                 spwgroup_reject[idx] = True
 
         vlass_flag_stats = {}
         vlass_flag_stats['spwgroup_list'] = imlist_entry['spw']
         vlass_flag_stats['scan_list'] = scan_list
         vlass_flag_stats['fname_list'] = fname_list
-        vlass_flag_stats['flagpct_field_spwgroup'] = n_flagged_field_spwgroup/n_total_field_spwgroup
-        vlass_flag_stats['flagpct_spwgroup'] = np.sum(n_flagged_field_spwgroup, axis=0)/np.sum(n_total_field_spwgroup, axis=0)
+        vlass_flag_stats['flagpct_field_spwgroup'] = n_flagged_field_spwgroup / \
+            n_total_field_spwgroup
+        vlass_flag_stats['flagpct_spwgroup'] = np.sum(
+            n_flagged_field_spwgroup, axis=0)/np.sum(n_total_field_spwgroup, axis=0)
         vlass_flag_stats['nfield_above_flagpct'] = nfield_above_flagpct
-        vlass_flag_stats['flagpct_thresh'] = self.inputs.vlass_plane_reject['flagpct_thresh']
-        vlass_flag_stats['nfield_thresh'] = self.inputs.vlass_plane_reject['nfield_thresh']
+        vlass_flag_stats['flagpct_thresh'] = self.inputs.vlass_plane_reject_ms['flagpct_thresh']
+        vlass_flag_stats['nfield_thresh'] = self.inputs.vlass_plane_reject_ms['nfield_thresh']
         vlass_flag_stats['spwgroup_reject'] = spwgroup_reject
 
         return vlass_flag_stats

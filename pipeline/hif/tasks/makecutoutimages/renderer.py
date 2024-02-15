@@ -111,13 +111,13 @@ class T2_4MDetailsMakecutoutimagesVlassCubeRenderer(basetemplates.T2_4MDetailsDe
 
         image_size = result.image_size
 
+        # Make the RMS summary plots
+        plotter = display.VlassCubeCutoutRmsSummary(context, result, info_dict)
+        rms_plots['Cutout Rms Summary Plots'] = plotter.plot()
+
         # Make the plots of the cutout images
         plotter = display.VlassCubeCutoutimagesSummary(context, result)
         img_plots['Cutout Image Summary Plots'] = plotter.plot()
-
-        # Make the RMS summary plots
-        plotter = display.VlassCubeCutoutRmsSummary(context, result)
-        rms_plots['Cutout Rms Summary Plots'] = plotter.plot()
 
         # Export Stats summary
         stats_summary = display.get_stats_summary(result.stats)
