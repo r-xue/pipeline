@@ -1119,6 +1119,7 @@ class SpwIdVsFreqChart(object):
         self.context = context
         self.figfile = self._get_figfile()
 
+#    @profile
     def plot(self) -> logger.Plot:
         """Create the plot.
 
