@@ -217,13 +217,21 @@ def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
     # Initialize the figure with a specified size
     _figure = figure.Figure(figsize=(20, 5))
     _grid = gridspec.GridSpec( 1, 3, width_ratios=[1,1,1])
+    _grid.update(wspace=0.3)
+    
+    # calculate the plot-colorbar width ratio if shape of the plot is landscape
+    # default to plot:colorbar = 20:1
+    if idx > idy:
+        _width_ratio = [int(20 * (idx/idy)**0.3), 1]
+    else:
+        _width_ratio = [20, 1]
 
     # Create subplots(Axes) for peak S/N map, mask map, and masked averaged spectrum
     peak_sn_plot, peak_sn_colorbar = \
-        map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=[20,1],
+        map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=_width_ratio,
                                                                   subplot_spec=_grid[0]))
     mask_map_plot, mask_map_colorbar = \
-        map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=[20,1],
+        map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=_width_ratio,
                                                                   subplot_spec=_grid[1]))
     masked_avg_sp_plot = _figure.add_subplot(_grid[2])
     kw = {}
