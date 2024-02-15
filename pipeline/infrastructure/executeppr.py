@@ -75,15 +75,16 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
             _getFirstRequest(pprXmlFile)
 
         # Set the directories
-        if os.getenv('SCIPIPE_ROOTDIR') is None:
-            # PIPE-2093: if $SCIPIPE_ROOTDIR doesn't exist, we likely run in a local dev/test environment, 
-            # then we override the default data processing root dir that is typically constructed from the 
-            # shell env variable and the long/deep production PPR <RelativePath> value.
-            workingDir = os.path.join('..', "working")
-            rawDir = os.path.join('..', "rawdata")
+        if 'SCIPIPE_ROOTDIR' in os.environ:
+            workingDir = os.path.join(os.path.expandvars('$SCIPIPE_ROOTDIR'), relativePath, 'working')
+            rawDir = os.path.join(os.path.expandvars('$SCIPIPE_ROOTDIR'), relativePath, 'rawdata')
         else:
-            workingDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"), relativePath, "working")
-            rawDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"), relativePath, "rawdata")
+            # PIPE-2093: if $SCIPIPE_ROOTDIR doesn't exist, we likely run in a local dev/test environment.
+            # Then we will override the typical production workingDir/rawDIR values that are traditionally
+            # constructed from $SCIPIPE_ROOTDIR and the PPR <RelativePath> field. Note that we assume that
+            # any executeppr call here happens inside the "working/" directory.
+            workingDir = os.path.abspath(os.path.join('..', 'working'))
+            rawDir = os.path.abspath(os.path.join('..', 'rawdata'))
 
         # Check for the breakpoint
         bpset = False
