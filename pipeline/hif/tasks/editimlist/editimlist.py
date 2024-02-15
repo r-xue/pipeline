@@ -624,11 +624,11 @@ class Editimlist(basetask.StandardTaskTemplate):
         return result
 
     def _add_vlasscube_targets(self, result, imlist_entry):
-        """Add multiple clean targtes for the VLASS-SE-CUBE mode.
+        """Add multiple clean targets for the VLASS-SE-CUBE mode.
         
         For the "coarse cube" mode, we perform the following operations:
             - loop over individual spw groups
-            - generate conresponsding clean target using a modified copy of the base CleanTarget object template
+            - generate corresponding clean target using a modified copy of the base CleanTarget object template
             - aggregate clean targets list after the VLASS-SE-CUBE plane rejection criteria is applied.
         note: the initial 'spw' from the base CleanTarget object template, i.e., imlist_entry['spw'], is expected to be a list here.
         For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.        
@@ -663,6 +663,10 @@ class Editimlist(basetask.StandardTaskTemplate):
             imlist_entry_per_spwgroup['flagpct'] = vlass_flag_stats['flagpct_spwgroup'][idx]
             # flagpct over the entire mosaic
             flagpct = th.flagpct_spwgroup(results_list=self.inputs.context.results, spw_selection=spw)
+            # PIPE-1800: flagpct_threshold here is the flag percent rejection threshold across the entire mosaic.
+            # We hardcode the value to 1.0 which means we reject any spw that is completely flagged.
+            # Note that this is different from vlass_plane_reject_ms['flagpct_thresh'] which is a per-field flagging threshold to 
+            # define "bad" fields.
             flagpct_threshold = 1.0
 
             if flagpct is None:
