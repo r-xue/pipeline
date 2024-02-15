@@ -473,10 +473,10 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return True
 
-    def reffreq(self, deconvolver: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
+    def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         """Tclean reffreq parameter heuristics."""
 
-        if deconvolver != 'mtmfs':
+        if deconvolver != 'mtmfs' or specmode != 'cont':
             return None
 
         if spwsel in (None, ''):
@@ -501,7 +501,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         d_sum *= 2
 
         if d_sum != 0.0:
-            return qaTool.quantity(n_sum/d_sum, 'GHz')
+            return f'{n_sum/d_sum}GHz'
         else:
             LOG.attentation('Reference frequency calculation led to zero denominator.')
             return None

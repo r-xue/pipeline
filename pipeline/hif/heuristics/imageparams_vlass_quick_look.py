@@ -51,7 +51,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         """Tclean imsize parameter heuristics."""
         return [7290, 7290]
 
-    def reffreq(self, deconvolver: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
+    def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         """Tclean reffreq parameter heuristics."""
         return '3.0GHz'
 

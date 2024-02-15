@@ -1267,6 +1267,14 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&'
                                            for v in filtered_vislist]
 
+                                drcorrect = self._get_drcorrect(field_intent[0], actual_spwspec, local_selected_datatype_str)
+
+                                deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
+                                                                                   actual_spwspec, stokes, inputs.specmode,
+                                                                                   local_selected_datatype_str, target_heuristics)
+
+                                reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
+
                                 target = CleanTarget(
                                     antenna=antenna,
                                     field=field_intent[0],
@@ -1298,10 +1306,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     datatype_info=local_selected_datatype_info,
                                     is_per_eb=inputs.per_eb if inputs.per_eb else None,
                                     usepointing=usepointing,
-                                    mosweight=mosweight)
-                                target['drcorrect'] = self._get_drcorrect(target['field'], target['spw'], target['datatype'])
-                                target['deconvolver'], target['nterms'] = self._get_deconvolver_nterms(
-                                    target['field'], target['spw'], target['datatype'])
+                                    mosweight=mosweight,
+                                    drcorrect=drcorrect,
+                                    deconvolver=deconvolver,
+                                    nterms=nterms,
+                                    reffreq=reffreq)
 
                                 result.add_target(target)
 
@@ -1337,28 +1346,35 @@ class MakeImList(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _get_deconvolver_nterms(self, field, spw_sel, datatype_str):
-        """Get the modified nterms parameter based on existing selfcal results."""
+    def _get_deconvolver_nterms(self, field, intent, spw, stokes, specmode, datatype_str, image_heuristics):
+        """
+        Get deconvolver and nterms. First check for any modified parameters based
+        on existing selfcal results. Otherwise use the heuristics methods.
+        """
 
         deconvolver, nterms = None, None
         context = self.inputs.context
 
-        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and specmode == 'cont':
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
-                im_spw = set(spw_sel.split(','))
+                im_spw = set(spw.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
                     nterms_sc = sc_target['sc_lib']['nterms']
                     if nterms_sc is not None and nterms_sc > 1:
                         nterms = nterms_sc
                         deconvolver = 'mtmfs'
-                        LOG.info(f"Using deconvolver='mtmfs', nterms={nterms} for field {field} and spw {spw_sel} based "
+                        LOG.info(f"Using deconvolver='mtmfs', nterms={nterms} for field {field} and spw {spw} based "
                                  "on previous selfcal aggregate continuum imaging results.")
                     break
 
+        if deconvolver is None and nterms is None:
+            deconvolver = image_heuristics.deconvolver(specmode, spw, intent, stokes)
+            nterms = image_heuristics.nterms(spw)
+
         return deconvolver, nterms
 
-    def _get_drcorrect(self, field, spw_sel, datatype_str):
+    def _get_drcorrect(self, field, spw, datatype_str):
         """Get the modified drcorrect parameter based on existing selfcal results."""
 
         drcorrect = None
@@ -1370,10 +1386,10 @@ class MakeImList(basetask.StandardTaskTemplate):
         if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
-                im_spw = set(spw_sel.split(','))
+                im_spw = set(spw.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
                     drcorrect = sc_target['sc_rms_scale']
-                    LOG.info(f"Using drcorrect={drcorrect} for field {field} and spw {spw_sel} based "
+                    LOG.info(f"Using drcorrect={drcorrect} for field {field} and spw {spw} based "
                              "on previous selfcal aggregate continuum imaging results.")
                     break
 
