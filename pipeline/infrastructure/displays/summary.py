@@ -1117,64 +1117,27 @@ class SpwIdVsFreqChart(object):
         self.inputs = inputs
         self.context = context
 
-    def _extract_spwdata_vla(self) -> Tuple[List[Dict[str, Union[List[int], List[float]]]], int]:
+    def _extract_spwdata_vla(self):
         """Extract SPW data of VLA from measurement set.
 
-        Returns:
-            Tuple containing a list of dictionary and a total number of SPW IDs.
-            The dictionary contains list of SPW IDs, list of bandwidth (GHz unit) for
-            each SPW ID and list of minimum frequency for each SPW ID.
         """
         ms = self.inputs.ms
-        request_spws = ms.get_spectral_windows()
-        dict_spwid_bw = {}
-        dict_spwid_fmin = {}
         banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
-        for spw in request_spws:
-            dict_spwid_bw[spw.id] = float(spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
-            dict_spwid_fmin[spw.id] = float(spw.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
-        spwdb = []
-        totalnum = 0
         for band in banddict:
             for baseband in banddict[band]:
                 spw_list = [list(spwitem.keys())[0] for spwitem in banddict[band][baseband]]
-                bw_list = []
-                fmin_list = []
-                for id in spw_list:
-                    bw_list.append(dict_spwid_bw[id])
-                    fmin_list.append(dict_spwid_fmin[id])
-                    totalnum += 1
-                spwdb.append({'spwid': spw_list, 'bw': bw_list, 'fmin': fmin_list})
-        return spwdb, totalnum
+                yield spw_list
 
-    def _extract_spwdata_alma_nro(self) -> Tuple[List[Dict[str, Union[List[int], List[float]]]], int]:
+    def _extract_spwdata_alma_nro(self):
         """Extract SPW data of ALMA or NRO from measurement set.
 
-        Returns:
-            Tuple containing a list of dictionary and a total number of SPW IDs.
-            The dictionary contains list of SPW IDs, list of bandwidth (GHz unit) for
-            each SPW ID and list of minimum frequency for each SPW ID.
         """
         ms = self.inputs.ms
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
         scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
-        dict_spwid_bw = {}
-        dict_spwid_fmin = {}
-        spwdb = []
-        for spw in scan_spws:
-            dict_spwid_bw[spw.id] = float(spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
-            dict_spwid_fmin[spw.id] = float(spw.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
-        totalnum = 0
         for spwid_list in utils.get_spectralspec_to_spwid_map(scan_spws).values():
-            bw_list = []
-            fmin_list = []
-            for id in spwid_list:
-                bw_list.append(dict_spwid_bw[id])
-                fmin_list.append(dict_spwid_fmin[id])
-                totalnum += 1
-            spwdb.append({'spwid': spwid_list, 'bw': bw_list, 'fmin': fmin_list})
-        return spwdb, totalnum
+            yield spwid_list
 
     def plot(self) -> logger.Plot:
         """Create the plot.
@@ -1186,59 +1149,65 @@ class SpwIdVsFreqChart(object):
         if os.path.exists(filename):
             return self._get_plot_object()
         ms = self.inputs.ms
-        fig = figure.Figure(figsize=(9.6, 7.2))
-        ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+        request_spws = ms.get_spectral_windows()
+        targeted_scans = ms.get_scans(scan_intent='TARGET')
+        dict_spwid_bw = {}
+        dict_spwid_fmin = {}
         antid = 0
         if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
             antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
+        # prepare axes
+        fig = figure.Figure(figsize=(9.6, 7.2))
+        ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+        bar_height = 0.4
+        max_spws_to_annotate = 16
         ax_atm = ax_spw.twinx()
         atm_color = 'm'
-        fmin_list_all = []
-        yspace = 0.3
-        many = 32
+
+        # plot spws
+        all_spwid_list = []
+        indices = [-1]
+        xmin, xmax = np.inf, -np.inf
+
         if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
-            spwdb, totalnum = self._extract_spwdata_vla()
-        else:  # for ALMA and NRO
-            spwdb, totalnum = self._extract_spwdata_alma_nro()
-        j = 0
-        for one in spwdb:
-            spwid_list = one['spwid']
-            indice_list = [i+j for i in range(len(spwid_list))]
-            bw_list = one['bw']
-            fmin_list = one['fmin']
-            # barh plot of spwid vs. Frequency
-            ax_spw.barh(indice_list, bw_list, height=0.4, left=fmin_list)
-            j += len(spwid_list)
+            spw_list_generator = self._extract_spwdata_vla()
+            scan_spws = request_spws
+        else:  # for ALMA or NRO
+            spw_list_generator = self._extract_spwdata_alma_nro()
+            scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
+        for spw in scan_spws:
+            dict_spwid_bw[spw.id] = float(spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
+            dict_spwid_fmin[spw.id] = float(spw.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
+        for spwid_list in spw_list_generator:
+            bw_list = [dict_spwid_bw[id] for id in spwid_list]
+            fmin_list = [dict_spwid_fmin[id] for id in spwid_list]
+            spwdb = {'spwid': spwid_list, 'bw': bw_list, 'fmin': fmin_list}
+#            spwdb = self._extract_spwdata(spw_list_generator)
+#        return
+            all_spwid_list.extend(spwdb['spwid'])  # to be used later
+            start = indices[-1] + 1
+            indices = list(range(start, start+len(spwdb['bw'])))
+
+            # draw bars
+            ax_spw.barh(indices, spwdb['bw'], height=bar_height, left=spwdb['fmin'])
+
             # Frequency vs. ATM transmission
             for spwid in spwid_list:
                 atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
                 ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=4, linestyle='-')
-            # Annotate
-            spw_to_annotate = []
-            indice_to_annotate = []
-            bw_to_annotate = []
-            fmin_to_annotate = []
-            if totalnum >= many:
-                spw_to_annotate = [spwid_list[0]] + ([spwid_list[-1]] if len(spwid_list) > 1 else [])
-                indice_to_annotate = [indice_list[0]] + ([indice_list[-1]] if len(indice_list) > 1 else [])
-                bw_to_annotate = [bw_list[0]] + ([bw_list[-1]] if len(bw_list) > 1 else [])
-                fmin_to_annotate = [fmin_list[0]] + ([fmin_list[-1]] if len(fmin_list) > 1 else [])
-            else:
-                spw_to_annotate = spwid_list
-                indice_to_annotate = indice_list
-                bw_to_annotate = bw_list
-                fmin_to_annotate = fmin_list
-            k = 0
-            for spwid in spw_to_annotate:
-                label = str(spwid)
-                xpos = fmin_to_annotate[k] + bw_to_annotate[k] / 2
-                ypos = indice_to_annotate[k] - yspace
-                ax_spw.annotate(label, (xpos, ypos), fontsize=14)
-                k += 1
-            fmin_list_all.extend(fmin_list)
-        xmin = min(fmin_list_all)-(max(fmin_list_all)-min(fmin_list_all))/15
-        ax_spw.set_xlim(xmin)
+
+            # annotate each bars
+            for idx, (index, spwid, bw, fmin) in enumerate(zip(indices, spwdb['spwid'], spwdb['bw'], spwdb['fmin'])):
+                xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)   # to be used for set_xlim() later
+                if len(indices) <= max_spws_to_annotate or idx in [0, len(indices) - 1]:
+                    ax_spw.annotate(str(spwid), (fmin + bw/2, index - bar_height/2),
+                                     fontsize=14, ha='center', va='bottom')
+
+#        xmin = min(fmin_list_all)-(max(fmin_list_all)-min(fmin_list_all))/15  ## should be improved
+#        ax_spw.set_xlim(xmin)
         ax_spw.invert_yaxis()
+        totalnum = len(all_spwid_list)
+#        totalnum = sum(map(lambda x: len(x['spwid']), spwdb))
         ax_spw.set_ylim(float(totalnum), -1.0)
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
