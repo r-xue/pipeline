@@ -5,17 +5,24 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffile=None, fluxdensity=None, spix=None,
-                  reffreq=None, scalebychan=None, standard=None, dryrun=None, acceptresults=None):
+                  reffreq=None, scalebychan=None, standard=None):
 
     """
     hifv_vlasetjy ---- Sets flux density scale and fills calibrator model to measurement set
 
+    The hifv_vlasetjy task does an initial run of setjy on the vis
+
+    Output:
+
+    results -- The results object for the pipeline task is returned.
+
+    standard -- Flux density standard
+    default: ''
+
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                  MSes, or tar files of MSes, If ASDM files are specified, they will be
-                  converted  to MS format.
-                  example: vis=['X227.ms', 'asdms.tar.gz']
+    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                  specified in the h_init or hifv_importdata task.
     field         List of field names or ids.
     intent        Observing intent of flux calibrators.
     spw           List of spectral window ids.
@@ -26,29 +33,13 @@ def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffi
     reffreq       Reference frequency for spix.  Can be set when fluxdensity is not -1
     scalebychan   Scale the flux density on a per channel basis or else on a per spw basis
     standard      Flux density standard
-    dryrun        Run the commands (True) or generate the commands to be run but
-                  do not execute (False).  This is a pipeline task execution mode.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
 
     --------- examples -----------------------------------------------------------
 
-    
-    The hifv_vlasetjy task does an initial run of setjy on the vis
-    
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    standard -- Flux density standard
-    default: ''
-    
-    Examples
-    
+
     1. Initial run of setjy:
-    
-    hifv_vlasetjy()
+
+    >>> hifv_vlasetjy()
 
 
     """

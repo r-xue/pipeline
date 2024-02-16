@@ -9,7 +9,7 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                  fracspwfps=None, online=None, fileonline=None, template=None,
                  filetemplate=None, pointing=None, filepointing=None, incompleteraster=None,
                  hm_tbuff=None, tbuff=None, qa0=None, qa2=None, parallel=None,
-                 flagbackup=None, dryrun=None, acceptresults=None):
+                 flagbackup=None):
 
     """
     hsd_flagdata ---- Do basic flagging of a list of MeasurementSets
@@ -18,11 +18,11 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     The hsd_flagdata data performs basic flagging operations on a list of
     MeasurementSets including:
 
-    o applying online flags
-    o applying a flagging template
-    o shadowed antenna data flagging
-    o scan-based flagging by intent or scan number
-    o edge channel flagging
+    - applying online flags
+    - applying a flagging template
+    - shadowed antenna data flagging
+    - scan-based flagging by intent or scan number
+    - edge channel flagging
 
     Output:
 
@@ -40,7 +40,7 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
     intents          A string containing a comma delimited list of intents against
                      which the scans to be flagged are matched.
 
-                     example: '*BANDPASS*'
+                     example: `'*BANDPASS*'`
     edgespw          Flag the edge spectral window channels.
     fracspw          Fraction of the baseline correlator TDM edge channels to be flagged.
     fracspwfps       Fraction of the ACS correlator TDM edge channels to be flagged.
@@ -71,23 +71,17 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                      options: 'automatic', 'true', 'false', True, False
                      default: None (equivalent to 'automatic')
     flagbackup       Back up any pre-existing flags before applying new ones.
-    dryrun           Run the commands (True) or generate the commands to be run but
-                     do not execute (False).
-    acceptresults    Add the results of the task to the pipeline context (True) or
-                     reject them (False).
 
     --------- examples -----------------------------------------------------------
 
-
     1. Do basic flagging on a MeasurementSet
 
-    hsd_flagdata()
+    >>> hsd_flagdata()
 
     2. Do basic flagging on a MeasurementSet flagging additional scans selected
     by number as well.
 
-    hsd_flagdata(scannumber='13,18')
-
+    >>> hsd_flagdata(scannumber='13,18')
 
     """
 

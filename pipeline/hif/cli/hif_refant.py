@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
                refant=None, geometry=None, flagging=None, parallel=None,
-               dryrun=None, acceptresults=None, refantignore=None):
+               refantignore=None):
 
     """
     hif_refant ---- Select the best reference antennas
@@ -22,8 +22,6 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
     Output:
 
     results -- The results object for the pipeline task is returned.
-
-    Issues
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -49,16 +47,13 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
                   example: 'DV05'
     geometry      Score antenna by proximity to the center of the array. This
                   option is quick as only the ANTENNA table must be read.
-                  Parameter is available when hm_refant='automatic'.
+                  Parameter is available when ``hm_refant``='automatic'.
     flagging      Score antennas by percentage of unflagged data.  This option
                   requires computing flagging statistics.
-                  Parameter is available when hm_refant='automatic'.
+                  Parameter is available when ``hm_refant``='automatic'.
     parallel      Execute using CASA HPC functionality, if available.
                   options: 'automatic', 'true', 'false', True, False
                   default: None (equivalent to False)
-    dryrun        Run the task (False) or display the command (True)
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
     refantignore  string list to be ignored as reference antennas.
                   example:  refantignore='ea02,ea03'
 
@@ -68,7 +63,7 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
 
     1. Compute the references antennas to be used for bandpass and gain calibration.
 
-    hif_refant()
+    >>> hif_refant()
 
 
     """

@@ -4,12 +4,11 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, parallel=None, dryrun=None, acceptresults=None):
-
+def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
     """
     hifa_imageprecheck ---- Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.
 
-    
+
     In this task, the representative source and the spw containing the representative
     frequency selected by the PI in the OT are used to calculate the synthesized beam
     and to make sensitivity estimates for the aggregate bandwidth and representative
@@ -19,8 +18,10 @@ def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, p
     (e.g. pre-Cycle 5 data does not have this information available). The best Briggs
     robust parameter to achieve the PI's desired angular resolution is chosen
     automatically. See the User's guide for further details.
-    
-    results -- The results object for the pipeline task is returned.
+
+    Output:
+
+        results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -34,18 +35,19 @@ def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, p
                                Example: '1.0arcsec'              
     calcsb                     Force (re-)calculation of sensitivities and beams
     parallel                   Use MPI cluster where possible
-    dryrun                     Run the task (False) or just display the command (True)
-    acceptresults              Add the results of the task to the pipeline context (True) or
-                               reject them (False).
 
     --------- examples -----------------------------------------------------------
 
-    
+    1. run with recommended settings to perform checks prior to imaging:
 
+    >>> hifa_imageprecheck()
+
+    2. run to perform checks prior to imaging and force the re-calculation of
+    sensitivities and beams:
+
+    >>> hifa_imageprecheck(calcsb=True)
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

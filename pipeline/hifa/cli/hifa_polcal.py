@@ -3,7 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None, dryrun=None, acceptresults=None):
+def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None):
     """
     hifa_polcal ---- Derive instrumental polarization calibration for ALMA.
 
@@ -11,37 +11,43 @@ def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None, dryr
     Derive the instrumental polarization calibrations for ALMA using the
     polarization calibrators.
 
+    Output:
+
+        results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
-    vis             The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                    specified in the pipeline context.
+    vis
+                    The list of input MeasurementSets. Defaults to the list of
+                    MeasurementSets specified in the pipeline context.
+
                     Example: ['M32A.ms', 'M32B.ms']
-    solint_chavg    Channel averaging to include in solint for gaincal steps
+    solint_chavg
+                    Channel averaging to include in solint for gaincal steps
                     producing cross-hand delay, cross-hand phase, and leakage
                     (D-terms) solutions.
+
                     Default: '5MHz'
-    vs_stats        List of visstat statistics to use for diagnostic comparison
+    vs_stats
+                    List of visstat statistics to use for diagnostic comparison
                     between the concatenated session MS and individual MSes in
                     that session after applying polarization calibration tables.
+
                     Default: ['min','max','mean']
-    vs_thresh       Threshold to use in diagnostic comparison of visstat
+    vs_thresh
+                    Threshold to use in diagnostic comparison of visstat
                     statistics; relative differences larger than this threshold
                     are reported in the CASA log.
+
                     Default: 1e-3
-    dryrun          Run the commands (True) or generate the commands to be run but do not
-                    execute (False).
-    acceptresults   Add the results of the task to the pipeline context (True) or
-                    reject them (False).
 
     --------- examples -----------------------------------------------------------
 
-
     1. Compute the polarization calibrations:
 
-    hifa_polcal()
+    >>> hifa_polcal()
 
     """
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

@@ -4,38 +4,31 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_hanning(vis=None, dryrun=None, acceptresults=None):
+def hifv_hanning(vis=None):
 
     """
     hifv_hanning ---- Hanning smoothing on a dataset
 
     The hifv_hanning task will hanning smooth a VLA dataset
 
+
+
+    Output:
+
+    results -- The results object for the pipeline task is returned.
+
+
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of visibility data files. These may be ASDMs, tar files of ASDMs,
-                  MSs, or tar files of MSs, If ASDM files are specified, they will be
-                  converted  to MS format.
-                  example: vis=['X227.ms', 'asdms.tar.gz']
-    dryrun        Run the commands (True) or generate the commands to be run but
-                  do not execute (False).  This is a pipeline task execution mode.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
+    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                  specified in the h_init or hifv_importdata task.
 
     --------- examples -----------------------------------------------------------
 
-    
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
-    
+
     1. Run the task to execute hanning smoothing on a VLA CASA pipeline loaded MeasurementSet.
-    
-    hifv_hanning()
+
+    >>> hifv_hanning()
 
 
     """

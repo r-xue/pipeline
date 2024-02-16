@@ -11,7 +11,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
                    nchan=None, start=None, width=None, nbins=None,
                    robust=None, uvtaper=None, clearlist=None, per_eb=None,
                    per_session=None, calcsb=None, datatype=None, datacolumn=None,
-                   parallel=None, dryrun=None, acceptresults=None):
+                   parallel=None):
 
     """
     hif_makeimlist ---- Compute list of clean images to be produced
@@ -19,7 +19,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
 
     Generate a list of images to be cleaned. By default, the list will include
     one image per science target per spw. Calibrator targets can be selected
-    by setting appropriate values for intent.
+    by setting appropriate values for ``intent``.
 
     By default, the output image cell size is set to the minimum cell size
     consistent with the UV coverage.
@@ -64,7 +64,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
 
                   Examples: '0~1000klambda', ['0~100klambda', 100~1000klambda]
     specmode      Frequency imaging mode, 'mfs', 'cont', 'cube', 'repBW'. ''
-                  defaults to 'cube' if intent parameter includes 'TARGET'
+                  defaults to 'cube' if ``intent`` parameter includes 'TARGET'
                   otherwise 'mfs'.
 
                   specmode='mfs' produce one image per source and spw
@@ -129,7 +129,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
     datatype      Data type(s) to image. The default '' selects the best
                   available data type (e.g. selfcal over regcal) with
                   an automatic fallback to the next available data type.
-                  With the data type parameter one can force the use of only
+                  With the ``datatype`` parameter one can force the use of only
                   given data type(s) without a fallback. The data type(s) are
                   specified as comma separated string of keywords. Accepted
                   values are the standard data types such as
@@ -137,7 +137,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
                   'SELFCAL_CONTLINE_SCIENCE', 'REGCAL_LINE_SCIENCE',
                   'SELFCAL_LINE_SCIENCE'. The shortcuts 'regcal' and 'selfcal'
                   are also accepted. They are expanded into the full data types
-                  using the specmode parameter and the available data types for
+                  using the ``specmode`` parameter and the available data types for
                   the given MSes. In addition the strings 'best' and 'all' are
                   accepted, where 'best' means the above mentioned automatic
                   mode and 'all' means all available data types for a given
@@ -148,9 +148,6 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
     datacolumn    Data column to image. Only to be used for manual overriding
                   when the automatic choice by data type is not appropriate.
     parallel      Use MPI cluster where possible
-    dryrun        Run the task (False) or just display the command (True)
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 
@@ -158,17 +155,17 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
     1. Make a list of science target images to be cleaned, one image per science
     spw.
 
-    hif_makeimlist()
+    >>> hif_makeimlist()
 
     2. Make a list of PHASE and BANDPASS calibrator targets to be imaged,
     one image per science spw.
 
-    hif_makeimlist(intent='PHASE,BANDPASS')
+    >>> hif_makeimlist(intent='PHASE,BANDPASS')
 
     3. Make a list of PHASE calibrator images observed in spw 1, images limited to
     50 pixels on a side.
 
-    hif_makeimlist(intent='PHASE',spw='1',calmaxpix=50)
+    >>> hif_makeimlist(intent='PHASE',spw='1',calmaxpix=50)
 
 
     """

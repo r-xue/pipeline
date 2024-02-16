@@ -4,48 +4,28 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_fixpointing(vis=None, dryrun=None, acceptresults=None):
+def hifv_fixpointing(vis=None):
 
     """
     hifv_fixpointing ---- Base fixpointing task
 
+    The hifv_fixpointing task
+
+    Output:
+
+    results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
-    vis           List of input visibility data
-    dryrun        Run the task (False) or display task command (True)
-    acceptresults Add the results into the pipeline context
+    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
+                  specified in the h_init or hifv_importdata task.
 
     --------- examples -----------------------------------------------------------
 
-    
-    The hifv_fixpointing task
-    
-    Keyword arguments:
 
-    vis -- List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
-    MSs, or tar files of MSs, If ASDM files are specified, they will be
-    converted  to MS format.
-    default: []
-    example: vis=['X227.ms', 'asdms.tar.gz']
-
-    dryrun -- Run the commands (True) or generate the commands to be run but
-                do not execute (False).
-                default: True
-    
-    acceptresults -- Add the results of the task to the pipeline context (True) or
-                reject them (False).
-                default: True
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    Examples
-    
     1. Basic fixpointing task
-    
-    hifv_fixpointing()
+
+    >>> hifv_fixpointing()
 
 
     """
