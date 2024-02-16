@@ -15,6 +15,7 @@ from . import casa_tools
 from . import exceptions
 from . import project
 from . import utils
+from .. import cli
 from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getPprObject
 
 
@@ -37,11 +38,6 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
             'summary'
         interactive: If True, print pipeline log to STDOUT.
     """
-    # TODO: This line is TBD.
-    # Currently cli module is imported here to avoid circular imports.
-    # Another option would be to move executevlappr to upper directory
-    # (just like recipereducer).
-    from .. import cli
 
     # Useful mode parameters
     echo_to_screen = interactive
