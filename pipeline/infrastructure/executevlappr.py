@@ -38,7 +38,6 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
             'summary'
         interactive: If True, print pipeline log to STDOUT.
     """
-
     # Useful mode parameters
     echo_to_screen = interactive
     workingDir = None
