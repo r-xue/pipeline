@@ -1,13 +1,13 @@
 import re
 import numpy as np
 
+from typing import List, Union, Optional
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 import pipeline.domain.measures as measures
 from pipeline.infrastructure import casa_tools
 from .imageparams_base import ImageParamsHeuristics
-
-from typing import Optional
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -505,3 +505,20 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             LOG.attentation('Reference frequency calculation led to zero denominator.')
             return None
+
+    def arrays(self, vislist: Optional[List[str]] = None):
+
+        """Return the array descriptions."""
+
+        if vislist is None:
+            local_vislist = self.vislist
+        else:
+            local_vislist = vislist
+
+        antenna_diameters = self.antenna_diameters(local_vislist)
+        array_descs = []
+        if 12.0 in antenna_diameters:
+            array_descs.append('12m')
+        if 7.0 in antenna_diameters:
+            array_descs.append('7m')
+        return ''.join(array_descs)
