@@ -147,14 +147,15 @@ class VLARestoreData(restoredata.RestoreData):
                 tar.extractall(path=inputs.output_dir)
 
             # Restore final flags version using flagmanager
-            try_index = 0
+            try_version = None
             for flagname in try_flag_version_names:
-                if not os.path.exists(os.path.join(flagversionpath, 'flags.{}'.format(flagname))):
-                    try_index += 1
-            LOG.info('Restoring final flags for %s from flag version %s' % (ms.basename, try_flag_version_names[try_index]))
+                if os.path.exists(os.path.join(flagversionpath, 'flags.{}'.format(flagname))):
+                    try_version = flagname
+                    break
+            LOG.info('Restoring final flags for %s from flag version %s' % (ms.basename, try_version))
             task = casa_tasks.flagmanager(vis=ms.name,
                                           mode='restore',
-                                          versionname=try_flag_version_names[try_index])
+                                          versionname=try_version)
             try:
                 self._executor.execute(task)
             except Exception:
