@@ -113,7 +113,7 @@ def detect_contamination(context: 'Context',
     masked_average_spectrum = np.nanmean(np.where(mask_map > 0.5, cube_regrid, np.nan), axis=(1, 2))
 
     # Generate the contamination report figures
-    _make_figures(peak_sn_map, mask_map, rms_map, masked_average_spectrum,
+    _make_figures(image_obj, peak_sn_map, mask_map, rms_map, masked_average_spectrum,
                   peak_sn_threshold, spectrum_at_peak, idy, idx, output_name,
                   freq_spec, dir_spec)
 
@@ -187,7 +187,8 @@ def _slice_and_calc_RMS_of_cube_regrid(naxis: NAxis,
     return np.sqrt(stddevsq + meansq)
 
 
-def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
+def _make_figures(image: 'sd_display.SpectralImage',
+                  peak_sn_map: 'sdtyping.NpArray2D',
                   mask_map: 'sdtyping.NpArray2D',
                   rms_map: 'sdtyping.NpArray2D',
                   masked_average_spectrum: 'sdtyping.NpArray1D',
@@ -202,6 +203,7 @@ def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
     Create figures to visualize contamination.
 
     Args:
+        image (SpectralImage): The image object.
         peak_sn_map (NpArray2D): Array of the peak S/N.
         mask_map (NpArray2D): Array of the mask map.
         rms_map (NpArray2D): Array of the RMS map.
@@ -217,22 +219,26 @@ def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
     # Initialize the figure with a specified size
     _figure = figure.Figure(figsize=(20, 5))
     _grid = gridspec.GridSpec( 1, 3, width_ratios=[1,1,1])
+    
+    # Set width spacing value of each grids. (default to 0.2)
     _grid.update(wspace=0.3)
     
-    # calculate the plot-colorbar width ratio if shape of the plot is landscape
-    # default to plot:colorbar = 20:1
-    if idx > idy:
-        _width_ratio = [int(20 * (idx/idy)**0.3), 1]
+    # Calculate the plot-colorbar width scaling factor if shape of the plot is landscape
+    if image.nx > image.ny:
+        _factor = (image.nx/image.ny)**0.3
     else:
-        _width_ratio = [20, 1]
+        _factor = 1.0
+    _width_ratio = [int(20 * _factor), 1]
+    _wspace = 0.3 / _factor
 
     # Create subplots(Axes) for peak S/N map, mask map, and masked averaged spectrum
+
     peak_sn_plot, peak_sn_colorbar = \
         map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=_width_ratio,
-                                                                  subplot_spec=_grid[0]))
+                                                                  subplot_spec=_grid[0], wspace=_wspace))
     mask_map_plot, mask_map_colorbar = \
         map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=_width_ratio,
-                                                                  subplot_spec=_grid[1]))
+                                                                  subplot_spec=_grid[1], wspace=_wspace))
     masked_avg_sp_plot = _figure.add_subplot(_grid[2])
     kw = {}
 
