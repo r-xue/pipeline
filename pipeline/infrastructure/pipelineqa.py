@@ -198,7 +198,13 @@ class QAScorePool(object):
 
         # maybe have different algorithms here. for now just return the
         # QAScore with minimum score
-        return min(self.pool, key=operator.attrgetter('score'))
+        numerical_scores = [score_obj for score_obj in self.pool if score_obj.score is not None]
+        if numerical_scores:
+            return min(numerical_scores, key=operator.attrgetter('score'))
+        else:
+            # Only None scores. Cannot select a representative one, so
+            # just return the first in the list.
+            return self.pool[0]
 
     @representative.setter
     def representative(self, value):
