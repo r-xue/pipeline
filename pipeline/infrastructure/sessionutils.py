@@ -375,6 +375,13 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
         assessed = []
 
         vis_list = as_list(inputs.vis)
+
+        # PIPE-2114: always execute per-EB tasks from the MPI client for one-EB data processing job.
+        if len(vis_list) == 1:
+            LOG.debug('Only a single EB is detected in the input vis list; switch to parallel=False '
+                      'to execute the task on the MPIclient.')
+            inputs.parallel = False
+
         with VDPTaskFactory(inputs, self._executor, self.Task) as factory:
             task_queue = [(vis, factory.get_task(vis)) for vis in vis_list]
 
