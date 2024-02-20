@@ -405,7 +405,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
         rastergapdict[key] = idx_list
 
         # compute number of data per raster map
-        # result is consolicated per field and spectralspec (PIPE-1990)
+        # result is consolidated per field and spectralspec (PIPE-1990)
         field_id = key[0]
         spw_id = key[1]
         spectralspec = str(ms.get_spectral_window(spw_id).spectralspec)
