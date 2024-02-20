@@ -406,8 +406,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet') -> List[int]
 
         # compute number of data per raster map
         # result is consolidated per field and spectralspec (PIPE-1990)
-        field_id = key[0]
-        spw_id = key[1]
+        field_id, spw_id, _ = key
         spectralspec = str(ms.get_spectral_window(spw_id).spectralspec)
         result_key = (field_id, spectralspec)
         ndmapdict.setdefault(result_key, []).extend(list(map(len, idx_list)))
