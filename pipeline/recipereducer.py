@@ -126,14 +126,17 @@ def _get_tasks(context, args, procedure):
 
         task_args = {}
 
-        if cli_command in ['hif_importdata',
+        if cli_command in ['h_importdata',
+                           'hif_importdata',
                            'hifa_importdata',
                            'hifv_importdata',
+                           'hsd_importdata',
+                           'hsdn_importdata',
+                           'h_restoredata',
                            'hif_restoredata',
                            'hifa_restoredata',
-                           'hsd_restoredata',
-                           'hsd_importdata',
-                           'hsdn_importdata']:
+                           'hifv_restoredata',
+                           'hsd_restoredata']:
             task_args['vis'] = args.vis
             # we might override this later with the procedure definition
             task_args['session'] = args.session
