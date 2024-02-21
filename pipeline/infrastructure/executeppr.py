@@ -202,7 +202,8 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
     import_tasks = ('h_importdata', 'hifa_importdata', 'hifv_importdata',
                     'hsd_importdata', 'hsdn_importdata')
     restore_tasks = ('h_restoredata', 'hifa_restoredata', 'hifv_restoredata',
-                     'hsd_restoredata', 'hsdn_restoredata')
+                     'hsd_restoredata')
+    restore_tasks_no_session = ('hsdn_restoredata')
 
     # Loop over the commands
     errstr = ''
@@ -254,6 +255,8 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
             if pipeline_task_name in import_tasks or pipeline_task_name in restore_tasks:
                 task_args['vis'] = files
                 task_args['session'] = sessions
+            elif pipeline_task_name in restore_tasks_no_session:
+                task_args['vis'] = files
 
             results = pipeline_task(**task_args)
             casa_tools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
