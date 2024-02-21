@@ -174,9 +174,9 @@ def _format_arg_value(arg_val):
     return '%s=%r' % (arg, val)
 
 
-def _as_task_call(task_class, task_args):
+def _as_task_call(task_func, task_args):
     kw_args = list(map(_format_arg_value, task_args.items()))
-    return '%s(%s)' % (task_class.__name__, ', '.join(kw_args))
+    return '%s(%s)' % (task_func.__name__, ', '.join(kw_args))
 
 
 def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
@@ -216,7 +216,8 @@ def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
             except Exception as ex:
                 # Log message if an exception occurred that was not handled by
                 # standardtask template (not turned into failed task result).
-                LOG.error('Unhandled error in recipereducer while running pipeline task %s.' % task._hif_call)
+                _hif_call = _as_task_call(task, task_args)
+                LOG.error('Unhandled error in recipereducer while running pipeline task %s.' % _hif_call)
                 traceback.print_exc()
                 return context
 
