@@ -27,6 +27,7 @@ class UVcontSubInputs(vdp.StandardInputs):
     fitorder = vdp.VisDependentProperty(default={})
     intent = vdp.VisDependentProperty(default='TARGET')
     field = vdp.VisDependentProperty(default='')
+    spw = vdp.VisDependentProperty(default='')
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     def __init__(self, context, output_dir=None, vis=None, field=None,
