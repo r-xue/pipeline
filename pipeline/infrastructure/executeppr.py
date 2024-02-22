@@ -203,7 +203,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
                     'hsd_importdata', 'hsdn_importdata')
     restore_tasks = ('h_restoredata', 'hifa_restoredata', 'hifv_restoredata',
                      'hsd_restoredata')
-    restore_tasks_no_session = ('hsdn_restoredata')
+    restore_tasks_no_session = ('hsdn_restoredata',)
 
     # Loop over the commands
     errstr = ''
