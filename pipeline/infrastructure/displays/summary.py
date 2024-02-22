@@ -1165,7 +1165,6 @@ class SpwIdVsFreqChart(object):
         atm_color = 'm'
 
         # plot spws
-        all_spwid_list = []
         indices = [-1]
         xmin, xmax = np.inf, -np.inf
 
@@ -1178,47 +1177,42 @@ class SpwIdVsFreqChart(object):
         for spw in scan_spws:
             dict_spwid_bw[spw.id] = float(spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
             dict_spwid_fmin[spw.id] = float(spw.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
+        bw_list = []
+        fmin_list = []
         for spwid_list in spw_list_generator:
             bw_list = [dict_spwid_bw[id] for id in spwid_list]
             fmin_list = [dict_spwid_fmin[id] for id in spwid_list]
-            spwdb = {'spwid': spwid_list, 'bw': bw_list, 'fmin': fmin_list}
-#            spwdb = self._extract_spwdata(spw_list_generator)
-#        return
-            all_spwid_list.extend(spwdb['spwid'])  # to be used later
             start = indices[-1] + 1
-            indices = list(range(start, start+len(spwdb['bw'])))
+            indices = list(range(start, start+len(bw_list)))
 
-            # draw bars
-            ax_spw.barh(indices, spwdb['bw'], height=bar_height, left=spwdb['fmin'])
+            # 1. draw bars
+            ax_spw.barh(indices, bw_list, height=bar_height, left=fmin_list)
 
-            # Frequency vs. ATM transmission
+            # 2. annotate each bars
+            for idx, (index, spwid, bw, fmin) in enumerate(zip(indices, spwid_list, bw_list, fmin_list)):
+                xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
+                if len(list(scan_spws)) <= max_spws_to_annotate or idx in [0, len(indices) - 1]:
+                    ax_spw.annotate(str(spwid), (fmin + bw/2, index - bar_height/2), fontsize=14, ha='left', va='bottom')
+
+            # 3. Frequency vs. ATM transmission
             for spwid in spwid_list:
                 atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
                 ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=4, linestyle='-')
-
-            # annotate each bars
-            for idx, (index, spwid, bw, fmin) in enumerate(zip(indices, spwdb['spwid'], spwdb['bw'], spwdb['fmin'])):
-                xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)   # to be used for set_xlim() later
-                if len(indices) <= max_spws_to_annotate or idx in [0, len(indices) - 1]:
-                    ax_spw.annotate(str(spwid), (fmin + bw/2, index - bar_height/2),
-                                     fontsize=14, ha='center', va='bottom')
-
-#        xmin = min(fmin_list_all)-(max(fmin_list_all)-min(fmin_list_all))/15  ## should be improved
-#        ax_spw.set_xlim(xmin)
+        ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
-        totalnum = len(all_spwid_list)
-#        totalnum = sum(map(lambda x: len(x['spwid']), spwdb))
-        ax_spw.set_ylim(float(totalnum), -1.0)
+        ax_spw.set_ylim(len(scan_spws), -1.0)
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
         ax_spw.grid(axis='x')
         ax_spw.tick_params(labelsize=13)
         ax_spw.set_yticks([])
+
         ax_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
         ax_atm.set_ylim(0, 1.05)
         ax_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
         ax_atm.yaxis.set_major_formatter(ticker.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
         ax_atm.yaxis.tick_right()
+
         fig.savefig(filename)
         return self._get_plot_object()
 

@@ -5,11 +5,21 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
-               infiles=None, antenna=None, field=None, spw=None, pol=None,
-               dryrun=None, acceptresults=None):
+               infiles=None, antenna=None, field=None, spw=None, pol=None):
 
     """
     hsd_atmcor ---- Apply offline ATM correction to the data.
+
+    The hsd_atmcor task provides the capability of offline correction of
+    residual atmospheric features in the calibrated single-dish spectra
+    originated from incomplete calibration mainly due to a difference of
+    elevation angles between ON_SOURCE and OFF_SOURCE measurements.
+
+    Optimal atmospheric model is automatically determined by default
+    (atmtype = 'auto'). You may specify desired atmospheric model by giving
+    either single integer (apply to all EBs) or a list of integers (models
+    per EB) to atmtype parameter. Please see parameter description for the
+    meanings of integer values.
 
     --------- parameter descriptions ---------------------------------------------
 
@@ -29,7 +39,7 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
                   when 'auto' is provided. List input should not contain 'auto'.
 
                   Default: 'auto'
-    dtem_dh       temperature gradient [K/km], e.g. -5.6. ("" = Tool default)
+    dtem_dh       Temperature gradient [K/km], e.g. -5.6. ("" = Tool default)
 
                   The value is directly passed to initialization method for ATM model.
                   Float and string types are acceptable. Float value is interpreted as
@@ -38,7 +48,7 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
                   trigger heuristics to choose best model from the provided value.
 
                   Default: '' (tool default, -5.6K/km, is used)
-    h0            scale height for water [km], e.g. 2.0. ("" = Tool default)
+    h0            Scale height for water [km], e.g. 2.0. ("" = Tool default)
 
                   The value is directly passed to initialization method for ATM model.
                   Float and string types are acceptable. Float value is interpreted as
@@ -56,7 +66,7 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
                   example: 'PM03,PM04'
                            '' (all antennas)
     field         Data selection by field names or ids.
-                  example: '*Sgr*,M100'
+                  example: '`*Sgr*,M100`'
                            '' (all fields)
     spw           Data selection by spw ids.
                   example: '3,4' (spw 3 and 4)
@@ -64,15 +74,20 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
     pol           Data selection by polarizations.
                   example: 'XX,YY' (correlation XX and YY)
                            '' (all polarizations)
-    dryrun        Run the commands (True) or generate the commands to be
-                  run but do not execute (False).
-    acceptresults Add the results of the task to the pipeline context (True)
-                  or reject them (False).
 
     --------- examples -----------------------------------------------------------
 
+    1. Basic usage
 
+    >>> hsd_atmcor()
 
+    2. Specify atmospheric model and data selection
+
+    >>> hsd_atmcor(atmtype=1, antenna='PM03,PM04', field='*Sgr*,M100')
+
+    3. Specify atmospheric model per EB (atmtype 1 for 1st EB, 2 for 2nd EB)
+
+    >>> hsd_atmcor(atmtype=[1, 2])
 
     """
 

@@ -4,18 +4,17 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_targetflag(vis=None, dryrun=None, acceptresults=None):
-
+def hifa_targetflag(vis=None):
     """
     hifa_targetflag ---- Flag target source outliers
 
-    
+
     This task flags very obvious target source outliers. The calibration tables and
     flags accumulated in the cal library up to this point are pre-applied, then
     hif_correctedampflag is called for just the TARGET intent. Any resulting
     flags are applied and the calibration library is restored to the state before
     calling this task.
-    
+
     Because science targets are generally not point sources, the flagging algorithm
     needs to be more clever than for point source calibrators. The algorithm identifies
     outliers by examining statistics within successive overlapping radial uv bins,
@@ -28,29 +27,32 @@ def hifa_targetflag(vis=None, dryrun=None, acceptresults=None):
     Also, to avoid confusion in mosaics and single field surveys, the amp vs. uv distance
     plots only show field IDs with new flags.
 
+    Output:
+
+        results -- The results object for the pipeline task is returned.
+
     --------- parameter descriptions ---------------------------------------------
 
-    vis           The list of input MeasurementSets. Defaults to the list of
+    vis
+                  The list of input MeasurementSets. Defaults to the list of
                   MeasurementSets specified in the h_init or hif_importdata task.
                   '': use all MeasurementSets in the context
-                  
+
                   Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    dryrun        Run the task (False) or display task command (True)
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).
 
     --------- examples -----------------------------------------------------------
 
-    
+    1. Run with recommended settings to flag outliers in science target(s):
 
+    >>> hifa_targetflag()
 
     """
-
-
+    ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #
     #                                                                        #
+    ##########################################################################
 
     # create a dictionary containing all the arguments given in the
     # constructor

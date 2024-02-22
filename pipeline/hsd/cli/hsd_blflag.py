@@ -18,8 +18,7 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
                  flag_pofrm=None, pofrm_thresh=None, pofrm_nmean=None,
                  plotflag=None, parallel=None,
                  infiles=None, antenna=None,
-                 field=None, spw=None, pol=None,
-                 dryrun=None, acceptresults=None):
+                 field=None, spw=None, pol=None):
 
     """
     hsd_blflag ---- Flag spectra based on predefined criteria of single dish pipeline
@@ -84,7 +83,7 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
                   example: 'PM03,PM04'
                            '' (all antennas)
     field         Data selection by field names or ids.
-                  example: '*Sgr*,M100'
+                  example: '`*Sgr*,M100`'
                            '' (all fields)
     spw           Data selection by spw ids.
                   example: '3,4' (spw 3 and 4)
@@ -92,15 +91,12 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
     pol           Data selection by polarizations.
                   example: 'XX,YY' (correlation XX and YY)
                            '' (all polarizations)
-    dryrun        Run the commands (True) or generate the commands to be
-                  run but do not execute (False).
-    acceptresults Add the results of the task to the pipeline context (True)
-                  or reject them (False).
 
     --------- examples -----------------------------------------------------------
 
+    1. flagging with all rules
 
-
+    >>> hsd_blflag()
 
     """
 

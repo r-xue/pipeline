@@ -4,13 +4,12 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifas_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, parallel=None,
-                        dryrun=None, acceptresults=None):
+def hifas_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
 
     """
     hifas_imageprecheck ---- Calculates the best robust value and Briggs weighting parameter to achieve sensitivity and angular resolution goals.
 
-    
+
     In this task, the representative source and the spw containing the
     representative frequency selected by the PI in the OT are used to calculate
     the synthesized beam and to make sensitivity estimates for the aggregate
@@ -21,7 +20,7 @@ def hifas_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, 
     this information available). The best Briggs weighting parameter to achieve
     the PI's desired angular resolution is chosen automatically.
     See the User's guide for further details.
-    
+
     results -- The results object for the pipeline task is returned.
 
     --------- parameter descriptions ---------------------------------------------
@@ -29,21 +28,25 @@ def hifas_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, 
     vis                        The list of input MeasurementSets. Defaults to the list of
                                MeasurementSets specified in the h_init or hif_importdata task.
                                '': use all MeasurementSets in the context
-                               
+
                                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
     desired_angular_resolution User specified angular resolution goal string.
                                '': automatic from performance parameters (default)
-                               
+
                                Example: '1.0arcsec'
     calcsb                     Force (re-)calculation of sensitivities and beams
     parallel                   Use MPI cluster where possible
-    dryrun                     Run the task (False) or just display the command (True)
-    acceptresults              Add the results of the task to the pipeline context (True) or
-                               reject them (False).
 
     --------- examples -----------------------------------------------------------
 
-    
+    1. run with recommended settings to perform checks prior to imaging:
+
+    >>> hifas_imageprecheck()
+
+    2. run to perform checks prior to imaging and force the re-calculation of
+    sensitivities and beams:
+
+    >>> hifas_imageprecheck(calcsb=True)
 
 
     """
