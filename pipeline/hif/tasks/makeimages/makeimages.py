@@ -464,7 +464,7 @@ def _get_description_map(intent):
             'mfs': 'Make polarization calibrator images',
             'cont': 'Make polarization calibrator images'
         }
-    elif intent in ('DIFFGAIN'):
+    elif intent == 'DIFFGAIN':
         return {
             'mfs': 'Make diffgain calibrator images',
             'cont': 'Make diffgain calibrator images'
