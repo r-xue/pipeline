@@ -254,42 +254,47 @@ finally:
 
         # Define the versions list file to be saved
         flag_version_list = os.path.join(visname + '.flagversions', 'FLAG_VERSION_LIST')
-        ti = tarfile.TarInfo(flag_version_list)
+        tar_info = tarfile.TarInfo(flag_version_list)
         LOG.info('Saving flag version list')
 
         # retrieve all flagversions saved
         flag_dict = flagmanager(vis=visname, mode='list')
-        flag_keys = [y['name'] for y in flag_dict.values() if type(y) == dict]
+        if 'MS' in flag_dict.keys():
+            del flag_dict['MS']
+        flag_keys = [y['name'] for y in flag_dict.values()]
+
+        export_final_flags_dict = dict()
+        if flag_version_name in flag_keys:
+            flag_comment = [y for y in flag_dict.values() if y['name'] == flag_version_name][0]['comment']
+            export_final_flags_dict[flag_version_name] = flag_comment
 
         # rename flagversions to make them more deterministic
-        export_final_flags_dict = dict()
-        flag_version_dict = [y for y in flag_dict.values() if type(y) == dict and y['name'] == flag_version_name]
-        if flag_version_name in flag_keys:
-            export_final_flags_dict[flag_version_name] = flag_version_dict[0]['comment']
-
-        applycal_flags = sorted([y for y in flag_dict.values() if type(y) == dict and 'applycal' in y['name']],
-                                key=lambda x: x['name'])
         if 'Applycal_Final' not in flag_keys:
+            applycal_flags = sorted([y for y in flag_dict.values() if 'applycal' in y['name']],
+                                    key=lambda x: x['name'])
             if applycal_flags:
                 export_final_flags_dict['Applycal_Final'] = applycal_flags[-1]['comment']
-                task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=applycal_flags[-1]['name'], versionname='Applycal_Final',
-                                            comment=applycal_flags[-1]['comment'])
+                task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=applycal_flags[-1]['name'],
+                                              versionname='Applycal_Final', comment=applycal_flags[-1]['comment'])
                 self._executor.execute(task)
         else:
-            export_final_flags_dict['Applycal_Final'] = [y for y in flag_dict.values() if type(y) == dict and y['name'] == 'Applycal_Final'][0]
+            applycal_comment = [y for y in flag_dict.values() if y['name'] == 'Applycal_Final'][0]['comment']
+            export_final_flags_dict['Applycal_Final'] = applycal_comment
 
-        target_RFI_key = [y for y in flag_dict.values() if type(y) == dict and 'hifv_checkflag_target-vla' in y['name']]
         if 'hifv_checkflag_target-vla' not in flag_keys:
+            target_RFI_key = [y for y in flag_dict.values() if 'hifv_checkflag_target-vla' in y['name']]
             if target_RFI_key:
                 export_final_flags_dict['hifv_checkflag_target-vla'] = target_RFI_key[-1]['comment']
-                task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=target_RFI_key[-1]['name'], versionname='hifv_checkflag_target-vla',
-                                            comment=target_RFI_key[-1]['comment'])
+                task = casa_tasks.flagmanager(vis=vis, mode='rename', oldname=target_RFI_key[-1]['name'],
+                                              versionname='hifv_checkflag_target-vla', comment=target_RFI_key[-1]['comment'])
                 self._executor.execute(task)
         else:
-            export_final_flags_dict['hifv_checkflag_target-vla'] = [y for y in flag_dict.values() if type(y) == dict and y['name'] == 'hifv_checkflag_target-vla'][0]
+            hifv_comment = [y for y in flag_dict.values() if y['name'] == 'hifv_checkflag_target-vla'][0]['comment']
+            export_final_flags_dict['hifv_checkflag_target-vla'] = hifv_comment
 
         if 'statwt_1' in flag_keys: 
-            export_final_flags_dict['statwt_1'] = [y for y in flag_dict.values() if type(y) == dict and y['name'] == 'statwt_1'][0]
+            statwt_comment = [y for y in flag_dict.values() if y['name'] == 'statwt_1'][0]['comment']
+            export_final_flags_dict['statwt_1'] = statwt_comment
 
         # recreate tar file
         line = ""
@@ -302,8 +307,8 @@ finally:
             line += "{} : {}\n".format(flag_version, flag_version_comment)
 
         line = line.encode(sys.stdout.encoding)
-        ti.size = len(line)
-        tar.addfile(ti, io.BytesIO(line))
+        tar_info.size = len(line)
+        tar.addfile(tar_info, io.BytesIO(line))
         tar.close()
 
         return tarfilename
