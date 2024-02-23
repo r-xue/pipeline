@@ -131,9 +131,6 @@ class EditimlistInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def field(self):
-        if 'ALMA' in self.imaging_mode:
-            if 'field' in self.context.size_mitigation_parameters:
-                return self.context.size_mitigation_parameters['field']
         # mutable object, so should not use VisDependentProperty(default=[])
         return []
 
