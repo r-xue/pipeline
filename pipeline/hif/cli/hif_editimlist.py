@@ -44,10 +44,7 @@ def hif_editimlist(imagename=None,
                    uvtaper=None,
                    uvrange=None,
                    width=None,
-                   vlass_plane_reject_ms=None,
-                   dryrun=None,
-                   acceptresults=None):
-
+                   vlass_plane_reject_ms=None):
     """
     hif_editimlist ---- Add to a list of images to be produced with hif_makeimages()
 

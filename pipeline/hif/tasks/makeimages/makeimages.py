@@ -8,7 +8,7 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.pipelineqa as pqa
+
 from pipeline.domain import DataType
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.infrastructure import casa_tools, exceptions, task_registry
