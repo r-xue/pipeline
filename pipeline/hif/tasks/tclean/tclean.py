@@ -1385,6 +1385,7 @@ class Tclean(cleanbase.CleanBase):
                                                   phasecenter=inputs.phasecenter,
                                                   stokes=inputs.stokes,
                                                   nchan=inputs.nchan,
+                                                  nbin=inputs.nbin,
                                                   start=inputs.start,
                                                   width=inputs.width,
                                                   weighting=inputs.weighting,
