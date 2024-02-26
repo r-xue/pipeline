@@ -460,7 +460,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         largest_primary_beam = th.largest_primary_beam_size(spwspec=imlist_entry['spw'], intent='TARGET')
         fieldids = th.field('TARGET', fieldnames)
 
-        # Fail if there is no field to image. This can occur if a mitigated field was specified as input.
+        # Fail if there is no field to image. This could occur if a field is requested that is not in the MS.
         # th.field will return [''] if no fields were found in the MS that match any input fields and intents
         if fieldids[0] == '':
             msg = "Field(s): {} not present in MS: {}".format(','.join(fieldnames), ms.name)

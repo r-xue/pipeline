@@ -169,7 +169,7 @@ class CheckProductSize(basetask.StandardTaskTemplate):
                                             {}, \
                                             'ERROR', \
                                             {'longmsg': 'Parameter error: maxproductsize must be > maxcubelimit', 'shortmsg': 'Parameter error'}, \
-                                            None) # Needed to update or print out will fail b/c -1 isn't a dict.
+                                            None)
             # Log summary information
             LOG.info(str(result))
             return result
