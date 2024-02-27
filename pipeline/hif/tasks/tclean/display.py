@@ -278,6 +278,7 @@ class TcleanMajorCycleSummaryFigure(object):
                 # scatter plot
                 pol_colors = ['gray', 'blue', 'green', 'red']
                 pol_markers = ['+', '<', '>', 'o']
+                pol_edgecolors = [None, 'black', 'black', 'black']
                 pol_alphas = [1, 0.3, 0.3, 0.3]
                 pol_id_arr = item['planeid_array']
                 for pol_id in np.unique(pol_id_arr):
@@ -285,11 +286,11 @@ class TcleanMajorCycleSummaryFigure(object):
                     pid = int(pol_id)
                     ax0_pol_idx = np.where((pol_id_arr == pol_id) & (ax0_y != 0))
                     if ax0_pol_idx[0].size > 0:
-                        ax0.scatter(x[ax0_pol_idx], np.abs(ax0_y[ax0_pol_idx]), label=self.pol_labels[pid], edgecolors='black',
+                        ax0.scatter(x[ax0_pol_idx], np.abs(ax0_y[ax0_pol_idx]), label=self.pol_labels[pid], edgecolors=pol_edgecolors[pid],
                                     alpha=pol_alphas[pid], color=pol_colors[pid], marker=pol_markers[pid])
                     ax1_pol_idx = np.where((pol_id_arr == pol_id) & (ax1_y != 0))
                     if ax1_pol_idx[0].size > 0:
-                        ax1.scatter(x[ax1_pol_idx], np.abs(ax1_y[ax1_pol_idx]), label=self.pol_labels[pid], edgecolors='black',
+                        ax1.scatter(x[ax1_pol_idx], np.abs(ax1_y[ax1_pol_idx]), label=self.pol_labels[pid], edgecolors=pol_edgecolors[pid],
                                     alpha=pol_alphas[pid], color=pol_colors[pid], marker=pol_markers[pid])
 
                 # Vertical line and annotation at major cycle end
