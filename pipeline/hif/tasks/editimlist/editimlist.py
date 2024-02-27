@@ -220,22 +220,6 @@ class EditimlistInputs(vdp.StandardInputs):
         self.clean_no_mask_selfcal_image = clean_no_mask_selfcal_image
         self.cycleniter_final_image_nomask = cycleniter_final_image_nomask
 
-        keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datatype', 'datacolumn', 'deconvolver', 'imsize',
-                            'phasecenter', 'specmode', 'gridder', 'imagename', 'scales', 'cfcache',
-                            'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
-                            'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'mask',
-                            'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
-                            'editmode', 'nsigma', 'pblimit',
-                            'sensitivity', 'conjbeams', 'clean_no_mask_selfcal_image', 'cycleniter_final_image_nomask')
-
-        self.keys_to_change = []
-        keydict = self.as_dict()
-        for key in keys_to_consider:
-            # print key, eval(key)
-            if keydict[key] is not None:
-                self.keys_to_change.append(key)
-
-
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
 #api.ImagingMeasurementSetsPreferred.register(EditimlistInputs)
@@ -278,7 +262,6 @@ class Editimlist(basetask.StandardTaskTemplate):
                         # use this information to change the values in inputs
                         LOG.debug("Setting inputdict['{k}'] to {v} {t}".format(k=parameter, v=value, t=type(value)))
                         inpdict[parameter] = value
-                        inp.keys_to_change.append(parameter) # Is this used anywhere?
             else:
                 LOG.error('Input parameter file is not readable: {fname}'.format(fname=inp.parameter_file))
 
