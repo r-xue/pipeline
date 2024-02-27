@@ -259,6 +259,9 @@ finally:
 
         # retrieve all flagversions saved
         flag_dict = flagmanager(vis=visname, mode='list')
+        # remove MS key entry if it exists; MS key does not conform with other entries
+        # more information about flagmanager return dictionary here:
+        # https://casadocs.readthedocs.io/en/stable/api/tt/casatasks.flagging.flagmanager.html#mode
         if 'MS' in flag_dict.keys():
             del flag_dict['MS']
         flag_keys = [y['name'] for y in flag_dict.values()]
