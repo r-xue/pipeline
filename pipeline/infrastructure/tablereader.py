@@ -569,19 +569,25 @@ class SpectralWindowTable(object):
                 baseband = msmd.baseband(i)
 
             ref_freq = msmd.reffreq(i)
-            # Read transitions for target spws. Other spws may cause severe
-            # messages because the target source IDs may not have the spw.
+            
+            # Read transitions for target spws.
+            
+            # PIPE-2124: Missing of the TRANSITION column (e.g. old data) or lack of (sourceid, spwid) entries
+            # in the SOURCE table might cause dubious "SEVERE" messages. Here we temporarily filter out
+            # such messages and replace them with generic messages of missing the transition metadata in the MS subtable.
+            logging.casalog.filterMsg('SOURCE table does not contain a row')
             if i in target_spw_ids:
-                try:  # TRANSITIONS column does not exist in old data
-                    # TODO: Are the transitions of a given spw the same for all
-                    #       target source IDs ?
+                try:
                     transitions = msmd.transitions(sourceid=first_target_source_id, spw=i)
                     if transitions is False:
                         transitions = ['Unknown']
-                except:
+                except RuntimeError as ex:
                     transitions = ['Unknown']
             else:
                 transitions = ['Unknown']
+            logging.casalog.clearFilterMsgList()
+            if transitions == ['Unknown']:
+                LOG.info('No transition info available for SOURCE_ID=%s and SPECTRAL_WINDOW_ID=%s', first_target_source_id, i)
 
             # Create simple name for spectral window if none was provided.
             if spw_name in [None, '']:
