@@ -51,6 +51,9 @@ dependencies:
   - mpi4py
   - certifi
   - protobuf=3.20 # casatplotms requires ver<=3.20 at this moment
+  - python-casacore # if you want a different I/O option.
+  - poppler # required for PL
+  - imagemagick # required for PL
   - pip:
     - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
     - casatools==6.6.1.8
