@@ -1,0 +1,64 @@
+############################################################################
+#
+# setup:
+#
+#   Install Miniforge3: the recommended minimal Conda installer
+#     hhttps://github.com/conda-forge/miniforge
+#
+#   Step-by-step to reproduce the Pipeline/CASA environment
+#     $ git clone https://open-bitbucket.nrao.edu/scm/pipe/pipeline.git --branch PIPE-1669-run-dev-pipeline-with-modular-casa6
+#     $ cd pipeline
+#     $ mamba env create -f pipe1669.yaml
+#
+#   Update:
+#     $ mamba update -n pipe1669 --all
+#     $ mamba env update -f pipe1669.yaml
+#
+#   Remove:
+#     $ mamba env remove -n pipe1669
+#
+# execute:
+#     $ mamba activate pipe1669
+#     $ xvfb-run -a python run_pipeline.py
+#     $ xvfb-run -a mpirun -n 4 python run_pipeline.py
+#
+# workaround of CAS-14037 (may be out-of-date)
+#     put `import casampi.private.start_mpi` into ~/.casa/config.py
+#
+# aliases:
+#     $ export casa_omp_num_threads=8
+#     $ export casa_mpi_nproc=8
+#     $ alias mcasa='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} python -m casashell --nologger --log2term --nogui --agg'
+#     $ alias casampi='PYTHONNOUSERSITE=1 mpirun -n ${casa_mpi_nproc} python -m casashell --nologger --log2term --nogui --agg'
+#
+############################################################################
+
+name: pipe1669
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - conda-ecosystem-user-package-isolation
+  - git
+  - python=3.8
+  - ipython
+  - pip
+  - numpy
+  - matplotlib
+  - scipy
+  - mpi4py
+  - certifi
+  - protobuf=3.20 # casatplotms requires ver<=3.20 at this moment
+  - pip:
+    - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
+    - casatools==6.6.1.8
+    - casatasks==6.6.1.8
+    - casashell==6.6.1.8
+    - casadata
+    - casampi
+    - almatasks
+    - casaplotms
+    - -r requirements.txt
+    - .
