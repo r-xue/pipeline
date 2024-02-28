@@ -16,6 +16,7 @@
 #
 #   Remove:
 #     $ mamba env remove -n pipe1669
+#     $ mamba remove -n pipe1669 mpi4py
 #
 # execute:
 #     $ mamba activate pipe1669
@@ -48,6 +49,7 @@ dependencies:
   - numpy
   - matplotlib
   - scipy
+  - openmpi
   - mpi4py
   - certifi
   - protobuf=3.20 # casatplotms requires ver<=3.20 at this moment
