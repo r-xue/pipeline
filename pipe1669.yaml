@@ -3,7 +3,7 @@
 # setup:
 #
 #   Install Miniforge3: the recommended minimal Conda installer
-#     hhttps://github.com/conda-forge/miniforge
+#     https://github.com/conda-forge/miniforge
 #
 #   Step-by-step to reproduce the Pipeline/CASA environment
 #     $ git clone https://open-bitbucket.nrao.edu/scm/pipe/pipeline.git --branch PIPE-1669-run-dev-pipeline-with-modular-casa6
