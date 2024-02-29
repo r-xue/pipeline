@@ -976,7 +976,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                             'CHECK',
                                             'POLARIZATION',
                                             'POLANGLE',
-                                            'POLLEAKAGE'
+                                            'POLLEAKAGE',
+                                            'DIFFGAIN'
                                             ]:
                                         h_imsize = [min(npix, inputs.calmaxpix) for npix in h_imsize]
                                     imsizes[(field_intent[0], spwspec)] = h_imsize
@@ -1394,6 +1395,8 @@ _DESCRIPTIONS = {
     ('POLANGLE', 'cont'): 'polarization calibrator',
     ('POLLEAKAGE', 'mfs'): 'polarization calibrator',
     ('POLLEAKAGE', 'cont'): 'polarization calibrator',
+    ('DIFFGAIN', 'mfs'): 'diffgain calibrator',
+    ('DIFFGAIN', 'cont'): 'diffgain calibrator',
     ('CHECK', 'mfs'): 'check source',
     ('CHECK', 'cont'): 'check source',
     ('TARGET', 'mfs'): 'target per-spw continuum',
@@ -1409,6 +1412,8 @@ _SIDEBAR_SUFFIX = {
     ('BANDPASS', 'cont'): 'cals',
     ('AMPLITUDE', 'mfs'): 'cals',
     ('AMPLITUDE', 'cont'): 'cals',
+    ('DIFFGAIN', 'mfs'): 'cals',
+    ('DIFFGAIN', 'cont'): 'cals',
     ('POLARIZATION', 'mfs'): 'pol',
     ('POLARIZATION', 'cont'): 'pol',
     ('POLANGLE', 'mfs'): 'pol',
