@@ -33,10 +33,11 @@
 #     $ alias casampi='PYTHONNOUSERSITE=1 mpirun -n ${casa_mpi_nproc} python -m casashell --nologger --log2term --nogui --agg'
 #
 # notes for macOS (including M1):
-#     * An environment variable (SYSTEM_VERSION_COMPAT=0) might be needed 
-#       as the current casatools wheels are built by old macOS SDKs.
-#       * https://github.com/microsoft/onnxruntime/issues/17166#issuecomment-1693938597
-#     * Because the casatools whl is still being built from the x86 platform, the conda 
+#     * An environment variable (SYSTEM_VERSION_COMPAT=0) might be needed here as
+#       py3.8/packaging might be too old for pip to recognize the macOS version label
+#       in the "casatools" wheel tag.
+#       * https://github.com/pypa/packaging/pull/319
+#     * Because the casatools wheels are still being built from the x86 platform, the conda 
 #       install architecture needs to be x86_64 (not the arm64). In addition, the Rosetta 2 
 #       emulation layer is needed for Apple silicon machines.
 #
