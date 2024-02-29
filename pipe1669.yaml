@@ -1,4 +1,4 @@
-############################################################################
+#######################################################################################################################
 #
 # setup:
 #
@@ -18,30 +18,46 @@
 #     $ mamba env remove -n pipe1669
 #     $ mamba remove -n pipe1669 mpi4py
 #
-# execute:
+# General use pattern (but see more details below)
 #     $ mamba activate pipe1669
 #     $ xvfb-run -a python run_pipeline.py
 #     $ xvfb-run -a mpirun -n 4 python run_pipeline.py
 #
-# workaround of CAS-14037 (may be out-of-date)
-#     put `import casampi.private.start_mpi` into ~/.casa/config.py
+# Workaround of CAS-14037 (!!important for casampi runs!!)
 #
-# aliases:
-#     $ export casa_omp_num_threads=8
-#     $ export casa_mpi_nproc=8
-#     $ alias mcasa='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} python -m casashell --nologger --log2term --nogui --agg'
-#     $ alias casampi='PYTHONNOUSERSITE=1 mpirun -n ${casa_mpi_nproc} python -m casashell --nologger --log2term --nogui --agg'
+#     * If you run a parallel CASA session without going through casashell e.g. mpirun -n 4 python run_script.py
+#     you have to put `import casampi.private.start_mpi` at the very beginning of your python script **before** any "import casatasks". Otherwise, it will cause deadlock the first time casatasks gets imported.
+#
+#     * If you run a parallel CASA session with casashell, e.g. mpirun -n 4 python -m casashell -c run_script.py
+#     you need to put `import casampi.private.start_mpi` inside ~/.casa/config.py. Again, failing to do so
+#     will also cause a deadlock when casatasks gets imported for the first time.
+#
+# Useful aliases/shortcuts to emulate monolithic casa executables 
+#
+#     $ mamba activate pipe1669
+#     $ export casa_omp_num_threads=4
+#     $ export casa_mpi_nproc=4
+#
+#     $ alias mpicasa='mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none -x OMP_NUM_THREADS'
+#
+#     $ alias casa6='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} python -m casashell'
+#     $ alias casa6_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} xvfb-run -a python -m casashell'
+#     $ alias casa6mpi='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 mpicasa -n ${casa_mpi_nproc} python -m casashell'
+#     $ alias casa6mpi_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 mpicasa -n ${casa_mpi_nproc} python -m casashell'
 #
 # notes for macOS (including M1):
+#
 #     * An environment variable (SYSTEM_VERSION_COMPAT=0) might be needed here as
 #       py3.8/packaging might be too old for pip to recognize the macOS version label
 #       in the "casatools" wheel tag.
 #       * https://github.com/pypa/packaging/pull/319
-#     * Because the casatools wheels are still being built from the x86 platform, the conda 
-#       install architecture needs to be x86_64 (not the arm64). In addition, the Rosetta 2 
-#       emulation layer is needed for Apple silicon machines.
 #
-############################################################################
+#     * Because the casatools wheels are still being built from the x86 platform, the Conda 
+#       install architecture needs to be "x86_64" (not "arm64 (Apple Silicon)"). 
+#           https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge3
+#       In addition, the Rosetta 2 emulation layer is needed for Apple silicon machines.
+#
+#######################################################################################################################
 
 name: pipe1669
 
@@ -62,7 +78,7 @@ dependencies:
   - mpi4py
   - certifi
   - protobuf=3.20 # casatplotms requires ver<=3.20 at this moment
-  - python-casacore # if you want a different I/O option.
+  # - python-casacore # if you want a different I/O option.
   - poppler # required for PL
   - imagemagick # required for PL
   - pip:
