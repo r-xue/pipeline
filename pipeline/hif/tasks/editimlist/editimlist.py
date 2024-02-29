@@ -429,7 +429,7 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                         uvtaper=imlist_entry['uvtaper'],
                                                         pixperbeam=ppb,
                                                         known_beams=inp.context.synthesized_beams,
-                                                        force_calc=False)
+                                                        force_calc=False, shift=True)
         else:
             synthesized_beam = None
 
@@ -473,13 +473,17 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['width'] = inpdict['width']
 
         # for VLASS phasecenter is required user input (not determined by heuristics)
-        if not inpdict['phasecenter']:
+        if inpdict['phasecenter']:
+            imlist_entry['phasecenter'] = inpdict['phasecenter']
+            imlist_entry['psf_phasecenter'] = inpdict['phasecenter']
+        else:
             if fieldids[0] != '':
-                imlist_entry['phasecenter'] = th.phasecenter(fieldids)
+                phasecenter, psf_phasecenter = th.phasecenter(fieldids)
+                imlist_entry['phasecenter'] = phasecenter
+                imlist_entry['psf_phasecenter'] = psf_phasecenter
             else:
                 imlist_entry['phasecenter'] = None
-        else:
-            inpdict['phasecenter']
+                imlist_entry['psf_phasecenter'] = None
 
         # set the field name list in the image list target
         if fieldnames:
