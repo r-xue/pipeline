@@ -599,6 +599,11 @@ def _get_description_map(intent):
             'mfs': 'Make polarization calibrator images',
             'cont': 'Make polarization calibrator images'
         }
+    elif intent == 'DIFFGAIN':
+        return {
+            'mfs': 'Make diffgain calibrator images',
+            'cont': 'Make diffgain calibrator images'
+        }
     elif intent == 'CHECK':
         return {
             'mfs': 'Make check source images',
@@ -616,7 +621,7 @@ def _get_description_map(intent):
         return {}
 
 def _get_sidebar_map(intent):
-    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE'):
+    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'DIFFGAIN'):
         return {
             'mfs': 'cals',
             'cont': 'cals'

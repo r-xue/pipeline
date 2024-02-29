@@ -96,6 +96,8 @@ class TcleanResult(basetask.Results):
         self.bl_ratio = None
         # Polarization calibrator fit result
         self.polcal_fit = None
+        # Flag to indicate usage of psfphasecenter parameter
+        self.used_psfphasecenter = False
         self.imaging_metadata = {}
 
     def merge_with_context(self, context):

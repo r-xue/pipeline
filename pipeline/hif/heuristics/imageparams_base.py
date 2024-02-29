@@ -501,8 +501,12 @@ class ImageParamsHeuristics(object):
                         if self.is_eph_obj(field):
                             phasecenter = 'TRACKFIELD'
                         else:
-                            phasecenter = self.phasecenter(field_ids, vislist=valid_vis_list, shift_to_nearest_field=shift,
-                                                           primary_beam=largest_primary_beam_size, intent=intent)
+                            # Note that the local phasecenter variable is intentionally set to the
+                            # second return parameter which is psf_phasecenter. In case "shift" is
+                            # True this may be a different coordinate of the mosaic pointing closest
+                            # to the original phase center value.
+                            _, phasecenter = self.phasecenter(field_ids, vislist=valid_vis_list, shift_to_nearest_field=shift,
+                                                              primary_beam=largest_primary_beam_size, intent=intent)
                         do_parallel = mpihelpers.parse_mpi_input_parameter(parallel)
                         paramList = ImagerParameters(msname=valid_vis_list,
                                                      scan=valid_scanids_list,
@@ -806,8 +810,10 @@ class ImageParamsHeuristics(object):
 
         center = cme.direction(ref, m0, m1)
         phase_center = '%s %s %s' % (ref, m0, m1)
+        psf_phase_center = phase_center
 
-        # if the image center is outside of the mosaic pointings, shift to the nearest field
+        # If the image center is outside of the mosaic pointings, calculate a PSF phase center
+        # pointing to the nearest field. Both the actual and the PSF phase centers are returned.
         if shift_to_nearest_field:
             nearest_field_to_center = self.center_field_ids(vislist, field_names[0], intent, phase_center)[0]
             ms = self.observing_run.get_ms(name=vislist[0])
@@ -816,7 +822,7 @@ class ImageParamsHeuristics(object):
                 pb_dist = 0.408
                 if cqa.getvalue(cqa.convert(cme.separation(center, nearest), 'arcsec'))[0] > pb_dist * primary_beam:
                     LOG.info('The nearest pointing is > {pb_dist}pb away from image center.  '
-                             'Shifting the phase center to the '
+                             'Shifting the PSF phase center to the '
                              'nearest field (id = {nf})'.format(pb_dist=pb_dist, nf=nearest_field_to_center))
                     LOG.info('Old phasecenter: {}'.format(phase_center))
                     # convert to strings (CASA 4.0 returns as list for some reason hence 0 index)
@@ -827,19 +833,16 @@ class ImageParamsHeuristics(object):
                     else:
                         m0 = cqa.angle(m0, prec=9)[0]
                     m1 = cqa.angle(m1, prec=9)[0]
-                    phase_center = '%s %s %s' % (ref, m0, m1)
-                    LOG.info('New phasecenter: {}'.format(phase_center))
-                    LOG.warning('Source {src} is an odd-shaped mosaic -- there is no mosaic field at the image '
-                                'phasecenter and imaging is likely to fail. The phasecenter of nearest pointing to '
-                                'the image center is {pc}'.format(src=field_names[0], pc=phase_center))
+                    psf_phase_center = '%s %s %s' % (ref, m0, m1)
+                    LOG.info('New PSF phasecenter: {}'.format(phase_center))
             else:
-                LOG.warning('No primary beam supplied.  Will not attempt to shift phasecenter to '
+                LOG.warning('No primary beam supplied.  Will not attempt to shift PSF phasecenter to '
                             'nearest field w/o a primary beam distance check.')
 
         if centreonly:
-            return phase_center
+            return phase_center, psf_phase_center
         else:
-            return phase_center, xspread, yspread
+            return phase_center, psf_phase_center, xspread, yspread
 
     def field(self, intent, field, exclude_intent=None, vislist=None):
 
@@ -1144,7 +1147,7 @@ class ImageParamsHeuristics(object):
         if centreonly:
             xspread = yspread = 0.0
         else:
-            ignore, xspread, yspread = self.phasecenter(fields, centreonly=centreonly, vislist=vislist)
+            _, _, xspread, yspread = self.phasecenter(fields, centreonly=centreonly, vislist=vislist)
 
         cqa = casa_tools.quanta
         csu = casa_tools.synthesisutils
@@ -1773,7 +1776,7 @@ class ImageParamsHeuristics(object):
         sens_bws = {}
 
         field_ids = self.field(intent, field, vislist=vis)  # list of strings with comma separated IDs per MS
-        phasecenter = self.phasecenter(field_ids, vislist=vis)  # string
+        phasecenter, _ = self.phasecenter(field_ids, vislist=vis)  # string
         center_field_ids = self.center_field_ids(vis, field, intent, phasecenter)  # list of integer IDs per MS
 
         for ms_index, msname in enumerate(vis):
