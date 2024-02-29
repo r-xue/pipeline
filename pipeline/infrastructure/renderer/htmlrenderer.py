@@ -2104,13 +2104,13 @@ def cmp(a, b):
 #
 def filter_qascores(results_list, lo:float, hi:float) -> List[pipelineqa.QAScore]:
     all_scores: List[pipelineqa.QAScore] = results_list.qa.pool
-    # suppress scores not intended for the banner, taking care not to suppress
+    # suppress scores not intended for the weblog, taking care not to suppress
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
-    banner_scores = rendererutils.scores_with_location(
-        all_scores, [pipelineqa.WebLogLocation.BANNER, pipelineqa.WebLogLocation.UNSET]
+    weblog_scores = pipelineqa.scores_with_location(
+        all_scores, [pipelineqa.WebLogLocation.BANNER, pipelineqa.WebLogLocation.ACCORDION, pipelineqa.WebLogLocation.UNSET]
     )
-    with_score = [s for s in banner_scores if s.score not in ('', 'N/A', None)]
+    with_score = [s for s in weblog_scores if s.score not in ('', 'N/A', None)]
     return [s for s in with_score if lo < s.score <= hi]
 
 
