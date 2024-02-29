@@ -694,8 +694,11 @@ def request_omp_threading(num_threads=None):
         with request_omp_threading(4):
             immoments(..)
 
-    Note: please use it with caution and examine the computing resource allocation circumstance
+    Note: 
+    * Please use it with caution and examine the computing resource allocation circumstance
     carefully at the execution point.
+    * The casalog.ompGet/SetNumThreads() API doesn't work as expected on macOS as of CASA ver6.6.1 although
+    runtime env var (i.e. OMP_NUM_THREADS) is respected. 
     """
 
     session_num_threads = casa_tools.casalog.ompGetNumThreads()
