@@ -120,7 +120,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  spwsel_lsrk=None, spwsel_topo=None, uvrange=None, specmode=None, gridder=None, deconvolver=None,
-                 nterms=None, outframe=None, imsize=None, cell=None, phasecenter=None, stokes=None, nchan=None,
+                 nterms=None, outframe=None, imsize=None, cell=None, phasecenter=None, psf_phasecenter=None, stokes=None, nchan=None,
                  start=None, width=None, nbin=None, datacolumn=None, datatype=None, datatype_info=None, pblimit=None,
                  cfcache=None, restoringbeam=None, hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
@@ -143,8 +143,8 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                                            cycleniter=cycleniter, cyclefactor=cyclefactor,
                                            hm_minpsffraction=hm_minpsffraction, hm_maxpsffraction=hm_maxpsffraction,
                                            scales=scales, outframe=outframe, imsize=imsize, cell=cell, phasecenter=phasecenter,
-                                           nchan=nchan, start=start, width=width, stokes=stokes, weighting=weighting,
-                                           robust=robust, restoringbeam=restoringbeam, pblimit=pblimit,
+                                           psf_phasecenter=psf_phasecenter, nchan=nchan, start=start, width=width, stokes=stokes,
+                                           weighting=weighting, robust=robust, restoringbeam=restoringbeam, pblimit=pblimit,
                                            iter=iter, mask=mask, hm_masking=hm_masking, cfcache=cfcache,
                                            hm_sidelobethreshold=hm_sidelobethreshold,
                                            hm_noisethreshold=hm_noisethreshold,
@@ -351,8 +351,11 @@ class Tclean(cleanbase.CleanBase):
 
         # Determine the phase center
         if inputs.phasecenter in ('', None):
-            field_id = self.image_heuristics.field(inputs.intent, inputs.field)
-            inputs.phasecenter = self.image_heuristics.phasecenter(field_id)
+            field_ids = self.image_heuristics.field(inputs.intent, inputs.field)
+            # TODO: This call will no longer work as expected after the PIPE-98 changes
+            #       (missing primary beam size and shift parameter compared to hif_makeimlist).
+            #       Need to decide whether to remove all hif_tclean fallback heuristics.
+            inputs.phasecenter, inputs.psf_phasecenter = self.image_heuristics.phasecenter(field_ids)
 
         # If imsize not set then use heuristic code to calculate the
         # centers for each field  / spw
@@ -1383,6 +1386,7 @@ class Tclean(cleanbase.CleanBase):
                                                   cell=inputs.cell,
                                                   cfcache=inputs.cfcache,
                                                   phasecenter=inputs.phasecenter,
+                                                  psf_phasecenter=inputs.psf_phasecenter,
                                                   stokes=inputs.stokes,
                                                   nchan=inputs.nchan,
                                                   nbin=inputs.nbin,
