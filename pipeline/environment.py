@@ -13,6 +13,8 @@ from importlib.metadata import version, PackageNotFoundError
 from importlib.util import find_spec
 import pkg_resources
 
+import casatasks
+
 from .infrastructure import mpihelpers
 from .infrastructure.mpihelpers import MPIEnvironment
 from .infrastructure import utils
@@ -235,8 +237,8 @@ def _cluster_details():
     return env_details
 
 
-casa_version = casa_tools.utils.version()
-casa_version_string = casa_tools.utils.version_string()
+casa_version = casatasks.version()
+casa_version_string = casatasks.version_string()
 compare_casa_version = casa_tools.utils.compare_version
 
 

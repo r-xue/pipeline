@@ -193,12 +193,11 @@ class QAScorePool(object):
         if not self.pool:
             return QAScore(None, 'No QA scores registered for this task', 'No QA')
 
-        # if all([s.score >= 0.9 for s in self.pool]):
-        #     return QAScore(min([s.score for s in self.pool]), self.all_unity_longmsg, self.all_unity_shortmsg)
-
-        # maybe have different algorithms here. for now just return the
-        # QAScore with minimum score
-        numerical_scores = [score_obj for score_obj in self.pool if score_obj.score is not None]
+        # Maybe have different algorithms here. for now just return the
+        # QAScore with minimum score of all non-hidden numerical ones.
+        numerical_scores = [score_obj for score_obj in scores_with_location(self.pool,
+                           [WebLogLocation.ACCORDION, WebLogLocation.BANNER, WebLogLocation.UNSET])
+                           if score_obj.score is not None]
         if numerical_scores:
             return min(numerical_scores, key=operator.attrgetter('score'))
         else:
@@ -283,7 +282,7 @@ class QAPlugin(object, metaclass=abc.ABCMeta):
             return True
 
         try:
-            if all([isinstance(r, self.child_cls) and 
+            if all([isinstance(r, self.child_cls) and
                     (self.generating_task is None or r.task is self.generating_task)
                     for r in result]):
                 return True
@@ -353,6 +352,17 @@ class QARegistry(object):
             # now that the messages from the QA stage have been attached to
             # the result, remove the capturing logging handler from all loggers
             logging.remove_handler(logging_handler)
+
+
+def scores_with_location(pool: List[QAScore],
+                         locations: Optional[List[WebLogLocation]] = None) -> List[QAScore]:
+    """
+    Filter QA scores by web log location.
+    """
+    if not locations:
+        locations = list(WebLogLocation)
+
+    return [score for score in pool if score.weblog_location in locations]
 
 
 qa_registry = QARegistry()

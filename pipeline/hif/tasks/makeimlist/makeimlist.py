@@ -30,6 +30,7 @@ class MakeImListInputs(vdp.StandardInputs):
     nchan = vdp.VisDependentProperty(default=-1)
     outframe = vdp.VisDependentProperty(default='LSRK')
     phasecenter = vdp.VisDependentProperty(default='')
+    psf_phasecenter = vdp.VisDependentProperty(default='')
     start = vdp.VisDependentProperty(default='')
     uvrange = vdp.VisDependentProperty(default='')
     width = vdp.VisDependentProperty(default='')
@@ -180,7 +181,7 @@ class MakeImListInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
-                 hm_cell=None, calmaxpix=None, phasecenter=None, nchan=None, start=None, width=None, nbins=None,
+                 hm_cell=None, calmaxpix=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, nbins=None,
                  robust=None, uvtaper=None, clearlist=None, per_eb=None, per_session=None, calcsb=None, datatype=None,
                  datacolumn=None, parallel=None, known_synthesized_beams=None, scal=False):
         self.context = context
@@ -200,6 +201,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.hm_cell = hm_cell
         self.calmaxpix = calmaxpix
         self.phasecenter = phasecenter
+        self.psf_phasecenter = psf_phasecenter
         self.nchan = nchan
         self.start = start
         self.width = width
@@ -919,22 +921,32 @@ class MakeImList(basetask.StandardTaskTemplate):
                         for spwspec in all_spw_keys:
                             cells[spwspec] = cell
 
+                    # get primary beams
+                    largest_primary_beams = {}
+                    for spwspec in min_freq_spwlist:
+                        if list(field_intent_list) != []:
+                            largest_primary_beams[spwspec] = self.heuristics.largest_primary_beam_size(spwspec=spwspec, intent=list(field_intent_list)[0][1])
+                        else:
+                            largest_primary_beams[spwspec] = self.heuristics.largest_primary_beam_size(spwspec=spwspec, intent='TARGET')
+
                     # if phase center not set then use heuristic code to calculate the
                     # centers for each field
                     phasecenter = inputs.phasecenter
+                    psf_phasecenter = inputs.psf_phasecenter
                     phasecenters = {}
+                    psf_phasecenters = {}
                     if phasecenter == '':
                         for field_intent in field_intent_list:
                             try:
                                 field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
-                                phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
+                                phasecenters[field_intent[0]], psf_phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'], intent=field_intent[1], primary_beam=largest_primary_beams[min_freq_spwlist[0]], shift_to_nearest_field=True)
                             except Exception as e:
                                 # problem defining center
                                 LOG.warning(e)
-                                pass
                     else:
                         for field_intent in field_intent_list:
                             phasecenters[field_intent[0]] = phasecenter
+                            psf_phasecenters[field_intent[0]] = psf_phasecenter
 
                     # if imsize not set then use heuristic code to calculate the
                     # centers for each field/spwspec
@@ -946,14 +958,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                         sfpblimit = 0.2
                     imsizes = {}
                     if imsize == []:
-                        # get primary beams
-                        largest_primary_beams = {}
-                        for spwspec in min_freq_spwlist:
-                            if list(field_intent_list) != []:
-                                largest_primary_beams[spwspec] = self.heuristics.largest_primary_beam_size(spwspec=spwspec, intent=list(field_intent_list)[0][1])
-                            else:
-                                largest_primary_beams[spwspec] = self.heuristics.largest_primary_beam_size(spwspec=spwspec, intent='TARGET')
-
                         for field_intent in field_intent_list:
                             max_x_size = 1
                             max_y_size = 1
@@ -977,7 +981,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                             'CHECK',
                                             'POLARIZATION',
                                             'POLANGLE',
-                                            'POLLEAKAGE'
+                                            'POLLEAKAGE',
+                                            'DIFFGAIN'
                                             ]:
                                         h_imsize = [min(npix, inputs.calmaxpix) for npix in h_imsize]
                                     imsizes[(field_intent[0], spwspec)] = h_imsize
@@ -1280,6 +1285,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     cell=cells[spwspec],
                                     imsize=imsizes[(field_intent[0], spwspec)],
                                     phasecenter=phasecenters[field_intent[0]],
+                                    psf_phasecenter=psf_phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
                                     gridder=target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec),
                                     imagename=imagename,
@@ -1395,6 +1401,8 @@ _DESCRIPTIONS = {
     ('POLANGLE', 'cont'): 'polarization calibrator',
     ('POLLEAKAGE', 'mfs'): 'polarization calibrator',
     ('POLLEAKAGE', 'cont'): 'polarization calibrator',
+    ('DIFFGAIN', 'mfs'): 'diffgain calibrator',
+    ('DIFFGAIN', 'cont'): 'diffgain calibrator',
     ('CHECK', 'mfs'): 'check source',
     ('CHECK', 'cont'): 'check source',
     ('TARGET', 'mfs'): 'target per-spw continuum',
@@ -1410,6 +1418,8 @@ _SIDEBAR_SUFFIX = {
     ('BANDPASS', 'cont'): 'cals',
     ('AMPLITUDE', 'mfs'): 'cals',
     ('AMPLITUDE', 'cont'): 'cals',
+    ('DIFFGAIN', 'mfs'): 'cals',
+    ('DIFFGAIN', 'cont'): 'cals',
     ('POLARIZATION', 'mfs'): 'pol',
     ('POLARIZATION', 'cont'): 'pol',
     ('POLANGLE', 'mfs'): 'pol',
