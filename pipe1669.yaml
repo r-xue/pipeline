@@ -26,13 +26,19 @@
 # Workaround of CAS-14037 (!!important for casampi runs!!)
 #
 #     * If you run a parallel CASA session without going through casashell e.g. mpirun -n 4 python run_script.py
-#     you have to put `import casampi.private.start_mpi` at the very beginning of your python script **before** any "import casatasks". 
-#     Otherwise, it will cause deadlock the first time casatasks gets imported.
+#     you have to put the code snippet below at the very beginning of your python script **before** any casatasks
+#     import actions. Otherwise, it will cause deadlock the first time casatasks gets imported.
 #
 #     * If you run a parallel CASA session with casashell, e.g. mpirun -n 4 python -m casashell -c run_script.py
-#     you need to put `import casampi.private.start_mpi` inside ~/.casa/config.py. Again, failing to do so
-#     will also cause a deadlock when casatasks gets imported for the first time.
+#     you need to put the code snippet inside ~/.casa/config.py. Again, failing to do so will also cause a deadlock
+#     when casatasks gets imported for the first time.
 #
+#     ```python
+#     try:
+#         import casampi.private.start_mpi
+#     except (ImportError, RuntimeError) as error:
+#         pass
+#     ```
 # Useful aliases/shortcuts to emulate monolithic casa executables 
 #
 #     $ mamba activate pipe1669
