@@ -52,12 +52,12 @@
 #     $ alias casa6mpi='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 mpicasa -n ${casa_mpi_nproc} python -m casashell'
 #     $ alias casa6mpi_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 mpicasa -n ${casa_mpi_nproc} python -m casashell'
 #
-# Notes for macOS (including M1):
+# Notes for macOS (including Apple Silicon):
 #
 #     * An environment variable (SYSTEM_VERSION_COMPAT=0) might be needed here as
 #       py3.8/packaging might be too old for pip to recognize the macOS version label
 #       in the "casatools" wheel tag.
-#       * https://github.com/pypa/packaging/pull/319
+#       https://github.com/pypa/packaging/pull/319
 #
 #     * Because the casatools wheels are still being built from the x86 platform, the Conda 
 #       install architecture needs to be "x86_64" (not "arm64 (Apple Silicon)"). 
