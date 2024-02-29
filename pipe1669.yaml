@@ -1,6 +1,6 @@
 #######################################################################################################################
 #
-# setup:
+# General / Conda Env.:
 #
 #   Install Miniforge3: the recommended minimal Conda installer
 #     https://github.com/conda-forge/miniforge
@@ -18,7 +18,7 @@
 #     $ mamba env remove -n pipe1669
 #     $ mamba remove -n pipe1669 mpi4py
 #
-# General use pattern (but see more details below)
+# Typical use pattern (but see more details below)
 #     $ mamba activate pipe1669
 #     $ xvfb-run -a python run_pipeline.py
 #     $ xvfb-run -a mpirun -n 4 python run_pipeline.py
@@ -26,7 +26,8 @@
 # Workaround of CAS-14037 (!!important for casampi runs!!)
 #
 #     * If you run a parallel CASA session without going through casashell e.g. mpirun -n 4 python run_script.py
-#     you have to put `import casampi.private.start_mpi` at the very beginning of your python script **before** any "import casatasks". Otherwise, it will cause deadlock the first time casatasks gets imported.
+#     you have to put `import casampi.private.start_mpi` at the very beginning of your python script **before** any "import casatasks". 
+#     Otherwise, it will cause deadlock the first time casatasks gets imported.
 #
 #     * If you run a parallel CASA session with casashell, e.g. mpirun -n 4 python -m casashell -c run_script.py
 #     you need to put `import casampi.private.start_mpi` inside ~/.casa/config.py. Again, failing to do so
@@ -45,7 +46,7 @@
 #     $ alias casa6mpi='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 mpicasa -n ${casa_mpi_nproc} python -m casashell'
 #     $ alias casa6mpi_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 mpicasa -n ${casa_mpi_nproc} python -m casashell'
 #
-# notes for macOS (including M1):
+# Notes for macOS (including M1):
 #
 #     * An environment variable (SYSTEM_VERSION_COMPAT=0) might be needed here as
 #       py3.8/packaging might be too old for pip to recognize the macOS version label
