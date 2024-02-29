@@ -42,15 +42,19 @@
 # Useful aliases/shortcuts to emulate monolithic casa executables 
 #
 #     $ mamba activate pipe1669
+#
 #     $ export casa_omp_num_threads=4
 #     $ export casa_mpi_nproc=4
 #
-#     $ alias mpicasa='mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none -x OMP_NUM_THREADS'
+#     $ export mpicasa6='mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none -x OMP_NUM_THREADS'
+#     $ export casa6shell='python -m casashell'
+#     $ export xvfb-run-auto='xvfb-run -a' # debian/ubuntu/redhat
+#     $ export xvfb-run-auto='xvfb-run -d' # redhat
 #
-#     $ alias casa6='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} python -m casashell'
-#     $ alias casa6_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} xvfb-run -a python -m casashell'
-#     $ alias casa6mpi='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 mpicasa -n ${casa_mpi_nproc} python -m casashell'
-#     $ alias casa6mpi_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 mpicasa -n ${casa_mpi_nproc} python -m casashell'
+#     $ alias casa6='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} ${casa6shell}'
+#     $ alias casa6_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} ${xvfb-run-auto} ${casa6shell}' # not usable on macOS
+#     $ alias casa6mpi='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 ${mpicasa6} -n ${casa_mpi_nproc} ${casa6shell}'
+#     $ alias casa6mpi_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 ${xvfb-run-auto} ${mpicasa6} -n ${casa_mpi_nproc} ${casa6shell}' # not usable on macOS
 #
 # Notes for macOS (including Apple Silicon):
 #
