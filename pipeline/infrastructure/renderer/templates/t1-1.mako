@@ -275,9 +275,10 @@ $(document).ready(function() {
                                  if pcontext.project_summary.telescope == 'ALMA':
                                     acs_version = session_group[0].acs_software_version
                                     software_build_version = session_group[0].acs_software_build_version
+                                    observing_modes = ','.join(session_group[0].observing_modes)
                             %>
                             % if pcontext.project_summary.telescope == 'ALMA':                        
-                                <td colspan="${numcol}"><b>Session:</b> ${sessionkey} <b>ACS Version:</b> ${acs_version}, <b>Build Version:</b> ${software_build_version} </td>
+                                <td colspan="${numcol}"><b>Session:</b> ${sessionkey} <b>ACS Version:</b> ${acs_version}, <b>Build Version:</b> ${software_build_version}, <b>Observing Mode(s):</b> ${observing_modes} </td>
                             % else: 
                                 <td colspan="${numcol}"><b>Session:</b> ${sessionkey} </td>
                             % endif

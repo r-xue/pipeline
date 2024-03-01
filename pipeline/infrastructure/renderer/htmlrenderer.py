@@ -315,7 +315,7 @@ class T1_1Renderer(RendererBase):
     TableRow = collections.namedtuple(
                 'Tablerow', 
                 'ousstatus_entity_id schedblock_id schedblock_name session '
-                'execblock_id ms acs_software_version acs_software_build_version href filesize ' 
+                'execblock_id ms acs_software_version acs_software_build_version observing_modes href filesize ' 
                 'receivers '
                 'num_antennas beamsize_min beamsize_max '
                 'time_start time_end time_on_source '
@@ -441,6 +441,7 @@ class T1_1Renderer(RendererBase):
                                             ms=ms.basename,
                                             acs_software_version = ms.acs_software_version,             # None for VLA
                                             acs_software_build_version = ms.acs_software_build_version, # None for VLA
+                                            observing_modes=ms.observing_modes,
                                             href=href,
                                             filesize=ms.filesize,
                                             receivers=receivers,
