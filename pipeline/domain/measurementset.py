@@ -61,6 +61,8 @@ class MeasurementSet(object):
         data_types_per_source_and_spw: A dictionary to store a list of
             available data types (values) in this MS per (source,spw) tuples
             (keys)
+        observing_modes: The name(s) of the Observing Mode(s) used for this MS
+            (empty list if not ALMA).
         reference_antenna_locked: If True, reference antenna is locked to
             prevent modification
         origin_ms: A path to the first generation MeasurementSet from which
@@ -114,6 +116,10 @@ class MeasurementSet(object):
         self.acs_software_build_version = None
 
         self.data_types_per_source_and_spw: dict = {}
+
+        # ALMA only: the name(s) of the Observing Mode(s) selected for this MS,
+        # populated from the ASDM_SBSUMMARY table (PIPE-2084).
+        self.observing_modes: List[str] = []
 
         # Dictionary mapping phase calibrator fields to corresponding fields
         # with TARGET / CHECK intents (PIPE-1154).

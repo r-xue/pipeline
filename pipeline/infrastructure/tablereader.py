@@ -7,7 +7,7 @@ import re
 import xml.etree.ElementTree as ElementTree
 from bisect import bisect_left
 from functools import reduce
-from typing import Tuple, List
+from typing import List, Tuple
 
 import cachetools
 import numpy
@@ -360,14 +360,16 @@ class MeasurementSetReader(object):
                     ms.representative_target = (sbinfo.repSource, sbinfo.repFrequency, sbinfo.repBandwidth)
                     ms.representative_window = sbinfo.repWindow
 
+                LOG.info('Populating ms.observing_modes ...')
+                ms.observing_modes = SBSummaryTable.get_observing_modes(ms)
+
                 LOG.info('Populating ms.science_goals ...')
                 if sbinfo.minAngResolution is None and sbinfo.maxAngResolution is None:
-                    observing_mode = SBSummaryTable.get_observing_mode(ms)
                     # Only warn if the number of 12m antennas is greater than the number of 7m antennas
                     # and if the observation is not single dish
                     if len([a for a in ms.get_antenna() if a.diameter == 12.0]) > \
                             len([a for a in ms.get_antenna() if a.diameter == 7.0]) \
-                            and 'Standard Single Dish' not in observing_mode:
+                            and 'Standard Single Dish' not in ms.observing_modes:
                         LOG.warning('Undefined angular resolution limits for %s' % ms.basename)
                     ms.science_goals = {'minAcceptableAngResolution': '0.0arcsec',
                                         'maxAcceptableAngResolution': '0.0arcsec'}
@@ -935,7 +937,7 @@ class SBSummaryTable(object):
                                  sensitivity=None, dynamicRange=None, spectralDynamicRangeBandWidth=None, sbName=None)
 
     @staticmethod
-    def get_observing_mode(ms):
+    def get_observing_modes(ms: domain.MeasurementSet) -> List[str]:
         msname = _get_ms_name(ms)
         sbsummary_table = os.path.join(msname, 'ASDM_SBSUMMARY')
         observing_modes = []
