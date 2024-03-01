@@ -423,7 +423,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         # ---------------------------------------------------------------------------------- set cell (SRDP ALMA)
         ppb = 5.0  # pixels per beam
         if fieldnames:
-            synthesized_beam, ksb = th.synthesized_beam(field_intent_list=[[fieldnames[0], 'TARGET']],
+            synthesized_beam, _ = th.synthesized_beam(field_intent_list=[[fieldnames[0], 'TARGET']],
                                                         spwspec=imlist_entry['spw'],
                                                         robust=imlist_entry['robust'],
                                                         uvtaper=imlist_entry['uvtaper'],
@@ -433,7 +433,10 @@ class Editimlist(basetask.StandardTaskTemplate):
         else:
             synthesized_beam = None
 
-        if inpdict['cell']:
+        # inpdict['cell'] will only be a string if the input is of the form '3ppb'
+        # With pixel per beam input, the cell size needs to be calculated using 
+        # th.cell(), so set inpdict['cell'] to the empty list to trigger this calculation.
+        if inpdict['cell'] and isinstance(inpdict['cell'], str):
             ppb = float(inpdict['cell'].split('ppb')[0])
             inpdict['cell'] = []
 
