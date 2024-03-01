@@ -1866,23 +1866,23 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
     if median_snr <= 0.3 * snr_threshold:
         score = rutils.SCORE_THRESHOLD_ERROR
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 30% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
         score = rutils.SCORE_THRESHOLD_WARNING
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 50% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
         score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 75% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
     else:
         score = 1.0
         shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is > 75% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
 
     origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
                           metric_score=median_snr,
@@ -2003,23 +2003,23 @@ def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_thres
     if median_snr <= 0.3 * snr_threshold:
         score = 0.7
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 30% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
         score = 0.8
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 50% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
         score = 0.9
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 75% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
     else:
         score = 1.0
         shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is > 75% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
 
     origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
                           metric_score=median_snr,
@@ -2634,6 +2634,7 @@ def score_sd_line_detection(group_id_list, spw_id_list, lines_list):
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
+
 @log_qa
 def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
                               pol: str, stat: List[tuple]) -> pqa.QAScore:
@@ -2679,6 +2680,7 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
                           metric_units='Statistics of binned spectra')
 
     return pqa.QAScore(final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
 
 @log_qa
 def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gfluxscale_err):
@@ -3328,8 +3330,8 @@ def score_renorm(result):
         score = 1.0
 
     origin = pqa.QAOrigin(metric_name='score_renormalize',
-                            metric_score=score,
-                            metric_units='')
+                          metric_score=score,
+                          metric_units='')
     return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
@@ -3716,9 +3718,6 @@ def score_fluxcsv(result):
                           metric_score=score,
                           metric_units='flux csv')
     return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
-
-
-
 
 
 @log_qa

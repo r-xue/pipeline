@@ -72,6 +72,7 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         # Check for flux service status codes
         score9 = _check_fluxservicestatuscodes(result)
 
+        # Add all scores to QA score pool in result.
         result.qa.pool.extend(polcal_scores)
         result.qa.pool.extend([score2, score3, score4, score5, score6, score8, score9])
         result.qa.pool.extend(scores7)
@@ -172,11 +173,13 @@ def _check_fluxservicemessages(result) -> pqa.QAScore:
     """
     return qacalc.score_fluxservicemessages(result)
 
+
 def _check_fluxservicestatuscodes(result) -> pqa.QAScore:
     """
     Check flux service statuscodes
     """
     return qacalc.score_fluxservicestatuscodes(result)
+
 
 def _check_fluxcsv(result) -> pqa.QAScore:
     """
@@ -207,7 +210,7 @@ def ous_parallactic_range(mses: List[MeasurementSet], field_name: str, intent: s
     when observed with the specifiedintent.
 
     :param mses: MeasurementSets to process
-    :param f: Field to inspect
+    :param field_name: Field to inspect
     :param intent: observing intent to consider
     :return: angular range expressed as (min angle, max angle) tuple
     """
@@ -312,6 +315,4 @@ def to_positive_definite(angle: ParallacticAngle) -> PositiveDefiniteAngle:
         return angle + 360
     return angle
 
-# - end parallactic angle coverage functions ----------------------------------------------------------------------------
-
-
+# - end parallactic angle coverage functions --------------------------------------------------------------------------
