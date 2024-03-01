@@ -147,13 +147,6 @@ def _check_bands(mses) -> pqa.QAScore:
     return qacalc.score_bands(mses)
 
 
-def _check_bwswitching(mses) -> pqa.QAScore:
-    """
-    Check each measurement set for bandwidth switching calibration issues
-    """
-    return qacalc.score_bwswitching(mses)
-
-
 def _check_observing_modes(mses) -> List[pqa.QAScore]:
     """
     Check each measurement set for issues with observing modes.

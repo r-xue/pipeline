@@ -39,7 +39,6 @@ if TYPE_CHECKING:
 
 __all__ = ['score_polintents',                                # ALMA specific
            'score_bands',                                     # ALMA specific
-           'score_bwswitching',                               # ALMA specific
            'score_science_spw_names',                         # ALMA specific
            'score_tsysspwmap',                                # ALMA specific
            'score_number_antenna_offsets',                    # ALMA specific
@@ -402,77 +401,6 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
                           metric_units='Fraction of MSes with HISTORY')
 
     return pqa.QAScore(score, longmsg, shortmsg, origin=origin)
-
-
-@log_qa
-def score_bwswitching(mses):
-    """
-    Score a MeasurementSet object based on the presence of
-    bandwidth switching observings. For bandwidth switched
-    observations the TARGET and PHASE spws are different.
-    """
-    nophasecals_all = set()   # track any spws that have no phase calibration across all MSes
-    num_b2b = 0    # number of MSes that have bandwidth switching in the B2B mode
-    num_bwsw = 0   # number of MSes that have bandwidth switching not in the B2B mode
-    complaints = []
-
-    # analyse each MS
-    for ms in mses:
-        # Get the science spws
-        scispws = {spw.id for spw in ms.get_spectral_windows(science_windows_only=True)}
-
-        # Get phase calibrator science spw ids
-        phasespws = []
-        for scan in ms.get_scans(scan_intent='PHASE'):
-            phasespws.extend([spw.id for spw in scan.spws])
-        phasespws = set(phasespws).intersection(scispws)
-
-        # Get science target science spw ids
-        targetspws = []
-        for scan in ms.get_scans(scan_intent='TARGET'):
-            targetspws.extend([spw.id for spw in scan.spws])
-        targetspws = set(targetspws).intersection(scispws)
-
-        # Determine the difference between the two
-        nophasecals = targetspws.difference(phasespws)
-        if len(nophasecals) == 0:
-            continue
-
-        nophasecals_all.update(nophasecals)
-
-        # the following section is invoked for B2B and BWSW modes
-        diffgain_mode = ms.get_diffgain_mode()
-        if diffgain_mode == 'B2B':
-            num_b2b += 1
-            complaints.append('%s uses the B2B mode' % ms.basename)
-        elif diffgain_mode == 'BWSW':
-            num_bwsw += 1
-            complaints.append('%s contains no phase calibrations for target spws %s' %
-                              (ms.basename, utils.commafy(list(nophasecals), quotes=False)))
-
-    if num_bwsw == 0 and num_b2b == 0:
-        longmsg = ('Phase calibrations found for all target spws in %s.' % (
-            utils.commafy([ms.basename for ms in mses], quotes=False)))
-        shortmsg = 'Phase calibrations found for all target spws'
-        score = 1.0
-    else:
-        longmsg = '%s.' % utils.commafy(complaints, False)
-        if num_bwsw > 0:   # at least one MS has no phase calibration and is not in a B2B mode
-            shortmsg = 'No phase calibrations found for target spws %s' % list(nophasecals_all)
-            if num_bwsw > 1:
-                shortmsg += ' in %i MSes' % num_bwsw
-            score = 0.0   # indicates that this mode is currently not supported by the pipeline
-        else:
-            shortmsg = 'B2B mode'
-            if num_b2b > 1:
-                shortmsg += ' in %i MSes' % num_b2b
-            score = 0.9
-
-    origin = pqa.QAOrigin(metric_name='score_bwswitching',
-                          metric_score=score,
-                          metric_units='MS score based on the number of spws without phase calibrators')
-
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
