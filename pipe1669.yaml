@@ -50,8 +50,8 @@
 #     $ export casa6shell='python -m casashell'
 #     $ export xvfb_run_auto='xvfb-run -a' # debian/ubuntu/redhat
 #     $ export xvfb_run_auto='xvfb-run -d' # redhat
-#     $ export pipeline_flag='--nologger --log2term --agg'
-
+#
+#     $ alias pipeline_flag='--nologger --log2term --agg'
 #     $ alias casa6='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} ${casa6shell}'
 #     $ alias casa6_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} ${xvfb_run_auto} ${casa6shell}' # not usable on macOS
 #     $ alias casa6mpi='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 ${mpicasa6} -n ${casa_mpi_nproc} ${casa6shell}'
@@ -59,7 +59,7 @@
 #
 #     For executing a headless parallel Pipeline processing session, you could try:
 #
-#     $ casa6mpi_xvfb $pipeline_flag -c run_pipeline.py
+#     $ casa6mpi_xvfb pipeline_flag -c run_pipeline.py
 #
 # Notes for macOS (including Apple Silicon):
 #
