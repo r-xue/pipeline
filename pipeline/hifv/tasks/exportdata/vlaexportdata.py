@@ -14,8 +14,6 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.filenamer import fitsname
 from . import vlaifaqua
 
-from casatasks import flagmanager
-
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -258,7 +256,8 @@ finally:
         LOG.info('Saving flag version list')
 
         # retrieve all flagversions saved
-        flag_dict = flagmanager(vis=visname, mode='list')
+        task = casa_tasks.flagmanager(vis=visname, mode='list')
+        flag_dict = self._executor.execute(task)
         # remove MS key entry if it exists; MS key does not conform with other entries
         # more information about flagmanager return dictionary here:
         # https://casadocs.readthedocs.io/en/stable/api/tt/casatasks.flagging.flagmanager.html#mode
