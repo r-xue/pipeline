@@ -423,11 +423,6 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             except:
                 hm_uvtaper = []
 
-
-
-
-
-
         if real_repr_target:
             # Determine heuristic UV taper value
             #
