@@ -322,7 +322,7 @@ class MeasurementSetReader(object):
                 LOG.debug("Field "+str(field.id) + " not in spwsforfields dictionary.")
 
     @staticmethod
-    def get_measurement_set(ms_file):
+    def get_measurement_set(ms_file: str) -> domain.MeasurementSet:
         LOG.info('Analysing {0}'.format(ms_file))
         ms = domain.MeasurementSet(ms_file)
 
@@ -397,7 +397,8 @@ class MeasurementSetReader(object):
             
                 # Populate the online ALMA Control Software names
                 LOG.info('Populating ms.acs_software_version and ms.acs_software_build_version...')
-                ms.acs_software_version, ms.acs_software_build_version  = MeasurementSetReader.get_acs_software_version(ms, msmd)
+                ms.acs_software_version, ms.acs_software_build_version = \
+                    MeasurementSetReader.get_acs_software_version(ms, msmd)
                     
             LOG.info('Populating ms.array_name ...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
@@ -512,7 +513,7 @@ class MeasurementSetReader(object):
 
                 acs_software_build_version = table.getcol('details')[1]
         except: 
-            LOG.info("Unable to read Annotation table infoformation for MS {}".format(_get_ms_basename(ms)))
+            LOG.info("Unable to read Annotation table information for MS {}".format(_get_ms_basename(ms)))
 
         return (acs_software_version, acs_software_build_version)
 
@@ -662,6 +663,7 @@ class SpectralWindowTable(object):
 
         return angle_info
 
+    @staticmethod
     def get_sdm_num_bin_info(ms, msmd):
         """
         Extract information about the online spectral averaging from the SPECTRAL_WINDOW
@@ -678,7 +680,7 @@ class SpectralWindowTable(object):
                 if 'SDM_NUM_BIN' in table.colnames():
                     sdm_num_bin = table.getcol('SDM_NUM_BIN')
                 else:
-                    LOG.info("SDM_NUM_BIN does not exist in the SPECTRAL_WINDOW Table of MS {}".format(_get_ms_basename(ms)))
+                    LOG.info(f"SDM_NUM_BIN does not exist in the SPECTRAL_WINDOW Table of MS {_get_ms_basename(ms)}")
         return sdm_num_bin
 
     @staticmethod
@@ -970,16 +972,13 @@ class SBSummaryTable(object):
         msname = _get_ms_name(ms)
         sbsummary_table = os.path.join(msname, 'ASDM_SBSUMMARY')        
         with casa_tools.TableReader(sbsummary_table) as table:
-            try:
-                scienceGoals = table.getcol('scienceGoal')
-                numScienceGoals = table.getcol('numScienceGoal')
-            except:
-                # LOG.warning('Error reading science goals for %s' % (ms.basename))
-                raise
+            scienceGoals = table.getcol('scienceGoal')
+            numScienceGoals = table.getcol('numScienceGoal')
 
             # shouldn't happen in a well-formed XML
             if len(scienceGoals) != numScienceGoals:
-                LOG.warning('numScienceGoal=%i but len(scienceGoal)=%i' % (numScienceGoals, len(scienceGoals)))
+                LOG.warning(f'{_get_ms_basename(ms)}: number of science goals found in the SB summary'
+                            f' ({len(scienceGoals)}) are fewer than the number that were declared ({numScienceGoals}).')
 
             repSources = []
             repFrequencies = []
@@ -1193,7 +1192,6 @@ class SourceTable(object):
             else: 
                 table_list.append("")
                 spacings_list.append("")
-
 
         all_sources = list(zip(ids, sourcenames, directions, propermotions, is_eph_objs, table_list, spacings_list))
 

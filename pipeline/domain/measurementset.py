@@ -50,6 +50,8 @@ class MeasurementSet(object):
         spectralspec_spwmap: A dictionary mapping SpectralSpec to corresponding
             spectral window IDs.
         fields: A list of Field objects associated with MS
+        scans: A list of Scan objects associated with MS
+        sources: A list of Source objects associated with MS
         states: A list of State objects associated with MS
         spwmaps: Spectral window mapping to use for combining/mapping, split by
             (intent, field), used in ALMA interferometry calibration tasks.
@@ -95,6 +97,8 @@ class MeasurementSet(object):
         self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
         self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
         self.fields: Union[RetrieveByIndexContainer, list] = []
+        self.scans: list = []
+        self.sources: Union[RetrieveByIndexContainer, list] = []
         self.states: Union[RetrieveByIndexContainer, list] = []
         self.reference_spwmap: Optional[List[int]] = None
         self.origin_ms: str = name
@@ -681,7 +685,6 @@ class MeasurementSet(object):
             return cycle_number
         else:
             return None
-
 
     @property
     def start_time(self):
@@ -1414,8 +1417,8 @@ class MeasurementSet(object):
         # Check for existing column registration and remove it
         column_keys = [k for k,v in self.data_column.items() if v == column]
         if column_keys!= []:
-           for k in column_keys:
-               del(self.data_column[k])
+            for k in column_keys:
+                del(self.data_column[k])
 
         # Update MS domain object
         if dtype not in self.data_column:
