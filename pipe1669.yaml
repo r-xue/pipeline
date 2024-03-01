@@ -35,7 +35,8 @@
 #
 #     ```python
 #     try:
-#         import casampi.private.start_mpi
+#         import casampi.private.start_mpi  # assign the client and server roles
+#         import casatasks                  # ensure the time-based logfile name
 #     except (ImportError, RuntimeError) as error:
 #         pass
 #     ```
@@ -45,8 +46,9 @@
 #
 #     $ export casa_omp_num_threads=4
 #     $ export casa_mpi_nproc=4
+#     $ export TMPDIR=/tmp
 #
-#     $ export mpicasa6='mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none -x OMP_NUM_THREADS'
+#     $ export mpicasa6='mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none --mca btl ^openib -x OMP_NUM_THREADS'
 #     $ export casa6shell='python -m casashell'
 #     $ export xvfb_run_auto='xvfb-run -a' # debian/ubuntu/redhat
 #     $ export xvfb_run_auto='xvfb-run -d' # redhat
