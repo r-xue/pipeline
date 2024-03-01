@@ -59,6 +59,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
+           'score_observing_modes',                           # ALMA specific
            'score_renorm',                                    # ALMA IF specific
            'score_polcal_gain_ratio',                         # ALMA IF specific
            'score_polcal_gain_ratio_rms',                     # ALMA IF specific
@@ -472,6 +473,69 @@ def score_bwswitching(mses):
                           metric_units='MS score based on the number of spws without phase calibrators')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
+def score_observing_modes(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+    """
+    This QA heuristic evaluates a list of measurement sets, creating a QA score
+    for each MS, and returning the aggregate list of QA scores for all MSes.
+    Each MS is scored based on consistency checks between their registered
+    Observing Mode(s) and e.g. the presence of differential gain SpWs / fields.
+
+    Args:
+        mses: list of measurement sets to score.
+
+    Returns:
+        List of QA scores.
+    """
+    # Create separate score for each MS.
+    scores = []
+    for ms in mses:
+        # If the Observing Modes include "band to band", perform a few validity
+        # checks w.r.t. the presence of DIFFGAIN fields and diffgain SpW setup:
+        if 'BandToBand Interferometry' in ms.observing_modes:
+            if ms.get_diffgain_mode() != 'B2B':
+                score = 0.0
+                shortmsg = 'Incorrect Observing Mode'
+                longmsg = f'Incorrect BandToBand Observing Mode, missing DIFFGAIN intent in {ms.basename}'
+            elif len(ms.get_fields(intent="DIFFGAIN")) > 1:
+                score = 0.0
+                shortmsg = 'Too many DIFFGAIN fields'
+                longmsg = f'Unable to process BandToBand dataset {ms.basename}, found more than 1 DIFFGAIN field'
+            else:
+                score = 0.9
+                shortmsg = 'BandToBand mode used'
+                longmsg = f'BandToBand mode used in {ms.basename}'
+
+        # If the Observing Modes do not include "band to band", but the MS
+        # contains a DIFFGAIN intent and a SpW setup consistent with
+        # band-to-band, then lower the score.
+        elif 'BandToBand Interferometry' not in ms.observing_modes and ms.get_diffgain_mode() == 'B2B':
+            score = 0.0
+            shortmsg = 'Incorrect Observing Mode'
+            longmsg = f'Incorrect Observing Mode, unexpectedly found a BandToBand DIFFGAIN intent in {ms.basename}'
+
+        # If the Observing Modes include "bandwidth switching", then lower the
+        # score, since processing these data has not yet been validated.
+        elif 'BandwidthSwitching Interferometry' in ms.observing_modes:
+            score = 0.0
+            shortmsg = 'BandwidthSwitching mode used'
+            longmsg = f'BandwidthSwitching mode used in {ms.basename}'
+
+        # If all validity checks are passed, score the MS as ok.
+        else:
+            score = 1.0
+            shortmsg = 'Observing mode(s) ok.'
+            longmsg = f'Observing mode(s) ok for {ms.basename}'
+
+        # Append score for current MS.
+        origin = pqa.QAOrigin(metric_name='score_observing_modes',
+                              metric_score=score,
+                              metric_units='MS score based on the observing modes')
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    return scores
 
 
 @log_qa

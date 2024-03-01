@@ -50,8 +50,8 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         # Check for the presence of receiver bands with calibration issues
         score2 = _check_bands(result.mses)
 
-        # Check for the presence of bandwidth switching
-        score3 = _check_bwswitching(result.mses)
+        # Check for validity of observing modes.
+        scores3 = _check_observing_modes(result.mses)
 
         # Check for science spw names matching the virtual spw ID lookup table
         score4 = _check_science_spw_names(result.mses,
@@ -74,7 +74,8 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
 
         # Add all scores to QA score pool in result.
         result.qa.pool.extend(polcal_scores)
-        result.qa.pool.extend([score2, score3, score4, score5, score6, score8, score9])
+        result.qa.pool.extend([score2, score4, score5, score6, score8, score9])
+        result.qa.pool.extend(scores3)
         result.qa.pool.extend(scores7)
 
 
@@ -151,6 +152,13 @@ def _check_bwswitching(mses) -> pqa.QAScore:
     Check each measurement set for bandwidth switching calibration issues
     """
     return qacalc.score_bwswitching(mses)
+
+
+def _check_observing_modes(mses) -> List[pqa.QAScore]:
+    """
+    Check each measurement set for issues with observing modes.
+    """
+    return qacalc.score_observing_modes(mses)
 
 
 def _check_science_spw_names(mses, virtual_science_spw_names) -> pqa.QAScore:
