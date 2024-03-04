@@ -426,7 +426,8 @@ def score_observing_modes(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
             if ms.get_diffgain_mode() != 'B2B':
                 score = 0.0
                 shortmsg = 'Incorrect Observing Mode'
-                longmsg = f'Incorrect BandToBand Observing Mode, missing DIFFGAIN intent in {ms.basename}'
+                longmsg = f'Incorrect BandToBand Observing Mode, {ms.basename} does not contain a DIFFGAIN intent' \
+                          f' and/or SpW setup consistent with band-to-band.'
             elif len(ms.get_fields(intent="DIFFGAIN")) > 1:
                 score = 0.0
                 shortmsg = 'Too many DIFFGAIN fields'
