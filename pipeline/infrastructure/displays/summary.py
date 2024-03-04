@@ -1,8 +1,9 @@
 import datetime
+import itertools
 import math
 import operator
 import os
-from typing import TYPE_CHECKING, Dict, List, Tuple, Union
+from typing import TYPE_CHECKING, Generator, List, Tuple
 
 import matplotlib.dates as dates
 import matplotlib.figure as figure
@@ -1117,9 +1118,11 @@ class SpwIdVsFreqChart(object):
         self.inputs = inputs
         self.context = context
 
-    def _extract_spwdata_vla(self):
-        """Extract SPW data of VLA from measurement set.
+    def _extract_spwdata_vla(self) -> Generator[List[int], None, None]:
+        """Extract list of SPW IDs of VLA from measurement set.
 
+        Yields:
+            List of SPW IDs for a baseband, for science_windows_only=True.
         """
         ms = self.inputs.ms
         banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
@@ -1128,9 +1131,11 @@ class SpwIdVsFreqChart(object):
                 spw_list = [list(spwitem.keys())[0] for spwitem in banddict[band][baseband]]
                 yield spw_list
 
-    def _extract_spwdata_alma_nro(self):
-        """Extract SPW data of ALMA or NRO from measurement set.
+    def _extract_spwdata_alma_nro(self) -> Generator[List[int], None, None]:
+        """Extract list of SPW IDs of ALMA or NRO from measurement set.
 
+        Yields:
+            List of SPW IDs for a tuning, for scan_intent='TARGET'.
         """
         ms = self.inputs.ms
         request_spws = ms.get_spectral_windows()
@@ -1151,8 +1156,6 @@ class SpwIdVsFreqChart(object):
         ms = self.inputs.ms
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
-        dict_spwid_bw = {}
-        dict_spwid_fmin = {}
         antid = 0
         if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
             antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
@@ -1161,58 +1164,54 @@ class SpwIdVsFreqChart(object):
         ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
         bar_height = 0.4
         max_spws_to_annotate = 16
+        prop_cycle = plt.rcParams['axes.prop_cycle']
+        colors = prop_cycle.by_key()['color']
+        colorcycle = itertools.cycle(colors)
         ax_atm = ax_spw.twinx()
         atm_color = 'm'
 
         # plot spws
-        indices = [-1]
-        xmin, xmax = np.inf, -np.inf
-
         if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
             spw_list_generator = self._extract_spwdata_vla()
             scan_spws = request_spws
         else:  # for ALMA or NRO
             spw_list_generator = self._extract_spwdata_alma_nro()
             scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
-        for spw in scan_spws:
-            dict_spwid_bw[spw.id] = float(spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
-            dict_spwid_fmin[spw.id] = float(spw.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
-        bw_list = []
-        fmin_list = []
+        xmin, xmax = np.inf, -np.inf
+        start = 0
+        totalnum_spws = len(scan_spws)
+        index = 0
+        i = 0
         for spwid_list in spw_list_generator:
-            bw_list = [dict_spwid_bw[id] for id in spwid_list]
-            fmin_list = [dict_spwid_fmin[id] for id in spwid_list]
-            start = indices[-1] + 1
-            indices = list(range(start, start+len(bw_list)))
-
-            # 1. draw bars
-            ax_spw.barh(indices, bw_list, height=bar_height, left=fmin_list)
-
-            # 2. annotate each bars
-            for idx, (index, spwid, bw, fmin) in enumerate(zip(indices, spwid_list, bw_list, fmin_list)):
-                xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
-                if len(list(scan_spws)) <= max_spws_to_annotate or idx in [0, len(indices) - 1]:
-                    ax_spw.annotate(str(spwid), (fmin + bw/2, index - bar_height/2), fontsize=14, ha='left', va='bottom')
-
-            # 3. Frequency vs. ATM transmission
+            color = next(colorcycle)
             for spwid in spwid_list:
+                # 1. draw bars
+                bw = [float(spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ)) for spw in scan_spws if spw.id == spwid][0]
+                fmin = [float(spw.min_frequency.to_units(FrequencyUnits.GIGAHERTZ)) for spw in scan_spws if spw.id == spwid][0]
+                ax_spw.barh(index, bw, zorder=2, height=bar_height, left=fmin, color=color)
+                # 2. annotate each bars
+                xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
+                if totalnum_spws <= max_spws_to_annotate or index in [start, start + len(spwid_list) - 1]:
+                    ax_spw.annotate(str(spwid), (fmin + bw/2, index - bar_height/2), fontsize=14, ha='left', va='bottom')
+                index += 1
+                # 3. Frequency vs. ATM transmission
                 atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
-                ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=4, linestyle='-')
+                ax_atm.plot(atm_freq, atm_transmission, color=atm_color, zorder=1, marker='.', markersize=2, linestyle='-')
+            start += len(spwid_list)
+            i += 1
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
-        ax_spw.set_ylim(len(scan_spws), -1.0)
+        ax_spw.set_ylim(totalnum_spws, -1.0)
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
         ax_spw.grid(axis='x')
         ax_spw.tick_params(labelsize=13)
         ax_spw.set_yticks([])
-
         ax_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
         ax_atm.set_ylim(0, 1.05)
         ax_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
         ax_atm.yaxis.set_major_formatter(ticker.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
         ax_atm.yaxis.tick_right()
-
         fig.savefig(filename)
         return self._get_plot_object()
 
