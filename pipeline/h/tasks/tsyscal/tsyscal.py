@@ -1,11 +1,13 @@
 import collections
 from operator import itemgetter, attrgetter
+from typing import Dict, List, Set
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain.measurementset import MeasurementSet
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.h.heuristics.tsysspwmap import tsysspwmap
 from pipeline.infrastructure import casa_tasks
@@ -93,9 +95,6 @@ class Tsyscal(basetask.StandardTaskTemplate):
         return resultobjects.TsyscalResults(pool=calapps, unmappedspws=nospwmap)
 
     def analyse(self, result):
-        # With no best caltable to find, our task is simply to set the one
-        # caltable as the best result
-
         # double-check that the caltable was actually generated
         on_disk = [ca for ca in result.pool if ca.exists()]
         result.final[:] = on_disk
@@ -111,7 +110,7 @@ class Tsyscal(basetask.StandardTaskTemplate):
 GainfieldMapping = collections.namedtuple('GainfieldMapping', 'intent preferred fallback')
 
 
-def get_solution_map(ms, is_single_dish):
+def get_solution_map(ms: MeasurementSet, is_single_dish: bool) -> List[GainfieldMapping]:
     """
     Get gainfield solution map. Different solution maps are returned for
     single dish and interferometric data.
@@ -158,7 +157,7 @@ def get_solution_map(ms, is_single_dish):
         ]
 
 
-def get_gainfield_map(ms, is_single_dish):
+def get_gainfield_map(ms: MeasurementSet, is_single_dish: bool) -> Dict:
     """
     Get the mapping of observing intent to gainfield parameter for a
     measurement set.
@@ -190,13 +189,13 @@ def get_gainfield_map(ms, is_single_dish):
     return converted
 
 
-def get_tsys_fields_for_intent(ms, intent):
+def get_tsys_fields_for_intent(ms: MeasurementSet, intent: str) -> Set[str]:
     """
     Returns the identity of the Tsys field(s) for an intent.
 
-    :param ms:
-    :param intent:
-    :return:
+    :param ms: MS to analyse
+    :param intent: intent to retrieve fields for.
+    :return: set of field identifiers corresponding to intent
     """
     # In addition to the science intent scan, a field must also have a Tsys
     # scan observed for a Tsys solution to be considered present. The
@@ -243,7 +242,8 @@ def get_tsys_fields_for_intent(ms, intent):
     return {field_identifiers[i] for i in r}
 
 
-def get_calapplications(ms, tsys_table, calfrom_defaults, origin, spw_map, is_single_dish):
+def get_calapplications(ms: MeasurementSet, tsys_table: str, calfrom_defaults: Dict, origin: callibrary.CalAppOrigin,
+                        spw_map: List, is_single_dish: bool) -> List[callibrary.CalApplication]:
     """
     Get a list of CalApplications that apply a Tsys caltable to a measurement
     set using the gainfield mapping defined in CAS-12213.
@@ -256,6 +256,8 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin, spw_map, is_si
     :param tsys_table: name of Tsys table
     :param calfrom_defaults: dict of CalFrom constructor arguments
     :param origin: CalOrigin for the created CalApplications
+    :param spw_map: Tsys SpW map
+    :param is_single_dish: boolean declaring if current MS is for Single-Dish
     :return: list of CalApplications
     """
     # Get the map of intent:gainfield
