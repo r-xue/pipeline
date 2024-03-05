@@ -1188,7 +1188,7 @@ class SpwIdVsFreqChart(object):
                 # 1. draw bars
                 bw = [float(spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ)) for spw in scan_spws if spw.id == spwid][0]
                 fmin = [float(spw.min_frequency.to_units(FrequencyUnits.GIGAHERTZ)) for spw in scan_spws if spw.id == spwid][0]
-                ax_spw.barh(index, bw, zorder=2, height=bar_height, left=fmin, color=color)
+                ax_spw.barh(index, bw, height=bar_height, left=fmin, color=color)
                 # 2. annotate each bars
                 xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
                 if totalnum_spws <= max_spws_to_annotate or index in [start, start + len(spwid_list) - 1]:
@@ -1196,7 +1196,7 @@ class SpwIdVsFreqChart(object):
                 index += 1
                 # 3. Frequency vs. ATM transmission
                 atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
-                ax_atm.plot(atm_freq, atm_transmission, color=atm_color, zorder=1, marker='.', markersize=2, linestyle='-')
+                ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=2, linestyle='-')
             start += len(spwid_list)
             i += 1
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
