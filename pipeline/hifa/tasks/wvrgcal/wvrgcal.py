@@ -1,6 +1,7 @@
 import collections
 import os
 import shutil
+from typing import Callable, Dict, List
 
 import numpy as np
 
@@ -12,6 +13,8 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks import gaincal
+from pipeline.hif.tasks.bandpass.common import BandpassResults
+from pipeline.hif.tasks.gaincal.common import GaincalResults
 from pipeline.hifa.heuristics import atm as atm_heuristic
 from pipeline.hifa.heuristics import wvrgcal as wvrgcal_heuristic
 from pipeline.hifa.tasks import bandpass
@@ -326,35 +329,35 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         # wvrcal files to be applied
         result.final[:] = on_disk
 
+        # If no QA intent was provided, then return early. Otherwise, continue
+        # with computing the QA results.
         qa_intent = inputs.qa_intent.strip()
         if not qa_intent:
             return result
 
-        # calculate the qa results if required
+        # Return early if no WVR caltable was created.
         if not result.final:
             return result
 
-        # get the spw for which qa results are needed
-        # If no spw order was specified explicitly, then calculate an order
-        # here; otherwise use the specified order (e.g. calculated during
-        # previous iteration).
+        # Determine the list of SpWs for which QA results are needed. If no QA
+        # SpW order was specified explicitly, then calculate an order here based
+        # on SpW bandwidth and Tsys; otherwise use the specified order.
         if inputs.qa_spw == '':
-            atmheuristics = atm_heuristic.AtmHeuristics(
-                context=inputs.context, vis=inputs.vis)
+            atmheuristics = atm_heuristic.AtmHeuristics(context=inputs.context, vis=inputs.vis)
             # Preferably rank spws by Tsys and bandwidth:
             qa_spw_list = atmheuristics.spwid_rank_by_tsys_and_bandwidth(qa_intent)
+
             # If ranking by Tsys failed (e.g. no Tsys table, or due to
             # flagging), then fall back to ranking by opacity and bandwidth:
             if qa_spw_list is None:
-                LOG.info("qa: ranking spws by bandwidth and Tsys failed for "
-                         "{}; will rank by bandwidth and opacity "
-                         "instead.".format(os.path.basename(inputs.vis)))
+                LOG.info(f"qa: ranking spws by bandwidth and Tsys failed for {inputs.ms.basename}; will rank by"
+                         f" bandwidth and opacity instead.")
                 qa_spw_list = atmheuristics.spwid_rank_by_opacity_and_bandwidth()
         else:
             qa_spw_list = inputs.qa_spw.split(',')
 
         for qa_spw in qa_spw_list:
-            LOG.info('qa: %s attempting to calculate wvrgcal QA using spw %s' % (os.path.basename(inputs.vis), qa_spw))
+            LOG.info(f'qa: {inputs.ms.basename} attempting to calculate wvrgcal QA using spw {qa_spw}')
             inputs.qa_spw = qa_spw
 
             # Do a bandpass calibration
@@ -402,8 +405,8 @@ class Wvrgcal(basetask.StandardTaskTemplate):
 
         # Edited for PIPE-1837 adding BPgood and PHgood
         LOG.info('qa: calculate ratio with-WVR phase RMS / without-WVR phase rms')
-        PHnoisy, BPnoisy, PHgood, BPgood = wvrg_qa.calculate_view(inputs.context, nowvr_caltable,
-                                                  wvr_caltable, result.qa_wvr, qa_intent)
+        PHnoisy, BPnoisy, PHgood, BPgood = wvrg_qa.calculate_view(inputs.context, nowvr_caltable, wvr_caltable,
+                                                                  result.qa_wvr, qa_intent)
         result.PHnoisy = PHnoisy
         result.BPnoisy = BPnoisy
         result.PHgood = PHgood
@@ -426,7 +429,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
 
         return result
 
-    def _report_wvr_improvement(self, result):
+    def _report_wvr_improvement(self, result: resultobjects.WvrgcalResult):
         """
         Report the improvement factors from QA data views to the log (PIPE-846).
         """
@@ -449,7 +452,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                     LOG.info(f"Ant #{antid} ({ant_names[antid]}), time {timestamp}: {qa_result.data[xid, yid]:.2f}"
                              f" {'(flagged)' if qa_result.flag[xid, yid] else ''}")
 
-    def _do_qa_bandpass(self, inputs):
+    def _do_qa_bandpass(self, inputs: WvrgcalInputs) -> BandpassResults:
         """
         Create a bandpass caltable for QA analysis, returning the result of
         the worker bandpass task.
@@ -467,7 +470,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             return result
 
     @staticmethod
-    def _do_user_qa_bandpass(inputs):
+    def _do_user_qa_bandpass(inputs: WvrgcalInputs) -> BandpassResults:
         """
         Accept and return the bandpass result affixed to the inputs.
 
@@ -478,7 +481,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         bp_result.accept(inputs.context)
         return bp_result
 
-    def _do_new_qa_bandpass(self, inputs):
+    def _do_new_qa_bandpass(self, inputs: WvrgcalInputs) -> BandpassResults:
         """
         Create a new bandpass caltable by spawning a bandpass worker task, 
         merging the results with the context.
@@ -510,7 +513,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             result.accept(inputs.context)
         return result
 
-    def _do_nowvr_gaincal(self, inputs):
+    def _do_nowvr_gaincal(self, inputs: WvrgcalInputs) -> GaincalResults:
         # do a phase calibration on the bandpass and phase
         # calibrators with B preapplied
         LOG.info('Calculating phase calibration with B applied')
@@ -527,12 +530,12 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             result = self._do_qa_gaincal(inputs, nowvr_caltable_namer)            
             return result
 
-    def _do_wvr_gaincal(self, inputs):
+    def _do_wvr_gaincal(self, inputs: WvrgcalInputs) -> GaincalResults:
         # get namer that will add '.flags_1_2.wvr' to caltable filename 
         wvr_caltable_namer = self._get_wvr_caltable_namer(inputs)            
         return self._do_qa_gaincal(inputs, wvr_caltable_namer)                    
 
-    def _do_qa_gaincal(self, inputs, caltable_namer):
+    def _do_qa_gaincal(self, inputs: WvrgcalInputs, caltable_namer: Callable[[str], str]) -> GaincalResults:
         """
         Generate a new gain caltable via a call to a child pipeline task.
 
@@ -560,11 +563,11 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         return result
 
     @staticmethod
-    def _get_nowvr_caltable_namer():
+    def _get_nowvr_caltable_namer() -> Callable[[str], str]:
         """        
         Returns a function that inserts a '.nowvr' component into a filename.
         """
-        def caltable_namer(caltable):
+        def caltable_namer(caltable: str) -> str:
             root, ext = os.path.splitext(caltable)
             new_caltable_name = '%s.nowvr%s' % (root, ext)
             LOG.debug('WVR uncorrected phase RMS gain table is %s' %
@@ -574,14 +577,14 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         return caltable_namer
 
     @staticmethod
-    def _get_wvr_caltable_namer(inputs):
+    def _get_wvr_caltable_namer(inputs: WvrgcalInputs) -> Callable[[str], str]:
         """        
         Returns a function that inserts a ''.flagged_<N>_antennas.wvr' component into a
         filename.
         """
         flags = '.flagged_%d_antennas' % len(inputs.wvrflag) if inputs.wvrflag else ''
 
-        def caltable_namer(caltable):
+        def caltable_namer(caltable: str) -> str:
             root, ext = os.path.splitext(caltable)
             new_caltable = '%s%s.wvr%s' % (root, flags, ext)
             LOG.debug('WVR-corrected phase RMS gain table is %s' %
@@ -591,9 +594,18 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         return caltable_namer    
 
     @staticmethod
-    def _get_wvrinfos(result):
+    def _get_wvrinfos(result: Dict) -> List[WVRInfo]:
+        """
+        Retrieve necessary information from the result returned by the CASA
+        'wvrgcal' task.
 
-        def to_microns(x):
+        Args:
+            result: result dictionary returned by CASA 'wvrgcal'
+
+        Returns:
+            List containing WVR info for each antenna.
+        """
+        def to_microns(x: float) -> measures.Distance:
             return measures.Distance(x, measures.DistanceUnits.MICROMETRE)
 
         # copy result in case we need it unaltered elsewhere, then convert raw
