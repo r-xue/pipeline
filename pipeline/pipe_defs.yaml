@@ -1,0 +1,63 @@
+
+casa_config:
+  datapath: ""
+  rundata:
+  nologger: True
+  telemetry: False
+  crashreporter: False
+  log2term: True
+  nogui: True
+  agg: True
+pipe_config:
+  version:
+  pps_config:
+  flux_service_url: 'https://almascience.org/sc/flux'
+  flux_service_url_backup: 'https://asa.alma.cl/sc/flux'
+  vislist:
+  procedure:
+  ppr_vla:
+  ppr_alma:
+  loglevel: 'debug'
+  loglevel: "debug"
+  memstats: False
+  pps_cleanup: True
+  pps_backup: True  
+session_profile:
+  conda_env: 'pipe1669'
+  conda_dir:
+  name: 'default'
+  scheduler: "proc" # 'slurm'
+  omp_num_threads: 4
+  mpicasa: False
+  xvfb: True
+  casashell: True
+  mpicasa: True
+  oversubscribe: True
+  background: True
+  psrecord: True
+  chdir:
+  slurm:
+    mem:
+    mem-per-cpu:
+    ntasks: 8
+    time: "8-0:0:0"
+    nodelist:
+    partition: "batch"
+    chdir:
+    requeue: False
+    export:
+    job-name:
+    nodelist:
+    chdir:
+    output:
+    error: 
+    mail-type: 'BEGIN,END,FAIL'
+    nodes: '1-1'
+    ntasks: 8
+    mail-user:
+    time: '8-0:0:0' 
+    cpus-per-task: 
+    mem-per-cpu: '30G'
+    mem-bind: 
+    mem: 
+    cmds: []
