@@ -113,7 +113,7 @@ def detect_contamination(context: 'Context',
     masked_average_spectrum = np.nanmean(np.where(mask_map > 0.5, cube_regrid, np.nan), axis=(1, 2))
 
     # Generate the contamination report figures
-    _make_figures(image_obj, peak_sn_map, mask_map, rms_map, masked_average_spectrum,
+    _make_figures(peak_sn_map, mask_map, rms_map, masked_average_spectrum,
                   peak_sn_threshold, spectrum_at_peak, idy, idx, output_name,
                   freq_spec, dir_spec)
 
@@ -187,8 +187,7 @@ def _slice_and_calc_RMS_of_cube_regrid(naxis: NAxis,
     return np.sqrt(stddevsq + meansq)
 
 
-def _make_figures(image: 'sd_display.SpectralImage',
-                  peak_sn_map: 'sdtyping.NpArray2D',
+def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
                   mask_map: 'sdtyping.NpArray2D',
                   rms_map: 'sdtyping.NpArray2D',
                   masked_average_spectrum: 'sdtyping.NpArray1D',
@@ -203,7 +202,6 @@ def _make_figures(image: 'sd_display.SpectralImage',
     Create figures to visualize contamination.
 
     Args:
-        image (SpectralImage): The image object.
         peak_sn_map (NpArray2D): Array of the peak S/N.
         mask_map (NpArray2D): Array of the mask map.
         rms_map (NpArray2D): Array of the RMS map.
@@ -216,29 +214,17 @@ def _make_figures(image: 'sd_display.SpectralImage',
         freq_spec (FrequencySpec, optional): Frequency specification. Defaults to None.
         dir_spec (DirectionSpec, optional): Direction specification. Defaults to None.
     """
+    
     # Initialize the figure with a specified size
     _figure = figure.Figure(figsize=(20, 5))
-    _grid = gridspec.GridSpec( 1, 3, width_ratios=[1,1,1])
-    
-    # Set width spacing value of each grids. (default to 0.2)
-    _grid.update(wspace=0.3)
-    
-    # Calculate the plot-colorbar width scaling factor if shape of the plot is landscape
-    if image.nx > image.ny:
-        _factor = (image.nx/image.ny)**0.3
-    else:
-        _factor = 1.0
-    _width_ratio = [int(20 * _factor), 1]
-    _wspace = 0.3 / _factor
-
-    # Create subplots(Axes) for peak S/N map, mask map, and masked averaged spectrum
+    _grid = gridspec.GridSpec( 1, 3, width_ratios=[1,1,1], wspace=0.3)
 
     peak_sn_plot, peak_sn_colorbar = \
-        map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=_width_ratio,
-                                                                  subplot_spec=_grid[0], wspace=_wspace))
+        map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=[20, 1],
+                                                                  subplot_spec=_grid[0]))
     mask_map_plot, mask_map_colorbar = \
-        map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=_width_ratio,
-                                                                  subplot_spec=_grid[1], wspace=_wspace))
+        map(_figure.add_subplot, gridspec.GridSpecFromSubplotSpec(1, 2, width_ratios=[20, 1],
+                                                                  subplot_spec=_grid[1]))
     masked_avg_sp_plot = _figure.add_subplot(_grid[2])
     kw = {}
 
@@ -271,7 +257,6 @@ def _make_figures(image: 'sd_display.SpectralImage',
                    peak_sn_threshold, dir_unit, kw)
     _plot_masked_averaged_spectrum(masked_avg_sp_plot, rms_map, masked_average_spectrum,
                                    peak_sn_threshold, spectrum_at_peak, freq_spec)
-
     # Save the figure to the specified output file
     _figure.savefig(output_name, bbox_inches="tight")
 
@@ -318,7 +303,7 @@ def _plot_peak_SN_map(plot: 'Axes',
     # dummy scatter to display a legend
     plot.scatter([], [], s=50, marker='o', facecolors='none',
                  edgecolors='grey', linewidth=3, label="Max")
-    plot.legend(bbox_to_anchor=(1.13, 0.99), loc='lower right', columnspacing=0.8)
+    plot.legend(bbox_to_anchor=(1,1), loc='lower left', borderaxespad=0.5)
 
 
 def _plot_mask_map(plot: 'Axes',
@@ -396,10 +381,9 @@ def _display_colorbar(plot: 'Axes',
         **options)
     
     # set position of the colorbar
-    ipos = plot.get_position()
+    ppos = plot.get_position()
     cpos = colorbar.get_position()
-    colorbar.set_position([cpos.x0 - cpos.width * 2.0, ipos.y0 + ipos.height * 0.05, 
-            cpos.width, ipos.height * 0.9])
+    colorbar.set_position([ppos.x1+0.005, ppos.y0, cpos.x1-cpos.x0, ppos.y1-ppos.y0])
 
 
 def _plot_masked_averaged_spectrum(plot: 'Axes',
