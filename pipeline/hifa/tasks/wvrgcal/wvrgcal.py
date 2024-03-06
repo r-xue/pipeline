@@ -343,8 +343,18 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         # SpW order was specified explicitly, then calculate an order here based
         # on SpW bandwidth and Tsys; otherwise use the specified order.
         if inputs.qa_spw == '':
-            atmheuristics = atm_heuristic.AtmHeuristics(context=inputs.context, vis=inputs.vis)
-            # Preferably rank spws by Tsys and bandwidth:
+            # PIPE-2056: if the observing mode is band-to-band, then restrict
+            # the list of QA SpWs to only the diffgain science SpWs, otherwise
+            # use all science SpWs.
+            if inputs.ms.is_band_to_band:
+                spws = inputs.ms.get_diffgain_spectral_windows()['SCIENCE']
+            else:
+                spws = inputs.ms.get_spectral_windows(science_windows_only=True)
+
+            # Initialize atmosphere heuristics.
+            atmheuristics = atm_heuristic.AtmHeuristics(context=inputs.context, vis=inputs.vis, spw=spws)
+
+            # Create a ranked list preferably by Tsys and SpW bandwidth.
             qa_spw_list = atmheuristics.spwid_rank_by_tsys_and_bandwidth(qa_intent)
 
             # If ranking by Tsys failed (e.g. no Tsys table, or due to

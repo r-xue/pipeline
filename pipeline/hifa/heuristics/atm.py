@@ -5,6 +5,7 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 from pipeline.domain import measures
+from pipeline.domain.spectralwindow import SpectralWindow
 from pipeline.h.heuristics import tsysspwmap
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.h.tasks.common import commonresultobjects
@@ -15,14 +16,12 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class AtmHeuristics(object):
-    def __init__(self, context: Context, vis: str):
+    def __init__(self, context: Context, vis: str, spw: List[SpectralWindow]):
         self.context = context
         self.vis = vis
+        self.science_spws = spw
         self.opacities = {}
         self.calculated = False
-
-        ms = context.observing_run.get_ms(name=vis)
-        self.science_spws = ms.get_spectral_windows(science_windows_only=True)
 
     def _calculate(self):
         LOG.info("Calculating opacities for {}...".format(os.path.basename(self.vis)))
