@@ -204,6 +204,15 @@ class MeasurementSet(object):
     def basename(self):
         return os.path.basename(self.name)
 
+    @property
+    def is_band_to_band(self) -> bool:
+        # PIPE-2084: declares whether this MS is for band-to-band
+        # interferometry. This is deemed True if either the observing mode
+        # declares it as band-to-band, or if the diffgain intent + SpW setup are
+        # consistent with band-to-band (latter covers datasets that don't have
+        # correct observing mode set in their metadata).
+        return "BandToBand Interferometry" in self.observing_modes or self.get_diffgain_mode() == "B2B"
+
     def get_antenna(self, search_term=''):
         if search_term == '':
             return self.antennas
