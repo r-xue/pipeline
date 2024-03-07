@@ -39,6 +39,7 @@ Example #5: process uid123.tar.gz with a log level of TRACE
 import ast
 import collections
 import os
+import tempfile
 import traceback
 import xml.etree.ElementTree as ElementTree
 
@@ -70,8 +71,69 @@ def _create_context(loglevel, plotlevel, name):
     # something like pipeline-procedure_hifa_calimage).
     pipeline = launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
                                  name=name)
-    h_cli.stack[h_cli.PIPELINE_NAME] = pipeline
     return pipeline.context
+
+
+def _register_context(loglevel: str, plotlevel: str, context: launcher.Context):
+    """Register given context to global scope.
+
+    If pipeline context already exists in global scope, it is saved on
+    disk to avoid being overwritten.
+
+    Args:
+        loglevel: Logging level
+        plotlevel: Plot level
+        context: Pipeline context object
+    """
+    # check if global context exists
+    pipeline_instance = h_cli.stack.get(h_cli.PIPELINE_NAME, None)
+    if pipeline_instance and isinstance(pipeline_instance, launcher.Pipeline):
+        # if global context exists, check identity with given context
+        global_context = pipeline_instance.context
+        if global_context == context:
+            # context is already registerd
+            return
+        else:
+            # if they are not identical, check their names
+            if global_context.name != context.name:
+                # save global context with intrinsic name
+                global_context.save()
+                context_file = f'{global_context.name}.context'
+                LOG.info(f'Global context exists. Saved it {context_file} to disk.')
+            else:
+                # save global context with different name to avoid
+                # name conflict with new one
+                for i in range(10):
+                    context_file = f'{global_context.name}-{i}.context'
+                    if not os.path.exists(context_file):
+                        global_context.save(context_file)
+                        LOG.info(f'Global context exists. Saved it {context_file} to disk.')
+                        break
+                else:
+                    # failed attempt to find appropriate context name
+                    # it should rarely happen, but overwrite existing context
+                    # if it happened
+                    LOG.warning('Existing Pipeline context will be overridden by the current pipeline processing.')
+
+    # register given context to global scope
+    with tempfile.TemporaryDirectory(dir='.') as temp_dir:
+        context_name = os.path.join(temp_dir, context.name)
+        try:
+            # to disable some log messages during registration
+            temp_loglevel = 'error'
+            logging.set_logging_level(level=temp_loglevel)
+            context.save(context_name)
+            # create pipeline instance using temporary context
+            pipeline_instance = launcher.Pipeline(
+                loglevel=temp_loglevel, plotlevel=plotlevel,
+                context=context_name
+            )
+            # then, replace context
+            pipeline_instance.context = context
+            h_cli.stack[h_cli.PIPELINE_NAME] = pipeline_instance
+        finally:
+            # set user-specified loglevel
+            logging.set_logging_level(level=loglevel)
 
 
 def _get_context_name(procedure):
@@ -196,6 +258,8 @@ def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
         context = _create_context(loglevel, plotlevel, name)
         procedure_title = _get_procedure_title(procedure)
         context.set_state('ProjectStructure', 'recipe_name', procedure_title)
+
+    _register_context(loglevel, plotlevel, context)
 
     if session is None:
         session = ['default'] * len(vis)

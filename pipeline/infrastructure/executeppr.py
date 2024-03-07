@@ -61,6 +61,9 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
        Resume execution from the 'breakpoint' in PPR.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='resume')
     """
+    # save existing context to disk
+    save_existing_context()
+
     # Useful mode parameters
     echo_to_screen = interactive
     workingDir = None
@@ -302,6 +305,30 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
     casa_tools.set_log_origin(fromwhere='')
 
     return
+
+
+def save_existing_context():
+    """Save existing context to disk.
+
+    Save existing global pipeline context to avoid
+    being overwritten by newly created one.
+    """
+    try:
+        cli.h_save()
+    except Exception:
+        # Since h_save raises exception if no context is registered,
+        # just continue processing in this case
+        pass
+    else:
+        # Last-saved context in the current working directory should be
+        # the one saved by the h_save task above.
+        context_files = sorted(
+            (f for f in os.listdir() if f.endswith('.context')),
+            key=lambda f: os.stat(f).st_mtime
+        )
+        assert len(context_files) > 0
+        context_file = context_files[-1]
+        casa_tools.post_to_log(f'Saved existing context {context_file} to disk.')
 
 
 def export_on_exception(context, errorfile):

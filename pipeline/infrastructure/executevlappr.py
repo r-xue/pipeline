@@ -16,7 +16,7 @@ from . import exceptions
 from . import project
 from . import utils
 from .. import cli
-from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getPprObject
+from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getPprObject, save_existing_context
 
 
 def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
@@ -38,6 +38,9 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
             'summary'
         interactive: If True, print pipeline log to STDOUT.
     """
+    # save existing context to disk
+    save_existing_context()
+
     # Useful mode parameters
     echo_to_screen = interactive
     workingDir = None
