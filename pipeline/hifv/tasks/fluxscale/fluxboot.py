@@ -142,14 +142,23 @@ class Fluxboot(basetask.StandardTaskTemplate):
         for spw, band in spw2band.items():
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
-
-        sources, flux_densities, spws, weblog_results,\
-        spindex_results, caltable, fluxscale_result = self._do_fluxboot(band2spw)
+        sources = []
+        flux_densities = []
+        spws = []
+        weblog_results = []
+        spindex_results = []
+        caltable = []
+        fluxscale_result = []
+        vis = self.inputs.vis
+        try:
+            sources, flux_densities, spws, weblog_results, spindex_results, caltable, fluxscale_result = self._do_fluxboot(band2spw)
+        except Exception as ex:
+            LOG.warning(ex)
 
         return FluxbootResults(sources=sources, flux_densities=flux_densities, spws=spws,
-                               weblog_results=weblog_results,
-                               spindex_results=spindex_results, vis=self.inputs.vis, caltable=caltable,
-                               fluxscale_result=fluxscale_result)
+                    weblog_results=weblog_results,
+                    spindex_results=spindex_results, vis=vis, caltable=caltable,
+                    fluxscale_result=fluxscale_result)
 
     def analyse(self, results):
         return results
@@ -258,21 +267,25 @@ class Fluxboot(basetask.StandardTaskTemplate):
             fluxphase = 'fluxphaseshortgaincal.g'
 
             for band, spwlist in band2spw.items():
-                append = False
-                isdir = os.path.isdir(fluxphase)
-                if isdir:
-                    append = True
-                    LOG.info("Appending to existing table: {!s}".format(fluxphase))
+                try:
+                    append = False
+                    isdir = os.path.isdir(fluxphase)
+                    if isdir:
+                        append = True
+                        LOG.info("Appending to existing table: {!s}".format(fluxphase))
+                    if band in self.inputs.context.evla['msinfo'][m.name].new_gain_solint1.keys():
+                        new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
 
-                new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
+                        LOG.info("Making gain tables for flux density bootstrapping")
+                        LOG.info("Short solint = " + new_gain_solint1 + " for band {!s}".format(band))
 
-                LOG.info("Making gain tables for flux density bootstrapping")
-                LOG.info("Short solint = " + new_gain_solint1 + " for band {!s}".format(band))
-
-                self._do_gaincal(calMs, fluxphase, 'p', [''],
-                                 solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt,
-                                 spw=','.join(spwlist), append=append)
-
+                        self._do_gaincal(calMs, fluxphase, 'p', [''],
+                                        solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt,
+                                        spw=','.join(spwlist), append=append)
+                except KeyError as ex:
+                    LOG.warning("No data found for {!s} band".format(ex))
+                except Exception as ex:
+                    LOG.warning(ex)
             # ----------------------------------------------------------------------------
             # New Heuristics, CAS-9186
             field_objects = m.get_fields(intent=['AMPLITUDE', 'BANDPASS', 'PHASE'])
@@ -285,35 +298,39 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             for i, field in enumerate(field_objects):
                 for band, spwlist in band2spw.items():
-                    calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
+                    try:
+                        calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
 
-                    scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
-                    scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=','.join(spwlist))])
+                        scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
+                        scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=','.join(spwlist))])
 
-                    calscanslist = list(map(int, scanids_perband.split(',')))
-                    scanobjlist = m.get_scans(scan_id=calscanslist,
-                                              scan_intent=['AMPLITUDE', 'BANDPASS', 'PHASE'])
-                    fieldidlist = []
-                    for scanobj in scanobjlist:
-                        fieldobj, = scanobj.fields
-                        if str(fieldobj.id) not in fieldidlist:
-                            fieldidlist.append(str(fieldobj.id))
+                        calscanslist = list(map(int, scanids_perband.split(',')))
+                        scanobjlist = m.get_scans(scan_id=calscanslist,
+                                                scan_intent=['AMPLITUDE', 'BANDPASS', 'PHASE'])
+                        fieldidlist = []
+                        for scanobj in scanobjlist:
+                            fieldobj, = scanobj.fields
+                            if str(fieldobj.id) not in fieldidlist:
+                                fieldidlist.append(str(fieldobj.id))
 
-                    if str(field.id) in fieldidlist:
-                        append = False
-                        isdir = os.path.isdir(fluxflagtable)
-                        if isdir:
-                            append = True
-                            LOG.info("Appending to existing table: {!s}".format(fluxflagtable))
+                        if str(field.id) in fieldidlist:
+                            append = False
+                            isdir = os.path.isdir(fluxflagtable)
+                            if isdir:
+                                append = True
+                                LOG.info("Appending to existing table: {!s}".format(fluxflagtable))
+                            if band in self.inputs.context.evla['msinfo'][m.name].gain_solint2.keys():
+                                gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
+                                LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
 
-                        gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
-                        LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
-
-                        self._do_gaincal(calMs, fluxflagtable, 'ap', [fluxphase],
-                                         solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
-                                         solnorm=True, append=append, fluxflag=True,
-                                         vlassmode=vlassmode, spw=','.join(spwlist))
-
+                                self._do_gaincal(calMs, fluxflagtable, 'ap', [fluxphase],
+                                                solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
+                                                solnorm=True, append=append, fluxflag=True,
+                                                vlassmode=vlassmode, spw=','.join(spwlist))
+                    except KeyError as ex:
+                        LOG.warning("No data found for {!s} band".format(ex))
+                    except Exception as ex:
+                        LOG.warning(ex)
             # use flagdata to clip fluxflag.g outside the range 0.9-1.1
             flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
                                           datacolumn='CPARAM', clipminmax=[0.9, 1.1], clipoutside=True,
@@ -336,12 +353,15 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 if isdir:
                     append = True
                     LOG.info("Appending to existing table: {!s}".format(caltable))
-
-                gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
-
-                self._do_gaincal(calMs, caltable, 'ap', [fluxphase],
-                                 solint=gain_solint2, minsnr=5.0, refAnt=refAnt, append=append, spw=','.join(spwlist))
-
+                if band in self.inputs.context.evla['msinfo'][m.name].gain_solint2.keys():
+                    gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
+                    try:
+                        self._do_gaincal(calMs, caltable, 'ap', [fluxphase],
+                                    solint=gain_solint2, minsnr=5.0, refAnt=refAnt, append=append, spw=','.join(spwlist))
+                    except Exception as ex:
+                        LOG.warning(str(ex))
+                else:
+                    LOG.warning("No data found for {!s} band".format(band))
             LOG.info("Gain table " + caltable + " is ready for flagging.")
         else:
             caltable = self.inputs.caltable

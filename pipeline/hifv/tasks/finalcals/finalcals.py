@@ -292,19 +292,24 @@ class Finalcals(basetask.StandardTaskTemplate):
         finalphasegaincaltable = tableprefix + str(stage_number) + '_8.' + 'finalphasegaincal.tbl'
 
         for band, spwlist in band2spw.items():
-            new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
-            phaseshortgaincal_results = self._do_calibratorgaincal(calMs, phaseshortgaincaltable,
+            try:
+                new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
+                phaseshortgaincal_results = self._do_calibratorgaincal(calMs, phaseshortgaincaltable,
                                                                    new_gain_solint1, 3.0, 'p', [''], refAnt,
                                                                    refantmode=refantmode, spw=','.join(spwlist))
 
-            gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
-            finalampgaincal_results = self._do_calibratorgaincal(calMs, finalampgaincaltable, gain_solint2, 5.0,
-                                                                 'ap', [phaseshortgaincaltable], refAnt,
-                                                                 refantmode=refantmode, spw=','.join(spwlist))
+                gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
+                finalampgaincal_results = self._do_calibratorgaincal(calMs, finalampgaincaltable, gain_solint2, 5.0,
+                                                                    'ap', [phaseshortgaincaltable], refAnt,
+                                                                    refantmode=refantmode, spw=','.join(spwlist))
 
-            finalphasegaincal_results = self._do_calibratorgaincal(calMs, finalphasegaincaltable, gain_solint2,
-                                                                   3.0, 'p', [finalampgaincaltable], refAnt,
-                                                                   refantmode=refantmode, spw=','.join(spwlist))
+                finalphasegaincal_results = self._do_calibratorgaincal(calMs, finalphasegaincaltable, gain_solint2,
+                                                                    3.0, 'p', [finalampgaincaltable], refAnt,
+                                                                    refantmode=refantmode, spw=','.join(spwlist))
+            except KeyError as ex:
+                LOG.warning("No data found for {!s} band".format(ex))
+            except Exception as ex:
+                LOG.warning(str(ex))
 
         tablesToAdd = [(ktypecaltable, '', ''), (bpcaltable, 'linear,linearflag', ''),
                        (avgpgain, '', ''), (finalampgaincaltable, '', ''),
@@ -823,6 +828,8 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         """
 
+        # PIPE-1729, setting fluxdensity to 1 for calibrators failed in hifv_fluxboot.
+        fluxdensity = -1 if os.path.isdir('fluxgaincalFcal_{!s}.g'.format(field)) else 1
         try:
             task_args = {'vis': calMs,
                          'field': field,
@@ -831,7 +838,7 @@ class Finalcals(basetask.StandardTaskTemplate):
                          'model': model_image,
                          'listmodels': False,
                          'scalebychan': True,
-                         'fluxdensity': -1,
+                         'fluxdensity': fluxdensity,
                          'standard': standard.Standard()(field),
                          'usescratch': True}
 

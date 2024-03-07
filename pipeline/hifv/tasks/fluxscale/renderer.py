@@ -181,12 +181,15 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         webdicts = {}
 
         for result in results:
+            try:
 
-            plotter = fluxbootdisplay.fluxgaincalSummaryChart(context, result, result.caltable)
-            plots = plotter.plot()
+                plotter = fluxbootdisplay.fluxgaincalSummaryChart(context, result, result.caltable)
+                plots = plotter.plot()
 
-            plotter = fluxbootdisplay.fluxbootSummaryChart(context, result)
-            plots.extend(plotter.plot())
+                plotter = fluxbootdisplay.fluxbootSummaryChart(context, result)
+                plots.extend(plotter.plot())
+            except Exception as ex:
+                LOG.warning(str(ex))
 
             ms = os.path.basename(result.inputs['vis'])
 
@@ -243,12 +246,14 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
                                                     'fitteddata': row['fitteddata']})
 
-            plotter = fluxbootdisplay.residualsSummaryChart(context, result, webdicts[ms])
-            plots.extend(plotter.plot())
+            try:
+                plotter = fluxbootdisplay.residualsSummaryChart(context, result, webdicts[ms])
+                plots.extend(plotter.plot())
 
-            plotter = fluxbootdisplay.modelfitSummaryChart(context, result, webdicts[ms])
-            plots.extend(plotter.plot())
-
+                plotter = fluxbootdisplay.modelfitSummaryChart(context, result, webdicts[ms])
+                plots.extend(plotter.plot())
+            except Exception as ex:
+                LOG.warning(str(ex))
             summary_plots[ms] = plots
 
             weblog_results[ms] = webdicts[ms]

@@ -149,15 +149,18 @@ class Solint(basetask.StandardTaskTemplate):
         split_result = self._do_split(calMs)
 
         for band, spwlist in band2spw.items():
-            longsolint_band, gain_solint2_band, shortsol2_band, short_solint_band, \
-            new_gain_solint1_band, vis, bpdgain_touse_band = self._do_solint(band, spwlist, calMs)
+            try:
+                longsolint_band, gain_solint2_band, shortsol2_band, short_solint_band, \
+                new_gain_solint1_band, vis, bpdgain_touse_band = self._do_solint(band, spwlist, calMs)
 
-            longsolint[band] = longsolint_band
-            gain_solint2[band] = gain_solint2_band
-            shortsol2[band] = shortsol2_band
-            short_solint[band] = short_solint_band
-            new_gain_solint1[band] = new_gain_solint1_band
-            bpdgain_touse[band] = bpdgain_touse_band
+                longsolint[band] = longsolint_band
+                gain_solint2[band] = gain_solint2_band
+                shortsol2[band] = shortsol2_band
+                short_solint[band] = short_solint_band
+                new_gain_solint1[band] = new_gain_solint1_band
+                bpdgain_touse[band] = bpdgain_touse_band
+            except Exception as ex:
+                    LOG.warning(str(ex))
 
         return SolintResults(longsolint=longsolint, gain_solint2=gain_solint2, shortsol2=shortsol2,
                              short_solint=short_solint, new_gain_solint1=new_gain_solint1, vis=vis,
@@ -474,7 +477,7 @@ class Solint(basetask.StandardTaskTemplate):
                         old_field = new_field
 
                     except KeyError:
-                        LOG.warning("WARNING: scan "+str(ii)+" is completely flagged and missing from " + calMs)
+                        LOG.warning("Scan "+str(ii)+" is completely flagged and missing from " + calMs)
 
         orig_durations = np.array(durations)
 
