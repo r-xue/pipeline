@@ -59,16 +59,6 @@ TaskArgs = collections.namedtuple('TaskArgs', 'vis infiles session')
 
 
 def _create_context(loglevel, plotlevel, name):
-    # TODO The following implementation is TBD.
-    # Pipeline context must be registered manually for Pipeline
-    # CLI tasks. This is usually done by h_init or h_resume
-    # when we work on Pipeline CLI tasks. However, we cannot use
-    # them because they don't support usecase required here.
-    # So, we should choose either (1) to use launcher directly or
-    # (2) to update h_init and h_resume to support the needs.
-    # Another option would be (3) to give up including recipe
-    # name in the Pipeline context name (current context name is
-    # something like pipeline-procedure_hifa_calimage).
     pipeline = launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
                                  name=name)
     return pipeline.context
