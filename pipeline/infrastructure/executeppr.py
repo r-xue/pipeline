@@ -186,7 +186,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
         session = defsession
 
         for key, value in sessionsDict.items():
-            if filenamer._sanitize_for_ms(asdm[1]) in value:
+            if filenamer.sanitize_for_ms(asdm[1]) in value:
                 session = key.lower()
                 break
 
