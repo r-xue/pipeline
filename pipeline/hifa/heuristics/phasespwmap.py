@@ -294,3 +294,38 @@ def simple_n2wspwmap(scispws: List[SpectralWindow], maxnarrowbw: str, maxbwfrac:
         return []
     else:
         return phasespwmap
+
+
+def update_spwmap_for_band_to_band(spwmap: List[int], dg_refspws: List[SpectralWindow],
+                                   dg_scispws: List[SpectralWindow]) -> List[int]:
+    """
+    This method updates the input SpW mapping to remap diffgain science SpW to
+    associated diffgain reference SpWs within the same baseband, and returns the
+    updated SpW mapping.
+
+    Args:
+        spwmap: SpW mapping to update
+        dg_refspws: diffgain reference SpWs
+        dg_scispws: diffgain science SpWs
+
+    Returns:
+        List representing the updated SpW mapping.
+    """
+    # Ensure that the length of the input SpW map is sufficient to include all
+    # diffgain SpWs; if necessary, add the missing SpWs, where each missing SpW
+    # is mapped to itself.
+    max_spw_id = max(spw.id for spw in dg_refspws + dg_scispws)
+    if len(spwmap) < max_spw_id + 1:
+        spwmap.extend(list(range(len(spwmap), max_spw_id + 1)))
+
+    # Modify the SpW mapping to ensure that diffgain science SpWs are remapped
+    # to a diffgain reference SpW with the same baseband.
+    # PIPE-2059: this mapping can in principle be to any of the diffgain SpWs
+    # that match the baseband, but here it will preferentially match to the
+    # diffgain reference SpW with the highest ID.
+    for dg_scispw in dg_scispws:
+        for dg_refspw in dg_refspws:
+            if dg_scispw.baseband == dg_refspw.baseband:
+                spwmap[dg_scispw.id] = spwmap[dg_refspw.id]
+
+    return spwmap

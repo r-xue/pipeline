@@ -18,6 +18,7 @@ from pipeline.hif.tasks.gaincal.common import GaincalResults
 from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
 from pipeline.hifa.heuristics.phasespwmap import simple_n2wspwmap
 from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
+from pipeline.hifa.heuristics.phasespwmap import update_spwmap_for_band_to_band
 from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -125,7 +126,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # Do not derive separate SpW mappings for fields that also cover any of
         # these calibrator intents:
-        exclude_intents = 'AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE'
+        exclude_intents = 'AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE,DIFFGAIN'
 
         # PIPE-629: if requested, unregister old spwphaseup calibrations from
         # local copy of context, to stop these from being pre-applied during
@@ -298,8 +299,22 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Simplify the inputs
         inputs: SpwPhaseupInputs = self.inputs
 
-        # Get a list of the science spws.
-        scispws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)
+        # PIPE-2059: select what SpWs to analyse.
+        if self.inputs.ms.is_band_to_band:
+            # For a BandToBand MS, restrict the SpWs to diffgain reference SpWs
+            # for PHASE intent, or to diffgain science SpWs for CHECK intent.
+            dg_refspws, dg_scispws = inputs.ms.get_diffgain_spectral_windows(task_arg=inputs.spw)
+            if intent == 'PHASE':
+                spws = dg_refspws
+            elif intent == 'CHECK':
+                spws = dg_scispws
+            else:
+                LOG.warning(f"{inputs.ms.basename}: unexpected intent ({intent}) encountered while deriving SpW mapping"
+                            f" for BandToBand; cannot create SpW mapping.")
+                spws = []
+        else:
+            # For all other measurement sets, select all science SpWs.
+            spws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)
 
         # By default, combine is False (i.e., no combining of spws), the
         # spwmap is empty (i.e. no mapping of spws), and there are no spws
@@ -316,27 +331,28 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         combined_snrs = []
         spwids = []
 
-        # PIPE-1436: if there is only one science SpW, then no SpW re-mapping
-        # can be done. In this case, just run the SNR test.
-        if len(scispws) == 1:
+        # PIPE-1436: if there is only one SpW, then no SpW re-mapping can be
+        # done. In this case, just run the SNR test.
+        if len(spws) == 1:
             LOG.info(f'Only 1 science SpW found for {inputs.ms.basename}, intent={intent}, field={field}, so using'
                      f' standard SpW map for this data selection.')
-            # Run a task to estimate the gaincal SNR for given intent and field.
-            nosnrs, spwids, snrs, goodsnrs = self._do_snrtest(intent, field)
+            # Run a task to estimate the gaincal SNR for given intent, field,
+            # and spectral windows.
+            nosnrs, spwids, snrs, goodsnrs = self._do_snrtest(intent, field, ','.join(str(spw.id) for spw in spws))
 
-        # If there are multiple science SpWs, then continue with computing the
-        # optimal SpW map according to the rules defined by each mapping mode.
+        # If there are multiple SpWs, then continue with computing the optimal
+        # SpW map according to the rules defined by each mapping mode.
         elif inputs.hm_spwmapmode == 'auto':
-
-            # Run a task to estimate the gaincal SNR for given intent and field.
-            nosnrs, spwids, snrs, goodsnrs = self._do_snrtest(intent, field)
+            # Run a task to estimate the gaincal SNR for given intent, field,
+            # and spectral windows.
+            nosnrs, spwids, snrs, goodsnrs = self._do_snrtest(intent, field, ','.join(str(spw.id) for spw in spws))
 
             # No SNR estimates available, default to simple narrow-to-wide spw
             # mapping.
             if nosnrs:
                 LOG.warning(f'No SNR estimates for any spws - Forcing simple spw mapping for {inputs.ms.basename},'
                             f' intent={intent}, field={field}')
-                spwmap = simple_n2wspwmap(scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
+                spwmap = simple_n2wspwmap(spws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
                 LOG.info(f'Using spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
             # All spws have good SNR values, no spw mapping required.
@@ -353,7 +369,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                                 ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
 
                 # Create a spw mapping for combining spws.
-                spwmap = combine_spwmap(scispws)
+                spwmap = combine_spwmap(spws)
                 combine = True
                 LOG.info(f'Using combined spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
@@ -372,7 +388,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                                 ''.format([spwid for spwid, goodsnr in zip(spwids, goodsnrs) if goodsnr is None]))
 
                 # Create an SNR-based spw mapping.
-                goodmap, spwmap, _ = snr_n2wspwmap(scispws, snrs, goodsnrs)
+                goodmap, spwmap, _ = snr_n2wspwmap(spws, snrs, goodsnrs)
 
                 # If the SNR-based mapping gave a good match for all spws, then
                 # report the final phase up spw map.
@@ -385,7 +401,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                                 f' {inputs.ms.basename}')
 
                     # Create a spw mapping for combining spws.
-                    spwmap = combine_spwmap(scispws)
+                    spwmap = combine_spwmap(spws)
                     combine = True
                     LOG.info(f'Using combined spw map {spwmap} for'
                              f' {inputs.ms.basename}, intent={intent}, field={field}')
@@ -396,32 +412,38 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     low_combinedsnr_spws, combined_snrs = self._do_combined_snr_test(spwids, snrs, spwmap)
 
         elif inputs.hm_spwmapmode == 'combine':
-            spwmap = combine_spwmap(scispws)
+            spwmap = combine_spwmap(spws)
             combine = True
-            low_combinedsnr_spws = scispws
+            low_combinedsnr_spws = spws
             LOG.info(f'Using combined spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
         elif inputs.hm_spwmapmode == 'simple':
-            spwmap = simple_n2wspwmap(scispws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
+            spwmap = simple_n2wspwmap(spws, inputs.maxnarrowbw, inputs.minfracmaxbw, inputs.samebb)
             LOG.info(f'Using simple spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
         else:
             LOG.info(f'Using standard spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
+
+        # PIPE-2059: for the PHASE calibrator in a BandToBand MS, adjust the
+        # newly derived optimal SpW mapping to ensure that diffgain science SpWs
+        # are remapped to an associated diffgain reference SpW.
+        if self.inputs.ms.is_band_to_band and intent == 'PHASE':
+            spwmap = update_spwmap_for_band_to_band(spwmap, dg_refspws, dg_scispws)
 
         # Collect SNR info.
         snr_info = self._get_snr_info(spwids, snrs, combined_snrs)
 
         return SpwMapping(combine, spwmap, low_combinedsnr_spws, snr_info)
 
-    def _do_snrtest(self, intent: str, field: str) -> Tuple[bool, List, List, List]:
+    def _do_snrtest(self, intent: str, field: str, spw: str) -> Tuple[bool, List, List, List]:
         """
         Run gaincal SNR task to perform SNR test for specified intent and
         field.
 
         Args:
-            intent: intent for which to derive SpW mapping.
-            field: field for which to derive SpW mapping.
-
+            intent: intent for which to perform SNR test.
+            field: field for which to perform SNR test.
+            spw: SpW IDs for which to perform SNR test.
         Returns:
             Tuple containing
               * Boolean to denote whether no SNRs were derived for any SpW.
@@ -430,7 +452,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
               * list of booleans denoting whether derived SNR
                 was good (>= SNR threshold)
         """
-
         # Simplify inputs.
         inputs = self.inputs
 
@@ -439,11 +460,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             'vis': inputs.vis,
             'field': field,
             'intent': intent,
+            'spw': spw,
             'phasesnr': inputs.phasesnr,
             'bwedgefrac': inputs.bwedgefrac,
             'hm_nantennas': inputs.hm_nantennas,
             'maxfracflagged': inputs.maxfracflagged,
-            'spw': inputs.spw
         }
         task_inputs = gaincalsnr.GaincalSnrInputs(inputs.context, **task_args)
         gaincalsnr_task = gaincalsnr.GaincalSnr(task_inputs)
