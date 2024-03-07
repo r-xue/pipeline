@@ -347,7 +347,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             # the list of QA SpWs to only the diffgain science SpWs, otherwise
             # use all science SpWs.
             if inputs.ms.is_band_to_band:
-                spws = inputs.ms.get_diffgain_spectral_windows()['SCIENCE']
+                _, spws = inputs.ms.get_diffgain_spectral_windows()
             else:
                 spws = inputs.ms.get_spectral_windows(science_windows_only=True)
 
