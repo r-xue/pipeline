@@ -2,7 +2,7 @@ import os
 import collections
 import shutil
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Any, Dict
-
+from collections import defaultdict
 import numpy as np
 
 import pipeline.hif.heuristics.findrefant as findrefant
@@ -28,8 +28,10 @@ class testBPdcalsInputs(vdp.StandardInputs):
     weakbp = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
     doflagundernspwlimit = vdp.VisDependentProperty(default=False)
+    flagbaddef = vdp.VisDependentProperty(default=True)
+    iglist = vdp.VisDependentProperty(default={})
 
-    def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None):
+    def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, flagbaddef=None, iglist=None):
         """
         Args:
             context (:obj:): Pipeline context
@@ -38,7 +40,10 @@ class testBPdcalsInputs(vdp.StandardInputs):
             refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
             doflagunderspwlimit(Boolean): Will identify individual spw when less than nspwlimit bad spw
                                           Used in the flagging of bad deformatters heuristics
-
+            flagbaddef(Boolean, optional): Enable/disable bad deformatter flagging. Default is True.
+            iglist(dict, optional): When flagbaddef is True, skip bad deformatter flagging for elements in the ignore list.
+                          Format: {antName:{band:{spw}}}
+                          Example: {'ea02': {'L': {0, 1, '10~13'}}}
         """
         super(testBPdcalsInputs, self).__init__()
         self.context = context
@@ -48,6 +53,8 @@ class testBPdcalsInputs(vdp.StandardInputs):
         self.doflagundernspwlimit = doflagundernspwlimit
         self.gain_solint1 = 'int'
         self.gain_solint2 = 'int'
+        self.flagbaddef = flagbaddef
+        self.iglist = iglist
 
 
 class testBPdcalsResults(basetask.Results):
@@ -176,6 +183,11 @@ class testBPdcals(basetask.StandardTaskTemplate):
         phase_collection = {}
         num_antennas = {}
 
+        result_amp_perband = []
+        result_phase_perband = []
+        amp_collection_perband = defaultdict(list)
+        phase_collection_perband = defaultdict(list)
+        num_antennas_perband = len(m.antennas)
         for band, spwlist in band2spw.items():
 
             for i in [0, 1, 2]:
@@ -194,27 +206,31 @@ class testBPdcals(basetask.StandardTaskTemplate):
                 5.  Repeat up to three times and then just drive ahead.
                 """
 
-                LOG.debug("    RUNNING SECOND PART BADDEFORMATTERS    ")
-                result_amp_perband, result_phase_perband, amp_collection_perband, phase_collection_perband, \
-                num_antennas_perband, amp_job, phase_job = self._run_baddeformatters(bpcaltablename)
+                # PIPE-1183, adding an option to skip bad deformatter flagging.
+                if self.inputs.flagbaddef:
+                    LOG.debug("    RUNNING SECOND PART BADDEFORMATTERS    ")
+                    result_amp_perband, result_phase_perband, amp_collection_perband, phase_collection_perband, \
+                    num_antennas_perband, amp_job, phase_job = self._run_baddeformatters(bpcaltablename)
 
-                pct_amp_ant = len(result_amp_perband) / num_antennas_perband
-                pct_phase_ant = len(result_phase_perband) / num_antennas_perband
-                ant_threshold = 0.5
+                    pct_amp_ant = len(result_amp_perband) / num_antennas_perband
+                    pct_phase_ant = len(result_phase_perband) / num_antennas_perband
+                    ant_threshold = 0.5
 
-                if (pct_amp_ant < ant_threshold and pct_phase_ant < ant_threshold) or i == 2:
-                    if amp_job:
-                        LOG.info("Executing bad deformatters amp flag commands for band {!s}...".format(band))
-                        self._executor.execute(amp_job)
-                    if phase_job:
-                        LOG.info("Executing bad deformatters phase flag commands for band {!s}...".format(band))
-                        self._executor.execute(phase_job)
-                    break
+                    if (pct_amp_ant < ant_threshold and pct_phase_ant < ant_threshold) or i == 2:
+                        if amp_job:
+                            LOG.info("Executing bad deformatters amp flag commands for band {!s}...".format(band))
+                            self._executor.execute(amp_job)
+                        if phase_job:
+                            LOG.info("Executing bad deformatters phase flag commands for band {!s}...".format(band))
+                            self._executor.execute(phase_job)
+                        break
+                    else:
+                        # Criteria to finish not met - remove the first reference antenna from consideration
+                        self.ignorerefant.append(refant)
+                        LOG.warning("A baseband is determined to be bad for >50% of antennas.  "
+                                    "Removing reference antenna(s) {!s} and rerunning the test calibration.".format(','.join(self.ignorerefant)))
                 else:
-                    # Criteria to finish not met - remove the first reference antenna from consideration
-                    self.ignorerefant.append(refant)
-                    LOG.warning("A baseband is determined to be bad for >50% of antennas.  "
-                             "Removing reference antenna(s) {!s} and rerunning the test calibration.".format(','.join(self.ignorerefant)))
+                    LOG.info("Skipping bad deformatter flagging")
 
             gtypecaltable[band] = gtypecaltablename
             ktypecaltable[band] = ktypecaltablename
@@ -843,7 +859,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         num_antennas = len(m.antennas)
         startdate = m.start_time['m0']['value']
-
+        iglist = self.inputs.iglist
         LOG.info("Start date for flag bad deformatters is: " + str(startdate))
 
         if startdate <= 56062.7:
@@ -886,9 +902,25 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         for iant in calBPstatresult['antband']:
             antName = calBPstatresult['antDict'][iant]
+
+            # PIPE-1183, only antenna name provided in ignore list so
+            # skip bad deformatter flagging for all bands and spws corresponding to that antenna
+            isAntIgnored = True if antName in iglist.keys() else False
+            if isAntIgnored and len(iglist[antName]) == 0:
+                LOG.info("Skipping bad deformatter flagging for all bands and spws corresponding to {!s} antenna".format(antName))
+                continue
             badspwlist = []
             flaggedspwlist = []
+
             for rrx in calBPstatresult['antband'][iant]:
+                trrx = rrx.replace("EVLA_", "") if "EVLA_" in rrx else rrx
+                # PIPE-1183, antenna name and band provided in ignore list so
+                # skip bad deformatter flagging for spws corresponding to that antenna and band
+                isBandIgnored = True if isAntIgnored and  trrx in iglist[antName].keys() else False
+                if isBandIgnored and len(iglist[antName][trrx]) == 0:
+                    LOG.info("Skipping bad deformatter flagging for all spws corresponding to {!s} band and {!s} antenna".format(rrx, antName))
+                    continue
+
                 for bband in calBPstatresult['antband'][iant][rrx]:
                     # List of spw in this baseband
                     spwl = calBPstatresult['rxBasebandDict'][rrx][bband]
@@ -896,12 +928,23 @@ class testBPdcals(basetask.StandardTaskTemplate):
                     nbadspws = 0
                     badspws = []
                     flaggedspws = []
+                    ignoredSPWs = []
                     if len(spwl) > 0:
                         if doprintall:
                             LOG.info(' Ant %s (%s) %s %s processing spws=%s' %
                                      (str(iant), antName, rrx, bband, str(spwl)))
+                        if isBandIgnored:
+                            for ispw in iglist[antName][trrx]:
+                                if "~" not in str(ispw):
+                                    ignoredSPWs.append(ispw)
+                                else:
+                                    ignoredSPWs.append(np.arange(eval(ispw.split("~")[0]), eval(ispw.split("~")[1])))
 
+                        # PIPE-1183, skip bad deformatter flagging for SPWs in ignore list
                         for ispw in spwl:
+                            if ispw in ignoredSPWs:
+                                LOG.info("Skipping bad deformatter flagging for {!s} spw corresponding to {!s} band and {!s} antenna".format(ispw, rrx, antName))
+                                continue
                             testvalid = False
                             if ispw in calBPstatresult['antspw'][iant]:
                                 for poln in calBPstatresult['antspw'][iant][ispw]:
