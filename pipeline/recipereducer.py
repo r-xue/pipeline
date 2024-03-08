@@ -81,29 +81,30 @@ def _register_context(loglevel: str, plotlevel: str, context: launcher.Context):
         # if global context exists, check identity with given context
         global_context = pipeline_instance.context
         if global_context == context:
-            # context is already registerd
+            # context is already registered
             return
+        elif global_context.name != context.name:
+            # global context is different from given context
+            # save global context with intrinsic name
+            global_context.save()
+            context_file = f'{global_context.name}.context'
+            LOG.info(f'Global context exists. Saved it {context_file} to disk.')
         else:
-            # if they are not identical, check their names
-            if global_context.name != context.name:
-                # save global context with intrinsic name
-                global_context.save()
-                context_file = f'{global_context.name}.context'
-                LOG.info(f'Global context exists. Saved it {context_file} to disk.')
+            # global context is different from given context but
+            # they accidentally have the same name
+            # save global context with different name to avoid
+            # name conflict with new one
+            for i in range(10):
+                context_file = f'{global_context.name}-{i}.context'
+                if not os.path.exists(context_file):
+                    global_context.save(context_file)
+                    LOG.info(f'Global context exists. Saved it {context_file} to disk.')
+                    break
             else:
-                # save global context with different name to avoid
-                # name conflict with new one
-                for i in range(10):
-                    context_file = f'{global_context.name}-{i}.context'
-                    if not os.path.exists(context_file):
-                        global_context.save(context_file)
-                        LOG.info(f'Global context exists. Saved it {context_file} to disk.')
-                        break
-                else:
-                    # failed attempt to find appropriate context name
-                    # it should rarely happen, but overwrite existing context
-                    # if it happened
-                    LOG.warning('Existing Pipeline context will be overridden by the current pipeline processing.')
+                # failed attempt to find appropriate context name
+                # it should rarely happen, but overwrite existing context
+                # if it happened
+                LOG.warning('Existing Pipeline context will be overridden by the current pipeline processing.')
 
     # register given context to global scope
     with tempfile.TemporaryDirectory(dir='.') as temp_dir:
