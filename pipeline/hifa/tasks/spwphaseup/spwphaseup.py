@@ -1,7 +1,7 @@
 import collections
 import copy
 import os
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 import numpy
 import traceback
@@ -11,10 +11,11 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks.gaincal import gtypegaincal
 from pipeline.hif.tasks.gaincal.common import GaincalResults
+from pipeline.hifa.heuristics.phasemetrics import PhaseStabilityHeuristics
 from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
 from pipeline.hifa.heuristics.phasespwmap import simple_n2wspwmap
 from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
@@ -22,7 +23,6 @@ from pipeline.hifa.heuristics.phasespwmap import update_spwmap_for_band_to_band
 from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from pipeline.hifa.heuristics.phasemetrics import PhaseStabilityHeuristics
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -181,7 +181,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         return result
 
     @staticmethod
-    def _derive_phase_to_target_check_mapping(ms: MeasurementSet) -> Dict:
+    def _derive_phase_to_target_check_mapping(ms: MeasurementSet) -> Dict[str, Set]:
         """
         Derive mapping between PHASE calibrator fields (by name) and
         corresponding fields (by name) with TARGET / CHECK intent that these
@@ -561,8 +561,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return low_snr_spwids, combined_snrs
 
-    def _do_gaincal(self, caltable=None, field=None, intent=None, gaintype=None, combine=None, minblperant=None,
-                    minsnr=None) -> GaincalResults:
+    def _do_gaincal(self, caltable: Optional[str] = None, field: Optional[str] = None, intent: Optional[str] = None,
+                    gaintype: Optional[str] = None, combine: Optional[str] = None, minblperant: Optional[int] = None,
+                    minsnr: Optional[int] = None) -> GaincalResults:
         """
         Runs gaincal worker task separately for each SpectralSpec present
         among the requested SpWs, each appending to the same caltable.
@@ -765,7 +766,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return snr_info
 
-    def _do_decoherence_assessment(self) -> Tuple[Dict, str, str, List]:
+    def _do_decoherence_assessment(self) -> Tuple[Optional[Dict], Optional[str], Optional[str], List]:
         try:
             LOG.info("Starting phase RMS structure function decoherence assessment.")
 
@@ -859,7 +860,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         return snr_info
 
     @staticmethod
-    def _get_phasecal_params(spwmaps, intent, field):
+    def _get_phasecal_params(spwmaps: Dict[IntentField, SpwMapping], intent: str, field: str) -> Tuple[str, str]:
         # By default, no spw mapping or combining, and gaintype='G'.
         combine = ''
         gaintype = 'G'
@@ -879,8 +880,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 class SpwPhaseupResults(basetask.Results):
     def __init__(self, vis: str = None, phasecal_mapping: Dict = None, phaseup_result: GaincalResults = None,
                  snr_info: Dict = None, spwmaps: Dict = None, unregister_existing: Optional[bool] = False,
-                 phaserms_totaltime: str = None, phaserms_cycletime: str = None, phaserms_results = None,
-                 phaserms_antout: List = []):
+                 phaserms_totaltime: str = None, phaserms_cycletime: str = None,
+                 phaserms_results: Optional[Dict] = None, phaserms_antout: Optional[List] = None):
         """
         Initialise the phaseup spw mapping results object.
         """
@@ -888,6 +889,8 @@ class SpwPhaseupResults(basetask.Results):
 
         if spwmaps is None:
             spwmaps = {}
+        if phaserms_antout is None:
+            phaserms_antout = []
 
         self.vis = vis
         self.phasecal_mapping = phasecal_mapping
@@ -913,7 +916,7 @@ class SpwPhaseupResults(basetask.Results):
         # the context before merging in the newly derived caltable.
         if self.unregister_existing:
             # Identify the MS to process
-            vis: str = os.path.basename(self.inputs['vis'])
+            vis: str = os.path.basename(self.vis)
 
             # predicate function that triggers when the spwphaseup caltable is
             # detected for this MS
