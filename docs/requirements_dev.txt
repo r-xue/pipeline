@@ -1,0 +1,9 @@
+### PL dev/test/debug toolbox
+
+pytest-xdist==3.5.0         # https://github.com/pytest-dev/pytest-xdist
+pytest-cov==4.1.0           # https://github.com/pytest-dev/pytest-cov
+pytest-html==4.1.1          # https://pypi.org/project/pytest-html/
+junit2html==30.1.6          # https://github.com/inorton/junit2html, require jinja2
+johnnydep==1.20.4           # https://pypi.org/project/johnnydep
+memory_profiler==0.61.0     # https://pypi.org/project/memory-profiler/
+line_profiler==4.1.2        # https://github.com/pyutils/line_profiler
