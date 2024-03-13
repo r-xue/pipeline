@@ -297,7 +297,8 @@ class residualsSummaryChart(object):
                 frequencies = []
                 residuals = []
                 for datadict in datadicts:
-                    residuals.append(float(datadict['data']) - float(datadict['fitteddata']))
+                    # PIPE-989, use fractional residuals rather than the absolute residuals.
+                    residuals.append((float(datadict['data']) - float(datadict['fitteddata'])) / float(datadict['data']))
                     frequencies.append(float(datadict['freq']))
 
                 frequencies = np.array(frequencies)
@@ -344,7 +345,7 @@ class residualsSummaryChart(object):
         chartBox = ax1.get_position()
         ax1.set_position([chartBox.x0, chartBox.y0, chartBox.width * 0.6, chartBox.height])
         ax1.legend(loc='upper center', bbox_to_anchor=(1.45, 0.8), shadow=True, ncol=1)
-        ax1.set_ylabel('Residuals (data - fit) [Jy]', size=mysize)
+        ax1.set_ylabel('Residuals (data - fit / data) [Jy]', size=mysize)
         ax1.set_xlabel('log10 Frequency [Hz]', size=mysize)
         ax2.set_xlabel('Frequency [GHz]', size=mysize)
 
