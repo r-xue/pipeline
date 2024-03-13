@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools", "wheel", "csscompressor==0.9.5"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Pipeline"
+description = "Pipeline"
+requires-python = ">= 3.8"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Programming Language :: Python :: 3.8",
+]
+
+[project.urls]
+Documentation = "https://almascience.nrao.edu/processing/science-pipeline"
+Repository = "https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline"
+
+[project.scripts]
+pipe_exec = "pipeline.pipe_exec:cli_interface"
+pipe_sch = "pipeline.pipe_sch:cli_interface"
+
+
+[tool.setuptools.package-data]
+"*" = [
+    '*.css',
+    '*.egg',
+    '*.eot',
+    '*.gif',
+    '*.html',
+    '*.jpg',
+    '*.js',
+    '*.mak',
+    '*.mako',
+    '*.otf',
+    '*.png',
+    '*.svg',
+    '*.ttf',
+    '*.txt',
+    '*.woff',
+    '*.woff2',
+    '*.xml',
+    '*.yaml',
+    'version',
+]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+optional-dependencies.dev = { file = ["requirements_dev.txt"] }
+optional-dependencies.docs = { file = ["requirements_docs.txt"] }

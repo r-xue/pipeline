@@ -12,7 +12,7 @@
 # casashell
 
 future
-urllib3<2.0
+urllib3
 commonmark
 recommonmark
 nbsphinx # nbsphinx requires 'pandoc' (e.g. from macports or apt, not 'pandoc' from PyPI) to work properly.

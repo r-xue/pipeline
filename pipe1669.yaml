@@ -127,5 +127,4 @@ dependencies:
     - almatasks
     - casaplotms
     - casaplotserver
-    - -r requirements.txt
     - .
