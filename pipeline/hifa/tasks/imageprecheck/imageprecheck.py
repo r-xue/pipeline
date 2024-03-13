@@ -415,7 +415,6 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             # Calculate the length of the 190th baseline, used to set the upper limit on uvtaper. See PIPE-1104.
             length_of_190th_baseline = image_heuristics.calc_length_of_nth_baseline(190)
             reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
-            # self.calc_uvtaper method is only available in hifas_imageprecheck
             try:
                 hm_uvtaper = self.calc_uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
                                                beam_user=user_desired_beam,

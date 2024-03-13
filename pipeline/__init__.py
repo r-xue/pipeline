@@ -151,7 +151,7 @@ def initcli(user_globals=None):
     else:
         my_globals = user_globals
 
-    for package in ['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd', 'hsdn']:
+    for package in ['h', 'hif', 'hifa', 'hifv', 'hsd', 'hsdn']:
         abs_cli_package = 'pipeline.{package}.cli'.format(package=package)
         try:
             # Check the existence of the generated __init__ modules
