@@ -57,6 +57,17 @@ If Pipeline is already installed, this command will upgrade the
 package with the new installation.
 
 You can also build a local wheel for easy distribution: `casa_pip wheel .`
+For a custom installation with optional dependencies (e.g. building docs, running pytest plugins, or performance profiling), one can also try
+
+```console
+casa_pip install .[dev]
+```
+
+or
+
+```console
+casa_pip install .[docs]
+```
 
 ## Developer install
 
@@ -76,11 +87,12 @@ To uninstall the developer installation, execute
 casa_pip uninstall pipeline
 ```
 
-## Temporary pairing CASA and Pipeline at runtime
+## Pairing CASA and Pipeline at runtime
 
-To pair and use a working copy of Pipeline with the local CASA installation, you
-can add the Pipeline source code path to the CASA/Python `sys.path` at runtime. This can be
-conveniently achieved by adding the example code block below in your CASA [`rcdir`](https://casadocs.readthedocs.io/en/latest/api/configuration.html) (default to `~/.casa`)
+To pair and use a working copy of Pipeline with the local CASA installation temporarily without
+touching your CASA copy, you can add the Pipeline source code path to the CASA/Python `sys.path`
+at runtime. This can be conveniently achieved by adding the example code block below to your
+CASA [`rcdir`](https://casadocs.readthedocs.io/en/latest/api/configuration.html) (default to `~/.casa`)
 `startup.py`:
 
 ```python
@@ -96,3 +108,10 @@ if isinstance(pipe_path,str):
         pipeline.initcli() 
 ```
 
+Here `PIPE_PATH` is a shell environment variable that points at your Pipeline code path, e.g., `export PIPE_PATH=/path/to/workspace/pipeline_branches/main`.
+
+Note that this use case will only work if the CASA installation has all dependency libraries required by the Pipeline package. For a pristine "vanilla" CASA build without Pipeline pre-installed, this can be done with:
+
+```console
+casa_pip install --upgrade-strategy=only-if-needed -r requirements.txt
+```
