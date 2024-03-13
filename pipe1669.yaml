@@ -75,6 +75,24 @@
 #           https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge3
 #       In addition, the Rosetta 2 emulation layer is needed for Apple silicon machines.
 #
+#     * A parallel Pipeline data process session might exit with a hang on macOS due to holdover active casaplotms.app sub-processes.
+#       Although this issue doesn't affect the processing run, to get a clean exist, one can put the code snippet below at the end
+#       of the Python script:
+#
+#     try:
+#         from casampi.MPIEnvironment import MPIEnvironment
+#         mpi_server_list = MPIEnvironment.mpi_server_rank_list()
+#         client.push_command_request('from casaplotms import plotmstool', block=True,
+#                                 target_server=mpi_server_list)
+#         rs_list = client.push_command_request('plotmstool.__proc!=None', block=True,
+#                                            target_server=mpi_server_list)
+#         servers_with_active_plotms = [rs['server'] for rs in rs_list if rs['ret']]
+#         if servers_with_active_plotms:
+#             print(f'servers with active plotms instances: {servers_with_active_plotms}')
+#             client.push_command_request('plotmstool.__proc.kill()', block=True, target_server=servers_with_active_plotms)
+#     except:
+#         pass
+#
 #######################################################################################################################
 
 name: pipe1669
@@ -95,18 +113,19 @@ dependencies:
   - openmpi
   - mpi4py
   - certifi
-  - protobuf=3.20 # casatplotms requires ver<=3.20 at this moment
-  # - python-casacore # if you want a different I/O option.
-  - poppler # required for PL
+  - protobuf
+  - poppler     # required for PL
   - imagemagick # required for PL
+  # - python-casacore # if you want a different I/O option.  
   - pip:
     - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
-    - casatools==6.6.1.8
-    - casatasks==6.6.1.8
-    - casashell==6.6.1.8
+    - casatools==6.6.1.11
+    - casatasks==6.6.1.11
+    - casashell==6.6.1.11
     - casadata
     - casampi
     - almatasks
     - casaplotms
+    - casaplotserver
     - -r requirements.txt
     - .
