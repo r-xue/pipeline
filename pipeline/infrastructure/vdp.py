@@ -997,7 +997,7 @@ def all_unique(o):
     Return True if all elements in the iterable argument are unique.
     """
     # LOG.trace('all_unique(%s)' % str(o))
-    if not isinstance(o, collections.Iterable):
+    if not isinstance(o, collections.abc.Iterable):
         raise ValueError('Cannot determine uniqueness of non-iterables')
 
     hashes = {gen_hash(e) for e in o}
