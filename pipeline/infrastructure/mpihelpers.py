@@ -3,6 +3,7 @@ import os
 import pickle
 import tempfile
 from inspect import signature
+import pprint 
 
 from pipeline.domain.unitformat import file_size
 
@@ -65,6 +66,10 @@ class AsyncTask(object):
         response = mpiclient.get_command_response(self.__pid,
                                                   block=True,
                                                   verbose=True)
+        LOG.debug('Received the response (%s) from MPIserver-%s for command_request_id=%s executing %s; content:',
+                  file_size.format(get_obj_size(response)), response[0]['server'], response[0]['id'], response[0]['parameters']['tier0_executable'])
+        LOG.debug(pprint.pformat(response))
+
         response = response[0]
         if response['successful']:
             self._merge_casa_commands(response)
@@ -343,7 +348,11 @@ def mpiexec(tier0_executable):
     executable = tier0_executable.get_executable()
     LOG.info('Executing %s on rank%s@%s', tier0_executable,
              MPIEnvironment.mpi_processor_rank, MPIEnvironment.hostname)
-    return executable()
+
+    ret = executable()
+    LOG.debug('Buffering the execution return (%s) of %s', file_size.format(get_obj_size(ret)), tier0_executable)
+
+    return ret
 
 
 def is_mpi_ready():
