@@ -71,7 +71,7 @@ class MakeImagesQAHandler(pqa.QAPlugin):
 
 
 class MakeImagesListQAHandler(pqa.QAPlugin):
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = resultobjects.MakeImagesResult
 
     def handle(self, context, result):
