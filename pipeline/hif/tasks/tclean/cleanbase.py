@@ -61,6 +61,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     pblimit = vdp.VisDependentProperty(default=0.2)
     is_per_eb = vdp.VisDependentProperty(default=False)
     phasecenter = vdp.VisDependentProperty(default='')
+    psf_phasecenter = vdp.VisDependentProperty(default='')
     restoringbeam = vdp.VisDependentProperty(default='common')
     robust = vdp.VisDependentProperty(default=-999.0)
     savemodel = vdp.VisDependentProperty(default='none')
@@ -122,7 +123,7 @@ class CleanBaseInputs(vdp.StandardInputs):
                  spw=None, spwsel=None, spwsel_all_cont=None, uvrange=None, orig_specmode=None, specmode=None, gridder=None, deconvolver=None,
                  uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, scales=None, outframe=None, imsize=None,
-                 cell=None, phasecenter=None, nchan=None, start=None, width=None, stokes=None, weighting=None,
+                 cell=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, stokes=None, weighting=None,
                  robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, startmodel=None, hm_masking=None,
                  hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None, wprojplanes=None,
                  hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None, hm_dogrowprune=None,
@@ -162,6 +163,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.imsize = imsize
         self.cell = cell
         self.phasecenter = phasecenter
+        self.psf_phasecenter = psf_phasecenter
         self.nchan = nchan
         self.start = start
         self.width = width
@@ -351,6 +353,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         # used in heuristics methods upstream.
         if inputs.heuristics.is_eph_obj(inputs.field):
             tclean_job_parameters['phasecenter'] = 'TRACKFIELD'
+            tclean_job_parameters['psfphasecenter'] = None
             # 2018-08-13: Spectral tracking has been implemented via a new
             # specmode option (CAS-11766).
             if inputs.specmode == 'cube':
@@ -365,6 +368,11 @@ class CleanBase(basetask.StandardTaskTemplate):
             #tclean_job_parameters['parallel'] = False
         else:
             tclean_job_parameters['phasecenter'] = inputs.phasecenter
+            if inputs.gridder == 'mosaic' and inputs.psf_phasecenter != inputs.phasecenter:
+                tclean_job_parameters['psfphasecenter'] = inputs.psf_phasecenter
+                result.used_psfphasecenter = True
+            else:
+                tclean_job_parameters['psfphasecenter'] = None
             tclean_job_parameters['outframe'] = inputs.outframe
 
         if scanidlist not in [[], None]:

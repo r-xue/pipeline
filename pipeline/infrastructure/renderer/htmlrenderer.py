@@ -193,7 +193,7 @@ def get_task_name(result_obj, include_stage=True):
 
 
 def get_stage_number(result_obj):
-    if not isinstance(result_obj, collections.Iterable):
+    if not isinstance(result_obj, collections.abc.Iterable):
         return get_stage_number([result_obj, ])
 
     if len(result_obj) == 0:
@@ -1393,7 +1393,7 @@ class T2_4MRenderer(RendererBase):
 #         for result in context.results:
 #             # we only handle lists of results, so wrap single objects in a
 #             # list if necessary
-#             if not isinstance(result, collections.Iterable):
+#             if not isinstance(result, collections.abc.Iterable):
 #                 result = wrap_in_resultslist(result)
 #             
 #             # split the results in the list into streams, divided by session
@@ -1583,7 +1583,7 @@ class T2_4MDetailsRenderer(object):
         for task_result in context.results:
             # we only handle lists of results, so wrap single objects in a
             # list if necessary
-            if not isinstance(task_result, collections.Iterable):
+            if not isinstance(task_result, collections.abc.Iterable):
                 task_result = wrap_in_resultslist(task_result)
 
             # find the renderer appropriate to the task..
@@ -2104,13 +2104,13 @@ def cmp(a, b):
 #
 def filter_qascores(results_list, lo:float, hi:float) -> List[pipelineqa.QAScore]:
     all_scores: List[pipelineqa.QAScore] = results_list.qa.pool
-    # suppress scores not intended for the banner, taking care not to suppress
+    # suppress scores not intended for the weblog, taking care not to suppress
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
-    banner_scores = rendererutils.scores_with_location(
-        all_scores, [pipelineqa.WebLogLocation.BANNER, pipelineqa.WebLogLocation.UNSET]
+    weblog_scores = pipelineqa.scores_with_location(
+        all_scores, [pipelineqa.WebLogLocation.BANNER, pipelineqa.WebLogLocation.ACCORDION, pipelineqa.WebLogLocation.UNSET]
     )
-    with_score = [s for s in banner_scores if s.score not in ('', 'N/A', None)]
+    with_score = [s for s in weblog_scores if s.score not in ('', 'N/A', None)]
     return [s for s in with_score if lo < s.score <= hi]
 
 

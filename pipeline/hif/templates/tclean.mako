@@ -26,7 +26,7 @@ try:
     long_description = '<br><small>{!s}'.format(result.metadata['long description'])
 except:
     long_description = ''
-%>Tclean/MakeImages${long_description}</%block>
+%>MakeImages${long_description}</%block>
 
 %if imaging_mode == 'ALMA':
     <p>In this stage, images with significant emission are cleaned to a threshold of
