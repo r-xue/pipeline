@@ -221,7 +221,7 @@ def get_logrecords(result, loglevel):
     """
     try:
         # WeakProxy is registered as an Iterable (and a Container, Hashable, etc.)
-        # so we can't check for isinstance(result, collections.Iterable)
+        # so we can't check for isinstance(result, collections.abc.Iterable)
         # see https://bugs.python.org/issue24067
         _ = iter(result)
     except TypeError:
