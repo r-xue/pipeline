@@ -193,7 +193,7 @@ def get_task_name(result_obj, include_stage=True):
 
 
 def get_stage_number(result_obj):
-    if not isinstance(result_obj, collections.Iterable):
+    if not isinstance(result_obj, collections.abc.Iterable):
         return get_stage_number([result_obj, ])
 
     if len(result_obj) == 0:
@@ -1393,7 +1393,7 @@ class T2_4MRenderer(RendererBase):
 #         for result in context.results:
 #             # we only handle lists of results, so wrap single objects in a
 #             # list if necessary
-#             if not isinstance(result, collections.Iterable):
+#             if not isinstance(result, collections.abc.Iterable):
 #                 result = wrap_in_resultslist(result)
 #             
 #             # split the results in the list into streams, divided by session
@@ -1583,7 +1583,7 @@ class T2_4MDetailsRenderer(object):
         for task_result in context.results:
             # we only handle lists of results, so wrap single objects in a
             # list if necessary
-            if not isinstance(task_result, collections.Iterable):
+            if not isinstance(task_result, collections.abc.Iterable):
                 task_result = wrap_in_resultslist(task_result)
 
             # find the renderer appropriate to the task..

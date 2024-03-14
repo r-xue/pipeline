@@ -82,7 +82,7 @@ class ALMAApplycalListQAHandler(pqa.QAPlugin):
     general score pool. The latter would be done by default, hence we
     overwrite the handle() implementation.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = h_applycal.ApplycalResults
     generating_task = hif_applycal.SerialIFApplycal
 
