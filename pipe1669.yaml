@@ -119,9 +119,9 @@ dependencies:
   # - python-casacore # if you want a different I/O option.  
   - pip:
     - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
-    - casatools==6.6.1.11
-    - casatasks==6.6.1.11
-    - casashell==6.6.1.11
+    - casatools==6.6.1.*
+    - casatasks==6.6.1.*
+    - casashell==6.6.1.*
     - casadata
     - casampi
     - almatasks

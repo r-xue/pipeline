@@ -1,16 +1,6 @@
 # WARNING: The dependency versions are not specified, so the CASA shipped-in modules could get upgraded accidentally.
 # One recommended solution is to use docs/pipeline_docs.yaml to construct an isolated/dedicated docs building environment.
 
-## skip CASA packages
-# casatools
-# casatasks
-# casadata
-# casaplotms
-# casaviewer
-# casampi
-# almatasks
-# casashell
-
 future
 urllib3
 commonmark
