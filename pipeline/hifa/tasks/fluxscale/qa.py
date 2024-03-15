@@ -5,6 +5,7 @@ import operator
 import re
 from decimal import Decimal
 from math import sqrt
+from typing import Iterable, List, Optional, Tuple
 
 import numpy
 
@@ -12,12 +13,14 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
+from pipeline.domain import Field, FluxMeasurement, MeasurementSet, SpectralWindow
 from pipeline.domain.measures import FluxDensity, FluxDensityUnits, Frequency, FrequencyUnits
 from pipeline.h.tasks.common import commonfluxresults
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_ANALYSIS_UTILS, ORIGIN_XML
 from pipeline.hifa.heuristics.snr import ALMA_BANDS, ALMA_SENSITIVITIES, ALMA_TSYS
 from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.launcher import Context
 from . import gcorfluxscale
 
 LOG = infrastructure.get_logger(__name__)
@@ -47,7 +50,7 @@ class GcorFluxscaleQAHandler(pqa.QAPlugin):
         vis = result.inputs['vis']
         ms = context.observing_run.get_ms(vis)
 
-        # Check for existance of field / spw combinations for which
+        # Check for existence of field / spw combinations for which
         # the derived fluxes are missing.
         score1 = self._missing_derived_fluxes(ms, result.inputs['transfer'], result.inputs['transintent'],
                                               result.measurements)
@@ -107,64 +110,33 @@ def score_kspw(context, result):
     # calculated from au.gaincalSNR() or equivalent, not from the SNR
     # implied by the weblog, which is less reliable in general.
 
-    vis = result.inputs['vis']
-    ms = context.observing_run.get_ms(vis)
+    # Retrieve the MS.
+    ms = context.observing_run.get_ms(result.inputs['vis'])
 
-    # identify the caltable for this measurement set
-    for caltable_path in context.callibrary.active.get_caltable(caltypes='tsys'):
-        with casa_tools.TableReader(caltable_path) as table:
-            msname = table.getkeyword('MSName')
-        if msname in vis:
-            break
-    else:
-        # No matching caltable. That's ok, gaincalSNR will do without.
-        caltable_path = ''
+    # Get the path to the Tsys caltable for the current MS. If no matching
+    # Tsys caltable was found, that is ok, gaincalSNR will do without.
+    caltable_path = _get_tsys_caltable_path(context, ms.basename)
 
-    # If there is more than one phase calibrator, then pick the first one that
-    # does NOT also have observe_target intent. If all have both intents, then
-    # continue to use the first one.
-    candidate_phase_fields = [f for f in ms.get_fields(intent='PHASE') if 'TARGET' not in f.intents]
-    if not candidate_phase_fields:
-        candidate_phase_fields = ms.get_fields(intent='PHASE')
-    phase_field = min(candidate_phase_fields, key=lambda f: f.time.min())
-    if not phase_field:
-        LOG.warning('Error calculating internal spw-spw consistency: no phase calibrator')
+    # Gather SpW IDs for all fields with flux measurements in the result.
+    fluxmeas_spwids = {fd.spw_id for measurements in result.measurements.values() for fd in measurements}
+    fluxmeas_spws = ms.get_spectral_windows(task_arg=','.join(str(s) for s in fluxmeas_spwids))
+
+    # Compute SNR info per SpW for the phase calibrator field; exit early if
+    # no SNR info is available.
+    LOG.info(f"{ms.basename}: computing SNR info for phase calibrator.")
+    snr_info = _compute_snr_info_for_intent(context, ms, caltable_path, fluxmeas_spws, intent="PHASE")
+    if not snr_info:
         return []
 
-    # take catalogue fluxes, adding fluxes for solar system amplitude
-    # calibrators found in the setjy stage
-    phase_fluxes = []
-    for fm in [fm for fm in phase_field.flux_densities if fm.origin in EXTERNAL_SOURCES]:
-        spw = ms.get_spectral_window(fm.spw_id)
-        phase_fluxes.append((spw.id,
-                             float(spw.mean_frequency.to_units(FrequencyUnits.HERTZ)),
-                             float(fm.I.to_units(FluxDensityUnits.JANSKY))))
-    if not phase_fluxes:
-        LOG.error('Error calculating internal spw-spw consistency: no flux densities for phase calibrator ({})'
-                  ''.format(utils.dequote(phase_field.name)))
-        return []
-
-    # gather spw ID for all measurements in the result
-    measurement_spw_ids = {fd.spw_id for measurements in result.measurements.values() for fd in measurements}
-    measurement_spws = {spw for spw in ms.spectral_windows if spw.id in measurement_spw_ids}
-
-    # run gaincalSNR
-    gaincalSNR_output = gaincalSNR(context, ms, caltable_path, phase_fluxes, phase_field, measurement_spws)
-
-    if not gaincalSNR_output:
-        LOG.warning('Error calculating internal spw-spw consistency: no result from aU.gaincalSNR')
-        return []
-
-    gaincalSNR_spw_ids = {k for k, v in gaincalSNR_output.items() if k in measurement_spw_ids}
-    if not gaincalSNR_spw_ids.issuperset(measurement_spw_ids):
+    # Check whether the SNR info could be computed for all SpWs for which there
+    # are flux measurements. If not, then log an error and return early.
+    snr_info_spwids = {k for k in snr_info if k in fluxmeas_spwids}
+    if not snr_info_spwids.issuperset(fluxmeas_spwids):
         LOG.error('Error calculating internal spw-spw consistency: could not identify highest SNR spectral window')
         return []
 
-    # this will hold QA scores for all fields
+    # Create QA scores for each field with flux measurements.
     all_scores = []
-
-    one_ghz = Frequency(1, FrequencyUnits.GIGAHERTZ)
-
     for field_id, measurements in result.measurements.items():
         # get domain object for the field.
         fields = ms.get_fields(task_arg=field_id)
@@ -175,68 +147,33 @@ def score_kspw(context, result):
         msg_intents = ','.join(field.intents)
         msg_fieldname = utils.dequote(field.name)
 
-        # get domain objects for the flux measurement spws
-        spw_ids = [m.spw_id for m in measurements]
-        measurement_spws = ms.get_spectral_windows(','.join([str(i) for i in spw_ids]))
+        # Get domain objects for the flux measurement SpWs for current field.
+        fld_fm_spws = ms.get_spectral_windows(','.join(str(m.spw_id) for m in measurements))
 
-        # discard narrow windows < 1GHz
-        spw_snr_candidates = [spw for spw in measurement_spws if spw.bandwidth >= one_ghz]
+        # Identify the SpW with the highest SNR.
+        highest_snr_spw = _get_highest_snr_spw(snr_info, fld_fm_spws, msg_fieldname, msg_intents)
 
-        # fall back to median bandwidth selection if all the windows are narrow
-        if not spw_snr_candidates:
-            LOG.info('No wide (>= 1 GHz) spectral windows identified for {} ({})'.format(msg_fieldname, msg_intents))
-
-            # find median bandwidth of all spws...
-            bandwidths = [spw.bandwidth.to_units(FrequencyUnits.HERTZ) for spw in measurement_spws]
-            median_bandwidth = Frequency(numpy.median(bandwidths), FrequencyUnits.HERTZ)
-
-            # ... and identify SNR spw candidates accordingly
-            LOG.info('Taking highest SNR window from spws with bandwidth >= {}'.format(median_bandwidth))
-            spw_snr_candidates = [spw for spw in measurement_spws if spw.bandwidth >= median_bandwidth]
-
-        # find the spw with the highest SNR
-        highest_snr_spw = max(spw_snr_candidates, key=lambda spw: gaincalSNR_output[spw.id]['snr'])
-
-        # now find the measurement for that spw
-        highest_snr_measurement = [m for m in measurements if m.spw_id == highest_snr_spw.id]
-        assert (len(highest_snr_measurement) == 1)
-        highest_snr_measurement = highest_snr_measurement[0]
-        highest_snr_i = highest_snr_measurement.I
-
-        # find the catalogue flux for the highest SNR spw
-        catalogue_fluxes = [f for f in field.flux_densities
-                            if f.origin in EXTERNAL_SOURCES
-                            and f.spw_id == highest_snr_measurement.spw_id]
-        if not catalogue_fluxes:
-            LOG.warning('Cannot calculate internal spw-spw consistency for {} ({}): no catalogue measurement for '
-                        'highest SNR spw ({})'.format(msg_fieldname, msg_intents, highest_snr_measurement.spw_id))
+        # Get the flux measurement with highest SNR and corresponding ratio of
+        # derived flux over catalog flux. If no flux ratio could be determined,
+        # then skip this field and continue with the next one.
+        highest_snr_measurement, r_snr = _get_highest_snr_measurement_and_flux_ratio(
+            field, highest_snr_spw, measurements, msg_fieldname, msg_intents)
+        if r_snr is None:
             continue
-        assert (len(catalogue_fluxes) == 1)
-        catalogue_flux = catalogue_fluxes[0]
 
-        # r_snr = ratio of derived flux to catalogue flux for highest SNR spw
-        r_snr = highest_snr_i.to_units(FluxDensityUnits.JANSKY) / catalogue_flux.I.to_units(FluxDensityUnits.JANSKY)
-
-        # now calculate r for remaining measurements in other spws
+        # Identify the other, non-highest-SNR, flux measurements that need to
+        # be scored.
         other_measurements = [m for m in measurements if m is not highest_snr_measurement]
-        # note that we do not include r_snr, as by definition it is the ratio
-        # to which all other spws are compared, and hence has a QA score of 1.0
-        k_spws = []
-        for m in other_measurements:
-            catalogue_fluxes = [f for f in field.flux_densities
-                                if f.origin in EXTERNAL_SOURCES
-                                and f.spw_id == m.spw_id]
-            if not catalogue_fluxes:
-                LOG.info('No catalogue measurement for {} ({}) spw {}'.format(msg_fieldname, msg_intents, m.spw_id))
-                continue
-            assert (len(catalogue_fluxes) == 1)
-            catalogue_flux = catalogue_fluxes[0]
-            r_spw = m.I.to_units(FluxDensityUnits.JANSKY) / catalogue_flux.I.to_units(FluxDensityUnits.JANSKY)
-            k_spw = r_spw / r_snr
-            k_spws.append((m.spw_id, k_spw))
 
-        # sort QA scores by spw
-        k_spws.sort(key=operator.itemgetter(0))
+        # Compute "k_spw" for the "other" measurements for current field. If no
+        # "k_spw" could be computed, then skip this field and continue with the
+        # next one.
+        k_spws = _compute_k_spws_for_flux_measurements(field, other_measurements, r_snr, msg_fieldname, msg_intents)
+        if k_spws is None:
+            continue
+
+        # Compute QA score based on "k_spw" for current field, and add to list
+        # of all QA scores.
         field_qa_scores = [qacalc.score_gfluxscale_k_spw(ms.basename, field, spw_id, k_spw, highest_snr_spw.id)
                            for spw_id, k_spw in k_spws]
         all_scores.extend(field_qa_scores)
@@ -244,8 +181,248 @@ def score_kspw(context, result):
     return all_scores
 
 
-def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', required_snr=25, edge_fraction=0.03125,
-               min_snr=10):
+def _compute_snr_info_for_intent(context: Context, ms: MeasurementSet, caltable_path: str,
+                                 spws: Iterable[SpectralWindow], intent: str = "PHASE") -> dict:
+    """
+    Compute and return the per-antenna, per-SpW SNR for given measurement set,
+    intent, and spectral windows.
+
+    This function first identifies what field to analyse for given intent, then
+    retrieves the fluxes for that field, and finally calls "gaincalSNR" to
+    compute the SNR info.
+
+    Args:
+        context: pipeline Context
+        ms: MeasurementSet domain object
+        caltable_path: path to the Tsys caltable
+        spws: SpectralWindow objects to compute SNR for
+        intent: observing intent to use for the calibrator
+
+    Returns:
+        Dictionary of SNR info keyed by spectral window ID.
+    """
+    # Identify what field to analyse; exit early if none was found.
+    field = _get_field_to_analyse(ms, intent)
+    if not field:
+        LOG.warning(f'Error calculating internal spw-spw consistency: no field found for {intent} intent.')
+        return {}
+
+    # Retrieve fluxes for selected field; exit early if none are found.
+    fluxes = _get_fluxes_for_field(ms, field)
+    if not fluxes:
+        LOG.error(f'Error calculating internal spw-spw consistency: no flux densities found for {intent} intent'
+                  f' (field: {utils.dequote(field.name)})')
+        return {}
+
+    # Run gaincalSNR to compute SNR info per SpW for current field. Warn if no
+    # SNR info was returned.
+    gaincalsnr_output = gaincalSNR(context, ms, caltable_path, fluxes, field, spws, intent=intent)
+    if not gaincalsnr_output:
+        LOG.warning('Error calculating internal spw-spw consistency: no result from gaincalSNR function')
+
+    return gaincalsnr_output
+
+
+def _compute_k_spws_for_flux_measurements(field: Field, flux_measurements: Iterable[FluxMeasurement], r_snr: float,
+                                          msg_fieldname: str, msg_intents: str) -> Optional[list]:
+    """
+    Compute the "k_spw" metric for given list of flux measurements and given
+    flux ratio for highest SNR SpW.
+
+    If no catalog fluxes are available, return early with None.
+
+    Args:
+        field: field to retrieve catalog fluxes for
+        flux_measurements: flux measurements to compute k_spw for
+        r_snr: flux ratio for highest SNR SpW
+        msg_fieldname: pre-formatted name of field, for log messages
+        msg_intents: pre-formatted name of intents, for log messages
+
+    Returns:
+        List of 'k_spw' for given flux measurements, or None.
+    """
+    k_spws = []
+    for m in flux_measurements:
+        # Retrieve catalog fluxes for current flux measurement; exit early if
+        # none could be found.
+        catalogue_fluxes = [f for f in field.flux_densities if f.origin in EXTERNAL_SOURCES and f.spw_id == m.spw_id]
+        if not catalogue_fluxes:
+            LOG.info('No catalogue measurement for {} ({}) spw {}'.format(msg_fieldname, msg_intents, m.spw_id))
+            return None
+
+        assert (len(catalogue_fluxes) == 1)
+        catalogue_flux = catalogue_fluxes[0]
+
+        # Compute ratio of derived flux over catalog flux for current
+        # measurement.
+        r_spw = m.I.to_units(FluxDensityUnits.JANSKY) / catalogue_flux.I.to_units(FluxDensityUnits.JANSKY)
+
+        # Compute "k_spw" as the ratio of the flux ratio for current measurement
+        # over the ratio for the highest SNR measurement.
+        k_spw = r_spw / r_snr
+        k_spws.append((m.spw_id, k_spw))
+
+    # Sort "k_spw" by SpW ID.
+    k_spws.sort(key=operator.itemgetter(0))
+
+    return k_spws
+
+
+def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field:
+    """
+    Identify and return which field to analyse for the "k_spw" score.
+
+    If there is more than one field for given intent calibrator, then pick the
+    first one that does NOT also have observe_target intent. If all have both
+    intents, then continue to use the first one observed.
+
+    Args:
+        ms: MeasurementSet to find field for
+        intent: intent to find field for
+
+    Returns:
+        Field to analyse.
+    """
+    candidate_fields = [f for f in ms.get_fields(intent=intent) if 'TARGET' not in f.intents]
+    if not candidate_fields:
+        candidate_fields = ms.get_fields(intent=intent)
+    field = min(candidate_fields, key=lambda f: f.time.min())
+    return field
+
+
+def _get_fluxes_for_field(ms: MeasurementSet, field: Field) -> List[Tuple[int, float, float]]:
+    """
+    Return flux information for given measurement set and field.
+
+    Select flux measurements that are from external sources, and return for each
+    the SpW ID, SpW mean frequency, and total intensity.
+
+    Args:
+        ms: MeasurementSet to retrieve fluxes for
+        field: field to retrieve fluxes for
+
+    Returns:
+        List of 3-tuples, containing:
+            SpW ID for flux measurement
+            Mean frequency of SpW in Hertz
+            Total intensity in Jansky in flux measurement.
+    """
+    fluxes = []
+    for fm in [fm for fm in field.flux_densities if fm.origin in EXTERNAL_SOURCES]:
+        spw = ms.get_spectral_window(fm.spw_id)
+        fluxes.append((spw.id, float(spw.mean_frequency.to_units(FrequencyUnits.HERTZ)),
+                       float(fm.I.to_units(FluxDensityUnits.JANSKY))))
+    return fluxes
+
+
+def _get_highest_snr_measurement_and_flux_ratio(field: Field, highest_snr_spw: SpectralWindow,
+                                                measurements: Iterable[FluxMeasurement], msg_fieldname: str,
+                                                msg_intents: str) -> Tuple[FluxMeasurement, Optional[float]]:
+    """
+    Retrieve flux measurement for given "highest SNR" SpW, compute ratio of
+    derived over catalog flux, and return both flux measurement and flux ratio.
+
+    If no catalog fluxes are available, then the flux ratio is returned as None.
+
+    Args:
+        field: field to retrieve catalog fluxes for
+        highest_snr_spw: SpW with highest SNR
+        measurements: derived flux measurements for given field
+        msg_fieldname: pre-formatted name of field, for log messages
+        msg_intents: pre-formatted name of intents, for log messages
+
+    Returns:
+        Tuple containing flux measurement and flux ratio for highest SNR SpW
+    """
+    # Retrieve flux measurement for highest SNR SpW.
+    highest_snr_measurement = [m for m in measurements if m.spw_id == highest_snr_spw.id]
+    assert (len(highest_snr_measurement) == 1)
+    highest_snr_measurement = highest_snr_measurement[0]
+    highest_snr_i = highest_snr_measurement.I
+
+    # Retrieve the catalogue flux for the highest SNR spw.
+    catalogue_fluxes = [f for f in field.flux_densities
+                        if f.origin in EXTERNAL_SOURCES
+                        and f.spw_id == highest_snr_measurement.spw_id]
+    if not catalogue_fluxes:
+        LOG.warning('Cannot calculate internal spw-spw consistency for {} ({}): no catalogue measurement for '
+                    'highest SNR spw ({})'.format(msg_fieldname, msg_intents, highest_snr_measurement.spw_id))
+        return highest_snr_measurement, None
+    assert (len(catalogue_fluxes) == 1)
+    catalogue_flux = catalogue_fluxes[0]
+
+    # Compute ratio of derived flux to catalogue flux for highest SNR spw.
+    r_snr = highest_snr_i.to_units(FluxDensityUnits.JANSKY) / catalogue_flux.I.to_units(FluxDensityUnits.JANSKY)
+
+    return highest_snr_measurement, r_snr
+
+
+def _get_highest_snr_spw(gaincalsnr_output: dict, spws: Iterable[SpectralWindow], msg_fieldname: str, msg_intents: str)\
+        -> SpectralWindow:
+    """
+    Return the highest SNR SpW for given measurement set.
+
+    Args:
+        gaincalsnr_output: dictionary with output from the gaincal SNR
+            assessment
+        spws: spectral windows to consider
+        msg_fieldname: pre-formatted name of field, for log messages
+        msg_intents: pre-formatted name of intents, for log messages
+
+    Returns:
+        Spectral window with highest SNR
+    """
+    # Define 1 GHZ for bandwidth comparisons.
+    one_ghz = Frequency(1, FrequencyUnits.GIGAHERTZ)
+
+    # discard narrow windows < 1GHz
+    spw_snr_candidates = [spw for spw in spws if spw.bandwidth >= one_ghz]
+
+    # fall back to median bandwidth selection if all the windows are narrow
+    if not spw_snr_candidates:
+        LOG.info('No wide (>= 1 GHz) spectral windows identified for {} ({})'.format(msg_fieldname, msg_intents))
+
+        # find median bandwidth of all spws...
+        bandwidths = [spw.bandwidth.to_units(FrequencyUnits.HERTZ) for spw in spws]
+        median_bandwidth = Frequency(numpy.median(bandwidths), FrequencyUnits.HERTZ)
+
+        # ... and identify SNR spw candidates accordingly
+        LOG.info('Taking highest SNR window from spws with bandwidth >= {}'.format(median_bandwidth))
+        spw_snr_candidates = [spw for spw in spws if spw.bandwidth >= median_bandwidth]
+
+    # Identify the spw with the highest SNR.
+    highest_snr_spw = max(spw_snr_candidates, key=lambda spw: gaincalsnr_output[spw.id]['snr'])
+
+    return highest_snr_spw
+
+
+def _get_tsys_caltable_path(context: Context, vis: str) -> str:
+    """
+    Identify the Tsys caltable for the current vis, and return the path to this
+    table.
+
+    Args:
+        context: pipeline context
+        vis: MS to look up Tsys caltable for
+
+    Returns:
+        Path to the Tsys caltable.
+    """
+    # Go through all caltables registered in callibrary looking for a Tsys
+    # caltable matching this vis.
+    for caltable_path in context.callibrary.active.get_caltable(caltypes='tsys'):
+        with casa_tools.TableReader(caltable_path) as table:
+            msname = table.getkeyword('MSName')
+        if msname in vis:
+            break
+    else:
+        caltable_path = ''
+    return caltable_path
+
+
+def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Iterable[Tuple[int, float, float]],
+               field: Field, spws: Iterable[SpectralWindow], intent='PHASE', required_snr: float = 25,
+               edge_fraction: float = 0.03125, min_snr: float = 10) -> dict:
     """
     Computes the per-antenna SNR expected for gaincal(solint='inf') on a
     per-spw basis and recommends whether bandwidth transfer and/or
@@ -272,6 +449,7 @@ def gaincalSNR(context, ms, tsysTable, flux, field, spws, intent='PHASE', requir
         fail (default=10)
     :return: a dictionary keyed by spectral window ID
     """
+    # Set maximum effective bandwidth per baseband.
     max_effective_bandwidth_per_baseband = Frequency(2.0 * (1 - 2 * edge_fraction), FrequencyUnits.GIGAHERTZ)
 
     # 1) Get the number of antennas in the dataset. In principle, this should
