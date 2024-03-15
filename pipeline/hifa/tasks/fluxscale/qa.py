@@ -113,18 +113,12 @@ def score_kspw(context, result):
     # Retrieve the MS.
     ms = context.observing_run.get_ms(result.inputs['vis'])
 
-    # Get the path to the Tsys caltable for the current MS. If no matching
-    # Tsys caltable was found, that is ok, gaincalSNR will do without.
-    caltable_path = _get_tsys_caltable_path(context, ms.basename)
-
     # Gather SpW IDs for all fields with flux measurements in the result.
     fluxmeas_spwids = {fd.spw_id for measurements in result.measurements.values() for fd in measurements}
-    fluxmeas_spws = ms.get_spectral_windows(task_arg=','.join(str(s) for s in fluxmeas_spwids))
 
     # Compute SNR info per SpW for the phase calibrator field; exit early if
     # no SNR info is available.
-    LOG.info(f"{ms.basename}: computing SNR info for phase calibrator.")
-    snr_info = _compute_snr_info_for_intent(context, ms, caltable_path, fluxmeas_spws, intent="PHASE")
+    snr_info = _compute_snr_info(context, ms, fluxmeas_spwids)
     if not snr_info:
         return []
 
@@ -147,11 +141,12 @@ def score_kspw(context, result):
         msg_intents = ','.join(field.intents)
         msg_fieldname = utils.dequote(field.name)
 
-        # Get domain objects for the flux measurement SpWs for current field.
-        fld_fm_spws = ms.get_spectral_windows(','.join(str(m.spw_id) for m in measurements))
-
-        # Identify the SpW with the highest SNR.
-        highest_snr_spw = _get_highest_snr_spw(snr_info, fld_fm_spws, msg_fieldname, msg_intents)
+        # Among SpWs in flux measurements for this field, identify the SpW with
+        # the highest SNR. If no SpW could be determined, then skip this field
+        # and continue with the next one.
+        highest_snr_spw = _get_highest_snr_spw(snr_info, measurements, ms, msg_fieldname, msg_intents)
+        if highest_snr_spw is None:
+            continue
 
         # Get the flux measurement with highest SNR and corresponding ratio of
         # derived flux over catalog flux. If no flux ratio could be determined,
@@ -179,6 +174,55 @@ def score_kspw(context, result):
         all_scores.extend(field_qa_scores)
 
     return all_scores
+
+
+def _compute_snr_info(context: Context, ms: MeasurementSet, spwids: Iterable[int]) -> dict:
+    """
+    Compute and return the per-antenna, per-SpW SNR for given measurement set
+    and spectral window IDs.
+
+    Args:
+        context: pipeline Context
+        ms: MeasurementSet domain object
+        spwids: IDs of SpWs to compute SNR for
+
+    Returns:
+        Dictionary of SNR info keyed by spectral window ID.
+    """
+    # Get the path to the Tsys caltable for the current MS. If no matching
+    # Tsys caltable was found, that is ok, gaincalSNR will do without.
+    caltable_path = _get_tsys_caltable_path(context, ms.basename)
+
+    # PIPE-2083: for standard (non-BandToBand) datasets, a single SNR assessment
+    # using the PHASE field should cover all Science SpWs:
+    if not ms.is_band_to_band:
+        spws = ms.get_spectral_windows(task_arg=','.join(str(s) for s in spwids))
+        LOG.info(f"{ms.basename}: computing SNR info for phase calibrator.")
+        snr_info = _compute_snr_info_for_intent(context, ms, caltable_path, spws, intent='PHASE')
+    # For a BandToBand dataset, the PHASE field will only cover the diffgain
+    # reference SpWs. To also obtain SNR estimates for the diffgain science
+    # SpWs, a separate SNR assessment needs to be run using the CHECK source
+    # field.
+    else:
+        # First split the requested SpW IDs into diffgain reference and science
+        # SpWs.
+        dg_ref_spws, dg_sci_spws = ms.get_diffgain_spectral_windows(task_arg=','.join(str(s) for s in spwids))
+
+        # Compute the SNR estimates for the diffgain reference SpWs.
+        LOG.info(f"{ms.basename} is a BandToBand project: computing SNR info for diffgain reference SpWs using the"
+                 f" phase calibrator.")
+        snf_info_dg_ref = _compute_snr_info_for_intent(context, ms, caltable_path, dg_ref_spws, intent='PHASE')
+
+        # Compute the SNR estimates for the diffgain science SpWs.
+        LOG.info(f"{ms.basename} is a BandToBand project: computing SNR info for diffgain science SpWs using the check"
+                 f" source.")
+        snr_info_dg_sci = _compute_snr_info_for_intent(context, ms, caltable_path, dg_sci_spws, intent='CHECK')
+
+        # Merge the resulting dictionaries, keeping only the SpW keys.
+        snr_info = {k: v for k, v in snf_info_dg_ref.items() if k in spwids}
+        snr_info.update({k: v for k, v in snr_info_dg_sci.items() if k in spwids})
+
+    return snr_info
 
 
 def _compute_snr_info_for_intent(context: Context, ms: MeasurementSet, caltable_path: str,
@@ -357,15 +401,15 @@ def _get_highest_snr_measurement_and_flux_ratio(field: Field, highest_snr_spw: S
     return highest_snr_measurement, r_snr
 
 
-def _get_highest_snr_spw(gaincalsnr_output: dict, spws: Iterable[SpectralWindow], msg_fieldname: str, msg_intents: str)\
-        -> SpectralWindow:
+def _get_highest_snr_spw(snr_info: dict, flux_measurements: Iterable[FluxMeasurement], ms: MeasurementSet,
+                         msg_fieldname: str, msg_intents: str) -> Optional[SpectralWindow]:
     """
-    Return the highest SNR SpW for given measurement set.
+    Return the highest SNR SpW for flux measurements based on SNR information.
 
     Args:
-        gaincalsnr_output: dictionary with output from the gaincal SNR
-            assessment
-        spws: spectral windows to consider
+        snr_info: dictionary with output from the gaincal SNR assessment
+        flux_measurements: flux measurements to consider
+        ms: measurement set to consider
         msg_fieldname: pre-formatted name of field, for log messages
         msg_intents: pre-formatted name of intents, for log messages
 
@@ -374,6 +418,18 @@ def _get_highest_snr_spw(gaincalsnr_output: dict, spws: Iterable[SpectralWindow]
     """
     # Define 1 GHZ for bandwidth comparisons.
     one_ghz = Frequency(1, FrequencyUnits.GIGAHERTZ)
+
+    # Determine which SpWs to consider based on what SpWs are present in the
+    # flux measurements and the given intent(s).
+    spws = ms.get_spectral_windows(','.join(str(m.spw_id) for m in flux_measurements))
+    # PIPE-2083: for BandToBand datasets, override the selection if the intents
+    # cover either PHASE or CHECK, to restrict to just the diffgain reference
+    # (for PHASE) or diffgain science (for CHECK) SpWs.
+    if ms.is_band_to_band:
+        if 'PHASE' in msg_intents:
+            spws, _ = ms.get_diffgain_spectral_windows(','.join(str(m.spw_id) for m in flux_measurements))
+        elif 'CHECK' in msg_intents:
+            _, spws = ms.get_diffgain_spectral_windows(','.join(str(m.spw_id) for m in flux_measurements))
 
     # discard narrow windows < 1GHz
     spw_snr_candidates = [spw for spw in spws if spw.bandwidth >= one_ghz]
@@ -390,8 +446,15 @@ def _get_highest_snr_spw(gaincalsnr_output: dict, spws: Iterable[SpectralWindow]
         LOG.info('Taking highest SNR window from spws with bandwidth >= {}'.format(median_bandwidth))
         spw_snr_candidates = [spw for spw in spws if spw.bandwidth >= median_bandwidth]
 
+    # PIPE-2083: if no SpW SNR candidates could be found, log error and return
+    # early.
+    if not spw_snr_candidates:
+        LOG.error(f'{ms.basename}: Error calculating internal spw-spw consistency for {msg_fieldname}'
+                  f' ({msg_intents}): could not identify candidate spectral windows.')
+        return None
+
     # Identify the spw with the highest SNR.
-    highest_snr_spw = max(spw_snr_candidates, key=lambda spw: gaincalsnr_output[spw.id]['snr'])
+    highest_snr_spw = max(spw_snr_candidates, key=lambda spw: snr_info[spw.id]['snr'])
 
     return highest_snr_spw
 
@@ -461,9 +524,9 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
     if seven_metres_majority:
         LOG.info('This is an ACA 7m dataset.')
 
-    # 2) Get the phase calibrator and target object spw(s) to process.
+    # 2) Get the calibrator and target object spw(s) to process.
     spw_types = ('TDM', 'FDM')
-    all_gaincal_spws = {spw for spw in ms.spectral_windows if 'PHASE' in spw.intents and spw.type in spw_types}
+    all_gaincal_spws = {spw for spw in ms.spectral_windows if intent in spw.intents and spw.type in spw_types}
     all_target_spws = {spw for spw in ms.spectral_windows if 'TARGET' in spw.intents and spw.type in spw_types}
     all_spws = all_gaincal_spws.union(spws)
 
@@ -534,7 +597,7 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
     # TODO Ask Todd if this is an error or a confusingly-named variable
     num_baselines = num_antennas - 1  # for an antenna-based solution
 
-    bandwidth_switching = {}
+    diffgain_mode = {}
     mydict = {}
 
     eight_ghz = Frequency(8, FrequencyUnits.GIGAHERTZ)
@@ -546,11 +609,12 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
             # Ignore band-2-band possibility for now
             alt_spw = max([w for w in all_gaincal_spws if spw.baseband == w.baseband],
                           key=operator.attrgetter('bandwidth'))
-            LOG.debug('This is a bandwidth switching project: spw {} matched to spw {}'.format(spw.id, alt_spw.id))
+            LOG.debug(f"This is a BandToBand or BandwidthSwitching project: spw {spw.id} matched to spw"
+                      f" {alt_spw.id}.")
             spw = alt_spw
 
         mydict[spw.id] = {}
-        bandwidth_switching[obsspw] = spw
+        diffgain_mode[obsspw] = spw
         band_info = [b for b in BAND_INFOS if b.name == spw.band].pop()
         relative_tsys = median_tsys[spw.id] / band_info.nominal_tsys
         time_factor = 1 / sqrt(time_on_source[spw].total_seconds() / 60.0)
@@ -605,7 +669,8 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
         mydict['calibrator'] = field.name
 
         if spw == obsspw:
-            # Then it is not a bandwidth-switching dataset, so compute snr in widest spw
+            # Then it is not a DIFFGAIN mode (B2B or BWSW) dataset, so compute
+            # snr in widest spw.
             widest_spw_bandwidth_factor = sqrt(eight_ghz / widest_spw.bandwidth)
             factor = relative_tsys * time_factor * array_size_factor * area_factor * widest_spw_bandwidth_factor * polarization_factor
             widest_spw_bandwidth_sensitivity = band_info.sensitivity * Decimal(factor)
@@ -623,30 +688,37 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
             mydict[spw.id]['snr_widest_spw'] = 0
 
     for spw in all_target_spws:
-        calspw = bandwidth_switching[spw]
+        calspw = diffgain_mode[spw]
         if mydict[calspw.id]['snr'] >= required_snr:
-            mydict[calspw.id]['status'] = 'normal_bw_switching' if spw != calspw else 'normal'
-            msg = ('spw {} ({}) calibrated by spw {} has sufficient S/N: {:.1f}'
+            # PIPE-2083 clarified the status, which I believe is anyway never used
+            if spw != calspw:
+                if ms.get_diffgain_mode() == 'B2B':
+                    mydict[calspw.id]['status'] = 'b2b_diffgain_mode'
+                elif ms.get_diffgain_mode() == 'BWSW':
+                    mydict[calspw.id]['status'] = 'bwsw_diffgain_mode'
+            else:
+                mydict[calspw.id]['status'] = 'normal'
+            msg = ('science spw {} ({}) calibrated by spw {} has sufficient S/N: {:.1f}'
                    ''.format(spw.id, spw.bandwidth, calspw.id, mydict[calspw.id]['snr']))
         elif mydict[calspw.id]['snr_widest_spw'] >= required_snr:
             mydict[calspw.id]['status'] = 'spwmap'
-            msg = ('spw {} {} calibrated by widest spw ({}: bandwidth={}) has sufficient S/N: {:.1f}'
+            msg = ('science spw {} {} calibrated by widest spw ({}: bandwidth={}) has sufficient S/N: {:.1f}'
                    ''.format(spw.id, spw.bandwidth, widest_spw.id, widest_spw.bandwidth,
                              mydict[calspw.id]['snr_widest_spw']))
         elif mydict[calspw.id]['snr_aggregate'] >= min_snr:
             mydict[calspw.id]['status'] = 'combine_spw'
-            msg = ('spw {} ({}) calibrated by aggregate bandwidth ({}) has sufficient S/N: {:.1f}'
+            msg = ('science spw {} ({}) calibrated by aggregate bandwidth ({}) has sufficient S/N: {:.1f}'
                    ''.format(spw.id, spw.bandwidth, aggregate_bandwidth, mydict[calspw.id]['snr_aggregate']))
         elif mydict[calspw.id]['medianTsys'] <= 0:
-            msg = ('spw {} ({}) has a negative median Tsys: there must be a problem in the data'
+            msg = ('science spw {} ({}) has a negative median Tsys: there must be a problem in the data'
                    ''.format(spw.id, spw.bandwidth))
         else:
-            msg = ('spw {} ({}): Even aggregate bandwidth is insufficient (SNR<{:.0f}). QA2 Fail!'
+            msg = ('science spw {} ({}): Even aggregate bandwidth is insufficient (SNR<{:.0f}). QA2 Fail!'
                    ''.format(spw.id, spw.bandwidth, min_snr))
             mydict[calspw.id]['status'] = 'starved'
         LOG.info(msg)
         if spw != calspw:
-            # Then it is a bandwidth-switching dataset, so remove the snr_widest_spw key
+            # diffgain mode (B2B/BWSW) dataset, so remove the snr_widest_spw key
             mydict[calspw.id].pop('snr_widest_spw', None)
     return mydict
 
