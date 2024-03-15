@@ -403,25 +403,6 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             (2.0, str(default_uvtaper)): beamRatio_2p0
             }
 
-        # Determine non-default UV taper value if the best robust is 2.0 and the user requested resolution parameter
-        # (desired_angular_resolution) is set (SRDP). (PIPE-708)
-        #
-        # Compute uvtaper for representative targets and also if representative target cannot be determined
-        # (real_repr_target = False) for representative targets and if user set angular resolution goal.
-        #
-        # Note that uvtaper is not computed for the ACA (7m) array, because robust of 2.0 is not in the checked range
-        # (see robust_values_to_check).
-        if hm_robust == 2.0 and cqa.getvalue(userAngResolution)[0] != 0.0:
-            # Calculate the length of the 190th baseline, used to set the upper limit on uvtaper. See PIPE-1104.
-            length_of_190th_baseline = image_heuristics.calc_length_of_nth_baseline(190)
-            reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
-            try:
-                hm_uvtaper = self.calc_uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
-                                               beam_user=user_desired_beam,
-                                               tapering_limit=length_of_190th_baseline, repr_freq=repr_freq)
-            except:
-                hm_uvtaper = []
-
         if real_repr_target:
             # Determine heuristic UV taper value
             #
@@ -539,6 +520,25 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             maxAcceptableAngResolution = cqa.quantity(0.0, 'arcsec')
 
         hm_uvtaper = default_uvtaper # Right now ALMA IF PI (non-SRDP) always uses the default_uvtaper
+
+        # Determine non-default UV taper value if the best robust is 2.0 and the user requested resolution parameter
+        # (desired_angular_resolution) is set (SRDP). (PIPE-708)
+        #
+        # Compute uvtaper for representative targets and also if representative target cannot be determined
+        # (real_repr_target = False) for representative targets and if user set angular resolution goal.
+        #
+        # Note that uvtaper is not computed for the ACA (7m) array, because robust of 2.0 is not in the checked range
+        # (see robust_values_to_check).
+        if hm_robust == 2.0 and cqa.getvalue(userAngResolution)[0] != 0.0:
+            # Calculate the length of the 190th baseline, used to set the upper limit on uvtaper. See PIPE-1104.
+            length_of_190th_baseline = image_heuristics.calc_length_of_nth_baseline(190)
+            reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
+            try:
+                hm_uvtaper = self.calc_uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
+                                               beam_user=user_desired_beam,
+                                               tapering_limit=length_of_190th_baseline, repr_freq=repr_freq)
+            except:
+                hm_uvtaper = []
 
         return ImagePreCheckResults(
             real_repr_target,
