@@ -276,7 +276,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                                           origin=origin, applies_to=data_selection))
 
 class TcleanListQAHandler(pqa.QAPlugin):
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = resultobjects.TcleanResult
 
     def handle(self, context, result):
