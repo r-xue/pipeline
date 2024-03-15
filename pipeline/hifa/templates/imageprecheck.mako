@@ -115,6 +115,7 @@ Single Continuum:
         ${user_minAR} / ${user_maxAR}
     %endif
     <p>
+%endif
 
 <h4>Estimated Synthesized Beam and Sensitivities for the Representative
 Target/Frequency</h4>
