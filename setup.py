@@ -8,6 +8,7 @@ import sys
 
 import csscompressor
 import setuptools
+from jsmin import jsmin
 from setuptools.command.build_py import build_py
 
 ENCODING = 'utf-8'  # locale.getpreferredencoding()
@@ -83,20 +84,13 @@ class MinifyJSCommand(setuptools.Command):
         self.announce('Creating minified JS: {}'.format(os.path.basename(output)),
                       level=logging.INFO)
 
-        command = ['java',
-                   '-jar', 'closure-compiler.jar',
-                   '--js_output_file', output,
-                   '--language_in', 'ECMASCRIPT6',
-                   '--language_out', 'ECMASCRIPT6',
-                   '--generate_exports', 'false',
-                   '--warning_level', 'verbose',
-                   '--compilation_level', 'BUNDLE']
+        minified = ''
+        for file in inputs:
+            with open(file) as js_file:
+                minified += jsmin(js_file.read(), quote_chars="'\"`")
 
-        input_files = [['--js', i] for i in inputs]
-
-        input_args = flatten([command, input_files])
-
-        subprocess.check_output([str(i) for i in input_args], cwd=self.root_dir)
+        with open(output, 'w') as js_file:
+            js_file.write(minified)
 
 
 class MinifyCSSCommand(setuptools.Command):
