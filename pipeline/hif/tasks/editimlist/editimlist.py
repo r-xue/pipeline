@@ -433,9 +433,10 @@ class Editimlist(basetask.StandardTaskTemplate):
         else:
             synthesized_beam = None
 
-        # inpdict['cell'] will only be a string if the input is of the form '3ppb'
-        # With pixel per beam input, the cell size needs to be calculated using 
-        # th.cell(), so set inpdict['cell'] to the empty list to trigger this calculation.
+        # inpdict['cell'] can have input of the form ['0.5arcsec', '0.5arcsec'] or '3ppb'
+        # It is only a string if the pixel-per-beam value is provided.
+        # With pixel-per-beam input, the cell size needs to be calculated using
+        # th.cell(), so set inpdict['cell'] to the empty list here to trigger this calculation.
         if inpdict['cell'] and isinstance(inpdict['cell'], str):
             ppb = float(inpdict['cell'].split('ppb')[0])
             inpdict['cell'] = []
@@ -480,13 +481,9 @@ class Editimlist(basetask.StandardTaskTemplate):
             imlist_entry['phasecenter'] = inpdict['phasecenter']
             imlist_entry['psf_phasecenter'] = inpdict['phasecenter']
         else:
-            if fieldids[0] != '':
-                phasecenter, psf_phasecenter = th.phasecenter(fieldids)
-                imlist_entry['phasecenter'] = phasecenter
-                imlist_entry['psf_phasecenter'] = psf_phasecenter
-            else:
-                imlist_entry['phasecenter'] = None
-                imlist_entry['psf_phasecenter'] = None
+            phasecenter, psf_phasecenter = th.phasecenter(fieldids)
+            imlist_entry['phasecenter'] = phasecenter
+            imlist_entry['psf_phasecenter'] = psf_phasecenter
 
         # set the field name list in the image list target
         if fieldnames:
