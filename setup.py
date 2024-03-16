@@ -14,15 +14,6 @@ from setuptools.command.build_py import build_py
 ENCODING = 'utf-8'  # locale.getpreferredencoding()
 
 
-def flatten(items):
-    """Yield items from any nested iterable"""
-    for x in items:
-        if isinstance(x, collections.abc.Iterable) and not isinstance(x, (str, bytes)):
-            for sub_x in flatten(x):
-                yield sub_x
-        else:
-            yield x
-
 
 class MinifyJSCommand(setuptools.Command):
     description = 'Minify the pipeline javascript'
@@ -84,13 +75,14 @@ class MinifyJSCommand(setuptools.Command):
         self.announce('Creating minified JS: {}'.format(os.path.basename(output)),
                       level=logging.INFO)
 
-        minified = ''
+        minified = []
         for file in inputs:
             with open(file) as js_file:
-                minified += jsmin(js_file.read(), quote_chars="'\"`")
+                minified.append('// from {}'.format(file))
+                minified.append(jsmin(js_file.read(), quote_chars="'\"`"))
 
         with open(output, 'w') as js_file:
-            js_file.write(minified)
+            js_file.write('\n'.join(minified))
 
 
 class MinifyCSSCommand(setuptools.Command):
