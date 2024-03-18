@@ -1,5 +1,6 @@
 ### PL dev/test/debug toolbox
 
+pytest
 pytest-xdist==3.5.0         # https://github.com/pytest-dev/pytest-xdist
 pytest-cov==4.1.0           # https://github.com/pytest-dev/pytest-cov
 pytest-html==4.1.1          # https://pypi.org/project/pytest-html/
@@ -8,3 +9,6 @@ johnnydep==1.20.4           # https://pypi.org/project/johnnydep
 memory_profiler==0.61.0     # https://pypi.org/project/memory-profiler/
 line_profiler==4.1.2        # https://github.com/pyutils/line_profiler
 build                       # https://packaging.python.org/en/latest/key_projects/#build
+twine                       # https://packaging.python.org/en/latest/key_projects/#twine
+wheel                       # https://packaging.python.org/en/latest/key_projects/#wheel
+# setuptools_scm              # https://pypi.org/project/setuptools-scm/

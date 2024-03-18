@@ -5,28 +5,20 @@ import decimal
 import http.server
 import os
 import pathlib
-import pkg_resources
 import threading
 import webbrowser
 
-from astropy.utils.iers import conf as iers_conf
-
-from . import domain
-from . import environment
-from . import infrastructure
-
-from .infrastructure import Pipeline, Context
-
-from . import h
-from . import hif
-from . import hifa
-from . import hsd
-from . import hifv
-from . import hsdn
-
-from .domain import measures
+import pkg_resources
 from casashell.private.stack_manip import find_frame
 from casatasks import casalog
+
+from . import environment, h, hif, hifa, hifv, hsd, hsdn, infrastructure
+from .domain import measures
+
+# from . import config
+from .infrastructure import Context, Pipeline
+
+__version__ = revision = environment.pipeline_revision
 
 # Modify filter to get INFO1 message which the pipeline
 # treats as ATTENTION level.
@@ -153,6 +145,7 @@ def stop_weblog():
             LOG.info(serve_message.format(host=sa[0], port=sa[1]))
             HTTP_SERVER = None
 
+
 def initcli(user_globals=None):
     LOG.info('Initializing cli...')
     if user_globals is None:
@@ -173,42 +166,15 @@ def initcli(user_globals=None):
             exec('from {} import *'.format(abs_cli_package), my_globals)
             LOG.info('Loaded Pipeline commands from package: {!s}'.format(package))
 
-revision = environment.pipeline_revision
-
 
 def log_host_environment():
-    env = environment.ENVIRONMENT
-    LOG.info('Pipeline version {!s} running on {!s}'.format(revision, env.hostname))
-
-    ram = measures.FileSize(env.ram, measures.FileSizeUnits.BYTES)
+    LOG.info('Pipeline version {!s} running on {!s}'.format(__version__, environment.hostname))
     try:
-        swap = measures.FileSize(env.swap, measures.FileSizeUnits.BYTES)
-    except decimal.InvalidOperation:
-        swap = 'unknown'
-
-    if env.cgroup_mem_limit != 'N/A':
-        cgroup_mem_limit = measures.FileSize(env.cgroup_mem_limit, measures.FileSizeUnits.BYTES)
-    else:
-        cgroup_mem_limit = 'N/A'
-
-    try:
-        LOG.info(
-            'Host environment:\n'
-            f'\tCPU: {env.cpu_type} '
-            f'(physical cores: {env.physical_cpu_cores}, logical cores: {env.logical_cpu_cores})\n'
-            f'\tMemory: {ram} RAM, {swap} swap\n'
-            f'\tOS: {env.host_distribution}\n'
-            f'\tcgroup limits: {env.cgroup_cpu_bandwidth} of {env.cgroup_num_cpus} CPU cores, '
-            f'memory limits={cgroup_mem_limit}\n'
-            f'\tulimit limits: CPU time={env.ulimit_cpu}, memory={env.ulimit_mem}, files={env.ulimit_files}'
-        )
-
-        LOG.info(
-            'Environment as detected by CASA:\n'
-            f'\tCPUs reported by CASA: {env.casa_cores} cores, '
-            f'max {env.casa_threads} OpenMP thread{"s" if env.casa_threads > 1 else ""}\n'
-            f'\tAvailable memory: {measures.FileSize(env.casa_memory, measures.FileSizeUnits.BYTES)}'
-        )
+        host_summary = '{!s} memory, {!s} x {!s} running {!s}'.format(
+            measures.FileSize(environment.memory_size, measures.FileSizeUnits.BYTES),
+            environment.logical_cpu_cores,
+            environment.cpu_type,
+            environment.host_distribution)
 
         LOG.debug('Dependency details:')
         for dep_name, dep_detail in environment.dependency_details.items():
