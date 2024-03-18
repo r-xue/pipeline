@@ -1,6 +1,7 @@
 
 casa_config:
-  datapath: ""
+  rcdir: 
+  datapath:
   rundata:
   nologger: True
   telemetry: False
@@ -8,11 +9,11 @@ casa_config:
   log2term: True
   nogui: True
   agg: True
+  logfile:
+  synthesis.imager.memprofile.enable: 'true'
 pipe_config:
-  version:
+  pl_srcdir:
   pps_config:
-  flux_service_url: 'https://almascience.org/sc/flux'
-  flux_service_url_backup: 'https://asa.alma.cl/sc/flux'
   vislist:
   procedure:
   ppr_vla:
@@ -21,23 +22,32 @@ pipe_config:
   loglevel: "debug"
   memstats: False
   pps_cleanup: True
-  pps_backup: True  
+  pps_backup: True
+  FLUX_SERVICE_URL: 'https://almascience.org/sc/flux'
+  FLUX_SERVICE_URL_BACKUP: 'https://asa.alma.cl/sc/flux'
+  SCIPIPE_HEURISTICS:
+  WEBLOG_RERENDER_STAGES:
+  SCIPIPE_ROOTDIR:  
+  DISABLE_CASA_CALLIBRARY: False
+  PIPE356_QA_MODE: 'on'  
 session_profile:
   conda_env: 'pipe1669'
-  conda_dir:
+  conda_prefix: '/opt/miniforge3'
   name: 'default'
   scheduler: "proc" # 'slurm'
   omp_num_threads: 4
-  mpicasa: False
+  mpicasa: True
   xvfb: True
   casashell: True
-  mpicasa: True
   oversubscribe: True
   background: True
   psrecord: True
   chdir:
+  cmd:
+  dryrun: False
   slurm:
     mem:
+    job-name: 
     mem-per-cpu:
     ntasks: 8
     time: "8-0:0:0"
