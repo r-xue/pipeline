@@ -56,25 +56,30 @@ class AntennaArray(object):
         # unmasked array.
         ma = numpy.ma.array(self.baseline_lookup, mask=~mask_self_corr)
 
-        min_x, min_y = numpy.unravel_index(
-            indices=numpy.ma.argmin(ma, axis=None),
-            shape=self.baseline_lookup.shape
-        )
-        self.baseline_min = Baseline(
-            antenna1=self.get_antenna(id=min_x),
-            antenna2=self.get_antenna(id=min_y),
-            length=Distance(value=self.baseline_lookup[min_x][min_y], units=DistanceUnits.METRE)
-        )
+        if len(antennas) <= 1:
+            # if there is only zero or one antenna, no need to calculate min/max baselines.
+            self.baseline_min = None
+            self.baseline_max = None
+        else:
+            min_x, min_y = numpy.unravel_index(
+                indices=numpy.ma.argmin(ma, axis=None),
+                shape=self.baseline_lookup.shape
+            )
+            self.baseline_min = Baseline(
+                antenna1=self.get_antenna(id=min_x),
+                antenna2=self.get_antenna(id=min_y),
+                length=Distance(value=self.baseline_lookup[min_x][min_y], units=DistanceUnits.METRE)
+            )
 
-        max_x, max_y = numpy.unravel_index(
-            indices=numpy.argmax(ma, axis=None),
-            shape=self.baseline_lookup.shape
-        )
-        self.baseline_max = Baseline(
-            antenna1=self.get_antenna(id=max_x),
-            antenna2=self.get_antenna(id=max_y),
-            length=Distance(value=self.baseline_lookup[max_x][max_y], units=DistanceUnits.METRE)
-        )
+            max_x, max_y = numpy.unravel_index(
+                indices=numpy.argmax(ma, axis=None),
+                shape=self.baseline_lookup.shape
+            )
+            self.baseline_max = Baseline(
+                antenna1=self.get_antenna(id=max_x),
+                antenna2=self.get_antenna(id=max_y),
+                length=Distance(value=self.baseline_lookup[max_x][max_y], units=DistanceUnits.METRE)
+            )
 
         self._baselines = self.baselines_for_antennas([a.id for a in antennas])
 
@@ -161,8 +166,11 @@ class AntennaArray(object):
         matrix, valuing simplicity of implementation over efficiency.
         """
         # no baselines = zero baseline length
-        if len(antennas) < 2:
+        if len(antennas) == 1:
             return numpy.zeros((1, 1))
+        if len(antennas) == 0:
+            return numpy.zeros(shape=(0,0))
+
 
         # calculate the array size required for our baselines. Another assumption:
         # the antenna IDs zero indexed and continuous enough for a sparse matrix to
