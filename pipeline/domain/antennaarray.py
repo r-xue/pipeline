@@ -166,11 +166,8 @@ class AntennaArray(object):
         matrix, valuing simplicity of implementation over efficiency.
         """
         # no baselines = zero baseline length
-        if len(antennas) == 1:
-            return numpy.zeros((1, 1))
-        if len(antennas) == 0:
-            return numpy.zeros(shape=(0,0))
-
+        if len(antennas) < 2:
+            return numpy.zeros(shape=(len(antennas),)*2)
 
         # calculate the array size required for our baselines. Another assumption:
         # the antenna IDs zero indexed and continuous enough for a sparse matrix to
