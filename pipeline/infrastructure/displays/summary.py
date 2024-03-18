@@ -1164,7 +1164,8 @@ class SpwIdVsFreqChart(object):
         fig = figure.Figure(figsize=(9.6, 7.2))
         ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
         bar_height = 0.4
-        max_spws_to_annotate = 16
+        max_spws_to_annotate_VLA = 16  # request for VLA, PIPE-1415.
+        max_spws_to_annotate_ALMA = 128  # to show spw ids as much as possible for ALMA/NRO.
         prop_cycle = matplotlib.rcParams['axes.prop_cycle']
         colors = prop_cycle.by_key()['color']
         colorcycle = itertools.cycle(colors)
@@ -1175,29 +1176,30 @@ class SpwIdVsFreqChart(object):
         if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
             spw_list_generator = self._extract_spwdata_vla()
             scan_spws = request_spws
+            max_spws_to_annotate = max_spws_to_annotate_VLA
         else:  # for ALMA or NRO
             spw_list_generator = self._extract_spwdata_alma_nro()
             scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
+            max_spws_to_annotate = max_spws_to_annotate_ALMA
         xmin, xmax = np.inf, -np.inf
-        sum_len_spwid_list = 0
         totalnum_spws = len(scan_spws)
-        idx_marking_spwid = 0
+        idx = 0
         for spwid_list in spw_list_generator:
             color = next(colorcycle)
             for spwid in spwid_list:
                 # 1. draw bars
-                bw = [float(spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ)) for spw in scan_spws if spw.id == spwid][0]
-                fmin = [float(spw.min_frequency.to_units(FrequencyUnits.GIGAHERTZ)) for spw in scan_spws if spw.id == spwid][0]
-                ax_spw.barh(idx_marking_spwid, bw, height=bar_height, left=fmin, color=color)
+                spwdata = [spw for spw in scan_spws if spw.id == spwid][0]
+                bw = float(spwdata.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
+                fmin = float(spwdata.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
+                ax_spw.barh(idx, bw, height=bar_height, left=fmin, color=color)
                 # 2. annotate each bars
                 xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
-                if totalnum_spws <= max_spws_to_annotate or idx_marking_spwid in [sum_len_spwid_list + spwid_list.index(spwid_list[0]), sum_len_spwid_list + spwid_list.index(spwid_list[0]) + spwid_list.index(spwid_list[len(spwid_list)-1])]:
-                    ax_spw.annotate(str(spwid), (fmin + bw/2, idx_marking_spwid - bar_height/2), fontsize=14, ha='left', va='bottom')
-                idx_marking_spwid += 1
+                if totalnum_spws <= max_spws_to_annotate or spwid in [spwid_list[0], spwid_list[-1]]:
+                    ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
                 # 3. Frequency vs. ATM transmission
                 atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
                 ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=2, linestyle='-')
-            sum_len_spwid_list += len(spwid_list)
+                idx += 1
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
         ax_spw.set_ylim(totalnum_spws, -1.0)
