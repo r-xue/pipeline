@@ -30,7 +30,19 @@ def _char_replacer(s, valid_chars):
 
 # Allow _target.ms, _targets.ms or .ms endings: needed to import
 # Measurement Sets (see PIPE-579, PIPE-1082, PIPE-1112, PIPE-1544)
-def sanitize_for_ms(vis_name):
+def sanitize_for_ms(vis_name: str) -> str:
+    """Remove suffix from MS name.
+
+    Sanitized name is generated from input MS name by removing
+    suffix. This method recognizes ".ms", "_target.ms", and
+    "_targets.ms" as suffix.
+
+    Args:
+        vis_name: Name of MS
+
+    Returns:
+        Sanitized name
+    """
     for msend in ('_target.ms', '_targets.ms', '.ms'):
         if vis_name.endswith(msend):
             return sanitize_for_ms(vis_name[:-len(msend)])
