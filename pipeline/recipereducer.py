@@ -41,6 +41,7 @@ import collections
 import os
 import tempfile
 import traceback
+from typing import Any, Callable, List, Optional, Tuple
 import xml.etree.ElementTree as ElementTree
 
 import pkg_resources
@@ -58,13 +59,13 @@ RECIPES_DIR = pkg_resources.resource_filename(__name__, 'recipes')
 TaskArgs = collections.namedtuple('TaskArgs', 'vis infiles session')
 
 
-def _create_context(loglevel, plotlevel, name):
+def _create_context(loglevel: str, plotlevel: str, name: str) -> launcher.Context:
     pipeline = launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
                                  name=name)
     return pipeline.context
 
 
-def _register_context(loglevel: str, plotlevel: str, context: launcher.Context):
+def _register_context(loglevel: str, plotlevel: str, context: launcher.Context) -> None:
     """Register given context to global scope.
 
     If pipeline context already exists in global scope, it is saved on
@@ -127,7 +128,7 @@ def _register_context(loglevel: str, plotlevel: str, context: launcher.Context):
             logging.set_logging_level(level=loglevel)
 
 
-def _get_context_name(procedure):
+def _get_context_name(procedure: str) -> str:
     root, _ = os.path.splitext(os.path.basename(procedure))
     return 'pipeline-%s' % root
 
@@ -154,13 +155,13 @@ def _get_processing_procedure(procedure: str) -> ElementTree:
     return procedure_xml
 
 
-def _get_procedure_title(procedure):
+def _get_procedure_title(procedure: str) -> str:
     procedure_xml = _get_processing_procedure(procedure)
     procedure_title = procedure_xml.findtext('ProcedureTitle', default='Undefined')
     return procedure_title
 
 
-def _get_tasks(context, args, procedure):
+def _get_tasks(context: launcher.Context, args: TaskArgs, procedure: str):
     procedure_xml = _get_processing_procedure(procedure)
 
     commands_seen = []
@@ -209,7 +210,7 @@ def _get_tasks(context, args, procedure):
         yield task, task_args
 
 
-def string_to_val(s):
+def string_to_val(s: str) -> Any:
     """
     Convert a string to a Python data type.
     """
@@ -225,19 +226,22 @@ def string_to_val(s):
         return s
 
 
-def _format_arg_value(arg_val):
+def _format_arg_value(arg_val: Tuple[Any, Any]) -> str:
     arg, val = arg_val
     return '%s=%r' % (arg, val)
 
 
-def _as_task_call(task_func, task_args):
+def _as_task_call(task_func: Callable, task_args: dict) -> str:
     kw_args = list(map(_format_arg_value, task_args.items()))
     return '%s(%s)' % (task_func.__name__, ', '.join(kw_args))
 
 
-def reduce(vis=None, infiles=None, procedure='procedure_hifa_calimage.xml',
-           context=None, name=None, loglevel='info', plotlevel='default',
-           session=None, exitstage=None, startstage=None):
+def reduce(vis: Optional[List[str]] = None, infiles: Optional[List[str]] = None,
+           procedure: str = 'procedure_hifa_calimage.xml',
+           context: Optional[launcher.Context] = None, name: Optional[str] = None,
+           loglevel: str = 'info', plotlevel: str = 'default',
+           session: Optional[List[str]] = None, exitstage: Optional[int] = None,
+           startstage: Optional[int] = None) -> launcher.Context:
     if vis is None:
         vis = []
 

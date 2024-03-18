@@ -10,6 +10,7 @@ Raises:
 import os
 import sys
 import traceback
+from typing import TYPE_CHECKING, Tuple, Union
 
 from . import casa_tools
 from . import exceptions
@@ -18,9 +19,12 @@ from . import utils
 from .. import cli
 from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getPprObject, save_existing_context
 
+if TYPE_CHECKING:
+    from pipeline.extern.XmlObjectifier import XmlObject
+
 
 def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
-               plotlevel: str = 'summary', interactive: bool = True):
+               plotlevel: str = 'summary', interactive: bool = True) -> None:
     """
     Runs Pipeline Processing Request (PPR).
 
@@ -220,7 +224,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
 # Return the intents list, the ASDM list, and the processing commands
 # for the first processing request. There should in general be only
 # one but the schema permits more. Generalize later if necessary.
-def _getFirstRequest(pprXmlFile):
+def _getFirstRequest(pprXmlFile: 'XmlObject') -> Union[Tuple[list, str, dict, list, list], Tuple[list, list, str, dict, list, str, list]]:
     # Initialize
     info = []
     relativePath = ""
@@ -278,7 +282,7 @@ def _getFirstRequest(pprXmlFile):
 
 # Given the pipeline processing request object print some project summary
 # information. Returns a list of tuples to preserve order (key, (prompt, value))
-def _getProjectSummary(pprObject):
+def _getProjectSummary(pprObject: 'XmlObject') -> list:
     ppr_summary = pprObject.SciPipeRequest.ProjectSummary
     summaryList = []
     summaryList.append(('proposal_code', ('Proposal code: ', ppr_summary.ProposalCode.getValue())))
@@ -293,7 +297,7 @@ def _getProjectSummary(pprObject):
 # Given the pipeline processing request object return the number of processing
 # requests. For EVLA this should always be 1 but check. Assume a single scheduling block
 # per processing request.
-def _getNumRequests(pprObject):
+def _getNumRequests(pprObject: 'XmlObject') -> int:
     ppr_prequests = pprObject.SciPipeRequest.ProcessingRequests
 
     numRequests = 0
@@ -325,7 +329,7 @@ def _getNumRequests(pprObject):
 
 # Given the pipeline processing request object return the number of scheduling
 # block sets. For the EVLA there can be only one.
-def _getNumSchedBlockSets(pprObject, requestId, numRequests):
+def _getNumSchedBlockSets(pprObject: 'XmlObject', requestId: int, numRequests: int) -> int:
     if numRequests == 1:
         ppr_dset = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.DataSet
     else:
@@ -343,7 +347,7 @@ def _getNumSchedBlockSets(pprObject, requestId, numRequests):
 # Given the pipeline processing request object return a list of ASDMs
 # where each element in the list is a tuple consisting of the path
 # to the ASDM, the name of the ASDM, and the UID of the ASDM.
-def _getAsdmList(pprObject, numSbSets, numRequests):
+def _getAsdmList(pprObject: 'XmlObject', numSbSets: int, numRequests: int) -> Tuple[str, int, list]:
     if numRequests == 1:
         ppr_dset = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.DataSet
         if numSbSets == 1:

@@ -11,6 +11,7 @@ import os
 import shutil
 import sys
 import traceback
+from typing import TYPE_CHECKING, Tuple, Union
 
 from ..extern import XmlObjectifier
 
@@ -21,9 +22,12 @@ from . import project
 from . import utils
 from .. import cli
 
+if TYPE_CHECKING:
+    from . launcher import Context
+
 
 def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
-               loglevel: str = 'info', plotlevel: str = 'default', interactive: bool = True):
+               loglevel: str = 'info', plotlevel: str = 'default', interactive: bool = True) -> None:
     """
     Runs Pipeline Processing Request (PPR).
 
@@ -307,7 +311,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
     return
 
 
-def save_existing_context():
+def save_existing_context() -> None:
     """Save existing context to disk.
 
     Save existing global pipeline context to avoid
@@ -331,7 +335,7 @@ def save_existing_context():
         casa_tools.post_to_log(f'Saved existing context {context_file} to disk.')
 
 
-def export_on_exception(context, errorfile):
+def export_on_exception(context: 'Context', errorfile: str) -> None:
     # Define path for exporting output products, and ensure path exists.
     products_dir = utils.get_products_dir(context)
     utils.ensure_products_dir_exists(products_dir)
@@ -350,7 +354,7 @@ def export_on_exception(context, errorfile):
 # Return the intents list, the ASDM list, and the processing commands
 # for the first processing request. There should in general be only
 # one but the schema permits more. Generalize later if necessary.
-def _getFirstRequest(pprXmlFile):
+def _getFirstRequest(pprXmlFile: str) -> Union[Tuple[list, str, dict, list, list], Tuple[list, list, str, dict, list, str, list]]:
     # Initialize
     info = []
     relativePath = ""
@@ -408,14 +412,14 @@ def _getFirstRequest(pprXmlFile):
 
 # Give the path to the pipeline processing request XML file return the pipeline
 # processing request object.
-def _getPprObject(pprXmlFile):
+def _getPprObject(pprXmlFile: str) -> XmlObjectifier.XmlObject:
     pprObject = XmlObjectifier.XmlObject(fileName=pprXmlFile)
     return pprObject
 
 
 # Given the pipeline processing request object print some project summary
 # information. Returns a list of tuples to preserve order (key, (prompt, value))
-def _getProjectSummary(pprObject):
+def _getProjectSummary(pprObject: XmlObjectifier.XmlObject) -> list:
     ppr_summary = pprObject.SciPipeRequest.ProjectSummary
     summaryList = []
     summaryList.append(('proposal_code', ('Proposal code: ', ppr_summary.ProposalCode.getValue())))
@@ -426,7 +430,7 @@ def _getProjectSummary(pprObject):
 
 # Given the pipeline processing request object print some project structure
 # information.
-def _getProjectStructure(pprObject):
+def _getProjectStructure(pprObject: XmlObjectifier.XmlObject) -> list:
 
     # backwards compatibility test
     ppr_project = pprObject.SciPipeRequest.ProjectStructure
@@ -461,7 +465,7 @@ def _getProjectStructure(pprObject):
 
 # Given the pipeline processing request object return the number of processing
 # requests. This should normally be 1.
-def _getNumRequests(pprObject):
+def _getNumRequests(pprObject: XmlObjectifier.XmlObject) -> int:
 
     ppr_prequests = pprObject.SciPipeRequest.ProcessingRequests
 
@@ -515,7 +519,7 @@ def _getNumRequests(pprObject):
 
 # Given the pipeline processing request object return a list of processing
 # intents in the form of a keyword and value dictionary
-def _getIntents(pprObject, requestId, numRequests):
+def _getIntents(pprObject: XmlObjectifier.XmlObject, requestId: int, numRequests: int) -> Tuple[int, dict]:
 
     if numRequests == 1:
         ppr_intents = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.ProcessingIntents
@@ -549,7 +553,7 @@ def _getIntents(pprObject, requestId, numRequests):
     return numIntents, intentsDict
 
 
-def _getPerformanceParameters(intentsDict):
+def _getPerformanceParameters(intentsDict: dict) -> project.PerformanceParameters:
     performanceParams = project.PerformanceParameters()
 
     # No performance parameters
@@ -566,7 +570,7 @@ def _getPerformanceParameters(intentsDict):
     return performanceParams
 
 
-def _getSessions(intentsDict):
+def _getSessions(intentsDict: dict) -> dict:
     sessionsDict = {}
 
     searching = True
@@ -588,7 +592,7 @@ def _getSessions(intentsDict):
 # Given the pipeline processing request object return a list of processing
 # commands where each element in the list is a tuple consisting of the
 # processing command name and the parameter set dictionary.
-def _getCommands(pprObject, requestId, numRequests):
+def _getCommands(pprObject: XmlObjectifier.XmlObject, requestId: int, numRequests: int) -> Tuple[str, int, list]:
     if numRequests == 1:
         ppr_cmds = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.ProcessingProcedure
     else:
@@ -624,7 +628,7 @@ def _getCommands(pprObject, requestId, numRequests):
 
 # Given the pipeline processing request object return the number of scheduling
 # block sets.
-def _getNumSchedBlockSets(pprObject, requestId, numRequests):
+def _getNumSchedBlockSets(pprObject: XmlObjectifier.XmlObject, requestId: int, numRequests: int) -> int:
     if numRequests == 1:
         ppr_dset = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.DataSet
     else:
@@ -642,7 +646,7 @@ def _getNumSchedBlockSets(pprObject, requestId, numRequests):
 # Given the pipeline processing request object return a list of ASDMs
 # where each element in the list is a tuple consisting of the path
 # to the ASDM, the name of the ASDM, and the UID of the ASDM.
-def _getAsdmList(pprObject, sbsetId, numSbSets, requestId, numRequests):
+def _getAsdmList(pprObject: XmlObjectifier.XmlObject, sbsetId: int, numSbSets: int, requestId: int, numRequests: int) -> Tuple[str, int, list]:
     if numRequests == 1:
         ppr_dset = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.DataSet
         if numSbSets == 1:
@@ -682,7 +686,7 @@ def _getAsdmList(pprObject, sbsetId, numSbSets, requestId, numRequests):
 
 # Given a parameter set object retrieve the parameter set dictionary for
 # each command.
-def _getParameters(ppsetObject):
+def _getParameters(ppsetObject: XmlObjectifier.XmlObject) -> Tuple[int, dict]:
     numParams = 0
     paramsDict = {}
 
