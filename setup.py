@@ -1,7 +1,5 @@
-import collections
 import logging
 import os
-import re
 import shutil
 import subprocess
 import sys
@@ -9,10 +7,10 @@ import sys
 import csscompressor
 import setuptools
 from jsmin import jsmin
+from setuptools import sic
 from setuptools.command.build_py import build_py
 
-ENCODING = 'utf-8'  # locale.getpreferredencoding()
-
+ENCODING = 'utf-8'
 
 
 class MinifyJSCommand(setuptools.Command):
@@ -184,72 +182,14 @@ class VersionCommand(setuptools.Command):
 
 
 def _get_git_version() -> str:
-    # Retrieve info about current branch.
-    git_branch = None
-    try:
-        git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'],
-                                             stderr=subprocess.DEVNULL).decode().strip()
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        # FileNotFoundError: if git is not on PATH.
-        # subprocess.CalledProcessError: if git command returns error; for example, current checkout
-        #   may have a detached HEAD pointing at a specific tag (not pointing to a branch).
-        pass
 
-    # Try to get version information
-    ver_from_script = []
     try:
-        # Output of the version.py script is a string with two or three space-separated elements:
-        # last branch tag (possibly empty), last release tag, and possibly a "dirty" suffix.
-        # For example:
-        # 2024.0.0.3 2024.0.0.3
-        # or
-        # '' 2024.0.0.3 dirty
-        ver_from_script = subprocess.check_output([sys.executable, 'pipeline/infrastructure/version.py'],
-                                                  stderr=subprocess.DEVNULL).decode().rstrip().split(' ')
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        # FileNotFoundError: if git is not on PATH.
-        # subprocess.CalledProcessError: if git command returns error; for example, current checkout
-        #   may have a detached HEAD pointing at a specific tag (not pointing to a branch).
-        pass
-
-    if git_branch is not None and (git_branch == 'main' or git_branch.startswith('release/')):
-        # Version string returned by this routine contains the latest release tag and optionally
-        # a local version identifier ("dirty") as described in PEP440, separated by "+".
-        return '+'.join(ver_from_script[1:])
-    else:
-        # Retrieve info about current commit.
-        try:
-            # Set version to latest tag, number of commits since tag, and latest commit hash.
-            commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty'],
+        ver_from_script = subprocess.check_output([sys.executable, 'pipeline/infrastructure/version.py', '--full-string'],
                                                   stderr=subprocess.DEVNULL).decode().strip()
-        except (FileNotFoundError, subprocess.CalledProcessError):
-            # FileNotFoundError: if git is not on PATH.
-            # subprocess.CalledProcessError: if git command returns error.
-            commit_hash = None
-
-        # Populate the hash, branch, and version from the script if any are unset:
-        if commit_hash is None:
-            commit_hash = "unknown_hash"
-        else:
-            # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label
-            commit_hash = re.sub(r'[^\w_\-\.]+', '.', commit_hash)
-
-        if git_branch is None:
-            git_branch = "unknown_branch"
-        else:
-            # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label
-            git_branch = re.sub(r'[^\w_\-\.]+', '.', git_branch)
-
-        if len(ver_from_script) < 2:
-            # Invalid version number:
-            version_number = '0.0.dev0'
-        else:
-            version_number = ver_from_script[1]
-
-        # Consolidate into single version string.
-        version = "{}+{}-{}".format(version_number, commit_hash, git_branch)
-
-        return version
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        # likely the script doesn't exist due to a wrong path or the Git metadata check failed.
+        ver_from_script = "unknown"
+    return ver_from_script
 
 
 class PipelineBuildPyCommand(build_py):
@@ -260,10 +200,20 @@ class PipelineBuildPyCommand(build_py):
         self.run_command('version')
 
 
-setuptools.setup(version=_get_git_version(),
-                 cmdclass={
-    'build_py': PipelineBuildPyCommand,
-    'minify_js': MinifyJSCommand,
-    'minify_css': MinifyCSSCommand,
-    'version': VersionCommand,
-})
+setuptools.setup(
+    cmdclass={
+        'build_py': PipelineBuildPyCommand,
+        'minify_js': MinifyJSCommand,
+        'minify_css': MinifyCSSCommand,
+        'version': VersionCommand,
+    },
+    # setuptools.sic allows you to bypass the version identifier normalization and
+    # preserve the public version label as much as possible, e.g., '1.0.0-dev1' will
+    # not get converted to '1.0.0.dev1'.
+    # https://github.com/pypa/setuptools/issues/308
+    # However, '-' in the local version string,
+    # will still be converted to '.', e.g. '1.0.0-dev1+PIPE-1243' will
+    # '1.0.0-dev1+PIPE.1243' in the importlib metadata. Therefore we use pipeline/_version.py as
+    # the main reference.
+    version=sic(_get_git_version())
+)

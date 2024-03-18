@@ -118,7 +118,7 @@ todo_include_todos = False
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
-
+# html_theme = "furo"
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
@@ -228,7 +228,7 @@ texinfo_documents = [
 # -- Sidebars
 
 html_sidebars = {
-    '**': ['localtoc.html'],
+    '**': ['localtoc.html'], # not allowed if using the 'furo' theme
     'search': [],
     'genindex': [],
     'py-modindex': [],

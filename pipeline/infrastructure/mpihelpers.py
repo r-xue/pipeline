@@ -10,7 +10,7 @@ try:
     from casampi.MPIEnvironment import MPIEnvironment
     from casampi.MPICommandClient import MPICommandClient
 except ImportError:
-    # MPI not available on MacOS
+    # MPI not available on macOS
     class DummyMPIEnvironment:
         is_mpi_enabled = False
         is_mpi_client = False

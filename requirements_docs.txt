@@ -5,11 +5,11 @@ future
 urllib3
 commonmark
 recommonmark
-nbsphinx # nbsphinx requires 'pandoc' (e.g. from macports or apt, not 'pandoc' from PyPI) to work properly.
+nbsphinx            # nbsphinx requires 'pandoc' (e.g. from macports or apt, not 'pandoc' from PyPI) to work properly.
 sphinx_rtd_theme
+# furo
 sphinxcontrib-bibtex
-sphinx-astrorefs # https://github.com/jobovy/sphinx-astrorefs
+sphinx-astrorefs    # https://github.com/jobovy/sphinx-astrorefs
 sphinx-copybutton
-
 #ipympl
 #nodejs

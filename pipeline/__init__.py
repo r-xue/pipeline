@@ -4,26 +4,20 @@ import atexit
 import http.server
 import os
 import pathlib
-import pkg_resources
 import threading
 import webbrowser
 
-from . import domain
-from . import environment
-from . import infrastructure
-
-from .infrastructure import Pipeline, Context
-
-from . import h
-from . import hif
-from . import hifa
-from . import hsd
-from . import hifv
-from . import hsdn
-
-from .domain import measures
+import pkg_resources
 from casashell.private.stack_manip import find_frame
 from casatasks import casalog
+
+from . import environment, h, hif, hifa, hifv, hsd, hsdn, infrastructure
+from .domain import measures
+
+# from . import config
+from .infrastructure import Context, Pipeline
+
+__version__ = revision = environment.pipeline_revision
 
 # Modify filter to get INFO1 message which the pipeline
 # treats as ATTENTION level.
@@ -144,6 +138,7 @@ def stop_weblog():
             LOG.info(serve_message.format(host=sa[0], port=sa[1]))
             HTTP_SERVER = None
 
+
 def initcli(user_globals=None):
     LOG.info('Initializing cli...')
     if user_globals is None:
@@ -164,11 +159,9 @@ def initcli(user_globals=None):
             exec('from {} import *'.format(abs_cli_package), my_globals)
             LOG.info('Loaded Pipeline commands from package: {!s}'.format(package))
 
-revision = environment.pipeline_revision
-
 
 def log_host_environment():
-    LOG.info('Pipeline version {!s} running on {!s}'.format(environment.pipeline_revision, environment.hostname))
+    LOG.info('Pipeline version {!s} running on {!s}'.format(__version__, environment.hostname))
     try:
         host_summary = '{!s} memory, {!s} x {!s} running {!s}'.format(
             measures.FileSize(environment.memory_size, measures.FileSizeUnits.BYTES),

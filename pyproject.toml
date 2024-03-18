@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel", "csscompressor==0.9.5", "jsmin==3.0.1"]
+requires = ["setuptools>=64.0", "wheel", "csscompressor==0.9.5", "jsmin==3.0.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -18,9 +18,9 @@ classifiers = [
 Documentation = "https://almascience.nrao.edu/processing/science-pipeline"
 Repository = "https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline"
 
-[project.scripts]
-pipe_exec = "pipeline.pipe_exec:cli_interface"
-pipe_sch = "pipeline.pipe_sch:cli_interface"
+# [project.scripts]
+# pipe_exec = "pipeline.pipe_exec:cli_interface"
+# pipe_sch = "pipeline.pipe_sch:cli_interface"
 
 [tool.setuptools.packages.find]
 include = ["pipeline*"]

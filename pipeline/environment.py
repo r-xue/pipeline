@@ -11,7 +11,6 @@ import sys
 
 from importlib.metadata import version, PackageNotFoundError
 from importlib.util import find_spec
-import pkg_resources
 
 import casatasks
 
@@ -19,11 +18,13 @@ from .infrastructure import mpihelpers
 from .infrastructure.mpihelpers import MPIEnvironment
 from .infrastructure import utils
 from .infrastructure import casa_tools
-from .infrastructure.version import get_version
+from .infrastructure.version import get_version_string_from_git
+from importlib.metadata import version, PackageNotFoundError
 
 __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'cpu_type', 'hostname', 'host_distribution',
            'logical_cpu_cores', 'memory_size', 'pipeline_revision', 'role', 'cluster_details', 'dependency_details']
-
+from .infrastructure import logging
+LOG = logging.get_logger(__name__)
 
 def _cpu_type():
     """
@@ -66,7 +67,7 @@ def _host_distribution():
     if system == 'Linux':
         return _linux_os_release()
     elif system == 'Darwin':
-        return 'MacOS {!s}'.format(platform.mac_ver()[0])
+        return 'macOS {!s}'.format(platform.mac_ver()[0])
     else:
         raise NotImplemented('Could not get host OS for system {!s}'.format(system))
 
@@ -125,77 +126,55 @@ def _pipeline_revision() -> str:
     attempt to get version from built package.
     :return: string describing pipeline version.
     """
-    pl_path = pkg_resources.resource_filename(__name__, '')
 
-    # Retrieve info about current commit.
+    version_str = 'unknown'
+    # check the version of installed package matching 'Pipeline'
     try:
-        # Silently test if this is a Git repo.
-        subprocess.check_output(['git', 'rev-parse'], cwd=pl_path, stderr=subprocess.DEVNULL)
-        # Continue with fetching commit and branch info.
-        commit_hash = subprocess.check_output(['git', 'describe', '--always', '--tags', '--long', '--dirty'],
-                                              cwd=pl_path, stderr=subprocess.DEVNULL).decode().strip()
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        # FileNotFoundError: expected if git is not present in PATH.
-        # subprocess.CalledProcessError: expected if one of the git commands
-        # throws an error.
-        commit_hash = None
+        # PIPE-1669: try to retrieve version from PEP566 metadata:
+        # https://peps.python.org/pep-0566/
+        # However, be aware that the metadata version string might be out-of-date
+        # from the package being imported depending on your workflow
+        # https://packaging.python.org/en/latest/guides/single-sourcing-package-version/#single-sourcing-the-version
+        # In addition, the version string could be converted form compliance reasons:
+        # https://peps.python.org/pep-0440/#local-version-segments
+        # '1.0.0-dev1+PIPE-1243' -> 1.0.0-dev1+PIPE.1243'.
+        version_str = version('pipeline')
+        LOG.debug('Pipeline version found from importlib.metadata: %s', version_str)
+    except PackageNotFoundError:
+        # likely the package is not installed
+        LOG.debug('Pipeline version is not found from importlib.metadata; '
+                 'the package is likely not pip-installed but added at runtime.')
 
-    # Retrieve info about current branch.
-    git_branch = None
+    # more reliable method with the string most correctly preserved.
     try:
-        git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'], cwd=pl_path,
-                                             stderr=subprocess.DEVNULL).decode().strip()
-
-    except (FileNotFoundError, subprocess.CalledProcessError):
+        from ._version import version as version_str
+        LOG.debug('Pipeline version found from pipeline._version: %s', version_str)
+    except ModuleNotFoundError:
         pass
 
-    # Try to get the version
-    ver = None
-    try:
-        ver = get_version(pl_path)
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        pass
+    # We try to check version via the Git history again; this monkey patch is to deal with
+    # the situation that the PEP566 metadata might be out of date, e.g. developers
+    # are using a Python interpreter with older Pipeline versions installed but add
+    # the latest Git repo to sys.path for testing at runtime. The '.git' pre-check is intended
+    # to avoid the unnecessary cost of subprocess call cost. In addition, it avoids pulling
+    # the Git-based version string if the imported Python code is coming from a scratch directory
+    # inside the repo, etc. build/lib/pipeline
+    git_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.git'))
+    src_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+    if os.path.exists(git_path):
+        LOG.debug('A Git repo is found at: %s', git_path)
+        LOG.debug('Checking the Git history from %s', src_path)
+        try:
+            # Silently test if this is a Git repo; if not, a CalledProcessError Exception
+            # will be triggered due to a non-zero subprocess exit status.
+            subprocess.check_output(['git', 'rev-parse'], cwd=src_path, stderr=subprocess.DEVNULL)
+            # If it's a Git repo, continue with fetching the desired Git-derived package version string.
+            version_str = get_version_string_from_git(src_path)
+            LOG.debug('Pipeline version derived from Git at runtime: %s', version_str)
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            pass
 
-    if git_branch is not None and ver is not None and (git_branch == "main" or git_branch.startswith("release/")):
-        # Output of the version.py script is a string with two or three space-separated elements:
-        # last branch tag (possibly empty), last release tag, and possibly a "dirty" suffix.
-        releasetag = ver[1]
-        if len(ver) >= 3:
-            dirty = ver[2]
-            return releasetag + '+' + dirty  # "+" denotes local version identifier as described in PEP440
-        else:
-            return releasetag
-    else:
-        # Consolidate into single version string.
-        if commit_hash is None:
-            commit_hash = "unknown_hash"
-            # If no Git commit info could be found, then attempt to load version
-            # from the _version module that is created when pipeline package is
-            # built.
-            try:
-                from pipeline._version import version
-                return version
-            except ModuleNotFoundError:
-                ver = "0.0.dev0"
-
-        if git_branch is None:
-            git_branch = "unknown_branch"
-
-        # this isn't available here
-        if ver is None or len(ver) < 2:
-            # Invalid version number:
-            ver = "0.0.dev0"
-        else:
-            ver = ver[1]
-
-        # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label (anything after the +)
-        commit_hash = re.sub(r'[^\w_\-\.]+', '.', commit_hash)
-        git_branch = re.sub(r'[^\w_\-\.]+', '.', git_branch)
-
-        # Consolidate into single version string.
-        version_str = "{}+{}-{}".format(ver, commit_hash, git_branch)
-
-        return version_str
+    return version_str
 
 
 def _ulimit():
