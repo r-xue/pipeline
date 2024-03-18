@@ -4,7 +4,7 @@ from typing import List, Tuple
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
-from pipeline.domain.spectralwindow import SpectralWindow
+from pipeline.domain import SpectralWindow
 from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)

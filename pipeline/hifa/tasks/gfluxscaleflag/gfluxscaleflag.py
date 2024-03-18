@@ -12,7 +12,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain.measurementset import MeasurementSet
+from pipeline.domain import MeasurementSet
 from pipeline.h.tasks.common.displays import applycal as applycal_displays
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal

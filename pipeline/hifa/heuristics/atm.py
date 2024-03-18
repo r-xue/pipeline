@@ -5,7 +5,7 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 from pipeline.domain import measures
-from pipeline.domain.spectralwindow import SpectralWindow
+from pipeline.domain import SpectralWindow
 from pipeline.h.heuristics import tsysspwmap
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.h.tasks.common import commonresultobjects

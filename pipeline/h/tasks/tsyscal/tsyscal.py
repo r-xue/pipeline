@@ -7,7 +7,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain.measurementset import MeasurementSet
+from pipeline.domain import MeasurementSet
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.h.heuristics.tsysspwmap import tsysspwmap
 from pipeline.infrastructure import casa_tasks

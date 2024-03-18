@@ -360,10 +360,10 @@ class MeasurementSetReader(object):
                     ms.representative_target = (sbinfo.repSource, sbinfo.repFrequency, sbinfo.repBandwidth)
                     ms.representative_window = sbinfo.repWindow
 
-                LOG.info('Populating ms.observing_modes ...')
+                LOG.info('Populating ms.observing_modes...')
                 ms.observing_modes = SBSummaryTable.get_observing_modes(ms)
 
-                LOG.info('Populating ms.science_goals ...')
+                LOG.info('Populating ms.science_goals...')
                 if sbinfo.minAngResolution is None and sbinfo.maxAngResolution is None:
                     # Only warn if the number of 12m antennas is greater than the number of 7m antennas
                     # and if the observation is not single dish
@@ -374,7 +374,6 @@ class MeasurementSetReader(object):
                     ms.science_goals = {'minAcceptableAngResolution': '0.0arcsec',
                                         'maxAcceptableAngResolution': '0.0arcsec'}
                 else:
-                    # LOG.info('Populating ms.science_goals ...')
                     ms.science_goals = {'minAcceptableAngResolution': sbinfo.minAngResolution,
                                         'maxAcceptableAngResolution': sbinfo.maxAngResolution}
 
@@ -402,7 +401,7 @@ class MeasurementSetReader(object):
                 ms.acs_software_version, ms.acs_software_build_version = \
                     MeasurementSetReader.get_acs_software_version(ms, msmd)
                     
-            LOG.info('Populating ms.array_name ...')
+            LOG.info('Populating ms.array_name...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
             ms.array_name = ExecblockTable.get_execblock_info(ms)
 

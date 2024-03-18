@@ -76,15 +76,18 @@ class DiffGaincal(basetask.StandardTaskTemplate):
         dg_refspws, dg_scispws = self.inputs.ms.get_diffgain_spectral_windows()
 
         # Compute phase solutions for the diffgain reference spectral windows.
+        LOG.info('Computing phase gain table for the diffgain reference spectral windows.')
         self._do_phasecal_for_diffgain_reference(dg_refspws, dg_scispws)
 
         # Compute phase solutions for the diffgain science spectral windows.
+        LOG.info('Computing phase gain table for the diffgain science spectral windows.')
         dg_ref_phase_results = self._do_phasecal_for_diffgain_science(dg_scispws)
         # Adopt resulting CalApplication(s) into final result.
         result.pool = dg_ref_phase_results.pool
 
         # Compute residual phase offsets (diagnostic) for the diffgain science
         # spectral windows.
+        LOG.info('Computing residual phase offsets for the diffgain science spectral windows.')
         result.phaseoffsetresult = self._do_phasecal_for_diffgain_residual_offsets(dg_scispws)
 
         return result
