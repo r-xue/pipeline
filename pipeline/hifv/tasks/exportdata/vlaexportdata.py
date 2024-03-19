@@ -261,8 +261,7 @@ finally:
         # remove MS key entry if it exists; MS key does not conform with other entries
         # more information about flagmanager return dictionary here:
         # https://casadocs.readthedocs.io/en/stable/api/tt/casatasks.flagging.flagmanager.html#mode
-        if 'MS' in flag_dict.keys():
-            del flag_dict['MS']
+        flag_dict.pop('MS', None)
         flag_keys = [y['name'] for y in flag_dict.values()]
 
         export_final_flags_dict = dict()
