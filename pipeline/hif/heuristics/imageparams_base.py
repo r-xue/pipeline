@@ -2015,8 +2015,8 @@ class ImageParamsHeuristics(object):
             ms_do = self.observing_run.get_ms(msname)
             min_diameter = min(min_diameter, min([antenna.diameter for antenna in ms_do.antennas]))
             percentileBaselineLengths.append(
-                np.percentile([float(baseline.length.to_units(measures.DistanceUnits.METRE))
-                               for baseline in ms_do.antenna_array.baselines], percentile))
+                np.percentile(ms_do.antenna_array.baselines_m, percentile)
+            )
 
         return np.median(percentileBaselineLengths), min_diameter
 
