@@ -4,7 +4,6 @@ from typing import List, Union, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
-import pipeline.domain.measures as measures
 from pipeline.infrastructure import casa_tools
 from .imageparams_base import ImageParamsHeuristics
 
@@ -206,13 +205,13 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         baseline_lengths = []
         for msname in self.vislist:
             ms_do = self.observing_run.get_ms(msname)
-            ms_baseline_lengths = [float(baseline.length.to_units(measures.DistanceUnits.METRE))
-                                    for baseline in ms_do.antenna_array.baselines]
-            ms_baseline_lengths.sort()
-            if(len(ms_baseline_lengths) >= n):
-                baseline_lengths.append(ms_baseline_lengths[n-1])
+            baselines_m = ms_do.antenna_array.baselines_m
+            if n > len(baselines_m):
+                continue
 
-        if(len(baseline_lengths) > 0):
+            baseline_lengths.append(np.sort(baselines_m)[n-1])
+
+        if len(baseline_lengths) > 0:
             return np.median(baseline_lengths)
         else:
             return None
