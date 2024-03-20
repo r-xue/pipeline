@@ -287,15 +287,29 @@ class Tier0JobRequest(Executable):
 
 
 class Tier0FunctionCall(Executable):
-    def __init__(self, fn, *args, executor=None, **kwargs):
+    def __init__(self, fn, *args, executor=None, use_pickle=False, **kwargs):
         """
         Create a new Tier0FunctionCall for a function to be executed on an MPI
-        server.
+        server. The functions and arguments must be picklable objects.
         """
         super().__init__()
         self.__fn = fn
-        self.__args = args
-        self.__kwargs = kwargs
+        if use_pickle:
+            # pass function arguments via local pickle I/O to workround the casampi bsend buffer 
+            # size restriction (CAS-13656).
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.func_args', dir='', delete=True)
+            tmpfile.close()
+            self.__func_args_path = tmpfile.name
+            # write task args object to pickle
+            with open(self.__func_args_path, 'wb') as pickle_file:
+                LOG.info('Saving task arguments to %s', self.__func_args_path)
+                pickle.dump((args, kwargs), pickle_file, protocol=-1)
+        else:
+            # pass function arguments directly via MPI messaging
+            self.__func_args_path = None
+            self.__args = args
+            self.__kwargs = kwargs
+
         if executor is None:
             self.__executor = None
         else:
@@ -317,15 +331,25 @@ class Tier0FunctionCall(Executable):
         self.__keyword = list(map(format_arg_value, kwargs.items()))
 
     def get_executable(self):
+        if self.__func_args_path is not None:
+            with open(self.__func_args_path, 'rb') as func_args_file:
+                args, kwargs = pickle.load(func_args_file)
+        else:
+            args = self.__args
+            kwargs = self.__kwargs
+
+        if self.__func_args_path is not None and os.path.exists(self.__func_args_path):
+            os.unlink(self.__func_args_path)
+
         if self.__executor is None:
-            return lambda: self.__fn(*self.__args, **self.__kwargs)
+            return lambda: self.__fn(*args, **kwargs)
         else:
             tmpfile = tempfile.NamedTemporaryFile(suffix='.casa_commands.log', dir='', delete=True)
             tmpfile.close()
             self.logs['casa_commands_tier0'] = tmpfile.name
             self.logs['casa_commands'] = self.__executor.cmdfile
             self.__executor.cmdfile = self.logs['casa_commands_tier0']
-            return lambda: self.__fn(*self.__args, executor=self.__executor, **self.__kwargs)
+            return lambda: self.__fn(*args, executor=self.__executor, **kwargs)
 
     def __repr__(self):
         args = self.__positional + self.__nameless + self.__keyword
@@ -529,10 +553,10 @@ class TaskQueue:
             task = SyncTask(fn(**job_args), executor)
         self.__queue.append(task)
 
-    def add_functioncall(self, fn, *args, **kwargs):
+    def add_functioncall(self, fn, *args, use_pickle=False, **kwargs):
 
         if self.__async:
-            executable = Tier0FunctionCall(fn, *args, **kwargs)
+            executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
             task = AsyncTask(executable)
         else:
             task = SyncTask(lambda: fn(*args, **kwargs))
