@@ -80,6 +80,7 @@ docs/source/_taskdocs/**
 casa-*.log
 docs/casa-*.log
 docs/source/casa-*.log
+*.last
 
 # PyBuilder
 target/

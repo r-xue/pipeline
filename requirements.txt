@@ -29,5 +29,8 @@ logutils == 0.3.5           # https://pypi.org/project/logutils
 ps_mem == 3.14              # https://pypi.org/project/ps-mem
 astropy == 5.2.2            # https://docs.astropy.org/en/stable/changelog.html
                             # the latest version compatible with Python 3.8
-bdsf == 1.10.3              # https://github.com/lofar-astron/PyBDSF
+bdsf == 1.10.3              ; platform_machine != "arm64"
+                            # https://github.com/lofar-astron/PyBDSF
                             # only required for the VLASS pipeline
+                            # not available on macOS-arm64 yet, therefore the env markers
+                            # https://peps.python.org/pep-0508/#environment-markers
