@@ -5,24 +5,32 @@ import operator
 import os
 import platform
 import re
-import sys
 import types
 from inspect import signature
 
 import casatasks
 import casaplotms
 
-# PIPE-2099: add the compatibility with the 'wvrgcal' task change from CAS-14218
-if hasattr(casatasks, 'wvrgcal'):
-    # wvrgcal was migrated into the casatasks package via CAS-14218
-    almatasks = casatasks
-else:
-    # before CAS-14218, the task wvrgcal was under the almatasks package
-    import almatasks
-
 from . import logging, utils
 
 LOG = logging.get_logger(__name__)
+
+# PIPE-2099: add the forward compatibility with the 'wvrgcal' task change from CAS-14218
+if not hasattr(casatasks, 'wvrgcal'):
+    # wvrgcal is being migrated into the casatasks package via CAS-14218.
+    # before CAS-14218/ver6.6.4, the task wvrgcal is under the "almatasks" package.
+    try:
+        import almatasks
+        casatasks.wvrgcal = almatasks.wvrgcal
+    except ImportError:
+        LOG.warning("CASA/wvrgcal is not installed, and the ALMA Pipeline task hifa_wvrgcal() will not work properly.")
+
+        def mock_wvrgcal(*args, **kwagrs):
+            LOG.warning("CASA/wvrgcal is not installed, and hifa_wvrgcal() will not work properly for ALMA-12m data "
+                        "because casatasks.wvrgcal is a dummy function and return None.")
+            return
+        casatasks.wvrgcal = mock_wvrgcal
+
 
 # logger for keeping a trace of CASA task and CASA tool calls.
 # The filename incorporates the hostname to keep MPI client files distinct
@@ -315,7 +323,7 @@ def get_fn_name(fn):
     Note: as of CASA ver6.5, all genuine CASA tasks are callable class instances, rather than Python functions.
     """
 
-    for m in (casatasks, casaplotms, almatasks):
+    for m in (casatasks, casaplotms):
         for k in m.__all__:
             v = getattr(m, k)
             if v == fn and not isinstance(fn, types.FunctionType):
