@@ -414,7 +414,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         elif inputs.hm_spwmapmode == 'combine':
             spwmap = combine_spwmap(spws)
             combine = True
-            low_combinedsnr_spws = spws
+            low_combinedsnr_spws = [spw.id for spw in spws]
             LOG.info(f'Using combined spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
         elif inputs.hm_spwmapmode == 'simple':
