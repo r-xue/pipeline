@@ -56,7 +56,7 @@ class PipelineManifest(object):
         Currently this assumes there is only one ous as is the case
         for member ous processing
         """
-        return self.piperesults.getchildren()[0]
+        return list(self.piperesults)[0]
 
     @staticmethod
     def add_casa_version(ous, casa_version):
