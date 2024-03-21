@@ -8,7 +8,11 @@
 #   Step-by-step to reproduce the Pipeline/CASA environment
 #     $ git clone https://open-bitbucket.nrao.edu/scm/pipe/pipeline.git --branch PIPE-1669-run-dev-pipeline-with-modular-casa6
 #     $ cd pipeline
+#
 #     $ mamba env create -f pipe1669.yaml
+#     $ # or
+#     $ mamba create -n pipe1669
+#     $ mamba env update -f pipe1669.yaml
 #
 #   Update:
 #     $ mamba update -n pipe1669 --all
@@ -18,7 +22,16 @@
 #     $ mamba env remove -n pipe1669
 #     $ mamba remove -n pipe1669 mpi4py
 #
+#   Clean:
+#     $ conda clean --all
+#
+# pipe1669.yaml vs. requirements.txt
+#     * The scope of pipe1669.yaml is used to create a pseudo monolithic-CASA6-like Python environment
+#     * And pyproject.toml+requirements.txt only handle pipeline installation inside that environment
+#       and are designed to work for both monolithic and modular CASA cases.
+#
 # Typical use pattern (but see more details below)
+#
 #     $ mamba activate pipe1669
 #     $ xvfb-run -a python run_pipeline.py
 #     $ xvfb-run -a mpirun -n 4 python run_pipeline.py
@@ -40,7 +53,7 @@
 #     except (ImportError, RuntimeError) as error:
 #         pass
 #     ```
-# Useful aliases/shortcuts to emulate monolithic casa executables 
+# Useful aliases/shortcuts to emulate monolithic CASA executables
 #
 #     $ mamba activate pipe1669
 #
@@ -65,15 +78,19 @@
 #
 # Notes for macOS (including Apple Silicon):
 #
-#     * An environment variable (SYSTEM_VERSION_COMPAT=0) might be needed here as
-#       py3.8/packaging might be too old for pip to recognize the macOS version label
-#       in the "casatools" wheel tag.
-#       https://github.com/pypa/packaging/pull/319
+#     * Because the casatools wheels only start being built from CASA ver>=6.6.4 with Py3.10 on the ARM64 (Apple Silicon) platform:
 #
-#     * Because the casatools wheels are still being built from the x86 platform, the Conda 
-#       install architecture needs to be "x86_64" (not "arm64 (Apple Silicon)"). 
-#           https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge3
-#       In addition, the Rosetta 2 emulation layer is needed for Apple silicon machines.
+#       * If your local conda install architecture is "arm64 (Apple Silicon)" rather than "x86_64", you have to manually edit "python=3.8"
+#       to "python=3.10" below for the Python version specification. You will also skip the installation of two optional dependencies: "almatasks" and "pybsdf"
+#
+#       * If your local conda install architecture is "x86_64" (either an Intel machine or Apple Silicon Macs with the Rosetta 2 emulation layer),
+#       you can keep using the "python=3.8" specification for full compatibility and support of all Pipeline features. Note one might need to set
+#       an environment variable (SYSTEM_VERSION_COMPAT=0) for your Conda command because Conda-Python3.8 is too old for pip to recognize the macOS version label
+#       in the "casatools/casatasks" wheel release tag:
+#           https://github.com/pypa/packaging/pull/319
+#
+#       * About the conda installation architecture, please see: https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge3
+#
 #
 #     * A parallel Pipeline data process session might exit with a hang on macOS due to holdover active casaplotms.app sub-processes.
 #       Although this issue doesn't affect the processing run, to get a clean exist, one can put the code snippet below at the end
@@ -103,8 +120,8 @@ channels:
 
 dependencies:
   - conda-ecosystem-user-package-isolation
-  - git
-  - python=3.8
+  # - git
+  - python=3.8 # use python=3.10 for macOS/arm64
   - ipython
   - pip
   - numpy
@@ -114,17 +131,21 @@ dependencies:
   - mpi4py
   - certifi
   - protobuf
-  - poppler     # required for PL
+  - poppler # required for PL
   - imagemagick # required for PL
-  # - python-casacore # if you want a different I/O option.  
+  # - python-casacore # if you want a different I/O option.
   - pip:
-    - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
-    - casatools==6.6.1.*
-    - casatasks==6.6.1.*
-    - casashell==6.6.1.*
-    - casadata
-    - casampi
-    - almatasks
-    - casaplotms
-    - casaplotserver
-    - .
+      - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
+      - casatools==6.6.1.*  ; platform_machine != "arm64"
+      - casatasks==6.6.1.*  ; platform_machine != "arm64"
+      - casashell==6.6.1.*  ; platform_machine != "arm64"
+      # native ARM64 builds for ver6.6.4.*
+      - casatools==6.6.4.*  ; platform_machine == "arm64"
+      - casatasks==6.6.4.*  ; platform_machine == "arm64"
+      - casashell==6.6.4.*  ; platform_machine == "arm64"
+      - casadata
+      - casampi
+      - almatasks ; platform_machine != "arm64" # avoid accidentally pull the older PyPI ver0.0.3 meta package
+      - casaplotms
+      - casaplotserver
+      - .
