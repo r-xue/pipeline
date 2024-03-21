@@ -7,16 +7,18 @@ import re
 import xml.etree.ElementTree as ElementTree
 from bisect import bisect_left
 from functools import reduce
+from typing import Tuple, List
 
 import cachetools
 import numpy
-from typing import Tuple
 
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.utils as utils
 from . import casa_tools
 from . import logging
+from .casa_tools import MSMDReader
+from ..domain import Antenna, AntennaArray
 
 LOG = logging.get_logger(__name__)
 
@@ -848,20 +850,16 @@ class ObservationTable(object):
 
 class AntennaTable(object):
     @staticmethod
-    def get_antenna_array(msmd):
+    def get_antenna_array(msmd: MSMDReader) -> AntennaArray:
         position = msmd.observatoryposition()            
         names = set(msmd.observatorynames())
         assert len(names) == 1
         name = names.pop()
-        array = domain.AntennaArray(name, position)
-
-        # .. and add a new Antenna for each row in the ANTENNA table
-        for antenna in AntennaTable.get_antennas(msmd):
-            array.add_antenna(antenna)
-        return array
+        antennas = AntennaTable.get_antennas(msmd)
+        return domain.AntennaArray(name, position, antennas)
 
     @staticmethod
-    def get_antennas(msmd):
+    def get_antennas(msmd: MSMDReader) -> List[Antenna]:
         antenna_table = os.path.join(msmd.name(), 'ANTENNA')
         LOG.trace('Opening ANTENNA table to read ANTENNA.FLAG_ROW')
         with casa_tools.TableReader(antenna_table) as table:
@@ -882,14 +880,6 @@ class AntennaTable(object):
             antennas.append(antenna)
 
         return antennas
-
-    @staticmethod
-    def _create_antenna(antenna_id, name, station, diameter, position, offset, flag):
-        # omit this antenna if it has been flagged
-        if flag is True:
-            return
-
-        return domain.Antenna(antenna_id, name, station, position, offset, diameter)
 
 
 class DataDescriptionTable(object):
