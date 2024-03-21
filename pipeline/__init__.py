@@ -11,11 +11,17 @@ import pkg_resources
 from casashell.private.stack_manip import find_frame
 from casatasks import casalog
 
-from . import environment, h, hif, hifa, hifv, hsd, hsdn, infrastructure
-from .domain import measures
-
 # from . import config
+from . import domain, environment, infrastructure
+
 from .infrastructure import Context, Pipeline
+
+from . import h
+from . import hif
+from . import hifa
+from . import hsd
+from . import hifv
+from . import hsdn
 
 __version__ = revision = environment.pipeline_revision
 
@@ -164,7 +170,7 @@ def log_host_environment():
     LOG.info('Pipeline version {!s} running on {!s}'.format(__version__, environment.hostname))
     try:
         host_summary = '{!s} memory, {!s} x {!s} running {!s}'.format(
-            measures.FileSize(environment.memory_size, measures.FileSizeUnits.BYTES),
+            domain.measures.FileSize(environment.memory_size, domain.measures.FileSizeUnits.BYTES),
             environment.logical_cpu_cores,
             environment.cpu_type,
             environment.host_distribution)
