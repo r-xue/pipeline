@@ -2065,7 +2065,7 @@ class ImageParamsHeuristics(object):
     def uvrange(self, field=None, spwspec=None):
         return None, None
 
-    def reffreq(self):
+    def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         return None
 
     def restfreq(self):
