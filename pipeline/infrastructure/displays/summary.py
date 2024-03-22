@@ -1165,7 +1165,7 @@ class SpwIdVsFreqChart(object):
         ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
         bar_height = 0.4
         max_spws_to_annotate_VLA = 16  # request for VLA, PIPE-1415.
-        max_spws_to_annotate_ALMA = 128  # to show spw ids as much as possible for ALMA/NRO.
+        max_spws_to_annotate_ALMA_NRO = np.inf  # currently set to be infinity but should be changed to a suitable value for ALMA and NRO, if required.
         prop_cycle = matplotlib.rcParams['axes.prop_cycle']
         colors = prop_cycle.by_key()['color']
         colorcycle = itertools.cycle(colors)
@@ -1180,7 +1180,7 @@ class SpwIdVsFreqChart(object):
         else:  # for ALMA or NRO
             spw_list_generator = self._extract_spwdata_alma_nro()
             scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
-            max_spws_to_annotate = max_spws_to_annotate_ALMA
+            max_spws_to_annotate = max_spws_to_annotate_ALMA_NRO
         xmin, xmax = np.inf, -np.inf
         totalnum_spws = len(scan_spws)
         idx = 0
@@ -1191,9 +1191,9 @@ class SpwIdVsFreqChart(object):
                 spwdata = [spw for spw in scan_spws if spw.id == spwid][0]
                 bw = float(spwdata.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
                 fmin = float(spwdata.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
+                xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
                 ax_spw.barh(idx, bw, height=bar_height, left=fmin, color=color)
                 # 2. annotate each bars
-                xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
                 if totalnum_spws <= max_spws_to_annotate or spwid in [spwid_list[0], spwid_list[-1]]:
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
                 # 3. Frequency vs. ATM transmission
@@ -1202,7 +1202,7 @@ class SpwIdVsFreqChart(object):
                 idx += 1
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
-        ax_spw.set_ylim(totalnum_spws, -1.0)
+        ax_spw.set_ylim(totalnum_spws + totalnum_spws/20.0, -1.0 - totalnum_spws/20.0)
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
         ax_spw.grid(axis='x')
