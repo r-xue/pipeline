@@ -636,14 +636,20 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             vislists = [inputs.vis]
 
-        # VLA only
-        if inputs.context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA') and inputs.specmode == 'cont':
-            ms = inputs.context.observing_run.get_ms(inputs.vis[0])
-            band = ms.get_vla_spw2band()
+        if imaging_mode in ('VLA', 'JVLA', 'EVLA') and inputs.specmode == 'cont':
+            ref_ms = inputs.context.observing_run.get_ms(inputs.vis[0])
+            vla_band = ref_ms.get_vla_spw2band()
             band_spws = {}
-            for k, v in band.items():
+            for k, v in vla_band.items():
                 if str(k) in spwlist:
                     band_spws.setdefault(v, []).append(k)
+        elif imaging_mode == 'ALMA':
+            ref_ms = inputs.context.observing_run.get_ms(inputs.vis[0])
+            band_spws = {}
+            for spwid in spwlist:
+                real_spw_id = inputs.context.observing_run.virtual2real_spw_id(int(spwid), ref_ms)
+                band_name = ref_ms.get_spectral_window(real_spw_id).band
+                band_spws.setdefault(band_name, []).append(spwid)
         else:
             band_spws = {None: 0}
 
@@ -653,8 +659,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         expected_num_targets = 0
         for selected_datatype_str, selected_datatype_info in zip(selected_datatypes_str, selected_datatypes_info):
             for band in band_spws:
-                if band != None:
-                    spw = band_spws[band].__repr__()
+                if band is not None:
+                    spw = band_spws[band].__repr__().replace(' ', '') # NOTE: Super flaky setup since one needs to remove blanks.
                     spwlist = band_spws[band]
                 for vislist in vislists:
                     if inputs.per_eb:
@@ -712,8 +718,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     # Get a field domain object. Make sure that it has the necessary intent. Otherwise the list of spw IDs
                                     # will not match with the available science spw IDs.
                                     # Using all intents (inputs.intent) here. Further filtering is performed in the next block.
-                                    if ms_domain_obj.get_fields(field_intent[0], intent=inputs.intent) != []:
-                                        field_domain_obj = ms_domain_obj.get_fields(field_intent[0], intent=inputs.intent)[0]
+                                    field_domain_objs = ms_domain_obj.get_fields(field_intent[0], intent=inputs.intent)
+                                    if field_domain_objs != []:
+                                        field_domain_obj = field_domain_objs[0]
                                         # Get all science spw IDs for this field and record the ones that are present in this MS
                                         field_science_spwids = [spw_domain_obj.id for spw_domain_obj in field_domain_obj.valid_spws if spw_domain_obj.id in ms_science_spwids]
                                         # Record the virtual spwids
@@ -798,7 +805,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                         filtered_spwlist_local = filtered_spwlist
 
                     if filtered_spwlist_local == [] or filtered_spwlist_local == ['']:
-                        LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
+                        # TODO: Check if this error message is needed for any use case.
+                        #LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
                         continue
 
                     # Parse hm_cell to get optional pixperbeam setting

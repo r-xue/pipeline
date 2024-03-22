@@ -146,7 +146,7 @@ class ImageParamsHeuristics(object):
                 cont_ranges_spwsel[source_name] = {}
                 all_continuum_spwsel[source_name] = {}
                 for spwid in self.spwids:
-                    cont_ranges_spwsel[source_name][str(spwid)] = ''
+                    cont_ranges_spwsel[source_name][str(spwid)] = 'NONE'
                     all_continuum_spwsel[source_name][str(spwid)] = False
 
         contfile = self.contfile if self.contfile is not None else ''
