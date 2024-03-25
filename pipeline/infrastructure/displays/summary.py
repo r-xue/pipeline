@@ -1165,7 +1165,7 @@ class SpwIdVsFreqChart(object):
         ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
         bar_height = 0.4
         max_spws_to_annotate_VLA = 16  # request for VLA, PIPE-1415.
-        max_spws_to_annotate_ALMA_NRO = np.inf  # currently set to be infinity but should be changed to a suitable value for ALMA and NRO, if required.
+        max_spws_to_annotate_ALMA_NRO = np.inf  # annotate all spws for ALMA/NRO
         prop_cycle = matplotlib.rcParams['axes.prop_cycle']
         colors = prop_cycle.by_key()['color']
         colorcycle = itertools.cycle(colors)
@@ -1202,7 +1202,6 @@ class SpwIdVsFreqChart(object):
                 idx += 1
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
-        ax_spw.set_ylim(totalnum_spws + totalnum_spws/20.0, -1.0 - totalnum_spws/20.0)
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
         ax_spw.grid(axis='x')
