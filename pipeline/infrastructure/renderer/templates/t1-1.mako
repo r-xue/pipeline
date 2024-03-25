@@ -343,15 +343,6 @@ $(document).ready(function() {
     <table class="table table-bordered"
            summary="Processing environment for this pipeline reduction">
         <caption>Processing environment for this pipeline reduction</caption>
-        <thead>
-            <th>Hostname</th>
-            <th># MPI Servers</th>
-            <th># CPU cores</th>
-            <th>CPU</th>
-            <th>RAM</th>
-            <th>OS</th>
-            <th>Max open file descriptors</th>
-        </thead>
         <tbody>
             % for tr in environment:
             <tr>

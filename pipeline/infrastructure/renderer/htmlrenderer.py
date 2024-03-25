@@ -1,9 +1,9 @@
 import collections
 import contextlib
 import datetime
+import decimal
 import functools
 import itertools
-import math
 import operator
 import os
 import pydoc
@@ -17,20 +17,20 @@ import numpy
 import pkg_resources
 
 import pipeline as pipeline
-from pipeline.domain.measurementset import MeasurementSet
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.displays.summary as summary
-from pipeline.infrastructure.launcher import Context
 import pipeline.infrastructure.logging as logging
 from pipeline import environment
+from pipeline.domain.measurementset import MeasurementSet
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
+from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.renderer.templates import resources
-from . import qaadapter, rendererutils, weblog
+from . import qaadapter, weblog
 from .. import eventbus
 from .. import pipelineqa
 from ..eventbus import WebLogStageRenderingStartedEvent, WebLogStageRenderingCompleteEvent, \
@@ -489,35 +489,102 @@ class T1_1Renderer(RendererBase):
 
     @staticmethod
     def get_cluster_tablerows():
-        environment_rows = []
-        node_environments = {}
-        data = sorted(pipeline.environment.cluster_details, key=operator.itemgetter('hostname'))
-        for k, g in itertools.groupby(data, operator.itemgetter('hostname')):
+        node_environments: Dict[str, List[environment.Environment]] = {}
+
+        data = sorted(pipeline.environment.cluster_details, key=operator.attrgetter('hostname'))
+        for k, g in itertools.groupby(data, operator.attrgetter('hostname')):
             node_environments[k] = list(g)
 
+        data_rows = collections.defaultdict(list)
         for node, node_envs in node_environments.items():
             if not node_envs:
                 continue
-            mpi_server_envs = [n for n in node_envs if 'MPI Server' in n['role']]
-            num_mpi_servers = len(mpi_server_envs) if mpi_server_envs else 'N/A'
+
             # all hardware on a node has the same value so just take first
             # environment dict
             n = node_envs[0]
-            row = T1_1Renderer.EnvironmentTableRow(
-                # take just the hostname, ignoring domain
-                hostname=node.split('.')[0],
-                cpu=n['cpu'],
-                num_cores=n['num_cores'],
-                num_mpi_servers=num_mpi_servers,
-                ram=str(measures.FileSize(n['ram'], measures.FileSizeUnits.BYTES)),
-                os=n['os'],
-                ulimit=n['ulimit']
-            )
-            environment_rows.append(row)
-        environment_rows.sort(key=operator.itemgetter(0))
-        environment_rows = utils.merge_td_columns(environment_rows)
 
-        mode = 'Parallel' if any(['MPI Server' in d['role'] for d in pipeline.environment.cluster_details]) else 'Serial'
+            mpi_server_envs = [n for n in node_envs if 'MPI Server' in n.role]
+            num_mpi_servers = len(mpi_server_envs) if mpi_server_envs else 'N/A'
+
+            data_rows['hostname'].append(node.split('.')[0])
+            data_rows['cpu_type'].append(n.cpu_type)
+            data_rows['logical_cpu_cores'].append(n.logical_cpu_cores)
+            data_rows['physical_cpu_cores'].append(n.physical_cpu_cores)
+
+            data_rows['ram'].append(str(measures.FileSize(n.ram, measures.FileSizeUnits.BYTES)))
+            try:
+                data_rows['swap'].append(measures.FileSize(n.swap, measures.FileSizeUnits.BYTES))
+            except decimal.InvalidOperation:
+                data_rows['swap'].append('unknown')
+
+            data_rows['cgroup_num_cpus'].append(n.cgroup_num_cpus)
+            data_rows['cgroup_cpu_bandwidth'].append(n.cgroup_cpu_bandwidth)
+            data_rows['cgroup_cpu_weight'].append(n.cgroup_cpu_weight)
+            try:
+                data_rows['cgroup_mem_limit'].append(measures.FileSize(n.cgroup_mem_limit, measures.FileSizeUnits.BYTES))
+            except decimal.InvalidOperation:
+                data_rows['cgroup_mem_limit'].append('N/A')
+
+            data_rows['casa_cores'].append(n.casa_cores)
+            data_rows['casa_threads'].append(n.casa_threads)
+            data_rows['casa_memory'].append(str(measures.FileSize(n.casa_memory, measures.FileSizeUnits.BYTES)))
+
+            data_rows['num_mpi_servers'].append(num_mpi_servers)
+            data_rows['os'].append(n.host_distribution)
+            data_rows['ulimit_files'].append(n.ulimit_files)
+
+        # order in this list = order the rows will appear in the table
+        row_order = [
+            'hostname',
+            'os',
+            'num_mpi_servers',
+            'cpu_type',
+            'physical_cpu_cores',
+            'logical_cpu_cores',
+            'ram',
+            'swap',
+            'cgroup_num_cpus',
+            'cgroup_cpu_bandwidth',
+            # 'cgroup_cpu_weight',
+            'cgroup_mem_limit',
+            'ulimit_files',
+            'casa_cores',
+            'casa_threads',
+            'casa_memory',
+        ]
+
+        row_descriptions = dict(
+            hostname='Hostname',
+            cpu_type='CPU',
+            logical_cpu_cores='Logical CPU cores (inc. SMT)',
+            physical_cpu_cores='Physical CPU cores',
+            num_mpi_servers="# MPI servers",
+            ram="RAM",
+            swap="Swap",
+            os="OS",
+            ulimit_files="Max open file descriptors",
+            casa_cores="CPU cores reported available by CASA",
+            casa_threads="CPU threads reported available by CASA",
+            casa_memory="Memory available to tclean",
+            cgroup_num_cpus="cgroup CPU allocation",
+            cgroup_cpu_bandwidth="cgroup CPU bandwidth",
+            # cgroup_cpu_weight="CPU distribution within cgroup",
+            cgroup_mem_limit="cgroup memory limit"
+        )
+
+        # compose the row contents, e.g., ['row title', val1, val2, val3]
+        environment_rows = [(row_descriptions[row], *data_rows[row]) for row in row_order]
+        environment_rows = utils.merge_td_rows(utils.merge_td_columns(environment_rows))
+
+        # we want headings in column 1 so need to replace markup
+        # we could also achieve this with CSS but it's easier just to modify the data
+        environment_rows = [
+            (row[0].replace('<td>', '<th>').replace('</td>', '</th>'), *row[1:])
+            for row in environment_rows
+        ]
+
+        mode = 'Parallel' if any(['MPI Server' in d.role for d in pipeline.environment.cluster_details]) else 'Serial'
 
         return mode, environment_rows
 

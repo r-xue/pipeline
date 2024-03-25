@@ -80,8 +80,8 @@ class PipelineManifest(object):
         # group node information by host
         root = eltree.SubElement(ous, 'execution_environment')
         groups = []
-        data = sorted(environment.cluster_details, key=operator.itemgetter('hostname'))
-        for _, g in itertools.groupby(data, operator.itemgetter('hostname')):
+        data = sorted(environment.cluster_details, key=operator.attrgetter('hostname'))
+        for _, g in itertools.groupby(data, operator.attrgetter('hostname')):
             groups.append(list(g))
 
         for host_details in groups:
@@ -89,7 +89,7 @@ class PipelineManifest(object):
 
     @staticmethod
     def add_execution_node(root, host_details):
-        mpi_server_details = [d for d in host_details if 'MPI Server' in d['role']]
+        mpi_server_details = [d for d in host_details if 'MPI Server' in d.role]
         num_mpi_servers = str(len(mpi_server_details))
         eltree.SubElement(root, 'node', num_mpi_servers=num_mpi_servers)
 
