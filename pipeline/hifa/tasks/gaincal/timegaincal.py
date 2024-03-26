@@ -516,13 +516,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                     if ref_spw not in lowsnr_spws:
                         solint = inputs.calsolint
 
-                    # TODO: PIPE-2087 - is this check necessary? If it's only introduced to avoid diffgain sci spws,
-                    #  then this should already been taken care of above (restricting to diffgain ref spws).
-                    selected_scans = inputs.ms.get_scans(scan_intent=intent, spw=spw_sel)
-                    if len(selected_scans) == 0:
-                        LOG.info(f'Skipping table generation for empty selection: spw={spw_sel}, intent={intent}')
-                        continue
-
                     phasecal_results.append(self._do_calibrator_phasecal(field=field.name, intent=intent, spw=spw_sel,
                                                                          gaintype=gaintype, combine=combine,
                                                                          solint=solint, minsnr=inputs.calminsnr,
