@@ -7,6 +7,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.utils import find_ranges
 from pipeline.domain.measures import FrequencyUnits
 
 LOG = infrastructure.get_logger(__name__)
@@ -77,7 +78,7 @@ class Hanning(basetask.StandardTaskTemplate):
     """
     Inputs = HanningInputs
 
-    def prepare(self):
+    def prepare(self) -> object:
         """Method where the hanning smoothing operation is executed.
 
         The MS SPECTRAL_WINDOW table is examined to see if the SDM_NUM_BIN value is greater than 1.
@@ -91,50 +92,36 @@ class Hanning(basetask.StandardTaskTemplate):
             HanningResults() type object
         """
 
-        def create_message(smoothing_windows):
-            message_lists = [[smoothing_windows[0]]]
-            for x in smoothing_windows[1:]:
-                if int(x) != int(message_lists[-1][-1]) + 1:
-                    message_lists.append([])
-                message_lists[-1].append(x)
-            message = ""
-            for message_list in message_lists:
-                if len(message_list) > 1:
-                    message += "{}~{}, ".format(message_list[0], message_list[-1])
-                else:
-                    message += message_list[0] + ", "
-            if message[-2:] == ", ":
-                message = message[:-2]
-            message = message.replace("~", "-")
-            message = ", and".join(message.rsplit(",", 1))
-            return message
-
         spw_preaverage = self._getpreaveraged()
-        if not spw_preaverage:
-            LOG.info("All spectral windows were selected for hanning smoothing")
-            try:
-                self._do_hanningsmooth()
-                LOG.info("Removing original VIS " + self.inputs.vis)
-                shutil.rmtree(self.inputs.vis)
-                LOG.info("Renaming temphanning.ms to " + self.inputs.vis)
-                os.rename('temphanning.ms', self.inputs.vis)
-            except Exception as ex:
-                LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
-            finally:
-                smoothing_windows = self.inputs.vis.spectral_windows
-        else:
-            smoothing_windows = self._getsmoothingwindows(spw_preaverage)
-            if smoothing_windows:
-                message = create_message(smoothing_windows)
-                LOG.info("Smoothing spectral window(s) {}.".format(message))
-                with casa_tools.MSReader(self.inputs.vis, nomodify=False) as ms:
-                    staql = {'spw': ",".join(smoothing_windows)}
-                    ms.msselect(staql)
-                    ms.hanningsmooth('data')
+        with casa_tools.MSReader(self.inputs.vis, nomodify=False) as mset:
+            ms_info = mset.getspectralwindowinfo()
+            # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
+            hs_dict = {x: False for x in ms_info.keys()}
+            if not spw_preaverage:
+                LOG.info("All spectral windows were selected for hanning smoothing")
+                try:
+                    self._do_hanningsmooth()
+                    LOG.info("Removing original VIS " + self.inputs.vis)
+                    shutil.rmtree(self.inputs.vis)
+                    LOG.info("Renaming temphanning.ms to " + self.inputs.vis)
+                    os.rename('temphanning.ms', self.inputs.vis)
+                except Exception as ex:
+                    LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
+                finally:
+                    hs_dict = {x: True for x in hs_dict.keys()}
             else:
-                LOG.info("None of the SPWs were selected for smoothing.")
-        if smoothing_windows:
-            self._track_hsmooth(smoothing_windows)
+                smoothing_windows = self._getsmoothingwindows(spw_preaverage)
+                if smoothing_windows:
+                    message = find_ranges(smoothing_windows)
+                    LOG.info("Smoothing spectral window(s) {}.".format(message))
+                    staql = {'spw': ",".join(smoothing_windows)}
+                    mset.msselect(staql)
+                    mset.hanningsmooth('data')
+                    for spw in smoothing_windows:
+                        hs_dict[spw] = True
+                else:
+                    LOG.info("None of the SPWs were selected for smoothing.")
+            self._track_hsmooth(hs_dict)
 
         return HanningResults()
 
@@ -165,7 +152,7 @@ class Hanning(basetask.StandardTaskTemplate):
 
         return self._executor.execute(task)
     
-    def _getsmoothingwindows(self, spw_preaverage):
+    def _getsmoothingwindows(self, spw_preaverage: dict) -> list:
         """Retrieve a list of windows that are not pre-averaged and should be hanning-smoothed
 
         Args:
@@ -178,7 +165,6 @@ class Hanning(basetask.StandardTaskTemplate):
         smooth_windows = list()
         for key, value in spw_preaverage.items():
             spw = str(int(key.split("r")[1]) - 1)
-            self._checkmaserline(spw)
             if value > 1:
                 # smooth preaveraged windows if maser line possible in window to avoid Gibbs ringing
                 if self._checkmaserline(spw):
@@ -188,7 +174,7 @@ class Hanning(basetask.StandardTaskTemplate):
 
         return sorted(smooth_windows, key=int)
 
-    def _getpreaveraged(self):
+    def _getpreaveraged(self) -> dict:
         """Return SDM_NUM_BIN table row if it exists. Empty dict signifies to smooth all windows.
 
         Return: Dict
@@ -203,11 +189,11 @@ class Hanning(basetask.StandardTaskTemplate):
 
         return sdm_num_bin
 
-    def _checkmaserline(self, spw: str):
+    def _checkmaserline(self, spw: str) -> bool:
         """Confirm if known maser line(s) appear in frequency range of spectral window
 
         Args:
-            spw(dict): spectral window number
+            spw(str): spectral window number
 
         Return: Boolean
             True if maser line may exist in window; False otherwise
@@ -260,14 +246,22 @@ class Hanning(basetask.StandardTaskTemplate):
                 return True
         return False
 
-    def _track_hsmooth(self, spws: list):
-        LOG.info("Writing Hanning smoothing information to SPECTRAL_WINDOW table of MS.")
+    def _track_hsmooth(self, hs_dict: dict):
+        """Modify SPECTRAL_WINDOW table to track hanning smoothing
+
+        Args:
+            hs_dict(dict): hanning smoothing dictionary to write in SPECTRAL_WINDOW table
+        """
+
+        LOG.info("Writing Hanning smoothing information to SPECTRAL_WINDOW table of MS {}.".format(self.inputs.vis))
         desc = {'OFFLINE_HANNING_SMOOTH': {'comment': 'Offline Hanning Smooth Flag',
-                                   'dataManagerGroup': 'StandardStMan',
-                                   'dataManagerType': 'StandardStMan',
-                                   'keywords': {"SPW_IDs": spws},
-                                   'maxlen': 0,
-                                   'option': 0,
-                                   'valueType': 'int'}}
-        with casa_tools.TableReader(self.inputs.vis + "/SPECTRAL_WINDOW", nomodify=False) as tb:
+                            'dataManagerGroup': 'StandardStMan',
+                            'dataManagerType': 'StandardStMan',
+                            'keywords': {},
+                            'maxlen': 0,
+                            'option': 0,
+                            'valueType': 'boolean'}}
+        with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW', nomodify=False) as tb:
             tb.addcols(desc)
+            for spw, value in hs_dict.items():
+                tb.putcell('OFFLINE_HANNING_SMOOTH', int(spw), value)
