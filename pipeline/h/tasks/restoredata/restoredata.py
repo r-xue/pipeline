@@ -27,7 +27,6 @@ results.accept(context)
 """
 import os
 import re
-import ast
 import sys
 import shutil
 import tarfile

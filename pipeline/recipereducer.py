@@ -36,7 +36,6 @@ Example #5: process uid123.tar.gz with a log level of TRACE
     pipeline.recipereducer.reduce(vis=['uid123.tar.gz'], loglevel='trace')
 
 """
-import ast
 import collections
 import os
 import traceback
