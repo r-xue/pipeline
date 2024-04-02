@@ -141,9 +141,8 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
     def colname(self) -> str:
         """Return name of existing data column in MS.
 
-        The following column names are examined in order, and return
-        the name if the column exists in MS. If multiple columns exist,
-        the following list shows the priority.
+        Scan through the column names in the MS, and return the most
+        'significant' one found from the following list.
 
             - CORRECTED_DATA
             - DATA
@@ -151,6 +150,8 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
 
         For example, if MS has CORRECTED_DATA and DATA columns,
         CORRECTED_DATA will be returned.
+
+        Returns a null string if none of them exist.
 
         Returns:
             Data column name
