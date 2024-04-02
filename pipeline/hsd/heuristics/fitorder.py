@@ -41,7 +41,7 @@ def get_fitting_function(name: str) -> FittingFunction:
 
 
 def is_polynomial_fit(value: FittingFunction) -> bool:
-    """Test if fitting function is polynomial.
+    """Determine if fitting function is polynomial.
 
     Returns:
         True if fitting function is polynomial, False otherwise.
@@ -50,7 +50,7 @@ def is_polynomial_fit(value: FittingFunction) -> bool:
 
 
 def is_cubic_spline_fit(value: FittingFunction) -> bool:
-    """Test if fitting function is cubic spline.
+    """Determine if fitting function is cubic spline.
 
     Returns:
         True if fitting function is cubic spline, False otherwise.
