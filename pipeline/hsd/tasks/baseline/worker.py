@@ -195,8 +195,8 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
             fit_func: Fit function to use. Cubic spline ('spline' or 'cspline')
                       and polynomial ('poly' or 'polynomial') are available.
                       Default is 'cspline'.
-            fit_order: Baseline fitting order. Defaults to None, which
-                       is to perform heuristics for fitting order.
+            fit_order: Manual fit order. If None is given, run heuristics to
+                       determine fit order.
             switchpoly: Whether to fall back the fits from cubic spline to
                         low order polynomial when large masks exist at the
                         edges of the spw.
