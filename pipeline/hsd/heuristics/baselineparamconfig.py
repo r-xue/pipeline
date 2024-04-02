@@ -1,8 +1,10 @@
-import os
-import numpy
-import collections
 import abc
+import collections
+import enum
+import os
 from typing import Dict, List, Sequence, Tuple, Union
+
+import numpy
 
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
@@ -22,7 +24,7 @@ def DEBUG():
     return LOG.isEnabledFor(logging.LOGGING_LEVELS['debug'])
 
 
-class BaselineParamKeys(object):
+class BaselineParamKeys(enum.Enum):
     ROW = 'row'
     POL = 'pol'
     MASK = 'mask'
@@ -37,8 +39,6 @@ class BaselineParamKeys(object):
     ORDER = 'order'
     NPIECE = 'npiece'
     NWAVE = 'nwave'
-    ORDERED_KEY = [ROW, POL, MASK, CLIPNITER, CLIPTHRESH, USELF, LFTHRESH,
-                   LEDGE, REDGE, AVG_LIMIT, FUNC, ORDER, NPIECE, NWAVE]
 
 
 BLP = BaselineParamKeys
@@ -46,11 +46,10 @@ BLP = BaselineParamKeys
 
 def write_blparam(fileobj, param):
     param_values = collections.defaultdict(str)
-    for key in BLP.ORDERED_KEY:
+    for key in BLP:
         if key in param:
             param_values[key] = param[key]
-    line = ','.join(map(str, [param_values[k] for k in BLP.ORDERED_KEY]))
-    #line = ','.join((str(param[k]) if k in param.keys() else '' for k in BLP.ORDERED_KEY))
+    line = ','.join(map(str, [param_values[k] for k in BLP]))
     fileobj.write(line+'\n')
 
 
@@ -59,7 +58,7 @@ def as_maskstring(masklist):
 
 
 def no_switching(engine, nchan, edge, num_pieces, masklist):
-    return 'cspline', 0
+    return fitorder.FittingFunction.CSPLINE.blfunc, 0
 
 
 def do_switching(engine, nchan, edge, num_pieces, masklist):
@@ -74,22 +73,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     ApplicableDuration = 'raster'  # 'raster' | 'subscan'
     MaxPolynomialOrder = 'none'  # 'none', 0, 1, 2,...
     PolynomialOrder = 'automatic'  # 'automatic', 0, 1, 2, ...
-
-    def _is_polynomial_fit(self) -> bool:
-        """Test if fitting function is polynomial.
-
-        Returns:
-            True if fitting function is polynomial, False otherwise.
-        """
-        return self.fitfunc.lower() in ('polynomial', 'poly')
-
-    def _is_cubic_spline_fit(self) -> bool:
-        """Test if fitting function is cubic spline.
-
-        Returns:
-            True if fitting function is cubic spline, False otherwise.
-        """
-        return self.fitfunc.lower() in ('spline', 'cspline')
 
     def __init__(self, fitfunc: str = 'cspline', switchpoly: bool = True):
         """Construct BaselineFitParamConfig instance.
@@ -106,7 +89,9 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             RuntimeError: Invalid fitting function was specified.
         """
         super(BaselineFitParamConfig, self).__init__()
-        self.fitfunc = fitfunc
+        self.fitfunc = fitorder.get_fitting_function(fitfunc)
+        LOG.info(f'Baseline parameter is optimized for {self.fitfunc.description} fitting')
+
         self.paramdict = {}
         self.heuristics_engine = fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic()
         if switchpoly is True:
@@ -114,14 +99,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         else:
             self.switching_heuristic = no_switching
 
-        if self._is_polynomial_fit():
-            LOG.info('Baseline parameter is optimized for polynomial fitting')
-        elif self._is_cubic_spline_fit():
-            LOG.info('Baseline parameter is optimized for segmented cubic spline fitting')
-        else:
-            error_msg = f'Invalid fitting function: {self.fitfunc}'
-            LOG.error(error_msg)
-            raise RuntimeError(error_msg)
         self.paramdict[BLP.CLIPNITER] = self.ClipCycle
         self.paramdict[BLP.CLIPTHRESH] = 5.0
 
@@ -399,7 +376,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return outdata
 
-    def _dummy_baseline_param( self, row: int, pol: int ) -> Dict[str, Union[int, float, str]]:
+    def _dummy_baseline_param( self, row: int, pol: int ) -> Dict[BLP, Union[int, float, str]]:
         """
         Create a dummy parameter dict for baseline parameters
 
@@ -411,8 +388,9 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         Returns:
            dummy parameter dict for baseline parameters
         """
-        return {'clipniter': 1, 'clipthresh': 5.0,
-                'row': row, 'pol': pol, 'mask': '', 'npiece': 1, 'blfunc': 'poly', 'order': 1}
+        return {BLP.CLIPNITER: 1, BLP.CLIPTHRESH: 5.0,
+                BLP.ROW: row, BLP.POL: pol, BLP.MASK: '', BLP.NPIECE: 1,
+                BLP.FUNC: fitorder.FittingFunction.POLY.blfunc, BLP.ORDER: 1}
 
     def __convert_flags_to_masklist(self, flags: 'numpy.ndarray[numpy.ndarray[numpy.int64]]') -> List[List[List[int]]]:
         """
@@ -491,10 +469,10 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         Returns:
             Baseline fitting parameter dictionary
         """
-        if self._is_polynomial_fit():
-            self.paramdict[BLP.FUNC] = 'poly'
+        if fitorder.is_polynomial_fit(self.fitfunc):
+            self.paramdict[BLP.FUNC] = self.fitfunc.blfunc
             self.paramdict[BLP.ORDER] = polyorder
-        elif self._is_cubic_spline_fit():
+        elif fitorder.is_cubic_spline_fit(self.fitfunc):
             num_nomask = nchan_without_edge - nchan_masked
             num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
             if TRACE():
@@ -508,7 +486,9 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 num_pieces,
                 masklist
             )
-            self.paramdict[BLP.FUNC] = fitfunc
+            self.paramdict[BLP.FUNC] = fitfunc.blfunc
             self.paramdict[BLP.ORDER] = order
+        else:
+            RuntimeError('Should not happen!')
 
         return self.paramdict

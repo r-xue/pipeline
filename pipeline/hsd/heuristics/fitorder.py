@@ -1,9 +1,61 @@
+import enum
+from typing import List, Tuple
+
 import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 
 LOG = infrastructure.get_logger(__name__)
+
+
+class FittingFunction(enum.Enum):
+    def __init__(self, description=''):
+        self.description = description
+        self.blfunc = self.name.lower()
+
+    POLY = 'polynomial',
+    CSPLINE = 'segmented cubic spline'
+    POLYNOMIAL = POLY
+    SPLINE = CSPLINE
+
+
+def get_fitting_function(name: str) -> FittingFunction:
+    """Get FittingFunction enum from name.
+
+    Args:
+        name: name of the fitting function
+
+    Raises:
+        RuntimeError: unsupported function name
+
+    Returns:
+        FittingFunction enum
+    """
+    try:
+        return FittingFunction.__members__[name.upper()]
+    except KeyError:
+        msg = f'Unsupported fitting function: {name}'
+        LOG.error(msg)
+        raise RuntimeError(msg)
+
+
+def is_polynomial_fit(value: FittingFunction) -> bool:
+    """Test if fitting function is polynomial.
+
+    Returns:
+        True if fitting function is polynomial, False otherwise.
+    """
+    return value is FittingFunction.POLY
+
+
+def is_cubic_spline_fit(value: FittingFunction) -> bool:
+    """Test if fitting function is cubic spline.
+
+    Returns:
+        True if fitting function is cubic spline, False otherwise.
+    """
+    return value is FittingFunction.CSPLINE
 
 
 class FitOrderHeuristics(api.Heuristic):
@@ -120,22 +172,33 @@ class MaskMaker(MaskMakerNoLine):
 
 
 class SwitchPolynomialWhenLargeMaskAtEdgeHeuristic(api.Heuristic):
-    def calculate(self, nchan, edge, num_pieces, masklist):
-        # fit function heuristics
-        # nchan: total number of channels
-        # nchan_segment: number of channels in one segment
-        # edge: number of channels from the edges to be excluded from the fit [C0, C1]
-        # mask: mask array (0->rejected, 1->adopted)
-        # masklist: list of fit ranges (included in the fit) [[C0, C1], [C2, C3], ...]
-        # nchan_edge: max number of consecutive masked channels from edges
-        # if nchan_edge >= nchan/2:
-        #     fitfunc='poly'
-        #     order=1
-        # elif nchan_edge >= nchan_segment:
-        #     fitfunc='poly'
-        #     order=2
-        # else:
-        #     fitfunc='cspline'
+    def calculate(self, nchan: int, edge: Tuple[int, int], num_pieces: int, masklist: List[List[int]]) -> Tuple[FittingFunction, int]:
+        """Perform fitting function heuristics.
+
+        Logic of the fitting function heuristics is as follows.
+
+            if nchan_edge >= nchan/2:
+                fitfunc=POLY
+                order=1
+            elif nchan_edge >= nchan_segment:
+                fitfunc=POLY
+                order=2
+            else:
+                fitfunc=CSPLINE
+
+        where nchan_segment is a number of channels in one segment,
+        and nchan_edge is max number of consecutive masked channels
+        from edges.
+
+        Args:
+            nchan: total number of channels
+            edge: number of channels from the edges to be excluded from the fit [C0, C1]
+            num_pieces: Number of segments for cspline fitting
+            masklist: List of fit ranges (included in the fit) [[C0, C1], [C2, C3], ...]
+
+        Returns:
+            Result of the heuristics as a two tuple of FittingFunction enum and fitting order
+        """
         if len(masklist) == 0:
             # special case: all channels are excluded from the fit
             nchan_edge0 = nchan
@@ -155,13 +218,13 @@ class SwitchPolynomialWhenLargeMaskAtEdgeHeuristic(api.Heuristic):
         nchan_half = nchan // 2 + nchan % 2
         nchan_quarter = nchan // 4 + (3 + nchan % 4) // 4
         if nchan_edge >= nchan_half:
-            fitfunc = 'poly'
+            fitfunc = FittingFunction.POLY
             order = 1
         elif nchan_edge >= nchan_quarter:
-            fitfunc = 'poly'
+            fitfunc = FittingFunction.POLY
             order = 2
         else:
-            fitfunc = 'cspline'
+            fitfunc = FittingFunction.CSPLINE
             order = 0  # not used
 
         LOG.debug('DEBUGGING INFORMATION:')
@@ -169,6 +232,6 @@ class SwitchPolynomialWhenLargeMaskAtEdgeHeuristic(api.Heuristic):
         LOG.debug('edge = {}'.format(list(edge)))
         LOG.debug('nchan_edge = {} (left {} right {})'.format(nchan_edge, nchan_edge0, nchan_edge1))
         LOG.debug('nchan = {}, num_pieces = {} => nchan_segment = {}, nchan_half = {}'.format(nchan, num_pieces, nchan_segment, nchan_half))
-        LOG.debug('---> RESULT: fitfunc "{}" order "{}"'.format(fitfunc, order))
+        LOG.debug('---> RESULT: fitfunc "{}" order "{}"'.format(fitfunc.blfunc, order))
 
         return fitfunc, order
