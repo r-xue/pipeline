@@ -196,9 +196,9 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
                       Default is 'cspline'.
             fit_order: Baseline fitting order. Defaults to None, which
                        is to perform heuristics for fitting order.
-            switchpoly: Whether or not fall back to low order polynomial
-                        fit when large mask exist at the edge of spw if
-                        fitfunc is either 'cspline' or 'spline'.
+            switchpoly: Whether to fall back the fits from cubic spline to
+                        low order polynomial when large masks exist at the
+                        edges of the spw.
                         Defaults to True if None is given.
             edge: Edge channels to exclude. Defaults to None, which means
                   that all channels are processed.

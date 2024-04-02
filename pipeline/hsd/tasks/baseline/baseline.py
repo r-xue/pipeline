@@ -123,8 +123,8 @@ class SDBaselineInputs(vdp.StandardInputs):
             fitorder: Manual fit order. If None is given, run heuristics to determine fit order.
             fitfunc: Fit function to use. Cubic spline ('spline' or 'cspline') and polynomial
                      ('poly' or 'polynomial') are available. Default is 'cspline'.
-            switchpoly: Whther or not fall back to low order polynomial fit when large mask
-                        exist at the edge of spw if fitfunc is either 'cspline' or 'spline'.
+            switchpoly: Whether to fall back the fits from cubic spline to low order polynomial
+                        when large masks exist at the edges of the spw.
                         Defaults to True if None is given.
             clusteringalgorithm: Clustering algorithm to use. Choices are 'kmean', 'hierarchy',
                                  or 'both', which merges results from two clustering algorithms.
