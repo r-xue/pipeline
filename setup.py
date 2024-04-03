@@ -16,7 +16,7 @@ PIPELINE_PACKAGES = ['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd', 'hsdn']
 def flatten(items):
     """Yield items from any nested iterable"""
     for x in items:
-        if isinstance(x, collections.Iterable) and not isinstance(x, (str, bytes)):
+        if isinstance(x, collections.abc.Iterable) and not isinstance(x, (str, bytes)):
             for sub_x in flatten(x):
                 yield sub_x
         else:
