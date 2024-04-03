@@ -1,7 +1,7 @@
 #
 # [SCRIPT INFORMATION]
 # GIT REPO: https://bitbucket.alma.cl/scm/~harold.francke_ar/sd-atm-line-correction-prototype.git
-# COMMIT: 63323c3c8e0
+# COMMIT: a75554f8bb0
 #
 #SDcalatmcorr: Casapipescript with wrapper for TS script "atmcorr.py" for the removal
 #of atmospheric line residuals.
@@ -1737,11 +1737,13 @@ def getJyperKfromCSV(jyperkfile = 'jyperk.csv', mssuffix = ''):
 
 def getJyperKfromCaltable(mslist, context):
     '''Get Jy/K factors from pipeline caltables. Will determine the MS list and tables from pipeline context.
+
+    This method could raise RuntimeError when Jy/K caltable associated with any of given MS does not exist.
     '''
     tb = createCasaTool(tbtool)
     callib = context.callibrary
 
-    def _extract_jyperk_table(vis) -> str:
+    def _extract_jyperk_table(vis: str) -> str:
         """Extract name of Jy/K caltable from callibrary.
 
         Args:
