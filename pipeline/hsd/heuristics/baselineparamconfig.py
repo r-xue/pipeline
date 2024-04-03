@@ -176,7 +176,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         data_desc = ms.get_data_description(spw=spw_id)
         npol = data_desc.num_polarizations
         # edge must be formatted to [L, R]
-        assert isinstance(edge, list) and len(edge) == 2, 'edge must be a list [L, R]. "{0}" was given.'.format(edge)
+        assert isinstance(edge, (list, tuple)) and len(edge) == 2, 'edge must be a list [L, R]. "{0}" was given.'.format(edge)
 
         if DEBUG() or TRACE():
             LOG.debug('nchan={nchan} edge={edge}'.format(nchan=nchan, edge=edge))
@@ -188,10 +188,12 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         index_list_total = []
 
+        edge = fitorder.EdgeChannels(*edge)
+
         # prepare mask arrays
         mask_array = numpy.ones(nchan, dtype=int)
-        mask_array[:edge[0]] = 0
-        mask_array[nchan-edge[1]:] = 0
+        mask_array[:edge.left] = 0
+        mask_array[nchan-edge.right:] = 0
 
         # deviation mask
         if DEBUG() or TRACE():
@@ -239,8 +241,8 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
                     #LOG.trace("Flag Mask = %s" % str(flaglist))
 
-                    spectra[:, :edge[0], :] = 0.0
-                    spectra[:, nchan-edge[1]:, :] = 0.0
+                    spectra[:, :edge.left, :] = 0.0
+                    spectra[:, nchan-edge.right:, :] = 0.0
 
                     # here we assume that masklist is polarization-independent
                     # (this is because that line detection/validation process accumulates
@@ -304,7 +306,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             if TRACE():
                                 LOG.trace('Masked Region from previous processes = {}'.format(
                                     _masklist))
-                                LOG.trace('edge parameters= {}'.format(edge))
+                                LOG.trace(f'edge parameters= ({edge.left}, {edge.right})')
                                 LOG.trace('Polynomial order = {}  Max Polynomial order = {}'.format(averaged_polyorder, max_polyorder))
 
                             # fitting
@@ -321,7 +323,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return blparam
 
-    def _configure_baseline_param(self, row_idx: int, pol: int, polyorder: int, nchan: int, edge: List[int], mask: Sequence[bool], mask_list: [List[List[int]]]) -> dict:
+    def _configure_baseline_param(self, row_idx: int, pol: int, polyorder: int, nchan: int, edge: fitorder.EdgeChannels, mask: Sequence[bool], mask_list: [List[List[int]]]) -> dict:
         """Configure baseline parameter values for given row and polarization incides.
 
         Args:
@@ -349,7 +351,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             LOG.critical('Invalid masklist')
 
         #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask))))
-        num_mask = int(effective_nchan - numpy.sum(mask[edge[0]:nchan - edge[1]] * 1.0))
+        num_mask = int(effective_nchan - numpy.sum(mask[edge.left:nchan - edge.right] * 1.0))
 
         # here meaning of "masklist" is changed
         #         masklist: list of channel ranges to be *excluded* from the fit
@@ -444,7 +446,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             r.append([idx[-1], len(mask)])
         return [[start, end - end_offset] for start, end in r]
 
-    def _get_fit_param(self, polyorder: int, nchan: int, edge: List[int], nchan_without_edge: int, nchan_masked: int, masklist: List[List[int]]):
+    def _get_fit_param(self, polyorder: int, nchan: int, edge: fitorder.EdgeChannels, nchan_without_edge: int, nchan_masked: int, masklist: List[List[int]]):
         """Configure fitting parameter values except mask.
 
         This method constructs dictionary that holds baseline parameters
