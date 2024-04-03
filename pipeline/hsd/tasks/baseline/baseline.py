@@ -120,9 +120,12 @@ class SDBaselineInputs(vdp.StandardInputs):
                             and validation result. Defaults to 'replace' if None is given.
             edge: Edge channels to exclude. Defaults to None, which means that all channels are processed.
             broadline: Detect broadline component or not. Defaults to True if None is given.
-            fitorder: Manual fit order. If None is given, run heuristics to determine fit order.
-            fitfunc: Fit function to use. Cubic spline ('spline' or 'cspline') and polynomial
-                     ('poly' or 'polynomial') are available. Default is 'cspline'.
+            fitorder: Fitting order for polynomial. For cubic spline, it is used to determine
+                      how much the spectrum is segmented into. None is equivalent to -1.
+                      Default (-1) is to determine the order automatically.
+            fitfunc: Fitting function for baseline subtraction. You can choose
+                     either cubic spline ('spline' or 'cspline') or polynomial
+                     ('poly' or 'polynomial'). Default is 'cspline'.
             switchpoly: Whether to fall back the fits from cubic spline to low order polynomial
                         when large masks exist at the edges of the spw.
                         Defaults to True if None is given.

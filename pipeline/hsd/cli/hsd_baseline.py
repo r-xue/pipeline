@@ -54,7 +54,7 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
 
     --------- parameter descriptions ---------------------------------------------
 
-    fitfunc             fitting function for baseline subtraction. You can choose
+    fitfunc             Fitting function for baseline subtraction. You can choose
                         either cubic spline ('spline' or 'cspline') or polynomial
                         ('poly' or 'polynomial'). Default is 'cspline'.
 

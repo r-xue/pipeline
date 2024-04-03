@@ -192,11 +192,12 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
             plan: Set of metadata for baseline subtraction, or List of
                   the them. Defaults to None. The task may fail if None
                   is given.
-            fit_func: Fit function to use. Cubic spline ('spline' or 'cspline')
-                      and polynomial ('poly' or 'polynomial') are available.
-                      Default is 'cspline'.
-            fit_order: Manual fit order. If None is given, run heuristics to
-                       determine fit order.
+            fit_func: Fitting function for baseline subtraction. You can choose
+                      either cubic spline ('spline' or 'cspline') or polynomial
+                      ('poly' or 'polynomial'). Default is 'cspline'.
+            fit_order: Fitting order for polynomial. For cubic spline, it is used to determine
+                       how much the spectrum is segmented into. None is equivalent to 'automatic'.
+                       Default ('automatic') is to determine the order automatically.
             switchpoly: Whether to fall back the fits from cubic spline to
                         low order polynomial when large masks exist at the
                         edges of the spw.
