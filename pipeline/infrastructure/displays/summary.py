@@ -1166,9 +1166,7 @@ class SpwIdVsFreqChart(object):
         bar_height = 0.4
         max_spws_to_annotate_VLA = 16  # request for VLA, PIPE-1415.
         max_spws_to_annotate_ALMA_NRO = np.inf  # annotate all spws for ALMA/NRO
-        prop_cycle = matplotlib.rcParams['axes.prop_cycle']
-        colors = prop_cycle.by_key()['color']
-        colorcycle = itertools.cycle(colors)
+        colorcycle = matplotlib.rcParams['axes.prop_cycle']()
         ax_atm = ax_spw.twinx()
         atm_color = 'm'
 
@@ -1185,7 +1183,7 @@ class SpwIdVsFreqChart(object):
         totalnum_spws = len(scan_spws)
         idx = 0
         for spwid_list in spw_list_generator:
-            color = next(colorcycle)
+            color = next(colorcycle)['color']
             for spwid in spwid_list:
                 # 1. draw bars
                 spwdata = [spw for spw in scan_spws if spw.id == spwid][0]
