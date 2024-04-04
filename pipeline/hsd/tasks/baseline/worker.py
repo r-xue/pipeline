@@ -198,9 +198,14 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
             fit_order: Fitting order for polynomial. For cubic spline, it is used to determine
                        how much the spectrum is segmented into. None is equivalent to 'automatic'.
                        Default ('automatic') is to determine the order automatically.
-            switchpoly: Whether to fall back the fits from cubic spline to
-                        low order polynomial when large masks exist at the
-                        edges of the spw.
+            switchpoly: Whether to fall back the fits from cubic spline to 1st or
+                        2nd order polynomial when large masks exist at the edges
+                        of the spw. Condition for switching is as follows:
+                            if nmask > nchan/2      => 1st order polynomial
+                            else if nmask > nchan/4 => 2nd order polynomial
+                            else                    => use fitfunc and fitorder
+                        where nmask is a number of channels for mask at edge while
+                        nchan is a number of channels of entire spectral window.
                         Defaults to True if None is given.
             edge: Edge channels to exclude. Defaults to None, which means
                   that all channels are processed.

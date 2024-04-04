@@ -126,8 +126,14 @@ class SDBaselineInputs(vdp.StandardInputs):
             fitfunc: Fitting function for baseline subtraction. You can choose
                      either cubic spline ('spline' or 'cspline') or polynomial
                      ('poly' or 'polynomial'). Default is 'cspline'.
-            switchpoly: Whether to fall back the fits from cubic spline to low order polynomial
-                        when large masks exist at the edges of the spw.
+            switchpoly: Whether to fall back the fits from cubic spline to 1st or
+                        2nd order polynomial when large masks exist at the edges
+                        of the spw. Condition for switching is as follows:
+                            if nmask > nchan/2      => 1st order polynomial
+                            else if nmask > nchan/4 => 2nd order polynomial
+                            else                    => use fitfunc and fitorder
+                        where nmask is a number of channels for mask at edge while
+                        nchan is a number of channels of entire spectral window.
                         Defaults to True if None is given.
             clusteringalgorithm: Clustering algorithm to use. Choices are 'kmean', 'hierarchy',
                                  or 'both', which merges results from two clustering algorithms.

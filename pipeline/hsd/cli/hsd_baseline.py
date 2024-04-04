@@ -62,9 +62,9 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                         to determine how much the spectrum is segmented into.
                         Default (-1) is to determine the order automatically.
 
-    switchpoly          If True, switch to 1st or 2nd order polynomial fit when
-                        large mask exists at edge if cubic spline fit is specified.
-                        Condition for switching is as follows:
+    switchpoly          Whether to fall back the fits from cubic spline to 1st or
+                        2nd order polynomial when large masks exist at the edges
+                        of the spw. Condition for switching is as follows:
                             if nmask > nchan/2      => 1st order polynomial
                             else if nmask > nchan/4 => 2nd order polynomial
                             else                    => use fitfunc and fitorder
