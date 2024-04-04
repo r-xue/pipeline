@@ -1166,7 +1166,9 @@ class SpwIdVsFreqChart(object):
         bar_height = 0.4
         max_spws_to_annotate_VLA = 16  # request for VLA, PIPE-1415.
         max_spws_to_annotate_ALMA_NRO = np.inf  # annotate all spws for ALMA/NRO
-        colorcycle = matplotlib.rcParams['axes.prop_cycle']()
+        prop_cycle = matplotlib.rcParams['axes.prop_cycle']
+        colors = prop_cycle.by_key()['color']
+        colorcycle = itertools.cycle(colors)
         ax_atm = ax_spw.twinx()
         atm_color = 'm'
 
@@ -1181,10 +1183,10 @@ class SpwIdVsFreqChart(object):
             max_spws_to_annotate = max_spws_to_annotate_ALMA_NRO
         xmin, xmax = np.inf, -np.inf
         totalnum_spws = len(scan_spws)
-        for i, spwid_list in enumerate(spw_list_generator):
-            color = next(colorcycle)['color']
-            for j, spwid in enumerate(spwid_list):
-                idx = i*len(spwid_list) + j
+        idx = 0
+        for spwid_list in spw_list_generator:
+            color = next(colorcycle)
+            for spwid in spwid_list:
                 # 1. draw bars
                 spwdata = [spw for spw in scan_spws if spw.id == spwid][0]
                 bw = float(spwdata.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
@@ -1197,6 +1199,7 @@ class SpwIdVsFreqChart(object):
                 # 3. Frequency vs. ATM transmission
                 atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
                 ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=2, linestyle='-')
+                idx += 1
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
