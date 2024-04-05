@@ -1,5 +1,7 @@
 import os
 import shutil
+import numpy
+from typing import Type, Dict, List
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -78,7 +80,7 @@ class Hanning(basetask.StandardTaskTemplate):
     """
     Inputs = HanningInputs
 
-    def prepare(self) -> object:
+    def prepare(self) -> Type[HanningResults]:
         """Method where the hanning smoothing operation is executed.
 
         The MS SPECTRAL_WINDOW table is examined to see if the SDM_NUM_BIN value is greater than 1.
@@ -92,7 +94,17 @@ class Hanning(basetask.StandardTaskTemplate):
             HanningResults() type object
         """
 
-        spw_preaverage = self._getpreaveraged()
+        with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
+            if 'OFFLINE_HANNING_SMOOTH' not in table.colnames():
+                try:
+                    spw_preaverage = table.getvarcol('SDM_NUM_BIN')
+                except Exception as e:
+                    spw_preaverage = dict()
+                    LOG.debug('Column SDM_NUM_BIN was not found in the SDM.')
+            else:
+                LOG.info("MS has already had offline hanning smoothing applied. Skipping this stage.")
+                return HanningResults()
+
         with casa_tools.MSReader(self.inputs.vis, nomodify=False) as mset:
             ms_info = mset.getspectralwindowinfo()
             # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
@@ -152,7 +164,7 @@ class Hanning(basetask.StandardTaskTemplate):
 
         return self._executor.execute(task)
     
-    def _getsmoothingwindows(self, spw_preaverage: dict) -> list:
+    def _getsmoothingwindows(self, spw_preaverage: Dict[str, int]) -> List[str]:
         """Retrieve a list of windows that are not pre-averaged and should be hanning-smoothed
 
         Args:
@@ -173,21 +185,6 @@ class Hanning(basetask.StandardTaskTemplate):
                 smooth_windows.append(spw)
 
         return sorted(smooth_windows, key=int)
-
-    def _getpreaveraged(self) -> dict:
-        """Return SDM_NUM_BIN table row if it exists. Empty dict signifies to smooth all windows.
-
-        Return: Dict
-        """
-
-        with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
-            try:
-                sdm_num_bin = table.getvarcol('SDM_NUM_BIN')
-            except Exception as e:
-                sdm_num_bin = dict()
-                LOG.debug('Column SDM_NUM_BIN was not found in the SDM.')
-
-        return sdm_num_bin
 
     def _checkmaserline(self, spw: str) -> bool:
         """Confirm if known maser line(s) appear in frequency range of spectral window
@@ -246,7 +243,7 @@ class Hanning(basetask.StandardTaskTemplate):
                 return True
         return False
 
-    def _track_hsmooth(self, hs_dict: dict):
+    def _track_hsmooth(self, hs_dict: Dict[str, bool]):
         """Modify SPECTRAL_WINDOW table to track hanning smoothing
 
         Args:
