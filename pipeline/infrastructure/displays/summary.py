@@ -1166,11 +1166,9 @@ class SpwIdVsFreqChart(object):
         bar_height = 0.4
         max_spws_to_annotate_VLA = 16  # request for VLA, PIPE-1415.
         max_spws_to_annotate_ALMA_NRO = np.inf  # annotate all spws for ALMA/NRO
-        prop_cycle = matplotlib.rcParams['axes.prop_cycle']
-        colors = prop_cycle.by_key()['color']
-        colorcycle = itertools.cycle(colors)
-        atm_color1 = [0.17, 0.17, 0.17, 0.6]  # gray, alpha=0.6 for plot
-        atm_color2 = [0.17, 0.17, 0.17, 1.0]  # gray, alpha=1.0 for tick and label
+        colorcycle = matplotlib.rcParams['axes.prop_cycle']()
+        atm_color_plot = [0.17, 0.17, 0.17, 0.6]  # gray, alpha=0.6
+        atm_color_tick_label = [0.17, 0.17, 0.17, 1.0]  # gray, alpha=1.0
         ax_atm = ax_spw.twinx()
         # plot spws
         if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
@@ -1185,7 +1183,7 @@ class SpwIdVsFreqChart(object):
         totalnum_spws = len(scan_spws)
         idx = 0
         for spwid_list in spw_list_generator:
-            color = next(colorcycle)
+            color = next(colorcycle)['color']
             for spwid in spwid_list:
                 # 1. draw bars
                 spwdata = [spw for spw in scan_spws if spw.id == spwid][0]
@@ -1203,7 +1201,7 @@ class SpwIdVsFreqChart(object):
         nchan = round((xmax - xmin) / resolution)
         elevation = atmutil.get_median_elevation(ms.name, antid)
         atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, elevation=elevation, doplot=False)
-        ax_atm.plot(atm_freq, atm_transmission, color=atm_color1, linestyle='-', linewidth=2.5)
+        ax_atm.plot(atm_freq, atm_transmission, color=atm_color_plot, linestyle='-', linewidth=2.5)
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
@@ -1211,9 +1209,9 @@ class SpwIdVsFreqChart(object):
         ax_spw.grid(axis='x')
         ax_spw.tick_params(labelsize=13)
         ax_spw.set_yticks([])
-        ax_atm.set_ylabel('ATM Transmission', color=atm_color2, labelpad=2, fontsize=14)
+        ax_atm.set_ylabel('ATM Transmission', color=atm_color_tick_label, labelpad=2, fontsize=14)
         ax_atm.set_ylim(0, 1.05)
-        ax_atm.tick_params(direction='out', colors=atm_color2, labelsize=13)
+        ax_atm.tick_params(direction='out', colors=atm_color_tick_label, labelsize=13)
         ax_atm.yaxis.set_major_formatter(ticker.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
         ax_atm.yaxis.tick_right()
         fig.savefig(filename)
