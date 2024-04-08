@@ -36,7 +36,6 @@ Example #5: process uid123.tar.gz with a log level of TRACE
     pipeline.recipereducer.reduce(vis=['uid123.tar.gz'], loglevel='trace')
 
 """
-import ast
 import collections
 import os
 import traceback
@@ -133,7 +132,7 @@ def _get_tasks(context, args, procedure):
             for parameter in parameterset.findall('Parameter'):
                 argname = parameter.findtext('Keyword')
                 argval = parameter.findtext('Value')
-                task_args[argname] = string_to_val(argval)
+                task_args[argname] = utils.string_to_val(argval)
 
         task_inputs = vdp.InputsContainer(task_class, context, **task_args)
         task = task_class(task_inputs)
@@ -141,22 +140,6 @@ def _get_tasks(context, args, procedure):
         # we yield rather than return so that the context can be updated
         # between task executions
         yield task
-
-
-def string_to_val(s):
-    """
-    Convert a string to a Python data type.
-    """
-    try:
-        pyobj = ast.literal_eval(s)
-        # PIPE-1030: prevent a string like "1,2,3" from being unexpectedly translated into tuple
-        if type(pyobj) is tuple and s.strip()[0] != '(':
-            pyobj = s
-        return pyobj
-    except ValueError:
-        return s
-    except SyntaxError:
-        return s
 
 
 def _format_arg_value(arg_val):
