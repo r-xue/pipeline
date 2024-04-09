@@ -4,6 +4,7 @@ import collections
 import functools
 import math
 import os
+from textwrap import wrap
 from numbers import Number
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
@@ -382,7 +383,13 @@ class SDImaging(basetask.StandardTaskTemplate):
             info['obspatt'] = 'sd'
             info['arrays'] = 'TP'
             info['modifier'] = ''
-            info['session'] = session
+
+            # PIPE-2148, limiting 'sessionX' keyword length to 68 characters
+            # due to FITS header keyword string length limit.
+            session_components = wrap(session, 68)
+            info['nsession'] = len(session_components)
+            for i, session_component in enumerate(session_components):
+                info['session{:01d}'.format(i+1)] = session_component
 
             image.setmiscinfo(info)
 

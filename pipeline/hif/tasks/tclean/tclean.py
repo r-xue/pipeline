@@ -2,6 +2,8 @@ import os
 import re
 import inspect
 
+from textwrap import wrap
+
 from typing import Optional
 
 import numpy as np
@@ -1798,7 +1800,15 @@ class Tclean(cleanbase.CleanBase):
             keywords, _, _, values = inspect.getargvalues(frame)
             for keyword in keywords:
                 if keyword not in ('self', 'imagename') and values[keyword] is not None:
-                    info[keyword] = values[keyword]
+                    if keyword == 'session':
+                        # PIPE-2148, limiting 'sessionX' keyword length to 68 characters
+                        # due to FITS header keyword string length limit.
+                        session_components = wrap(session, 68)
+                        info['nsession'] = len(session_components)
+                        for i, session_component in enumerate(session_components):
+                            info['session{:01d}'.format(i+1)] = session_component
+                    else:
+                        info[keyword] = values[keyword]
 
             # Save header back to image
             image.setmiscinfo(info)
