@@ -418,7 +418,6 @@ def test_E2E6_1_00010_S__uid___A002_Xd0a588_X2239_regression():
 # Restore from Cycle 5 (with current pipeline)
 @pytest.mark.fast
 @pytest.mark.alma
-@pytest.mark.restore
 def test_uid___A002_Xc845c0_X7366_cycle5_restore_regression():
     """
     Restore from Cycle 5 (with current pipeline)
@@ -435,19 +434,18 @@ def test_uid___A002_Xc845c0_X7366_cycle5_restore_regression():
                             visname=['uid___A002_Xc845c0_X7366'],
                             expectedoutput_dir=ref_directory)
 
-    # copy files use restore task into products folder
+    # copy files for the restore into products folder
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
     shutil.copytree(input_products, f'{pr.output_dir}/rawdata')
 
     pr.run()
 
 
-# Restore selfcal from Cycle N (with current pipeline)
+# Restore selfcal from Cycle 10 (with current pipeline)
 @pytest.mark.fast
 @pytest.mark.alma
-@pytest.mark.restore
 def test_uid___A002_Xc46ab2_X15ae_selfcal_restore_regression():
-    """Restore selfcal from Cycle N (with current pipeline)
+    """Restore selfcal from Cycle 10 (with current pipeline)
 
     Recipe name:                procedure_hifa_image
     Dataset:                    uid___A002_Xc46ab2_X15ae
@@ -461,19 +459,18 @@ def test_uid___A002_Xc46ab2_X15ae_selfcal_restore_regression():
                             visname=['uid___A002_Xc46ab2_X15ae'],
                             expectedoutput_dir=ref_directory)
 
-    # copy files use restore task into products folder
+    # copy files into products folder for restore
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
     shutil.copytree(input_products, f'{pr.output_dir}/rawdata')
 
     pr.run()
 
 
-# Restore renorm from Cycle N (with current pipeline)
+# Restore renorm from Cycle 8 (with current pipeline)
 @pytest.mark.fast
 @pytest.mark.alma
-@pytest.mark.restore
 def test_uid___A002_Xef72bb_X9d29_renorm_restore_regression():
-    """Restore renorm from Cycle N (with current pipeline)
+    """Restore renorm from Cycle 8 (with current pipeline)
 
     Recipe name:                procedure_hifa_image
     Dataset:                    uid___A002_Xef72bb_X9d29
@@ -487,7 +484,7 @@ def test_uid___A002_Xef72bb_X9d29_renorm_restore_regression():
                             visname=['uid___A002_Xef72bb_X9d29'],
                             expectedoutput_dir=ref_directory)
 
-    # copy files use restore task into products folder
+    # copy files into products folder for restore
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
     shutil.copytree(input_products, f'{pr.output_dir}/rawdata')
 
