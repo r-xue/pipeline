@@ -92,9 +92,24 @@ def group_into_sessions(context, all_results, measurement_sets=None):
         basename = os.path.basename(r[0])
         return ms_start_times.get(basename, datetime.datetime.utcfromtimestamp(0))
 
-    results_by_session = sorted(all_results, key=get_session)
-    return {session_id: sorted(results_for_session, key=get_start_time)
-            for session_id, results_for_session in itertools.groupby(results_by_session, get_session)}
+    def sort_within_session(arg_tuple):
+        session_id, results_for_session = arg_tuple
+        return session_id, sorted(results_for_session, key=get_start_time)
+
+    def get_session_start_time(arg_tuple):
+        # precondition: results are sorted within session in advance
+        session_id, results_for_session = arg_tuple
+        # start time of the session is start time of the first MS in the session
+        return get_start_time(results_for_session[0])
+
+    # group results by session, and sort results chronologically within session
+    results_by_session = map(
+        sort_within_session,
+        itertools.groupby(sorted(all_results, key=get_session), key=get_session)
+    )
+
+    # sort session chronologically and generate ordered dictionary
+    return dict(sorted(results_by_session, key=get_session_start_time))
 
 
 def group_vislist_into_sessions(context, vislist):
