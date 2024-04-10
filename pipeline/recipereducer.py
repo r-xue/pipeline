@@ -209,22 +209,6 @@ def _get_tasks(context: launcher.Context, args: TaskArgs, procedure: str):
         yield task, task_args
 
 
-def string_to_val(s: str) -> Any:
-    """
-    Convert a string to a Python data type.
-    """
-    try:
-        pyobj = ast.literal_eval(s)
-        # PIPE-1030: prevent a string like "1,2,3" from being unexpectedly translated into tuple
-        if type(pyobj) is tuple and s.strip()[0] != '(':
-            pyobj = s
-        return pyobj
-    except ValueError:
-        return s
-    except SyntaxError:
-        return s
-
-
 def _format_arg_value(arg_val: Tuple[Any, Any]) -> str:
     arg, val = arg_val
     return '%s=%r' % (arg, val)
