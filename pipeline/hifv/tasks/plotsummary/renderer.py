@@ -264,15 +264,8 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             # no obvious drop in amplitude with uvdist, then use all the data.
             # A simpler compromise would be to use a uvrange that captures the
             # inner half the data.
-            baselines = sorted(ms.antenna_array.baselines,
-                               key=operator.attrgetter('length'))
-            # take index as midpoint + 1 so we include the midpoint in the
-            # constraint
-            half_baselines = baselines[0:(len(baselines) // 2) + 1]
-            uv_max = half_baselines[-1].length.to_units(measures.DistanceUnits.METRE)
-            uv_range = '<%s' % uv_max
+            max_uvs[vis], uv_range = utils.scale_uv_range(ms)
             LOG.debug('Setting UV range to %s for %s', uv_range, vis)
-            max_uvs[vis] = half_baselines[-1].length
 
             brightest_fields = T2_4MDetailsplotsummaryRenderer.get_brightest_fields(ms)
 
@@ -387,7 +380,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
     def get_baseband_desc(baseband_spws, spws_select=[]):
         """Get the baseband descriptions from a specifield spw list.
 
-        note: derived from a similar implementation in infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer 
+        note: derived from a similar implementation in infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer
         """
         vla_baseband_desc = []
         vla_baseband_centfreq = []
@@ -476,7 +469,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 job_params['field'] = str(field_id)
                 job = casa_tasks.visstat(**job_params)
                 LOG.debug('Calculating statistics for %r (#%s)', field_name, field_id)
-                result = job.execute(dry_run=False)
+                result = job.execute()
 
                 average_flux[(field_id, field_name)] = float(result['CORRECTED']['mean'])
 
@@ -560,7 +553,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         # get stats on amp solution of gaintable
         calstat_job = casa_tasks.calstat(caltable=gaintable, axis='amp',
                                          datacolumn='CPARAM', useflags=True)
-        calstat_result = calstat_job.execute(dry_run=False)
+        calstat_result = calstat_job.execute()
         stats = calstat_result['CPARAM']
 
         # amp solutions of unity imply phase-only was requested
@@ -572,7 +565,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         # same again for phase solution
         calstat_job = casa_tasks.calstat(caltable=gaintable, axis='phase',
                                          datacolumn='CPARAM', useflags=True)
-        calstat_result = calstat_job.execute(dry_run=False)
+        calstat_result = calstat_job.execute()
         stats = calstat_result['CPARAM']
 
         # phase solutions ~ 0 implies amp-only solution

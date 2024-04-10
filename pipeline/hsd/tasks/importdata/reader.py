@@ -386,7 +386,7 @@ class MetaDataReader(object):
         """Return row IDs of DataTable with invalid pointing information and a list of message.
 
         Returns:
-            Tuple: contains dictionary of invalid pointing data and a list of message 
+            Tuple: contains dictionary of invalid pointing data and a list of message
         """
 
         msglist = []
@@ -402,7 +402,7 @@ class MetaDataReader(object):
             Dict: contains list of row IDs of datatable
         """
         # keys for dictionary are (spw_id, antenna_id) tuples
-        flagdict = rasterutil.flag_raster_map(self.datatable)
+        flagdict = rasterutil.flag_raster_map(self.datatable, self.ms)
 
         return flagdict
 
@@ -449,16 +449,12 @@ class MetaDataReader(object):
         cmd_merged = merge_flagcmd(cmdlist)
         write_flagcmd(flagtemplate, cmd_merged, reason)
 
-    def execute(self, dry_run: bool = True) -> Dict[str, Dict[str, Union[str, Dict]]]:
+    def execute(self) -> Dict[str, Dict[str, Union[str, Dict]]]:
         """Read MeasurementSet and fill DataTable.
 
-        Args:
-            dry_run: flag of dry run
         Returns:
             Dict: dictionary of ephemeris sources
         """
-        if dry_run:
-            return
 
         # name of the MS
         name = self.name

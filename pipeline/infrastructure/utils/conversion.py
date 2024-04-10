@@ -15,7 +15,7 @@ import string
 import typing
 from datetime import datetime, timedelta
 from numbers import Number
-from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union, Iterable
 
 import cachetools
 import pyparsing
@@ -68,7 +68,7 @@ class LoggingLRUCache(cachetools.LRUCache):
 MSTOOL_SELECTEDINDICES_CACHE: typing.Dict[str, LoggingLRUCache] = {}
 
 
-def commafy(l: Sequence[str], quotes: bool = True, multi_prefix: str = '', separator: str = ', ',
+def commafy(l: Iterable, quotes: bool = True, multi_prefix: str = '', separator: str = ', ',
             conjunction: str = 'and') -> str:
     """Convert the string list into the textual description.
 
@@ -87,7 +87,7 @@ def commafy(l: Sequence[str], quotes: bool = True, multi_prefix: str = '', separ
     Return:
         The textual description of the given list.
     """
-    if not isinstance(l, list) and isinstance(l, collections.Iterable):
+    if not isinstance(l, list) and isinstance(l, collections.abc.Iterable):
         l = [i for i in l]
 
     # turn 's' into 's '
@@ -144,7 +144,7 @@ def flatten(l: Sequence[Any]) -> Iterator[Any]:
         Single list.
     """
     for el in l:
-        if isinstance(el, collections.Iterable) and not isinstance(el, str):
+        if isinstance(el, collections.abc.Iterable) and not isinstance(el, str):
             for sub in flatten(el):
                 yield sub
         else:

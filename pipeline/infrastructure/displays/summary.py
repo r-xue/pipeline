@@ -881,7 +881,7 @@ class UVChart(object):
             # get max UV via unprojected baseline
             spw = ms.get_spectral_window(self.spw_id)
             wavelength_m = 299792458 / float(spw.max_frequency.to_units(FrequencyUnits.HERTZ))
-            bl_max = float(ms.antenna_array.max_baseline.length.to_units(DistanceUnits.METRE))
+            bl_max = float(ms.antenna_array.baseline_max.length.to_units(DistanceUnits.METRE))
             self.uv_max = math.ceil(1.05 * bl_max / wavelength_m)
 
     def plot(self):
@@ -1196,9 +1196,18 @@ class SpwIdVsFreqChart(object):
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
                 idx += 1
         # 3. Frequency vs. ATM transmission
-        resolution = atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]
         center_freq = (xmin + xmax) / 2.0
+        LOG.info("center_freq = {}".format(center_freq))
+        resolution = abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2])
+        LOG.info("resolution 1 = {}".format(resolution))
         nchan = round((xmax - xmin) / resolution)
+        LOG.info("nchan 1 = {}".format(nchan))
+        resolution = 0.01
+        LOG.info("resolution 2 = {}".format(resolution))
+#        center_freq = (xmin + xmax) / 2.0
+#        LOG.info("center_freq = {}".format(center_freq))
+        nchan = round((xmax - xmin) / resolution)
+        LOG.info("nchan 2 = {}".format(nchan))
         elevation = atmutil.get_median_elevation(ms.name, antid)
         atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, elevation=elevation, doplot=False)
         ax_atm.plot(atm_freq, atm_transmission, color=atm_color_plot, linestyle='-', linewidth=2.5)

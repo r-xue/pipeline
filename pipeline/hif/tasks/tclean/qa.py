@@ -24,7 +24,7 @@ class TcleanQAHandler(pqa.QAPlugin):
 
         qaTool = casa_tools.quanta
 
-        data_selection = pqa.TargetDataSelection(session={context.observing_run.get_ms(result.vis[0]).session},
+        data_selection = pqa.TargetDataSelection(session={','.join(context.observing_run.get_ms(_vis).session for _vis in result.vis)},
                                                  vis=set(result.vis), spw={result.spw}, field={result.sourcename},
                                                  intent={result.intent}, pol={result.stokes})
 
@@ -111,6 +111,18 @@ class TcleanQAHandler(pqa.QAPlugin):
             # Add score to pool
             result.qa.pool.append(pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=data_selection))
 
+            # psfphasecenter usage score
+            # PIPE-98 asked for a QA score of 0.9 when the psfphasecenter parameter
+            # is used in the tclean calls for odd-shaped mosaics.
+            if result.used_psfphasecenter:
+                psfpc_score = 0.9
+                longmsg = f"Field {result.sourcename} has an odd-shaped mosaic - setting psfphasecenter to the position of the nearest pointing for SPW {result.spw}"
+                shortmsg = 'Odd-shaped mosaic'
+                origin = pqa.QAOrigin(metric_name='psfphasecenter', metric_score='N/A', metric_units='N/A')
+                # Add a hidden QA score. The psfphasecenter scores are aggregated in hif_makeimages to create
+                # scores per field and list of spws to be shown in the weblog.
+                result.qa.pool.append(pqa.QAScore(psfpc_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=data_selection, weblog_location=pqa.WebLogLocation.HIDDEN))
+
             # MOM8_FC based score
             if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None:
                 try:
@@ -165,7 +177,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                     # Calculate POLI/POLA images
                     imstat_arg = {'imagename': result.residual, 'axes': [0, 1]}
                     job = casa_tasks.imstat(**imstat_arg)
-                    calstat = job.execute(dry_run=False)
+                    calstat = job.execute()
                     rms = calstat['rms']
                     prms = np.sqrt(rms[1]**2. + rms[2]**2.)
 
@@ -173,31 +185,31 @@ class TcleanQAHandler(pqa.QAPlugin):
                     poli_imagename = imagename.replace('IQUV', 'POLI')
                     immath_arg = {'imagename': imagename, 'outfile': poli_imagename, 'mode': 'poli', 'sigma': '0.0Jy/beam'}
                     job = casa_tasks.immath(**immath_arg)
-                    res = job.execute(dry_run=False)
+                    res = job.execute()
                     pola_imagename = imagename.replace('IQUV', 'POLA')
                     immath_arg = {'imagename': imagename, 'outfile': pola_imagename, 'mode': 'pola', 'polithresh': '%.8fJy/beam' % (5.0*prms)}
                     job = casa_tasks.immath(**immath_arg)
-                    res = job.execute(dry_run=False)
+                    res = job.execute()
 
                     # Try fitting I, Q and U images planes
                     error_msgs = []
                     imfit_arg = {'imagename': imagename, 'stokes': 'I', 'box': '110,110,145,145'}
                     job = casa_tasks.imfit(**imfit_arg)
-                    res_I = job.execute(dry_run=False)
+                    res_I = job.execute()
                     if res_I is None or not res_I['converged']:
                         msg = f"Fitting Stokes I for {imagename} (field {result.inputs['field']} spw {result.inputs['spw']}) failed"
                         error_msgs.append(msg)
 
                     imfit_arg = {'imagename': imagename, 'stokes': 'Q', 'box': '115,115,130,130'}
                     job = casa_tasks.imfit(**imfit_arg)
-                    res_Q = job.execute(dry_run=False)
+                    res_Q = job.execute()
                     if res_Q is None or not res_Q['converged']:
                         msg = f"Fitting Stokes Q for {imagename} (field {result.inputs['field']} spw {result.inputs['spw']}) failed"
                         error_msgs.append(msg)
 
                     imfit_arg = {'imagename': imagename, 'stokes': 'U', 'box': '110,110,145,145'}
                     job = casa_tasks.imfit(**imfit_arg)
-                    res_U = job.execute(dry_run=False)
+                    res_U = job.execute()
                     if res_U is None or not res_U['converged']:
                         msg = f"Fitting Stokes U for {imagename} (field {result.inputs['field']} spw {result.inputs['spw']}) failed"
                         error_msgs.append(msg)
@@ -264,7 +276,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                                           origin=origin, applies_to=data_selection))
 
 class TcleanListQAHandler(pqa.QAPlugin):
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = resultobjects.TcleanResult
 
     def handle(self, context, result):
