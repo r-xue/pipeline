@@ -59,6 +59,16 @@ TaskArgs = collections.namedtuple('TaskArgs', 'vis infiles session')
 
 
 def _create_context(loglevel: str, plotlevel: str, name: str) -> launcher.Context:
+    """Create Pipeline context.
+
+    Args:
+        loglevel: Logging level
+        plotlevel: Plot level
+        name: Name of the context
+
+    Returns:
+        Pipeline context object
+    """
     pipeline = launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel,
                                  name=name)
     return pipeline.context
