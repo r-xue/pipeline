@@ -174,7 +174,7 @@ def _pipeline_revision() -> str:
             # built.
             try:
                 from pipeline._version import version
-                ver = version
+                return version
             except ModuleNotFoundError:
                 ver = "0.0.dev0"
 

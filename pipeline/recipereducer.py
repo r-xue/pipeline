@@ -36,7 +36,6 @@ Example #5: process uid123.tar.gz with a log level of TRACE
     pipeline.recipereducer.reduce(vis=['uid123.tar.gz'], loglevel='trace')
 
 """
-import ast
 import collections
 import os
 import tempfile
@@ -202,7 +201,7 @@ def _get_tasks(context: launcher.Context, args: TaskArgs, procedure: str):
             for parameter in parameterset.findall('Parameter'):
                 argname = parameter.findtext('Keyword')
                 argval = parameter.findtext('Value')
-                task_args[argname] = string_to_val(argval)
+                task_args[argname] = utils.string_to_val(argval)
 
         # we yield rather than return so that the context can be updated
         # between task executions
