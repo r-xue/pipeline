@@ -50,6 +50,38 @@ def clean_extendable_keys(data, key, num_keys=None):
     return data
 
 
+def wrap_key(data: dict, key: str, value: str) -> dict:
+    """
+    FITS string header keyword content is limited to 68 characters.
+    Longer content needs to be written to multiple keywords.
+    The "long string" convention is not supported by CASA's
+    exportfits.
+
+    Arguments:
+        data {dict} -- Dictionary to be processed
+        key {str}   -- Key for the dictionary
+        value {str} -- Value for the dictionary
+
+    """
+    key_len = len(key)
+    if key_len > 7:
+        raise ValueError('Wrapped keyword basename must be <=7 characters')
+    elif key_len == 7:
+        num_digits = 1
+    else:
+        num_digits = 2
+
+    value_components = wrap(value, 68)
+    vc_len = len(value_components)
+    if vc_len > 10**num_digits:
+        raise ValueError(f"Too many wrap elements for {key}{'X'*num_digits} keywords")
+    data[f'n{key}'] = vc_len
+    for i, value_component in enumerate(value_components):
+        data[f'{key}{(i+1):0{num_digits}d}'] = value_component
+
+    return data
+
+
 # Add information to image header
 def set_miscinfo(name, spw=None, virtspw=True, field=None, nfield=None, datatype=None, type=None, iter=None,
                  intent=None, specmode=None, robust=None, weighting=None, is_per_eb=None, context=None):
@@ -62,10 +94,7 @@ def set_miscinfo(name, spw=None, virtspw=True, field=None, nfield=None, datatype
         if name is not None:
             # PIPE-533, limiting 'filnamXX' keyword length to 68 characters
             # due to FITS header keyword string length limit.
-            filename_components = wrap(os.path.basename(name), 68)
-            info['nfilnam'] = len(filename_components)
-            for i, filename_component in enumerate(filename_components):
-                info['filnam{:02d}'.format(i+1)] = filename_component
+            info = wrap_key(info, 'filnam', os.path.basename(name))
 
             # clean up extra "filnamX" entries
             info = clean_extendable_keys(info, 'filnam')

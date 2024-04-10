@@ -2,8 +2,6 @@ import os
 import re
 import inspect
 
-from textwrap import wrap
-
 from typing import Optional
 
 import numpy as np
@@ -1803,10 +1801,7 @@ class Tclean(cleanbase.CleanBase):
                     if keyword == 'session':
                         # PIPE-2148, limiting 'sessionX' keyword length to 68 characters
                         # due to FITS header keyword string length limit.
-                        session_components = wrap(session, 68)
-                        info['nsession'] = len(session_components)
-                        for i, session_component in enumerate(session_components):
-                            info['session{:01d}'.format(i+1)] = session_component
+                        info = imageheader.wrap_key(info, 'sessio', session)
                     else:
                         info[keyword] = values[keyword]
 
