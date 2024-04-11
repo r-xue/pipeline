@@ -10,6 +10,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics.vlascanheuristics import VLAScanHeuristics
+from pipeline.hifv.heuristics.specline_detect import SpectralLineDetector
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -145,6 +146,13 @@ class VLAImportData(importdata.ImportData):
 
         if PbandWarning:
             LOG.warning(PbandWarning)
+
+        # Spectral line detection tool
+        mset = myresults.mses[0]
+        sltool = SpectralLineDetector(mset=mset, auto='auto')
+        sltool.execute()
+        for spw in mset.get_all_spectral_windows():
+            LOG.debug("SPW {}: {}".format(spw.id, spw.specline_window))
 
         return myresults
 

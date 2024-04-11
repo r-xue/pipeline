@@ -207,26 +207,28 @@ class SpectralWindow(object):
         sdm_num_bin: Number of bins for online spectral averaging
         correlation_bits: Number of bits used for correlation
         median_receptor_angle: Median feed receptor angle.
+        specline_window: whether spw is intended for spectral line or continuum (VLA only)
     """
 
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
                  'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
                  'channels', '_ref_frequency_frame', 'spectralspec', 'transitions', 'sdm_num_bin', 'correlation_bits',
-                 'median_receptor_angle')
+                 'median_receptor_angle', 'specline_window')
 
     def __getstate__(self):
         """Define what to pickle as a class intance."""
         return (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name,
                 self.baseband, self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency,
                 self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame,
-                self.spectralspec, self.transitions, self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle)
+                self.spectralspec, self.transitions, self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle,
+                self.specline_window)
 
     def __setstate__(self, state):
         """Define how to unpickle a class instance."""
         (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name, self.baseband,
          self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency, self._max_frequency,
          self._centre_frequency, self.channels, self._ref_frequency_frame, self.spectralspec, self.transitions,
-         self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle) = state
+         self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle, self.specline_window) = state
 
     def __repr__(self):
         chan_freqs = self.channels.chan_freqs
@@ -261,7 +263,8 @@ class SpectralWindow(object):
             self.transitions,
             self.sdm_num_bin,
             self.correlation_bits,
-            self.median_receptor_angle
+            self.median_receptor_angle,
+            self.specline_window
         )
 
     def __init__(self, spw_id: int, name: str, spw_type: str, bandwidth: float,
@@ -274,7 +277,8 @@ class SpectralWindow(object):
                  transitions: Optional[List[str]] = None,
                  sdm_num_bin: Optional[int] = None,
                  correlation_bits: Optional[str]=None,
-                 median_receptor_angle: Optional[numpy.ndarray] = None):
+                 median_receptor_angle: Optional[numpy.ndarray] = None,
+                 specline_window: bool = False):
         """
         Initialize SpectralWindow class.
 
@@ -298,6 +302,7 @@ class SpectralWindow(object):
             sdm_num_bin: Number of bins for online spectral averaging
             correlation_bits: Number of bits used for correlation
             median_receptor_angle: Median feed receptor angle.
+            specline_window: whether spw is intended for spectral line or continuum (VLA only)
         """
         if transitions is None:
             transitions = ['Unknown']
@@ -340,6 +345,7 @@ class SpectralWindow(object):
         self.sdm_num_bin = sdm_num_bin
         self.correlation_bits = correlation_bits
         self.median_receptor_angle = median_receptor_angle
+        self.specline_window = specline_window
 
     @property
     def centre_frequency(self):

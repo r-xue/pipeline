@@ -5,6 +5,7 @@ import tarfile
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.restoredata import restoredata
+from pipeline.hifv.heuristics.specline_detect import SpectralLineDetector
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import casa_tasks
 from ..finalcals import applycals
@@ -77,6 +78,13 @@ class VLARestoreData(restoredata.RestoreData):
         # Flags.Original.
         #    TBD: Add error handling
         import_results = self._do_importasdm(sessionlist=sessionlist, vislist=vislist)
+
+        # Spectral line detection tool
+        mset = import_results[0].mses[0]
+        sltool = SpectralLineDetector(mset=mset, auto='auto')
+        sltool.execute()
+        for spw in mset.get_all_spectral_windows():
+            LOG.debug("SPW {}: {}".format(spw.id, spw.specline_window))
 
         for ms in self.inputs.context.observing_run.measurement_sets:
             hanning_results = self._do_hanningsmooth()
