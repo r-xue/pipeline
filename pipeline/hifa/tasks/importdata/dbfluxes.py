@@ -112,8 +112,9 @@ def buildurl(service_url, obs_time, frequency, sourcename):
     date = '{!s}-{!s}-{!s}'.format(str(obs_time.day).zfill(2), obs_time.strftime('%B'), obs_time.year)
     sourcename = sanitize_string(sourcename)
     urlparams = buildparams(sourcename, date, frequency)
+    catalogue_param = "&CATALOGUE=5"
 
-    url = '{!s}?{!s}'.format(service_url, urlparams)
+    url = '{!s}?{!s}{!s}'.format(service_url, urlparams, catalogue_param)
 
     return url
 
