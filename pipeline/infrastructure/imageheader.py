@@ -62,22 +62,21 @@ def wrap_key(data: dict, key: str, value: str) -> dict:
         key {str}   -- Key for the dictionary
         value {str} -- Value for the dictionary
 
+    Returns:
+        dict -- Reference to the data
+
     """
     key_len = len(key)
-    if key_len > 7:
-        raise ValueError('Wrapped keyword basename must be <=7 characters')
-    elif key_len == 7:
-        num_digits = 1
-    else:
-        num_digits = 2
+    if key_len > 6:
+        raise ValueError('Wrapped keyword basename must be <=6 characters')
 
     value_components = wrap(value, 68)
     vc_len = len(value_components)
-    if vc_len > 10**num_digits:
-        raise ValueError(f"Too many wrap elements for {key}{'X'*num_digits} keywords")
+    if vc_len > 99:
+        raise ValueError(f'Too many wrap elements for {key}XX keywords')
     data[f'n{key}'] = vc_len
     for i, value_component in enumerate(value_components):
-        data[f'{key}{(i+1):0{num_digits}d}'] = value_component
+        data[f'{key}{(i+1):02d}'] = value_component
 
     return data
 
