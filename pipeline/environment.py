@@ -155,8 +155,8 @@ class Environment(typing.Protocol):
     cgroup_mem_limit: str       # cgroup memory limit
 
     ulimit_files: str           # open file descriptors ulimit
-    ulimit_cpu: str             # memory ulimit
-    ulimit_mem: str             # cpu time ulimit, in seconds
+    ulimit_cpu: str             # cpu time ulimit, in seconds
+    ulimit_mem: str             # memory ulimit
 
     role: str                   # MPI role
 

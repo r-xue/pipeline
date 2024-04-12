@@ -197,7 +197,8 @@ def log_host_environment():
 
         LOG.info(
             'Environment as detected by CASA:\n'
-            f'\tCPUs reported by CASA: {env.casa_cores} cores, {env.casa_threads} threads\n'
+            f'\tCPUs reported by CASA: {env.casa_cores} cores, '
+            f'max {env.casa_threads} OpenMP thread{"s" if env.casa_threads > 1 else ""}\n'
             f'\tAvailable memory: {measures.FileSize(env.casa_memory, measures.FileSizeUnits.BYTES)}'
         )
 
