@@ -544,7 +544,7 @@ class T1_1Renderer(RendererBase):
 
         node_environments: Dict[str, List[environment.Environment]] = {}
 
-        data = sorted(pipeline.environment.cluster_details, key=operator.attrgetter('hostname'))
+        data = sorted(pipeline.environment.cluster_details(), key=operator.attrgetter('hostname'))
         for k, g in itertools.groupby(data, operator.attrgetter('hostname')):
             node_environments[k] = list(g)
 
@@ -608,7 +608,7 @@ class T1_1Renderer(RendererBase):
             )
         }
 
-        mode = 'Parallel' if any(['MPI Server' in d.role for d in pipeline.environment.cluster_details]) else 'Serial'
+        mode = 'Parallel' if any(['MPI Server' in d.role for d in pipeline.environment.cluster_details()]) else 'Serial'
 
         return mode, tables
 

@@ -758,17 +758,23 @@ pipeline_revision = _pipeline_revision()
 
 ENVIRONMENT = EnvironmentFactory.create()
 
-def _cluster_details():
-    env_details = [ENVIRONMENT]
-    if mpihelpers.is_mpi_ready():
-        mpi_results = mpihelpers.mpiclient.push_command_request(
-            'pipeline.environment.ENVIRONMENT',
-            block=True,
-            target_server=mpihelpers.mpi_server_list
-        )
-        for r in mpi_results:
-            env_details.append(r['ret'])
+def cluster_details():
+    # defer calculation as running this code at import time blocks MPI
+    # see https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/pull-requests/1244/overview?commentId=13655
+    global _cluster_details
+    if _cluster_details is None:
+        env_details = [ENVIRONMENT]
+        if mpihelpers.is_mpi_ready():
+            mpi_results = mpihelpers.mpiclient.push_command_request(
+                'pipeline.environment.ENVIRONMENT',
+                block=True,
+                target_server=mpihelpers.mpi_server_list
+            )
+            for r in mpi_results:
+                env_details.append(r['ret'])
 
-    return env_details
+        _cluster_details = env_details
 
-cluster_details = _cluster_details()
+    return _cluster_details
+
+_cluster_details = None

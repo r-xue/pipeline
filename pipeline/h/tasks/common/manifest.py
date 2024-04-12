@@ -80,7 +80,7 @@ class PipelineManifest(object):
         # group node information by host
         root = eltree.SubElement(ous, 'execution_environment')
         groups = []
-        data = sorted(environment.cluster_details, key=operator.attrgetter('hostname'))
+        data = sorted(environment.cluster_details(), key=operator.attrgetter('hostname'))
         for _, g in itertools.groupby(data, operator.attrgetter('hostname')):
             groups.append(list(g))
 
