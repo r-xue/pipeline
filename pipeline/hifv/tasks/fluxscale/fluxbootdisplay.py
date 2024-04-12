@@ -108,7 +108,7 @@ class fluxgaincalSummaryChart(object):
                 self.create_plot()
             except Exception as ex:
                 LOG.error('Could not create fluxgaincal plot.')
-                # LOG.exception(ex)
+
                 return None
 
         return wrapper
@@ -258,7 +258,7 @@ class modelfitSummaryChart(object):
                 self.create_plot()
             except Exception as ex:
                 LOG.error('Could not create fluxboot fitting plot.')
-                # LOG.exception(ex)
+
                 return None
 
         return wrapper
@@ -370,7 +370,7 @@ class residualsSummaryChart(object):
                 self.create_plot()
             except Exception as ex:
                 LOG.error('Could not create fluxboot residuals plot.')
-                # LOG.exception(ex)
+
                 return None
 
         return wrapper
