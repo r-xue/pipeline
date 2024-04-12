@@ -1,5 +1,4 @@
 import copy
-import math
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -325,7 +324,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
             # Calculate full cont sensitivity (no frequency ranges excluded)
             try:
-                sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = \
+                sensitivity, _, sens_bw, known_per_spw_cont_sensitivities_all_chan = \
                     image_heuristics.calc_sensitivities(inputs.vis, repr_field, 'TARGET', cont_spw, -1, {}, 'cont', gridder, cells[(robust, str(default_uvtaper), 'aggBW')], imsizes[(robust, str(default_uvtaper), 'aggBW')], 'briggs', robust, default_uvtaper, True, known_per_spw_cont_sensitivities_all_chan, calcsb)
                 # Set calcsb flag to False since the first calculations of beam
                 # and sensitivity will have already reset the dictionaries.
@@ -519,10 +518,14 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             minAcceptableAngResolution = cqa.quantity(0.0, 'arcsec')
             maxAcceptableAngResolution = cqa.quantity(0.0, 'arcsec')
 
-        hm_uvtaper = default_uvtaper # Right now ALMA IF PI (non-SRDP) always uses the default_uvtaper
+        # The normal ALMA IF recipe (non-SRDP) always uses the default_uvtaper
+        hm_uvtaper = default_uvtaper
 
+        # The below is only run for SRDP. userAngResolution)[0] will be 0.0 unless desired_angular_resolution is
+        # provided, which only occurs in the SRDP recipe.
+        #
         # Determine non-default UV taper value if the best robust is 2.0 and the user requested resolution parameter
-        # (desired_angular_resolution) is set (SRDP). (PIPE-708)
+        # (desired_angular_resolution) is set for SRDP. (PIPE-708)
         #
         # Compute uvtaper for representative targets and also if representative target cannot be determined
         # (real_repr_target = False) for representative targets and if user set angular resolution goal.
@@ -534,9 +537,9 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             length_of_190th_baseline = image_heuristics.calc_length_of_nth_baseline(190)
             reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
             try:
-                hm_uvtaper = self.calc_uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
-                                               beam_user=user_desired_beam,
-                                               tapering_limit=length_of_190th_baseline, repr_freq=repr_freq)
+                hm_uvtaper = image_heuristics.uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
+                                                      beam_user=user_desired_beam,
+                                                      tapering_limit=length_of_190th_baseline, repr_freq=repr_freq, srdp=True)
             except:
                 hm_uvtaper = []
 
@@ -567,65 +570,3 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
     def analyse(self, results):
         return results
-
-    def calc_uvtaper(self, beam_natural=None,  beam_user=None, tapering_limit=None, repr_freq=None):
-        """
-        This code will take a given beam and a desired beam size and calculate the necessary
-        UV-tapering parameters needed for tclean to recreate that beam.
-
-        UV-tapering parameter larger than the 80 percentile baseline is not allowed.
-
-        :param beam_natural: natural beam, dictionary with major, minor and positionangle keywords
-        :param beam_user: desired beam, dictionary with major, minor and positionangle keywords
-        :param tapering_limit: 190th baseline in meters. uvtaper larger than this baseline is not allowed
-        :param repr_freq: representative frequency, dictionary with unit and value keywords.
-        :return: uv_taper needed to recreate user_beam in tclean
-        """
-        if beam_natural is None:
-            return []
-        if beam_user is None:
-            return []
-        if tapering_limit is None:
-            return []
-        if repr_freq is None:
-            return []
-
-        # Determine uvtaper based on equations from Ryan Loomis,
-        # https://open-confluence.nrao.edu/display/NAASC/Data+Processing%3A+Imaging+Tips
-        # See PIPE-704.
-        cqa = casa_tools.quanta
-
-        bmajor = 1.0 / cqa.getvalue(cqa.convert(beam_natural['major'], 'arcsec'))
-        bminor = 1.0 / cqa.getvalue(cqa.convert(beam_natural['minor'], 'arcsec'))
-
-        des_bmajor = 1.0 / cqa.getvalue(cqa.convert(beam_user['major'], 'arcsec'))
-        des_bminor = 1.0 / cqa.getvalue(cqa.convert(beam_user['minor'], 'arcsec'))
-
-        if (des_bmajor > bmajor) or (des_bminor > bminor):
-            LOG.warning('uvtaper cannot be calculated for beam_user (%.2farcsec) larger than beam_natural (%.2farcsec)' % (
-                1.0 / des_bmajor, 1.0 / bmajor))
-            return []
-
-        tap_bmajor = 1.0 / (bmajor * des_bmajor / (math.sqrt(bmajor ** 2 - des_bmajor ** 2)))
-        tap_bminor = 1.0 / (bminor * des_bminor / (math.sqrt(bminor ** 2 - des_bminor ** 2)))
-
-        # Assume symmetric beam
-        tap_angle = math.sqrt( (tap_bmajor ** 2 + tap_bminor ** 2) / 2.0 )
-
-        # Convert angle to baseline
-        ARCSEC_PER_RAD = 206264.80624709636
-        uvtaper_value = ARCSEC_PER_RAD / tap_angle
-        LOG.info('uvtaper needed to achive user specified angular resolution is %.2fklambda' %
-                 utils.round_half_up(uvtaper_value / 1000., 2))
-
-        # Determine maximum allowed uvtaper
-        # PIPE-1104: Limit such that the image includes the baselines from at least 20 antennas.
-        # Limit should be set to: (N*(N-1)/2)=the length of the 190th baseline.
-        uvtaper_limit = tapering_limit / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
-                        cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
-        # Limit uvtaper
-        if uvtaper_value < uvtaper_limit:
-            uvtaper_value = uvtaper_limit
-            LOG.warning('uvtaper is smaller than allowed limit of %.2fklambda, the length of the 190th baseline, using the limit value' %
-                        utils.round_half_up(uvtaper_limit / 1000., 2))
-        return ['%.2fklambda' % utils.round_half_up(uvtaper_value / 1000., 2)]
