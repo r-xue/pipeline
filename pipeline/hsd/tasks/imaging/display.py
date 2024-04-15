@@ -1031,15 +1031,22 @@ class SDChannelMapDisplay(SDImageDisplay):
             for i in range(self.NumChannelMap + 1):
                 idx_chan_left_end = int(idx_left_end + i * indices_width_of_line)
                 vel_chan_left_end = None
-                if idx_chan_left_end == 0:
-                    vel_chan_left_end = 0.5 * (self.velocity[idx_chan_left_end] -
-                                               self.velocity[idx_chan_left_end - 1]) - velocity_line_center
+
+                if 0 <= idx_chan_left_end < self.nchan:
+                    if idx_chan_left_end == 0:
+                        vel_chan_left_end = 0.5 * (self.velocity[idx_chan_left_end] -
+                                                   self.velocity[idx_chan_left_end + 1])
+                    else:
+                        vel_chan_left_end = 0.5 * (self.velocity[idx_chan_left_end] + 
+                                                   self.velocity[idx_chan_left_end - 1])
+                    vel_chan_left_end -= velocity_line_center
                 else:
-                    vel_chan_left_end = 0.5 * (self.velocity[idx_chan_left_end] +
-                                               self.velocity[idx_chan_left_end - 1]) - velocity_line_center
-                vertical_lines.append(
-                    axes_integsp2.axvline(x=vel_chan_left_end, linewidth=0.3, color='r')
-                )
+                    LOG.warn(f'Omitting the vertical line: index:{idx_chan_left_end} on ChannelMap:{i}')
+
+                if vel_chan_left_end is not None:
+                    vertical_lines.append(
+                        axes_integsp2.axvline(x=vel_chan_left_end, linewidth=0.3, color='r')
+                    )
                 LOG.debug(f'i, Vel[idx_chan_left_end] : {i}, {vel_chan_left_end}')
 
             # loop over polarizations
