@@ -110,11 +110,11 @@ def buildurl(service_url, obs_time, frequency, sourcename):
     # New Example May 2019:
     # https://osf-sourcecat-2019apr.asa-test.alma.cl/sc/flux?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=0&NAME=J1427-4206
     date = '{!s}-{!s}-{!s}'.format(str(obs_time.day).zfill(2), obs_time.strftime('%B'), obs_time.year)
-    sourcename = sanitize_string(sourcename)
-    urlparams = buildparams(sourcename, date, frequency)
     catalogue_param = "&CATALOGUE=5"
+    sourcename = sanitize_string(sourcename)
+    urlparams = buildparams(sourcename, date, frequency, catalogue_param)
 
-    url = '{!s}?{!s}{!s}'.format(service_url, urlparams, catalogue_param)
+    url = '{!s}?{!s}'.format(service_url, urlparams)
 
     return url
 
