@@ -163,9 +163,17 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             imaging_mode='ALMA'
         )
 
-        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = image_heuristics.representative_target()
+        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, \
+            minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, \
+            sensitivityGoal = image_heuristics.representative_target()
 
-        # PIPE-708, used only for SRDP
+        # Store PI selected angular resolution
+        pi_minAcceptableAngResolution = minAcceptableAngResolution
+        pi_maxAcceptableAngResolution = maxAcceptableAngResolution
+        pi_maxAllowedBeamAxialRatio = maxAllowedBeamAxialRatio
+
+        # Fetch angular resolution goals if they were entered via the task interface
+        # See: PIPE-708, used only for SRDP, and PIPE-1712
         if inputs.desired_angular_resolution not in [None, '']:
             # Parse user angular resolution goal
             if type(inputs.desired_angular_resolution) is str:
@@ -184,12 +192,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         else:
             userAngResolution = cqa.quantity('%.3garcsec' % 0.0)
 
-        # Store PI selected angular resolution
-        pi_minAcceptableAngResolution = minAcceptableAngResolution
-        pi_maxAcceptableAngResolution = maxAcceptableAngResolution
-        pi_maxAllowedBeamAxialRatio = maxAllowedBeamAxialRatio
-
-        # Store user selected angular resolution
+        # Store user selected angular resolution (if task interface entered)
         user_minAcceptableAngResolution = cqa.mul(userAngResolution, 0.8)
         user_maxAcceptableAngResolution = cqa.mul(userAngResolution, 1.2)
         user_maxAllowedBeamAxialRatio = maxAllowedBeamAxialRatio
@@ -539,7 +542,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             try:
                 hm_uvtaper = image_heuristics.uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
                                                       beam_user=user_desired_beam,
-                                                      tapering_limit=length_of_190th_baseline, repr_freq=repr_freq, srdp=True)
+                                                      tapering_limit=length_of_190th_baseline, repr_freq=repr_freq, do_uvtaper=True)
             except:
                 hm_uvtaper = []
 

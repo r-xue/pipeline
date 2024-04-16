@@ -29,7 +29,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return 0.5
 
-    def uvtaper(self, beam_natural=None, protect_long=3, beam_user=None, tapering_limit=None, repr_freq=None, srdp=False):
+    def uvtaper(self, beam_natural=None, protect_long=3, beam_user=None, tapering_limit=None, repr_freq=None, do_uvtaper=False):
         """
         Adjustment of uvtaper parameter based on desired resolution or representative baseline length.
 
@@ -39,8 +39,8 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         :param repr_freq: representative frequency, dictionary with unit and value keywords.
         :return: uv_taper needed to recreate user_beam in tclean
         """
-        # Only apply below uvtaper for SRDP
-        if srdp:
+        # Only apply below uvtaper for SRDP as of PIPE-1712:
+        if do_uvtaper:
             """
             This code will take a given beam and a desired beam size and calculate the necessary
             UV-tapering parameters needed for tclean to recreate that beam.
