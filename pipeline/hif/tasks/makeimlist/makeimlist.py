@@ -660,7 +660,10 @@ class MakeImList(basetask.StandardTaskTemplate):
         for selected_datatype_str, selected_datatype_info in zip(selected_datatypes_str, selected_datatypes_info):
             for band in band_spws:
                 if band is not None:
-                    spw = band_spws[band].__repr__().replace(' ', '') # NOTE: Super flaky setup since one needs to remove blanks.
+                    # The format of "spw" is "['<id1>','<id2>',...,'<idN>']", i.e. without any
+                    # blanks (see also above where the default spw value is computed for the non
+                    # band case).
+                    spw = "[" + ",".join(f"'{item}'" for item in band_spws[band]) + "]"
                     spwlist = band_spws[band]
                 for vislist in vislists:
                     if inputs.per_eb:
@@ -805,7 +808,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                         filtered_spwlist_local = filtered_spwlist
 
                     if filtered_spwlist_local == [] or filtered_spwlist_local == ['']:
-                        # TODO: Check if this error message is needed for any use case.
+                        # We can get here for example if a multiband observations does not feature
+                        # LF or HF spws for a given field (PIPE-832). We should not log anything in
+                        # that case. Before PIPE-832 there used to be a provisional error message for
+                        # potential other cases, but this probably never happened. For now just
+                        # continuing in the loop.
                         #LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
                         continue
 
