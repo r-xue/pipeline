@@ -37,7 +37,7 @@ class SolintListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing SolintResults.
     """
-    result_cls = collections.abc.Iterable
+    result_cls = collections.Iterable
     child_cls = solint.SolintResults
     generating_task = solint.Solint
 
@@ -73,8 +73,12 @@ class FluxbootQAHandler(pqa.QAPlugin):
             webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
                                                 'fitteddata': row['fitteddata']})
 
-        rmsmeanvalues = self.computeRMSandMean(webdicts[ms])
-        score1 = qacalc.score_vla_flux_residual_rms(rmsmeanvalues)
+        spixl = []
+        for spi_result in result.spindex_results:
+            spixl.append(spi_result["spix"])
+
+        fractional_residuals = self.getFractionalResiduals(webdicts[ms])
+        score1 = qacalc.score_vla_flux_residual_rms(fractional_residuals, len(result.spws), spixl)
         scores = [score1]
         if scores == []:
             LOG.error('Error with computing flux density bootstrapping residuals')
@@ -82,6 +86,18 @@ class FluxbootQAHandler(pqa.QAPlugin):
                                   shortmsg='Fluxboot issue.')]
 
         result.qa.pool.extend(scores)
+
+    def getFractionalResiduals(self, webdicts):
+        fractional_residuals = []
+        for source, datadicts in webdicts.items():
+            try:
+                residuals = []
+                for datadict in datadicts:
+                    residuals.append((float(datadict['data']) - float(datadict['fitteddata'])) / float(datadict['data']))
+                fractional_residuals.append(residuals)
+            except Exception as e:
+                continue
+        return fractional_residuals
 
     def computeRMSandMean(self, webdicts):
         rmsmeanvalues = []
@@ -109,7 +125,7 @@ class FluxbootListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing FluxbootResults.
     """
-    result_cls = collections.abc.Iterable
+    result_cls = collections.Iterable
     child_cls = FluxbootResults
 
     def handle(self, context, result):

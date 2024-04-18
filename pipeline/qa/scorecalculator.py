@@ -1166,39 +1166,32 @@ def score_total_data_vla_delay(filename, m):
 
 
 @log_qa
-def score_vla_flux_residual_rms(rmsmeanvalues):
+def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
     """
     Take the RMS values of the residuals.
     Input is a list of tuples with (rms, mean, count) per sources
     """
 
-    scores = []
-    rmsvalues = []
-    counts = []
-    for rms, mean, count in rmsmeanvalues:
-        sourcescore = 1.0 - (0.01 * count)
-        rmsvalues.append(rms)
-        counts.append(float(count))
+    # PIPE-989, part a
+    max_res = max(max(res) for res in fractional_residuals)
+    score = 1.0 - max_res
 
-        if sourcescore < 0.0:
-            sourcescore = 0.0
+    # PIPE-989 part b
+    if min([min(res) for res in fractional_residuals]) > 0.3:
+        LOG.warning("All fractional residuals are > 0.3")
 
-        scores.append(sourcescore)
-
-    countfractions = np.array(counts) / np.sum(counts)
-
-    # Weighted average per sources
-    try:
-        score = np.average(scores, weights=countfractions)
-    except Exception as e:
-        score = 0.0
+    # PIPE-989 part c
+    bool_spix = [True if eval(spix) < -3 or eval(spix) > 2 else False for spix in spixl]
+    if num_spws > 1 and all(bool_spix):
+        score = score - 0.5
+        LOG.warning("spix for a band/s is <-3 or >2, reducing score by 0.5")
 
     if score < 0.0:
         score = 0.0
 
     # Set score message and origin
     try:
-        longmsg = 'Max rms of the residuals is {!s}'.format(np.max(rmsvalues))
+        longmsg = 'Max rms of the residuals is {!s}'.format(max_res)
     except Exception as e:
         longmsg = 'No max rms.'
     shortmsg = longmsg
