@@ -78,8 +78,8 @@ class TcleanQAHandler(pqa.QAPlugin):
 
                 if (np.isnan(rms_score)):
                     rms_score = 0.0
-                    longmsg='Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
-                    shortmsg='RMS is NaN'
+                    longmsg = 'Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
+                    shortmsg = 'RMS is NaN'
                 else:
                     if rms_score > 0.66:
                         longmsg = 'RMS vs. DR corrected sensitivity. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
