@@ -38,9 +38,15 @@ class PriorcalsInputs(vdp.StandardInputs):
     swpow_spw = vdp.VisDependentProperty(default='')
     show_tec_maps = vdp.VisDependentProperty(default=True)
     apply_tec_correction = vdp.VisDependentProperty(default=False)
+    apply_gaincurves = vdp.VisDependentProperty(default=True)
+    apply_opcal = vdp.VisDependentProperty(default=True)
+    apply_rqcal = vdp.VisDependentProperty(default=True)
+    apply_antpos = vdp.VisDependentProperty(default=True)
+    apply_swpowcal = vdp.VisDependentProperty(default=False)
     ant_pos_time_limit = vdp.VisDependentProperty(default=150)
 
-    def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None, ant_pos_time_limit=None):
+    def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, apply_gaincurves=None, apply_opcal=None,
+                 apply_rqcal=None, apply_antpos=None, apply_swpowcal=None, swpow_spw=None, ant_pos_time_limit=None):
         """
         Args:
             context (:obj:): Pipeline context
@@ -57,6 +63,13 @@ class PriorcalsInputs(vdp.StandardInputs):
         self.apply_tec_correction = apply_tec_correction
         self.swpow_spw = swpow_spw
         self.ant_pos_time_limit = ant_pos_time_limit
+        self.apply_gaincurves = apply_gaincurves
+        self.apply_opcal = apply_opcal
+        self.apply_rqcal = apply_rqcal
+        self.apply_antpos = apply_antpos
+        self.apply_swpowcal = apply_swpowcal
+        if apply_swpowcal:
+            apply_rqcal = False
 
     def to_casa_args(self):
         raise NotImplementedError
