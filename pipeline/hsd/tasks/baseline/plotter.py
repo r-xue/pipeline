@@ -2,7 +2,7 @@
 import collections
 import itertools
 import os
-from typing import TYPE_CHECKING, Any, Dict, Generator, Iterable, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Tuple, Union
 
 import matplotlib.figure as figure
 import matplotlib.pyplot as plt
@@ -22,7 +22,6 @@ from ..common.display import DPIDetail, ch_to_freq, sd_polmap
 from ..common import direction_utils as dirutil
 
 if TYPE_CHECKING:
-    from numbers import Integral
     from pipeline.infrastructure.launcher import Context
     from pipeline.domain.datatable import DataTableImpl as DataTable
     from pipeline.domain.measurementset import MeasurementSet
@@ -532,19 +531,26 @@ class BaselineSubtractionDataManager(object):
                 for d in rowlist:
                     ix = num_ra - 1 - d['RAID']
                     iy = d['DECID']
-                    idxs = d['IDS']
-                    if len(idxs) > 0:
-                        # to access MS rows in sorted order (avoid jumping distant row, accessing back and forth)
-                        rows = dtrows[idxs].copy()
-                        sorted_index = numpy.argsort(rows)
-        #                 idxperpol = [[], [], [], []]
-                        for isort in sorted_index:
-                            row = rows[isort]
-                            mapped_row = rowmap[row]
-                            LOG.debug('row %s: mapped_row %s', row, mapped_row)
+                    if len( d['IDS'] ) > 0:
+                        # create table
+                        index_table = []
+                        for ids_idx, dt_id in enumerate( d['IDS'] ):
+                            index_table.append(
+                                {
+                                    'ids_idx'     : ids_idx,                 # index within the 'IDS'
+                                    'datatable_id': dt_id,                   # datatable id
+                                    'orig_row'    : dtrows[dt_id],           # row of original MS
+                                    'mapped_row'  : rowmap[ dtrows[dt_id] ], # row of the MS for baseline subtraction
+                                    'valid'       : [None] * num_pol         # valid flag for each pol
+                                }                                            #  --True of not fully flagged
+                            )
+
+                        # sort the table with orig_row (to avoid jumping back and forth to access the infile)
+                        # and fill the 'valid' column
+                        for this_index in sort_with_key( index_table, 'orig_row' ):
+                            mapped_row = this_index['mapped_row']
                             this_data = tb.getcell(colname, mapped_row)
                             this_mask = tb.getcell('FLAG', mapped_row)
-                            LOG.trace('this_mask.shape=%s', this_mask.shape)
                             binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
                             map_data[ix, iy] += this_data.real * binary_mask
                             num_accumulated[ix, iy] += binary_mask
