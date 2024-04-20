@@ -2,7 +2,7 @@
 import collections
 import itertools
 import os
-from typing import TYPE_CHECKING, Dict, Generator, Iterable, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Generator, Iterable, List, Optional, Tuple, Union
 
 import matplotlib.figure as figure
 import matplotlib.pyplot as plt
@@ -356,7 +356,6 @@ class BaselineSubtractionDataManager(object):
             map_data_storage: Storage for sparse map. If None is given, new array is created.
             map_mask_storage: Storage for sparse map mask. If None is given, new array is created.
         """
-
         if infile == self.postfit_data and self.postfit_integrated_data is not None:
             pass
         elif infile == self.prefit_data and self.prefit_integrated_data is not None:
@@ -403,48 +402,65 @@ class BaselineSubtractionDataManager(object):
                         break
                 assert colname is not None
 
+                # loop for 'panels' of profile map
                 for d in rowlist:
+                    midxperpol = []
                     ix = num_ra - 1 - d['RAID']
                     iy = d['DECID']
-                    idxs = d['IDS']
-                    if len(idxs) > 0:
-                        # to access MS rows in sorted order (avoid jumping distant row, accessing back and forth)
-                        rows = dtrows[idxs].copy()
-                        sorted_index = numpy.argsort(rows)
-                        idxperpol = [[], [], [], []]
-                        for isort in sorted_index:
-                            row = rows[isort]
-                            mapped_row = rowmap[row]
-                            LOG.debug('row %s: mapped_row %s', row, mapped_row)
+                    if len( d['IDS'] ) > 0:
+                        # create index table
+                        index_list = []
+                        for ids_idx, dt_id in enumerate( d['IDS'] ):
+                            index_list.append(
+                                {
+                                    'ids_idx'     : ids_idx,                 # index within the 'IDS'
+                                    'datatable_id': dt_id,                   # datatable id
+                                    'orig_row'    : dtrows[dt_id],           # row of original MS
+                                    'mapped_row'  : rowmap[ dtrows[dt_id] ], # row of the MS for baseline subtraction
+                                    'valid'       : [None] * num_pol         # valid flag for each pol
+                                 }                                           #  --True if not fully flagged
+                            )
+
+                        # sort the table with orig_row (to avoid jumping back and forth to access the infile)
+                        # and fill the 'valid' column of the index table
+                        for this_index in sort_with_key( index_list, 'orig_row' ):
+
+                            # get the data and mask
+                            mapped_row = this_index['mapped_row']
                             this_data = tb.getcell(colname, mapped_row)
                             this_mask = tb.getcell('FLAG', mapped_row)
-                            LOG.trace('this_mask.shape=%s', this_mask.shape)
+
+                            # mark each rows whether it is fully flagged for each pol
                             for ipol in range(num_pol):
-                                pmask = this_mask[ipol]
-                                allflagged = numpy.all(pmask == True)
-                                LOG.trace('all(this_mask==True) = %s', allflagged)
-                                if not allflagged:
-                                    idxperpol[ipol].append(idxs[isort])
-                                else:
-                                    LOG.debug('spectrum for pol %s is completely flagged at %s, %s (row %s)',
-                                              ipol, ix, iy, mapped_row)
+                                allflagged = numpy.all( this_mask[ipol] == True )
+                                this_index['valid'][ipol] = not allflagged
+
+                            # used later to calculate integrated data
                             binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
                             integrated_data += this_data.real * binary_mask
                             num_accumulated += binary_mask
-                        midxperpol = []
+
+                        # pick one 'representative' row for each ipol, and prepare storage data
+                        # the 'representative' row is given by the 'median index' (i.e. ids_idx to the median of selected ids)
                         for ipol in range(num_pol):
-                            pidxs = idxperpol[ipol]
-                            if len(pidxs) > 0:
-                                midx = median_index(pidxs)
-                                median_row = dtrows[pidxs[midx]]
-                                mapped_row = rowmap[median_row]
-                                LOG.debug('median row for (%s,%s) with pol %s is %s (mapped to %s)',
-                                          ix, iy, ipol, median_row, mapped_row)
+
+                            # pick index of 'valid' (not fully flagged) rows for each pol
+                            valid_index_list = [ r for r in index_list if r['valid'][ipol] ]
+
+                            if len( valid_index_list ) > 0:
+                                # get the row number (mapped_row) corresponding to the 'median index'
+                                sorted_valid_index_list = sort_with_key( valid_index_list, 'datatable_id' )
+                                median_index = sorted_valid_index_list[ len(sorted_valid_index_list) // 2 ]
+                                mapped_row = median_index['mapped_row']
+
+                                # get data and mask for mapped_row, and prepare for storage data
                                 this_data = tb.getcell(colname, mapped_row)
                                 this_mask = tb.getcell('FLAG', mapped_row)
                                 map_data[ix, iy, ipol] = this_data[ipol].real
                                 map_mask[ix, iy, ipol] = this_mask[ipol]
-                                midxperpol.append( numpy.where(idxs == pidxs[midx])[0][0] )
+
+                                # save the 'median index' with its ids_idx : to be used in get_lines() later
+                                midxperpol.append( median_index[ 'ids_idx' ] )
                             else:
                                 midxperpol.append(None)
                     else:
@@ -1550,26 +1566,6 @@ def get_lines2(
     return lines_map
 
 
-def median_index(arr: Iterable) -> 'Integral':
-    """Return array index that corresponds to median value.
-
-    Args:
-        arr (): Array with type that implements comparison operator
-
-    Returns:
-        Index of median value. If arr is empty or not iterable,
-        NaN is returned.
-    """
-    if not numpy.iterable(arr) or len(arr) == 0:
-        return numpy.nan
-    else:
-        sorted_index = numpy.argsort(arr)
-        if len(arr) < 3:
-            return sorted_index[0]
-        else:
-            return sorted_index[len(arr) // 2]
-
-
 def binned_mean_ma(x: List[float], masked_data: MaskedArray,
                    nbin: int) -> Tuple[numpy.ndarray, MaskedArray]:
     """
@@ -1613,3 +1609,17 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
     binned_data.mask |= numpy.logical_not(numpy.isfinite(binned_data.data))
 
     return binned_x, binned_data
+
+
+def sort_with_key( arr: List[Dict[str, Any]], key: str, reverse: Optional[bool]=False ) -> List[Dict[str, Any]]:
+    """
+    Sort the list of dictionaries with the value of the specified key in each list component
+
+    Args:
+        arr     : input list of dictionaries
+        key     : key to the value to sort with
+        reverse : True to sort in reversed order, defaults to False
+    Returns:
+        sorted list
+    """
+    return sorted( arr, reverse=reverse, key=lambda x: x[key] )
