@@ -444,7 +444,7 @@ class BaselineSubtractionDataManager(object):
                                 this_mask = tb.getcell('FLAG', mapped_row)
                                 map_data[ix, iy, ipol] = this_data[ipol].real
                                 map_mask[ix, iy, ipol] = this_mask[ipol]
-                                midxperpol.append(midx)
+                                midxperpol.append( numpy.where(idxs == pidxs[midx])[0][0] )
                             else:
                                 midxperpol.append(None)
                     else:
