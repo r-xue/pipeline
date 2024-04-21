@@ -219,20 +219,25 @@ class BaselineSubtractionDataManager(object):
 
         dtrows = self.datatable.getcol('ROW')
 
-        if not basetask.DISABLE_WEBLOG:
-            self.get_averaged_data(dtrows, num_ra, num_dec, nchan, npol,
-                                   rowlist, rowmap=in_rowmap)
-            self.get_data(self.prefit_data, dtrows, num_ra, num_dec, nchan, npol,
-                          rowlist, rowmap=in_rowmap,
-                          integrated_data_storage=self.prefit_storage.integrated_data,
-                          map_data_storage=self.prefit_storage.map_data,
-                          map_mask_storage=self.prefit_storage.map_mask)
+        # get prefit data
+        if self.prefit_integrated_data is None and not basetask.DISABLE_WEBLOG:
+            self.prefit_integrated_data, self.prefit_map_data, self.prefit_averaged_data \
+                = self.get_data(self.prefit_data, dtrows, num_ra, num_dec, nchan, npol,
+                                rowlist, rowmap=in_rowmap,
+                                integrated_data_storage=self.prefit_storage.integrated_data,
+                                map_data_storage=self.prefit_storage.map_data,
+                                map_mask_storage=self.prefit_storage.map_mask,
+                                produce_averaged_data=True )
 
-        self.get_data(self.postfit_data, dtrows, num_ra, num_dec, nchan, npol,
-                      rowlist, rowmap=out_rowmap,
-                      integrated_data_storage=self.postfit_storage.integrated_data,
-                      map_data_storage=self.postfit_storage.map_data,
-                      map_mask_storage=self.postfit_storage.map_mask)
+        # get postfit data
+        if self.postfit_integrated_data is None:
+            self.postfit_integrated_data, self.postfit_map_data \
+                = self.get_data(self.postfit_data, dtrows, num_ra, num_dec, nchan, npol,
+                                rowlist, rowmap=out_rowmap,
+                                integrated_data_storage=self.postfit_storage.integrated_data,
+                                map_data_storage=self.postfit_storage.map_data,
+                                map_mask_storage=self.postfit_storage.map_mask,
+                                produce_averaged_data=False )
 
         return self.postfit_integrated_data, self.postfit_map_data, self.prefit_integrated_data, self.prefit_map_data, self.prefit_averaged_data
 
@@ -329,16 +334,20 @@ class BaselineSubtractionDataManager(object):
         rowmap: Optional[dict] = None,
         integrated_data_storage: Optional[numpy.ndarray] = None,
         map_data_storage: Optional[numpy.ndarray] = None,
-        map_mask_storage: Optional[numpy.ndarray] = None
-    ) -> None:
+        map_mask_storage: Optional[numpy.ndarray] = None,
+        produce_averaged_data: Optional[bool] = False
+    ) -> Tuple[numpy.ma.masked_array, ...]:
         """Create array data for sparse map.
 
-        Computes two masked array data for sparse map. One is the integrated
-        spectrum averaged over whole spectral data regardless of their spatial
-        position, which is displayed in the top panel of the figure.
-        Another array is the spectra for sparse map averaged for each spatial
-        position of the sparse map panel. Spatial grouping information is
-        held by rowlist.
+        Computes the following masked array data for sparse map:
+        1. The integrated spectrum averaged over entire spectral data
+           regardless of their spatial position, which is displayed in
+           the top panel of the figure.
+        2. The 'representative' spectrum for each panel of the sparse map.
+           rowlist holds the Spatial grouping information of the panels.
+        3. Averaged spectra for each panel of the sparse map
+           rowlist holds the Spatial grouping information of the panels.
+           Returned only when produce_averaged_data is specified as True.
 
         Args:
             infile: Name of the MS
@@ -354,216 +363,144 @@ class BaselineSubtractionDataManager(object):
                                      new array is created.
             map_data_storage: Storage for sparse map. If None is given, new array is created.
             map_mask_storage: Storage for sparse map mask. If None is given, new array is created.
+            produce_averaged_data: Whether to produce averaged data for each panel. Defaut is False.
+
+        Returns:
+            Integrated spectrum averaged over entire spectral data
+            Representative spectrum for each panel of the sparse map
+            Averaged spectra for each panel of the sparse map (only if produce_averaged_data is True)
         """
-        if infile == self.postfit_data and self.postfit_integrated_data is not None:
-            pass
-        elif infile == self.prefit_data and self.prefit_integrated_data is not None:
-            pass
+        # default rowmap is EchoDictionary
+        if rowmap is None:
+            rowmap = utils.EchoDictionary()
+
+        integrated_shape = (num_pol, num_chan)
+        map_shape = (num_ra, num_dec, num_pol, num_chan)
+        if integrated_data_storage is not None:
+            assert integrated_data_storage.shape == integrated_shape
+            assert integrated_data_storage.dtype == float
+            integrated_data = integrated_data_storage
+            integrated_data[:] = 0.0
         else:
-            # default rowmap is EchoDictionary
-            if rowmap is None:
-                rowmap = utils.EchoDictionary()
+            integrated_data = numpy.zeros((num_pol, num_chan), dtype=float)
 
-            integrated_shape = (num_pol, num_chan)
-            map_shape = (num_ra, num_dec, num_pol, num_chan)
-            if integrated_data_storage is not None:
-                assert integrated_data_storage.shape == integrated_shape
-                assert integrated_data_storage.dtype == float
-                integrated_data = integrated_data_storage
-                integrated_data[:] = 0.0
-            else:
-                integrated_data = numpy.zeros((num_pol, num_chan), dtype=float)
+        num_integrated = numpy.zeros((num_pol, num_chan), dtype=int)
 
-            num_accumulated = numpy.zeros((num_pol, num_chan), dtype=int)
-
-            if map_data_storage is not None:
-                assert map_data_storage.shape == map_shape
-                assert map_data_storage.dtype == float
-                map_data = map_data_storage
-                map_data[:] = display.NoDataThreshold
-            else:
-                map_data = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float) + display.NoDataThreshold
-            if map_mask_storage is not None:
-                assert map_mask_storage.shape == map_shape
-                assert map_mask_storage.dtype == bool
-                map_mask = map_mask_storage
-                map_mask[:] = False
-            else:
-                map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
-
-            # column name for spectral data
-            with casa_tools.TableReader(infile) as tb:
-                colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
-                colname = None
-                for name in colnames:
-                    if name in tb.colnames():
-                        colname = name
-                        break
-                assert colname is not None
-
-                # loop for 'panels' of profile map
-                for d in rowlist:
-                    midxperpol = []
-                    ix = num_ra - 1 - d['RAID']
-                    iy = d['DECID']
-                    if len( d['IDS'] ) > 0:
-                        # create index table
-                        index_list = []
-                        for ids_idx, dt_id in enumerate( d['IDS'] ):
-                            index_list.append(
-                                {
-                                    'ids_idx'     : ids_idx,                 # index within the 'IDS'
-                                    'datatable_id': dt_id,                   # datatable id
-                                    'orig_row'    : dtrows[dt_id],           # row of original MS
-                                    'mapped_row'  : rowmap[ dtrows[dt_id] ], # row of the MS for baseline subtraction
-                                    'valid'       : [None] * num_pol         # valid flag for each pol
-                                 }                                           #  --True if not fully flagged
-                            )
-
-                        # sort the table with orig_row (to avoid jumping back and forth to access the infile)
-                        # and fill the 'valid' column of the index table
-                        for this_index in sort_with_key( index_list, 'orig_row' ):
-
-                            # get the data and mask
-                            mapped_row = this_index['mapped_row']
-                            this_data = tb.getcell(colname, mapped_row)
-                            this_mask = tb.getcell('FLAG', mapped_row)
-
-                            # mark each rows whether it is fully flagged for each pol
-                            for ipol in range(num_pol):
-                                allflagged = numpy.all( this_mask[ipol] == True )
-                                this_index['valid'][ipol] = not allflagged
-
-                            # used later to calculate integrated data
-                            binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
-                            integrated_data += this_data.real * binary_mask
-                            num_accumulated += binary_mask
-
-                        # pick one 'representative' row for each ipol, and prepare storage data
-                        # the 'representative' row is given by the 'median index' (i.e. ids_idx to the median of selected ids)
-                        for ipol in range(num_pol):
-
-                            # pick index of 'valid' (not fully flagged) rows for each pol
-                            valid_index_list = [ r for r in index_list if r['valid'][ipol] ]
-
-                            if len( valid_index_list ) > 0:
-                                # get the row number (mapped_row) corresponding to the 'median index'
-                                sorted_valid_index_list = sort_with_key( valid_index_list, 'datatable_id' )
-                                median_index = sorted_valid_index_list[ len(sorted_valid_index_list) // 2 ]
-                                mapped_row = median_index['mapped_row']
-
-                                # get data and mask for mapped_row, and prepare for storage data
-                                this_data = tb.getcell(colname, mapped_row)
-                                this_mask = tb.getcell('FLAG', mapped_row)
-                                map_data[ix, iy, ipol] = this_data[ipol].real
-                                map_mask[ix, iy, ipol] = this_mask[ipol]
-
-                                # save the 'median index' with its ids_idx : to be used in get_lines() later
-                                midxperpol.append( median_index[ 'ids_idx' ] )
-                            else:
-                                midxperpol.append(None)
-                    else:
-                        LOG.debug('no data is available for (%s,%s)', ix, iy)
-                        midxperpol = [None for ipol in range(num_pol)]
-                    d['MEDIAN_INDEX'] = midxperpol
-                    LOG.debug('MEDIAN_INDEX for %s, %s is %s', ix, iy, midxperpol)
-            integrated_data_masked = numpy.ma.masked_array(integrated_data, num_accumulated == 0)
-            integrated_data_masked /= num_accumulated
-            map_data_masked = numpy.ma.masked_array(map_data, map_mask)
-            LOG.trace('integrated_data=%s', integrated_data)
-            LOG.trace('num_accumulated=%s', num_accumulated)
-            LOG.trace('map_data.shape=%s', map_data.shape)
-
-            if infile == self.postfit_data:
-                self.postfit_integrated_data = integrated_data_masked
-                self.postfit_map_data = map_data_masked
-            else:
-                self.prefit_integrated_data = integrated_data_masked
-                self.prefit_map_data = map_data_masked
-
-    def get_averaged_data(
-        self,
-        dtrows: numpy.ndarray,
-        num_ra: int,
-        num_dec: int,
-        num_chan: int,
-        num_pol: int,
-        rowlist: List[Dict[str, Union[int, float, List[int]]]],
-        rowmap: Optional[dict] = None
-    ) -> None:
-        """Create array data for sparse map.
-
-        Computes the spectra for sparse map averaged for each spatial
-        position of the sparse map panel. Spatial grouping information is
-        held by rowlist.
-
-        Args:
-            dtrows: List of datatable rows
-            num_ra: Number of panels along horizontal axis
-            num_dec: Number of panels along vertical axis
-            num_chan: Number of spectral channels
-            num_pol: Number of polarizaionts
-            rowlist: List of datatable row ids per sparse map panel with metadata
-            rowmap: Row mapping between original (calibrated) MS and the MS
-                    specified by infile. Defaults to None.
-        """
-        infile = self.prefit_data
-        if self.prefit_averaged_data is not None:
-            pass
+        if map_data_storage is not None:
+            assert map_data_storage.shape == map_shape
+            assert map_data_storage.dtype == float
+            map_data = map_data_storage
+            map_data[:] = display.NoDataThreshold
         else:
-            # default rowmap is EchoDictionary
-            if rowmap is None:
-                rowmap = utils.EchoDictionary()
-            num_accumulated = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=int)
-            map_data = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float)
+            map_data = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float) + display.NoDataThreshold
+        if map_mask_storage is not None:
+            assert map_mask_storage.shape == map_shape
+            assert map_mask_storage.dtype == bool
+            map_mask = map_mask_storage
+            map_mask[:] = False
+        else:
             map_mask = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
 
+        if produce_averaged_data:
+            num_to_average = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=int)
+            map_data_to_average = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=float)
+            map_mask_to_average = numpy.zeros((num_ra, num_dec, num_pol, num_chan), dtype=bool)
+
+        # go through infile and pack the data
+        with casa_tools.TableReader(infile) as tb:
             # column name for spectral data
-            with casa_tools.TableReader(infile) as tb:
-                colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
-                colname = None
-                for name in colnames:
-                    if name in tb.colnames():
-                        colname = name
-                        break
-                assert colname is not None
+            colnames = ['CORRECTED_DATA', 'DATA', 'FLOAT_DATA']
+            colname = None
+            for name in colnames:
+                if name in tb.colnames():
+                    colname = name
+                    break
+            assert colname is not None
 
-                for d in rowlist:
-                    ix = num_ra - 1 - d['RAID']
-                    iy = d['DECID']
-                    if len( d['IDS'] ) > 0:
-                        # create table
-                        index_table = []
-                        for ids_idx, dt_id in enumerate( d['IDS'] ):
-                            index_table.append(
-                                {
-                                    'ids_idx'     : ids_idx,                 # index within the 'IDS'
-                                    'datatable_id': dt_id,                   # datatable id
-                                    'orig_row'    : dtrows[dt_id],           # row of original MS
-                                    'mapped_row'  : rowmap[ dtrows[dt_id] ], # row of the MS for baseline subtraction
-                                    'valid'       : [None] * num_pol         # valid flag for each pol
-                                }                                            #  --True of not fully flagged
-                            )
+            # loop for 'panels' of profile map
+            for d in rowlist:
+                midxperpol = []
+                ix = num_ra - 1 - d['RAID']
+                iy = d['DECID']
+                if len( d['IDS'] ) > 0:
+                    # create index table
+                    index_list = []
+                    for ids_idx, dt_id in enumerate( d['IDS'] ):
+                        index_list.append(
+                            {
+                                'ids_idx'     : ids_idx,                 # index within the 'IDS'
+                                'datatable_id': dt_id,                   # datatable id
+                                'orig_row'    : dtrows[dt_id],           # row of original MS
+                                'mapped_row'  : rowmap[ dtrows[dt_id] ], # row of the MS for baseline subtraction
+                                'valid'       : [None] * num_pol         # valid flag for each pol
+                            }                                            #  --True if not fully flagged
+                        )
 
-                        # sort the table with orig_row (to avoid jumping back and forth to access the infile)
-                        # and fill the 'valid' column
-                        for this_index in sort_with_key( index_table, 'orig_row' ):
-                            mapped_row = this_index['mapped_row']
+                    # fill the 'valid' column of the index table, and counts for averaging/integrating.
+                    # sort the index_list with orig_row, to avoid jumping back and forth to access the infile.
+                    for this_index in sort_with_key( index_list, 'orig_row' ):
+
+                        # get the data and mask
+                        mapped_row = this_index['mapped_row']
+                        this_data = tb.getcell(colname, mapped_row)
+                        this_mask = tb.getcell('FLAG', mapped_row)
+
+                        # mark each rows whether it is fully flagged for each pol
+                        for ipol in range(num_pol):
+                            allflagged = numpy.all( this_mask[ipol] == True )
+                            this_index['valid'][ipol] = not allflagged
+
+                        # used later to calculate integrated/averaged data
+                        binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
+                        integrated_data += this_data.real * binary_mask
+                        num_integrated += binary_mask
+                        if produce_averaged_data:
+                            map_data_to_average[ix, iy] += this_data.real * binary_mask
+                            num_to_average[ix, iy] += binary_mask
+
+                    # pick one 'representative' row for each ipol, and prepare storage data
+                    # the 'representative' row is given by the 'median index' (i.e. ids_idx to the median of selected ids)
+                    for ipol in range(num_pol):
+                        # pick index of 'valid' (not fully flagged) rows for each pol
+                        valid_index_list = [ r for r in index_list if r['valid'][ipol] ]
+
+                        if len( valid_index_list ) > 0:
+                            # get the row number (mapped_row) corresponding to the 'median index'
+                            sorted_valid_index_list = sort_with_key( valid_index_list, 'datatable_id' )
+                            median_index = sorted_valid_index_list[ len(sorted_valid_index_list) // 2 ]
+                            mapped_row = median_index['mapped_row']
+
+                            # get data and mask for mapped_row, and prepare for storage data
                             this_data = tb.getcell(colname, mapped_row)
                             this_mask = tb.getcell('FLAG', mapped_row)
-                            binary_mask = numpy.asarray(numpy.logical_not(this_mask), dtype=int)
-                            map_data[ix, iy] += this_data.real * binary_mask
-                            num_accumulated[ix, iy] += binary_mask
-                    else:
-                        LOG.debug('no data is available for (%s,%s)', ix, iy)
-            map_mask[:] = num_accumulated == 0
-            map_data[map_mask] = display.NoDataThreshold
-            map_data_masked = numpy.ma.masked_array(map_data, map_mask)
-            map_data_masked /= num_accumulated
-            LOG.trace('num_accumulated=%s', num_accumulated)
-            LOG.trace('map_data.shape=%s', map_data.shape)
+                            map_data[ix, iy, ipol] = this_data[ipol].real
+                            map_mask[ix, iy, ipol] = this_mask[ipol]
 
-            self.prefit_averaged_data = map_data_masked
+                            # save the 'median index' with its ids_idx : to be used in get_lines() later
+                            midxperpol.append( median_index['ids_idx'] )
+                        else:
+                            midxperpol.append(None)
+                else:
+                    LOG.debug('no data is available for (%s,%s)', ix, iy)
+                    midxperpol = [None for ipol in range(num_pol)]
+                # push median_index into the specific component of rowlist
+                d['MEDIAN_INDEX'] = midxperpol
+                LOG.debug('MEDIAN_INDEX for %s, %s is %s', ix, iy, midxperpol)
+
+        # calculate integrated data
+        integrated_data_masked = numpy.ma.masked_array(integrated_data, num_integrated == 0)
+        integrated_data_masked /= num_integrated
+        map_data_masked = numpy.ma.masked_array(map_data, map_mask)
+
+        if produce_averaged_data:
+            # calculate averaged data for each panel
+            map_mask_to_average[:] = num_to_average == 0
+            map_data_to_average[map_mask_to_average] = display.NoDataThreshold
+            map_data_averaged_masked = numpy.ma.masked_array(map_data_to_average, map_mask_to_average)
+            map_data_averaged_masked /= num_to_average
+            return integrated_data_masked, map_data_masked, map_data_averaged_masked
+
+        return integrated_data_masked, map_data_masked
 
 
 class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
