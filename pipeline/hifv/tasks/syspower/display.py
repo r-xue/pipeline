@@ -8,6 +8,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
 import pipeline.infrastructure.casa_tools as casa_tools
+from astropy.time import Time as atime
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -195,8 +196,10 @@ class compressionSummary(object):
 
         for scan in scans:
             epoch = scan.start_time
-            t = qa.splitdate(epoch['m0'])
-            dd = datetime.datetime(t['year'], t['month'], t['monthday'], t['hour'], t['min'], t['sec'], t['usec'])
+            # PIPE-2156, replacing quanta.splitdate with astropy.time
+            # to resolve a bug in plotting
+            t = atime(epoch['m0']["value"], format='mjd')
+            dd = t.datetime
             # datestring = dd.strftime('%Y-%m-%dT%H:%M:%S')
             scantimes.append({'scanid': scan.id, 'time': dd})
 
@@ -335,8 +338,10 @@ class medianSummary(object):
 
         for scan in scans:
             epoch = scan.start_time
-            t = qa.splitdate(epoch['m0'])
-            dd = datetime.datetime(t['year'], t['month'], t['monthday'], t['hour'], t['min'], t['sec'], t['usec'])
+            # PIPE-2156, replacing quanta.splitdate with astropy.time
+            # to resolve a bug in plotting
+            t = atime(epoch['m0']["value"], format='mjd')
+            dd = t.datetime
             # datestring = dd.strftime('%Y-%m-%dT%H:%M:%S')
             scantimes.append({'scanid': scan.id, 'time': dd})
 
