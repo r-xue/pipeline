@@ -236,7 +236,7 @@ class DiffGaincal(basetask.StandardTaskTemplate):
         if len(scan_groups) > 1:
             caltable = phasecal_result.inputs['caltable']
             for scan_group in scan_groups[1:]:
-                self._do_gaincal(caltable=caltable, spw=spw_ids, scan=scan_group, append=True)
+                self._do_gaincal(caltable=caltable, combine='scan', scan=scan_group, spw=spw_ids, append=True)
 
         # If a caltable was created:
         # , then create a modified CalApplication to
