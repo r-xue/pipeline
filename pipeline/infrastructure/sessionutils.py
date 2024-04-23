@@ -65,6 +65,11 @@ def group_into_sessions(context, all_results, measurement_sets=None):
     """
     Return results grouped into lists by session.
 
+    Sessions and results are sorted chronologically.
+
+    In terms of the returned dictionary, it means that keys and
+    each list associated with the key are all sorted chronologically.
+
     :param context: pipeline context
     :type context: Context
     :param all_results: result to be grouped
