@@ -415,7 +415,6 @@ def test_E2E6_1_00010_S__uid___A002_Xd0a588_X2239_regression():
     pr.run()
 
 
-# Restore from Cycle 5 (with current pipeline)
 @pytest.mark.fast
 @pytest.mark.alma
 def test_uid___A002_Xc845c0_X7366_cycle5_restore_regression():
@@ -441,20 +440,19 @@ def test_uid___A002_Xc845c0_X7366_cycle5_restore_regression():
     pr.run()
 
 
-# Restore selfcal from Cycle 10 (with current pipeline)
 @pytest.mark.fast
 @pytest.mark.alma
 def test_uid___A002_Xc46ab2_X15ae_selfcal_restore_regression():
     """Restore selfcal from Cycle 10 (with current pipeline)
 
-    Recipe name:                procedure_hifa_image
+    Recipe name:                procedure_hifa_image_selfcal
     Dataset:                    uid___A002_Xc46ab2_X15ae
     """
 
     input_dir = 'pl-regressiontest/uid___A002_Xc46ab2_X15ae'
     ref_directory = 'pl-regressiontest/uid___A002_Xc46ab2_X15ae'
 
-    pr = PipelineRegression(recipe='procedure_hifa_image.xml',
+    pr = PipelineRegression(recipe='procedure_hifa_image_selfcal.xml',
                             input_dir=input_dir,
                             visname=['uid___A002_Xc46ab2_X15ae'],
                             expectedoutput_dir=ref_directory)
@@ -466,7 +464,6 @@ def test_uid___A002_Xc46ab2_X15ae_selfcal_restore_regression():
     pr.run()
 
 
-# Restore renorm from Cycle 8 (with current pipeline)
 @pytest.mark.fast
 @pytest.mark.alma
 def test_uid___A002_Xef72bb_X9d29_renorm_restore_regression():
