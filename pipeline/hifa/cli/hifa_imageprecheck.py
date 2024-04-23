@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
+def hifa_imageprecheck(vis=None, srdp_desired_angular_resolution=None, calcsb=None, parallel=None):
     """
     hifa_imageprecheck ---- Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.
 
@@ -29,10 +29,9 @@ def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, p
                                MeasurementSets specified in the h_init or hif_importdata task.
                                '': use all MeasurementSets in the context
                                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-    desired_angular_resolution User specified angular resolution goal string.
+    srdp_desired_angular_resolution User specified angular resolution goal string.
                                '': automatic from performance parameters (default)
-                               
-                               Example: '1.0arcsec'              
+                               Example: '1.0arcsec'
     calcsb                     Force (re-)calculation of sensitivities and beams
     parallel                   Use MPI cluster where possible
 

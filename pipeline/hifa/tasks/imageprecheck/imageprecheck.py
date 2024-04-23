@@ -114,12 +114,12 @@ class ImagePreCheckInputs(vdp.StandardInputs):
 
     calcsb = vdp.VisDependentProperty(default=False)
     parallel = vdp.VisDependentProperty(default='automatic')
-    desired_angular_resolution = vdp.VisDependentProperty(default='')
+    srdp_desired_angular_resolution = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
+    def __init__(self, context, vis=None, srdp_desired_angular_resolution=None, calcsb=None, parallel=None):
         self.context = context
         self.vis = vis
-        self.desired_angular_resolution = desired_angular_resolution
+        self.srdp_desired_angular_resolution = srdp_desired_angular_resolution
         self.calcsb = calcsb
         self.parallel = parallel
 
@@ -151,6 +151,12 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         imageprecheck_heuristics = imageprecheck.ImagePreCheckHeuristics(inputs)
 
         image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
+
+        if inputs.srdp_desired_angular_resolution in [None, '']:
+            imaging_mode = 'ALMA'
+        else:
+            imaging_mode = 'ALMA-SRDP'
+
         image_heuristics = image_heuristics_factory.getHeuristics(
             vislist=inputs.vis,
             spw='',
@@ -160,7 +166,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             contfile=context.contfile,
             linesfile=context.linesfile,
             imaging_params=context.imaging_parameters,
-            imaging_mode='ALMA'
+            imaging_mode=imaging_mode
         )
 
         repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, \
@@ -174,12 +180,12 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
         # Fetch angular resolution goals if they were entered via the task interface
         # See: PIPE-708, used only for SRDP, and PIPE-1712
-        if inputs.desired_angular_resolution not in [None, '']:
+        if inputs.srdp_desired_angular_resolution not in [None, '']:
             # Parse user angular resolution goal
-            if type(inputs.desired_angular_resolution) is str:
-                userAngResolution = cqa.quantity(inputs.desired_angular_resolution)
+            if type(inputs.srdp_desired_angular_resolution) is str:
+                userAngResolution = cqa.quantity(inputs.srdp_desired_angular_resolution)
             else:
-                userAngResolution = cqa.quantity('%.3garcsec' % inputs.desired_angular_resolution)
+                userAngResolution = cqa.quantity('%.3garcsec' % inputs.srdp_desired_angular_resolution)
             # Assume symmetric beam for now
             user_desired_beam = {'minor': cqa.convert(userAngResolution, 'arcsec'),
                                  'major': cqa.convert(userAngResolution, 'arcsec'),
@@ -521,14 +527,14 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             minAcceptableAngResolution = cqa.quantity(0.0, 'arcsec')
             maxAcceptableAngResolution = cqa.quantity(0.0, 'arcsec')
 
-        # The normal ALMA IF recipe (non-SRDP) always uses the default_uvtaper
+        # The default ALMA IF recipe (non-SRDP) always uses the default_uvtaper
         hm_uvtaper = default_uvtaper
 
-        # The below is only run for SRDP. userAngResolution)[0] will be 0.0 unless desired_angular_resolution is
+        # The below is only run for SRDP. userAngResolution)[0] will be 0.0 unless srdp_desired_angular_resolution is
         # provided, which only occurs in the SRDP recipe.
         #
         # Determine non-default UV taper value if the best robust is 2.0 and the user requested resolution parameter
-        # (desired_angular_resolution) is set for SRDP. (PIPE-708)
+        # (srdp_desired_angular_resolution) is set for SRDP. (PIPE-708)
         #
         # Compute uvtaper for representative targets and also if representative target cannot be determined
         # (real_repr_target = False) for representative targets and if user set angular resolution goal.
@@ -541,8 +547,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             reprBW_mode_string = ['repBW' if reprBW_mode in ['nbin', 'repr_spw'] else 'aggBW']
             try:
                 hm_uvtaper = image_heuristics.uvtaper(beam_natural=beams[(2.0, str(default_uvtaper), reprBW_mode_string[0])],
-                                                      beam_user=user_desired_beam,
-                                                      tapering_limit=length_of_190th_baseline, repr_freq=repr_freq, do_uvtaper=True)
+                                                    beam_user=user_desired_beam,
+                                                    tapering_limit=length_of_190th_baseline, repr_freq=repr_freq)
             except:
                 hm_uvtaper = []
 

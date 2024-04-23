@@ -26,7 +26,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         See PIPE-680 and CASR-543"""
         return 0.5
 
-    def uvtaper(self, beam_natural=None, protect_long=None) -> Union[str, list]:
+    def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None) -> Union[str, list]:
         """Tclean uvtaper parameter heuristics."""
         return []
 
