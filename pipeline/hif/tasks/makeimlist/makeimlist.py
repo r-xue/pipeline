@@ -636,14 +636,14 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             vislists = [inputs.vis]
 
-        if imaging_mode in ('VLA', 'JVLA', 'EVLA') and inputs.specmode == 'cont':
+        if 'VLA' in imaging_mode and inputs.specmode == 'cont':
             ref_ms = inputs.context.observing_run.get_ms(inputs.vis[0])
             vla_band = ref_ms.get_vla_spw2band()
             band_spws = {}
             for k, v in vla_band.items():
                 if str(k) in spwlist:
                     band_spws.setdefault(v, []).append(k)
-        elif imaging_mode == 'ALMA':
+        elif imaging_mode in ('ALMA', 'ALMA-SCAL', 'ALMA-SRDP'):
             ref_ms = inputs.context.observing_run.get_ms(inputs.vis[0])
             band_spws = {}
             for spwid in spwlist:
