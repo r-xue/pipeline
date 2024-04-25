@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=None, createmms=None,
-                    ocorr_mode=None, datacolumns=None):
+                    ocorr_mode=None, datacolumns=None, parallel=None):
 
     """
     hifv_importdata ---- Imports data into the VLA pipeline
@@ -69,6 +69,7 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
                   {'data':'raw','corrected':'regcal_contline'}
                   or {'data':'raw'} will be assumed, depending on
                   whether the corrected column exists or not.
+    parallel      Execute using CASA HPC functionality, if available.                  
 
     --------- examples -----------------------------------------------------------
 
