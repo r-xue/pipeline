@@ -39,7 +39,6 @@ taskapidoc:
 	@rm -rf ./source/_apidoc 
 	@sphinx-apidoc -o ./source/_apidoc/ ../pipeline ../pipeline/recipes/*.py ../pipeline/run*pipeline.py ../pipeline/domain/*.py ../pipeline/extern/*.py ../pipeline/infrastructure/*.py ../pipeline/qa/*.py ../pipeline/h*/heuristics/*.py ../pipeline/h*/tasks/*.py ../pipeline/h*/templates/*.py ../pipeline/h*/environment/*.py
 
-
 taskdocs:
 	@rm -rf ${SOURCEDIR}/_taskdocs
 	@${PYTHON} ./source/pipeline_tasks/create_docs.py --outdir ${SOURCEDIR}/_taskdocs --srcdir ../
@@ -47,7 +46,7 @@ taskdocs:
 html_docs:
 	@make taskdocs
 	@make apidoc
-	@rm -rf ${BUILDDIR}/html ${BUILDDIR}/doctrees ${SOURCEDIR}/_autosummary
+	@rm -rf ${BUILDDIR}/html ${BUILDDIR}/doctrees ${SOURCEDIR}/_autosummary ${SOURCEDIR}/_autosummary ${SOURCEDIR}/pipeline_tasks/_autosummary_tasks
 	@make html
 	@rm -rf casa-*.log ${SOURCEDIR}/casa-*log
 
