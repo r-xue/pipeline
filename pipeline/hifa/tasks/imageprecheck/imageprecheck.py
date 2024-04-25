@@ -155,6 +155,10 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         if inputs.srdp_desired_angular_resolution in [None, '']:
             imaging_mode = 'ALMA'
         else:
+            # This imaging mode is presently only used by imageprecheck. It was
+            # added in PIPE-1712 to support merging hifas_imageprecheck with
+            # hifa_imageprecheck. It could be expanded to a fully
+            # fledged imaging mode in the future.
             imaging_mode = 'ALMA-SRDP'
 
         image_heuristics = image_heuristics_factory.getHeuristics(

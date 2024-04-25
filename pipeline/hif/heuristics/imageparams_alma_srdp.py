@@ -1,5 +1,10 @@
 from .imageparams_alma import ImageParamsHeuristicsALMA
 
+
+# This imaging mode is presently only used by imageprecheck. It was
+# added in PIPE-1712 to support merging hifas_imageprecheck with
+# hifa_imageprecheck. It could be expanded to a fully
+# fledged imaging mode in the future.
 class ImageParamsHeuristicsALMASrdp(ImageParamsHeuristicsALMA):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
