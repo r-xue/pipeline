@@ -330,16 +330,19 @@ if len(optimal_scores) > 0:
     # during the weblog rendering will not be caught by the automatic collection of logrecords
     # in the result object. Thus there are PL tasks that send an "extra_logrecords" list into
     # the Mako system to have these shown on weblog pages. The following block tries to get them.
+    # To make sure that the errors and warnings get to the top of the list, the two kinds of
+    # messages are processed in separate loops, inserting any new message at the first list position.
     try:
+        for extra_logrecord in extra_logrecords:
+            if extra_logrecord.levelno == logging.logging.WARNING:
+                notification_trs.insert(0, rendererutils.format_notification('warning alert-warning', 'Warning!', extra_logrecord.msg))
+                if most_severe_render_class not in ('danger alert-danger', 'warning alert-warning'):
+                    most_severe_render_class = 'warning alert-warning'
         for extra_logrecord in extra_logrecords:
             if extra_logrecord.levelno == logging.logging.ERROR:
                 notification_trs.insert(0, rendererutils.format_notification('danger alert-danger', 'Error!', extra_logrecord.msg))
                 if most_severe_render_class != 'danger alert-danger':
                     most_severe_render_class = 'danger alert-danger'
-            elif extra_logrecord.levelno == logging.logging.WARNING:
-                notification_trs.append(rendererutils.format_notification('warning alert-warning', 'Warning!', extra_logrecord.msg))
-                if most_severe_render_class not in ('danger alert-danger', 'warning alert-warning'):
-                    most_severe_render_class = 'warning alert-warning'
     except Exception as e:
         pass
 %>
