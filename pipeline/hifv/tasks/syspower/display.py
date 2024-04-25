@@ -3,12 +3,12 @@ import datetime
 
 import numpy as np
 import matplotlib.pyplot as plt
+from astropy.time import Time as atime
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
 import pipeline.infrastructure.casa_tools as casa_tools
-from astropy.time import Time as atime
 
 LOG = infrastructure.get_logger(__name__)
 
