@@ -11,5 +11,6 @@ sphinx_rtd_theme
 sphinxcontrib-bibtex
 sphinx-astrorefs    # https://github.com/jobovy/sphinx-astrorefs
 sphinx-copybutton
+sphinx-markdown-tables # https://pypi.org/project/sphinx-markdown-tables/
 #ipympl
 #nodejs

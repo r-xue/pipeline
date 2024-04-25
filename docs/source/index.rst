@@ -46,6 +46,8 @@ Pipeline Documentation
    develdocmd/DeveloperDocumentation.md
 
    develdocmd/python3_conversion_notes.md
+   develdocmd/releases.md
+   develdocmd/recipes.md
 
 .. toctree::
    :maxdepth: 2
