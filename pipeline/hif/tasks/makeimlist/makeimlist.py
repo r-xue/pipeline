@@ -648,8 +648,10 @@ class MakeImList(basetask.StandardTaskTemplate):
             band_spws = {}
             for spwid in spwlist:
                 real_spw_id = inputs.context.observing_run.virtual2real_spw_id(int(spwid), ref_ms)
-                band_name = ref_ms.get_spectral_window(real_spw_id).band
-                band_spws.setdefault(band_name, []).append(spwid)
+                real_spw_id_obj = ref_ms.get_spectral_window(real_spw_id)
+                if real_spw_id_obj:
+                    band_name = real_spw_id_obj.band
+                    band_spws.setdefault(band_name, []).append(spwid)
         else:
             band_spws = {None: 0}
 
