@@ -1178,7 +1178,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             no_cont_ranges = False
                             if (field_intent[1] == 'TARGET' and specmode == 'cont' and
-                                    all([v in ('', 'NONE') for v in spwsel_spwid_dict.values()])):
+                                    all([v == '' for v in spwsel_spwid_dict.values()])):
                                 LOG.warning('No valid continuum ranges were found for any spw. Creating an aggregate continuum'
                                             ' image from the full bandwidth from all spws, but this should be used with'
                                             ' caution.')
@@ -1186,8 +1186,8 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             for spwid in adjusted_spwspec.split(','):
                                 spwsel_spwid = spwsel_spwid_dict[spwid]
-                                if field_intent[1] == 'TARGET' and not no_cont_ranges:
-                                    if spwsel_spwid in ('', 'NONE'):
+                                if field_intent[1] == 'TARGET' and specmode in ('mfs', 'cont') and not no_cont_ranges:
+                                    if spwsel_spwid == '':
                                         if specmode == 'cont':
                                             LOG.warning('Spw {!s} will not be used in creating the aggregate continuum image'
                                                         ' of {!s} because no continuum range was found.'

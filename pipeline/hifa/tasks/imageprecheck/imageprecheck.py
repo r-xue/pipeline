@@ -209,6 +209,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             # Calculate nbin / reprBW sensitivity if necessary
             if reprBW_mode in ['nbin', 'repr_spw']:
 
+                print(f'DM: {robust} {str(default_uvtaper)} {repr_field} {repr_spw} {calcsb}')
                 beams[(robust, str(default_uvtaper), 'repBW')], known_synthesized_beams = image_heuristics.synthesized_beam(
                     [(repr_field, 'TARGET')], str(repr_spw), robust=robust, uvtaper=default_uvtaper,
                     known_beams=known_synthesized_beams, force_calc=calcsb, parallel=parallel, shift=True)
