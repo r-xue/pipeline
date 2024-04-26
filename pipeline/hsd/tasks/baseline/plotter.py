@@ -467,7 +467,11 @@ class BaselineSubtractionDataManager(object):
                         if len( valid_index_list ) > 0:
                             # get the row number (mapped_row) corresponding to the 'median index'
                             sorted_valid_index_list = sort_with_key( valid_index_list, 'datatable_id' )
-                            median_index = sorted_valid_index_list[ len(sorted_valid_index_list) // 2 ]
+
+                            # patch to get similar behaviors with those before PIPE-2064
+                            choice = 0 if len(sorted_valid_index_list) < 3 else len(sorted_valid_index_list) // 2
+
+                            median_index = sorted_valid_index_list[ choice ]
                             mapped_row = median_index['mapped_row']
 
                             # get data and mask for mapped_row, and prepare for storage data
