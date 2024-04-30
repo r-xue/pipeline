@@ -6,25 +6,13 @@ from typing import List, Tuple, Union, Optional, TYPE_CHECKING
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
-from . import DataType
+from .datatype import DataType, TYPE_PRIORITY_ORDER
 from . import MeasurementSet
 
 if TYPE_CHECKING:
     from datetime import datetime
 
 LOG = infrastructure.get_logger(__name__)
-
-
-DATA_TYPE_PRIORITY = [
-    DataType.RAW,
-    DataType.REGCAL_CONTLINE_ALL,
-    DataType.ATMCORR,
-    DataType.BASELINED,
-    DataType.REGCAL_CONTLINE_SCIENCE,
-    DataType.SELFCAL_CONTLINE_SCIENCE,
-    DataType.REGCAL_LINE_SCIENCE,
-    DataType.SELFCAL_LINE_SCIENCE
-]
 
 
 def sort_measurement_set(ms: MeasurementSet) -> Tuple[int, 'datetime']:
@@ -39,12 +27,12 @@ def sort_measurement_set(ms: MeasurementSet) -> Tuple[int, 'datetime']:
         Data priority and observation start time
     """
     data_types = set(itertools.chain(*ms.data_types_per_source_and_spw.values()))
-    assert all([t in DATA_TYPE_PRIORITY for t in data_types])
+    assert all([t in TYPE_PRIORITY_ORDER for t in data_types])
     if len(data_types) > 0:
-        data_priority = min([DATA_TYPE_PRIORITY.index(t) for t in data_types])
+        data_priority = min([TYPE_PRIORITY_ORDER.index(t) for t in data_types])
     else:
         # no data type assignments, assign lowest priority (largest value)
-        data_priority = len(DATA_TYPE_PRIORITY)
+        data_priority = len(TYPE_PRIORITY_ORDER)
     observation_start_time = utils.get_epoch_as_datetime(ms.start_time)
     return data_priority, observation_start_time
 
