@@ -1837,7 +1837,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             format(_tirp.msobj.basename, __field_name, _tirp.spwid,
                    _tirp.msobj.get_antenna(_tirp.antid)[0].name, str(_tirp.pol_names)))
         if _tirp.raster_info is None:
-            LOG.warning('Raster scan analysis failed. Skipping further calculation.')
+            LOG.warning('Raster scan analysis failed. Skipping further calculation on '
+                        f'{_tirp.msobj.antennas[_tirp.antid].name}, {_tirp.msobj.execblock_id}')
             return __SKIP
         _tirp.dt = _cp.dt_dict[_tirp.msobj.basename]
         _tirp.index_list = common.get_index_list_for_ms(_tirp.dt, [_tirp.msobj.origin_ms],
