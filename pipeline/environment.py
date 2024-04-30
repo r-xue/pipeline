@@ -592,8 +592,14 @@ class CGroupLimit:
         Represents the limiting cgroup limit on RAM+swap usage for a process.
         """
 
+        # No cgroup memory limits can be reported as max or as a magic number
+        #
+        # See https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/pull-requests/1244/overview?commentId=13998
+        # and links therein
+        _UNLIMITED = ('max', str(sys.maxsize - (sys.maxsize % os.sysconf('SC_PAGE_SIZE'))))
+
         def __init__(self, val: str):
-            if val == 'max':
+            if val in CGroupLimit.MemoryLimit._UNLIMITED:
                 self.limit = -1
             else:
                 self.limit = int(val)
@@ -615,8 +621,8 @@ class CGroupLimit:
             except ValueError:
                 # empty list = no active memory limits
                 return 'N/A'
-            else:
-                return limit.limit
+
+            return limit.limit
 
 
 class MacOSEnvironment(CommonEnvironment):

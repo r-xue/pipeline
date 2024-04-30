@@ -350,11 +350,16 @@ class T1_1Renderer(RendererBase):
         ULIMIT_CPU = "CPU time ulimit in seconds"
         CASA_CORES = "CPU cores reported available by CASA"
         CASA_THREADS = "Max OpenMP threads per CASA instance"
-        CASA_MEMORY = "Memory available to tclean"
+        CASA_MEMORY = "Memory available to pipeline"
         CGROUP_NUM_CPUS = "Cgroup CPU allocation"
         CGROUP_CPU_BANDWIDTH = "Cgroup CPU bandwidth"
         CGROUP_CPU_WEIGHT = "CPU distribution within cgroup"
         CGROUP_MEM_LIMIT = "Cgroup memory limit"
+
+        def description(self, ctx):
+            if self is self.CASA_MEMORY:
+                return f'Memory available to {"pipeline" if is_singledish_ms(ctx) else "tclean"}'
+            return self.value
 
     class EnvironmentTable:
         """
@@ -366,10 +371,14 @@ class T1_1Renderer(RendererBase):
         @param rows: properties to present in the table
         @param data: dict of environment properties per host
         """
-        def __init__(self, rows: List["T1_1Renderer.EnvironmentProperty"],
-                     data: Dict["T1_1Renderer.EnvironmentProperty", List[str]]):
+        def __init__(
+                self,
+                ctx: Context,
+                rows: List["T1_1Renderer.EnvironmentProperty"],
+                data: Dict["T1_1Renderer.EnvironmentProperty", List[str]]
+            ):
 
-            unmerged_rows = [(prop.value, *data[prop]) for prop in rows]
+            unmerged_rows = [(prop.description(ctx), *data[prop]) for prop in rows]
             merged_rows = utils.merge_td_rows(utils.merge_td_columns(unmerged_rows))
 
             # we want headings in column 1 so need to replace markup
@@ -506,7 +515,7 @@ class T1_1Renderer(RendererBase):
 
             ms_summary_rows.append(row)
 
-        execution_mode, environment_tables = T1_1Renderer.get_environment_tables()
+        execution_mode, environment_tables = T1_1Renderer.get_environment_tables(context)
 
         return {
             'pcontext': context,
@@ -538,7 +547,7 @@ class T1_1Renderer(RendererBase):
         }
 
     @staticmethod
-    def get_environment_tables():
+    def get_environment_tables(ctx: Context):
         # alias to make the following code more compact and easier to read
         props = T1_1Renderer.EnvironmentProperty
 
@@ -591,10 +600,12 @@ class T1_1Renderer(RendererBase):
 
         tables = {
             "Host information": T1_1Renderer.EnvironmentTable(
+                ctx=ctx,
                 rows=[props.HOSTNAME, props.OS, props.NUM_MPI_SERVERS, props.ULIMIT_FILES],
                 data=data_rows
             ),
             "CPU resources and limits": T1_1Renderer.EnvironmentTable(
+                ctx=ctx,
                 rows=[props.HOSTNAME, props.CPU_TYPE, props.PHYSICAL_CPU_CORES,
                       props.LOGICAL_CPU_CORES, props.CGROUP_NUM_CPUS,
                       props.CGROUP_CPU_BANDWIDTH, props.ULIMIT_CPU,
@@ -602,6 +613,7 @@ class T1_1Renderer(RendererBase):
                 data=data_rows
             ),
             "Available memory and limits": T1_1Renderer.EnvironmentTable(
+                ctx=ctx,
                 rows=[props.HOSTNAME, props.RAM, props.SWAP, props.CGROUP_MEM_LIMIT,
                       props.ULIMIT_MEM, props.CASA_MEMORY],
                 data=data_rows
