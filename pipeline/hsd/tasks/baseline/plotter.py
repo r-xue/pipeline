@@ -335,7 +335,7 @@ class BaselineSubtractionDataManager(object):
         integrated_data_storage: Optional[numpy.ndarray] = None,
         map_data_storage: Optional[numpy.ndarray] = None,
         map_mask_storage: Optional[numpy.ndarray] = None,
-        produce_averaged_data: Optional[bool] = False
+        produce_averaged_data: bool = False
     ) -> Tuple[numpy.ma.masked_array, ...]:
         """Create array data for sparse map.
 
