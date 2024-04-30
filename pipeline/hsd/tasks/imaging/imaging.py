@@ -1876,8 +1876,10 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
+    _log_dict = {'ANTENNA': msobj.antennas[antid].name,
+                 'EB': msobj.execblock_id}
     try:
-        gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
+        gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list, _log_dict)
     except Exception as e:
         if isinstance(e, RasterScanHeuristicsFailure):
             LOG.warning('{}'.format(e))

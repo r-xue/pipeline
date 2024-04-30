@@ -419,7 +419,9 @@ class SDInspection(object):
                         try:
                             sra_sel = numpy.take(offset_ra, id_list)
                             sdec_sel = numpy.take(offset_dec, id_list)
-                            merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel)
+                            _log_dict = {'ANTENNA': ms.antennas[ant].name,
+                                         'EB': ms.execblock_id}
+                            merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel, _log_dict)
                             raster_heuristic_ok = True
                         except RasterScanHeuristicsFailure as e:
                             LOG.warn('{} This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.'.format(e))

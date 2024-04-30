@@ -9,7 +9,7 @@ observing region.
 Note that it does not check if observing pattern is raster.
 """
 # import standard modules
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 # import 3rd party modules
 import numpy as np
@@ -536,7 +536,8 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[i
     return distance_list
 
 
-def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray]) -> np.ndarray:
+def find_raster_gap(ra: np.ndarray[np.float64], dec: np.ndarray[np.float64], dtrow_list: List[np.ndarray[np.int64]],
+                    msg_dict: Dict[str, str]=None) -> np.ndarray[np.int64]:
     """
     Find gaps between individual raster map.
 
@@ -556,12 +557,18 @@ def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray
         dec: np.ndarray of Dec
         dtrow_list: List of np.ndarray holding array indices for ra and dec.
                     Each index array is supposed to represent single raster row.
+        msg_dict (default to None): string dict for a log message
 
     Returns:
         np.ndarray of index for dtrow_list indicating boundary between raster maps
     """
 
-    msg = 'Failed to identify gap between raster map iteration.'
+    msg = 'Failed to identify gap between raster map iteration'
+    if msg_dict is not None:
+        _msg = [msg_dict[k] for k in ['ANTENNA', 'EB'] if msg_dict.get(k, False)]
+        if _msg:
+            msg += ' : ' + ', '.join(_msg)
+
     if len(dtrow_list) == 0:
         raise RasterScanHeuristicsFailure(msg)
 
@@ -592,7 +599,8 @@ def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray
 class RasterScanHeuristic(api.Heuristic):
     """Heuristic to analyze raster scan pattern."""
 
-    def calculate(self, ra: np.ndarray, dec: np.ndarray) -> Tuple[List, List]:
+    def calculate(self, ra: np.ndarray[np.float64], dec: np.ndarray[np.float64],
+                  msg_dict: Dict[str, str]=None) -> Tuple[List[np.ndarray[np.int64]], List[np.ndarray[np.int64]]]:
         """Detect gaps that separate individual raster rows and raster maps.
 
         Detected gaps are transrated into TimeTable and TimeGap described below.
@@ -600,6 +608,7 @@ class RasterScanHeuristic(api.Heuristic):
         Args:
             ra: horizontal position list
             dec: vertical position list
+            msg_dict (default to None): string dict for a log message in find_raster_gap()
 
         Returns:
             Two-tuple containing information on group membership
@@ -631,7 +640,7 @@ class RasterScanHeuristic(api.Heuristic):
         # gaplist_row = ret[2]
         idx_iter = zip(gaplist_row[:-1], gaplist_row[1:])
         dtrow_list = [np.arange(s, e, dtype=int) for s, e in idx_iter]
-        gaplist_map = find_raster_gap(ra, dec, dtrow_list)
+        gaplist_map = find_raster_gap(ra, dec, dtrow_list, msg_dict)
         LOG.info('large gap list: %s', gaplist_map)
 
         # construct return value that is compatible with grouping2 heuristics
