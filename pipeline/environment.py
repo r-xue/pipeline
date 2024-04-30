@@ -3,9 +3,9 @@ environment.py defines functions and variables related to the execution environm
 """
 from __future__ import annotations
 
+import ast
 import dataclasses
 import json
-import math
 import operator
 import os
 import platform
@@ -30,7 +30,6 @@ from .infrastructure.mpihelpers import MPIEnvironment
 from .infrastructure.version import get_version
 
 LOG = logging.get_logger(__name__)
-
 
 __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'pipeline_revision', 'cluster_details',
            'dependency_details']
@@ -258,16 +257,38 @@ class LinuxEnvironment(CommonEnvironment):
         self.cgroup_cpu_weight = str(CGroupLimit.CPUWeight.get_limit(cgroup_controllers))
         self.cgroup_mem_limit = str(CGroupLimit.MemoryLimit.get_limit(cgroup_controllers))
 
+        os_release = dict(self.read_os_release())
+        self.host_distribution = (f'{os_release.get("NAME", "Linux")} '
+                                  f'{os_release.get("VERSION", "(unknown distribution)")}')
+
+    @staticmethod
+    def read_os_release():
+        """
+        Reads OS release information from disk.
+
+        Taken from https://www.freedesktop.org/software/systemd/man/latest/os-release.html
+        """
+        # in Python >= 3.10 we could do this:
+        # return platform.freedesktop_os_release()
         try:
-            os_release = {}
-            f = _load('/etc/os-release')
-            for line in f.split():
-                line_split = line.split('=')
-                if len(line_split) == 2:
-                    os_release[line_split[0].upper()] = line_split[1].strip().strip('"')
-            self.host_distribution = '{NAME} {VERSION}'.format(**os_release)
-        except Exception as e:
-            self.host_distribution = 'Linux (unknown distribution)'
+            filename = '/etc/os-release'
+            f = open(filename)
+        except FileNotFoundError:
+            filename = '/usr/lib/os-release'
+            f = open(filename)
+
+        for line_number, line in enumerate(f, start=1):
+            line = line.rstrip()
+            if not line or line.startswith('#'):
+                continue
+            m = re.match(r'([A-Z][A-Z_0-9]+)=(.*)', line)
+            if m:
+                name, val = m.groups()
+                if val and val[0] in '"\'':
+                    val = ast.literal_eval(val)
+                yield name, val
+            else:
+                LOG.warn(f'{filename}:{line_number}: bad line {line!r}')
 
     @staticmethod
     def _from_lscpu(lscpu_json: dict, key: str) -> str:
