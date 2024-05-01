@@ -530,8 +530,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
         # PIPE-1603, add fluxboot heuristics to use fitorder=0
         if len(spws) == 1 or len(spws) == 2:
             mhz_deltaf = deltaf.to_units(FrequencyUnits.MEGAHERTZ) if len(spws) == 1 \
-                else ((spws[1].centre_frequency - spws[0].centre_frequency).to_units(FrequencyUnits.MEGAHERTZ) \
+                else (abs((spws[1].centre_frequency - spws[0].centre_frequency).to_units(FrequencyUnits.MEGAHERTZ)) \
                       if len(spws) == 2 else None )
+
             for band in unique_bands:
                 if ((band == "L" and mhz_deltaf < 64) or (band != "L" and mhz_deltaf < 128)):
                     fitorder = 0
