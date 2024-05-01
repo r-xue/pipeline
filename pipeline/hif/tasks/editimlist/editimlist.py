@@ -95,9 +95,8 @@ class EditimlistInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def cell(self):
         # mutable object, so should not use VisDependentProperty(default=[])
-        if 'ALMA' in self.imaging_mode:
-            if 'hm_cell' in self.context.size_mitigation_parameters:
-                return self.context.size_mitigation_parameters['hm_cell']
+        if 'hm_cell' in self.context.size_mitigation_parameters:
+            return self.context.size_mitigation_parameters['hm_cell']
         return []
 
     @cell.convert
@@ -113,9 +112,8 @@ class EditimlistInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def imsize(self):
         # mutable object, so should not use VisDependentProperty(default=[])
-        if 'ALMA' in self.imaging_mode:
-            if 'hm_imsize' in self.context.size_mitigation_parameters:
-                return self.context.size_mitigation_parameters['hm_imsize']
+        if 'hm_imsize' in self.context.size_mitigation_parameters:
+            return self.context.size_mitigation_parameters['hm_imsize']
         return []
 
     @imsize.convert
@@ -147,9 +145,8 @@ class EditimlistInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def nbin(self):
-        if 'ALMA' in self.imaging_mode:
-            if 'nbins' in self.context.size_mitigation_parameters:
-                return self.context.size_mitigation_parameters['nbins']
+        if 'nbins' in self.context.size_mitigation_parameters:
+            return self.context.size_mitigation_parameters['nbins']
         return -1
 
     @vdp.VisDependentProperty
