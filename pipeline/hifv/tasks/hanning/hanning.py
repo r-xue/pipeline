@@ -107,21 +107,8 @@ class Hanning(basetask.StandardTaskTemplate):
 
         with casa_tools.MSReader(self.inputs.vis, nomodify=False) as mset:
             ms_info = mset.getspectralwindowinfo()
-            # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
             hs_dict = {x: False for x in ms_info.keys()}
-            if not spw_preaverage:
-                LOG.info("All spectral windows were selected for hanning smoothing")
-                try:
-                    self._do_hanningsmooth()
-                    LOG.info("Removing original VIS " + self.inputs.vis)
-                    shutil.rmtree(self.inputs.vis)
-                    LOG.info("Renaming temphanning.ms to " + self.inputs.vis)
-                    os.rename('temphanning.ms', self.inputs.vis)
-                except Exception as ex:
-                    LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
-                finally:
-                    hs_dict = {x: True for x in hs_dict.keys()}
-            else:
+            if spw_preaverage:
                 smoothing_windows = self._getsmoothingwindows(spw_preaverage)
                 if smoothing_windows:
                     message = find_ranges(smoothing_windows)
@@ -133,7 +120,20 @@ class Hanning(basetask.StandardTaskTemplate):
                         hs_dict[spw] = True
                 else:
                     LOG.info("None of the SPWs were selected for smoothing.")
-            self._track_hsmooth(hs_dict)
+        if not spw_preaverage:
+            LOG.info("All spectral windows were selected for hanning smoothing")
+            try:
+                self._do_hanningsmooth()
+                LOG.info("Removing original VIS " + self.inputs.vis)
+                shutil.rmtree(self.inputs.vis)
+                LOG.info("Renaming temphanning.ms to " + self.inputs.vis)
+                os.rename('temphanning.ms', self.inputs.vis)
+            except Exception as ex:
+                LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
+            finally:
+                hs_dict = {x: True for x in hs_dict.keys()}
+        # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
+        self._track_hsmooth(hs_dict)
 
         return HanningResults()
 
@@ -195,6 +195,7 @@ class Hanning(basetask.StandardTaskTemplate):
         Return: Boolean
             True if maser line may exist in window; False otherwise
         """
+        LOG.debug("Checking for maser line contamination in spw {}.".format(spw))
 
         def freq_to_vel(rest_freq, obs_freq):
             c_kms = 2.99792458e5
@@ -234,11 +235,12 @@ class Hanning(basetask.StandardTaskTemplate):
         to_lsrk = suTool.advisechansel(msname=ms_info.name, spwselection=spw, getfreqrange=True, freqframe='LSRK')
         freq_low = float(qaTool.getvalue(qaTool.convert(to_lsrk['freqstart'], 'Hz')))
         freq_high = float(qaTool.getvalue(qaTool.convert(to_lsrk['freqend'], 'Hz')))
+        LOG.debug("Freq low: {}; Freq high: {}".format(freq_low, freq_high))
 
         for value in maser_dict.values():
             vel_low = freq_to_vel(value, freq_low)
             vel_high = freq_to_vel(value, freq_high)
-            if abs(vel_low) <= 200 or abs(vel_high) <= 200:
+            if (freq_low <= value <= freq_high) or abs(vel_low) <= 200 or abs(vel_high) <= 200:
                 LOG.info("Maser line possible in spw {}. Hanning smoothing will be applied.".format(spw))
                 return True
         return False
