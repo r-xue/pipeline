@@ -193,11 +193,17 @@ class QAScorePool(object):
         if not self.pool:
             return QAScore(None, 'No QA scores registered for this task', 'No QA')
 
-        # Maybe have different algorithms here. For now just return the
-        # QAScore with minimum score of all non-hidden ones.
-        return min(scores_with_location(self.pool,
-                   [WebLogLocation.ACCORDION, WebLogLocation.BANNER, WebLogLocation.UNSET]),
-                   key=operator.attrgetter('score'))
+        # Maybe have different algorithms here. for now just return the
+        # QAScore with minimum score of all non-hidden numerical ones.
+        numerical_scores = [score_obj for score_obj in scores_with_location(self.pool,
+                           [WebLogLocation.ACCORDION, WebLogLocation.BANNER, WebLogLocation.UNSET])
+                           if score_obj.score is not None]
+        if numerical_scores:
+            return min(numerical_scores, key=operator.attrgetter('score'))
+        else:
+            # Only None scores. Cannot select a representative one, so
+            # just return the first in the list.
+            return self.pool[0]
 
     @representative.setter
     def representative(self, value):
