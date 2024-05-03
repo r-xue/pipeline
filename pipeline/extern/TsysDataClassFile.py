@@ -6,7 +6,7 @@ sys.path.append(".")#/opt/pipelinedriver/2022AUG/casa/casa-6.4.1-12-pipeline-202
 
 try:
     from taskinit import tbtool,msmdtool,qatool,attool, mstool,metool
-except:
+except ImportError:
     from casatools import table as tbtool
     from casatools import msmetadata as msmdtool
     from casatools import quanta as qatool
@@ -550,7 +550,7 @@ class TsysData(object):
             intents.append(intent[scan])
         
         self.tsysfields =             ['spw',    'scan','intent',     'field',       'antenna','flags','tsys']
-        self.tsysdata = np.array([list(spws),list(scans),intents,list(fields),list(ant_names[ant1]),flags, tsys ])     
+        self.tsysdata = np.array([list(spws),list(scans),intents,list(fields),list(ant_names[ant1]),flags, tsys ], dtype=object)
             
         spws_list = list(set(list(spws)))
         scans_list = list(set(list(scans)))
@@ -563,7 +563,7 @@ class TsysData(object):
             nchans.append(numchannels[spw])
 
         self.specfields = ['spw','freq_mhz','nchan']
-        self.specdata = np.array([spws_list, freq_mhz, nchans])# v2.4 nchan -> nchans seems. like a bug.
+        self.specdata = np.array([spws_list, freq_mhz, nchans], dtype=object)# v2.4 nchan -> nchans seems. like a bug.
 
         absorptions = []
         scans = []
@@ -575,7 +575,7 @@ class TsysData(object):
                 absorptions.append(atmos_transmission[f'{spw}_{scan}'])
        
         self.absorptionfields = ['spw','scan','absorption']
-        self.absorptiondata = np.array([spws,scans,absorptions])
+        self.absorptiondata = np.array([spws,scans,absorptions], dtype=object)
     
     def tsysmap(vis,tsystable, msmdtool_instance,intent='OBSERVE_TARGET#ON_SOURCE'):  # v2.4, this function
         _tsysmap = np.array(tsysspwmap(vis=vis,tsystable=tsystable))
