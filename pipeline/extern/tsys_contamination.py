@@ -33,18 +33,18 @@ from shutil import copy2, copytree, rmtree
 import subprocess
 
 import sys; 
-if 'testing' in VERSION:
-    sys.path.append(".")
-else:
-    sys.path.append("/jaopost_spool/PIPEREQ-49/PIPEREQ-232/scripts/");
+# if 'testing' in VERSION:
+#     sys.path.append(".")
+# else:
+#     sys.path.append("/jaopost_spool/PIPEREQ-49/PIPEREQ-232/scripts/");
 
-from TsysDataClassFile import TsysData
+from .TsysDataClassFile import TsysData
 # from _PREQ232 import *
 # from itertools import product
 
 try:
     from taskinit import tbtool,msmdtool,qatool,attool, mstool,metool
-except:
+except ImportError:
     from casatools import table as tbtool
     from casatools import msmetadata as msmdtool
     from casatools import quanta as qatool
@@ -1494,9 +1494,8 @@ def main():
             subprocess.call(["rsync","-uva","tsys_contamination_log",
                 os.path.join(os.environ["SPOOLAREA"],"PIPEREQ-49","PIPEREQ-232/")], shell=False)
 
-####
 
 with warnings.catch_warnings(): # v2.3
     if 'testing' in VERSION:
         warnings.filterwarnings(action='ignore', category=RuntimeWarning) # ignore these warnings which are not very useful
-    main()
+    # main()
