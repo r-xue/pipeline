@@ -20,7 +20,7 @@ class T2_4MDetailsCorrectedampflagRenderer(basetemplates.T2_4MDetailsDefaultRend
     """
     # List of intents to consider for flagging summary.
     task_intents = ('BANDPASS', 'PHASE', 'AMPLITUDE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE', 'TARGET',
-                    'DIFFGAIN')
+                    'DIFFGAINREF', 'DIFFGAINSRC')
 
     def __init__(self,
                  uri='correctedampflag.mako',

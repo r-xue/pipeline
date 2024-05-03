@@ -106,7 +106,7 @@ def plot_type(plot):
 		</tr>
 	</thead>
 	<tbody>
-		% for k in ['TOTAL', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'CHECK', 'DIFFGAIN', 'TARGET']:
+		% for k in ['TOTAL', 'BANDPASS', 'AMPLITUDE', 'PHASE', 'CHECK', 'DIFFGAINREF', 'DIFFGAINSRC', 'TARGET']:
 		<tr>
 			<th>${k}</th>
 			% for step in ['before','after']:

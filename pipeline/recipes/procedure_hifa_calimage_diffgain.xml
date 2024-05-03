@@ -131,7 +131,7 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">intent</Keyword>
-                <Value xmlns="">PHASE,BANDPASS,AMPLITUDE,DIFFGAIN</Value>
+                <Value xmlns="">PHASE,BANDPASS,AMPLITUDE,DIFFGAINREF,DIFFGAINSRC</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>

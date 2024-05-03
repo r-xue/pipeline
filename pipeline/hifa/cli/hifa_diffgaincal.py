@@ -9,14 +9,14 @@ def hifa_diffgaincal(vis=None):
     hifa_diffgaincal ---- Derive SpW phase offsets from differential gain calibrator.
 
     This task creates the spectral window phase gain offset table used to allow
-    calibrating the "science" spectral setup with phase gains from a "reference"
-    spectral setup. A bright point source Quasar, called the Differential Gain
-    Calibrator (DIFFGAIN) source, is used for this purpose. The DIFFGAIN is
-    typically observed in groups of interleaved "reference" and "science" scans,
-    once at the start and once at the end of the observations. In very long
-    observations, there may be a group of scans occurring during the middle.
-    Scan groups are combined while solving for SpW offsets between "reference"
-    and "science" spectral setups.
+    calibrating the "on-source" spectral setup with phase gains from a
+    "reference" spectral setup. A bright point source Quasar, called the
+    Differential Gain Calibrator (DIFFGAIN) source, is used for this purpose.
+    This DIFFGAIN source typically observed in groups of interleaved "reference"
+    and "on-source" scans, once at the start and once at the end of the
+    observations. In very long observations, there may be a group of scans
+    occurring during the middle. Scan groups are combined while solving for SpW
+    offsets between "reference" and "on-source" spectral setups.
 
     Output:
 

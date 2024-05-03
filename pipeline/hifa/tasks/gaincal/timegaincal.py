@@ -41,7 +41,7 @@ class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
     # Override default base class intents for ALMA.
     @vdp.VisDependentProperty
     def intent(self):
-        return 'PHASE,AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE,DIFFGAIN'
+        return 'PHASE,AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE,DIFFGAINREF,DIFFGAINSRC'
 
     # Used for diagnostic phase offsets plots in weblog.
     offsetstable = vdp.VisDependentProperty(default=None)
@@ -113,7 +113,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         # Look through calibrator phasecal results for any CalApplications for
         # caltables that are applicable to non-PHASE calibrators (i.e.
-        # AMPLITUDE, BANDPASS, POL*, and DIFFGAIN). Add these CalApps to the
+        # AMPLITUDE, BANDPASS, POL*, and DIFFGAIN*). Add these CalApps to the
         # final task result, to be merged into the final context / callibrary.
         for cpres in cal_phase_results:
             cp_calapp = cpres.final[0]
@@ -257,11 +257,12 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         if inputs.ms.is_band_to_band:
             # PIPE-2087: for BandToBand, restrict the solve to the diffgain
             # reference SpWs, use refantmode strict for the solve, and register
-            # the solutions to be applied to the diffgain science SpWs.
-            dg_refspws, dg_scispws = inputs.ms.get_diffgain_spectral_windows(task_arg=inputs.spw)
+            # the solutions to be applied to the diffgain on-source SpWs.
+            dg_refspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINREF')
+            dg_srcspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINSRC')
             spw_to_solve = ','.join(str(s.id) for s in dg_refspws)
             refantmode = 'strict'
-            apply_to_spw = ','.join(str(s.id) for s in dg_scispws)
+            apply_to_spw = ','.join(str(s.id) for s in dg_srcspws)
 
         # Create separate phase solutions for each PHASE field.
         for field in inputs.ms.get_fields(intent=p_intent):
@@ -471,7 +472,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         if inputs.ms.is_band_to_band:
             # PIPE-2087: for BandToBand, restrict the solve to the diffgain
             # reference SpWs.
-            dg_refspws, _ = inputs.ms.get_diffgain_spectral_windows(task_arg=inputs.spw)
+            dg_refspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINREF')
             spw_to_solve = ','.join(str(spw.id) for spw in dg_refspws)
 
         # Create separate phase solutions for each PHASE field. These solutions
@@ -552,7 +553,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         if inputs.ms.is_band_to_band:
             # PIPE-2087: for BandToBand, restrict the solve to the diffgain
             # reference SpWs.
-            dg_refspws, _ = inputs.ms.get_diffgain_spectral_windows(task_arg=inputs.spw)
+            dg_refspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINREF')
             spw_to_solve = ','.join(str(spw.id) for spw in dg_refspws)
 
         # Create separate phase solutions for each PHASE field.
@@ -772,7 +773,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         # Create CalApplication for the calibrators.
         cal_calapp = callibrary.copy_calapplication(
-            result_calapp, intent='AMPLITUDE,BANDPASS,PHASE,DIFFGAIN,POLARIZATION,POLANGLE,POLLEAKAGE',
+            result_calapp, intent='AMPLITUDE,BANDPASS,PHASE,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE',
             gainfield='nearest', interp='nearest,linear')
 
         # Create CalApplication for the TARGET/CHECK sources.
@@ -780,11 +781,11 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                             'gainfield': ''}
 
         # PIPE-2087: for BandToBand, register the solutions to be applied to the
-        # diffgain science SpWs, and use the amplitude solutions from the
+        # diffgain on-source SpWs, and use the amplitude solutions from the
         # BANDPASS intent.
         if inputs.ms.is_band_to_band:
-            _, dg_scispws = inputs.ms.get_diffgain_spectral_windows(task_arg=inputs.spw)
-            calapp_overrides['spw'] = ','.join(str(s.id) for s in dg_scispws)
+            dg_srcspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINSRC')
+            calapp_overrides['spw'] = ','.join(str(s.id) for s in dg_srcspws)
             calapp_overrides['gainfield'] = ','.join(f.name for f in inputs.ms.get_fields(intent='BANDPASS'))
 
         target_calapp = callibrary.copy_calapplication(result_calapp, **calapp_overrides)

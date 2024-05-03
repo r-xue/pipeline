@@ -90,7 +90,8 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
     solint = vdp.VisDependentProperty(default='inf')
     # Include polarisation (PIPE-599) and diffgain (PIPE-2083) intent in the
     # transfer intent.
-    transintent = vdp.VisDependentProperty(default='PHASE,BANDPASS,CHECK,DIFFGAIN,POLARIZATION,POLANGLE,POLLEAKAGE')
+    transintent = vdp.VisDependentProperty(default='PHASE,BANDPASS,CHECK,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,'
+                                                   'POLLEAKAGE')
     uvrange = vdp.VisDependentProperty(default='')
 
     def __init__(self, context, output_dir=None, vis=None, caltable=None, fluxtable=None, reffile=None, reference=None,
@@ -606,7 +607,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         # PIPE-1154: identify which fields covered the PHASE calibrator and/or
         # CHECK source intent while not also covering one of the other
-        # calibrator intents (typically AMPLITUDE, BANDPASS, DIFFGAIN, POL*).
+        # calibrator intents (typically AMPLITUDE, BANDPASS, DIFFGAIN*, POL*).
         # For these fields, derive separate phase solutions for each combination
         # of intent, field, and use optimal gaincal parameters based on
         # spwmapping registered in the measurement set.

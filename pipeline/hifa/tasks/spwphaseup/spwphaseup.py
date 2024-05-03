@@ -126,7 +126,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # Do not derive separate SpW mappings for fields that also cover any of
         # these calibrator intents:
-        exclude_intents = 'AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE,DIFFGAIN'
+        exclude_intents = 'AMPLITUDE,BANDPASS,POLARIZATION,POLANGLE,POLLEAKAGE,DIFFGAINREF,DIFFGAINSRC'
 
         # PIPE-629: if requested, unregister old spwphaseup calibrations from
         # local copy of context, to stop these from being pre-applied during
@@ -302,12 +302,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # PIPE-2059: select what SpWs to analyse.
         if self.inputs.ms.is_band_to_band:
             # For a BandToBand MS, restrict the SpWs to diffgain reference SpWs
-            # for PHASE intent, or to diffgain science SpWs for CHECK intent.
-            dg_refspws, dg_scispws = inputs.ms.get_diffgain_spectral_windows(task_arg=inputs.spw)
+            # for PHASE intent, or to diffgain on-source SpWs for CHECK intent.
             if intent == 'PHASE':
-                spws = dg_refspws
+                spws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINREF')
             elif intent == 'CHECK':
-                spws = dg_scispws
+                spws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINSRC')
             else:
                 LOG.warning(f"{inputs.ms.basename}: unexpected intent ({intent}) encountered while deriving SpW mapping"
                             f" for BandToBand; cannot create SpW mapping.")
@@ -425,10 +424,12 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             LOG.info(f'Using standard spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
 
         # PIPE-2059: for the PHASE calibrator in a BandToBand MS, adjust the
-        # newly derived optimal SpW mapping to ensure that diffgain science SpWs
-        # are remapped to an associated diffgain reference SpW.
+        # newly derived optimal SpW mapping to ensure that diffgain on-source
+        # SpWs are remapped to an associated diffgain reference SpW.
         if self.inputs.ms.is_band_to_band and intent == 'PHASE':
-            spwmap = update_spwmap_for_band_to_band(spwmap, dg_refspws, dg_scispws)
+            dg_refspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINREF')
+            dg_srcspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINSRC')
+            spwmap = update_spwmap_for_band_to_band(spwmap, dg_refspws, dg_srcspws)
 
         # Collect SNR info.
         snr_info = self._get_snr_info(spwids, snrs, combined_snrs)

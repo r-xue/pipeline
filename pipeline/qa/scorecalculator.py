@@ -421,29 +421,29 @@ def score_observing_modes(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     scores = []
     for ms in mses:
         # If the Observing Modes include "band to band", perform a few validity
-        # checks w.r.t. the presence of DIFFGAIN fields and diffgain SpW setup:
+        # checks w.r.t. the presence of DIFFGAIN* fields and diffgain SpW setup:
         if 'BandToBand Interferometry' in ms.observing_modes:
             if ms.get_diffgain_mode() != 'B2B':
                 score = 0.0
                 shortmsg = 'Incorrect Observing Mode'
-                longmsg = f'Incorrect BandToBand Observing Mode, {ms.basename} does not contain a DIFFGAIN intent' \
+                longmsg = f'Incorrect BandToBand Observing Mode, {ms.basename} does not contain a DIFFGAIN* intent' \
                           f' and/or SpW setup consistent with band-to-band.'
-            elif len(ms.get_fields(intent="DIFFGAIN")) > 1:
+            elif len(ms.get_fields(intent="DIFFGAINREF,DIFFGAINSRC")) > 1:
                 score = 0.0
-                shortmsg = 'Too many DIFFGAIN fields'
-                longmsg = f'Unable to process BandToBand dataset {ms.basename}, found more than 1 DIFFGAIN field'
+                shortmsg = 'Too many DIFFGAIN* fields'
+                longmsg = f'Unable to process BandToBand dataset {ms.basename}, found more than 1 DIFFGAIN* field'
             else:
                 score = 0.9
                 shortmsg = 'BandToBand mode used'
                 longmsg = f'BandToBand mode used in {ms.basename}'
 
         # If the Observing Modes do not include "band to band", but the MS
-        # contains a DIFFGAIN intent and a SpW setup consistent with
+        # contains a DIFFGAIN* intent and a SpW setup consistent with
         # band-to-band, then lower the score.
         elif 'BandToBand Interferometry' not in ms.observing_modes and ms.get_diffgain_mode() == 'B2B':
             score = 0.0
             shortmsg = 'Incorrect Observing Mode'
-            longmsg = f'Incorrect Observing Mode, unexpectedly found a BandToBand DIFFGAIN intent in {ms.basename}'
+            longmsg = f'Incorrect Observing Mode, unexpectedly found a BandToBand DIFFGAIN* intent in {ms.basename}'
 
         # If the Observing Modes include "bandwidth switching", then lower the
         # score, since processing these data has not yet been validated.

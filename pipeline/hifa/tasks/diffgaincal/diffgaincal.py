@@ -6,7 +6,6 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import SpectralWindow
 from pipeline.hif.tasks.gaincal import common
 from pipeline.hif.tasks.gaincal import gtypegaincal
 from pipeline.hifa.heuristics.phasespwmap import update_spwmap_for_band_to_band
@@ -72,23 +71,20 @@ class DiffGaincal(basetask.StandardTaskTemplate):
         # Initialize results.
         result = DiffGaincalResults(vis=self.inputs.vis)
 
-        # Retrieve the diffgain spectral windows.
-        dg_refspws, dg_scispws = self.inputs.ms.get_diffgain_spectral_windows()
+        # Compute phase solutions for the diffgain reference intent.
+        LOG.info('Computing phase gain table for the diffgain reference intent.')
+        self._do_phasecal_for_diffgain_reference()
 
-        # Compute phase solutions for the diffgain reference spectral windows.
-        LOG.info('Computing phase gain table for the diffgain reference spectral windows.')
-        self._do_phasecal_for_diffgain_reference(dg_refspws, dg_scispws)
-
-        # Compute phase solutions for the diffgain science spectral windows.
-        LOG.info('Computing phase gain table for the diffgain science spectral windows.')
-        dg_ref_phase_results = self._do_phasecal_for_diffgain_science(dg_scispws)
+        # Compute phase solutions for the diffgain on-source spectral windows.
+        LOG.info('Computing phase gain table for the diffgain on-source intent.')
+        dg_ref_phase_results = self._do_phasecal_for_diffgain_onsource()
         # Adopt resulting CalApplication(s) into final result.
         result.pool = dg_ref_phase_results.pool
 
-        # Compute residual phase offsets (diagnostic) for the diffgain science
-        # spectral windows.
-        LOG.info('Computing residual phase offsets for the diffgain science spectral windows.')
-        result.phaseoffsetresult = self._do_phasecal_for_diffgain_residual_offsets(dg_scispws)
+        # Compute residual phase offsets for the diffgain on-source intent, for
+        # diagnostic plots in the weblog.
+        LOG.info('Computing residual phase offsets for the diffgain on-source intent.')
+        result.phaseoffsetresult = self._do_phasecal_for_diffgain_residual_offsets()
 
         return result
 
@@ -114,7 +110,7 @@ class DiffGaincal(basetask.StandardTaskTemplate):
         return result
 
     def _do_gaincal(self, append: bool = False, caltable: Optional[str] = None, combine: Optional[str] = None,
-                    scan: Optional[str] = None, spw: Optional[str] = None) -> common.GaincalResults:
+                    intent: Optional[str] = None, scan: Optional[str] = None) -> common.GaincalResults:
         """
         Local method to call the G-type gaincal worker task, with pre-defined
         values for parameters that are shared among all gaincal steps in this
@@ -124,8 +120,8 @@ class DiffGaincal(basetask.StandardTaskTemplate):
             append: boolean whether to append to existing caltable
             caltable: name of caltable to use
             combine: axis to combine solutions over
+            intent: intent selection to use
             scan: scan selection to use
-            spw: spectral window selection to use
 
         Returns:
             GaincalResults
@@ -134,8 +130,8 @@ class DiffGaincal(basetask.StandardTaskTemplate):
             'output_dir': self.inputs.output_dir,
             'vis': self.inputs.vis,
             'caltable': caltable,
-            'intent': 'DIFFGAIN',
-            'spw': spw,
+            'intent': intent,
+            'spw': ','.join(str(spw.id) for spw in self.inputs.ms.get_spectral_windows(intent=intent)),
             'scan': scan,
             'combine': combine,
             'solint': 'inf',
@@ -150,35 +146,34 @@ class DiffGaincal(basetask.StandardTaskTemplate):
 
         return result
 
-    def _do_phasecal_for_diffgain_reference(self, dg_refspws: List[SpectralWindow], dg_scispws: List[SpectralWindow]):
+    def _do_phasecal_for_diffgain_reference(self):
         """
-        Compute phase gain solutions for the diffgain reference spectral
-        windows, and register the resulting caltable in the local task context
-        to be applied to the diffgain science spectral windows.
-
-        Args:
-            dg_refspws: diffgain reference spectral windows
-            dg_scispws: diffgain science spectral windows
+        Compute phase gain solutions for the diffgain reference intent and
+        register the resulting caltable in the local task context to be applied
+        to the diffgain on-source intent.
         """
         # Run gaincal for the diffgain reference spws.
-        spw_ids = ','.join(str(spw.id) for spw in dg_refspws)
-        phasecal_result = self._do_gaincal(spw=spw_ids)
+        phasecal_result = self._do_gaincal(intent='DIFFGAINREF')
 
         # If a caltable was created, then create a modified CalApplication to
         # correctly register the caltable.
         if phasecal_result.pool:
-            # Create SpW mapping to re-map diffgain science SpWs to diffgain
-            # reference SpWs.
-            dg_spwmap = update_spwmap_for_band_to_band([], dg_refspws, dg_scispws)
+            # Retrieve the diffgain spectral windows, and create SpW mapping to
+            # re-map diffgain on-source SpWs to diffgain reference SpWs.
+            dg_refspws = self.inputs.ms.get_spectral_windows(intent='DIFFGAINREF')
+            dg_srcspws = self.inputs.ms.get_spectral_windows(intent='DIFFGAINSRC')
+            dg_spwmap = update_spwmap_for_band_to_band([], dg_refspws, dg_srcspws)
 
             # Define CalApplication overrides to specify how the diffgain
             # reference phase solutions should be registered in the callibrary.
-            # Note: solutions derived for the diffgain reference SpWs are
-            # registered here to be applied to the diffgain science SpWs.
+            # Note: solutions derived for the diffgain reference intent are
+            # registered here to be applied to the diffgain on-source intent and
+            # SpWs with a corresponding SpW mapping.
             calapp_overrides = {
                 'calwt': False,
+                'intent': 'DIFFGAINSRC',
                 'interp': 'linearPD,linear',
-                'spw': ','.join(str(spw.id) for spw in dg_scispws),
+                'spw': ','.join(str(spw.id) for spw in dg_srcspws),
                 'spwmap': dg_spwmap,
             }
 
@@ -190,15 +185,15 @@ class DiffGaincal(basetask.StandardTaskTemplate):
 
             # Register these diffgain reference phase solutions into local
             # context to ensure that these are used in pre-apply when computing
-            # phase solutions for the diffgain science spectral windows.
+            # phase solutions for the diffgain on-source intent.
             phasecal_result.accept(self.inputs.context)
 
-    def _do_phasecal_for_diffgain_science(self, dg_scispws: List[SpectralWindow]) -> Optional[common.GaincalResults]:
+    def _do_phasecal_for_diffgain_onsource(self) -> Optional[common.GaincalResults]:
         """
-        Compute phase gain solutions for the diffgain science spectral
-        windows. Gain solutions are created separately for groups of scans,
-        using combine='scan', and appended to a single caltable. Each scan group
-        is intended to comprise scans taken closely together in time (typically
+        Compute phase gain solutions for the diffgain on-source intent. Gain
+        solutions are created separately for groups of scans, using
+        combine='scan', and appended to a single caltable. Each scan group is
+        intended to comprise scans taken closely together in time (typically
         alternated with the diffgain reference scans), and these groups are
         typically done before and after the science target scans. In practice,
         scan groups are identified as scans with IDs separated by less than 4.
@@ -210,32 +205,26 @@ class DiffGaincal(basetask.StandardTaskTemplate):
         resulting caltable will be applied to the science target or check
         source.
 
-        Args:
-            dg_scispws: diffgain science spectral windows
-
         Returns:
-            GaincalResults for the diffgain science phase solutions caltable.
+            GaincalResults for the diffgain on-source phase solutions caltable.
         """
-        # Get diffgain science spw ids.
-        spw_ids = ','.join(str(spw.id) for spw in dg_scispws)
-
-        # Determine scan groups.
-        scan_groups = self._get_scan_groups(spw_ids)
+        # Determine scan groups for diffgain on-source intent.
+        scan_groups = self._get_scan_groups(intent='DIFFGAINSRC')
 
         # Exit early if no scan groups could be identified.
         if not scan_groups:
-            LOG.warning(f"{self.inputs.ms.basename}: no scan groups found for diffgain science spectral windows.")
+            LOG.warning(f"{self.inputs.ms.basename}: no scan groups found for diffgain on-source intent.")
             return None
 
         # Run gaincal for the first scan group.
-        phasecal_result = self._do_gaincal(combine='scan', scan=scan_groups[0], spw=spw_ids)
+        phasecal_result = self._do_gaincal(combine='scan', intent='DIFFGAINSRC', scan=scan_groups[0])
 
         # If there are multiple scan groups, run gaincal for all remaining
         # scan groups, appending their solutions to the same caltable.
         if len(scan_groups) > 1:
             caltable = phasecal_result.inputs['caltable']
             for scan_group in scan_groups[1:]:
-                self._do_gaincal(caltable=caltable, combine='scan', scan=scan_group, spw=spw_ids, append=True)
+                self._do_gaincal(caltable=caltable, combine='scan', intent='DIFFGAINSRC', scan=scan_group, append=True)
 
         # If a caltable was created, then create a modified CalApplication to
         # correctly register the caltable.
@@ -244,13 +233,13 @@ class DiffGaincal(basetask.StandardTaskTemplate):
             # overrides in the CalApplication:
             calapp_overrides = {
                 'calwt': False,
-                'intent': 'DIFFGAIN',
+                'intent': 'DIFFGAINSRC',
             }
             modified_calapp = callibrary.copy_calapplication(phasecal_result.pool[0], **calapp_overrides)
             phasecal_result.pool[0] = modified_calapp
             phasecal_result.final[0] = modified_calapp
 
-            # Register the diffgain science phase solutions into local context
+            # Register the diffgain on-source phase solutions into local context
             # to ensure that these are used in pre-apply when computing the
             # residual phase offsets (diagnostic) caltable.
             phasecal_result.accept(self.inputs.context)
@@ -268,44 +257,36 @@ class DiffGaincal(basetask.StandardTaskTemplate):
 
         return phasecal_result
 
-    def _do_phasecal_for_diffgain_residual_offsets(self, dg_scispws: List[SpectralWindow]) -> common.GaincalResults:
+    def _do_phasecal_for_diffgain_residual_offsets(self) -> common.GaincalResults:
         """
-        Compute residual phase offsets caltable for the diffgain science
-        spectral windows.
-
-        Args:
-            dg_scispws: diffgain science spectral windows
+        Compute residual phase offsets caltable for the diffgain on-source intent.
 
         Returns:
-            GaincalResults for the diffgain science residual phase solutions
+            GaincalResults for the diffgain on-source residual phase solutions
             caltable.
         """
-        # Run 2nd gaincal for the diffgain science spws, this time with the
-        # phase solutions for diffgain science spws in pre-apply, to assess the
-        # residual phase offsets.
-        spw_ids = ','.join(str(spw.id) for spw in dg_scispws)
-        phasecal_result = self._do_gaincal(spw=spw_ids)
+        # Run 2nd gaincal for the diffgain on-source intent, this time with the
+        # phase solutions for diffgain on-source intent in pre-apply, to assess
+        # the residual phase offsets.
+        phasecal_result = self._do_gaincal(intent='DIFFGAINSRC')
 
         return phasecal_result
 
-    def _get_scan_groups(self, spw) -> List[str]:
+    def _get_scan_groups(self, intent: str) -> List[str]:
         """
-        Return list of scan groups associated with given spectral window(s), where
-        each group are scans separated by less than 4 in ID.
+        Return list of scan groups associated with given intent, where each
+        group are scans separated by less than 4 in ID.
 
-        E.g., if the scans for given spectral window(s) are:
+        E.g., if the scans for given intent are:
           '5,7,9,11,79,81,83'
         Then this will return:
           ['5,7,9,11', '79,81,83']
 
-        Args:
-            spw: spectral windows to retrieve scans for.
-
         Returns:
             List of groups of scans.
         """
-        # Get IDs of DIFFGAIN scans for given SpWs.
-        dg_scanids = sorted(scan.id for scan in self.inputs.ms.get_scans(scan_intent='DIFFGAIN', spw=spw))
+        # Get IDs of DIFFGAIN scans for given intent.
+        dg_scanids = sorted(scan.id for scan in self.inputs.ms.get_scans(scan_intent=intent))
 
         # Group scans separated in ID by less than 4.
         scan_groups = [','.join(map(str, group))

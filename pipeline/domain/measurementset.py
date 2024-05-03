@@ -558,7 +558,7 @@ class MeasurementSet(object):
                                '{1}'.format(spw_id, self.basename))
 
     def get_spectral_windows(self, task_arg='', with_channels=False, num_channels=(), science_windows_only=True,
-                             spectralspecs=None):
+                             spectralspecs=None, intent=None):
         """
         Return the spectral windows corresponding to the given CASA-style spw
         argument, filtering out windows that may not be science spectral 
@@ -574,13 +574,17 @@ class MeasurementSet(object):
         if spectralspecs is not None:
             spws = [w for w in spws if w.spectralspec in spectralspecs]
 
+        # If requested, filter spws by intent.
+        if intent is not None:
+            spws = [w for w in spws if not set(intent.split(',')).isdisjoint(w.intents)]
+
         if not science_windows_only:
             return spws
 
         if self.antenna_array.name == 'ALMA':
             science_intents = {'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE',
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
-                               'CHECK', 'DIFFGAIN'}
+                               'CHECK', 'DIFFGAINREF', 'DIFFGAINSRC'}
             return [w for w in spws if w.num_channels not in self.exclude_num_chans
                     and not science_intents.isdisjoint(w.intents)]
 
@@ -626,43 +630,6 @@ class MeasurementSet(object):
             spws.append(proxy)
         return spws
 
-    def get_diffgain_spectral_windows(self, task_arg: str = '', with_channels: bool = False) \
-            -> Tuple[List[Union[spectralwindow.SpectralWindow, spectralwindow.SpectralWindowWithChannelSelection]],
-                     List[Union[spectralwindow.SpectralWindow, spectralwindow.SpectralWindowWithChannelSelection]]]:
-        """
-        Returns a 2-tuple containing a list of the diffgain reference spectral
-        windows and a list of the diffgain science spectral windows.
-
-        For ALMA observatory measurement sets, this method first retrieves the
-        spectral windows corresponding to the given CASA-style spw argument, and
-        then further splits the SpWs with DIFFGAIN intent into two lists:
-
-        * the diffgain reference SpWs that used for phase calibration in
-          diffgain observing modes.
-        * the diffgain science SpWs that are used for observing the science
-          target in diffgain observing modes.
-
-        For non-ALMA-observatory measurement sets, where diffgain is currently
-        not supported by Pipeline, this method will return empty lists for both
-        diffgain reference and science SpWs.
-
-        Returns:
-            2-tuple containing:
-              * list of diffgain reference SpWs
-              * list of diffgain science SpWs
-        """
-        ref_spws = []
-        sci_spws = []
-        if self.antenna_array.name == 'ALMA':
-            for spw in self.get_all_spectral_windows(task_arg, with_channels):
-                if spw.num_channels not in self.exclude_num_chans and 'DIFFGAIN' in spw.intents:
-                    if 'PHASE' in spw.intents:
-                        ref_spws.append(spw)
-                    elif 'TARGET' in spw.intents:
-                        sci_spws.append(spw)
-
-        return ref_spws, sci_spws
-
     def get_diffgain_mode(self) -> Optional[str]:
         """
         Determine if the intents and SpW setup in this measurement set are
@@ -670,31 +637,31 @@ class MeasurementSet(object):
         calibrator: BandToBand (B2B) or BandwidthSwitching (BWSW).
 
         Returns:
-            'B2B' if the ratio of frequencies between science target and reference spws is above 1.661;
-            'BWSW' if the ratio of bandwidths between reference and science target is above 1.5;
-            None if there is no DIFFGAIN intent in this MS.
+            'B2B' if the ratio of frequencies between on-source and reference spws is above 1.661;
+            'BWSW' if the ratio of bandwidths between reference and on-source is above 1.5;
+            None if there are no DIFFGAIN* intents in this MS.
 
         Raises:
-            ValueError if the DIFFGAIN intent is present in the MS, but either
-            a. the MS is missing diffgain reference or science SpWs
-            b. the SpW setup does not match either BandToBand or
-               BandwidthSwitching.
+            ValueError if the DIFFGAIN* intents are present in the MS, but either
+            a. the MS is missing diffgain reference or on-source SpWs
+            b. the SpW setup does not match either BandToBand or BandwidthSwitching.
         """
-        if 'DIFFGAIN' in self.intents:
-            # Retrieve diffgain reference and diffgain science SpWs.
-            dg_refspws, dg_scispws = self.get_diffgain_spectral_windows()
+        if 'DIFFGAINREF' in self.intents or 'DIFFGAINSRC' in self.intents:
+            # Retrieve diffgain reference and diffgain on-source SpWs.
+            dg_refspws = self.get_spectral_windows(intent='DIFFGAINREF')
             if not dg_refspws:
-                raise ValueError(f'DIFFGAIN intent missing in calibration sources for dataset {self.basename}')
-            if not dg_scispws:
-                raise ValueError(f'DIFFGAIN intent missing in science sources for dataset {self.basename}')
+                raise ValueError(f'DIFFGAINREF intent missing in calibration sources for dataset {self.basename}')
+            dg_srcspws = self.get_spectral_windows(intent='DIFFGAINSRC')
+            if not dg_srcspws:
+                raise ValueError(f'DIFFGAINSRC intent missing in science sources for dataset {self.basename}')
 
             # Retrieve the center frequency and bandwidth from the first
-            # diffgain science SpW and first diffgain reference SpW. The setup
+            # diffgain on-source SpW and first diffgain reference SpW. The setup
             # is expected to be the same for all SpWs.
             refcent = dg_refspws[0].centre_frequency.value
-            scicent = dg_scispws[0].centre_frequency.value
+            scicent = dg_srcspws[0].centre_frequency.value
             refwidth = dg_refspws[0].bandwidth.value
-            sciwidth = dg_scispws[0].bandwidth.value
+            sciwidth = dg_srcspws[0].bandwidth.value
 
             # [at least] one of the above conditions has to be satisfied
             if scicent/refcent > 1.661:  # simple ratio to be out of band Cycle 10

@@ -650,9 +650,9 @@ class Correctedampflag(basetask.StandardTaskTemplate):
             # If no valid fields were found, raise warning, and continue to
             # next intent. The following intents are optional and do not require
             # a warning: CHECK (PIPE-281), POLANGLE, POLLEAKAGE (PIPE-607),
-            # DIFFGAIN (PIPE-2082).
+            # DIFFGAINREF, DIFFGAINSRC (PIPE-2082, PIPE-2145).
             if not valid_fields:
-                if intent not in ['CHECK', 'DIFFGAIN', 'POLANGLE', 'POLLEAKAGE']:
+                if intent not in ['CHECK', 'DIFFGAINREF', 'DIFFGAINSRC', 'POLANGLE', 'POLLEAKAGE']:
                     LOG.warning("Invalid data selection for given intent(s) and field(s): fields {} do not include"
                                 " intent \'{}\'.".format(utils.commafy(utils.safe_split(inputs.field)), intent))
                 continue

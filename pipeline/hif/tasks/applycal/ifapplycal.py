@@ -15,8 +15,8 @@ class IFApplycalInputs(applycal.ApplycalInputs):
 
     # Override h_applycal default, adding polarisation (PIPE-600) and diffgain
     # (PIPE-2088) to calibrator intents.
-    intent = vdp.VisDependentProperty(
-        default='TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK,DIFFGAIN,POLARIZATION,POLANGLE,POLLEAKAGE')
+    intent = vdp.VisDependentProperty(default='TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK,DIFFGAINREF,DIFFGAINSRC,'
+                                              'POLARIZATION,POLANGLE,POLLEAKAGE')
 
     def __init__(self, context, output_dir=None, vis=None, field=None, spw=None, antenna=None, intent=None, parang=None,
                  applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None,

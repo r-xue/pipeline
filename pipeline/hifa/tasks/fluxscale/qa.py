@@ -200,27 +200,29 @@ def _compute_snr_info(context: Context, ms: MeasurementSet, spwids: Iterable[int
         LOG.info(f"{ms.basename}: computing SNR info for phase calibrator.")
         snr_info = _compute_snr_info_for_intent(context, ms, caltable_path, spws, intent='PHASE')
     # For a BandToBand dataset, the PHASE field will only cover the diffgain
-    # reference SpWs. To also obtain SNR estimates for the diffgain science
+    # reference SpWs. To also obtain SNR estimates for the diffgain on-source
     # SpWs, a separate SNR assessment needs to be run using the CHECK source
     # field.
     else:
-        # First split the requested SpW IDs into diffgain reference and science
-        # SpWs.
-        dg_ref_spws, dg_sci_spws = ms.get_diffgain_spectral_windows(task_arg=','.join(str(s) for s in spwids))
+        # First split the requested SpW IDs into diffgain reference and
+        # on-source SpWs.
+        spw_str = ','.join(str(s) for s in spwids)
+        dg_refspws = ms.get_spectral_windows(task_arg=spw_str, intent='DIFFGAINREF')
+        dg_srcspws = ms.get_spectral_windows(task_arg=spw_str, intent='DIFFGAINSRC')
 
         # Compute the SNR estimates for the diffgain reference SpWs.
         LOG.info(f"{ms.basename} is a BandToBand project: computing SNR info for diffgain reference SpWs using the"
                  f" phase calibrator.")
-        snf_info_dg_ref = _compute_snr_info_for_intent(context, ms, caltable_path, dg_ref_spws, intent='PHASE')
+        snr_info_dg_ref = _compute_snr_info_for_intent(context, ms, caltable_path, dg_refspws, intent='PHASE')
 
-        # Compute the SNR estimates for the diffgain science SpWs.
-        LOG.info(f"{ms.basename} is a BandToBand project: computing SNR info for diffgain science SpWs using the check"
-                 f" source.")
-        snr_info_dg_sci = _compute_snr_info_for_intent(context, ms, caltable_path, dg_sci_spws, intent='CHECK')
+        # Compute the SNR estimates for the diffgain on-source SpWs.
+        LOG.info(f"{ms.basename} is a BandToBand project: computing SNR info for diffgain on-source SpWs using the"
+                 f" check source.")
+        snr_info_dg_src = _compute_snr_info_for_intent(context, ms, caltable_path, dg_srcspws, intent='CHECK')
 
         # Merge the resulting dictionaries, keeping only the SpW keys.
-        snr_info = {k: v for k, v in snf_info_dg_ref.items() if k in spwids}
-        snr_info.update({k: v for k, v in snr_info_dg_sci.items() if k in spwids})
+        snr_info = {k: v for k, v in snr_info_dg_ref.items() if k in spwids}
+        snr_info.update({k: v for k, v in snr_info_dg_src.items() if k in spwids})
 
     return snr_info
 
@@ -424,12 +426,14 @@ def _get_highest_snr_spw(snr_info: dict, flux_measurements: Iterable[FluxMeasure
     spws = ms.get_spectral_windows(','.join(str(m.spw_id) for m in flux_measurements))
     # PIPE-2083: for BandToBand datasets, override the selection if the intents
     # cover either PHASE or CHECK, to restrict to just the diffgain reference
-    # (for PHASE) or diffgain science (for CHECK) SpWs.
+    # SpWs for PHASE intent or diffgain on-source SpWs for CHECK intent.
     if ms.is_band_to_band:
         if 'PHASE' in msg_intents:
-            spws, _ = ms.get_diffgain_spectral_windows(','.join(str(m.spw_id) for m in flux_measurements))
+            spws = ms.get_spectral_windows(task_arg=','.join(str(m.spw_id) for m in flux_measurements),
+                                           intent='DIFFGAINREF')
         elif 'CHECK' in msg_intents:
-            _, spws = ms.get_diffgain_spectral_windows(','.join(str(m.spw_id) for m in flux_measurements))
+            spws = ms.get_spectral_windows(task_arg=','.join(str(m.spw_id) for m in flux_measurements),
+                                           intent='DIFFGAINSRC')
 
     # discard narrow windows < 1GHz
     spw_snr_candidates = [spw for spw in spws if spw.bandwidth >= one_ghz]

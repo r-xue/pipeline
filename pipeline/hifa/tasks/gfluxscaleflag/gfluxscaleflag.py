@@ -70,19 +70,19 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def intent(self):
         # By default, this task will run for AMPLITUDE, PHASE, CHECK, and
-        # DIFFGAIN intents.
-        intents_to_flag = 'AMPLITUDE,PHASE,CHECK,DIFFGAIN'
+        # DIFFGAIN* intents.
+        intents_to_flag = 'AMPLITUDE,PHASE,CHECK,DIFFGAINREF,DIFFGAINSRC'
 
         # Check if any of the AMPLITUDE intent fields were also used for
         # BANDPASS, in which case it has already been flagged by
         # hifa_bandpassflag, and this task will just do PHASE, CHECK, and
-        # DIFFGAIN fields. This assumes that there will only be 1 field for
+        # DIFFGAIN* fields. This assumes that there will only be 1 field for
         # BANDPASS and 1 field for AMPLITUDE (which can be the same), which is
         # valid as of Cycle 5.
         for field in self.ms.get_fields(intent='AMPLITUDE'):
             for fieldintent in field.intents:
                 if 'BANDPASS' in fieldintent:
-                    intents_to_flag = 'PHASE,CHECK,DIFFGAIN'
+                    intents_to_flag = 'PHASE,CHECK,DIFFGAINREF,DIFFGAINSRC'
         return intents_to_flag
 
     minsnr = vdp.VisDependentProperty(default=2.0)
@@ -412,10 +412,11 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
 
         # PIPE-2082: the phase solves for the diffgain calibrator should always
         # use combine='', gaintype='G', and no spwmap or interp.
-        if 'DIFFGAIN' in inputs.intent and inputs.ms.get_fields(intent='DIFFGAIN'):
+        if ('DIFFGAINSRC' in inputs.intent or 'DIFFGAINREF' in inputs.intent) \
+                and inputs.ms.get_fields(intent='DIFFGAINREF,DIFFGAINSRC'):
             LOG.info('Compute phase gaincal table for diffgain calibrator.')
-            self._do_gaincal(intent='DIFFGAIN', gaintype='G', calmode='p', combine='', solint=inputs.phaseupsolint,
-                             minsnr=inputs.minsnr, refant=inputs.refant)
+            self._do_gaincal(intent='DIFFGAINREF,DIFFGAINSRC', gaintype='G', calmode='p', combine='',
+                             solint=inputs.phaseupsolint, minsnr=inputs.minsnr, refant=inputs.refant)
 
         # PIPE-1154: for PHASE calibrator and CHECK source fields, create
         # separate phase solutions for each combination of intent, field, and

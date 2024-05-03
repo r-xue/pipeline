@@ -139,19 +139,20 @@ def get_solution_map(ms: MeasurementSet, is_single_dish: bool) -> List[Gainfield
 
     else:
         # Intent mapping extracted from CAS-12213 ticket.
-        # PIPE-2080: updated to add mapping for DIFFGAIN intent.
+        # PIPE-2080: updated to add mapping for DIFFGAINREF, DIFFGAINSRC intent.
         #
         # ObjectToBeCalibrated 	TsysSolutionToUse 	IfNoSolutionPresentThenUse
         # BANDPASS cal 	        all BANDPASS cals 	fallback to 'nearest'
         # FLUX cal 	            all FLUX cals 	    fallback to 'nearest'
-        # DIFFGAIN              all DIFFGAIN cals 	fallback to BANDPASS
+        # DIFFGAIN[REF|SRC]     all DIFFGAIN cals 	fallback to BANDPASS
         # PHASE cal 	        all PHASE cals 	    all TARGETs
         # TARGET 	            all TARGETs 	    all PHASE cals
         # CHECK_SOURCE        	all TARGETs     	all PHASE cals
         return [
             GainfieldMapping(intent='BANDPASS', preferred=f('BANDPASS'), fallback='nearest'),
             GainfieldMapping(intent='AMPLITUDE', preferred=f('AMPLITUDE'), fallback='nearest'),
-            GainfieldMapping(intent='DIFFGAIN', preferred=f('DIFFGAIN'), fallback=f('BANDPASS')),
+            GainfieldMapping(intent='DIFFGAINREF', preferred=f('DIFFGAINREF'), fallback=f('BANDPASS')),
+            GainfieldMapping(intent='DIFFGAINSRC', preferred=f('DIFFGAINSRC'), fallback=f('BANDPASS')),
             GainfieldMapping(intent='PHASE', preferred=f('PHASE'), fallback=f('TARGET')),
             GainfieldMapping(intent='TARGET', preferred=f('TARGET'), fallback=f('PHASE')),
             GainfieldMapping(intent='CHECK', preferred=f('TARGET'), fallback=f('PHASE')),

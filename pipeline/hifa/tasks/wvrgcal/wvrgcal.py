@@ -344,10 +344,10 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         # on SpW bandwidth and Tsys; otherwise use the specified order.
         if inputs.qa_spw == '':
             # PIPE-2056: if the observing mode is band-to-band, then restrict
-            # the list of QA SpWs to only the diffgain science SpWs, otherwise
+            # the list of QA SpWs to only the diffgain on-source SpWs, otherwise
             # use all science SpWs.
             if inputs.ms.is_band_to_band:
-                _, spws = inputs.ms.get_diffgain_spectral_windows()
+                spws = inputs.ms.get_spectral_windows(intent='DIFFGAINSRC')
             else:
                 spws = inputs.ms.get_spectral_windows(science_windows_only=True)
 
