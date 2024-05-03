@@ -929,7 +929,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 min_cell = cells[spwspec] if (qaTool.convert(cells[spwspec][0], 'arcsec')['value'] < qaTool.convert(min_cell[0], 'arcsec')['value']) else min_cell
                         # Rounding to two significant figures
                         min_cell = ['%.2g%s' % (qaTool.getvalue(min_cell[0]), qaTool.getunit(min_cell[0]))]
-                        # Use same cell size for all spws (in a band (TODO))
                         # Need to populate all spw keys because the imsize heuristic picks
                         # up the lowest frequency spw.
                         for spwspec in all_spw_keys:
@@ -1015,7 +1014,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                             if max_x_size == 1 or max_y_size == 1:
                                 LOG.error('imsize of [{:d}, {:d}] for field {!s} intent {!s} spw {!s} is degenerate.'.format(max_x_size, max_y_size, field_intent[0], field_intent[1], min_freq_spwlist))
                             else:
-                                # Use same size for all spws (in a band (TODO))
                                 # Need to populate all spw keys because the imsize for the cont
                                 # target is taken from this dictionary.
                                 for spwspec in all_spw_keys:
