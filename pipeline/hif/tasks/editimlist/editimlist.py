@@ -446,7 +446,7 @@ class Editimlist(basetask.StandardTaskTemplate):
 
         # Fail if there is no field to image. This could occur if a field is requested that is not in the MS.
         # th.field will return [''] if no fields were found in the MS that match any input fields and intents
-        if fieldids[0] == '':
+        if len(fieldids) == 1 and fieldids[0] == '':
             msg = "Field(s): {} not present in MS: {}".format(','.join(fieldnames), ms.name)
             LOG.error(msg)
 
@@ -456,7 +456,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         else:
             sfpblimit = 0.2
 
-        if fieldids[0] != '':
+        if not (len(fieldids) == 1 and fieldids[0] == ''):
             imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                             primary_beam=largest_primary_beam,
                                             sfpblimit=sfpblimit, intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
