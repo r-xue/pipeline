@@ -114,12 +114,12 @@ class ImagePreCheckInputs(vdp.StandardInputs):
 
     calcsb = vdp.VisDependentProperty(default=False)
     parallel = vdp.VisDependentProperty(default='automatic')
-    srdp_desired_angular_resolution = vdp.VisDependentProperty(default='')
+    desired_angular_resolution = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, srdp_desired_angular_resolution=None, calcsb=None, parallel=None):
+    def __init__(self, context, vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
         self.context = context
         self.vis = vis
-        self.srdp_desired_angular_resolution = srdp_desired_angular_resolution
+        self.desired_angular_resolution = desired_angular_resolution
         self.calcsb = calcsb
         self.parallel = parallel
 
@@ -152,13 +152,10 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
         image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
 
-        if inputs.srdp_desired_angular_resolution in [None, '']:
+        if inputs.desired_angular_resolution in [None, '']:
             imaging_mode = 'ALMA'
         else:
-            # This imaging mode is presently only used by imageprecheck. It was
-            # added in PIPE-1712 to support merging hifas_imageprecheck with
-            # hifa_imageprecheck. It could be expanded to a fully
-            # fledged imaging mode in the future.
+_
             imaging_mode = 'ALMA-SRDP'
 
         image_heuristics = image_heuristics_factory.getHeuristics(
@@ -184,12 +181,12 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
 
         # Fetch angular resolution goals if they were entered via the task interface
         # See: PIPE-708, used only for SRDP, and PIPE-1712
-        if inputs.srdp_desired_angular_resolution not in [None, '']:
+        if inputs.desired_angular_resolution not in [None, '']:
             # Parse user angular resolution goal
-            if type(inputs.srdp_desired_angular_resolution) is str:
-                userAngResolution = cqa.quantity(inputs.srdp_desired_angular_resolution)
+            if type(inputs.desired_angular_resolution) is str:
+                userAngResolution = cqa.quantity(inputs.desired_angular_resolution)
             else:
-                userAngResolution = cqa.quantity('%.3garcsec' % inputs.srdp_desired_angular_resolution)
+                userAngResolution = cqa.quantity('%.3garcsec' % inputs.desired_angular_resolution)
             # Assume symmetric beam for now
             user_desired_beam = {'minor': cqa.convert(userAngResolution, 'arcsec'),
                                  'major': cqa.convert(userAngResolution, 'arcsec'),
@@ -534,11 +531,11 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         # The default ALMA IF recipe (non-SRDP) always uses the default_uvtaper
         hm_uvtaper = default_uvtaper
 
-        # The below is only run for SRDP. userAngResolution)[0] will be 0.0 unless srdp_desired_angular_resolution is
+        # The below is only run for SRDP. userAngResolution)[0] will be 0.0 unless desired_angular_resolution is
         # provided, which only occurs in the SRDP recipe.
         #
         # Determine non-default UV taper value if the best robust is 2.0 and the user requested resolution parameter
-        # (srdp_desired_angular_resolution) is set for SRDP. (PIPE-708)
+        # (desired_angular_resolution) is set for SRDP. (PIPE-708)
         #
         # Compute uvtaper for representative targets and also if representative target cannot be determined
         # (real_repr_target = False) for representative targets and if user set angular resolution goal.
