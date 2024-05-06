@@ -969,7 +969,7 @@ class ImageParamsHeuristics(object):
                     # One can not try the above "ms" object as it will be undefined when checking
                     # LF spws. So here just trying the first in the list.
                     checkMS = self.observing_run.get_ms(self.vislist[0])
-                    b2bMode = checkMS.is_band_to_band()
+                    b2bMode = checkMS.is_band_to_band
                 except:
                     b2bMode = False
                 if not b2bMode:
