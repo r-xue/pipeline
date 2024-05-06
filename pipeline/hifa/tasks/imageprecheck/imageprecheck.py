@@ -155,7 +155,18 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         if inputs.desired_angular_resolution in [None, '']:
             imaging_mode = 'ALMA'
         else:
-_
+            # This 'ALMA-SRDP' imaging mode is used when a value was
+            # provided for desired_angular_resolution. This is only done
+            # as part of the SRDP recipe (See: PIPE-1712)
+            #
+            # It's possible for the SRDP recipe to set
+            # desired_angular_resolution to '', but in this case,
+            # the 'ALMA' imaging mode can be used, because without
+            # a desired_angular_resolution, SRDP falls back to the
+            # default 'ALMA' behavior (no uvtaper).
+            #
+            # In the future, this could be expanded to be a more
+            # complete imaging mode.
             imaging_mode = 'ALMA-SRDP'
 
         image_heuristics = image_heuristics_factory.getHeuristics(
