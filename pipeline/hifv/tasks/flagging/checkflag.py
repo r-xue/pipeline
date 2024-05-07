@@ -154,6 +154,14 @@ class Checkflag(basetask.StandardTaskTemplate):
                                      merge='replace')
         self._executor.execute(job)
 
+        # back up flagversion with simple name to restore
+        # TODO: use original backup eventually
+        job = casa_tasks.flagmanager(vis=self.inputs.vis, mode='save',
+                                     versionname='before_rflag_statwt',
+                                     comment='flagversion before running hifv_checkflag() added',
+                                     merge='replace')
+        self._executor.execute(job)
+
         # decide on if we use cont.dat for target-vla
         use_contdat = False
         if self.inputs.checkflagmode == 'target-vla':

@@ -93,6 +93,8 @@ class Statwt(basetask.StandardTaskTemplate):
 
         wtables['after'] = self._make_weight_table(suffix='after')
 
+        casa_tasks.flagmanager(vis=self.inputs.vis, mode='save', versionname='rfi_flagged_statwt', merge='replace', comment='flagversion after running hifv_statwt()')
+
         return StatwtResults(jobs=[statwt_result], flag_summaries=flag_summaries, wtables=wtables)
 
     def analyse(self, results):
