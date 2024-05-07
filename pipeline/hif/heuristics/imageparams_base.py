@@ -692,7 +692,7 @@ class ImageParamsHeuristics(object):
         cqa = casa_tools.quanta
 
         # Return None for each return value if no fields are input
-        if fields[0] == '':
+        if len(fields) == 1 and fields[0] == '':
             if centreonly:
                 return None, None
             else:
