@@ -1,18 +1,17 @@
 import collections
 import os
+import shutil
 
 import matplotlib.pyplot as plt
 import numpy as np
-import shutil
 
 import pipeline.infrastructure.logging as logging
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.infrastructure import casa_tools, filenamer
 from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 from pipeline.infrastructure.mpihelpers import TaskQueue
 from pipeline.infrastructure.renderer import logger
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import filenamer
 
 LOG = logging.get_logger(__name__)
 
@@ -95,7 +94,7 @@ class SelfcalSummary(object):
             ms = self.context.observing_run.get_ms(vis)
             caltb_loc = os.path.join(self.scal_dir, gaintable)
             self.plot_ants_flagging_colored(figname, ms, caltb_loc)
-            nflagged_sols, nsols = self.get_sols_flagged_solns(caltb_loc)
+            nflagged_sols, nsols = self.get_sols_flagged_solns(caltb_loc, ms)
             antpos_plots[vis] = logger.Plot(figname, parameters={'nflagged_sols': nflagged_sols, 'nsols': nsols})
             antpos_plots[vis].parameters['title'] = 'Frac. Flagged Sol. Per Antenna'
             antpos_plots[vis].parameters['caption'] = f'Frac. Flagged Sol. Per Antenna<br>Solint: {solint}'
@@ -111,13 +110,14 @@ class SelfcalSummary(object):
         return image_plots, antpos_plots, phasefreq_plots
 
     @staticmethod
-    def get_sols_flagged_solns(gaintable):
+    def get_sols_flagged_solns(gaintable, ms):
 
         with casa_tools.TableReader(gaintable) as tb:
-            flags = tb.getcol('FLAG').squeeze()
+            npol = max([ms.get_data_description(int(spw)).num_polarizations for spw in tb.getcol('SPECTRAL_WINDOW_ID')])
+
+            flags = tb.getcol('FLAG')[range(npol)]
             nsols = flags.size
-            flagged_sols = np.where(flags == True)
-            nflagged_sols = flagged_sols[0].size
+            nflagged_sols = flags.sum()
 
         return nflagged_sols, nsols
 
@@ -191,12 +191,13 @@ class SelfcalSummary(object):
                     range(len(names))]
 
         with casa_tools.TableReader(gaintable) as tb:
+            npol = max([ms.get_data_description(int(spw)).num_polarizations for spw in tb.getcol('SPECTRAL_WINDOW_ID')])
             nflags = []
             nunflagged = []
             fracflagged = []
             for idx in range(len(names)):
                 tbant = tb.query(query='ANTENNA1=='+str(ids[idx]))
-                ant_flags = tbant.getcol('FLAG')
+                ant_flags = tbant.getcol('FLAG')[range(npol)]
                 if ant_flags.size == 0:
                     nflags.append(0)
                     nunflagged.append(0)

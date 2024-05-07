@@ -5,22 +5,21 @@ see: https://github.com/jjtobin/auto_selfcal
 
 import logging
 import os
-import time
-import numpy as np
 import shutil
+import time
 
 import casatools
+import numpy as np
 from casatasks import casalog
 
-import pipeline.infrastructure as infrastructure
 import pipeline.hif.heuristics.findrefant as findrefant
+import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.casa_tasks import casa_tasks as cts
 from pipeline.infrastructure.casa_tools import image as ia
 from pipeline.infrastructure.casa_tools import imager as im
-from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.casa_tools import msmd
-from pipeline.infrastructure import casa_tools
-
+from pipeline.infrastructure.casa_tools import table as tb
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -100,7 +99,7 @@ def fetch_scan_times(vislist, targets):
                 integrations = np.append(integrations, np.array([ints_per_scan]))
 
             scantimesdict[vis][target] = scantimes.copy()
-            #assume each band only has a single integration time
+            # assume each band only has a single integration time
             integrationtimesdict[vis][target] = np.median(integrationtimes)
             integrationsdict[vis][target] = integrations.copy()
         msmd.close()
@@ -156,7 +155,7 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
             mosaic_field[target] = {}
             mosaic_field[target]['field_ids'] = []
             mosaic_field[target]['mosaic'] = False
-            #mosaic_field[target]['field_ids']=msmd.fieldsforname(target)
+            # mosaic_field[target]['field_ids']=msmd.fieldsforname(target)
             mosaic_field[target]['field_ids'] = msmd.fieldsforscans(scansdict[vis][target])
             mosaic_field[target]['field_ids'] = list(set(mosaic_field[target]['field_ids']))
             if len(mosaic_field[target]['field_ids']) > 1:
@@ -185,7 +184,7 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
             scantimesdict[vis][target] = scantimes.copy()
             scanstartsdict[vis][target] = scanstarts.copy()
             scanendsdict[vis][target] = scanends.copy()
-            #assume each band only has a single integration time
+            # assume each band only has a single integration time
             integrationtimesdict[vis][target] = np.median(integrationtimes)
             integrationsdict[vis][target] = integrations.copy()
         msmd.close()
@@ -638,8 +637,8 @@ def get_SNR_self(
             solint_snr[target][band] = {}
             solint_snr_per_spw[target][band] = {}
             for solint in solints[band]:
-                #code to work around some VLA data not having the same number of spws due to missing BlBPs
-                #selects spwlist from the visibilities with the greates number of spws
+                # code to work around some VLA data not having the same number of spws due to missing BlBPs
+                # selects spwlist from the visibilities with the greates number of spws
                 maxspws = 0
                 maxspwvis = ''
                 for vis in vislist:
@@ -848,7 +847,7 @@ def get_spw_eff_bandwidth(vis, target, vislist, spwsarray_dict):
         msmd.close()
         trans_spw = -1
         # must directly cast to int, otherwise the CASA tool call does not like numpy.uint64
-        #loop through returned spws to see which is in the spw array rather than assuming, because assumptions be damned
+        # loop through returned spws to see which is in the spw array rather than assuming, because assumptions be damned
         for check_spw in spws[spwname]:
             matching_index = np.where(check_spw == spwsarray_dict[vis])
             if len(matching_index[0]) == 0:
@@ -856,7 +855,7 @@ def get_spw_eff_bandwidth(vis, target, vislist, spwsarray_dict):
             else:
                 trans_spw = check_spw
                 break
-        #trans_spw=int(np.max(spws[spwname])) # assume higher number spw is the correct one, generally true with ALMA data structure
+        # trans_spw=int(np.max(spws[spwname])) # assume higher number spw is the correct one, generally true with ALMA data structure
         cumulat_bw = 0.0
         for i in range(len(contdotdat[key])):
             cumulat_bw += np.abs(contdotdat[key][i][1]-contdotdat[key][i][0])
@@ -1111,11 +1110,11 @@ def get_VLA_bands(vislist, fields):
         spws_for_field = np.unique(spws_for_field)
         spws_for_field.sort()
         spws_for_field = spws_for_field.astype('int')
-        #visheader=vishead(vis,mode='list',listitems=[])
+        # visheader=vishead(vis,mode='list',listitems=[])
         tb.open(vis+'/SPECTRAL_WINDOW')
         spw_names = tb.getcol('NAME')
         tb.close()
-        #spw_names=visheader['spw_name'][0]
+        # spw_names=visheader['spw_name'][0]
         spw_names_band = ['']*len(spws_for_field)
         spw_names_band = ['']*len(spws_for_field)
         spw_names_bb = ['']*len(spws_for_field)
@@ -1294,16 +1293,6 @@ def compare_beams(image1, image2):
     return delta_beamarea
 
 
-def get_sols_flagged_solns(gaintable):
-    tb.open(gaintable)
-    flags = tb.getcol('FLAG').squeeze()
-    nsols = flags.size
-    flagged_sols = np.where(flags == True)
-    nflagged_sols = flagged_sols[0].size
-    tb.close()
-    return nflagged_sols, nsols
-
-
 def gaussian_norm(x, mean, sigma):
     gauss_dist = np.exp(-(x-mean)**2/(2*sigma**2))
     norm_gauss_dist = gauss_dist/np.max(gauss_dist)
@@ -1345,7 +1334,7 @@ def importdata(vislist, all_targets, telescope):
 
     for band in bands:
         LOG.info(band)
-        scantimesdict_temp, scanstartsdict_temp, scanendsdict_temp, integrationsdict_temp, integrationtimesdict_temp,\
+        scantimesdict_temp, scanstartsdict_temp, scanendsdict_temp, integrationsdict_temp, integrationtimesdict_temp, \
             integrationtimes_temp, n_spws_temp, minspw_temp, spwsarray_temp, spws_set_dict_temp, mosaic_field_temp = fetch_scan_times_band_aware(vislist, all_targets, band_properties, band)
 
         scantimesdict[band] = scantimesdict_temp.copy()
