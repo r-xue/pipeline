@@ -29,7 +29,7 @@ def sort_measurement_set(ms: MeasurementSet) -> Tuple[int, 'datetime']:
     data_types = set(itertools.chain(*ms.data_types_per_source_and_spw.values()))
     assert all([t in TYPE_PRIORITY_ORDER for t in data_types])
     if len(data_types) > 0:
-        data_priority = min([TYPE_PRIORITY_ORDER.index(t) for t in data_types])
+        data_priority = max([TYPE_PRIORITY_ORDER.index(t) for t in data_types])
     else:
         # no data type assignments, assign lowest priority (largest value)
         data_priority = len(TYPE_PRIORITY_ORDER)
