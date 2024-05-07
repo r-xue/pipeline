@@ -113,9 +113,15 @@ class SelfcalSummary(object):
     def get_sols_flagged_solns(gaintable, ms):
 
         with casa_tools.TableReader(gaintable) as tb:
-            npol = max([ms.get_data_description(int(spw)).num_polarizations for spw in tb.getcol('SPECTRAL_WINDOW_ID')])
-
-            flags = tb.getcol('FLAG')[range(npol)]
+            pol_id = list(dict.fromkeys(ms.get_data_description(
+                int(spw)).pol_id for spw in tb.getcol('SPECTRAL_WINDOW_ID')))[0]
+            corr_type = ms.polarizations[pol_id].corr_type_string
+            corr_type_all = sorted(ms.polarizations, key=lambda pol: len(
+                pol.corr_type_string), reverse=True)[0].corr_type_string
+            idx_pol_select = [corr_type_all.index(corr) for corr in corr_type]
+            flags = tb.getcol('FLAG')
+            if flags.shape[0] > len(idx_pol_select):
+                flags = flags[idx_pol_select]
             nsols = flags.size
             nflagged_sols = flags.sum()
 
@@ -191,18 +197,27 @@ class SelfcalSummary(object):
                     range(len(names))]
 
         with casa_tools.TableReader(gaintable) as tb:
-            npol = max([ms.get_data_description(int(spw)).num_polarizations for spw in tb.getcol('SPECTRAL_WINDOW_ID')])
+            pol_id = list(dict.fromkeys(ms.get_data_description(
+                int(spw)).pol_id for spw in tb.getcol('SPECTRAL_WINDOW_ID')))[0]
+            corr_type = ms.polarizations[pol_id].corr_type_string
+            corr_type_all = sorted(ms.polarizations, key=lambda pol: len(
+                pol.corr_type_string), reverse=True)[0].corr_type_string
+            idx_pol_select = [corr_type_all.index(corr) for corr in corr_type]
+            LOG.debug(f'correlation setup - all      : {corr_type_all}')
+            LOG.debug(f'correlation setup - caltable : {corr_type}')            
             nflags = []
             nunflagged = []
             fracflagged = []
             for idx in range(len(names)):
                 tbant = tb.query(query='ANTENNA1=='+str(ids[idx]))
-                ant_flags = tbant.getcol('FLAG')[range(npol)]
+                ant_flags = tbant.getcol('FLAG')
                 if ant_flags.size == 0:
                     nflags.append(0)
                     nunflagged.append(0)
                     fracflagged.append(np.nan)
                     continue
+                if ant_flags.shape[0] > len(idx_pol_select):
+                    ant_flags = ant_flags[idx_pol_select]
                 nflags.append(ant_flags.sum())
                 nunflagged.append(ant_flags.size - nflags[-1])
                 fracflagged.append(nflags[-1]/ant_flags.size)
@@ -314,7 +329,8 @@ class SelfcalSummary(object):
             else:
                 rms_theory = 0.0
 
-            noise_histogram_plots_path = os.path.join(self.stage_dir, 'sc.'+filenamer.sanitize(tb[0])+'_'+tb[1]+'_noise_plot.png')
+            noise_histogram_plots_path = os.path.join(
+                self.stage_dir, 'sc.'+filenamer.sanitize(tb[0])+'_'+tb[1]+'_noise_plot.png')
 
             self.create_noise_histogram_plots(
                 n_initial, n_final, intensity_initial, intensity_final, rms_inital, rms_final,
