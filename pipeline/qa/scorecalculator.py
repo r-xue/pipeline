@@ -1168,8 +1168,13 @@ def score_total_data_vla_delay(filename, m):
 @log_qa
 def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
     """
-    Take the RMS values of the residuals.
-    Input is a list of tuples with (rms, mean, count) per sources
+    score_vla_flux_residual_rms: calculates the score for pipeline task hifv_fluxboot
+
+    output: returns QAscore
+    --------- parameter descriptions ---------------------------------------------
+    fractional_residuals: Take the RMS values of the residuals.
+    nums_spws: number of spws
+    spixl: list of a spectral index
     """
 
     # PIPE-989, part a

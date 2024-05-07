@@ -88,6 +88,13 @@ class FluxbootQAHandler(pqa.QAPlugin):
         result.qa.pool.extend(scores)
 
     def getFractionalResiduals(self, webdicts):
+        """
+        getFractionalResiduals: calculate the fractional residuals
+
+        Output: returns a list of fractional residuals
+        --------- parameter descriptions ---------------------------------------------
+        webdicts: a dictionary containing data and fitted data
+        """
         fractional_residuals = []
         for source, datadicts in webdicts.items():
             try:
