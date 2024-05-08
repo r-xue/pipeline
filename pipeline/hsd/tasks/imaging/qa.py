@@ -22,7 +22,7 @@ class SDImagingQAHandler(pqa.QAPlugin):
         """
         This handles single SDImagingResultItem.
         """
-        # result.outcome should have 'image' 
+        # result.outcome should have 'image'
         if 'image' not in result.outcome:
             return
 
@@ -33,6 +33,9 @@ class SDImagingQAHandler(pqa.QAPlugin):
 
         score_masked = qacalc.score_sdimage_masked_pixels(context, result)
         result.qa.pool.append(score_masked)
+
+        score_contamination = qacalc.score_sdimage_contamination(context, result)
+        result.qa.pool.append(score_contamination)
 
 
 class SDImagingListQAHandler(pqa.QAPlugin):
@@ -47,7 +50,7 @@ class SDImagingListQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
-        collated = utils.flatten([r.qa.pool for r in result]) 
+        collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
 
 

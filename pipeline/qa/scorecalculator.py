@@ -3242,6 +3242,34 @@ def score_sdimage_masked_pixels(context, result):
 
 
 @log_qa
+def score_sdimage_contamination(context, result):
+    contaminated = result.outcome.get('contaminated', False)
+    imageitem = result.outcome['image']
+    field = imageitem.sourcename
+    spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+    if contaminated:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'Absorption feature was detected in the lower S/N area. '
+                'Please check calibration result in detail.')
+        smsg = 'Absorption feature was detected.'
+        score = 0.65
+    else:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'No absorption feature was detected.')
+        smsg = 'No absorption feature was detected.'
+        score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='SingleDishImageContamination',
+                          metric_score=contaminated,
+                          metric_units='Whether emission from OFF position contaminated or not')
+
+    return pqa.QAScore(score,
+                       longmsg=lmsg,
+                       shortmsg=smsg,
+                       origin=origin)
+
+
+@log_qa
 def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     """ Convert internal spw_id-spw_id consistency ratio to a QA score.
 
