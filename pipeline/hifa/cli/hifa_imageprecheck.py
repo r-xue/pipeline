@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_imageprecheck(vis=None, srdp_desired_angular_resolution=None, calcsb=None, parallel=None):
+def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
     """
     hifa_imageprecheck ---- Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.
 
