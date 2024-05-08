@@ -1186,7 +1186,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             for spwid in adjusted_spwspec.split(','):
                                 spwsel_spwid = spwsel_spwid_dict[spwid]
-                                if field_intent[1] == 'TARGET' and specmode in ('mfs', 'cont') and not no_cont_ranges:
+                                if 'ALMA' in imaging_mode and field_intent[1] == 'TARGET' and specmode in ('mfs', 'cont') and not no_cont_ranges:
                                     if spwsel_spwid == '':
                                         if specmode == 'cont':
                                             LOG.warning('Spw {!s} will not be used in creating the aggregate continuum image'
