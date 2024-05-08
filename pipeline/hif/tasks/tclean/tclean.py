@@ -349,13 +349,6 @@ class Tclean(cleanbase.CleanBase):
             #  antenna sizes are not listed) could be added in some future configurations by removing this character.
             inputs.antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&' for v in inputs.vis]
 
-        # Determine the phase center
-        if inputs.phasecenter in ('', None):
-            field_ids = self.image_heuristics.field(inputs.intent, inputs.field)
-            # TODO: This call will no longer work as expected after the PIPE-98 changes
-            #       (missing primary beam size and shift parameter compared to hif_makeimlist).
-            #       Need to decide whether to remove all hif_tclean fallback heuristics.
-            inputs.phasecenter, inputs.psf_phasecenter = self.image_heuristics.phasecenter(field_ids)
 
         # If imsize not set then use heuristic code to calculate the
         # centers for each field  / spw
