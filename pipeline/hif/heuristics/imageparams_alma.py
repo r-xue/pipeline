@@ -439,14 +439,21 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
     def threshold(self, iteration, threshold, hm_masking):
 
+        cqa = casa_tools.quanta
+
         if iteration == 0:
             return '0.0mJy'
         elif iteration == 1:
-            return threshold
+            maxthreshold = self.imaging_params.get('maxthreshold', None)
+            if maxthreshold and threshold and cqa.gt(threshold, maxthreshold):
+                LOG.info(
+                    f'Switching to use the pre-defined threshold upper limit value of {maxthreshold} instead of {threshold}')
+                return maxthreshold
+            else:
+                return threshold
         else:
             # Fallback to circular mask if auto-boxing fails.
             # CAS-10489: old centralregion option needs higher threshold
-            cqa = casa_tools.quanta
             return '%sJy' % (cqa.getvalue(cqa.mul(threshold, 2.0))[0])
 
     def intent(self):
