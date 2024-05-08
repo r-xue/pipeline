@@ -727,11 +727,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     if field_domain_objs != []:
                                         field_domain_obj = field_domain_objs[0]
                                         # Get all science spw IDs for this field and record the ones that are present in this MS
-                                        field_science_spwids = [spw_domain_obj.id for spw_domain_obj in field_domain_obj.valid_spws if spw_domain_obj.id in ms_science_spwids]
+                                        field_intent_science_spwids = [spw_domain_obj.id for spw_domain_obj in field_domain_obj.valid_spws if spw_domain_obj.id in ms_science_spwids and field_intent[1] in spw_domain_obj.intents]
                                         # Record the virtual spwids
                                         spwids_per_vis_and_field = [
                                             inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj)
-                                            for spwid in field_science_spwids
+                                            for spwid in field_intent_science_spwids
                                             if inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) in list(map(int, spwids))]
                                     else:
                                         spwids_per_vis_and_field = []
