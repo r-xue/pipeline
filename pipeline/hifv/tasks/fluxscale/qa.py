@@ -1,5 +1,4 @@
 import collections
-import collections.abc
 import os
 import numpy as np
 
