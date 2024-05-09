@@ -132,7 +132,7 @@ class FluxbootListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing FluxbootResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = FluxbootResults
 
     def handle(self, context, result):
