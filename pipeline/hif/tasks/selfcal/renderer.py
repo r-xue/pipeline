@@ -135,6 +135,9 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             else:
                 return '<span class="glyphicon glyphicon-remove"></span>'
 
+        def color_success(str):
+            return f'<b><a style="color:blue">{str}</a></b>'
+
         for target in targets:
             row = []
             valid_chars = "%s%s" % (string.ascii_letters, string.digits)
@@ -146,6 +149,9 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             row.append(target['cell'])
             row.append(target['imsize'])
             row.append(', '.join(target['sc_solints']))
+            if target['sc_lib']['SC_success']:
+                final_solint = target['sc_lib']['final_solint']
+                row[-1] = row[-1].replace(final_solint, color_success(final_solint))
             row.append(bool2icon(target['sc_lib']['SC_success']))
             row.append(bool2icon(target['sc_lib']['SC_success'] and r.applycal_result_contline is not None))
             row.append(bool2icon(target['sc_lib']['SC_success'] and r.applycal_result_line is not None))
