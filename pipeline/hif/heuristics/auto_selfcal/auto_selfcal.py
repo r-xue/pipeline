@@ -208,6 +208,7 @@ class SelfcalHeuristics(object):
                        'fullsummary': False,
                        'verbose': True}
 
+        tc_ret = None
         if not savemodel_only:
             if not resume:
                 image_exts = ['.image*', '.mask', '.model*', '.pb*', '.psf*', '.residual*',
@@ -233,6 +234,8 @@ class SelfcalHeuristics(object):
                                 'parallel': parallel,
                                 'startmodel': ''})
             tc_ret = self.cts.tclean(**tclean_args)
+
+        return tc_ret
 
     def remove_dirs(self, dir_names):
         """Remove dirs based on a list of glob pattern."""
@@ -351,16 +354,15 @@ class SelfcalHeuristics(object):
                         sensitivity = sensitivity  # *4.0  might be unnecessary with DR mods
                 else:
                     sensitivity = 0.0
-                self.tclean_wrapper(
-                    vislist, sani_target + '_' + band + '_initial', band_properties, band, telescope=self.telescope, nsigma=4.0,
-                    scales=[0],
+                initial_tclean_return = self.tclean_wrapper(
+                    vislist, sani_target + '_' + band + '_initial', band_properties, band, telescope=self.telescope,
+                    nsigma=4.0, scales=[0],
                     threshold=str(sensitivity * 4.0) + 'Jy', savemodel='none', parallel=parallel, cellsize=cellsize,
-                    imsize=imsize,
-                    nterms=selfcal_library[target][band]['nterms'],
+                    imsize=imsize, nterms=selfcal_library[target][band]['nterms'],
                     field=self.field, spw=selfcal_library[target][band]['spws_per_vis'],
                     uvrange=selfcal_library[target][band]['uvrange'],
                     obstype=selfcal_library[target][band]['obstype'],
-                    nfrms_multiplier=dirty_NF_RMS/dirty_RMS)
+                    nfrms_multiplier=dirty_NF_RMS / dirty_RMS)
                 initial_SNR, initial_RMS = estimate_SNR(sani_target+'_'+band+'_initial.image.tt0')
                 if self.telescope != 'ACA':
                     initial_NF_SNR, initial_NF_RMS = estimate_near_field_SNR(
@@ -371,8 +373,13 @@ class SelfcalHeuristics(object):
                     bm = image.restoringbeam(polarization=0)
                 if self.telescope == 'ALMA' or self.telescope == 'ACA':
                     selfcal_library[target][band]['theoretical_sensitivity'] = sensitivity_nomod
+                    selfcal_library[target][band]['clean_threshold_orig'] = sensitivity*4.0
                 if 'VLA' in self.telescope:
                     selfcal_library[target][band]['theoretical_sensitivity'] = -99.0
+                    if initial_tclean_return is not None and initial_tclean_return['iterdone'] > 0:
+                        selfcal_library[target][band]['clean_threshold_orig'] = initial_tclean_return['summaryminor'][0][0][0]['peakRes'][-1]
+                    else:
+                        selfcal_library[target][band]['clean_threshold_orig'] = 4.0*initial_RMS
                 selfcal_library[target][band]['SNR_orig'] = initial_SNR
                 if selfcal_library[target][band]['nterms'] < 2:
                     # updated nterms if needed based on S/N and fracbw
@@ -1112,11 +1119,17 @@ class SelfcalHeuristics(object):
             for band in selfcal_library[target].keys():
                 vislist = selfcal_library[target][band]['vislist'].copy()
                 nfsnr_modifier = selfcal_library[target][band]['RMS_NF_curr'] / selfcal_library[target][band]['RMS_curr']
+                clean_threshold = min(
+                    selfcal_library[target][band]['clean_threshold_orig'],
+                    selfcal_library[target][band]['RMS_NF_curr'] * 3.0)
+                if selfcal_library[target][band]['clean_threshold_orig'] < selfcal_library[target][band][
+                        'RMS_NF_curr'] * 3.0:
+                    LOG.warning(
+                        "The clean threshold used for the initial image was less than 3*RMS_NF_curr, using that for the final image threshold instead.")
                 self.tclean_wrapper(
-                    vislist, sani_target + '_' + band + '_final', band_properties, band, telescope=self.telescope, nsigma=3.0,
-                    threshold=str(selfcal_library[target][band]['RMS_curr']*3.0) + 'Jy', scales=[0],
-                    savemodel='none', parallel=parallel, cellsize=cellsize,
-                    imsize=imsize,
+                    vislist, sani_target + '_' + band + '_final', band_properties, band, telescope=self.telescope,
+                    nsigma=3.0, threshold=str(clean_threshold) + 'Jy', scales=[0],
+                    savemodel='none', parallel=parallel, cellsize=cellsize, imsize=imsize,
                     nterms=selfcal_library[target][band]['nterms'],
                     field=self.field, datacolumn='corrected', spw=selfcal_library[target][band]['spws_per_vis'],
                     uvrange=selfcal_library[target][band]['uvrange'],
