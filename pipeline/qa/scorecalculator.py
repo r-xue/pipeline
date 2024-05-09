@@ -3262,11 +3262,15 @@ def score_sdimage_contamination(context, result):
     origin = pqa.QAOrigin(metric_name='SingleDishImageContamination',
                           metric_score=contaminated,
                           metric_units='Whether emission from OFF position contaminated or not')
-
+    selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
+                                        field=set(result.outcome['assoc_fields']),
+                                        intent={'TARGET'},
+                                        pol={'I'})
     return pqa.QAScore(score,
                        longmsg=lmsg,
                        shortmsg=smsg,
-                       origin=origin)
+                       origin=origin,
+                       applies_to=selection)
 
 
 @log_qa
