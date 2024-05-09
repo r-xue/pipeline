@@ -1,4 +1,5 @@
 import collections
+import collections.abc
 import os
 import numpy as np
 
@@ -37,7 +38,7 @@ class SolintListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing SolintResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = solint.SolintResults
     generating_task = solint.Solint
 
