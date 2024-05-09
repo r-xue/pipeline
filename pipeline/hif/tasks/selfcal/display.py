@@ -358,8 +358,13 @@ class SelfcalSummary(object):
         ax.step(intensity_2, N_2/np.max(N_2), label='Final Data')
         ax.plot(intensity_1, gaussian_norm(intensity_1, 0, rms_1), label='Initial Gaussian')
         ax.plot(intensity_2, gaussian_norm(intensity_2, 0, rms_2), label='Final Gaussian')
+        xlim = ax.get_xlim()
+        xrange = abs(xlim[1]-xlim[0])
         if rms_theory != 0.0:
-            ax.plot([-1.0*rms_theory, rms_theory], [0.606, 0.606], label='Theoretical Sensitivity')
+            alpha_plot = max(-1.0*9.0*2.0*rms_theory/xrange*0.75 + 1.0, 0.25)
+            x_model = np.arange(xlim[0], xlim[1], abs(intensity_2[1]-intensity_2[0]))
+            ax.fill(x_model, gaussian_norm(x_model, 0, rms_theory),
+                    color='gray', label='Theoretical Sensitivity', alpha=alpha_plot)
         ax.legend(fontsize=10)
         ax.set_xlabel('Intensity (mJy/Beam)')
         ax.set_ylabel('N')
