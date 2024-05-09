@@ -21,7 +21,8 @@ def sort_measurement_set(ms: MeasurementSet) -> Tuple[int, 'datetime']:
     Sort key consists of data priority and observation start time.
     Data priority is determined from the data types of given
     measurement set. Sort order of the data types is defined in
-    DATA_TYPE_PRIORITY list. No data type corresponds to the last.
+    DATA_TYPE_PRIORITY list. If no DataType is set to the MS,
+    the lowest priority is assigned to the MS.
 
     Returns:
         Data priority and observation start time
