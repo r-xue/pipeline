@@ -124,7 +124,7 @@ def detect_contamination(context: 'Context',
                       freq_spec, dir_spec)
 
     # Issue a warning if an absorption feature is detected
-    contaminated = _warn_deep_absorption_feature(masked_average_spectrum, item)
+    contaminated = _detect_deep_absorption_feature(masked_average_spectrum)
 
     return contaminated
 
@@ -510,17 +510,14 @@ def _configure_axis(axis: 'Axis',
     axis.set_tick_params(rotation=rotation)
 
 
-def _warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D',
-                                  imageitem: Optional['ImageItem']=None) -> bool:
+def _detect_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D') -> bool:
     """
-    Warn if a strong absorption feature is detected in the spectrum.
+    Check if a strong absorption feature exists in the spectrum.
 
     This function checks the masked average spectrum for any strong absorption features.
-    If detected, it logs a warning message with details about the image item (if provided).
 
     Args:
         masked_average_spectrum (NpArray1D): 1D array of the average spectrum of the masked regions.
-        imageitem (Optional['ImageItem']): ImageItem object containing details about the image. Defaults to None.
 
     Returns:
         True if contamination was detected, False otherwise.
@@ -530,19 +527,6 @@ def _warn_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D',
 
     # Determine if the spectrum has a strong absorption feature
     _has_strong_absorption = np.nanmin(masked_average_spectrum) <= STDDEV_THRESHOLD_FACTOR * std_value
-
-    # If a strong absorption feature is detected, log a warning message
-    if _has_strong_absorption:
-        if imageitem is not None:
-            field = imageitem.sourcename
-            spw = ','.join(map(str, np.unique(imageitem.spwlist)))
-            warning_sentence = (f'Field {field} Spw {spw}: '
-                                'Absorption feature was detected in the lower S/N area. '
-                                'Please check calibration result in detail.')
-        else:
-            warning_sentence = ('Absorption feature was detected but an image item was not specificated. '
-                                'Please check calibration result in detail.')
-        LOG.warning(warning_sentence)
 
     return _has_strong_absorption
 
