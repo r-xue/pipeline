@@ -1093,7 +1093,7 @@ def get_ALMA_bands(vislist, spwstring, spwarray):
                 observed_bands[vis][band]['maxfreq'] = maxfreq
                 observed_bands[vis][band]['minfreq'] = minfreq
                 observed_bands[vis][band]['fracbw'] = fracbw
-    get_max_uvdist(vislist, observed_bands[vislist[0]]['bands'].copy(), observed_bands)
+    get_max_uvdist(vislist, observed_bands[vislist[0]]['bands'].copy(), observed_bands, telescope='ALMA')
     return bands, observed_bands
 
 
@@ -1166,7 +1166,7 @@ def get_VLA_bands(vislist, fields):
                 bands_match = False
     if not bands_match:
         LOG.warning('Inconsistent VLA bands are detected in the input MSs.')
-    get_max_uvdist(vislist, observed_bands[vislist[0]]['bands'].copy(), observed_bands)
+    get_max_uvdist(vislist, observed_bands[vislist[0]]['bands'].copy(), observed_bands, telescope='VLA')
     return observed_bands[vislist[0]]['bands'].copy(), observed_bands
 
 
@@ -1239,7 +1239,7 @@ def get_baseline_dist(vis):
     return baselines
 
 
-def get_max_uvdist(vislist, bands, band_properties):
+def get_max_uvdist(vislist, bands, band_properties, telescope='VLA'):
     for band in bands:
         all_baselines = np.array([])
         for vis in vislist:
@@ -1247,17 +1247,23 @@ def get_max_uvdist(vislist, bands, band_properties):
             all_baselines = np.append(all_baselines, baselines)
         max_baseline = np.max(all_baselines)
         min_baseline = np.min(all_baselines)
-        baseline_5 = np.percentile(all_baselines, 5.0)
+
+        if 'VLA' in telescope:
+            baseline_5 = np.percentile(all_baselines[all_baselines > 0.05*all_baselines.max()], 5.0)
+        else:  # ALMA
+            baseline_5 = np.percentile(all_baselines, 5.0)
+
         baseline_75 = np.percentile(all_baselines, 75.0)
         baseline_median = np.percentile(all_baselines, 50.0)
         for vis in vislist:
+            meanlam = 3.0e8/band_properties[vis][band]['meanfreq']
             max_uv_dist = max_baseline  # leave maxuv in meters like the other uv entries /meanlam/1000.0
             min_uv_dist = min_baseline
             band_properties[vis][band]['maxuv'] = max_uv_dist
             band_properties[vis][band]['minuv'] = min_uv_dist
             band_properties[vis][band]['75thpct_uv'] = baseline_75
             band_properties[vis][band]['median_uv'] = baseline_median
-            band_properties[vis][band]['LAS'] = 0.6 / (1000*baseline_5) * 180./np.pi * 3600.
+            band_properties[vis][band]['LAS'] = 0.6 * (meanlam/baseline_5) * 180./np.pi * 3600.
 
 
 def get_uv_range(band, band_properties, vislist):
