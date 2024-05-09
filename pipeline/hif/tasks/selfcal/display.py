@@ -46,11 +46,11 @@ class SelfcalSummary(object):
         return im_initial, im_final
 
     def _im_rootname(self):
-        return os.path.join(self.scal_dir, filenamer.sanitize(self.field)+'_'+self.band)
+        return os.path.join(self.scal_dir, 'sc.'+filenamer.sanitize(self.field)+'_'+self.band)
 
     def _im_solname(self, solint):
         idx = self.solints.index(solint)
-        return os.path.join(self.scal_dir, filenamer.sanitize(self.field)+'_'+self.band+'_'+solint+'_'+str(idx))
+        return os.path.join(self.scal_dir, 'sc.'+filenamer.sanitize(self.field)+'_'+self.band+'_'+solint+'_'+str(idx))
 
     @matplotlibrc_formal
     def plot_qa(self, solint):
@@ -313,7 +313,7 @@ class SelfcalSummary(object):
             else:
                 rms_theory = 0.0
 
-            noise_histogram_plots_path = os.path.join(self.stage_dir, filenamer.sanitize(tb[0])+'_'+tb[1]+'_noise_plot.png')
+            noise_histogram_plots_path = os.path.join(self.stage_dir, 'sc.'+filenamer.sanitize(tb[0])+'_'+tb[1]+'_noise_plot.png')
 
             self.create_noise_histogram_plots(
                 n_initial, n_final, intensity_initial, intensity_final, rms_inital, rms_final,

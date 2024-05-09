@@ -570,8 +570,10 @@ def get_intflux(imagename, rms, maskname=None):
         pix_per_beam = beamarea/cellarea
 
         if maskname is None:
-            maskname = imagename.replace('image.tt0', 'mask')
-        imagestats = image.statistics(mask=maskname)
+            mask = None
+        else:
+            mask = f'"{imagename.replace("image.tt0", "mask")}"'
+        imagestats = image.statistics(mask=mask)
 
     if len(imagestats['flux']) > 0:
         flux = imagestats['flux'][0]
