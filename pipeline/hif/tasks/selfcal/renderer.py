@@ -148,10 +148,12 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             row.append(target['phasecenter'])
             row.append(target['cell'])
             row.append(target['imsize'])
-            row.append(', '.join(target['sc_solints']))
             if target['sc_lib']['SC_success']:
                 final_solint = target['sc_lib']['final_solint']
-                row[-1] = row[-1].replace(final_solint, color_success(final_solint))
+                sc_solints_list = [color_success(final_solint) if solint == final_solint else solint for solint in target['sc_solints']]
+            else:
+                sc_solints_list = target['sc_solints']
+            row.append(', '.join(sc_solints_list))
             row.append(bool2icon(target['sc_lib']['SC_success']))
             row.append(bool2icon(target['sc_lib']['SC_success'] and r.applycal_result_contline is not None))
             row.append(bool2icon(target['sc_lib']['SC_success'] and r.applycal_result_line is not None))

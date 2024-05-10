@@ -1022,6 +1022,12 @@ class SelfcalHeuristics(object):
                         if ((post_SNR >= SNR) and (delta_beamarea < self.delta_beam_thresh)) or ((solint == 'inf_EB') and ((post_SNR-SNR)/SNR > -0.02) and (delta_beamarea < self.delta_beam_thresh)):
                             selfcal_library[target][band]['SC_success'] = True
                             selfcal_library[target][band]['Stop_Reason'] = 'None'
+                            # keep track of whether inf_EB had a S/N decrease
+                            if solint == 'inf_EB':
+                                if (post_SNR-SNR)/SNR >= 0.0 and (post_SNR_NF - SNR_NF)/SNR_NF >= 0.0:
+                                    selfcal_library[target][band]['inf_EB_SNR_decrease'] = False
+                                else:
+                                    selfcal_library[target][band]['inf_EB_SNR_decrease'] = True
                             for vis in vislist:
                                 selfcal_library[target][band][vis]['gaintable_final'] = selfcal_library[target][band][
                                     vis][solint]['gaintable']
@@ -1071,9 +1077,20 @@ class SelfcalHeuristics(object):
                                 selfcal_library[target][band][vis][solint]['Fail_Reason'] = reason
                             LOG.info('****************Selfcal failed*************')
                             LOG.info('REASON: '+reason)
-                            if iteration > 0:  # reapply only the previous gain tables, to get rid of solutions from this selfcal round
-                                LOG.info('****************Reapplying previous solint solutions*************')
+                            LOG.info('****************Reapplying previous solint solutions where available*************')
+
+                            # if the final successful solint was inf_EB but inf_EB had a S/N decrease, don't count it as a success and revert to no selfcal
+                            if selfcal_library[target][band]['final_solint'] == 'inf_EB' and selfcal_library[target][band][
+                                    'inf_EB_SNR_decrease']:
+                                selfcal_library[target][band]['SC_success'] = False
+                                selfcal_library[target][band]['final_solint'] = 'None'
                                 for vis in vislist:
+                                    selfcal_library[target][band][vis]['inf_EB']['Pass'] = False  # remove the success from inf_EB
+                                    # remove the success from inf_EB
+                                    selfcal_library[target][band][vis]['inf_EB']['Fail_Reason'] += ' with no successful solints later'
+                            for vis in vislist:
+                                # reapply only the previous gain tables, to get rid of solutions from this selfcal round
+                                if selfcal_library[target][band]['SC_success']:
                                     LOG.info(
                                         '****************Applying ' +
                                         str(selfcal_library[target][band][vis]['gaintable_final']) + ' to ' + target + ' ' +
@@ -1085,9 +1102,8 @@ class SelfcalHeuristics(object):
                                                       calwt=False, spwmap=selfcal_library[target][band][vis]['spwmap_final'],
                                                       applymode=selfcal_library[target][band][vis]['applycal_mode_final'],
                                                       field=self.field, spw=selfcal_library[target][band][vis]['spws'])
-                            else:
-                                LOG.info('****************Removing all calibrations for '+target+' '+band+'**************')
-                                for vis in vislist:
+                                else:
+                                    LOG.info('****************Removing all calibrations for '+target+' '+band+'**************')
                                     self.cts.flagmanager(vis=vis, mode='restore', versionname='selfcal_starting_flags_'+sani_target)
                                     self.cts.clearcal(vis=vis, field=self.field, spw=selfcal_library[target][band][vis]['spws'])
                                     selfcal_library[target][band]['SNR_post'] = selfcal_library[target][band][
