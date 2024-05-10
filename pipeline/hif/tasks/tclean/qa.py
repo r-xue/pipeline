@@ -60,9 +60,14 @@ class TcleanQAHandler(pqa.QAPlugin):
                 # set the score to the lowest (but still yellow) value
                 result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
                                                   weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
+                return result
 
             # PIPE-1790: if tclean failed to produce an image, skip any subsequent processing and report QAscore=0.34
             if result.image is None:
+                longmsg = 'tclean failed to produce an image'
+                shortmsg = 'no image'
+                result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
+                                                  weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
                 return result
 
             # Image RMS based score
@@ -73,8 +78,8 @@ class TcleanQAHandler(pqa.QAPlugin):
 
                 if (np.isnan(rms_score)):
                     rms_score = 0.0
-                    longmsg='Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
-                    shortmsg='RMS is NaN'
+                    longmsg = 'Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
+                    shortmsg = 'RMS is NaN'
                 else:
                     if rms_score > 0.66:
                         longmsg = 'RMS vs. DR corrected sensitivity. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)

@@ -1390,6 +1390,7 @@ class Tclean(cleanbase.CleanBase):
                                                   psf_phasecenter=inputs.psf_phasecenter,
                                                   stokes=inputs.stokes,
                                                   nchan=inputs.nchan,
+                                                  nbin=inputs.nbin,
                                                   start=inputs.start,
                                                   width=inputs.width,
                                                   weighting=inputs.weighting,
@@ -1799,7 +1800,12 @@ class Tclean(cleanbase.CleanBase):
             keywords, _, _, values = inspect.getargvalues(frame)
             for keyword in keywords:
                 if keyword not in ('self', 'imagename') and values[keyword] is not None:
-                    info[keyword] = values[keyword]
+                    if keyword == 'session':
+                        # PIPE-2148, limiting 'sessionX' keyword length to 68 characters
+                        # due to FITS header keyword string length limit.
+                        info = imageheader.wrap_key(info, 'sessio', session)
+                    else:
+                        info[keyword] = values[keyword]
 
             # Save header back to image
             image.setmiscinfo(info)

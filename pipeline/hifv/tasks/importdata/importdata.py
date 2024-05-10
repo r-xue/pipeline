@@ -8,11 +8,10 @@ import pipeline.h.tasks.importdata.importdata as importdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics.vlascanheuristics import VLAScanHeuristics
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -24,20 +23,22 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
     bdfflags = vdp.VisDependentProperty(default=False)
     process_caldevice = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
+    parallel = sessionutils.parallel_inputs_impl(default=False)
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, createmms=None,
-                 ocorr_mode=None, datacolumns=None):
-        super(VLAImportDataInputs, self).__init__(context, vis=vis, output_dir=output_dir, asis=asis,
-                                                  process_caldevice=process_caldevice, session=session,
-                                                  overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
-                                                  save_flagonline=save_flagonline, createmms=createmms,
-                                                  ocorr_mode=ocorr_mode, datacolumns=datacolumns)
+                 ocorr_mode=None, datacolumns=None, parallel=None):
+        super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,
+                         process_caldevice=process_caldevice, session=session,
+                         overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
+                         save_flagonline=save_flagonline, createmms=createmms,
+                         ocorr_mode=ocorr_mode, datacolumns=datacolumns)
+        self.parallel = parallel
 
 
 class VLAImportDataResults(basetask.Results):
     def __init__(self, mses=None, setjy_results=None):
-        super(VLAImportDataResults, self).__init__()
+        super().__init__()
 
         if mses is None:
             mses = []
@@ -116,14 +117,12 @@ class VLAImportDataResults(basetask.Results):
         return 'VLAImportDataResults:\n\t{0}'.format('\n\t'.join([ms.name for ms in self.mses]))
 
 
-@task_registry.set_equivalent_casa_task('hifv_importdata')
-@task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
-class VLAImportData(importdata.ImportData):
+class SerialVLAImportData(importdata.ImportData):
     Inputs = VLAImportDataInputs
 
     def prepare(self, **parameters):
         # get results object by running super.prepare()
-        results = super(VLAImportData, self).prepare()
+        results = super().prepare()
 
         # create results object
         myresults = VLAImportDataResults(mses=results.mses, setjy_results=results.setjy_results)
@@ -189,3 +188,12 @@ class VLAImportData(importdata.ImportData):
                 LOG.info('Copying %s from ASDM to measurement set', xml_filename)
                 LOG.trace('Copying %s: %s to %s', xml_filename, asdm_source, vis_source)
                 shutil.copyfile(asdm_source, vis_source)
+
+
+@task_registry.set_equivalent_casa_task('hifv_importdata')
+@task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
+class VLAImportData(sessionutils.ParallelTemplate):
+    """VLAImportData class for parallelization."""
+
+    Inputs = VLAImportDataInputs
+    Task = SerialVLAImportData
