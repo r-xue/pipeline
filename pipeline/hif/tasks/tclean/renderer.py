@@ -70,6 +70,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         have_polcal_fit = False
 
+        extra_logrecords_handler = logging.CapturingHandler(logging.WARNING)
+        logging.add_handler(extra_logrecords_handler)
         for r in clean_results:
             if r.empty() or not r.iterations:
                 continue
@@ -771,6 +773,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # PIPE-1723: display a message in the weblog depending on the observatory
         imaging_mode = clean_results[0].imaging_mode  if len(clean_results)>0  else  None
 
+        extra_logrecords = extra_logrecords_handler.buffer
         ctx.update({
             'imaging_mode': imaging_mode,
             'plots': plots,
@@ -780,7 +783,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'have_polcal_fit': have_polcal_fit,
             'chk_fit_info': chk_fit_rows,
             'pol_fit_info': pol_fit_rows,
-            'pol_fit_plots': pol_fit_plots
+            'pol_fit_plots': pol_fit_plots,
+            'extra_logrecords': extra_logrecords
         })
 
 
@@ -882,7 +886,12 @@ class TCleanTablesRenderer(basetemplates.CommonRenderer):
 
 def get_plot(plots, prefix, datatype, field, spw, stokes, i, colname, moment):
     try:
-        return plots[prefix][datatype][field][spw][stokes][i][colname][moment]
+        plot = plots[prefix][datatype][field][spw][stokes][i][colname][moment]
+        if not os.path.exists(plot.abspath):
+            # PIPE-2022: Generate a warning if the PNG file is missing. The
+            # message is caught by a local logging handler for the weblog.
+            LOG.warning(f'Plot {plot.abspath} is missing on disk')
+        return plot
     except KeyError:
         return None
 
@@ -972,6 +981,8 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
         have_polcal_fit = False
 
+        extra_logrecords_handler = logging.CapturingHandler(logging.WARNING)
+        logging.add_handler(extra_logrecords_handler)
         for r in clean_results:
 
             if r.empty() or not r.iterations:
@@ -1705,13 +1716,15 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
         spwgroup_list = makeimages_result.metadata['vlass_cube_metadata']['spwgroup_list']
         plane_keep_dict = {spwgroup: plane_keep[idx] for idx, spwgroup in enumerate(spwgroup_list)}
 
+        extra_logrecords = extra_logrecords_handler.buffer
         ctx.update({
             'plots': plots,
             'plots_dict': plots_dict,
             'image_info': final_rows,
             'dirname': weblog_dir,
             'vlass_cubesummary_plots_html': vlass_cubesummary_plots_html,
-            'plane_keep_dict': plane_keep_dict
+            'plane_keep_dict': plane_keep_dict,
+            'extra_logrecords': extra_logrecords
         })
 
 
