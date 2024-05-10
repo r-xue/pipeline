@@ -217,6 +217,7 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">mfs</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -239,6 +240,7 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cube</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
