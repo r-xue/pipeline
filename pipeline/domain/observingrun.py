@@ -48,6 +48,7 @@ class ObservingRun(object):
     def add_measurement_set(self, ms):
         if ms.basename in [m.basename for m in self.measurement_sets]:
             msg = '{0} is already in the pipeline context'.format(ms.name)
+            LOG.error(msg)
             raise Exception(msg)
 
         # Initialise virtual science spw IDs from first MS
