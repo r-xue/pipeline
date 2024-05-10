@@ -523,6 +523,10 @@ class Circfeedpolcal(polarization.Polarization):
             if self.inputs.run_setjy:
                 job = casa_tasks.setjy(**task_args)
                 self._executor.execute(job)
+            else:
+                LOG.warning("Setting the polarized flux densities for the polarization angle calibrator within the task was disabled. \
+                            Polarization angle will not be properly calibrated unless the polarized flux densities were set prior to invoking this task. \
+                            Check the RL phase offset vs. Freq and RL delay vs. freq plots to ensure behavior is as expected.")
         except Exception as ex:
             LOG.warning("Exception: Problem with circfeedpolcal setjy. {!s}".format(str(ex)))
             return None
