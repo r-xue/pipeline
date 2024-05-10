@@ -1,5 +1,4 @@
 import datetime
-import itertools
 import math
 import operator
 import os
