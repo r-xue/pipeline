@@ -460,6 +460,10 @@ class SkyDisplay(object):
             fig.tight_layout()
             fig.savefig(plotfile, bbox_inches='tight', bbox_extra_artists=ax.findobj(mtext.Text), dpi=self.dpi)
             plt.close(fig)
+            if not os.path.exists(plotfile):
+                # PIPE-2022: Generate a warning if the PNG file is missing. The
+                # message is caught by a local logging handler for the weblog.
+                LOG.warning(f'Plot {plotfile} is missing on disk')
 
             return plotfile, coord_names, miscinfo.get('field'), band
 
