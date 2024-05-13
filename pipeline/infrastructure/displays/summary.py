@@ -1162,7 +1162,7 @@ class SpwIdVsFreqChart(object):
         # prepare axes
         fig = figure.Figure(figsize=(9.6, 7.2))
         ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-#        bar_height = 0.4
+        bar_height = 0.4
         max_spws_to_annotate_VLA = 16  # request for VLA, PIPE-1415.
         max_spws_to_annotate_ALMA_NRO = np.inf  # annotate all spws for ALMA/NRO
         colorcycle = matplotlib.rcParams['axes.prop_cycle']()
@@ -1180,7 +1180,6 @@ class SpwIdVsFreqChart(object):
             max_spws_to_annotate = max_spws_to_annotate_ALMA_NRO
         xmin, xmax = np.inf, -np.inf
         totalnum_spws = len(scan_spws)
-        bar_height = 0.4
         idx = 0
         for spwid_list in spw_list_generator:
             color = next(colorcycle)['color']
@@ -1200,7 +1199,7 @@ class SpwIdVsFreqChart(object):
                 idx += 1
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
-        ax_spw.set_ylim(totalnum_spws + totalnum_spws/20.0, -1.0 - totalnum_spws/20.0)  # The spw indices are from 0 to totalnum_spws. y-axis is inverted. totalnum_spws/20.0 is a mergin. -1.0 is upper edge instead of 0.0.
+        ax_spw.set_ylim(totalnum_spws + totalnum_spws/20.0, -1.0 - totalnum_spws/20.0)  # The spw indices are from 0 to totalnum_spws. y-axis is inverted. totalnum_spws/20.0 is a mergin. -1.0 is upper edge.
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
         ax_spw.grid(axis='x')
