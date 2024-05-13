@@ -89,11 +89,29 @@ class FluxbootQAHandler(pqa.QAPlugin):
 
     def getFractionalResiduals(self, webdicts):
         """
-        getFractionalResiduals: calculate the fractional residuals
+        Compute the fractional residuals between observed and predicted data.
 
-        Output: returns a list of fractional residuals
-        --------- parameter descriptions ---------------------------------------------
-        webdicts: a dictionary containing data and fitted data
+        Parameters:
+            webdicts (dictionary) : A dictionary containing data and predicted data per source
+
+        Returns:
+            list : The fractional residuals, calculated as (observed - predicted) / observed.
+
+        Raises:
+            ZeroDivisionError: If any observed value is zero.
+
+        Example:
+            >>> webdicts = {'J1407+2827': [{'freq': '7.257',
+                            'data': '1.44, ',
+                            'error': '0.0017146284762749138',
+                            'fitteddata': '1.45'}],
+                            'J1820-2528': [{'freq': '7.257',
+                            'data': '0.73',
+                            'error': '0.0028120763231611317',
+                            'fitteddata': '0.70'}]
+                            }
+            >>> getFractionalResiduals(webdicts)
+            [[-0.006], [0.04]]
         """
         fractional_residuals = []
         for source, datadicts in webdicts.items():
