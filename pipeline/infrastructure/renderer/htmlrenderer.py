@@ -378,6 +378,10 @@ class T1_1Renderer(RendererBase):
                 data: Dict["T1_1Renderer.EnvironmentProperty", List[str]]
             ):
 
+            # 'memory available to pipeline' should not be presented for SD data
+            if is_singledish_ms(ctx):
+                rows = [r for r in rows if r != T1_1Renderer.EnvironmentProperty.CASA_MEMORY]
+
             unmerged_rows = [(prop.description(ctx), *data[prop]) for prop in rows]
             merged_rows = utils.merge_td_rows(utils.merge_td_columns(unmerged_rows))
 
