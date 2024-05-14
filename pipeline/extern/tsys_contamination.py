@@ -36,10 +36,11 @@ from scipy.signal import find_peaks, peak_prominences, peak_widths, savgol_filte
 from scipy.spatial import ConvexHull
 from scipy.special import legendre
 
+import pipeline.infrastructure.logging
+
 from .TsysDataClassFile import TsysData
 
-######################################################################################################
-######################################################################################################
+LOG = pipeline.infrastructure.logging.get_logger(__name__)
 
 
 # PREQ 232 in JAOPOST
@@ -529,8 +530,8 @@ if True:
         peaks_dict0["peak_heights"] += base_detection
 
         if verbose:
-            print(
-                f"positive_line_intervals: peaks0, peaks_dict0 = {peaks0}, {peaks_dict0}"
+            LOG.debug(
+                "positive_line_intervals: peaks0, peaks_dict0 = %s, %s", peaks0, peaks_dict0
             )
             plt.close()
             plt.plot(normalized_data)
@@ -570,7 +571,7 @@ if True:
                 peaks0[_], peaks_dict0["peak_heights"][_], peaks_dict0["prominences"][_]
             ]
             inside_peaks = inside_peaks[(-inside_peaks[:, 1]).argsort()]
-            print(f"positive_line_intervals:\n\t\tinside_peaks={inside_peaks}")
+            LOG.info("positive_line_intervals:\n\t\tinside_peaks=%s", inside_peaks)
             # input()
             peaks.append(inside_peaks[0, 0])
             peaks_intervals.append(interval)
@@ -590,7 +591,6 @@ if True:
         detection_limit,
         edge=0.025,
         base_detection=2,
-        verbose=True,
     ):
         peaks, intervals, heights = positive_line_intervals(
             normalized_data=normalized_data,
@@ -600,13 +600,11 @@ if True:
             base_detection=base_detection,
         )
 
-        if verbose:
-            print(f"refitting_intervals_bp_to_source:\n\t--First version: {intervals}")
-            # input()
+        LOG.debug("refitting_intervals_bp_to_source:\n\t--First version: %s", intervals)
         final_peaks, final_intervals = np.array([]), np.array([])
         for interval in intervals:
             shift = shift_bp_to_source(
-                interval=interval, bp=bp, source=source, sigma=sigma, verbose=verbose
+                interval=interval, bp=bp, source=source, sigma=sigma
             )
             # print(intervals, shift)
             interval = np.array(interval, dtype=int)
@@ -622,11 +620,9 @@ if True:
 
             peaks1 += ch0
             intervals1 += ch0
-            if verbose:
-                print(
-                    f"refitting_intervals_bp_to_source:\n\t--Second version: {intervals1}"
-                )
-                # input()
+            LOG.debug(
+                "refitting_intervals_bp_to_source:\n\t--Second version: %s", intervals1
+            )
             final_peaks = np.r_[final_peaks, peaks1]
             final_intervals = (
                 intervals1
@@ -682,7 +678,6 @@ if True:
         clip_snr=4,
         iterations=2,
         asym_factor=2,
-        verbose=False,
     ):  # v3.5
         nchan = len(source)
         chans = np.arange(0, nchan)
@@ -692,15 +687,13 @@ if True:
             interval=interval,
             sigma=np.nanmedian(sigma),
             limit_sigma=1,
-            verbose=True,
         )
         if delta == 0:
             delta = (interval[1] - interval[0]) / 2
         ch0, ch1 = max(0, int(interval[0] - delta / 2)), int(
             min(interval[1] + delta / 2, nchan - 1)
         )
-        if verbose:
-            print(f"shift_bp_to_source {ch0},{ch1}")
+        LOG.debug("shift_bp_to_source %s,%s", ch0, ch1)
 
         shift = below_fit(
             data=(source)[ch0 : ch1 + 1],
@@ -713,13 +706,11 @@ if True:
             plt.plot(source[ch0 : ch1 + 1])
             plt.plot(shift + bp[ch0 : ch1 + 1])
             input()
-        if verbose:
-            print(f"shift={shift}")
+        LOG.debug("shift=%s", shift)
         return shift
 
-    def search_expanded_interval(data, interval, sigma, limit_sigma=2, verbose=False):
-        if verbose:
-            print(f"---initial interval={interval}")
+    def search_expanded_interval(data, interval, sigma, limit_sigma=2):
+        LOG.debug("---initial interval=%s", interval)
         ch0, ch1 = int(interval[0]), int(interval[1])
         delta0 = ch1 - ch0
         nchan = data.shape[0]
@@ -736,15 +727,17 @@ if True:
                 np.sum(no_nans(m * x + n - y) ** 2) / sigma**2 / (_ch1 - _ch0 + 1)
             )
             if reduced_chi_square > 1 + limit_sigma * np.sqrt(2 / (_ch1 - _ch0 + 1)):
-                if verbose:
-                    print(
-                        f"---redchi-sq = {reduced_chi_square}, delta_return = {delta_return}"
-                    )
+                LOG.debug(
+                    "---redchi-sq = %s, delta_return = %s",
+                    reduced_chi_square,
+                    delta_return,
+                )
                 return delta_return
             else:
                 delta_return = delta
-        if verbose:
-            print(f"---redchi-sq = {reduced_chi_square}, delta_return = {delta_return}")
+        LOG.debug(
+            "---redchi-sq = %s, delta_return = %s", reduced_chi_square, delta_return
+        )
         return delta_return
 
     def basic_atm_asymmetric_fit(data, transmission, iterations, clip, asym_factor=2):
@@ -779,19 +772,17 @@ if True:
             ]
         return res["x"]
 
-    def smoother_sigma(v, iterations=2, clip_level=7, stype="sg", verbose=False):
+    def smoother_sigma(v, iterations=2, clip_level=7, stype="sg"):
         vv = v.copy()
         for i in range(iterations):
             sub, ss = smoother(vv, stype=stype)
             sigma = median_abs_deviation(sub, scale="normal", nan_policy="omit")
-            if verbose:
-                print(f"smoother_sigma:\n\tsub={sub}\n\tsigma={sigma}")
+            LOG.debug("smoother_sigma:\n\tsub=%s\n\tsigma=%s", sub, sigma)
             selection = np.abs(sub) > clip_level * sigma
             if np.any(selection):
                 vv[selection] = np.nan
             else:
                 break
-                print(vv)
         return sigma
 
     def no_nans(x):
@@ -1279,9 +1270,9 @@ def find_prominent_peaks_in_atm(
         prominent_peaks_in_atm = atm_peak_centers[
             _ > n_sigma_atm * sigma / np.abs(temperature)
         ]
-        print(f"Prominent peak at chans {prominent_peaks_in_atm}")
+        LOG.info("Prominent peak at chans %s", prominent_peaks_in_atm)
     else:
-        print("No prominent peaks in the ATM profile.")
+        LOG.info("No prominent peaks in the ATM profile.")
     return prominent_peaks_in_atm
 
 
@@ -1306,7 +1297,7 @@ def detect_tsys_contamination(
     t0, slope, base = basic_atm_asymmetric_fit(
         dif - np.nanmin(dif), 1 - atm, clip=4, iterations=3
     )  # v3.3 set min of dif to zero. Include base.
-    print(f"t0 = {t0}, slope={slope}")
+    LOG.info("t0 = %s, slope=%s", t0, slope)
     nchan = len(dif)
     simplemm = mm = (
         t0 * atm + slope * np.linspace(-1, 1, nchan) + base + np.nanmin(dif)
@@ -1317,8 +1308,8 @@ def detect_tsys_contamination(
             for i in range(1, 6, 2)
         ]
     )
-    print(
-        f"channel percentage within n-sigmas: {channel_percentage_within_simple_model}%"
+    LOG.info(
+        "channel percentage within n-sigmas: %s%%", channel_percentage_within_simple_model
     )
 
     # Identify prominent peaks in the atmospheric profile. Ignore CO as a prominent peak.
@@ -1338,7 +1329,7 @@ def detect_tsys_contamination(
         if prominent_peaks_in_atm is not None or np.any(
             channel_percentage_within_simple_model < np.array([20, 40, 50])
         ):
-            print("Not simple")
+            LOG.info("Not simple")
             dega = 3 if prominent_peaks_in_atm is not None else 0  # v3.5
             dega += k
             deg_baseline = 3
@@ -1407,8 +1398,8 @@ def detect_tsys_contamination(
         )
         if np.any(normres[prominent_peaks_in_atm] >= n_sigma_detection_limit):
             # print("**",normres[prominent_peaks_in_atm])
-            print(
-                f"detect_tsys_contamination: re-iterating ATM fitting with higher order."
+            LOG.info(
+                "detect_tsys_contamination: re-iterating ATM fitting with higher order."
             )
         else:
             break
@@ -1438,7 +1429,6 @@ def detect_tsys_contamination(
         normalized_data=normres,
         detection_limit=n_sigma_detection_limit,
         base_detection=(1 - 2) / (4096 - 128) * (nchan - 128) + 2,
-        verbose=True,
     )
 
     # plt.plot(dif);plt.plot(mm);input()
@@ -1520,13 +1510,13 @@ def get_tsys_contaminated_intervals(
         spwlist = list(_)
     spwlist = list(_.intersection(set(spwlist)))
     if len(spwlist) == 0:
-        print("get_tsys_contaminated_intervals. Warning: no spwlist -> no output.")
+        LOG.info("get_tsys_contaminated_intervals. Warning: no spwlist -> no output.")
     _ = set(list(tsys.tsysdata[tsys.tsysfields.index("field")]))
     if fieldlist is None:
         fieldlist = list(_)
     fieldlist = list(_.intersection(set(fieldlist)))
     if len(fieldlist) == 0:
-        print("get_tsys_contaminated_intervals. Warning: no fieldlist -> no output.")
+        LOG.info("get_tsys_contaminated_intervals. Warning: no fieldlist -> no output.")
     with warnings.catch_warnings():
         warnings.filterwarnings(action="ignore", message="Mean of empty slice")
         average_difference, average_science, average_bp, average_antenna = (
@@ -1560,7 +1550,7 @@ def get_tsys_contaminated_intervals(
         if intent_dict[field] == "bandpass":
             continue
         key = f"{spw}_{field}"
-        print(f"-- {key}")
+        LOG.info("-- %s", key)
         _ = set(scans[(intents == "bandpass") * (spws == spw)].tolist())
         assert (
             len(_) == 1
@@ -1606,12 +1596,15 @@ def get_tsys_contaminated_intervals(
         sigma_mad_dif = median_abs_deviation(
             dif - mm, scale="normal", nan_policy="ignore"
         )
-        print(
-            "large_baseline_residual *** \n",
-            f"\tsigma_mad_dif,sigma_smooth_bp,sigma_smooth_s,prominent_peaks_in_atm = {sigma_mad_dif:.2g},{sigma_smooth_bp:.2g},{sigma_smooth_s:.2g},{prominent_peaks_in_atm}",
+        LOG.info(
+            "large_baseline_residual *** \n\tsigma_mad_dif,sigma_smooth_bp,sigma_smooth_s,prominent_peaks_in_atm = %.2g,%.2g,%.2g,%s",
+            sigma_mad_dif,
+            sigma_smooth_bp,
+            sigma_smooth_s,
+            prominent_peaks_in_atm,
         )
-        print(
-            f"\tchans over 5sigma = {np.sum((dif-mm)>5*sigma_smooth_bp)}, nchan={nchan}, nchan/4={nchan/4}"
+        LOG.info(
+            "\tchans over 5sigma = %s, nchan=%s, nchan/4=%s", np.sum((dif-mm)>5*sigma_smooth_bp), nchan, nchan/4
         )
         if False:
             plt.close()
@@ -1653,9 +1646,12 @@ def get_tsys_contaminated_intervals(
         delta_tsys_detection_level = relative_detection_factor * np.nanmedian(
             min_science[key][corr]
         )  # v3.1
-        print(
-            f"common_peaks1={common_peaks1}, common_peaks2={common_peaks2}",
-            f"pcline_peak_chans={pcline_peak_chans}, pcline_intervals={pcline_intervals}",
+        LOG.info(
+            "common_peaks1=%s, common_peaks2=%s, pcline_peak_chans=%s, pcline_intervals=%s",
+            common_peaks1,
+            common_peaks2,
+            pcline_peak_chans,
+            pcline_intervals,
         )
         # print(f"speaks={speaks}, prominence_dictionary_source_peaks={prominence_dictionary_source_peaks}")
         # plt.plot(spec_s/sigma_smooth_s,'-');plt.plot(speaks,(spec_s/sigma_smooth_s)[speaks],'.');input()
@@ -1669,7 +1665,7 @@ def get_tsys_contaminated_intervals(
         interval_range_limit = 0.4
         concommitant_peak_max_distance = (4 - 2) / 2048 * (nchan - 128) + 2.0
         for pcli, pclp in zip(list(pcline_intervals), list(pcline_peak_chans)):
-            print(f"pcli={pcli}, pclp={pclp}")
+            LOG.info(f"pcli=%s, pclp=%s", pcli, pclp)
             delta_s = np.ptp(spec_s[pcli[0] : pcli[1] + 1])  # v3.1
             delta_b = np.ptp(spec_b[pcli[0] : pcli[1] + 1])  # v3.1
             delta_dif = np.ptp(
@@ -1726,15 +1722,15 @@ def get_tsys_contaminated_intervals(
                 if gaussian_check[0] < n_sigma_detection_limit * (
                     (1 - 0.5) / (4096 - 128) * (nchan - 128) + 0.5
                 ) or not np.any((pcli[1] - pcli[0] > _auxipeak) * (_auxipeak > 0)):
-                    print(
-                        f"{pcli} -> possible (failed concommitant peak gaussian check)"
+                    LOG.info(
+                        "%s -> possible (failed concommitant peak gaussian check)", pcli
                     )
                     possible_line_intervals.append(pcli)
                 else:
-                    print(f"{pcli} -> recovered peak in gaussian check")
+                    LOG.info("%s -> recovered peak in gaussian check", pcli)
                     line_intervals.append(pcli)
             else:
-                print(f"-- pcli={pcli} ")
+                LOG.info("-- pcli=%s", pcli)
                 line_intervals.append(pcli)
 
         line_intervals = np.array(line_intervals)
@@ -1792,10 +1788,10 @@ def get_tsys_contaminated_intervals(
             line_intervals = difference_intervals(
                 line_intervals, co_telluric["ranges"]
             )  # v3.5
-        print(f"telluric_intervals: {telluric_intervals}")
-        print(f"line_intervals: {list(line_intervals)}")
-        print(f"possible_line_intervals: {possible_line_intervals}")
-        print(f"low_tsys_contamination: {low_tsys_contamination}")
+        LOG.info("telluric_intervals: %s", telluric_intervals)
+        LOG.info("line_intervals: %s", list(line_intervals))
+        LOG.info("possible_line_intervals: %s", possible_line_intervals)
+        LOG.info("low_tsys_contamination: %s", low_tsys_contamination)
         # puff the intervals by 1 channel for 12M and several if the thing has more channels
         off_science_line_intervals = np.array([[]])
         interval_dict = {
@@ -1859,8 +1855,8 @@ def get_tsys_contaminated_intervals(
                 )
 
                 warnings_list.append([warning, message])
-            print(
-                f"Range {i} equivalent to {velocity_width_kms} km/s or {int(abs(i[1]-i[0])/nchan*100)}% of the SpW."
+            LOG.info(
+                "Range %s equivalent to %s km/s or %d%% of the SpW", i, velocity_width_kms, abs(i[1]-i[0])/nchan*100
             )
             if not wide:
                 _.append(i)
@@ -1870,7 +1866,7 @@ def get_tsys_contaminated_intervals(
 
         if plot:
             if large_baseline_residual:
-                print(f"{key} large_baseline_residual: {large_baseline_residual}")
+                LOG.info("%s large_baseline_residual: %s", key, large_baseline_residual)
             plot_source_bp_normalized_residuals(
                 source_tsys=spec_s,
                 bandpass_tsys=spec_b,
@@ -2126,7 +2122,7 @@ def main():
         if not os.path.exists(baktbl):
             # rmtree(baktbl)
             copytree(tsystable, baktbl)
-        print(("-" * 40) + f"\n{tsys.msfile}\n" + ("-" * 40))  # v2.3
+        LOG.info("%s\n%s\n%s", ("-" * 40), tsys.msfile, ("-" * 40))  # v2.3
         line_contamination_intervals, warnings_list = get_tsys_contaminated_intervals(
             tsys,
             plot=True,  # large baseline residual v3.3
@@ -2155,7 +2151,7 @@ def main():
         )
         if m:
             pl_run_dir = m.group(1)
-            print(f"In pipeline working dir: saving timestamp code {pl_run_dir}")
+            LOG.info("In pipeline working dir: saving timestamp code %s", pl_run_dir)
         f.write(f"\n# script version {VERSION} {pl_run_dir}\n# {tsystable}\n")
 
         field_contamination = dict()
@@ -2167,13 +2163,13 @@ def main():
         if len(field_contamination) == 0:
             _ = f"## No tsys contamination identified.\n"
             f.write(_)
-            print(_, end="")
+            LOG.info(_)
 
         # v3.3 large baseline residual
         for w in warnings_list:
             _ = " ".join(w)
             f.write(f"# {_}\n")
-            print(f"# {_}")
+            LOG.info("# %s", _)
 
         for field in field_contamination:
             field = np.int64(field)
@@ -2219,14 +2215,14 @@ def main():
             flagline = f"# mode='manual' scan='{','.join([str(sc) for sc in contamination_scans])}' spw='{spw_ranges}' reason='Tsys:tsysflag_tsys_channel'\n"
             _ += flagline
             f.write(_)
-            print(_, end="")
+            LOG.info(_)
             ft.write(flagline)
 
         f.close()
         ft.close()
 
     if make_tsyscontamination_html_log():
-        print("Log folder created.")
+        LOG.info("Log folder created.")
         if "testing" in VERSION or False:
             subprocess.call(
                 [

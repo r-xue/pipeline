@@ -1,5 +1,6 @@
 import bz2
 import itertools
+import math
 import pickle
 import re
 
@@ -11,6 +12,11 @@ from casatools import ms as mstool
 from casatools import msmetadata as msmdtool
 from casatools import quanta as qatool
 from casatools import table as tbtool
+
+import pipeline.infrastructure.logging
+
+LOG = pipeline.infrastructure.logging.get_logger(__name__)
+
 
 ms = mstool()
 msmd = msmdtool()
@@ -31,7 +37,7 @@ def getband(freq):
     return np.arange(1, len(lo) + 1)[(freq > lo) & (freq < hi)][0]
 
 
-def ATMtrans(msfile, scans, spws, ifld=None, verbose=False):
+def ATMtrans(msfile, scans, spws, ifld=None):
     results = dict()
     assert ms.open(msfile), f"Could not open ms file {msfile}"
     assert msmd.open(msfile), f"Could not open metadata from {msfile}"
@@ -50,7 +56,7 @@ def ATMtrans(msfile, scans, spws, ifld=None, verbose=False):
             # If there is more than 1 field, it is a mosaic. Take the central field value, hoping
             # that it is near the center...
             if len(fld) > 1:
-                fld = int(floor(np.median(fld)))
+                fld = int(math.floor(np.median(fld)))
             else:
                 fld = int(fld[0])
             fields.append(fld)
@@ -224,19 +230,17 @@ def weather_function(msfile):
         ntimes = int(len(pwv) / nant)
         pwvtime = np.median(pwvtime.reshape(ntimes, nant), axis=1)
         if np.all(pwv == 1.0):
-            print("weather_function: PWV all ones, no valid data")
+            LOG.info("weather_function: PWV all ones, no valid data")
             pwv *= 0
         pwv = np.median(pwv.reshape(ntimes, nant), axis=1)
         conditions["pwv"] = lambda tt: np.interp(tt, pwvtime, pwv)
     except RuntimeError:
-        print(
-            """This measurement set does not have or has problems with ASDM_CALWVR table. Try the option
-asis='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing' 
-in importasdm"""
+        LOG.warning(
+            "This measurement set does not have or has problems with ASDM_CALWVR table. Try the option asis='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing' in importasdm"
         )
         raise RuntimeError()
     except AssertionError:
-        print("no valid data in table ASDM_CALWVR. Trying ASDM_CALATMOSPHERE.")
+        LOG.info("no valid data in table ASDM_CALWVR. Trying ASDM_CALATMOSPHERE.")
 
     if len(pwv) <= 0:
         try:
@@ -249,10 +253,8 @@ in importasdm"""
             tb.close()
             conditions["pwv"] = lambda tt: np.interp(tt, pwvtime, pwv)
         except RuntimeError:
-            print(
-                """This measurement set does not have an ASDM_CALATMOSPHERE table. Try the option
-asis='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing' 
-in importasdm"""
+            LOG.warning(
+                "This measurement set does not have an ASDM_CALATMOSPHERE table. Try the option asis='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing' in importasdm"
             )
             raise RuntimeError()
 
@@ -260,7 +262,7 @@ in importasdm"""
     try:
         tb.open(msfile + "/WEATHER")
     except RuntimeError:
-        print("Could not open the WEATHER table for this ms, default returned.")
+        LOG.info("Could not open the WEATHER table for this ms, default returned.")
         conditions["pressure"] = lambda tt: 563.0
         conditions["temperature"] = lambda tt: 0.0  # in deg C
         conditions["humidity"] = lambda tt: 20.0
@@ -303,10 +305,8 @@ in importasdm"""
                     wsdict[i] = name
         tb.close()
     except RuntimeError:
-        print(
-            """This measurement set does not have an ASDM_STATION table. Try the option
-asis='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing' 
-in importasdm"""
+        LOG.warning(
+            "This measurement set does not have an ASDM_STATION table. Try the option asis='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing' in importasdm"
         )
         raise RuntimeError()
 
@@ -533,7 +533,7 @@ class TsysData(object):
                 )  # v2.4
                 return
             except OSError:
-                print(f"Could not load {file}.")
+                LOG.info(f"Could not load {file}.")
 
         m = re.match(r"(uid.+)\.ms\S+", tsystable)
         assert m, "Could not extract ms file name from tsystable:{tsystable}"
@@ -611,7 +611,7 @@ class TsysData(object):
         # break
 
         atmos_transmission = ATMtrans(
-            msfile=msfile, scans=set(list(scans)), spws=set(list(spws)), verbose=False
+            msfile=msfile, scans=set(list(scans)), spws=set(list(spws))
         )
         assert np.all(
             np.array([np.all(_ <= 1) for _ in atmos_transmission.values()])
@@ -683,7 +683,7 @@ class TsysData(object):
             for i in allIntents:
                 if i.find(intent) >= 0:
                     intent = i
-                    print("Translated intent to ", i)
+                    LOG.info("Translated intent to ", i)
                     break
 
         value = [i.find(intent.replace("*", "")) for i in allIntents]
