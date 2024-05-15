@@ -106,6 +106,9 @@ def detect_contamination(context: 'Context',
     mask_map = np.where(peak_sn_map < peak_sn_threshold, 1.0, 0.0)
     masked_average_spectrum = np.nanmean(np.where(mask_map > 0.5, cube_regrid, np.nan), axis=(1, 2))
 
+    # Check if an absorption feature is detected
+    contaminated = _detect_deep_absorption_feature(masked_average_spectrum)
+
     # Generate the contamination report figures
     if do_plot:
         # Create a directory for the current stage
@@ -122,9 +125,6 @@ def detect_contamination(context: 'Context',
         _make_figures(peak_sn_map, mask_map, rms_map, masked_average_spectrum,
                       peak_sn_threshold, spectrum_at_peak, idy, idx, output_name,
                       freq_spec, dir_spec)
-
-    # Issue a warning if an absorption feature is detected
-    contaminated = _detect_deep_absorption_feature(masked_average_spectrum)
 
     return contaminated
 
