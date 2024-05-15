@@ -3,11 +3,11 @@ Created on 7 Jan 2015
 
 @author: sjw
 """
-import traceback
 import collections
 import itertools
 import os
 import string
+import traceback
 from random import randint
 
 import numpy as np
@@ -17,8 +17,9 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tasks, casa_tools
+from pipeline.infrastructure.utils.weblog import plots_to_html
+
 from . import display
 
 LOG = logging.get_logger(__name__)
@@ -1704,16 +1705,25 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                                                    pola_thumbnail=row.pola_thumbnail))
         pol_fit_rows = utils.merge_td_columns(pol_fit_rows, num_to_merge=4)
 
+        vlass_cubesummary_plots = display.VlassCubeSummary(context, makeimages_result).plot()
+
+        if vlass_cubesummary_plots:
+            vlass_cubesummary_plots_html = plots_to_html(vlass_cubesummary_plots, report_dir=context.report_dir)[0]
+        else:
+            vlass_cubesummary_plots_html = None
+
+        plane_keep = makeimages_result.metadata['vlass_cube_metadata']['plane_keep']
+        spwgroup_list = makeimages_result.metadata['vlass_cube_metadata']['spwgroup_list']
+        plane_keep_dict = {spwgroup: plane_keep[idx] for idx, spwgroup in enumerate(spwgroup_list)}
+
         extra_logrecords = extra_logrecords_handler.buffer
         ctx.update({
             'plots': plots,
             'plots_dict': plots_dict,
             'image_info': final_rows,
             'dirname': weblog_dir,
-            'chk_fit_info': chk_fit_rows,
-            'have_polcal_fit': have_polcal_fit,
-            'pol_fit_info': pol_fit_rows,
-            'pol_fit_plots': pol_fit_plots,
+            'vlass_cubesummary_plots_html': vlass_cubesummary_plots_html,
+            'plane_keep_dict': plane_keep_dict,
             'extra_logrecords': extra_logrecords
         })
 
