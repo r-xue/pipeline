@@ -36,6 +36,8 @@ from pipeline.infrastructure import casa_tools
 if TYPE_CHECKING:
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
+    from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
+    from pipeline.infrastructure.launcher import Context
 
 __all__ = ['score_polintents',                                # ALMA specific
            'score_bands',                                     # ALMA specific
@@ -3242,7 +3244,27 @@ def score_sdimage_masked_pixels(context, result):
 
 
 @log_qa
-def score_sdimage_contamination(context, result):
+def score_sdimage_contamination(context: 'Context', result: 'SDImagingResultItem') -> pqa.QAScore:
+    """Evaluate QA score based on the absorption feature in the image.
+
+    If there is an emission at OFF_SOURCE position (contamination),
+    it is emerged as an absorption feature in the calibrated spectra.
+    Therefore, this QA score utilizes any significant absorption
+    features as an indicator of potential contamination.
+
+    Requirements (PIPE-2066):
+        - QA score should be
+          - 0.65 if absorption feature exists
+          - 1.0 if absorption feature does not exist
+
+    Args:
+        context: Pipeline context
+        result: Imaging result instance
+
+    Returns:
+        QAScore -- QAScore instance holding the score based on the
+                   existence of the absorption feature in the image
+    """
     contaminated = result.outcome.get('contaminated', False)
     imageitem = result.outcome['image']
     field = imageitem.sourcename
