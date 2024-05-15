@@ -88,7 +88,7 @@ def detect_contamination(context: 'Context',
         do_plot (bool): Set True to make figure. Default is True.
 
     Returns:
-        True if contamination was detected, False otherwise.
+        True if potential contamination is detected, False otherwise.
     """
     LOG.info("=================")
 
