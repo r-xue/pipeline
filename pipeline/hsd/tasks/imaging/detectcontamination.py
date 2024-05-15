@@ -78,7 +78,7 @@ def detect_contamination(context: 'Context',
     in the ON position may also be warned as well.
 
     This function is the main routine of the module. It detects contamination in the provided image item
-    and generates a contamination report.
+    and returns boolean value indicating if potential contamination is detected or not.
 
     Args:
         context (Context): The pipeline context object.
