@@ -3272,7 +3272,7 @@ def score_sdimage_contamination(context: 'Context', result: 'SDImagingResultItem
     if contaminated:
         lmsg = (f'Field {field} Spw {spw}: '
                 'Absorption feature was detected in the lower S/N area. '
-                'Please check calibration result in detail.')
+                'Please check the calibration result in detail.')
         smsg = 'Absorption feature was detected.'
         score = 0.65
     else:
