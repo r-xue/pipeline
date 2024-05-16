@@ -3271,19 +3271,20 @@ def score_sdimage_contamination(context: 'Context', result: 'SDImagingResultItem
     spw = ','.join(map(str, np.unique(imageitem.spwlist)))
     if contaminated:
         lmsg = (f'Field {field} Spw {spw}: '
-                'Absorption feature was detected in the lower S/N area. '
+                'Possible astronomical line contamination in the OFF position '
+                'was detected in the lower S/N area. '
                 'Please check the calibration result in detail.')
-        smsg = 'Absorption feature was detected.'
+        smsg = 'Possible astronomical line contamination was detected.'
         score = 0.65
     else:
         lmsg = (f'Field {field} Spw {spw}: '
-                'No absorption feature was detected.')
-        smsg = 'No absorption feature was detected.'
+                'No astronomical line contamintaion in the OFF position was detected.')
+        smsg = 'No astronomical line contamination was detected.'
         score = 1.0
 
     origin = pqa.QAOrigin(metric_name='SingleDishImageContamination',
                           metric_score=contaminated,
-                          metric_units='Whether emission from OFF position contaminated or not')
+                          metric_units='Whether emission in OFF position contaminated or not')
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
                                         field=set(result.outcome['assoc_fields']),
                                         intent={'TARGET'},
