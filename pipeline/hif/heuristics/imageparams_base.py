@@ -1,5 +1,6 @@
 import collections
 import copy
+import fnmatch
 import math
 import operator
 import os.path
@@ -8,10 +9,12 @@ import shutil
 import uuid
 from typing import List, Union, Optional
 
+import astropy.units as u
 import numpy as np
-
+from astropy.coordinates import SkyCoord
 from casatasks.private.imagerhelpers.imager_base import PySynthesisImager
-from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
+from casatasks.private.imagerhelpers.imager_parallel_continuum import \
+    PyParallelContSynthesisImager
 from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
 
 import pipeline.domain.measures as measures
@@ -22,6 +25,8 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 from pipeline.hif.heuristics import mosaicoverlap
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils.conversion import (phasecenter_to_skycoord,
+                                                      refcode_to_skyframe)
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -885,6 +890,64 @@ class ImageParamsHeuristics(object):
             field_str_list.append(field_string)
 
         return field_str_list
+
+    def select_fields(self, intent='TARGET', name=None, phasecenter=None, offsets=None):
+        """Select fields id based on intent, field name, or separation constrains from the phasecenter
+
+        This method selects fields based on the following search rules:
+            intent: restrict the search by the field intent
+            name: restrict the search id by the field name.
+            phasecenter, offsets: restrict the search area in an on-sky box centered around phasecenter
+
+        Args:
+            intent (str, optional): intent string. Defaults to 'TARGET'.
+            name (str, optional): name string, which could be a wildcard like '1*,2*,0*' Defaults to None.
+            phasecenter (str, optional): center of the search box. Defaults to None.
+            offsets (optional): sky offsets search limits along the longitude/ latitude direction in the reference frame. 
+                Defaults to None.
+
+        Returns:
+            list: a list; each element is the selected field id list per measurement sets.
+        """
+
+        fields_list = []
+
+        for vis in self.vislist:
+            ms = self.observing_run.get_ms(name=vis)
+            fields = list(ms.fields)
+            select = np.full(len(fields), True)
+
+            if isinstance(intent, str) and intent not in ('', '*'):
+                intent_set = intent.split(',')
+                select = select & np.array([not field.intents.isdisjoint(intent_set) for field in fields])
+
+            if isinstance(name, str) and name not in ('', '*'):
+                name_pats = name.split(',')
+                select = select & np.array([any([fnmatch.fnmatch(field.name, name_pat) for name_pat in name_pats]) for field in fields])
+
+            if isinstance(phasecenter, str):
+
+                coord_phasecenter = phasecenter_to_skycoord(phasecenter)
+                frame = refcode_to_skyframe(fields[0].frame)
+                coord_phasecenter = coord_phasecenter.transform_to(frame)
+
+                coords = SkyCoord(
+                    [field.longitude['value'] for field in fields],
+                    [field.latitude['value'] for field in fields],
+                    frame=frame,
+                    unit=(fields[0].longitude['unit'], fields[0].latitude['unit']))
+                dra, ddec = coord_phasecenter.spherical_offsets_to(coords)
+                if not isinstance(offsets, (list, tuple)):
+                    offsets_limit = (offsets, offsets)
+                else:
+                    offsets_limit = offsets
+                LOG.info('Searching for fields within the maximum sky offsets of %s from %s .', offsets_limit, phasecenter)
+                select = select & (np.abs(dra) < u.Quantity(offsets_limit[0])) & (np.abs(ddec) < u.Quantity(offsets_limit[1]))
+
+            LOG.info('Found %s of %s fields out meeting the selection rule(s) in %s', select.sum(), select.size, os.path.basename(vis))
+            fields_list.append([field.id for idx, field in enumerate(fields) if select[idx]])
+
+        return fields_list
 
     def _is_mosaic(self, field_str_list):
         """Determine if it's a mosaic or not.
@@ -2022,8 +2085,8 @@ class ImageParamsHeuristics(object):
             ms_do = self.observing_run.get_ms(msname)
             min_diameter = min(min_diameter, min([antenna.diameter for antenna in ms_do.antennas]))
             percentileBaselineLengths.append(
-                np.percentile([float(baseline.length.to_units(measures.DistanceUnits.METRE))
-                               for baseline in ms_do.antenna_array.baselines], percentile))
+                np.percentile(ms_do.antenna_array.baselines_m, percentile)
+            )
 
         return np.median(percentileBaselineLengths), min_diameter
 
@@ -2063,6 +2126,9 @@ class ImageParamsHeuristics(object):
     def cycleniter(self, iteration):
         return None
 
+    def nmajor(self, iteration):
+        return None
+
     def scales(self, iteration=None):
         return None
 
@@ -2072,7 +2138,7 @@ class ImageParamsHeuristics(object):
     def uvrange(self, field=None, spwspec=None):
         return None, None
 
-    def reffreq(self):
+    def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         return None
 
     def restfreq(self):

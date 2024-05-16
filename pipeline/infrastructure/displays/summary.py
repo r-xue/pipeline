@@ -879,7 +879,7 @@ class UVChart(object):
             # get max UV via unprojected baseline
             spw = ms.get_spectral_window(self.spw_id)
             wavelength_m = 299792458 / float(spw.max_frequency.to_units(FrequencyUnits.HERTZ))
-            bl_max = float(ms.antenna_array.max_baseline.length.to_units(DistanceUnits.METRE))
+            bl_max = float(ms.antenna_array.baseline_max.length.to_units(DistanceUnits.METRE))
             self.uv_max = math.ceil(1.05 * bl_max / wavelength_m)
 
     def plot(self):
