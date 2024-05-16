@@ -75,7 +75,7 @@ def detect_contamination(context: 'Context',
 
     This method defines 'contamination' as a deep absorption feature, which is in most cases
     due to a strong emission feature in the OFF position. Note that a strong absorption feature
-    in the ON position may also be warned as well.
+    in the ON position may also be detected as 'contamination'.
 
     This function is the main routine of the module. It detects contamination in the provided image item
     and returns boolean value indicating if potential contamination is detected or not.
