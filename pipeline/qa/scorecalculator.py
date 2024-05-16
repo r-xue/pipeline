@@ -3272,7 +3272,7 @@ def score_sdimage_contamination(context: 'Context', result: 'SDImagingResultItem
     if contaminated:
         lmsg = (f'Field {field} Spw {spw}: '
                 'Possible astronomical line contamination in the OFF position '
-                'was detected in the lower S/N area. '
+                'was detected. '
                 'Please check the calibration result in detail.')
         smsg = 'Possible astronomical line contamination was detected.'
         score = 0.65
