@@ -696,6 +696,13 @@ class ImageParamsHeuristics(object):
         cme = casa_tools.measures
         cqa = casa_tools.quanta
 
+        # Return None for each return value if no fields are input
+        if len(fields) == 1 and fields[0] == '':
+            if centreonly:
+                return None, None
+            else:
+                return None, None, None, None
+
         if vislist is None:
             vislist = self.vislist
 

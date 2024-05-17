@@ -72,7 +72,6 @@ class EditimlistInputs(vdp.StandardInputs):
     gridder = vdp.VisDependentProperty(default='')
     mask = vdp.VisDependentProperty(default=None)
     pbmask = vdp.VisDependentProperty(default=None)
-    nbin = vdp.VisDependentProperty(default=-1)
     nchan = vdp.VisDependentProperty(default=-1)
     niter = vdp.VisDependentProperty(default=0)
     nterms = vdp.VisDependentProperty(default=0)
@@ -102,23 +101,36 @@ class EditimlistInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def cell(self):
         # mutable object, so should not use VisDependentProperty(default=[])
+        if 'hm_cell' in self.context.size_mitigation_parameters:
+            return self.context.size_mitigation_parameters['hm_cell']
         return []
 
     @cell.convert
     def cell(self, val):
         if isinstance(val, str):
             val = [val]
+        for item in val:
+            if isinstance(item, str):
+                if 'ppb' in item:
+                    return item
         return val
 
     @vdp.VisDependentProperty
     def imsize(self):
         # mutable object, so should not use VisDependentProperty(default=[])
+        if 'hm_imsize' in self.context.size_mitigation_parameters:
+            return self.context.size_mitigation_parameters['hm_imsize']
         return []
 
     @imsize.convert
     def imsize(self, val):
         if not isinstance(val, list):
             val = [val]
+
+        for item in val:
+            if isinstance(item, str):
+                if 'pb' in item:
+                    return item
         return val
 
     @vdp.VisDependentProperty
@@ -149,6 +161,12 @@ class EditimlistInputs(vdp.StandardInputs):
         LOG.debug("convert the task input of vlass_plane_reject_ms from %r to %r.",
                   unprocessed, vlass_plane_reject_dict)
         return vlass_plane_reject_dict
+
+    @vdp.VisDependentProperty
+    def nbin(self):
+        if 'nbins' in self.context.size_mitigation_parameters:
+            return self.context.size_mitigation_parameters['nbins']
+        return -1
 
     @vdp.VisDependentProperty
     def spw(self):
@@ -221,22 +239,6 @@ class EditimlistInputs(vdp.StandardInputs):
         self.cycleniter_final_image_nomask = cycleniter_final_image_nomask
         self.vlass_plane_reject_ms = vlass_plane_reject_ms
 
-        keys_to_consider = ('field', 'intent', 'spw', 'cell', 'datatype', 'datacolumn', 'deconvolver', 'imsize',
-                            'phasecenter', 'specmode', 'gridder', 'imagename', 'scales', 'cfcache',
-                            'start', 'width', 'nbin', 'nchan', 'uvrange', 'stokes', 'nterms',
-                            'robust', 'uvtaper', 'niter', 'cyclefactor', 'cycleniter', 'nmajor', 'mask',
-                            'search_radius_arcsec', 'threshold', 'imaging_mode', 'reffreq', 'restfreq',
-                            'editmode', 'nsigma', 'pblimit', 'vlass_plane_reject_ms',
-                            'sensitivity', 'conjbeams', 'clean_no_mask_selfcal_image', 'cycleniter_final_image_nomask')
-
-        self.keys_to_change = []
-        keydict = self.as_dict()
-        for key in keys_to_consider:
-            # print key, eval(key)
-            if keydict[key] is not None:
-                self.keys_to_change.append(key)
-
-
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
 #api.ImagingMeasurementSetsPreferred.register(EditimlistInputs)
@@ -279,7 +281,6 @@ class Editimlist(basetask.StandardTaskTemplate):
                         # use this information to change the values in inputs
                         LOG.debug("Setting inputdict['{k}'] to {v} {t}".format(k=parameter, v=value, t=type(value)))
                         inpdict[parameter] = value
-                        inp.keys_to_change.append(parameter)
             else:
                 LOG.error('Input parameter file is not readable: {fname}'.format(fname=inp.parameter_file))
 
@@ -442,7 +443,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         # ---------------------------------------------------------------------------------- set cell (SRDP ALMA)
         ppb = 5.0  # pixels per beam
         if fieldnames:
-            synthesized_beam, ksb = th.synthesized_beam(field_intent_list=[[fieldnames[0], 'TARGET']],
+            synthesized_beam, _ = th.synthesized_beam(field_intent_list=[[fieldnames[0], 'TARGET']],
                                                         spwspec=imlist_entry['spw'],
                                                         robust=imlist_entry['robust'],
                                                         uvtaper=imlist_entry['uvtaper'],
@@ -451,14 +452,39 @@ class Editimlist(basetask.StandardTaskTemplate):
                                                         force_calc=False, shift=True)
         else:
             synthesized_beam = None
+
+        # inpdict['cell'] can have input of the form ['0.5arcsec', '0.5arcsec'] or '3ppb'
+        # It is only a string if the pixel-per-beam value is provided.
+        # With pixel-per-beam input, the cell size needs to be calculated using
+        # th.cell(), so set inpdict['cell'] to the empty list here to trigger this calculation.
+        if inpdict['cell'] and isinstance(inpdict['cell'], str):
+            ppb = float(inpdict['cell'].split('ppb')[0])
+            inpdict['cell'] = []
+
         imlist_entry['cell'] = th.cell(beam=synthesized_beam,
                                        pixperbeam=ppb) if not inpdict['cell'] else inpdict['cell']
         # ----------------------------------------------------------------------------------  set imsize (SRDP ALMA)
         largest_primary_beam = th.largest_primary_beam_size(spwspec=imlist_entry['spw'], intent='TARGET')
         fieldids = th.field('TARGET', fieldnames)
-        imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
-                                           primary_beam=largest_primary_beam,
-                                           sfpblimit=0.2, intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
+
+        # Fail if there is no field to image. This could occur if a field is requested that is not in the MS.
+        # th.field will return [''] if no fields were found in the MS that match any input fields and intents
+        if len(fieldids) == 1 and fieldids[0] == '':
+            msg = "Field(s): {} not present in MS: {}".format(','.join(fieldnames), ms.name)
+            LOG.error(msg)
+
+        if isinstance(inpdict['imsize'], str):
+            sfpblimit = float(inpdict['imsize'].split('pb')[0])
+            inpdict['imsize'] = []
+        else:
+            sfpblimit = 0.2
+
+        if not (len(fieldids) == 1 and fieldids[0] == ''):
+            imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
+                                            primary_beam=largest_primary_beam,
+                                            sfpblimit=sfpblimit, intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
+        else:
+            imlist_entry['imsize'] = None
         # ---------------------------------------------------------------------------------- set imsize (VLA)
         if img_mode == 'VLA' and imlist_entry['specmode'] == 'cont':
             imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
