@@ -215,6 +215,14 @@ class testBPdcals(basetask.StandardTaskTemplate):
                     self.ignorerefant.append(refant)
                     LOG.warning("A baseband is determined to be bad for >50% of antennas.  "
                              "Removing reference antenna(s) {!s} and rerunning the test calibration.".format(','.join(self.ignorerefant)))
+                    # PIPE-1554: restoring saved version of the flags as baseband is bad for >50% of antennas.
+                    flag_version_name = "testbpdcals_applycal"
+                    task = casa_tasks.flagmanager(vis=m.name, mode='restore', versionname=flag_version_name)
+                    try:
+                        flag_restore_results = self._executor.execute(task)
+                    except Exception:
+                        LOG.error("Failed to restore the last applied flags for %s" % m.basename)
+                        raise
 
             gtypecaltable[band] = gtypecaltablename
             ktypecaltable[band] = ktypecaltablename
@@ -746,6 +754,16 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         ntables = len(AllCalTables)
 
+        # save flags
+        # PIPE-1554: backing up the flags before applycal with version name.
+        # The given version name is used to restore the flags when required.
+        task = casa_tasks.flagmanager(vis=m.name, mode='save', versionname="testbpdcals_applycal")
+        try:
+            self._executor.execute(task)
+        except Exception:
+            LOG.error("Failed to save the last applied flags for %s" % m.basename)
+            raise
+
         applycal_task_args = {'vis': self.inputs.vis,
                               'field': '',
                               'spw': spw,
@@ -759,8 +777,8 @@ class testBPdcals(basetask.StandardTaskTemplate):
                               'spwmap': [],
                               'calwt': [False]*ntables,
                               'parang': self.parang,
-                              'applymode': 'calflagstrict',
-                              'flagbackup': True}
+                              'applymode': 'calflagstrict'
+                              }
 
         job = casa_tasks.applycal(**applycal_task_args)
 
