@@ -244,7 +244,7 @@ class SpectralWindow(object):
             chan_effective_bws = numpy.array(list(chan_effective_bws))
 
         return ('SpectralWindow({0!r}, {1!r}, {2!r}, {3!r}, {4!r}, {5!r}, {6}, {7}, {8}, {9!r}, {10!r}, {11!r}, '
-                '{12!r}, {13}, {14}, {15!r})').format(
+                '{12!r}, {13}, {14}, {15!r}, {16})').format(
             self.id,
             self.name,
             self.type,

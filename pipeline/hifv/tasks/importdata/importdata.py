@@ -24,16 +24,18 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
     bdfflags = vdp.VisDependentProperty(default=False)
     process_caldevice = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
+    specline_spws = vdp.VisDependentProperty(default='auto')
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, createmms=None,
-                 ocorr_mode=None, datacolumns=None, parallel=None):
+                 ocorr_mode=None, datacolumns=None, specline_spws=None, parallel=None):
         super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                          process_caldevice=process_caldevice, session=session,
                          overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
                          save_flagonline=save_flagonline, createmms=createmms,
                          ocorr_mode=ocorr_mode, datacolumns=datacolumns)
+        self.specline_spws = specline_spws
         self.parallel = parallel
 
 
@@ -147,11 +149,12 @@ class SerialVLAImportData(importdata.ImportData):
             LOG.warning(PbandWarning)
 
         # Spectral line detection tool
-        mset = myresults.mses[0]
-        sltool = SpectralLineDetector(mset=mset, auto='auto')
-        sltool.execute()
-        for spw in mset.get_all_spectral_windows():
-            LOG.debug("SPW {}: {}".format(spw.id, spw.specline_window))
+        for mset in myresults.mses:
+            sltool = SpectralLineDetector(mset=mset, spws=self.inputs.specline_spws)
+            sltool.execute()
+            LOG.debug("Whether spectral window is designated as spectral line or continuum.")
+            for spw in mset.get_all_spectral_windows():
+                LOG.debug("SPW ID {}: {}".format(spw.id, spw.specline_window))
 
         return myresults
 
