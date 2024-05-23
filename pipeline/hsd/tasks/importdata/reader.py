@@ -49,7 +49,7 @@ def mjdsec2str(t: float) -> str:
     """
     date_time = mjd_to_datetime(t / 86400)
     attributes = ('year', 'month', 'day', 'hour', 'minute', 'second', 'microsecond')
-    return '{}/{}/{}/{}:{}:{}.{}'.format(*[getattr(date_time, name) for name in attributes])
+    return '{}/{}/{}/{}:{}:{}.{:0>6d}'.format(*[getattr(date_time, name) for name in attributes])
 
 
 def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:

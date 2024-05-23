@@ -11,6 +11,7 @@ from .utils import mjd_to_datetime, mjd_to_datestring
 
 test_cases = [
     (56839.91646527777, datetime.datetime(2014, 7, 1, 21, 59, 42, 599999)),
+    (56839.91647013888, datetime.datetime(2014, 7, 1, 21, 59, 43, 19999)),
     (60414, datetime.datetime(2024, 4, 14, 0, 0, 0)),
     (60414.9999999999, datetime.datetime(2024, 4, 14, 23, 59, 59, 999991)),
     (60414.999999999985, datetime.datetime(2024, 4, 14, 23, 59, 59, 999999))
@@ -31,6 +32,7 @@ def test_mjd_to_datetime(mjd: float, expected: datetime.datetime):
 
 test_cases = [
     (56839.91646527777, 'Tue Jul  1 21:59:42 2014 UTC'),
+    (56839.91647013888, 'Tue Jul  1 21:59:43 2014 UTC'),
     (60414, 'Sun Apr 14 00:00:00 2024 UTC'),
     (60414.9999999999, 'Sun Apr 14 23:59:59 2024 UTC'),
     (60414.999999999985, 'Sun Apr 14 23:59:59 2024 UTC')
