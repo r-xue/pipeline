@@ -41,6 +41,15 @@ class SDBaselineQAHandler(pqa.QAPlugin):
         for qstat in result.outcome['baseline_quality_stat']:
             scores.append(qacalc.score_sd_baseline_quality(qstat.vis, qstat.field, qstat.ant,
                                                            qstat.spw, qstat.pol, qstat.stat))
+
+        reduction_group = context.observing_run.ms_reduction_group
+        for bl in result.outcome['baselined']:
+            reduction_group_id = bl['group_id']
+            field_name = reduction_group[reduction_group_id].field_name
+            spw_ids = set(m.spw_id for m in reduction_group[reduction_group_id])
+            lines = bl['lines']
+            scores.append(qacalc.score_sd_line_detection(field_name, spw_ids, lines))
+
         result.qa.pool.extend(scores)
 
 

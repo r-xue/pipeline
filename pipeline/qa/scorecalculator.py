@@ -15,7 +15,7 @@ import operator
 import os
 import re
 import traceback
-from typing import List, Tuple, TYPE_CHECKING
+from typing import List, Tuple, TYPE_CHECKING, Union
 
 import numpy as np
 from scipy import interpolate
@@ -2602,37 +2602,35 @@ def score_images_exist(filesdir, imaging_products_only, calimages, targetimages)
 
 
 @log_qa
-def score_sd_line_detection(group_id_list, spw_id_list, lines_list):
-    detected_spw = []
-    detected_group = []
+def score_sd_line_detection(field_name: str, spw_id: List[int], lines: List[List[Union[float, bool]]]) -> pqa.QAScore:
+    line_ranges = []
+    for line in lines:
+        center, width, is_valid = line[:3]
+        if is_valid:
+            chan_left = int(np.floor(center - width / 2))
+            chan_right = int(np.ceil(center + width / 2))
+            line_ranges.append((chan_left, chan_right))
 
-    for group_id, spw_id, lines in zip(group_id_list, spw_id_list, lines_list):
-        if any([l[2] for l in lines]):
-            LOG.trace('detected lines exist at group_id %s spw_id %s' % (group_id, spw_id))
-            unique_spw_id = set(spw_id)
-            if len(unique_spw_id) == 1:
-                detected_spw.append(unique_spw_id.pop())
-            else:
-                detected_spw.append(-1)
-            detected_group.append(group_id)
+    metric_value = ';'.join([f'{l}~{r}' for l, r in line_ranges])
 
-    if len(detected_spw) == 0:
-        score = 0.0
-        longmsg = 'No spectral lines were detected'
-        shortmsg = 'No spectral lines were detected'
+    spw = ','.join(map(str, spw_id))
+    if metric_value:
+        score = 1.0
+        spw_desc = f'Spws {spw}' if len(spw_id) > 1 else f'Spw {spw}'
+        longmsg = f'Successfully detected spectral lines in Field {field_name}, {spw_desc}'
+        shortmsg = 'Successfully detected spectral lines'
     else:
         score = 1.0
-        if detected_spw.count(-1) == 0:
-            longmsg = 'Spectral lines were detected in spws %s' % (', '.join(map(str, detected_spw)))
-        else:
-            longmsg = 'Spectral lines were detected in ReductionGroups %s' % (','.join(map(str, detected_group)))
-        shortmsg = 'Spectral lines were detected'
+        longmsg = 'No spectral lines were detected'
+        shortmsg = 'No spectral lines were detected'
 
     origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                          metric_score=len(detected_spw),
-                          metric_units='Number of spectral lines detected')
-
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+                          metric_score=metric_value,
+                          metric_units='Channel range(s) of detected lines')
+    selection = pqa.TargetDataSelection(spw=set(spw.split(',')),
+                                        field=set([field_name]),
+                                        intent={'TARGET'})
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
 
 @log_qa
 def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
