@@ -49,7 +49,6 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         # copy cont.dat file across to weblog directory
         contdat_filename = 'cont.dat'
-        contdat_path = os.path.join(weblog_dir, contdat_filename)
         contdat_weblink = os.path.join('stage%s' % results[0].stage_number, contdat_filename)
         contdat_path_link = '<a href="{!s}" class="replace-pre" data-title="{!s}">View</a>' \
                             ' or <a href="{!s}" download="{!s}">download</a> {!s} file.'.format(contdat_weblink, contdat_filename,

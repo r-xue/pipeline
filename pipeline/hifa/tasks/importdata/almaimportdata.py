@@ -133,7 +133,7 @@ class SerialALMAImportData(importdata.ImportData):
 @task_registry.set_equivalent_casa_task('hifa_importdata')
 @task_registry.set_casa_commands_comment('If required, ASDMs are converted to MeasurementSets.')
 class ALMAImportData(sessionutils.ParallelTemplate):
-    """ALMAmportData class for parallelization."""
+    """ALMAImportData class for parallelization."""
 
     Inputs = ALMAImportDataInputs
     Task = SerialALMAImportData
