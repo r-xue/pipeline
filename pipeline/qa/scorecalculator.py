@@ -15,7 +15,7 @@ import operator
 import os
 import re
 import traceback
-from typing import List, Tuple, TYPE_CHECKING, Union
+from typing import List, Optional, Tuple, TYPE_CHECKING, Union
 
 import numpy as np
 from scipy import interpolate
@@ -34,8 +34,10 @@ from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.infrastructure import casa_tools
 
 if TYPE_CHECKING:
+    from pipeline.domain.singledish import MSReductionGroupDesc
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
+    from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
 
 __all__ = ['score_polintents',                                # ALMA specific
            'score_bands',                                     # ALMA specific
@@ -2602,7 +2604,40 @@ def score_images_exist(filesdir, imaging_products_only, calimages, targetimages)
 
 
 @log_qa
-def score_sd_line_detection(field_name: str, spw_id: List[int], lines: List[List[Union[float, bool]]]) -> pqa.QAScore:
+def score_overall_sd_line_detection(reduction_group: 'MSReductionGroupDesc', result: 'SDBaselineResults') -> List[pqa.QAScore]:
+    line_detection_scores = []
+    for bl in result.outcome['baselined']:
+        reduction_group_id = bl['group_id']
+        field_name = reduction_group[reduction_group_id].field_name
+        spw_ids = set(m.spw_id for m in reduction_group[reduction_group_id])
+        lines = bl['lines']
+        score = score_sd_line_detection(field_name, spw_ids, lines)
+        if score:
+            line_detection_scores.append(score)
+
+    if len(line_detection_scores) == 0:
+        # add new entry with score of 0.8 if no spectral lines
+        # were detected in any spws/fields
+        score = 0.8
+        longmsg = 'No spectral lines were detected'
+        shortmsg = 'No spectral lines were detected'
+
+        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                              metric_score='N/A',
+                              metric_units='Channel range(s) of detected lines')
+        selection = pqa.TargetDataSelection(intent={'TARGET'})
+        line_detection_scores.append(
+            pqa.QAScore(
+                score, longmsg=longmsg, shortmsg=shortmsg,
+                origin=origin, applies_to=selection
+            )
+        )
+
+    return line_detection_scores
+
+
+@log_qa
+def score_sd_line_detection(field_name: str, spw_id: List[int], lines: List[List[Union[float, bool]]]) -> Optional[pqa.QAScore]:
     line_ranges = []
     for line in lines:
         center, width, is_valid = line[:3]
@@ -2619,18 +2654,15 @@ def score_sd_line_detection(field_name: str, spw_id: List[int], lines: List[List
         spw_desc = f'Spws {spw}' if len(spw_id) > 1 else f'Spw {spw}'
         longmsg = f'Successfully detected spectral lines in Field {field_name}, {spw_desc}'
         shortmsg = 'Successfully detected spectral lines'
-    else:
-        score = 1.0
-        longmsg = 'No spectral lines were detected'
-        shortmsg = 'No spectral lines were detected'
 
-    origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                          metric_score=metric_value,
-                          metric_units='Channel range(s) of detected lines')
-    selection = pqa.TargetDataSelection(spw=set(spw.split(',')),
-                                        field=set([field_name]),
-                                        intent={'TARGET'})
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                              metric_score=metric_value,
+                              metric_units='Channel range(s) of detected lines')
+        selection = pqa.TargetDataSelection(spw=set(spw.split(',')),
+                                            field=set([field_name]),
+                                            intent={'TARGET'})
+        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+
 
 @log_qa
 def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
