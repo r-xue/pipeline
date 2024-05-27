@@ -2610,8 +2610,9 @@ def score_overall_sd_line_detection(reduction_group: 'MSReductionGroupDesc', res
         reduction_group_id = bl['group_id']
         field_name = reduction_group[reduction_group_id].field_name
         spw_ids = set(m.spw_id for m in reduction_group[reduction_group_id])
+        nchan = reduction_group[reduction_group_id].nchan
         lines = bl['lines']
-        score = score_sd_line_detection(field_name, spw_ids, lines)
+        score = score_sd_line_detection(field_name, spw_ids, nchan, lines)
         if score:
             line_detection_scores.append(score)
 
@@ -2637,7 +2638,29 @@ def score_overall_sd_line_detection(reduction_group: 'MSReductionGroupDesc', res
 
 
 @log_qa
-def score_sd_line_detection(field_name: str, spw_id: List[int], lines: List[List[Union[float, bool]]]) -> Optional[pqa.QAScore]:
+def score_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
+    chan_leftmost = min(line[0] for line in line_ranges)
+    chan_rightmost = max(line[1] for line in line_ranges)
+    print(chan_leftmost, chan_rightmost, nchan)
+    if chan_leftmost <= 0 or nchan - 1 <= chan_rightmost:
+        score = 0.65
+    else:
+        score = 1.0
+    return score
+
+
+@log_qa
+def score_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
+    line_coverage = sum(line[1] - line[0] + 1 for line in line_ranges)
+    if line_coverage > nchan / 3:
+        score = 0.65
+    else:
+        score = 1.0
+    return score
+
+
+@log_qa
+def score_sd_line_detection(field_name: str, spw_id: List[int], nchan: int, lines: List[List[Union[float, bool]]]) -> Optional[pqa.QAScore]:
     line_ranges = []
     for line in lines:
         center, width, is_valid = line[:3]
@@ -2646,14 +2669,26 @@ def score_sd_line_detection(field_name: str, spw_id: List[int], lines: List[List
             chan_right = int(np.ceil(center + width / 2))
             line_ranges.append((chan_left, chan_right))
 
-    metric_value = ';'.join([f'{l}~{r}' for l, r in line_ranges])
+    if line_ranges:
+        metric_value = ';'.join([f'{l}~{r}' for l, r in line_ranges])
+        spw = ','.join(map(str, spw_id))
+        score_edge = score_sd_edge_lines(line_ranges, nchan)
+        msg_list = []
+        if score_edge < 1.0:
+            msg_list.append('An edge line is detected')
+        score_wide = score_sd_wide_lines(line_ranges, nchan)
+        if score_wide < 1.0:
+            msg_list.append('A wide line is detected')
 
-    spw = ','.join(map(str, spw_id))
-    if metric_value:
-        score = 1.0
+        score = min(score_edge, score_wide)
         spw_desc = f'Spws {spw}' if len(spw_id) > 1 else f'Spw {spw}'
-        longmsg = f'Successfully detected spectral lines in Field {field_name}, {spw_desc}'
-        shortmsg = 'Successfully detected spectral lines'
+        if msg_list:
+            # detected edge line and/or wide line
+            shortmsg = '. '.join(msg_list) + '.'
+            longmsg = f'Field {field_name}, {spw_desc}: {shortmsg}'
+        else:
+            longmsg = f'Successfully detected spectral lines in Field {field_name}, {spw_desc}'
+            shortmsg = 'Successfully detected spectral lines'
 
         origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                               metric_score=metric_value,
