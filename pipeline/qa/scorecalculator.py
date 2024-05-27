@@ -1392,8 +1392,8 @@ def score_wvrgcal(ms_name, dataresult):
         if WVRinfo.flag:
             flagant_list.append(WVRinfo.antenna)
 
-    # limits for disc and rms triggers - 
-    # same as hard coded in wvrg_qa to make the remcloud 
+    # limits for disc and rms triggers -
+    # same as hard coded in wvrg_qa to make the remcloud
     # trigger result object boolean
     disc_max = 500 # in um
     rms_max = 500 # in um
@@ -1411,7 +1411,7 @@ def score_wvrgcal(ms_name, dataresult):
 
     if score > 1.0:
         # if nothing else score passes will be >1.0
-        # truncate to 1.0 - ratio_score now holding improvement 
+        # truncate to 1.0 - ratio_score now holding improvement
         score = 1.0
         if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 or dataresult.PHnoisy is True:
             score = 0.9  # i.e. to blue as a maximum value
@@ -1440,7 +1440,7 @@ def score_wvrgcal(ms_name, dataresult):
                 score = linear_score(score, 0.0, 0.9, 0.67, 0.9)
                 # i.e. inputs will be truncated to between 0.0 and 0.9, linfited to be then between 0.67 and 0.9 - blue
 
-    # now for scores < 1.0 
+    # now for scores < 1.0
     elif score < 1.0:
         qa_messages.append('No WVR improvement')  # PIPE-1837 message changed, now below
 
@@ -1457,7 +1457,7 @@ def score_wvrgcal(ms_name, dataresult):
 
         else:
             score = 0.66
-            reduceBy = 0.0  # initiate due to PIPE-1837 if/else loops 
+            reduceBy = 0.0  # initiate due to PIPE-1837 if/else loops
             if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
                 # now adjust 0.1 per bad entry
                 reduceBy += len(flagant_list)*0.1
@@ -1472,14 +1472,14 @@ def score_wvrgcal(ms_name, dataresult):
                 if len(rms_limit) > 0:
                     qa_messages.append('Elevated rms value(s)')
 
-            # PIPE-1837 before final yellow scoring we assess if the 
+            # PIPE-1837 before final yellow scoring we assess if the
             # phase rms from wvrg_qa was 'good' i.e. <1 radian
-            # but only when there are no other WVR soln issues, i.e. 
+            # but only when there are no other WVR soln issues, i.e.
             # disc or rms are below the fixed limits - note
             # message changes explicitly if only BP is 'good' or both BP and Phase
             # technically the phase can be noisy due to SNR, not atmospheric variations
             if len(disc_limit) == 0 and len(rms_limit) == 0:
-                # here we would check if initscore > 0.X: "limit' 
+                # here we would check if initscore > 0.X: "limit'
                 if dataresult.BPgood:
                     qa_messages.append('Bandpass ' + ('and Phase ' if dataresult.PHgood else '') +
                                        'calibrator atmospheric phase stability appears to be good')
@@ -1491,14 +1491,14 @@ def score_wvrgcal(ms_name, dataresult):
                     qa_messages.append('Check atmospheric phase stability')
                     # if disc and rms didn't trigger but phase stability not reported as good - still yellow
                     score = linear_score(score, 0.0, 0.66, 0.34, 0.66)
-  
+
             # Otherwise now we are back to yellow when disc or rms also triggered on any ant and append message now
             else:
                 qa_messages.append('Check atmospheric phase stability')
                 score = linear_score(score, 0.0, 0.66, 0.34, 0.66)
                 # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
 
-    # join the short messages for the QA score (are these stored?? ) 
+    # join the short messages for the QA score (are these stored?? )
     qa_mesg = ' - '.join(qa_messages)
 
     if qa_mesg:
@@ -1506,7 +1506,7 @@ def score_wvrgcal(ms_name, dataresult):
     else:
         longmsg = 'phase RMS improvement was %0.2f for %s' % (wvr_score, ms_name)
 
-    # should be made always 
+    # should be made always
     shortmsg = '%0.2fx improvement' % wvr_score
 
     origin = pqa.QAOrigin(metric_name='score_wvrgcal',
@@ -1991,8 +1991,8 @@ def score_decoherence_assessment(ms: MeasurementSet, phaserms_results, outlier_a
     phase_stability_origin = pqa.QAOrigin(metric_name='Phase stability',
                                           metric_score=phasermscycle_p80,
                                           metric_units='Degrees')
-       
-    return pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin, 
+
+    return pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin,
                        weblog_location=pqa.WebLogLocation.ACCORDION)
 
 
