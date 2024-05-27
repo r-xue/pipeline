@@ -382,7 +382,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             info['obspatt'] = 'sd'
             info['arrays'] = 'TP'
             info['modifier'] = ''
-            info['session'] = session
+
+            # PIPE-2148, limiting 'sessionX' keyword length to 68 characters
+            # due to FITS header keyword string length limit.
+            info = imageheader.wrap_key(info, 'sessio', session)
 
             image.setmiscinfo(info)
 
