@@ -51,24 +51,6 @@ class SDBaselineQAHandler(pqa.QAPlugin):
         result.qa.pool.extend(scores)
 
 
-def _get_plot(plots: List[logger.Plot], figfile: str) -> Optional[Union[compress.CompressedObj, logger.Plot]]:
-    """
-    Return Plot instance that matches figure file name.
-
-    Args:
-        plots: A list of plot objects
-        figfile: The name of figure file
-    Returns:
-        Plot instance. Returns None if no match is found.
-    """
-    for p in plots:
-        if isinstance(p, compress.CompressedObj):
-            p = p.decompress()
-        if p.basename == os.path.basename(figfile):
-            return p
-    return None
-
-
 class SDBaselineListQAHandler(pqa.QAPlugin):
     """QA handler to handle list of results."""
 
