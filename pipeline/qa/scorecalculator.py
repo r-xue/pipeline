@@ -2666,12 +2666,34 @@ def score_overall_sd_line_detection(reduction_group: 'MSReductionGroupDesc', res
     return line_detection_scores
 
 
+def line_wider_than(line_ranges: List[Tuple[int, int]], nchan: int, fraction: float) -> bool:
+    """Check if line coverage is wider than given threshold.
+
+    Return value is computed as follows:
+
+        sum(line_coverage) > nchan * fraction,
+
+    where line_coverage is computed by line[1] - line[0] + 1
+    for each lines in line_ranges.
+
+    Args:
+        line_ranges: List of line ranges
+        nchan: Number of channels
+        fraction: Fractional threshold
+
+    Returns:
+        True if line coverage is wider than the threshold. Otherwise, False.
+    """
+    line_coverage = sum(min(line[1], nchan - 1) - max(line[0], 0) + 1 for line in line_ranges)
+    return line_coverage > nchan * fraction
+
+
 @log_qa
 def score_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
     """Compute score based on the existence of lines at edge channels.
 
-    This function returns 0.65 if there is a line that contains edge channels.
-    Otherwise, it returns 1.0.
+    This function returns 0.65 if there is a line that contains edge channels
+    and line width exceeds 1/5 of spw bandwidth. Otherwise, it returns 1.0.
 
     Args:
         line_ranges: List of line ranges
@@ -2681,13 +2703,16 @@ def score_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float
         Computed score. Value is either 0.65 (edge line exists)
         or 1.0 (no edge line exists)
     """
-    chan_leftmost = min(line[0] for line in line_ranges)
-    chan_rightmost = max(line[1] for line in line_ranges)
-    print(chan_leftmost, chan_rightmost, nchan)
-    if chan_leftmost <= 0 or nchan - 1 <= chan_rightmost:
-        score = 0.65
+    # see PIPEREQ-304 for the origin of the value
+    fraction = 1 / 5
+    for line in line_ranges:
+        is_edge_line = (line[0] <= 0) or (nchan - 1 <= line[1])
+        if is_edge_line and line_wider_than([line], nchan, fraction):
+            score = 0.65
+            break
     else:
         score = 1.0
+
     return score
 
 
@@ -2708,8 +2733,9 @@ def score_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float
         Computed score. Value is either 0.65 (wide line exists)
         or 1.0 (no wide line exists)
     """
-    line_coverage = sum(line[1] - line[0] + 1 for line in line_ranges)
-    if line_coverage > nchan / 3:
+    # see PIPEREQ-304 for the origin of the value
+    fraction = 1 / 3
+    if line_wider_than(line_ranges, nchan, fraction):
         score = 0.65
     else:
         score = 1.0
