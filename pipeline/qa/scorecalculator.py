@@ -2823,7 +2823,7 @@ def score_sd_line_detection(field_name: str, spw_id: List[int], nchan: int, line
     """
     if line_ranges:
         metric_value = ';'.join([f'{l}~{r}' for l, r in line_ranges])
-        spw = ','.join(map(str, spw_id))
+        spw = ', '.join(map(str, spw_id))
         score_edge = score_sd_edge_lines(line_ranges, nchan)
         msg_list = []
         if score_edge < 1.0:
