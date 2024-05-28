@@ -3,11 +3,38 @@ scorecalculator_test.py : Unit tests for "qa/scorecalculator.py".
 
 Unit tests for "qa/scorecalculator.py"
 """
-from typing import List, Optional, Tuple, TYPE_CHECKING
+from typing import List, Optional, Tuple
 
 import pytest
 
 import pipeline.qa.scorecalculator as qacalc
+
+
+@pytest.mark.parametrize(
+    'lines, expected',
+    [
+        ([(10, 5, True)], [(7, 13)]),
+        ([(10, 5, False)], []),
+    ]
+)
+def test_get_line_ranges(lines: List[Tuple[int, int, bool]], expected: List[Tuple[int, int]]):
+    line_ranges = qacalc.get_line_ranges(lines)
+    assert line_ranges == expected
+
+
+@pytest.mark.parametrize(
+    'lines, nchan, fraction, expected',
+    [
+        ([(0, 100)], 1024, 1 / 3, False),
+        ([(0, 400)], 1024, 1 / 3, True),
+        ([(0, 115), (200, 315), (400, 515)], 1024, 1 / 3, True),
+        ([(0, 100)], 1024, 1 / 20, True),
+    ]
+)
+def test_line_wider_than(lines: List[Tuple[int, int]], nchan: int, fraction: float, expected: bool):
+    is_wider = qacalc.line_wider_than(lines, nchan, fraction)
+    assert is_wider == expected
+
 
 test_cases_edge = [
     # line not extend to the edge
@@ -61,19 +88,19 @@ def test_score_sd_wide_lines(lines: List[Tuple[int, int]], nchan: int, expected:
 
 test_cases_qa_msg = [
     # narrow line at the middle
-    ([(1024, 10, True)], 2048, 1.0, 'Successfully detected spectral lines'),
+    ([(1019, 1029)], 2048, 1.0, 'Successfully detected spectral lines'),
     # narrow edge line
-    ([(5, 10, True)], 1024, 1.0, 'Successfully detected spectral lines'),
+    ([(0, 10)], 1024, 1.0, 'Successfully detected spectral lines'),
     # edge line with enough coverage to lower QA score
-    ([(105, 210, True)], 1024, 0.65, 'An edge line is detected.'),
+    ([(0, 220)], 1024, 0.65, 'An edge line is detected.'),
     # wide line with enough coverage to lower QA score
-    ([(521, 342, True)], 1024, 0.65, 'A wide line is detected.'),
+    ([(200, 600)], 1024, 0.65, 'A wide line is detected.'),
     # multiple narrow lines with enough coverage *in total* to lower QA score
-    ([(150, 100, True), (350, 100, True), (550, 100, True), (720, 42, True)], 1024, 0.65, 'A wide line is detected.'),
+    ([(100, 200), (300, 400), (500, 600), (700, 742)], 1024, 0.65, 'A wide line is detected.'),
     # wide edge lines that can violate both criteria
-    ([(512, 1024, True)], 1024, 0.65, 'An edge line is detected. A wide line is detected.'),
+    ([(0, 1023)], 1024, 0.65, 'An edge line is detected. A wide line is detected.'),
     # no valid line, no QA score
-    ([(1024, 6, False)], 2048, None, 'N/A'),
+    ([], 2048, None, 'N/A'),
 
 ]
 
