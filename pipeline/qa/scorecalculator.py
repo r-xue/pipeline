@@ -2690,7 +2690,7 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
     for bl in result.outcome['baselined']:
         reduction_group_id = bl['group_id']
         reduction_group_desc = reduction_group[reduction_group_id]
-        member_list = bl['member_list']
+        member_list = bl['members']
         field_name = reduction_group_desc.field_name
         spw_ids = set(m.spw_id for m in reduction_group_desc)
         nchan = reduction_group_desc.nchan
@@ -2699,6 +2699,8 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
             deviation_mask_all, reduction_group_desc, member_list
         )
         lines.extend(deviation_masks)
+        # sort lines by left channel
+        lines.sort(key=lambda x: x[0])
         score = score_sd_line_detection(field_name, spw_ids, nchan, lines)
         if score:
             line_detection_scores.append(score)
