@@ -2,6 +2,9 @@
 reader_test.py : Unit tests for "hsd/tasks/importdata/reader.py".
 
 Unit tests for "hsd/tasks/importdata/reader.py"
+
+Please see hsd/tasks/common/utils_test.py for detailed explanation
+on the test cases.
 """
 import pytest
 
