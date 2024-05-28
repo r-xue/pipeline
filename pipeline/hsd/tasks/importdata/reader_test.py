@@ -21,6 +21,7 @@ test_cases = [
 
 @pytest.mark.parametrize('mjd, expected', test_cases)
 def test_mjdsec2str(mjd: float, expected: str):
+    # 1 day = 24hour * 60min * 60sec = 86400sec
     mjdsec = mjd * 86400
     result = mjdsec2str(mjdsec)
     print(f'result {result} expected {expected}')

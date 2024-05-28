@@ -322,6 +322,7 @@ def mjd_to_datestring(t: float, unit: str='sec') -> str:
         'Wed Nov 17 00:00:00 1858 UTC'
     """
     if unit in ['sec', 's']:
+        # 1 day = 24hour * 60min * 60sec = 86400sec
         mjd = t / 86400.0
     elif unit in ['day', 'd']:
         mjd = t
