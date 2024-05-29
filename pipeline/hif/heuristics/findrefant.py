@@ -27,8 +27,10 @@
 # Imports
 # -------
 
+import collections
 import os
 import operator
+from typing import Dict
 
 import numpy
 
@@ -762,19 +764,10 @@ class RefAntFlagging:
 # ------------------------------------------------------------------------------
 
     def __init__( self, vis, field, spw, intent ):
-
-        # Set the public member functions
-
         self.vis = vis
-
         self.field = field
         self.spw = spw
         self.intent = intent
-
-
-        # Return None
-
-        return None
 
 # ------------------------------------------------------------------------------
 
@@ -800,17 +793,36 @@ class RefAntFlagging:
 
 # ------------------------------------------------------------------------------
 
-    def calc_score( self ):
+    def calc_score(self) -> Dict[str, float]:
+        """
+        Calculate the number of unflagged (good) measurements for each
+        antenna, determine the score, and return them.
 
-        # Calculate the number of unflagged (good) measurements for each
-        # antenna, determine the score, and return them
+        PIPE-1805: first compute individual scores for each intent, then
+        combine into a single representative score.
 
-        good = self._get_good()
-        LOG.info('Get good antennas {0}'.format(good))
-        score = self._calc_score( good )
-        LOG.info('Get good antenna score {0}'.format(score))
+        Returns:
+            Dictionary with antenna ID as key, and score as value.
+        """
+        all_scores = collections.defaultdict(list)
+        for intent in self.intent.split(','):
+            # Retrieve number of unflagged scans per antenna for current intent.
+            good = self._get_good(intent)
+            LOG.info(f'Get good antennas {good} for intent {intent}')
 
-        return( score )
+            # Compute score per antenna for current intent.
+            score = self._calc_score(good)
+            LOG.info(f'Get good antenna score {score} for intent {intent}')
+
+            # Add to combined score.
+            for k, v in score.items():
+                all_scores[k].append(v)
+
+        # For each antenna, combine the score-per-intent into a single
+        # representative score by taking the lowest score.
+        combined_scores = {ant: min(scores) for ant, scores in all_scores.items()}
+
+        return combined_scores
 
 # ------------------------------------------------------------------------------
 
@@ -837,36 +849,27 @@ class RefAntFlagging:
 
 # ------------------------------------------------------------------------------
 
-    def _get_good(self):
+    def _get_good(self, intent: str) -> Dict[str, float]:
         # Update April 2015 to use the flagging task instead of the agent flagger
         task_args = {'vis'          : self.vis,
                      'mode'         : 'summary',
                      'field'        : self.field,
                      'spw'          : self.spw,
-                     'intent'       : self.intent,
+                     'intent'       : intent,
                      'display'      : '',
                      'flagbackup'   : False,
                      'savepars'     : False}
-
         task = casa_tasks.flagdata(**task_args)
-
-        d = task.execute()
+        result = task.execute()
 
         # Calculate the number of good data for each antenna and return them
         good = dict()
-
-        # Agent flagger way
-        # antenna = d['report0']['antenna']
-
-        # Flagtask way
         try:
-            antenna = d['antenna']
-
-            for a in antenna:
-                good[a] = antenna[a]['total'] - antenna[a]['flagged']
+            antennas = result['antenna']
+            for ant in antennas:
+                good[ant] = antennas[ant]['total'] - antennas[ant]['flagged']
         except:
-            msg = "The CASA 'flagdata' task returned invalid " \
-                  "results, unable to rank based on flagging score."
+            msg = "The CASA 'flagdata' task returned invalid results, unable to rank based on flagging score."
             raise Exception(msg)
 
         return good
@@ -904,24 +907,22 @@ class RefAntFlagging:
 
 # ------------------------------------------------------------------------------
 
-    def _calc_score(self, good):
-
-        score = dict()
-
+    @staticmethod
+    def _calc_score(good: Dict[str, float]) -> Dict[str, float]:
         if good:
-            # Get the number of good data, calculate the fraction of good
-            # data, and calculate the good and bad weights
+            # Maximum number of unflagged datapoints across all antennas.
+            max_unflagged = max(good.values())
 
-            nGood = numpy.array(list(good.values()), float)
-            fGood = nGood / float(numpy.max(nGood))
-
-            wGood = fGood * len(nGood)
-            wBad = (1.0 - fGood) * len(nGood)
-
-            # Calculate the score for each antenna and return them
-            names = list(good.keys())
-
-            for n in range(len(wGood)):
-                score[names[n]] = wGood[n]
+            # For each antenna, compute score as the fraction of unflagged
+            # datapoints over the maximum nr. of unflagged datapoints across
+            # all antennas, multiplied by the number of antennas for weighting.
+            if max_unflagged:
+                score = {ant: len(good) * n_unflagged / max_unflagged for ant, n_unflagged in good.items()}
+            else:
+                # If no unflagged datapoints are found at all, then return a
+                # score of 0 for each antenna.
+                score = {ant: 0. for ant in good}
+        else:
+            score = {}
 
         return score
