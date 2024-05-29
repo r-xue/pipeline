@@ -2827,9 +2827,10 @@ def score_sd_line_detection(field_name: str, spw_id: List[int], nchan: int, line
         If any line is detected in the spw, it returns QAScore object.
         If no line is detected, it returns None.
     """
+    return_score = False
     if line_ranges:
+        return_score = True
         metric_value = ';'.join([f'{l}~{r}' for l, r in line_ranges])
-        spw = ', '.join(map(str, spw_id))
         score_edge = score_sd_edge_lines(line_ranges, nchan)
         msg_list = []
         if score_edge < 1.0:
@@ -2839,19 +2840,28 @@ def score_sd_line_detection(field_name: str, spw_id: List[int], nchan: int, line
             msg_list.append('A wide line is detected')
 
         score = min(score_edge, score_wide)
-        spw_desc = f'Spws {spw}' if len(spw_id) > 1 else f'Spw {spw}'
         if msg_list:
             # detected edge line and/or wide line
             shortmsg = '. '.join(msg_list) + '.'
-            longmsg = f'Field {field_name}, {spw_desc}: {shortmsg}'
         else:
-            longmsg = f'Successfully detected spectral lines in Field {field_name}, {spw_desc}'
             shortmsg = 'Successfully detected spectral lines'
+    elif deviation_mask:
+        # perform wide line QA only
+        metric_value = ''
+        score_wide = score_sd_wide_lines(line_ranges + deviation_mask, nchan)
+        if score_wide < 1.0:
+            return_score = True
+            score = score_wide
+            shortmsg = 'A wide line is detected.'
 
+    if return_score:
+        spw = ', '.join(map(str, spw_id))
+        spw_desc = f'Spws {spw}' if len(spw_id) > 1 else f'Spw {spw}'
+        longmsg = f'Field {field_name}, {spw_desc}: {shortmsg}'
         origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                               metric_score=metric_value,
                               metric_units='Channel range(s) of detected lines')
-        selection = pqa.TargetDataSelection(spw=set(spw.split(',')),
+        selection = pqa.TargetDataSelection(spw=set(spw.split(', ')),
                                             field=set([field_name]),
                                             intent={'TARGET'})
         return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)

@@ -88,28 +88,30 @@ def test_score_sd_wide_lines(lines: List[Tuple[int, int]], nchan: int, expected:
 
 
 @pytest.mark.parametrize(
-    'lines, nchan, expected_score, expected_msg',
+    'lines, devmask, nchan, expected_score, expected_msg',
     [
         # narrow line at the middle
-        ([(1019, 1029)], 2048, 1.0, 'Successfully detected spectral lines'),
+        ([(1019, 1029)], [], 2048, 1.0, 'Successfully detected spectral lines'),
         # narrow edge line
-        ([(0, 10)], 1024, 1.0, 'Successfully detected spectral lines'),
+        ([(0, 10)], [], 1024, 1.0, 'Successfully detected spectral lines'),
         # edge line with enough coverage to lower QA score
-        ([(0, 220)], 1024, 0.65, 'An edge line is detected.'),
+        ([(0, 220)], [], 1024, 0.65, 'An edge line is detected.'),
         # wide line with enough coverage to lower QA score
-        ([(200, 600)], 1024, 0.65, 'A wide line is detected.'),
+        ([(200, 600)], [], 1024, 0.65, 'A wide line is detected.'),
         # multiple narrow lines with enough coverage *in total* to lower QA score
-        ([(100, 200), (300, 400), (500, 600), (700, 742)], 1024, 0.65, 'A wide line is detected.'),
+        ([(100, 200), (300, 400), (500, 600), (700, 742)], [], 1024, 0.65, 'A wide line is detected.'),
         # wide edge lines that can violate both criteria
-        ([(0, 1023)], 1024, 0.65, 'An edge line is detected. A wide line is detected.'),
+        ([(0, 1023)], [], 1024, 0.65, 'An edge line is detected. A wide line is detected.'),
         # no valid line, no QA score
-        ([], 2048, None, 'N/A'),
+        ([], [], 2048, None, 'N/A'),
+        # no valid line but wide deviation mask exists
+        ([], [(0, 700)], 1024, 0.65, 'A wide line is detected.')
     ]
 )
-def test_score_sd_lines_overall(lines: List[Tuple[int, int]], nchan: int, expected_score: Optional[float], expected_msg: str):
+def test_score_sd_lines_overall(lines: List[Tuple[int, int]], devmask: List[Tuple[int, int]], nchan: int, expected_score: Optional[float], expected_msg: str):
     field_name = 'M100'
     spw_id = [17]
-    score = qacalc.score_sd_line_detection(field_name, spw_id, nchan, lines, [])
+    score = qacalc.score_sd_line_detection(field_name, spw_id, nchan, lines, devmask)
     if expected_score:
         assert expected_score == score.score
         assert expected_msg == score.shortmsg
