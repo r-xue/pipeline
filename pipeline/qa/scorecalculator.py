@@ -2698,10 +2698,10 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
         deviation_masks = select_deviation_masks(
             deviation_mask_all, reduction_group_desc, member_list
         )
-        lines.extend(deviation_masks)
         # sort lines by left channel
-        lines.sort(key=lambda x: x[0])
-        score = score_sd_line_detection(field_name, spw_ids, nchan, lines)
+        lines.sort(key=operator.itemgetter(0))
+        deviation_masks.sort(key=operator.itemgetter(0))
+        score = score_sd_line_detection(field_name, spw_ids, nchan, lines, deviation_masks)
         if score:
             line_detection_scores.append(score)
 
@@ -2744,7 +2744,12 @@ def line_wider_than(line_ranges: List[Tuple[int, int]], nchan: int, fraction: fl
     Returns:
         True if line coverage is wider than the threshold. Otherwise, False.
     """
-    line_coverage = sum(min(line[1], nchan - 1) - max(line[0], 0) + 1 for line in line_ranges)
+    mask = np.zeros(nchan, dtype=np.uint8)
+    for line in line_ranges:
+        ch_start = max(line[0], 0)
+        ch_end = min(line[1], nchan - 1) + 1
+        mask[ch_start:ch_end] = 1
+    line_coverage = sum(mask)
     return line_coverage > nchan * fraction
 
 
@@ -2803,7 +2808,7 @@ def score_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float
 
 
 @log_qa
-def score_sd_line_detection(field_name: str, spw_id: List[int], nchan: int, line_ranges: List[Tuple[int, int]]) -> Optional[pqa.QAScore]:
+def score_sd_line_detection(field_name: str, spw_id: List[int], nchan: int, line_ranges: List[Tuple[int, int]], deviation_mask: List[Tuple(int, int)]) -> Optional[pqa.QAScore]:
     """Compute QA score based on the line detection result.
 
     It computes QA score based on the existence of lines at the edge
@@ -2816,6 +2821,7 @@ def score_sd_line_detection(field_name: str, spw_id: List[int], nchan: int, line
                 spw id varies across EB.
         nchan: Number of channels for the spw
         lines: List of (start, end) channels for lines
+        deviation_mask: List of (start, end) channels for deviation mask
 
     Returns:
         If any line is detected in the spw, it returns QAScore object.
@@ -2828,7 +2834,7 @@ def score_sd_line_detection(field_name: str, spw_id: List[int], nchan: int, line
         msg_list = []
         if score_edge < 1.0:
             msg_list.append('An edge line is detected')
-        score_wide = score_sd_wide_lines(line_ranges, nchan)
+        score_wide = score_sd_wide_lines(line_ranges + deviation_mask, nchan)
         if score_wide < 1.0:
             msg_list.append('A wide line is detected')
 

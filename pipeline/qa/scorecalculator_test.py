@@ -29,6 +29,7 @@ def test_get_line_ranges(lines: List[Tuple[int, int, bool]], expected: List[Tupl
         ([(0, 400)], 1024, 1 / 3, True),
         ([(0, 115), (200, 315), (400, 515)], 1024, 1 / 3, True),
         ([(0, 100)], 1024, 1 / 20, True),
+        ([(0, 200), (100, 250)], 1024, 1 / 4, False)
     ]
 )
 def test_line_wider_than(lines: List[Tuple[int, int]], nchan: int, fraction: float, expected: bool):
@@ -108,7 +109,7 @@ def test_score_sd_wide_lines(lines: List[Tuple[int, int]], nchan: int, expected:
 def test_score_sd_lines_overall(lines: List[Tuple[int, int]], nchan: int, expected_score: Optional[float], expected_msg: str):
     field_name = 'M100'
     spw_id = [17]
-    score = qacalc.score_sd_line_detection(field_name, spw_id, nchan, lines)
+    score = qacalc.score_sd_line_detection(field_name, spw_id, nchan, lines, [])
     if expected_score:
         assert expected_score == score.score
         assert expected_msg == score.shortmsg
