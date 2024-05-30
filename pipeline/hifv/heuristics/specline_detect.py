@@ -34,13 +34,14 @@ class SpectralLineDetector(object):
         elif self.spws == 'none':
             LOG.info("Spectral line assignment is turned off. All spws will be regarded as continuum.")
         else:
+            spec_windows = range_to_list(self.spws)
+            LOG.debug('Spectral Windows: {}'.format(spec_windows))
+            assert all([type(x) == int for x in spec_windows]), "User-defined spws invalid"
             LOG.info("Spectral line detection defined by user.")
-            spec_windows = self.spws.split(',')
-            spec_windows = list(chain.from_iterable([range_to_list(x) if '~' in x else [x] for x in spec_windows]))
             LOG.info('The user identified the following spws for spectral line analysis: {}. '
-                     'All other spws will be regarded as contiuum.'.format(self.spws))
+                     'All other spws will be regarded as continuum.'.format(self.spws))
             for spw in spws:
-                if str(spw.id) in spec_windows:
+                if int(spw.id) in spec_windows:
                     spw.specline_window = True
             
 
