@@ -2752,12 +2752,16 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
                 shortmsg += 'An edge line mixed with possible instrumental instability was detected at spw edge. '
             if is_wide_line:
                 score = 0.65
-                shortmsg += 'A wide line was detected.'
+                shortmsg += 'A wide line was detected. '
             elif is_wide_mix:
                 score = 0.65
-                shortmsg += 'A wide line mixed with possible instrumental instability was detected.'
+                shortmsg += 'A wide line mixed with possible instrumental instability was detected. '
 
-            if not shortmsg:
+            if len(shortmsg) > 0:
+                shortmsg += 'Please review baseline fit quality.'
+            else:
+                # if no messages are set, it indicates that detected
+                # lines do not harm baseline subtraction
                 shortmsg = 'Successfully detected spectral lines'
 
             longmsg = f'Field {field_name}, {spw_desc}: {shortmsg}'
