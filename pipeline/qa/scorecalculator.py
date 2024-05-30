@@ -34,7 +34,7 @@ from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.infrastructure import casa_tools
 
 if TYPE_CHECKING:
-    from pipeline.domain.singledish import MSReductionGroupDesc
+    from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
     from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
@@ -2625,7 +2625,7 @@ def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, in
     return line_ranges
 
 
-def select_deviation_masks(deviation_masks: dict, reduction_group_desc: 'MSReductionGroupDesc', member_list: List[int]) -> List[Tuple[int, int]]:
+def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSReductionGroupMember') -> List[Tuple[int, int]]:
     """Select unique deviation masks that belongs to given reduction group member.
 
     Args:
@@ -2636,22 +2636,11 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_desc: 'MSReduc
     Returns:
         List of (start, end) channels for selected deviation masks
     """
-    selected = []
-    for member_id in member_list:
-        member = reduction_group_desc[member_id]
-        ms_name = member.ms.basename
-        field_id = member.field_id
-        spw_id = member.spw_id
-        deviation_masks_for_ms = deviation_masks[ms_name]
-        for k, mask_list in deviation_masks_for_ms.items():
-            if k[0] != field_id or k[2] != spw_id:
-                continue
-
-            for mask in mask_list:
-                if mask not in selected:
-                    selected.append(mask)
-
-    return selected
+    ms_name = reduction_group_member.ms.basename
+    field_id = reduction_group_member.field_id
+    spw_id = reduction_group_member.spw_id
+    antenna_id = reduction_group_member.antenna_id
+    return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
 
 
 @log_qa
@@ -2686,24 +2675,102 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
         List of QAScore objects derived from line detection results
     """
     line_detection_scores = []
+    deviation_mask_scores = []
     deviation_mask_all = result.outcome['deviation_mask']
     for bl in result.outcome['baselined']:
         reduction_group_id = bl['group_id']
         reduction_group_desc = reduction_group[reduction_group_id]
         member_list = bl['members']
         field_name = reduction_group_desc.field_name
-        spw_ids = set(m.spw_id for m in reduction_group_desc)
         nchan = reduction_group_desc.nchan
         lines = get_line_ranges(bl['lines'])
-        deviation_masks = select_deviation_masks(
-            deviation_mask_all, reduction_group_desc, member_list
-        )
         # sort lines by left channel
         lines.sort(key=operator.itemgetter(0))
-        deviation_masks.sort(key=operator.itemgetter(0))
-        score = score_sd_line_detection(field_name, spw_ids, nchan, lines, deviation_masks)
-        if score:
-            line_detection_scores.append(score)
+        spw_ids = set(reduction_group_desc[m].spw_id for m in member_list)
+        spw = ', '.join(map(str, spw_ids))
+        spw_desc = f'Spws {spw}' if len(spw_ids) > 1 else f'Spw {spw}'
+
+        # deviation mask only
+        deviation_masks_spw = []
+        for member_id in member_list:
+            reduction_group_member = reduction_group_desc[member_id]
+            deviation_masks = select_deviation_masks(
+                deviation_mask_all, reduction_group_member
+            )
+
+            for mask in deviation_masks:
+                if mask not in deviation_masks_spw:
+                    deviation_masks_spw.append(mask)
+
+            if deviation_masks:
+                is_edge_mask = test_sd_edge_lines(deviation_masks, nchan)
+                is_wide_mask = test_sd_wide_lines(deviation_masks, nchan)
+                score = 1.0
+                shortmsg = ''
+                if is_edge_mask:
+                    score = 0.65
+                    shortmsg += 'Possible instrumental instabilities were detected at spw edge. '
+                if is_wide_mask:
+                    score = 0.65
+                    shortmsg += 'Possible instrumental instatibilities were detected at wide range of spw.'
+
+                if not shortmsg:
+                    shortmsg = 'Possible instrumental instabilities were detected.'
+
+                antenna_name = reduction_group_member.antenna_name
+                longmsg = f'Field {field_name}, {spw_desc}, Antenna {antenna_name}: {shortmsg}'
+                metric_value = ';'.join([f'{l}~{r}' for l, r in deviation_masks])
+                origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                                      metric_score=metric_value,
+                                      metric_units='Channel range(s) possibly affected by instrumental instatbilities')
+                selection = pqa.TargetDataSelection(spw=set(spw.split(', ')),
+                                                    field=set([field_name]),
+                                                    ant=set([antenna_name]),
+                                                    intent={'TARGET'})
+                deviation_mask_scores.append(
+                    pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+                )
+
+        # line only & line + deviation mask
+        if len(lines) > 0:
+            is_edge_line = test_sd_edge_lines(lines, nchan)
+            is_wide_line = test_sd_wide_lines(lines, nchan)
+            if len(deviation_masks_spw) > 0:
+                mixed_ranges = lines + deviation_masks_spw
+                is_edge_mix = test_sd_edge_lines(mixed_ranges, nchan)
+                is_wide_mix = test_sd_wide_lines(mixed_ranges, nchan)
+            else:
+                is_edge_mix = False
+                is_wide_mix = False
+            score = 1.0
+            shortmsg = ''
+            if is_edge_line:
+                score = 0.65
+                shortmsg += 'An edge line was detected. '
+            elif is_edge_mix:
+                score = 0.65
+                shortmsg += 'An edge line mixed with possible instrumental instability was detected at spw edge. '
+            if is_wide_line:
+                score = 0.65
+                shortmsg += 'A wide line was detected.'
+            elif is_wide_mix:
+                score = 0.65
+                shortmsg += 'A wide line mixed with possible instrumental instability was detected.'
+
+            if not shortmsg:
+                shortmsg = 'Successfully detected spectral lines'
+
+            longmsg = f'Field {field_name}, {spw_desc}: {shortmsg}'
+            metric_value = ';'.join([f'{left}~{right}' for left, right in lines])
+            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                                  metric_score=metric_value,
+                                  metric_units='Channel range(s) of detected lines')
+            selection = pqa.TargetDataSelection(spw=set(spw.split(', ')),
+                                                field=set([field_name]),
+                                                intent={'TARGET'})
+            line_detection_scores.append(
+                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+            )
 
     if len(line_detection_scores) == 0:
         # add new entry with score of 0.8 if no spectral lines
@@ -2723,10 +2790,10 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
             )
         )
 
-    return line_detection_scores
+    return line_detection_scores + deviation_mask_scores
 
 
-def line_wider_than(line_ranges: List[Tuple[int, int]], nchan: int, fraction: float) -> bool:
+def line_wider_than(line_ranges: List[Tuple[int, int]], nchan: int, fraction: float, edge: bool) -> bool:
     """Check if line coverage is wider than given threshold.
 
     Return value is computed as follows:
@@ -2740,21 +2807,29 @@ def line_wider_than(line_ranges: List[Tuple[int, int]], nchan: int, fraction: fl
         line_ranges: List of line ranges
         nchan: Number of channels
         fraction: Fractional threshold
+        edge: Only check edge lines
 
     Returns:
         True if line coverage is wider than the threshold. Otherwise, False.
     """
+    if fraction <= 0:
+        return False
+
     mask = np.zeros(nchan, dtype=np.uint8)
     for line in line_ranges:
         ch_start = max(line[0], 0)
         ch_end = min(line[1], nchan - 1) + 1
         mask[ch_start:ch_end] = 1
-    line_coverage = sum(mask)
-    return line_coverage > nchan * fraction
+    if edge:
+        nedge = max(int(np.ceil(nchan * fraction)), 1)
+        return np.all(mask[:nedge] == 1) or np.all(mask[-nedge:])
+    else:
+        line_coverage = sum(mask)
+        return line_coverage > nchan * fraction
 
 
 @log_qa
-def score_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
+def test_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
     """Compute score based on the existence of lines at edge channels.
 
     This function returns 0.65 if there is a line that contains edge channels
@@ -2770,19 +2845,12 @@ def score_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float
     """
     # see PIPEREQ-304 for the origin of the value
     fraction = 1 / 5
-    for line in line_ranges:
-        is_edge_line = (line[0] <= 0) or (nchan - 1 <= line[1])
-        if is_edge_line and line_wider_than([line], nchan, fraction):
-            score = 0.65
-            break
-    else:
-        score = 1.0
-
-    return score
+    edge = True
+    return line_wider_than(line_ranges, nchan, fraction, edge)
 
 
 @log_qa
-def score_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
+def test_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
     """Compute score based on the existence of wide lines.
 
     This function returns 0.65 if there is a line whose width
@@ -2800,71 +2868,8 @@ def score_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float
     """
     # see PIPEREQ-304 for the origin of the value
     fraction = 1 / 3
-    if line_wider_than(line_ranges, nchan, fraction):
-        score = 0.65
-    else:
-        score = 1.0
-    return score
-
-
-@log_qa
-def score_sd_line_detection(field_name: str, spw_id: List[int], nchan: int, line_ranges: List[Tuple[int, int]], deviation_mask: List[Tuple(int, int)]) -> Optional[pqa.QAScore]:
-    """Compute QA score based on the line detection result.
-
-    It computes QA score based on the existence of lines at the edge
-    and wide lines. QAScore object is created with proper QA message.
-    If no lines were detected, it returns None.
-
-    Args:
-        field_name: Name of the field
-        spw_id: List of real spw ids. It can have multiple spw ids if
-                spw id varies across EB.
-        nchan: Number of channels for the spw
-        lines: List of (start, end) channels for lines
-        deviation_mask: List of (start, end) channels for deviation mask
-
-    Returns:
-        If any line is detected in the spw, it returns QAScore object.
-        If no line is detected, it returns None.
-    """
-    return_score = False
-    if line_ranges:
-        return_score = True
-        metric_value = ';'.join([f'{l}~{r}' for l, r in line_ranges])
-        score_edge = score_sd_edge_lines(line_ranges, nchan)
-        msg_list = []
-        if score_edge < 1.0:
-            msg_list.append('An edge line is detected')
-        score_wide = score_sd_wide_lines(line_ranges + deviation_mask, nchan)
-        if score_wide < 1.0:
-            msg_list.append('A wide line is detected')
-
-        score = min(score_edge, score_wide)
-        if msg_list:
-            # detected edge line and/or wide line
-            shortmsg = '. '.join(msg_list) + '.'
-        else:
-            shortmsg = 'Successfully detected spectral lines'
-    elif deviation_mask:
-        # perform wide line QA only
-        metric_value = ''
-        score_wide = score_sd_wide_lines(line_ranges + deviation_mask, nchan)
-        if score_wide < 1.0:
-            return_score = True
-            score = score_wide
-            shortmsg = 'A wide line is detected.'
-
-    if return_score:
-        spw = ', '.join(map(str, spw_id))
-        spw_desc = f'Spws {spw}' if len(spw_id) > 1 else f'Spw {spw}'
-        longmsg = f'Field {field_name}, {spw_desc}: {shortmsg}'
-        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                              metric_score=metric_value,
-                              metric_units='Channel range(s) of detected lines')
-        selection = pqa.TargetDataSelection(spw=set(spw.split(', ')),
-                                            field=set([field_name]),
-                                            intent={'TARGET'})
-        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+    edge = False
+    return line_wider_than(line_ranges, nchan, fraction, edge)
 
 
 @log_qa
