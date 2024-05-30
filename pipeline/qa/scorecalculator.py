@@ -2626,12 +2626,11 @@ def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, in
 
 
 def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSReductionGroupMember') -> List[Tuple[int, int]]:
-    """Select unique deviation masks that belongs to given reduction group member.
+    """Select deviation masks that belongs to given reduction group member.
 
     Args:
         deviation_masks: List of all deviation masks
-        reduction_group_desc: Reduction group description
-        member_list: List of member ids for given reduction group description
+        reduction_group_member: Reduction group member instance
 
     Returns:
         List of (start, end) channels for selected deviation masks
@@ -2652,7 +2651,8 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
     individual results are as follows:
 
         - skip scoring if no lines were detected (no QAScore object)
-        - 0.65 if there are lines extends to edge channels
+        - 0.65 if there are lines extends to edge channels with the
+          width more than 1/5 of spw bandwidth
         - 0.65 if there are lines that covers more than 1/3 of spw
           bandwidth in total
         - 1.0 otherwise
@@ -2662,6 +2662,13 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
     the score of 0.8 and the message indicating that no lines were
     detected. Therefore, returned list should contain at least one
     QAScore object.
+
+    In addition to the detected lines, deviation masks are also
+    examined in the same way as lines. Also, combination of
+    detected lines and deviation masks are examined similarly. Returned
+    QAScore objects are the collection of scores from all cases
+    (line only, deviation mask only, and mix of them) but they can
+    be differentiated by the associated messages and/or metric units.
 
     Relevant JIRA tickets:
         PIPE-2136
@@ -2673,6 +2680,7 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
 
     Returns:
         List of QAScore objects derived from line detection results
+        and/or deviation masks
     """
     line_detection_scores = []
     deviation_mask_scores = []
@@ -2698,6 +2706,8 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
                 deviation_mask_all, reduction_group_member
             )
 
+            # deviation_masks_spw will be combined with
+            # detected lines to examine "mixed" case
             for mask in deviation_masks:
                 if mask not in deviation_masks_spw:
                     deviation_masks_spw.append(mask)
@@ -2800,12 +2810,10 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
 def line_wider_than(line_ranges: List[Tuple[int, int]], nchan: int, fraction: float, edge: bool) -> bool:
     """Check if line coverage is wider than given threshold.
 
-    Return value is computed as follows:
-
-        sum(line_coverage) > nchan * fraction,
-
-    where line_coverage is computed by line[1] - line[0] + 1
-    for each lines in line_ranges.
+    Threshold is computed by nchan * fraction. When edge parameter is
+    False, the function checks if total line coverage exceeds the threshold.
+    If edge parameter is True, the function looks for the line ranges that
+    spans edge channels, and check if their widths exceed the threhold.
 
     Args:
         line_ranges: List of line ranges
@@ -2815,6 +2823,8 @@ def line_wider_than(line_ranges: List[Tuple[int, int]], nchan: int, fraction: fl
 
     Returns:
         True if line coverage is wider than the threshold. Otherwise, False.
+        Please see the above description for more detailed explanation on
+        return value.
     """
     if fraction <= 0:
         return False
@@ -2834,18 +2844,18 @@ def line_wider_than(line_ranges: List[Tuple[int, int]], nchan: int, fraction: fl
 
 @log_qa
 def test_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
-    """Compute score based on the existence of lines at edge channels.
+    """Test the existence of lines at edge channels.
 
-    This function returns 0.65 if there is a line that contains edge channels
-    and line width exceeds 1/5 of spw bandwidth. Otherwise, it returns 1.0.
+    This function checks if there is lines that spans edge channels
+    *and* their widths exceed 1/5 of spw bandwidth.
 
     Args:
         line_ranges: List of line ranges
         nchan: Number of channels
 
     Returns:
-        Computed score. Value is either 0.65 (edge line exists)
-        or 1.0 (no edge line exists)
+        True if there are lines that satisfy the condition above.
+        Otherwise, False.
     """
     # see PIPEREQ-304 for the origin of the value
     fraction = 1 / 5
@@ -2855,20 +2865,21 @@ def test_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
 
 @log_qa
 def test_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
-    """Compute score based on the existence of wide lines.
+    """Test the existence of wide lines.
 
-    This function returns 0.65 if there is a line whose width
-    exceeds 1/3 of spw bandwidth. If there are multiple lines
-    and their coverage exceeds the criterion *in total*, returned
-    value will also be 0.65. Otherwise, it returns 1.0.
+    This function returns True if there is a line with the width
+    exceeding 1/3 of spw bandwidth. If there are multiple lines
+    and their coverage exceeds the criterion *in total*, the
+    function also returns True. Otherwise, it returns False.
 
     Args:
         line_ranges: List of line ranges
         nchan: Number of channels
 
     Returns:
-        Computed score. Value is either 0.65 (wide line exists)
-        or 1.0 (no wide line exists)
+        True if wide line exists. Otherwise, Flase. Please see
+        the above description on more detailed explanation of
+        return value.
     """
     # see PIPEREQ-304 for the origin of the value
     fraction = 1 / 3
