@@ -276,15 +276,21 @@ class AquaXmlGenerator(object):
         if Spw == '':
             Spw = 'N/A'
 
-        Field = ','.join(sorted(map(str, qa_score.applies_to.field)))
-        if Field == '':
-            Field = 'N/A'
-
         Intent = ','.join(sorted(qa_score.applies_to.intent))
         if Intent == '':
             Intent = 'N/A'
 
-        return [ElementTree.Element('DataSelection', Asdm=Asdm, Session=Session, Spw=Spw, Field=Field, Intent=Intent)]
+        extra_attributes = {}
+
+        Field = ','.join(sorted(map(str, qa_score.applies_to.field)))
+        if len(Field) > 0:
+            extra_attributes['Field'] = Field
+
+        Antenna = ','.join(sorted(map(str, qa_score.applies_to.ant)))
+        if len(Antenna) > 0:
+            extra_attributes['Antenna'] = Antenna
+
+        return [ElementTree.Element('DataSelection', Asdm=Asdm, Session=Session, Spw=Spw, Intent=Intent, **extra_attributes)]
 
     def _get_xml_for_qa_scores(self, items, registry) -> List[ElementTree.Element]:
         """
