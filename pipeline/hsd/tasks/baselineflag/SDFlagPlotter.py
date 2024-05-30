@@ -446,7 +446,7 @@ class SDFlagPlotter(object):
         # check consistency
         for pol in pollist:
             if PlotData_dict[pol]['data'] is None and PlotData_dict[pol]['isActive']:
-                LOG.info( "Got no valid data for active flag type for ant:{} spw:{} pol:{} \"{}\"".format(
+                LOG.info( "No statistics data to show for Active flags: ant:{} spw:{} pol:{} \"{}\"".format(
                     PlotData_dict[pol]['ant_name'],
                     PlotData_dict[pol]['spw'],
                     pol,
