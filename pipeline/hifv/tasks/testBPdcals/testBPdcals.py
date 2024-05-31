@@ -29,7 +29,14 @@ class testBPdcalsInputs(vdp.StandardInputs):
     refantignore = vdp.VisDependentProperty(default='')
     doflagundernspwlimit = vdp.VisDependentProperty(default=False)
     flagbaddef = vdp.VisDependentProperty(default=True)
-    iglist = vdp.VisDependentProperty(default={})
+    iglist = vdp.VisDependentProperty(default=True)
+
+    @iglist.postprocess
+    def iglist(self, unprocessed):
+        iglist_dict = {}
+        if isinstance(unprocessed, dict):
+            iglist_dict.update(unprocessed)
+        return iglist_dict
 
     def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, flagbaddef=None, iglist=None):
         """
