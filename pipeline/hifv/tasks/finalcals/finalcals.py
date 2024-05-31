@@ -29,14 +29,16 @@ class FinalcalsInputs(vdp.StandardInputs):
     """
     weakbp = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, weakbp=None, refantignore=None):
+    def __init__(self, context, vis=None, weakbp=None, refantignore=None, refant=None):
         """
         Args:
             context (:obj:): Pipeline context
             vis(str, optional): String name of the measurement set
             weakbp(Boolean):  weak bandpass heuristics on/off - currently not used - see PIPE-104
             refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
+            refant(List): A list of reference antenna(s)
 
         """
         super(FinalcalsInputs, self).__init__()
@@ -44,6 +46,7 @@ class FinalcalsInputs(vdp.StandardInputs):
         self.vis = vis
         self._weakbp = weakbp
         self.refantignore = refantignore
+        self.refant = refant
 
 
 class FinalcalsResults(basetask.Results):
@@ -201,7 +204,10 @@ class Finalcals(basetask.StandardTaskTemplate):
                                                 spw='', refantignore=refantignore)
 
         RefAntOutput = refantobj.calculate()
-
+        # PIPE-595: extending reference antenna list by adding user specified reference antenna list
+        RefAntOutput.extend(self.inputs.refant)
+        # Keeping unique antennas
+        RefAntOutput = list(set(RefAntOutput))
         refAnt = ','.join(RefAntOutput)
 
         LOG.info("The pipeline will use antenna(s) " + refAnt + " as the reference")

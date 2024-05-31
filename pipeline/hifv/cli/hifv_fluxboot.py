@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_fluxboot(vis=None, caltable=None, fitorder=None, refantignore=None):
+def hifv_fluxboot(vis=None, caltable=None, fitorder=None, refantignore=None, refant=None):
 
     """
     hifv_fluxboot ---- Fluxboot
@@ -28,6 +28,8 @@ def hifv_fluxboot(vis=None, caltable=None, fitorder=None, refantignore=None):
                   If no determination can be made by the heuristics, a fitorder of 1 will be used.
     refantignore  String list of antennas to ignore
                   Example:  refantignore='ea02,ea03'
+    refant        A list of reference antenna(s)
+                  Example: refant = ['eq01', 'eq02']
 
     --------- examples -----------------------------------------------------------
 

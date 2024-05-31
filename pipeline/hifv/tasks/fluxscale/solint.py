@@ -33,8 +33,9 @@ class SolintInputs(vdp.StandardInputs):
     """
     limit_short_solint = vdp.VisDependentProperty(default='')
     refantignore = vdp.VisDependentProperty(default='')
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, limit_short_solint=None, refantignore=None):
+    def __init__(self, context, vis=None, limit_short_solint=None, refantignore=None, refant=None):
         """
         Args:
             context (:obj:): Pipeline context
@@ -50,6 +51,7 @@ class SolintInputs(vdp.StandardInputs):
         self.refantignore = refantignore
         self.gain_solint1 = 'int'
         self.gain_solint2 = 'int'
+        self.refant = refant
 
 
 class SolintResults(basetask.Results):
@@ -236,7 +238,10 @@ class Solint(basetask.StandardTaskTemplate):
                                                 spw='', refantignore=refantignore)
 
         RefAntOutput = refantobj.calculate()
-
+        # PIPE-595: extending reference antenna list by adding user specified reference antenna list
+        RefAntOutput.extend(self.inputs.refant)
+        # Keeping unique antennas
+        RefAntOutput = list(set(RefAntOutput))
         refAnt = ','.join(RefAntOutput)
 
         bpdgain_touse = tablebase + table_suffix[0]

@@ -28,8 +28,9 @@ class testBPdcalsInputs(vdp.StandardInputs):
     weakbp = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
     doflagundernspwlimit = vdp.VisDependentProperty(default=False)
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None):
+    def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, refant=None):
         """
         Args:
             context (:obj:): Pipeline context
@@ -38,7 +39,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
             refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
             doflagunderspwlimit(Boolean): Will identify individual spw when less than nspwlimit bad spw
                                           Used in the flagging of bad deformatters heuristics
-
+            refant(List): A list of reference antenna(s)
         """
         super(testBPdcalsInputs, self).__init__()
         self.context = context
@@ -48,6 +49,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
         self.doflagundernspwlimit = doflagundernspwlimit
         self.gain_solint1 = 'int'
         self.gain_solint2 = 'int'
+        self.refant = refant
 
 
 class testBPdcalsResults(basetask.Results):
@@ -314,7 +316,10 @@ class testBPdcals(basetask.StandardTaskTemplate):
                                                 spw='', refantignore=refantignore)
 
         RefAntOutput = refantobj.calculate()
-
+        # PIPE-595: extending reference antenna list by adding user specified reference antenna list
+        RefAntOutput.extend(self.inputs.refant)
+        # Keeping unique antennas
+        RefAntOutput = list(set(RefAntOutput))
         LOG.info("RefAntOutput: {}".format(RefAntOutput))
 
         self._do_gtype_delaycal(caltable=gtypecaltable, RefAntOutput=RefAntOutput, spwlist=spwlist)

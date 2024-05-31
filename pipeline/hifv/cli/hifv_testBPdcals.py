@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None):
+def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, refant=None):
 
     """
     hifv_testBPdcals ---- Runs initial delay and bandpass calibration to setup for RFI flagging
@@ -22,6 +22,8 @@ def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwli
     refantignore         String list of antennas to ignore
                          Example:  refantignore='ea02,ea03'
     doflagundernspwlimit If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.
+    refant               A list of reference antenna(s)
+                         Example: refant = ['eq01', 'eq02']
 
     --------- examples -----------------------------------------------------------
 

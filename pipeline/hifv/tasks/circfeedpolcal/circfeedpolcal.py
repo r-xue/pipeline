@@ -67,13 +67,14 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
     refantignore = vdp.VisDependentProperty(default='')
     leakage_poltype = vdp.VisDependentProperty(default='')
     mbdkcross = vdp.VisDependentProperty(default=True)
+    refant = vdp.VisDependentProperty(default='')
 
     @vdp.VisDependentProperty
     def clipminmax(self):
         return [0.0, 0.25]
 
     def __init__(self, context, vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None,
-                 mbdkcross=None, clipminmax=None):
+                 mbdkcross=None, clipminmax=None, refant=None):
         super(CircfeedpolcalInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -82,6 +83,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
         self.leakage_poltype = leakage_poltype
         self.mbdkcross = mbdkcross
         self.clipminmax = clipminmax
+        self.refant = refant
 
 
 @task_registry.set_equivalent_casa_task('hifv_circfeedpolcal')
@@ -124,6 +126,10 @@ class Circfeedpolcal(polarization.Polarization):
                                                 geometry=True, flagging=True, intent='', spw='',
                                                 refantignore=refantignore)
         self.RefAntOutput = refantobj.calculate()
+        # PIPE-595: extending reference antenna list by adding user specified reference antenna list
+        self.RefAntOutput.extend(self.inputs.refant)
+        # Keeping unique antennas
+        self.RefAntOutput = list(set(self.RefAntOutput))
 
         # setjy for amplitude/flux calibrator (VLASS 3C286 or 3C48)
         fluxcalfieldname, fluxcalfieldid, fluxcal = self._do_setjy()

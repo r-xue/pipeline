@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_finalcals(vis=None, weakbp=None, refantignore=None):
+def hifv_finalcals(vis=None, weakbp=None, refantignore=None, refant=None):
 
     """
     hifv_finalcals ---- Compute final gain calibration tables
@@ -21,6 +21,8 @@ def hifv_finalcals(vis=None, weakbp=None, refantignore=None):
                   specified in the h_init or hifv_importdata task.
     weakbp        Activate weak bandpass heuristics
     refantignore  String list of antennas to ignore
+    refant        A list of reference antenna(s)
+                  Example: refant = ['eq01', 'eq02']
 
     --------- examples -----------------------------------------------------------
 

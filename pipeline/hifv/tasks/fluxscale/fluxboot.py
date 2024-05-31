@@ -32,8 +32,9 @@ class FluxbootInputs(vdp.StandardInputs):
     caltable = vdp.VisDependentProperty(default=None)
     refantignore = vdp.VisDependentProperty(default='')
     fitorder = vdp.VisDependentProperty(default=-1)
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None):
+    def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None, refant=None):
         """
         Args:
             vis(str or list):  measurement set
@@ -54,6 +55,7 @@ class FluxbootInputs(vdp.StandardInputs):
         self.refantignore = refantignore
         self.fitorder = fitorder
         self.spix = 0.0
+        self.refant = refant
 
 
 class FluxbootResults(basetask.Results):
@@ -251,6 +253,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
                                                     spw='', refantignore=refantignore)
 
             RefAntOutput = refantobj.calculate()
+            # PIPE-595: extending reference antenna list by adding user specified reference antenna list
+            RefAntOutput.extend(self.inputs.refant)
+            # Keeping unique antennas
+            RefAntOutput = list(set(RefAntOutput))
             refAnt = ','.join(RefAntOutput)
 
             LOG.info("The pipeline will use antenna(s) " + refAnt + " as the reference")
