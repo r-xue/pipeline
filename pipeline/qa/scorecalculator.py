@@ -2722,18 +2722,23 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
                     shortmsg += 'Possible instrumental instabilities were detected at spw edge. '
                 if is_wide_mask:
                     score = 0.65
-                    shortmsg += 'Possible instrumental instatibilities were detected at wide range of spw.'
+                    shortmsg += 'Possible instrumental instatibilities were detected at wide range of spw. '
 
-                if not shortmsg:
+                if len(shortmsg) > 0:
+                    shortmsg += 'Please review baseline fit quality.'
+                else:
                     shortmsg = 'Possible instrumental instabilities were detected.'
 
+                spw_id = reduction_group_member.spw_id
+                ms_name = reduction_group_member.ms.origin_ms
                 antenna_name = reduction_group_member.antenna_name
-                longmsg = f'Field {field_name}, {spw_desc}, Antenna {antenna_name}: {shortmsg}'
+                longmsg = f'{ms_name}, Field {field_name}, Spw {spw_id}, Antenna {antenna_name}: {shortmsg}'
                 metric_value = ';'.join([f'{l}~{r}' for l, r in deviation_masks])
                 origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                                       metric_score=metric_value,
                                       metric_units='Channel range(s) possibly affected by instrumental instatbilities')
-                selection = pqa.TargetDataSelection(spw=set(spw.split(', ')),
+                selection = pqa.TargetDataSelection(vis=set([ms_name]),
+                                                    spw=set([spw_id]),
                                                     field=set([field_name]),
                                                     ant=set([antenna_name]),
                                                     intent={'TARGET'})
@@ -2772,7 +2777,7 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
             else:
                 # if no messages are set, it indicates that detected
                 # lines do not harm baseline subtraction
-                shortmsg = 'Successfully detected spectral lines'
+                shortmsg = 'Successfully detected spectral lines.'
 
             longmsg = f'Field {field_name}, {spw_desc}: {shortmsg}'
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines])
@@ -2790,8 +2795,8 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
         # add new entry with score of 0.8 if no spectral lines
         # were detected in any spws/fields
         score = 0.8
-        longmsg = 'No spectral lines were detected'
-        shortmsg = 'No spectral lines were detected'
+        longmsg = 'No spectral lines were detected.'
+        shortmsg = 'No spectral lines were detected.'
 
         origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                               metric_score='N/A',
