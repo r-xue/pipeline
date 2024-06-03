@@ -84,7 +84,7 @@ from scipy import signal
 import copy
 
 try:
-    from taskinit import tbtool,msmdtool,qatool,attool, mstool, casalog, metool
+    from taskinit import tbtool,msmdtool,qatool,attool, mstool, casalog, metool, cbtool
 except:
     from casatools import table as tbtool
     from casatools import msmetadata as msmdtool
@@ -93,14 +93,16 @@ except:
     from casatools import ms as mstool
     from casatasks import casalog 
     from casatools import measures as metool
+    from casatools import calibrater as cbtool
 
 mytb=tbtool()
 myms=mstool()
+mycb=cbtool()
 
 
 # Interface function for use by ALMA Pipeline renormalization task (PIPE-1687).
 def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, float], excludechan: Dict,
-                correct_atm: bool, atm_auto_exclude: bool, bwthreshspw: Dict) -> tuple:   ## PIPE-1469 for bwthreshspw
+        correct_atm: bool, atm_auto_exclude: bool, bwthreshspw: Dict, caltable: str) -> tuple:   ## PIPE-1469 for bwthreshspw
     """
     Interface function for ALMA Pipeline: this runs the ALMA renormalization
     heuristic for input vis, and returns statistics and metadata required by
@@ -129,6 +131,8 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
         bwthreshspw: disctionary with keys set to SpW IDs (as string), 
             and values set to a bandwidth (in Hz) to use for dividing 
             up the SpWs, e.g. 120e6 
+        caltable: Name of the caltable that renorm will create and write
+            results to. 
 
     Returns: 8-tuple containing:
         - boolean declaring whether data are all TDM
@@ -144,7 +148,7 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
     """
     # Initialize the renormalization object for input vis.
     print(' Doing the initialize in ALMARENORM itself\n')
-    rn = ACreNorm(vis)
+    rn = ACreNorm(vis, caltable=caltable)
 
     # Initialize return variables.
     stats = {}
@@ -167,7 +171,7 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
     if not alltdm:
         # Run the renormalisation.
         rn.renormalize(docorr=apply, docorrThresh=threshold, correctATM=correct_atm, spws=spw, excludechan=excludechan,
-                       atmAutoExclude=atm_auto_exclude, bwthreshspw=bwthreshspw) # add bwthreshspw
+                       atmAutoExclude=atm_auto_exclude, bwthreshspw=bwthreshspw, datacolumn='DATA') # add bwthreshspw
 
         # Create spectra plots.
         rn.plotSpectra(includeSummary=False)
@@ -204,14 +208,23 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
 class ACreNorm(object):
 
 
-    def __init__(self,msname):
+    def __init__(self,msname, caltable=None):
 
         # Version
+        self.RNversion='v1.7-2024/04/01-PLWG'
 
-        self.RNversion='v1.6.1-2023/08/09-PLWG'
-
+        if isinstance(msname, str) == False:
+            raise TypeError('Input for msname must be a string')
         self.msname=msname
         casalog.post('Opening ms: '+str(self.msname))
+
+        if caltable:
+            if isinstance(caltable, str) == False:
+                raise TypeError('Input for caltable must be a string')
+            self.rntable = caltable
+            casalog.post('Renormalization results will be written to ' + self.rntable)
+        else:
+            self.rntable=None
 
         self.msmeta=msmdtool()
         self.msmeta.open(self.msname)
@@ -592,8 +605,9 @@ class ACreNorm(object):
         plt.title(self.msname,{'horizontalalignment': 'left', 'fontsize': 'medium','verticalalignment': 'bottom'})
         plt.ticklabel_format(style='plain', useOffset=False)
         if hardcopy:
-            if not os.path.exists('RN_plots'):
-                os.mkdir('RN_plots')
+            #if not os.path.exists('RN_plots'):
+            #    os.mkdir('RN_plots')
+            os.makedirs('RN_plots', exist_ok=True)
             fname=self.msname+'_ReNormSpwVsFreq.png'
             casalog.post('Saving hardcopy plot: '+fname)
             plt.savefig('./RN_plots/'+fname)
@@ -826,8 +840,9 @@ class ACreNorm(object):
             plt.subplots_adjust(wspace=0.3)
 
         if hardcopy:
-            if not os.path.exists('RN_plots'):
-                os.mkdir('RN_plots')
+            #if not os.path.exists('RN_plots'):
+            #    os.mkdir('RN_plots')
+            os.makedirs('RN_plots', exist_ok=True)
             fname=self.msname+'_RelTsysSpectra.png'
             casalog.post('Saving hardcopy plot: '+fname)
             plt.savefig('./RN_plots/'+fname)
@@ -1179,6 +1194,31 @@ class ACreNorm(object):
                 casalog.post('')
                 casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
                 raise Exception('Correction requested but these data have already been renormalized.')
+
+            # One has the ability to input the name of a caltable while creating the ACreNorm object.
+            # If that hasn't been done yet, default to a simple name.
+            if not self.rntable:
+                # Name our new calibration table
+                self.rntable = self.msname+'.renorm.tbl'
+                
+            # Use the Calibrator Tool to create an empty cal table for us to put results into. 
+            # We want to create a TSYS table since this is a multiplication correction. 
+            casalog.post('Creating a calibration table to store renorm solutions: '+self.rntable)
+            mycb.open(filename=self.msname, compress=False, addcorr=False, addmodel=False)
+            mycb.createcaltable(
+                    caltable = self.rntable,
+                    partype = 'Real', # or Float?
+                    caltype = 'B TSYS',
+                    singlechan = False
+                    )
+            mycb.close()
+
+            # Define a new table tool instance for this table
+            self.rntb = tbtool()
+            self.rntb.open(self.rntable, nomodify=False)
+
+            # Need to keep track of the number of times we write to the renorm table. 
+            rntb_iter = 0
 
         else:
             casalog.post('No corrections will be applied (docorr=False)!')
@@ -2087,13 +2127,17 @@ class ACreNorm(object):
                                 
                                 # If we want to apply the correction and it's the second time through the data
                                 if docorr and second_pass: 
+                                    casalog.post('Writing solutions to table...')
+                                    self.writeCalTable(ispw, ifld, iscan, N, rntb_iter)
+                                    rntb_iter += 1  
+
                                     # apply the correction
                                     # Antenna-based Correction factors are in voltage units (pair products are power)
-                                    Nv=np.sqrt(N)
-                                    self.applyReNorm(iscan,ispw,ifld,Nv,datacolumn) 
+                                    #Nv=np.sqrt(N)
+                                    #self.applyReNorm(iscan,ispw,ifld,Nv,datacolumn) 
                             
                                     # do self.recordApply here and pass scan, spw, field too
-                                    self.recordApply(iscan,ispw,ifld)
+                                    #self.recordApply(iscan,ispw,ifld)
 
                                     # ****
                                     # In combination with the docorrApply dictionary, and the printed message
@@ -2101,7 +2145,7 @@ class ACreNorm(object):
                                     # here might be a good place for this
                                     # ****
 
-                                    casalog.post('Application of the ReNormalization was written to the MS history for spw'+str(ispw)+' scan'+str(iscan)+' field'+str(ifld))
+                                    #casalog.post('Application of the ReNormalization was written to the MS history for spw'+str(ispw)+' scan'+str(iscan)+' field'+str(ifld))
 
                             # closes the data check to see if the AC data is confirmed to be filled 
                             #    - only gets here if None was returned
@@ -2161,11 +2205,89 @@ class ACreNorm(object):
                 else:
                     self.rnpipestats[trg][spw]['seg_change'] = False
 
-        
+        # If we have been applying solutions, close the table as we finish.
+        if docorr:
+            self.rntb.close()
+
         # final log end of the renormalize function
         casalog.post('*** ALMA almarenorm.py ***', 'INFO', 'ReNormalize')   
         casalog.post('*** '+str(self.RNversion)+' ***', 'INFO', 'ReNormalize')   
         casalog.post('*** End of renormalization run ***', 'INFO', 'ReNormalize')   
+
+
+    def writeCalTable(self, spw, field, scan, N, iter_n):
+        """
+        Purpose: 
+            This function takes in a Renormalization Spectrum and writes that 
+            solution to a calibration table. The table is essentially another
+            Tsys calibration table. 
+
+        Inputs:
+            spw : integer
+                Spw that relates to the data.
+
+            field : integer 
+                Field ID number that relates to the data.
+
+            scan : integer
+                Scan number that relates to the data.
+
+            N : np.array
+                A 3-D numpy array of shape 
+                
+                (number polarization : number channels : number antenna)
+
+                that contains the renormalization spectrum to be written to 
+                the calibration table.
+            
+            iter_n : integer
+                A book-keeping value that keeps track of how many times we 
+                have written to the table to avoid over-writing data.
+
+        Output:
+            None, the calibration table initialized by self.renormalize() is
+            updated with the contents of input N and all related metadata.
+        """
+        # We need the number of antennas from the array shape as this will be
+        # the number of rows we'll be adding to the table currently.
+        nPol, nChan, nAnt = N.shape
+        
+        # Antenna based corrections so we need 1 row for each antenna
+        self.rntb.addrows(nrow = nAnt)
+
+        # Placing the renorm values themselves into the table
+        self.rntb.putcol('FPARAM', N, startrow=iter_n*nAnt, nrow=nAnt)
+
+        # Following the convention of the Tsys table, filling all values with 0.1 for the error.
+        self.rntb.putcol('PARAMERR', N*0.0+0.1, startrow=iter_n*nAnt, nrow=nAnt)
+
+        # Filling the flags with 0's since we don't really flag data here. 
+        self.rntb.putcol('FLAG', N*0, startrow=iter_n*nAnt, nrow=nAnt)
+
+        # Filling the SNR and Weights with 1's, no real meaning for it here.
+        self.rntb.putcol('SNR', N/N, startrow=iter_n*nAnt, nrow=nAnt)
+        self.rntb.putcol('WEIGHT', N/N, startrow=iter_n*nAnt, nrow=nAnt)
+
+        # Using the mean time of the input scan
+        self.rntb.putcol('TIME', [np.mean(self.msmeta.timesforscan(scan))]*nAnt, startrow=iter_n*nAnt, nrow=nAnt)
+
+        # Given as input
+        self.rntb.putcol('FIELD_ID', [field]*nAnt, startrow=iter_n*nAnt, nrow=nAnt)
+        self.rntb.putcol('SCAN_NUMBER', [scan]*nAnt, startrow=iter_n*nAnt, nrow=nAnt)
+        self.rntb.putcol('SPECTRAL_WINDOW_ID', [spw]*nAnt, startrow=iter_n*nAnt, nrow=nAnt)
+
+        # Antenna 1 is equal to the row number we are in and Antenna 2 is meaningless since these
+        # are antenna based corrections. 
+        self.rntb.putcol('ANTENNA1', np.arange(nAnt), startrow=iter_n*nAnt, nrow=nAnt)
+        self.rntb.putcol('ANTENNA2', [-1]*nAnt, startrow=iter_n*nAnt, nrow=nAnt)
+
+        # Interval has a meaning similar to the length of time a solution is valid for. 
+        # Tsys tables use 0, we could use 0 or the length of this scan here since we are
+        # taking an average over the scan length. 
+        self.rntb.putcol('INTERVAL', [0]*nAnt, startrow=iter_n*nAnt, nrow=nAnt)
+
+        # Not sure what this is... but it's 0 for Tsys tables
+        self.rntb.putcol('OBSERVATION_ID', [0]*nAnt, startrow=iter_n*nAnt, nrow=nAnt)
 
     def calcChanRanges(self,spw,bwthresh=120e6,bwdiv='odd',onlyfdm=True, edge=0.01,verbose=False):
         
@@ -3080,8 +3202,9 @@ class ACreNorm(object):
                 # input to go on to the next plot.
                 if hardcopy:
                     # Ensure the plots directory exists, if not, create it.
-                    if not os.path.exists('RN_plots'):
-                        os.mkdir('RN_plots')
+                    #if not os.path.exists('RN_plots'):
+                    #    os.mkdir('RN_plots')
+                    os.makedirs('RN_plots', exist_ok=True)
                     fname = self.msname \
                             + '_'+target \
                             + '_spw'+str(spw) \
@@ -3171,8 +3294,9 @@ class ACreNorm(object):
             plt.text(loscan+0.25,0.9*Fmax,'Spw='+str(spw))
 
         if hardcopy:
-            if not os.path.exists('RN_plots'):
-                os.mkdir('RN_plots')
+            #if not os.path.exists('RN_plots'):
+            #    os.mkdir('RN_plots')
+            os.makedirs('RN_plots', exist_ok=True)
             fname=self.msname+'_ReNormAmpVsScan.png'
             casalog.post('Saving hardcopy plot: '+fname)
             plt.savefig('./RN_plots/'+fname)
@@ -3220,8 +3344,9 @@ class ACreNorm(object):
                 )
        
         if hardcopy:
-            if not os.path.exists('RN_plots'):
-                os.mkdir('RN_plots')
+            #if not os.path.exists('RN_plots'):
+            #    os.mkdir('RN_plots')
+            os.makedirs('RN_plots', exist_ok=True)
             fname=self.msname+'_ReNormAmpVsSpw.png'
             casalog.post('Saving hardcopy plot: '+fname)
             plt.savefig('./RN_plots/'+fname)
@@ -3389,6 +3514,7 @@ class ACreNorm(object):
         R[atm_masked] = 1.0
 
         if doplot:
+            os.makedirs('RN_plots', exist_ok=True)
             plt.subplot(2,self.nfit,ifit+1)
             plt.plot(range(nCha),R,'g-')
             plt.title('Final Data After Fitting')
@@ -3854,8 +3980,9 @@ class ACreNorm(object):
                     # Save a hardcopy of the plots if desired 
                     # or show plots interactively
                     if hardcopy:
-                        if not os.path.exists('RN_plots'):
-                            os.mkdir('RN_plots')
+                        #if not os.path.exists('RN_plots'):
+                        #    os.mkdir('RN_plots')
+                        os.makedirs('RN_plots', exist_ok=True)
                         if verbose:
                             casalog.post('\tSaving hardcopy plot: '+fname)
                         plt.savefig('./RN_plots/'+fname+'.png')
@@ -4178,8 +4305,9 @@ class ACreNorm(object):
             ax_atm.set_yticklabels([str(int(ylbl)) for ylbl in ylabels[ylabels_mask]])
             
         # Save the plotted figure, setting up the plot directory if it doesn't already exist.
-        if not os.path.exists('RN_plots'):
-            os.mkdir('RN_plots')
+        #if not os.path.exists('RN_plots'):
+        #    os.mkdir('RN_plots')
+        os.makedirs('RN_plots', exist_ok=True)
         fnameM=self.msname+'_ReNormDiagnosticCheck_'+target+'_spw'+str(spwin) \
                 +'_scan'+str(scanin)+'_field'+str(fldin)        
         plt.savefig('./RN_plots/'+fnameM+'.png')

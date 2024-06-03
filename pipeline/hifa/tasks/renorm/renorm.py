@@ -14,7 +14,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class RenormResults(basetask.Results):
     def __init__(self, renorm_applied, vis, apply, threshold, correctATM, spw, excludechan, corrApplied, corrColExists,
-                 stats, rnstats, alltdm, atmAutoExclude, atmWarning, atmExcludeCmd, bwthreshspw, exception=None):
+                 stats, rnstats, alltdm, atmAutoExclude, atmWarning, atmExcludeCmd, bwthreshspw, caltable, exception=None):
         super().__init__()
         self.renorm_applied = renorm_applied
         self.vis = vis
@@ -32,6 +32,7 @@ class RenormResults(basetask.Results):
         self.atmWarning = atmWarning
         self.atmExcludeCmd = atmExcludeCmd
         self.bwthreshspw = bwthreshspw
+        self.caltable = caltable
         self.exception = exception
 
     def merge_with_context(self, context):
@@ -52,7 +53,8 @@ class RenormResults(basetask.Results):
                 f'\talltdm={self.alltdm}\n'
                 f'\tstats={self.stats}\n'
                 f'\tatmAutoExclude={self.atmAutoExclude}\n'
-                f'\tbwthreshspw={self.bwthreshspw}\n')
+                f'\tbwthreshspw={self.bwthreshspw}\n'
+                f'\tcaltable={self.caltable}\n')
 
 
 class RenormInputs(vdp.StandardInputs):
@@ -67,7 +69,7 @@ class RenormInputs(vdp.StandardInputs):
     parallel = sessionutils.parallel_inputs_impl()
 
     def __init__(self, context, vis=None, apply=None, threshold=None, correctATM=None, spw=None,
-                 excludechan=None, atm_auto_exclude=None, bwthreshspw=None, parallel=None):
+                 excludechan=None, atm_auto_exclude=None, bwthreshspw=None, caltable=None, parallel=None):
         super().__init__()
         self.context = context
         self.vis = vis
@@ -78,6 +80,7 @@ class RenormInputs(vdp.StandardInputs):
         self.excludechan = excludechan
         self.atm_auto_exclude = atm_auto_exclude
         self.bwthreshspw = bwthreshspw
+        self.caltable = caltable
         self.parallel = parallel
 
 
@@ -120,6 +123,7 @@ class SerialRenorm(basetask.StandardTaskTemplate):
             'correct_atm': inp.correctATM,
             'atm_auto_exclude': inp.atm_auto_exclude,
             'bwthreshspw': inp.bwthreshspw,
+            'caltable': f"{inp.vis}.hifa_renorm.STAGE.spw{'_'.join(x for x in inp.spw.split(',') if x)}.tbl",
         }
 
         # Call the ALMA renormalization function and collect its output in task
@@ -131,12 +135,12 @@ class SerialRenorm(basetask.StandardTaskTemplate):
 
             result = RenormResults(renorm_applied, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw,
                                    inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm,
-                                   inp.atm_auto_exclude, atmWarning, atmExcludeCmd, inp.bwthreshspw)
+                                   inp.atm_auto_exclude, atmWarning, atmExcludeCmd, inp.bwthreshspw, inp.caltable)
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
             LOG.error(traceback.format_exc())
             result = RenormResults(False, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw,
-                                   inp.excludechan, False, False, {}, {}, True, inp.atm_auto_exclude, {}, {}, {}, e)
+                                   inp.excludechan, False, False, {}, {}, True, inp.atm_auto_exclude, {}, {}, {}, inp.caltable, e)
 
         return result
 
