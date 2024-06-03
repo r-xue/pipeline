@@ -577,18 +577,23 @@ class SpectralWindowTable(object):
             # PIPE-2124: Missing of the TRANSITION column (e.g. old data) or lack of (sourceid, spwid) entries
             # in the SOURCE table might cause dubious "SEVERE" messages. Here we temporarily filter out them and
             # later replace with generic messages of missing the transition metadata in the MS subtable.
-            transitions = ['Unknown']
+            transitions = False
             with logging.log_filtermsg('SOURCE table does not contain a row'):
                 if i in target_spw_ids:
                     try:
+                        # The msmd.transitions(..) call below can return a boolean value of False or
+                        # a Numpy array with dtype=numpy.str_ , e.g.,
+                        #   CASA <15>: msmd.transitions(sourceid=2,spw=16)
+                        #   Out[15]: array(['N2H__v_0_J_1_0(ID=3925982)'], dtype='<U26')
+                        # For invalid source/spw combinations, the call could also trigger an exception with a RuntimeError.
+                        # Also see: https://casadocs.readthedocs.io/en/latest/api/tt/casatools.msmetadata.html#casatools.msmetadata.msmetadata.transitions
                         transitions = msmd.transitions(sourceid=first_target_source_id, spw=i)
-                        if transitions is False:
-                            transitions = ['Unknown']
-                    except:
+                    except RuntimeError:
                         pass
 
-            if transitions == ['Unknown']:
+            if transitions is False:
                 LOG.info('No transition info available for SOURCE_ID=%s and SPECTRAL_WINDOW_ID=%s', first_target_source_id, i)
+                transitions = ['Unknown']
 
             # Create simple name for spectral window if none was provided.
             if spw_name in [None, '']:

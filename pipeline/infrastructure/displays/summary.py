@@ -1170,6 +1170,7 @@ class SpwIdVsFreqChart(object):
         atm_color_plot = [0.17, 0.17, 0.17, 0.6]  # gray, alpha=0.6
         atm_color_tick_label = [0.17, 0.17, 0.17, 1.0]  # gray, alpha=1.0
         ax_atm = ax_spw.twinx()
+
         # plot spws
         if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
             spw_list_generator = self._extract_spwdata_vla()
@@ -1204,6 +1205,7 @@ class SpwIdVsFreqChart(object):
         ax_atm.plot(atm_freq, atm_transmission, color=atm_color_plot, linestyle='-', linewidth=2.5)
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
+        ax_spw.set_ylim(totalnum_spws + totalnum_spws/20.0, -1.0 - totalnum_spws/20.0)  # The spw indices are from 0 to totalnum_spws. y-axis is inverted. totalnum_spws/20.0 is a mergin. -1.0 is upper edge.
         ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
         ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
         ax_spw.grid(axis='x')

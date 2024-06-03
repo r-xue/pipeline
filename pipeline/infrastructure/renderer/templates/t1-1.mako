@@ -340,20 +340,15 @@ $(document).ready(function() {
 <div style="display: none;" id="hidden-environment">
     <p><strong>Execution Mode:</strong> ${execution_mode}</p>
 
-    <table class="table table-bordered"
-           summary="Processing environment for this pipeline reduction">
-        <caption>Processing environment for this pipeline reduction</caption>
+    % for title, table in environment_tables.items():
+    <table class="table table-bordered" summary="${title}">
         <thead>
-            <th>Hostname</th>
-            <th># MPI Servers</th>
-            <th># CPU cores</th>
-            <th>CPU</th>
-            <th>RAM</th>
-            <th>OS</th>
-            <th>Max open file descriptors</th>
+          <tr>
+            <th class="info" scope="col" colspan="${table.num_columns}">${title}</th>
+          </tr>
         </thead>
         <tbody>
-            % for tr in environment:
+            % for tr in table.table_rows:
             <tr>
                 % for td in tr:
                     ${td}
@@ -362,5 +357,6 @@ $(document).ready(function() {
             % endfor
         </tbody>
     </table>
+    % endfor
 
 </div>
