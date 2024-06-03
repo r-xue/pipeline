@@ -2715,18 +2715,17 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
             if deviation_masks:
                 is_edge_mask = test_sd_edge_lines(deviation_masks, nchan)
                 is_wide_mask = test_sd_wide_lines(deviation_masks, nchan)
-                score = 1.0
-                shortmsg = ''
-                if is_edge_mask:
+                if is_edge_mask and is_wide_mask:
                     score = 0.65
-                    shortmsg += 'Possible instrumental instabilities were detected at spw edge. '
+                    shortmsg = 'Possible instrumental instabilities were detected at spw edge covering a large fraction of spw.'
+                elif is_edge_mask:
+                    score = 0.65
+                    shortmsg = 'Possible instrumental instabilities detected at spw edge.'
                 if is_wide_mask:
                     score = 0.65
-                    shortmsg += 'Possible instrumental instatibilities were detected at wide range of spw. '
-
-                if len(shortmsg) > 0:
-                    shortmsg += 'Please review baseline fit quality.'
+                    shortmsg = 'Possible instrumental instabilities affecting a large fraction of spw.'
                 else:
+                    score = 1.0
                     shortmsg = 'Possible instrumental instabilities were detected.'
 
                 spw_id = reduction_group_member.spw_id
@@ -2757,26 +2756,29 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
             else:
                 is_edge_mix = False
                 is_wide_mix = False
-            score = 1.0
-            shortmsg = ''
-            if is_edge_line:
+
+            if is_edge_line and is_wide_line:
                 score = 0.65
-                shortmsg += 'An edge line was detected. '
+                shortmsg = 'An edge line and a wide line were detected.'
+            elif is_edge_line:
+                score = 0.65
+                shortmsg = 'An edge line was detected.'
+            elif is_wide_line:
+                score = 0.65
+                shortmsg = 'A wide line was detected.'
+            elif is_edge_mix and is_wide_mix:
+                score = 0.65
+                shortmsg = 'An edge line and a wide line with possible instrumental instability detected.'
             elif is_edge_mix:
                 score = 0.65
-                shortmsg += 'An edge line mixed with possible instrumental instability was detected at spw edge. '
-            if is_wide_line:
-                score = 0.65
-                shortmsg += 'A wide line was detected. '
+                shortmsg = 'An edge line mixed with possible instrumental instability detected.'
             elif is_wide_mix:
                 score = 0.65
-                shortmsg += 'A wide line mixed with possible instrumental instability was detected. '
-
-            if len(shortmsg) > 0:
-                shortmsg += 'Please review baseline fit quality.'
+                shortmsg = 'A wide line mixed with possible instrumental instability detected.'
             else:
                 # if no messages are set, it indicates that detected
                 # lines do not harm baseline subtraction
+                score = 1.0
                 shortmsg = 'Successfully detected spectral lines.'
 
             longmsg = f'Field {field_name}, {spw_desc}: {shortmsg}'
