@@ -17,9 +17,10 @@ from pipeline.infrastructure.utils import utils
 from pipeline.infrastructure import casa_tools
 from pipeline.extern.adopted import getMedianPWV
 
-# Avoid downloading the updated IERS tables from the internet because an
-#  approximate value is enough in this case
-iers_conf.auto_max_age = None
+# PIPE-2195: use a longer period for auto_max_age (default=30.), which was
+# proposed (but rejected) for Astropy>=6.0 .
+# see https://github.com/astropy/astropy/issues/14756
+iers_conf.auto_max_age = 180
 
 __all__ = [
     'FlagDeterALMA',
