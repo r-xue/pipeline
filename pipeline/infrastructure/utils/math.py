@@ -1,7 +1,7 @@
 import decimal
 from typing import Union
 
-__all__ = ['round_half_up']
+__all__ = ['round_half_up', 'round_up']
 
 
 def round_half_up(value: Union[int, str], precision: float = 0) -> float:
@@ -26,7 +26,22 @@ def round_half_up(value: Union[int, str], precision: float = 0) -> float:
         precision: Precision of un-rounded value to consider when rounding
 
     Returns:
-        rounded value to nearest integer away from 0
+        rounded value to nearest integer with ties going away from 0
     """
     return float(
         decimal.Decimal(float(value) * 10 ** precision).to_integral_value(rounding=decimal.ROUND_HALF_UP)) / 10 ** precision
+
+
+def round_up(value: Union[int, str], precision: float = 0) -> float:
+    """
+    Round away from zero.
+
+    Args:
+        value: Un-rounded value
+        precision: Precision of un-rounded value to consider when rounding
+
+    Returns:
+        rounded value to nearest integer away from 0
+    """
+    return float(
+        decimal.Decimal(float(value) * 10 ** precision).to_integral_value(rounding=decimal.ROUND_UP)) / 10 ** precision
