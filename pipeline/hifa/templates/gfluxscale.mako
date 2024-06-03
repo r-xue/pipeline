@@ -61,6 +61,16 @@ def rx_for_plot(plot):
 
 <%block name="title">Phased-up fluxscale</%block>
 
+<p>First, the gains are solved on the FLUX calibrator scan with the solution
+interval set to the integration time for the phase solves and to the scan time
+for the amplitude solves. The amplitude gain solutions are examined for obvious
+outliers introduced by gaincal and flagged prior to calling the fluxscale task
+to transfer the fluxscale to the transfer targets and populate their model
+column. The policy of using of 'T' amplitude solves, which pre-average the XX
+and YY data, effectively calibrates to the Stokes I flux densities measured by
+the ALMA calibrator survey program, and allows polarized calibrators to have
+differing flux densities in their calibrated XX and YY visibilities.</p>
+
 <h2>Contents</h2>
 <ul>
     <li>Tables:</li>
