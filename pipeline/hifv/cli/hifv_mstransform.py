@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=None, intent=None, spw=None, chanbin=None, timebin=None):
+def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=None, intent=None, spw=None, spw_line=None, chanbin=None, timebin=None):
 
     """
     hifv_mstransform ---- Create new MeasurementSets for science target imaging
@@ -49,10 +49,13 @@ def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=No
                         By default only TARGET data is selected.
 
                         Examples: 'PHASE,BANDPASS'
-    spw                 Select spectral window/channels to image. By default all
+    spw                 Select spectral window/channels to image for continuum imaging. By default all
                         science spws for which the specified intent is valid are
-                         selected.
-    chanbin              Width (bin) of input channels to average to form an output
+                        selected.
+    spw_line            Select spectral window/channels to image for line imaging. 
+                        By default all science spws for which the specified intent is valid are
+                        selected.
+    chanbin             Width (bin) of input channels to average to form an output
                         channel. If chanbin > 1 then chanaverage is automatically
                         switched to True.
     timebin             Bin width for time averaging. If timebin > 0s then

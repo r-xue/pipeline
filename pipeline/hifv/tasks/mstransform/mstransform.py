@@ -25,12 +25,39 @@ class VlaMstransformInputs(mst.MstransformInputs):
     def outputvis_for_line(self):
         vis_root = os.path.splitext(self.vis)[0]
         return vis_root + '_targets.ms'
+    
+    # TODO: conversion for spw_line
+    # Find all the spws with TARGET intent. These may be a subset of the
+    # science spws which include calibration spws.
+    @vdp.VisDependentProperty
+    def spw_line(self):
+        science_target_intents = set(self.intent.split(','))
+        science_target_spws = []
+
+        science_spws = [spw for spw in self.ms.get_spectral_windows(science_windows_only=True)]
+        for spw in science_spws:
+            if spw.intents.intersection(science_target_intents):
+                science_target_spws.append(spw)
+
+        return ','.join([str(spw.id) for spw in science_target_spws])
+
+    @spw_line.convert
+    def spw_line(self, value):
+        science_target_intents = set(self.intent.split(','))
+        science_target_spws = []
+
+        science_spws = [spw for spw in self.ms.get_spectral_windows(task_arg=value, science_windows_only=True)]
+        for spw in science_spws:
+            if spw.intents.intersection(science_target_intents):
+                science_target_spws.append(spw)
+
+        return ','.join([str(spw.id) for spw in science_target_spws])
 
     def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None,
-                 chanbin=None, timebin=None, outputvis_for_line=None):
+                 spw_line=None, chanbin=None, timebin=None, outputvis_for_line=None):
 
         super().__init__(context, output_dir, vis, outputvis, field, intent, spw, chanbin, timebin)
-
+        self.spw_line = spw_line
         self.outputvis = outputvis
         self.outputvis_for_line = outputvis_for_line
 
@@ -43,13 +70,15 @@ class VlaMstransform(mst.Mstransform):
         inputs = self.inputs
 
         # Create the results structure
-        vis_root = os.path.splitext(inputs.vis)[0]
-        outputvis_for_line = vis_root + '_targets.ms'
         result = VlaMstransformResults(vis=inputs.vis, outputvis=inputs.outputvis,
                                        outputvis_for_line=outputvis_for_line)
 
         # Run CASA task to create the output MS for continuum data
         mstransform_args = inputs.to_casa_args()
+        # Remove input member variables that don't belong as input to the mstransform task
+        # TODO: Handle this in a better way.
+        mstransform_args.pop('outputvis_for_line', None)
+        mstransform_args.pop('spw_line', None)
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
         try:
@@ -68,11 +97,13 @@ class VlaMstransform(mst.Mstransform):
         task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='before_rflag_statwt')
         self._executor.execute(task)
 
-        # TODO: add ability to also split off specific SPWs here. They can also
-        # be split off in the mstransform call.
-
         # Run CASA task to create the output MS for the line data
-        mstransform_args['outputvis'] = outputvis_for_line
+        mstransform_args['outputvis'] = inputs.outputvis_for_line
+
+        # TODO: add ability to also split off pre-identified SPWs here, in addition or instead of 
+        # ones specified directly as task input
+        if inputs.spw_line:
+            mstransform_args['spw'] = inputs.spw_line
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
         try:
