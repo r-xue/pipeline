@@ -62,16 +62,6 @@ class ImagePreCheckResults(basetask.Results):
         """
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
         """
-        # Store imaging parameters in context
-
-        # Added for SRDP support
-        # Store uvtaper parameter in context
-        if 'uvtaper' in context.imaging_parameters.keys():
-            del context.imaging_parameters['uvtaper']
-        if self.hm_uvtaper != []:
-            context.imaging_parameters['uvtaper'] = self.hm_uvtaper
-        # end added for SRDP support
-
         # Calculated sensitivities for later stages
         if self.per_spw_cont_sensitivities_all_chan is not None:
             if 'recalc' in self.per_spw_cont_sensitivities_all_chan:
@@ -88,12 +78,16 @@ class ImagePreCheckResults(basetask.Results):
             else:
                 utils.update_beams_dict(context.synthesized_beams, self.synthesized_beams)
 
-        # Calculated robust and uvtaper values for later stages
+        # Store calculated robust and uvtaper values in the context for later stages
         #
         # Note: For Cycle 6 the robust heuristic is used in subsequent stages.
-        #       The uvtaper heuristic is not yet to be used.
+        #       The uvtaper heuristic is not yet to be used for the ALMA PI pipeline,
+        #       but is used for SRDP. 
         context.imaging_parameters['robust'] = self.hm_robust
-        #context.imaging_parameters['uvtaper'] = self.hm_uvtaper
+        if 'uvtaper' in context.imaging_parameters.keys():
+            del context.imaging_parameters['uvtaper']
+        if self.hm_uvtaper != []:
+            context.imaging_parameters['uvtaper'] = self.hm_uvtaper
 
         # It was decided not use a file based transport for the time being (03/2018)
         # Write imageparams.dat file
