@@ -8,6 +8,7 @@ import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.extern.almarenorm import alma_renorm
 from pipeline.infrastructure import task_registry
+from pipeline.h.heuristics import caltable as caltable_heuristic
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -83,6 +84,18 @@ class RenormInputs(vdp.StandardInputs):
         self.caltable = caltable
         self.parallel = parallel
 
+    @vdp.VisDependentProperty
+    def caltable(self):
+        """
+        Get the caltable argument for these inputs.
+
+        If set to a table-naming heuristic, this should give a sensible name
+        considering the current CASA task arguments.
+        """
+        namer = caltable_heuristic.AmpCaltable()
+        casa_args = self._get_task_args(ignore=('caltable',))
+        return namer.calculate(output_dir=self.output_dir, stage=self.context.stage, **casa_args)
+
 
 class SerialRenorm(basetask.StandardTaskTemplate):
     Inputs = RenormInputs
@@ -123,7 +136,7 @@ class SerialRenorm(basetask.StandardTaskTemplate):
             'correct_atm': inp.correctATM,
             'atm_auto_exclude': inp.atm_auto_exclude,
             'bwthreshspw': inp.bwthreshspw,
-            'caltable': f"{inp.vis}.hifa_renorm.STAGE.spw{'_'.join(x for x in inp.spw.split(',') if x)}.tbl",
+            'caltable': inp.caltable #namer.calculate(vis=inp.vis, stage=self.inputs.context.stage, **casa_args)
         }
 
         # Call the ALMA renormalization function and collect its output in task

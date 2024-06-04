@@ -32,18 +32,20 @@ class RenormQAHandler(pqa.QAPlugin):
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
             return
 
-        if result.apply and result.corrApplied:
-            # Request for correcting data that has already been corrected
-            score = 0.0
-            shortmsg = 'Corrections already applied'
-            longmsg = 'EB {}: Corrections already applied to data'.format(os.path.basename(result.vis))
-            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
+        # TODO: corrApplied will not be True after PIPE-2151. But do we need a "hifa_renorm has already been run"
+        # flag or will the PL simply use the last cal table? How do other cal tasks handle this?
+        #if result.apply and result.corrApplied:
+        #    # Request for correcting data that has already been corrected
+        #    score = 0.0
+        #    shortmsg = 'Corrections already applied'
+        #    longmsg = 'EB {}: Corrections already applied to data'.format(os.path.basename(result.vis))
+        #    result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
-        if not result.corrColExists and result.apply:
-            # Request for correcting data when there is no CORRECTED_DATA column
+        if result.apply and result.caltable is not None and not os.path.exists(result.caltable):
+            # Cal table not created
             score = 0.0
-            shortmsg = 'No corrected data column'
-            longmsg = 'EB {}: Corrected data column does not exist'.format(os.path.basename(result.vis))
+            shortmsg = 'No cal table created'
+            longmsg = 'EB {}: No cal table was created.'.format(os.path.basename(result.vis))
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
         for source in result.stats: 
@@ -75,15 +77,15 @@ class RenormQAHandler(pqa.QAPlugin):
                     elif max_factor > threshold:
                         if result.apply:
                             score = 0.9
-                            shortmsg = 'Renormalization applied'
+                            shortmsg = 'Renormalization computed'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                      'is outside threshold of {:.1%} so corrections were applied to data'.format( \
+                                      'is outside threshold of {:.1%} so corrections were computed.'.format( \
                                       os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                         else:
                             score = max(0.66+threshold-max_factor, 0.34)
                             shortmsg = 'Renormalization factor outside threshold'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                      'is outside threshold of {:.1%} but corrections were not applied to the data.'.format( \
+                                      'is outside threshold of {:.1%} but no corrections were computed.'.format( \
                                       os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
 
                     result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))

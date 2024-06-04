@@ -188,7 +188,8 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
         # corrected column. If apply=False, it doesn't matter if the corrected
         # column exists or if the data has already been corrected, because the
         # correction isn't actually done.
-        if (corrColExists or not apply) and (not corrApplied or not apply):
+        # TODO: Check logic
+        if True or (corrColExists or not apply) and (not corrApplied or not apply):
             # Get stats (dictionary) indexed by source, spw
             stats = rn.rnpipestats
             # Get all factors for QA
