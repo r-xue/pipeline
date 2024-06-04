@@ -14,12 +14,12 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RenormResults(basetask.Results):
-    def __init__(self, renorm_applied, vis, apply, threshold, correctATM, spw, excludechan, corrApplied, corrColExists,
+    def __init__(self, renorm_applied, vis, createcaltable, threshold, correctATM, spw, excludechan, corrApplied, corrColExists,
                  stats, rnstats, alltdm, atmAutoExclude, atmWarning, atmExcludeCmd, bwthreshspw, caltable, exception=None):
         super().__init__()
         self.renorm_applied = renorm_applied
         self.vis = vis
-        self.apply = apply
+        self.createcaltable = createcaltable
         self.threshold = threshold
         self.correctATM = correctATM
         self.spw = spw
@@ -46,7 +46,7 @@ class RenormResults(basetask.Results):
         return (f'RenormResults:\n'
                 f'\trenorm_applied={self.renorm_applied}\n'
                 f'\tvis={self.vis}\n'
-                f'\tapply={self.apply}\n'
+                f'\tcreatecaltable={self.createcaltable}\n'
                 f'\tthreshold={self.threshold}\n'
                 f'\tcorrectATM={self.correctATM}\n'
                 f'\tspw={self.spw}\n'
@@ -59,7 +59,7 @@ class RenormResults(basetask.Results):
 
 
 class RenormInputs(vdp.StandardInputs):
-    apply = vdp.VisDependentProperty(default=False)
+    createcaltable = vdp.VisDependentProperty(default=False)
     threshold = vdp.VisDependentProperty(default=1.02)
     correctATM = vdp.VisDependentProperty(default=False)
     spw = vdp.VisDependentProperty(default='')
@@ -69,12 +69,12 @@ class RenormInputs(vdp.StandardInputs):
 
     parallel = sessionutils.parallel_inputs_impl()
 
-    def __init__(self, context, vis=None, apply=None, threshold=None, correctATM=None, spw=None,
+    def __init__(self, context, vis=None, createcaltable=None, threshold=None, correctATM=None, spw=None,
                  excludechan=None, atm_auto_exclude=None, bwthreshspw=None, caltable=None, parallel=None):
         super().__init__()
         self.context = context
         self.vis = vis
-        self.apply = apply
+        self.createcaltable = createcaltable
         self.threshold = threshold
         self.correctATM = correctATM
         self.spw = spw
@@ -130,7 +130,7 @@ class SerialRenorm(basetask.StandardTaskTemplate):
         alma_renorm_inputs = {
             'vis': inp.vis,
             'spw': [int(x) for x in inp.spw.split(',') if x],  # alma_renorm expects SpWs as list of integers
-            'apply': inp.apply,
+            'apply': inp.createcaltable,
             'threshold': inp.threshold,
             'excludechan': copy.deepcopy(inp.excludechan),  # create copy, PIPE-1612.
             'correct_atm': inp.correctATM,
@@ -146,13 +146,13 @@ class SerialRenorm(basetask.StandardTaskTemplate):
             alltdm, atmExcludeCmd, atmWarning, corrApplied, corrColExists, renorm_applied, rnstats, stats = \
                 alma_renorm(**alma_renorm_inputs)
 
-            result = RenormResults(renorm_applied, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw,
+            result = RenormResults(renorm_applied, inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
                                    inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm,
                                    inp.atm_auto_exclude, atmWarning, atmExcludeCmd, inp.bwthreshspw, inp.caltable)
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
             LOG.error(traceback.format_exc())
-            result = RenormResults(False, inp.vis, inp.apply, inp.threshold, inp.correctATM, inp.spw,
+            result = RenormResults(False, inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
                                    inp.excludechan, False, False, {}, {}, True, inp.atm_auto_exclude, {}, {}, {}, inp.caltable, e)
 
         return result

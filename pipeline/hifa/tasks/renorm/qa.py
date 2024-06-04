@@ -34,14 +34,14 @@ class RenormQAHandler(pqa.QAPlugin):
 
         # TODO: corrApplied will not be True after PIPE-2151. But do we need a "hifa_renorm has already been run"
         # flag or will the PL simply use the last cal table? How do other cal tasks handle this?
-        #if result.apply and result.corrApplied:
+        #if result.createcaltable and result.corrApplied:
         #    # Request for correcting data that has already been corrected
         #    score = 0.0
         #    shortmsg = 'Corrections already applied'
         #    longmsg = 'EB {}: Corrections already applied to data'.format(os.path.basename(result.vis))
         #    result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
-        if result.apply and result.caltable is not None and not os.path.exists(result.caltable):
+        if result.createcaltable and result.caltable is not None and not os.path.exists(result.caltable):
             # Cal table not created
             score = 0.0
             shortmsg = 'No cal table created'
@@ -75,7 +75,7 @@ class RenormQAHandler(pqa.QAPlugin):
                                   'is within threshold of {:.1%}'.format( \
                                   os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                     elif max_factor > threshold:
-                        if result.apply:
+                        if result.createcaltable:
                             score = 0.9
                             shortmsg = 'Renormalization computed'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
@@ -105,7 +105,7 @@ class RenormQAHandler(pqa.QAPlugin):
         for target in result.atmWarning: 
             for spw in result.atmWarning[target]:
                 if result.atmWarning[target][spw]:
-                    if not result.apply:
+                    if not result.createcaltable:
                         atm_score = 0.9
                         shortmsg = "Renormalization correction may be incorrect due to an atmospheric feature"
                         longmsg = "Renormalization correction may be incorrect in SPW {} due to an atmospheric feature. Suggested "\
@@ -137,8 +137,8 @@ class RenormQAHandler(pqa.QAPlugin):
                     result.qa.pool.append(pqa.QAScore(atm_score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
         # If there were any entries in excludechan for spws that weren't identified as having an atmospheric feature by renorm,
-        # when apply=True, and there are also provide a QA message.
-        if result.apply and warn_excludechan_spw:
+        # when createcaltable=True, and there are also provide a QA message.
+        if result.createcaltable and warn_excludechan_spw:
             for exclude_spw in excludechan:
                 longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. " \
                           "Auto-calculated channel exclusion indicated that no channels need to be excluded for SPW {}." \

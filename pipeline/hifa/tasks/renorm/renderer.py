@@ -32,9 +32,9 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Make a list of the plots to be plotted 
         summary_plots = make_renorm_plots(result, weblog_dir)
        
-        # If the results were applied (apply=T), highlight table entries in blue, otherwise red.
+        # If the cal table was created (createcaltable=T), highlight table entries in blue, otherwise red.
         # This variable just updates the text describing the highlight color (PIPE-1264) in the table description.
-        if result.inputs['apply']:
+        if result.inputs['createcaltable']:
             table_color_text = 'blue. Renormalization has been applied as detailed in the task inputs.'
         else: 
             table_color_text = 'red. Renormalization has <i>not</i> been applied.'
@@ -97,8 +97,8 @@ def make_renorm_table(context, results, weblog_dir):
     merged_rows = utils.merge_td_columns(rows, num_to_merge=2)
     merged_rows = [list(row) for row in merged_rows]  # convert tuples to mutable lists
 
-    # Fetch the input value of 'apply' which is the same for all results
-    apply_results = results[0].inputs['apply'] 
+    # Fetch the input value of 'createcaltable' which is the same for all results
+    createcaltable_results = results[0].inputs['createcaltable'] 
     
     for row, _ in enumerate(merged_rows):
         mm = re.search(r'<td[^>]*>(\d+.\d*) \(\d+\)', merged_rows[row][-2])
@@ -109,7 +109,7 @@ def make_renorm_table(context, results, weblog_dir):
                     cell = ET.fromstring(merged_rows[row][col])
                     innermost_child = getchild(cell)
                     # If the results are applied, make the table entries blue, if not, red
-                    if apply_results:
+                    if createcaltable_results:
                         innermost_child.set('class','info alert-info') 
                     else:
                         innermost_child.set('class','danger alert-danger') 
