@@ -11,7 +11,7 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics.vlascanheuristics import VLAScanHeuristics
-from pipeline.hifv.heuristics.specline_detect import SpectralLineDetector
+from pipeline.hifv.heuristics.specline_detect import detect_spectral_lines
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -150,8 +150,8 @@ class SerialVLAImportData(importdata.ImportData):
 
         # Spectral line detection tool
         for mset in myresults.mses:
-            sltool = SpectralLineDetector(mset=mset, spws=self.inputs.specline_spws)
-            sltool.execute()
+            LOG.debug("{}".format(self.inputs.specline_spws))
+            detect_spectral_lines(mset=mset, specline_spws=self.inputs.specline_spws)
             LOG.debug("Whether spectral window is designated as spectral line or continuum.")
             for spw in mset.get_all_spectral_windows():
                 LOG.debug("SPW ID {}: {}".format(spw.id, spw.specline_window))

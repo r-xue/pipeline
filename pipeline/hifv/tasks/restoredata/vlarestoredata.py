@@ -5,7 +5,6 @@ import tarfile
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.restoredata import restoredata
-from pipeline.hifv.heuristics.specline_detect import SpectralLineDetector
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import casa_tasks
 from ..finalcals import applycals
