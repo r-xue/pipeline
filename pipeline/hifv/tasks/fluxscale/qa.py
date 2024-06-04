@@ -73,12 +73,12 @@ class FluxbootQAHandler(pqa.QAPlugin):
             webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
                                                 'fitteddata': row['fitteddata']})
 
-        spixl = []
+        spix_list = []
         for spi_result in result.spindex_results:
-            spixl.append(spi_result["spix"])
+            spix_list.append(spi_result["spix"])
 
         fractional_residuals = self.getFractionalResiduals(webdicts[ms])
-        score1 = qacalc.score_vla_flux_residual_rms(fractional_residuals, len(result.spws), spixl)
+        score1 = qacalc.score_vla_flux_residual_rms(fractional_residuals, len(result.spws), spix_list)
         scores = [score1]
         if scores == []:
             LOG.error('Error with computing flux density bootstrapping residuals')
@@ -120,30 +120,9 @@ class FluxbootQAHandler(pqa.QAPlugin):
                 for datadict in datadicts:
                     residuals.append((float(datadict['data']) - float(datadict['fitteddata'])) / float(datadict['data']))
                 fractional_residuals.append(residuals)
-            except Exception as e:
+            except Exception:
                 continue
         return fractional_residuals
-
-    def computeRMSandMean(self, webdicts):
-        rmsmeanvalues = []
-        for source, datadicts in webdicts.items():
-            try:
-                frequencies = []
-                residuals = []
-                for datadict in datadicts:
-                    residuals.append(float(datadict['data']) - float(datadict['fitteddata']))
-                    frequencies.append(float(datadict['freq']))
-                rms = np.std(residuals)
-                mean = np.mean(residuals)
-
-                # Count number of residuals outside the mean +/- rms range
-                count = len(residuals) - len([resid for resid in residuals if ((mean - rms) < resid < (mean + rms))])
-                rmsmeanvalues.append((np.std(residuals), np.mean(residuals), count))
-
-            except Exception as e:
-                continue
-
-        return rmsmeanvalues
 
 
 class FluxbootListQAHandler(pqa.QAPlugin):
