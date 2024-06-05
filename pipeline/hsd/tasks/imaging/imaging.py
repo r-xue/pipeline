@@ -382,7 +382,10 @@ class SDImaging(basetask.StandardTaskTemplate):
             info['obspatt'] = 'sd'
             info['arrays'] = 'TP'
             info['modifier'] = ''
-            info['session'] = session
+
+            # PIPE-2148, limiting 'sessionX' keyword length to 68 characters
+            # due to FITS header keyword string length limit.
+            info = imageheader.wrap_key(info, 'sessio', session)
 
             image.setmiscinfo(info)
 
@@ -1215,9 +1218,13 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp : Reduction group parameter object of prepare()
         """
         # PIPE-251: detect contamination
-        if not basetask.DISABLE_WEBLOG:
-            detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'],
-                                                     _rgp.imager_result.frequency_channel_reversed)
+        do_plot = not basetask.DISABLE_WEBLOG
+        contaminated = detectcontamination.detect_contamination(
+            self.inputs.context, _rgp.imager_result.outcome['image'],
+            _rgp.imager_result.frequency_channel_reversed,
+            do_plot
+        )
+        _rgp.imager_result.outcome['contaminated'] = contaminated
 
     def __append_result(self, _cp: imaging_params.CommonParameters, _rgp: imaging_params.ReductionGroupParameters):
         """Append result to RGP.

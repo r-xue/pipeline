@@ -442,13 +442,16 @@ class SDFlagPlotter(object):
             ylim:     ylimits
         Returns:
             (none)
-        Raises:
-            'Exception' when no valid data exists for active flag type
         """
         # check consistency
         for pol in pollist:
             if PlotData_dict[pol]['data'] is None and PlotData_dict[pol]['isActive']:
-                raise Exception("Got no valid data for active flag type.")
+                LOG.info( "No statistics data to show for Active flags: ant:{} spw:{} pol:{} \"{}\"".format(
+                    PlotData_dict[pol]['ant_name'],
+                    PlotData_dict[pol]['spw'],
+                    pol,
+                    PlotData_dict[pol]['title']
+                ) )
 
         # loop over pols
         for pol in pollist:

@@ -6,7 +6,7 @@ Classes:
 """
 
 from enum import Enum, auto, unique
-
+from operator import attrgetter
 
 @unique
 class DataType(Enum):
@@ -26,8 +26,8 @@ class DataType(Enum):
 
     RAW = auto()
     REGCAL_CONTLINE_ALL = auto()
-    BASELINED = auto()
     ATMCORR = auto()
+    BASELINED = auto()
     REGCAL_CONTLINE_SCIENCE = auto()
     SELFCAL_CONTLINE_SCIENCE = auto()
     REGCAL_LINE_SCIENCE = auto()
@@ -58,3 +58,6 @@ class DataType(Enum):
             # Thus listing only their possible data types.
             specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
         return specmode_datatypes
+
+
+TYPE_PRIORITY_ORDER = sorted(DataType.__members__.values(), key=attrgetter('value'))

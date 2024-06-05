@@ -84,6 +84,10 @@
     <ProcessingCommand>
         <Command xmlns="">hif_uvcontsub</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">field</Keyword>
+                <Value xmlns="">{{{field_list}}}</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
