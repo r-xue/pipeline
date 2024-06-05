@@ -18,7 +18,6 @@ from .infrastructure import Pipeline, Context
 from . import h
 from . import hif
 from . import hifa
-from . import hifas
 from . import hsd
 from . import hifv
 from . import hsdn
