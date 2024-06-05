@@ -5,9 +5,11 @@ import traceback
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.vdp as vdp
 from pipeline.extern.almarenorm import alma_renorm
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tools
 from pipeline.h.heuristics import caltable as caltable_heuristic
 
 LOG = infrastructure.get_logger(__name__)
@@ -15,7 +17,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class RenormResults(basetask.Results):
     def __init__(self, renorm_applied, vis, createcaltable, threshold, correctATM, spw, excludechan, corrApplied, corrColExists,
-                 stats, rnstats, alltdm, atmAutoExclude, atmWarning, atmExcludeCmd, bwthreshspw, caltable, exception=None):
+                 stats, rnstats, alltdm, atmAutoExclude, atmWarning, atmExcludeCmd, bwthreshspw, caltable, calapps, exception=None):
         super().__init__()
         self.renorm_applied = renorm_applied
         self.vis = vis
@@ -34,13 +36,22 @@ class RenormResults(basetask.Results):
         self.atmExcludeCmd = atmExcludeCmd
         self.bwthreshspw = bwthreshspw
         self.caltable = caltable
+        self.calapps = calapps
         self.exception = exception
 
     def merge_with_context(self, context):
         """
         See :method:`~pipeline.infrastructure.api.Results.merge_with_context`
         """
-        return
+
+        if not self.calapps:
+            LOG.error('No results to merge')
+            return
+        else:
+            for calapp in self.calapps:
+                LOG.debug('Adding calibration to callibrary:\n'
+                          '%s\n%s' % (calapp.calto, calapp.calfrom))
+                context.callibrary.add(calapp.calto, calapp.calfrom)
 
     def __repr__(self):
         return (f'RenormResults:\n'
@@ -136,7 +147,7 @@ class SerialRenorm(basetask.StandardTaskTemplate):
             'correct_atm': inp.correctATM,
             'atm_auto_exclude': inp.atm_auto_exclude,
             'bwthreshspw': inp.bwthreshspw,
-            'caltable': inp.caltable #namer.calculate(vis=inp.vis, stage=self.inputs.context.stage, **casa_args)
+            'caltable': inp.caltable
         }
 
         # Call the ALMA renormalization function and collect its output in task
@@ -146,14 +157,49 @@ class SerialRenorm(basetask.StandardTaskTemplate):
             alltdm, atmExcludeCmd, atmWarning, corrApplied, corrColExists, renorm_applied, rnstats, stats = \
                 alma_renorm(**alma_renorm_inputs)
 
+            calapps = []
+            if inp.createcaltable:
+                msObj = inp.context.observing_run.get_ms(inp.vis)
+
+                origin = callibrary.CalAppOrigin(task=SerialRenorm, inputs=inp.to_casa_args())
+
+                tbTool = casa_tools.table
+                tbTool.open(inp.caltable)
+                field_ids = tbTool.getcol('FIELD_ID')
+                spw_ids = tbTool.getcol('SPECTRAL_WINDOW_ID')
+                tbTool.done()
+
+                # Get unique field/spw combinations
+                field_spw = dict()
+                for f_id, s_id in zip(field_ids, spw_ids):
+                    field_name = msObj.fields[f_id].name
+                    if field_name not in field_spw:
+                        field_spw[field_name] = set()
+                    field_spw[field_name].add(str(s_id))
+
+                for field_name in field_spw:
+                    spw = ','.join(field_spw[field_name])
+
+                    calto_args = {'vis': inp.vis,
+                                  'intent': 'TARGET',
+                                  'field': field_name,
+                                  'spw': spw}
+                    calto = callibrary.CalTo(**calto_args)
+
+                    calfrom_args = {'gaintable': inp.caltable,
+                                    'interp': 'nearest'}
+                    calfrom = callibrary.CalFrom(**calfrom_args)
+
+                    calapps.append(callibrary.CalApplication(calto, calfrom, origin))
+
             result = RenormResults(renorm_applied, inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
                                    inp.excludechan, corrApplied, corrColExists, stats, rnstats, alltdm,
-                                   inp.atm_auto_exclude, atmWarning, atmExcludeCmd, inp.bwthreshspw, inp.caltable)
+                                   inp.atm_auto_exclude, atmWarning, atmExcludeCmd, inp.bwthreshspw, inp.caltable, calapps)
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
             LOG.error(traceback.format_exc())
             result = RenormResults(False, inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
-                                   inp.excludechan, False, False, {}, {}, True, inp.atm_auto_exclude, {}, {}, {}, inp.caltable, e)
+                                   inp.excludechan, False, False, {}, {}, True, inp.atm_auto_exclude, {}, {}, {}, inp.caltable, [], e)
 
         return result
 
