@@ -2625,6 +2625,58 @@ def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, in
     return line_ranges
 
 
+@log_qa
+def test_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
+    """Test the existence of lines at edge channels.
+
+    This function checks if there is lines that spans edge channels.
+
+    Args:
+        line_ranges: List of line ranges
+        nchan: Number of channels
+
+    Returns:
+        True if there are lines that satisfy the condition above.
+        Otherwise, False.
+    """
+    chan_leftmost = min(line[0] for line in line_ranges)
+    chan_rightmost = max(line[1] for line in line_ranges)
+    LOG.debug('leftmost %s, rightmost %s, nchan %s', chan_leftmost, chan_rightmost, nchan)
+    return chan_leftmost <= 0 or nchan - 1 <= chan_rightmost
+
+
+@log_qa
+def test_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
+    """Test the existence of wide lines.
+
+    This function returns True if there is a line with the width
+    exceeding 1/3 of spw bandwidth. If there are multiple lines
+    and their coverage exceeds the criterion *in total*, the
+    function also returns True. Otherwise, it returns False.
+
+    Args:
+        line_ranges: List of line ranges
+        nchan: Number of channels
+
+    Returns:
+        True if wide line exists. Otherwise, Flase. Please see
+        the above description on more detailed explanation of
+        return value.
+    """
+    # see PIPEREQ-304 for the origin of the value
+    fraction = 1 / 3
+
+    mask = np.zeros(nchan, dtype=np.uint8)
+    for line in line_ranges:
+        ch_start = max(line[0], 0)
+        ch_end = min(line[1], nchan - 1) + 1
+        mask[ch_start:ch_end] = 1
+
+    line_coverage = sum(mask)
+
+    return line_coverage > nchan * fraction
+
+
 def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSReductionGroupMember') -> List[Tuple[int, int]]:
     """Select deviation masks that belongs to given reduction group member.
 
@@ -2777,58 +2829,6 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
         )
 
     return line_detection_scores + deviation_mask_scores
-
-
-@log_qa
-def test_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
-    """Test the existence of lines at edge channels.
-
-    This function checks if there is lines that spans edge channels.
-
-    Args:
-        line_ranges: List of line ranges
-        nchan: Number of channels
-
-    Returns:
-        True if there are lines that satisfy the condition above.
-        Otherwise, False.
-    """
-    chan_leftmost = min(line[0] for line in line_ranges)
-    chan_rightmost = max(line[1] for line in line_ranges)
-    LOG.debug('leftmost %s, rightmost %s, nchan %s', chan_leftmost, chan_rightmost, nchan)
-    return chan_leftmost <= 0 or nchan - 1 <= chan_rightmost
-
-
-@log_qa
-def test_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
-    """Test the existence of wide lines.
-
-    This function returns True if there is a line with the width
-    exceeding 1/3 of spw bandwidth. If there are multiple lines
-    and their coverage exceeds the criterion *in total*, the
-    function also returns True. Otherwise, it returns False.
-
-    Args:
-        line_ranges: List of line ranges
-        nchan: Number of channels
-
-    Returns:
-        True if wide line exists. Otherwise, Flase. Please see
-        the above description on more detailed explanation of
-        return value.
-    """
-    # see PIPEREQ-304 for the origin of the value
-    fraction = 1 / 3
-
-    mask = np.zeros(nchan, dtype=np.uint8)
-    for line in line_ranges:
-        ch_start = max(line[0], 0)
-        ch_end = min(line[1], nchan - 1) + 1
-        mask[ch_start:ch_end] = 1
-
-    line_coverage = sum(mask)
-
-    return line_coverage > nchan * fraction
 
 
 @log_qa
