@@ -2651,9 +2651,8 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
     individual results are as follows:
 
         - skip scoring if no lines were detected (no QAScore object)
-        - 0.65 if there are lines extends to edge channels with the
-          width more than 1/5 of spw bandwidth
-        - 0.65 if there are lines that covers more than 1/3 of spw
+        - 0.55 if there are lines extends to edge channels
+        - 0.6 if there are lines that covers more than 1/3 of spw
           bandwidth in total
         - 1.0 otherwise
 
@@ -2664,11 +2663,10 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
     QAScore object.
 
     In addition to the detected lines, deviation masks are also
-    examined in the same way as lines. Also, combination of
-    detected lines and deviation masks are examined similarly. Returned
-    QAScore objects are the collection of scores from all cases
-    (line only, deviation mask only, and mix of them) but they can
-    be differentiated by the associated messages and/or metric units.
+    examined. Score will be 0.65 if deviation masks with any widths
+    exist. Returned QAScore objects are the collection of scores from
+    both spectral lines and deviation masks but they can be
+    differentiated by the associated messages and/or metric units.
 
     Relevant JIRA tickets:
         PIPE-2136
@@ -2698,41 +2696,24 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
         spw = ', '.join(map(str, spw_ids))
         spw_desc = f'Spws {spw}' if len(spw_ids) > 1 else f'Spw {spw}'
 
-        # deviation mask only
-        deviation_masks_spw = []
+        # deviation mask
         for member_id in member_list:
             reduction_group_member = reduction_group_desc[member_id]
             deviation_masks = select_deviation_masks(
                 deviation_mask_all, reduction_group_member
             )
 
-            # deviation_masks_spw will be combined with
-            # detected lines to examine "mixed" case
-            for mask in deviation_masks:
-                if mask not in deviation_masks_spw:
-                    deviation_masks_spw.append(mask)
-
             if deviation_masks:
-                is_edge_mask = test_sd_edge_lines(deviation_masks, nchan)
-                is_wide_mask = test_sd_wide_lines(deviation_masks, nchan)
-                if is_edge_mask and is_wide_mask:
-                    score = 0.65
-                    shortmsg = 'Possible instrumental instabilities were detected at spw edge covering a large fraction of spw.'
-                elif is_edge_mask:
-                    score = 0.65
-                    shortmsg = 'Possible instrumental instabilities detected at spw edge.'
-                if is_wide_mask:
-                    score = 0.65
-                    shortmsg = 'Possible instrumental instabilities affecting a large fraction of spw.'
-                else:
-                    score = 1.0
-                    shortmsg = 'Possible instrumental instabilities were detected.'
+                score = 0.65
+                msg = 'Deviation mask was triggered'
+                # msg = 'Possible instrumental instabilities were detected'
 
                 spw_id = reduction_group_member.spw_id
                 ms_name = reduction_group_member.ms.origin_ms
                 antenna_name = reduction_group_member.antenna_name
-                longmsg = f'{ms_name}, Field {field_name}, Spw {spw_id}, Antenna {antenna_name}: {shortmsg}'
-                metric_value = ';'.join([f'{l}~{r}' for l, r in deviation_masks])
+                shortmsg = f'{msg}.'
+                longmsg = f'{msg} in Spw {spw_id}, EB {ms_name}, Field {field_name}, Antenna {antenna_name}.'
+                metric_value = ';'.join([f'{left}~{right}' for left, right in deviation_masks])
                 origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                                       metric_score=metric_value,
                                       metric_units='Channel range(s) possibly affected by instrumental instatbilities')
@@ -2749,39 +2730,23 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
         if len(lines) > 0:
             is_edge_line = test_sd_edge_lines(lines, nchan)
             is_wide_line = test_sd_wide_lines(lines, nchan)
-            if len(deviation_masks_spw) > 0:
-                mixed_ranges = lines + deviation_masks_spw
-                is_edge_mix = test_sd_edge_lines(mixed_ranges, nchan)
-                is_wide_mix = test_sd_wide_lines(mixed_ranges, nchan)
-            else:
-                is_edge_mix = False
-                is_wide_mix = False
 
             if is_edge_line and is_wide_line:
-                score = 0.65
-                shortmsg = 'An edge line and a wide line were detected.'
+                score = 0.55  # min(0.55, 0.6)
+                msg = 'Edge and wide lines were detected'
             elif is_edge_line:
-                score = 0.65
-                shortmsg = 'An edge line was detected.'
+                score = 0.55
+                msg = 'Edge line was detected'
             elif is_wide_line:
-                score = 0.65
-                shortmsg = 'A wide line was detected.'
-            elif is_edge_mix and is_wide_mix:
-                score = 0.65
-                shortmsg = 'An edge line and a wide line with possible instrumental instability detected.'
-            elif is_edge_mix:
-                score = 0.65
-                shortmsg = 'An edge line mixed with possible instrumental instability detected.'
-            elif is_wide_mix:
-                score = 0.65
-                shortmsg = 'A wide line mixed with possible instrumental instability detected.'
+                score = 0.6
+                msg = 'Wide line was detected'
             else:
-                # if no messages are set, it indicates that detected
-                # lines do not harm baseline subtraction
+                # detected lines do not harm baseline subtraction
                 score = 1.0
-                shortmsg = 'Successfully detected spectral lines.'
+                msg = 'Spectral lines were detected'
 
-            longmsg = f'Field {field_name}, {spw_desc}: {shortmsg}'
+            shortmsg = f'{msg}.'
+            longmsg = f'{msg} in Spw {spw_desc}, Field {field_name}.'
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines])
             origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                                   metric_score=metric_value,
