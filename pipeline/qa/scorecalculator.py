@@ -2740,13 +2740,6 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
         reduction_group_desc = reduction_group[reduction_group_id]
         member_list = bl['members']
         field_name = reduction_group_desc.field_name
-        nchan = reduction_group_desc.nchan
-        lines = get_line_ranges(bl['lines'])
-        # sort lines by left channel
-        lines.sort(key=operator.itemgetter(0))
-        spw_ids = set(reduction_group_desc[m].spw_id for m in member_list)
-        spw = ', '.join(map(str, spw_ids))
-        spw_desc = f'Spws {spw}' if len(spw_ids) > 1 else f'Spw {spw}'
 
         # deviation mask
         for member_id in member_list:
@@ -2778,8 +2771,13 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
                     pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
                 )
 
-        # line only & line + deviation mask
+        # spectral lines
+        lines = get_line_ranges(bl['lines'])
         if len(lines) > 0:
+            # sort lines by left channel
+            lines.sort(key=operator.itemgetter(0))
+
+            nchan = reduction_group_desc.nchan
             is_edge_line = test_sd_edge_lines(lines, nchan)
             is_wide_line = test_sd_wide_lines(lines, nchan)
 
@@ -2797,6 +2795,9 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
                 score = 1.0
                 msg = 'Spectral lines were detected'
 
+            spw_ids = set(reduction_group_desc[m].spw_id for m in member_list)
+            spw = ', '.join(map(str, spw_ids))
+            spw_desc = f'Spws {spw}' if len(spw_ids) > 1 else f'Spw {spw}'
             shortmsg = f'{msg}.'
             longmsg = f'{msg} in Spw {spw_desc}, Field {field_name}.'
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines])
