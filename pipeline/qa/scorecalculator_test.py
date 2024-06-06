@@ -23,28 +23,6 @@ def test_get_line_ranges(lines: List[Tuple[int, int, bool]], expected: List[Tupl
 
 
 @pytest.mark.parametrize(
-    'lines, nchan, fraction, edge, expected',
-    [
-        ([(0, 100)], 1024, 1 / 3, False, False),
-        ([(0, 100)], 1024, 1 / 3, True, False),
-        ([(0, 400)], 1024, 1 / 3, False, True),
-        ([(0, 400)], 1024, 1 / 3, True, True),
-        ([(0, 115), (200, 315), (400, 515)], 1024, 1 / 3, False, True),
-        ([(0, 115), (200, 315), (400, 515)], 1024, 1 / 3, True, False),
-        ([(0, 100)], 1024, 1 / 20, False, True),
-        ([(0, 100)], 1024, 1 / 20, True, True),
-        ([(0, 200), (100, 250)], 1024, 1 / 4, False, False),
-        ([(0, 200), (100, 250)], 1024, 1 / 4, True, False),
-        ([(1, 500)], 1024, 1/3, False, True),
-        ([(1, 500)], 1024, 1/3, True, False),
-    ]
-)
-def test_line_wider_than(lines: List[Tuple[int, int]], nchan: int, fraction: float, edge: bool, expected: bool):
-    is_wider = qacalc.line_wider_than(lines, nchan, fraction, edge)
-    assert is_wider == expected
-
-
-@pytest.mark.parametrize(
     'lines, nchan, expected',
     [
         # line not extend to the edge

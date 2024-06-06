@@ -2814,41 +2814,6 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
     return line_detection_scores + deviation_mask_scores
 
 
-def line_wider_than(line_ranges: List[Tuple[int, int]], nchan: int, fraction: float, edge: bool) -> bool:
-    """Check if line coverage is wider than given threshold.
-
-    Threshold is computed by nchan * fraction. When edge parameter is
-    False, the function checks if total line coverage exceeds the threshold.
-    If edge parameter is True, the function looks for the line ranges that
-    spans edge channels, and check if their widths exceed the threhold.
-
-    Args:
-        line_ranges: List of line ranges
-        nchan: Number of channels
-        fraction: Fractional threshold
-        edge: Only check edge lines
-
-    Returns:
-        True if line coverage is wider than the threshold. Otherwise, False.
-        Please see the above description for more detailed explanation on
-        return value.
-    """
-    if fraction <= 0:
-        return False
-
-    mask = np.zeros(nchan, dtype=np.uint8)
-    for line in line_ranges:
-        ch_start = max(line[0], 0)
-        ch_end = min(line[1], nchan - 1) + 1
-        mask[ch_start:ch_end] = 1
-    if edge:
-        nedge = max(int(np.ceil(nchan * fraction)), 1)
-        return np.all(mask[:nedge] == 1) or np.all(mask[-nedge:])
-    else:
-        line_coverage = sum(mask)
-        return line_coverage > nchan * fraction
-
-
 @log_qa
 def test_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
     """Test the existence of lines at edge channels.
@@ -2889,8 +2854,16 @@ def test_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
     """
     # see PIPEREQ-304 for the origin of the value
     fraction = 1 / 3
-    edge = False
-    return line_wider_than(line_ranges, nchan, fraction, edge)
+
+    mask = np.zeros(nchan, dtype=np.uint8)
+    for line in line_ranges:
+        ch_start = max(line[0], 0)
+        ch_end = min(line[1], nchan - 1) + 1
+        mask[ch_start:ch_end] = 1
+
+    line_coverage = sum(mask)
+
+    return line_coverage > nchan * fraction
 
 
 @log_qa
