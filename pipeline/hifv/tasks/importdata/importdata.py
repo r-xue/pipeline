@@ -150,7 +150,6 @@ class SerialVLAImportData(importdata.ImportData):
 
         # Spectral line detection tool
         for mset in myresults.mses:
-            LOG.debug("{}".format(self.inputs.specline_spws))
             detect_spectral_lines(mset=mset, specline_spws=self.inputs.specline_spws)
             LOG.debug("Whether spectral window is designated as spectral line or continuum.")
             for spw in mset.get_all_spectral_windows():

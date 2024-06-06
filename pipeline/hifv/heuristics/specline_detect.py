@@ -13,7 +13,8 @@ LOG = logging.get_logger(__name__)
 
 
 def detect_spectral_lines(mset: Type[MeasurementSet], specline_spws: str='auto') -> None:
-    """
+    """Handles assignment of spectral windows
+
     Args:
         mset(object): MeasurementSet object containing MS information
         specline_spws(str): tells pipeline how to handle spectral line assignment; 'auto', 'none', or
@@ -24,14 +25,16 @@ def detect_spectral_lines(mset: Type[MeasurementSet], specline_spws: str='auto')
     if specline_spws == 'auto':
         LOG.info("Spectral line detection set to {}.".format(specline_spws))
         for spw in spws:
-            auto_detector(spw)
+            _auto_detector(spw)
     elif specline_spws == 'none':
         LOG.info("Spectral line assignment is turned off. All spws will be regarded as continuum.")
     else:
         spec_windows = range_to_list(specline_spws)
         LOG.debug('User-defined spectral windows for spectral lines: {}'.format(spec_windows))
         if not all([type(x) == int for x in spec_windows]):
-            raise Exception("Invalid input for user-defined spws.")
+            msg = "Invalid input for user-defined spws: {}".format(spec_windows)
+            LOG.error(msg)
+            raise Exception(msg)
         LOG.info("Spectral line detection defined by user.")
         LOG.info('The user identified the following spws for spectral line analysis: {}. '
                     'All other spws will be regarded as continuum.'.format(specline_spws))
@@ -40,8 +43,11 @@ def detect_spectral_lines(mset: Type[MeasurementSet], specline_spws: str='auto')
                 spw.specline_window = True
             
 
-def auto_detector(spw: Type[SpectralWindow]) -> None:
-    """
+def _auto_detector(spw: Type[SpectralWindow]) -> None:
+    """Determines if a spectral window should be designated as a spectral line window using the following criteria:
+       - frequency above L-band (greater than 1GHz) and
+       - window more narrow than 64MHz or more than 128 channels or channel widths less than 0.5 MHz
+
     Args:
         spw(object): spectral window object stored in pipeline context
     """
