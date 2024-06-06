@@ -2853,8 +2853,7 @@ def line_wider_than(line_ranges: List[Tuple[int, int]], nchan: int, fraction: fl
 def test_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
     """Test the existence of lines at edge channels.
 
-    This function checks if there is lines that spans edge channels
-    *and* their widths exceed 1/5 of spw bandwidth.
+    This function checks if there is lines that spans edge channels.
 
     Args:
         line_ranges: List of line ranges
@@ -2864,10 +2863,10 @@ def test_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int) -> float:
         True if there are lines that satisfy the condition above.
         Otherwise, False.
     """
-    # see PIPEREQ-304 for the origin of the value
-    fraction = 1 / 5
-    edge = True
-    return line_wider_than(line_ranges, nchan, fraction, edge)
+    chan_leftmost = min(line[0] for line in line_ranges)
+    chan_rightmost = max(line[1] for line in line_ranges)
+    LOG.debug('leftmost %s, rightmost %s, nchan %s', chan_leftmost, chan_rightmost, nchan)
+    return chan_leftmost <= 0 or nchan - 1 <= chan_rightmost
 
 
 @log_qa

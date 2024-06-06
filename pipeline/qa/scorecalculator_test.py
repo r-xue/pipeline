@@ -51,13 +51,13 @@ def test_line_wider_than(lines: List[Tuple[int, int]], nchan: int, fraction: flo
         ([(1020, 1030)], 2048, False),
         ([(1, 11)], 1024, False),
         ([(800, 1022)], 1024, False),
-        # too narrow edge lines
-        ([(0, 10)], 1024, False),
-        ([(0, 203)], 1024, False),
-        ([(990, 1023)], 1024, False),
-        ([(-10, 200)], 1024, False),
-        ([(900, 2047)], 1024, False),
-        # wide edge line that lowers QA score
+        # narrow edge lines
+        ([(0, 10)], 1024, True),
+        ([(0, 203)], 1024, True),
+        ([(990, 1023)], 1024, True),
+        ([(-10, 200)], 1024, True),
+        ([(900, 2047)], 1024, True),
+        # wide edge lines
         ([(0, 204)], 1024, True),
         ([(800, 1023)], 1024, True),
         ([(800, 1024)], 1024, True),
