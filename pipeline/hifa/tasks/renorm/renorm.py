@@ -172,7 +172,7 @@ class SerialRenorm(basetask.StandardTaskTemplate):
                 # Get unique field/spw combinations
                 field_spw = dict()
                 for f_id, s_id in zip(field_ids, spw_ids):
-                    field_name = msObj.fields[f_id].name
+                    field_name = msObj.get_fields(field_id=f_id)[0].name
                     if field_name not in field_spw:
                         field_spw[field_name] = set()
                     field_spw[field_name].add(str(s_id))
@@ -187,6 +187,7 @@ class SerialRenorm(basetask.StandardTaskTemplate):
                     calto = callibrary.CalTo(**calto_args)
 
                     calfrom_args = {'gaintable': inp.caltable,
+                                    'caltype': 'amp',
                                     'interp': 'nearest'}
                     calfrom = callibrary.CalFrom(**calfrom_args)
 
