@@ -163,10 +163,10 @@ class CheckProductSize(basetask.StandardTaskTemplate):
                                             -1, \
                                             -1, \
                                             -1, \
-                                            {}, \
+                                            -1, \
                                             self.inputs.maximsize, \
                                             -1, \
-                                            -1, \
+                                            {}, \
                                             'ERROR', \
                                             {'longmsg': 'Parameter error: maxproductsize must be > maxcubelimit', 'shortmsg': 'Parameter error'}, \
                                             None)

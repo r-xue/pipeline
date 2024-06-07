@@ -193,7 +193,7 @@ class QAScorePool(object):
         if not self.pool:
             return QAScore(None, 'No QA scores registered for this task', 'No QA')
 
-        # Maybe have different algorithms here. for now just return the
+        # Maybe have different algorithms here. For now just return the
         # QAScore with minimum score of all non-hidden numerical ones.
         numerical_scores = [score_obj for score_obj in scores_with_location(self.pool,
                            [WebLogLocation.ACCORDION, WebLogLocation.BANNER, WebLogLocation.UNSET])
