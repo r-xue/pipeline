@@ -880,7 +880,8 @@ class SelfcalHeuristics(object):
                                 spwlist = selfcal_library[target][band][vislist[0]]['spws'].split(',')
                                 fallback[vis], map_index, spwmap, applycal_spwmap_inf_EB = analyze_inf_EB_flagging(
                                     selfcal_library, band, spwlist, sani_target + '_' + vis + '_' + band + '_' + solint + '_' +
-                                    str(iteration) + '_' + solmode[band][iteration] + '.g', vis, target, 'test_inf_EB.g', spectral_scan)
+                                    str(iteration) + '_' + solmode[band][iteration] + '.g', vis, target, 'test_inf_EB.g',
+                                    spectral_scan, self.telescope)
 
                                 inf_EB_fallback_mode_dict[target][band][vis] = fallback[vis]+''
                                 LOG.info(f'inf_EB {fallback[vis]}  {applycal_spwmap_inf_EB}')
