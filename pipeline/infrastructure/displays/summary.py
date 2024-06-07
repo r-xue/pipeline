@@ -1202,7 +1202,7 @@ class SpwIdVsFreqChart(object):
         nchan = round((xmax - xmin) / resolution)
         elevation = atmutil.get_median_elevation(ms.name, antid)
         atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, elevation=elevation, doplot=False)
-        ax_atm.plot(atm_freq, atm_transmission, color=atm_color_plot, linestyle='-', linewidth=2.5)
+        ax_atm.plot(atm_freq, atm_transmission, color=atm_color_plot, linestyle='-', linewidth=2.0)
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
         ax_spw.set_ylim(totalnum_spws + totalnum_spws/20.0, -1.0 - totalnum_spws/20.0)  # The spw indices are from 0 to totalnum_spws. y-axis is inverted. totalnum_spws/20.0 is a mergin. -1.0 is upper edge.
