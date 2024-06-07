@@ -129,7 +129,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  iter=None, mask=None, niter=None, threshold=None, tlimit=None, drcorrect=None, masklimit=None,
                  calcsb=None, cleancontranges=None, parallel=None,
                  # Extra parameters not in the CLI task interface
-                 weighting=None, robust=None, uvtaper=None, scales=None, cycleniter=None, cyclefactor=None,
+                 weighting=None, robust=None, uvtaper=None, scales=None, cycleniter=None, cyclefactor=None, nmajor=None,
                  hm_minpsffraction=None, hm_maxpsffraction=None,
                  sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None, antenna=None,
                  usepointing=None, mosweight=None, spwsel_all_cont=None, num_all_spws=None, num_good_spws=None,
@@ -140,7 +140,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                                            datacolumn=datacolumn, datatype=datatype, datatype_info=datatype_info,
                                            intent=intent, field=field, spw=spw, uvrange=uvrange, specmode=specmode,
                                            gridder=gridder, deconvolver=deconvolver, uvtaper=uvtaper, nterms=nterms,
-                                           cycleniter=cycleniter, cyclefactor=cyclefactor,
+                                           cycleniter=cycleniter, cyclefactor=cyclefactor, nmajor=nmajor,
                                            hm_minpsffraction=hm_minpsffraction, hm_maxpsffraction=hm_maxpsffraction,
                                            scales=scales, outframe=outframe, imsize=imsize, cell=cell, phasecenter=phasecenter,
                                            psf_phasecenter=psf_phasecenter, nchan=nchan, start=start, width=width, stokes=stokes,
@@ -349,13 +349,6 @@ class Tclean(cleanbase.CleanBase):
             #  antenna sizes are not listed) could be added in some future configurations by removing this character.
             inputs.antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&' for v in inputs.vis]
 
-        # Determine the phase center
-        if inputs.phasecenter in ('', None):
-            field_ids = self.image_heuristics.field(inputs.intent, inputs.field)
-            # TODO: This call will no longer work as expected after the PIPE-98 changes
-            #       (missing primary beam size and shift parameter compared to hif_makeimlist).
-            #       Need to decide whether to remove all hif_tclean fallback heuristics.
-            inputs.phasecenter, inputs.psf_phasecenter = self.image_heuristics.phasecenter(field_ids)
 
         # If imsize not set then use heuristic code to calculate the
         # centers for each field  / spw
@@ -1378,6 +1371,7 @@ class Tclean(cleanbase.CleanBase):
                                                   nterms=inputs.nterms,
                                                   cycleniter=inputs.cycleniter,
                                                   cyclefactor=cyclefactor,
+                                                  nmajor=inputs.nmajor,
                                                   hm_minpsffraction=inputs.hm_minpsffraction,
                                                   hm_maxpsffraction=inputs.hm_maxpsffraction,
                                                   scales=inputs.scales,
