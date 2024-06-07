@@ -86,7 +86,9 @@ class ALMAExportData(exportdata.ExportData):
             manifest_file = os.path.join(self.inputs.products_dir, results.manifest)
             self._add_to_manifest(manifest_file, auxfproducts, auxcaltables, auxcalapplys, pipe_aqua_reportfile, oussid)
 
-        self._export_renorm_to_manifest(results.manifest)
+        # PIPE-2151: We no longer export renorm results since this case is
+        #            now covered via cal tables.
+        #self._export_renorm_to_manifest(results.manifest)
 
         return results
 
@@ -129,7 +131,7 @@ class ALMAExportData(exportdata.ExportData):
         # Get the output file name
         ps = context.project_structure
         script_file = os.path.join(context.report_dir, script_name)
-        out_script_file = self.NameBuilder.casa_script(script_name, 
+        out_script_file = self.NameBuilder.casa_script(script_name,
                                                        project_structure=ps,
                                                        ousstatus_entity_id=oussid,
                                                        output_dir=products_dir)
