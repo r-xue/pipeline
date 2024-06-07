@@ -1,6 +1,7 @@
 import copy
 import os
 import traceback
+import collections
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -45,7 +46,7 @@ class RenormResults(basetask.Results):
         """
 
         if not self.calapps:
-            LOG.error('No results to merge')
+            LOG.info('No results to merge')
             return
         else:
             for calapp in self.calapps:
@@ -163,18 +164,14 @@ class SerialRenorm(basetask.StandardTaskTemplate):
 
                 origin = callibrary.CalAppOrigin(task=SerialRenorm, inputs=inp.to_casa_args())
 
-                tbTool = casa_tools.table
-                tbTool.open(inp.caltable)
-                field_ids = tbTool.getcol('FIELD_ID')
-                spw_ids = tbTool.getcol('SPECTRAL_WINDOW_ID')
-                tbTool.done()
+                with casa_tools.TableReader(inp.caltable) as table:
+                    field_ids = table.getcol('FIELD_ID')
+                    spw_ids = table.getcol('SPECTRAL_WINDOW_ID')
 
                 # Get unique field/spw combinations
-                field_spw = dict()
+                field_spw = collections.defaultdict(set)
                 for f_id, s_id in zip(field_ids, spw_ids):
                     field_name = msObj.get_fields(field_id=f_id)[0].name
-                    if field_name not in field_spw:
-                        field_spw[field_name] = set()
                     field_spw[field_name].add(str(s_id))
 
                 for field_name in field_spw:
@@ -186,8 +183,9 @@ class SerialRenorm(basetask.StandardTaskTemplate):
                                   'spw': spw}
                     calto = callibrary.CalTo(**calto_args)
 
+                    # The renorm results are applied like a Tsys calibration
                     calfrom_args = {'gaintable': inp.caltable,
-                                    'caltype': 'amp',
+                                    'caltype': 'tsys',
                                     'interp': 'nearest'}
                     calfrom = callibrary.CalFrom(**calfrom_args)
 
