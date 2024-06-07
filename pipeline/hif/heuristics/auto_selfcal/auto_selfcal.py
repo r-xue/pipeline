@@ -390,7 +390,7 @@ class SelfcalHeuristics(object):
                 selfcal_library[target][band]['SNR_NF_orig'] = initial_NF_SNR
                 selfcal_library[target][band]['RMS_NF_orig'] = initial_NF_RMS
                 selfcal_library[target][band]['RMS_curr'] = initial_RMS
-                selfcal_library[target][band]['RMS_NF_curr'] = initial_NF_RMS
+                selfcal_library[target][band]['RMS_NF_curr'] = initial_NF_RMS if initial_NF_RMS > 0 else initial_RMS
                 selfcal_library[target][band]['SNR_dirty'] = dirty_SNR
                 selfcal_library[target][band]['RMS_dirty'] = dirty_RMS
                 selfcal_library[target][band]['Beam_major_orig'] = bm['major']['value']
@@ -993,7 +993,8 @@ class SelfcalHeuristics(object):
                             if selfcal_library[target][band][vis][solint]['RMS_post'] < selfcal_library[target][band]['RMS_curr'] and vis == vislist[-1]:
                                 selfcal_library[target][band]['RMS_curr'] = selfcal_library[target][band][vis][solint][
                                     'RMS_post'].copy()
-                            if selfcal_library[target][band][vis][solint]['RMS_NF_post'] < selfcal_library[target][band]['RMS_NF_curr'] and vis == vislist[-1]:
+                            if selfcal_library[target][band][vis][solint]['RMS_NF_post'] < selfcal_library[target][band]['RMS_NF_curr'] and \
+                                    selfcal_library[target][band][vis][solint]['RMS_NF_post'] > 0 and vis == vislist[-1]:
                                 selfcal_library[target][band]['RMS_NF_curr'] = selfcal_library[target][band][vis][solint][
                                     'RMS_NF_post'].copy()
                             with casa_tools.ImageReader(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0') as image:
