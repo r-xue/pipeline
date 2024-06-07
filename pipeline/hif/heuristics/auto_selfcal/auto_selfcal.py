@@ -22,7 +22,7 @@ from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               get_nterms, get_sensitivity, get_SNR_self,
                               get_SNR_self_update, get_solints_simple, get_spw_map,
                               get_spw_bandwidth, get_uv_range, importdata,
-                              rank_refants)
+                              link_tclean_products, rank_refants)
 
 # from pipeline.infrastructure.utils import request_omp_threading
 
@@ -1144,15 +1144,18 @@ class SelfcalHeuristics(object):
                         'RMS_NF_curr'] * 3.0:
                     LOG.warning(
                         "The clean threshold used for the initial image was less than 3*RMS_NF_curr, using that for the final image threshold instead.")
-                self.tclean_wrapper(
-                    vislist, sani_target + '_' + band + '_final', band_properties, band, telescope=self.telescope,
-                    nsigma=3.0, threshold=str(clean_threshold) + 'Jy', scales=[0],
-                    savemodel='none', parallel=parallel, cellsize=cellsize, imsize=imsize,
-                    nterms=selfcal_library[target][band]['nterms'],
-                    field=self.field, datacolumn='corrected', spw=selfcal_library[target][band]['spws_per_vis'],
-                    uvrange=selfcal_library[target][band]['uvrange'],
-                    obstype=selfcal_library[target][band]['obstype'],
-                    nfrms_multiplier=nfsnr_modifier)
+                if selfcal_library[target][band]['SC_success']:
+                    self.tclean_wrapper(
+                        vislist, sani_target + '_' + band + '_final', band_properties, band, telescope=self.telescope,
+                        nsigma=3.0, threshold=str(clean_threshold) + 'Jy', scales=[0],
+                        savemodel='none', parallel=parallel, cellsize=cellsize, imsize=imsize,
+                        nterms=selfcal_library[target][band]['nterms'],
+                        field=self.field, datacolumn='corrected', spw=selfcal_library[target][band]['spws_per_vis'],
+                        uvrange=selfcal_library[target][band]['uvrange'],
+                        obstype=selfcal_library[target][band]['obstype'],
+                        nfrms_multiplier=nfsnr_modifier)
+                else:
+                    link_tclean_products(sani_target + '_' + band + '_initial', sani_target + '_' + band + '_final')
                 final_SNR, final_RMS = estimate_SNR(sani_target+'_'+band+'_final.image.tt0')
                 if self.telescope != 'ACA':
                     final_NF_SNR, final_NF_RMS = estimate_near_field_SNR(
@@ -1229,14 +1232,19 @@ class SelfcalHeuristics(object):
                         nfsnr_modifier = selfcal_library[target][band]['RMS_NF_curr'] / selfcal_library[target][band]['RMS_curr']
                         sensitivity_agg, sens_bw = self.get_sensitivity()
                         sensitivity_scale_factor = selfcal_library[target][band]['RMS_curr']/sensitivity_agg
-                        self.tclean_wrapper(vislist, sani_target + '_' + band + '_' + spw + '_final', band_properties, band,
-                                            telescope=self.telescope, nsigma=4.0,
-                                            threshold=str(sensitivity * sensitivity_scale_factor * 4.0) + 'Jy', scales=[0],
-                                            savemodel='none', parallel=parallel, cellsize=cellsize, imsize=imsize, nterms=1,
-                                            field=self.field, datacolumn='corrected', spw=spws_per_vis,
-                                            uvrange=selfcal_library[target][band]['uvrange'],
-                                            obstype=selfcal_library[target][band]['obstype'],
-                                            nfrms_multiplier=nfsnr_modifier)
+                        
+                        if selfcal_library[target][band]['SC_success']:
+                            self.tclean_wrapper(vislist, sani_target + '_' + band + '_' + spw + '_final', band_properties, band,
+                                                telescope=self.telescope, nsigma=4.0,
+                                                threshold=str(sensitivity * sensitivity_scale_factor * 4.0) + 'Jy', scales=[0],
+                                                savemodel='none', parallel=parallel, cellsize=cellsize, imsize=imsize, nterms=1,
+                                                field=self.field, datacolumn='corrected', spw=spws_per_vis,
+                                                uvrange=selfcal_library[target][band]['uvrange'],
+                                                obstype=selfcal_library[target][band]['obstype'],
+                                                nfrms_multiplier=nfsnr_modifier)
+                        else:
+                            link_tclean_products(sani_target + '_' + band + '_' + spw + '_initial', sani_target + '_' + band + '_' + spw + '_final')
+                        
                         final_per_spw_SNR, final_per_spw_RMS = estimate_SNR(sani_target+'_'+band+'_'+spw+'_final.image.tt0')
                         if self.telescope != 'ACA':
                             final_per_spw_NF_SNR, final_per_spw_NF_RMS = estimate_near_field_SNR(
