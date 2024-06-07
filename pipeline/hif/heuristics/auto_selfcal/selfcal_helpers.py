@@ -212,7 +212,7 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
 # actual routine used for getting solints
 def get_solints_simple(
         vislist, scantimesdict, scanstartsdict, scanendsdict, integrationtimes, inf_EB_gaincal_combine, spwcombine=True,
-        solint_decrement='fixed', solint_divider=2.0, n_solints=4.0, do_amp_selfcal=False):
+        solint_decrement='fixed', solint_divider=2.0, n_solints=4.0, do_amp_selfcal=False, mosaic=False):
     all_integrations = np.array([])
     all_nscans_per_obs = np.array([])
     all_time_between_scans = np.array([])
@@ -258,6 +258,7 @@ def get_solints_simple(
 
     max_scantime = np.median(allscantimes)
     median_scantime = np.max(allscantimes)
+    min_scantime = np.min(allscantimes)
     median_scans_per_obs = np.median(all_nscans_per_obs)
     median_time_per_obs = np.median(all_times_per_obs)
     median_time_between_scans = np.median(all_time_between_scans)
@@ -329,7 +330,8 @@ def get_solints_simple(
     gaincal_combine.insert(0, inf_EB_gaincal_combine)
 
     # insert solint = inf
-    if median_scans_per_obs > 1:                    # if only a single scan per target, redundant with inf_EB and do not include
+    if (not mosaic and (median_scans_per_obs > 2 or (median_scans_per_obs == 2 and max_scantime / min_scantime < 4))) or mosaic: 
+        # if only a single scan per target, redundant with inf_EB and do not include                
         solints_list.append('inf')
         if spwcombine:
             gaincal_combine.append('spw')
