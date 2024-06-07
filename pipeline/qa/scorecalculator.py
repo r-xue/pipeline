@@ -2751,7 +2751,6 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
             if deviation_masks:
                 score = 0.65
                 msg = 'Deviation mask was triggered'
-                # msg = 'Possible instrumental instabilities were detected'
 
                 spw_id = reduction_group_member.spw_id
                 ms_name = reduction_group_member.ms.origin_ms
