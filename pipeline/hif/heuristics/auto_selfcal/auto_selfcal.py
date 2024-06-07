@@ -22,7 +22,7 @@ from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               get_nterms, get_sensitivity, get_SNR_self,
                               get_SNR_self_update, get_solints_simple, get_spw_map,
                               get_spw_bandwidth, get_uv_range, importdata,
-                              link_tclean_products, rank_refants)
+                              copy_products, rank_refants)
 
 # from pipeline.infrastructure.utils import request_omp_threading
 
@@ -1155,7 +1155,7 @@ class SelfcalHeuristics(object):
                         obstype=selfcal_library[target][band]['obstype'],
                         nfrms_multiplier=nfsnr_modifier)
                 else:
-                    link_tclean_products(sani_target + '_' + band + '_initial', sani_target + '_' + band + '_final')
+                    copy_products(sani_target + '_' + band + '_initial', sani_target + '_' + band + '_final')
                 final_SNR, final_RMS = estimate_SNR(sani_target+'_'+band+'_final.image.tt0')
                 if self.telescope != 'ACA':
                     final_NF_SNR, final_NF_RMS = estimate_near_field_SNR(
@@ -1243,7 +1243,7 @@ class SelfcalHeuristics(object):
                                                 obstype=selfcal_library[target][band]['obstype'],
                                                 nfrms_multiplier=nfsnr_modifier)
                         else:
-                            link_tclean_products(sani_target + '_' + band + '_' + spw + '_initial', sani_target + '_' + band + '_' + spw + '_final')
+                            copy_products(sani_target + '_' + band + '_' + spw + '_initial', sani_target + '_' + band + '_' + spw + '_final')
                         
                         final_per_spw_SNR, final_per_spw_RMS = estimate_SNR(sani_target+'_'+band+'_'+spw+'_final.image.tt0')
                         if self.telescope != 'ACA':

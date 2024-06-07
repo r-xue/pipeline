@@ -25,13 +25,13 @@ from pipeline.infrastructure.casa_tools import table as tb
 LOG = infrastructure.get_logger(__name__)
 
 
-def link_tclean_products(imagename_src, imagename_dst):
+def copy_products(imagename_src, imagename_dst):
     """Link the tclean products.
 
     This function is used to link the tclean products.
     """
-    LOG.info('Linking tclean products: src- %s -> dst- %s', imagename_src, imagename_dst)
-    
+    LOG.info('copy tclean products: src- %s -> dst- %s', imagename_src, imagename_dst)
+
     src_list = glob.glob(imagename_src+'.*')
     for src in src_list:
         dst = src.replace(imagename_src+'.', imagename_dst+'.')
@@ -39,7 +39,8 @@ def link_tclean_products(imagename_src, imagename_dst):
             os.remove(dst)
         elif os.path.isdir(dst):
             shutil.rmtree(dst)
-        os.symlink(src, dst)
+        if os.path.isdir(src):
+            shutil.copytree(src, dst)
 
 
 def get_selfcal_logger(loggername='auto_selfcal', loglevel='DEBUG', logfile=None):
