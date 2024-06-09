@@ -591,9 +591,16 @@ def get_intflux(imagename, rms, maskname=None):
         pix_per_beam = beamarea/cellarea
 
         if maskname is None:
-            mask = None
+            try_mask = imagename.replace("image.tt0", "mask")
         else:
-            mask = f'"{imagename.replace("image.tt0", "mask")}"'
+            try_mask = maskname
+        if os.path.isdir(try_mask):
+            # PIPE-2144: wrap the mask image name with quotation marks and avoid the ambiguity
+            # when casatools evaluates the lattice expression.
+            mask = f'"{try_mask}"'
+        else:
+            LOG.warning('The integrated flux is being calculated without a valid external mask file.')
+            mask = None
         imagestats = image.statistics(mask=mask)
 
     if len(imagestats['flux']) > 0:
