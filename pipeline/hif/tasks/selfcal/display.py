@@ -204,7 +204,7 @@ class SelfcalSummary(object):
                 pol.corr_type_string), reverse=True)[0].corr_type_string
             idx_pol_select = [corr_type_all.index(corr) for corr in corr_type]
             LOG.debug(f'correlation setup - all      : {corr_type_all}')
-            LOG.debug(f'correlation setup - caltable : {corr_type}')            
+            LOG.debug(f'correlation setup - caltable : {corr_type}')
             nflags = []
             nunflagged = []
             fracflagged = []
@@ -332,6 +332,11 @@ class SelfcalSummary(object):
             noise_histogram_plots_path = os.path.join(
                 self.stage_dir, 'sc.'+filenamer.sanitize(tb[0])+'_'+tb[1]+'_noise_plot.png')
 
+            LOG.debug('generating the noise histogram: %s', noise_histogram_plots_path)
+            LOG.debug('rms_initial %s', rms_inital)
+            LOG.debug('rms_final %s', rms_final)
+            LOG.debug('rms_theory %s', rms_theory)
+
             self.create_noise_histogram_plots(
                 n_initial, n_final, intensity_initial, intensity_final, rms_inital, rms_final,
                 noise_histogram_plots_path, rms_theory)
@@ -345,6 +350,7 @@ class SelfcalSummary(object):
     @staticmethod
     @matplotlibrc_formal
     def create_noise_histogram_plots(N_1, N_2, intensity_1, intensity_2, rms_1, rms_2, outfile, rms_theory=0.0):
+        # intensity_1, intensity_2, rms_1, rms_2, and rms_theory, are in mJy/beam
 
         def gaussian_norm(x, mean, sigma):
             gauss_dist = np.exp(-(x-mean)**2/(2*sigma**2))
@@ -354,16 +360,16 @@ class SelfcalSummary(object):
         fig, ax = plt.subplots(figsize=(9.6, 7.2))
         ax.set_yscale('log')
         plt.ylim([0.0001, 2.0])
-        ax.step(intensity_1, N_1/np.max(N_1), label='Initial Data')
-        ax.step(intensity_2, N_2/np.max(N_2), label='Final Data')
-        ax.plot(intensity_1, gaussian_norm(intensity_1, 0, rms_1), label='Initial Gaussian')
-        ax.plot(intensity_2, gaussian_norm(intensity_2, 0, rms_2), label='Final Gaussian')
+        ax.step(intensity_1*1e3, N_1/np.max(N_1), label='Initial Data')
+        ax.step(intensity_2*1e3, N_2/np.max(N_2), label='Final Data')
+        ax.plot(intensity_1*1e3, gaussian_norm(intensity_1, 0, rms_1), label='Initial Gaussian')
+        ax.plot(intensity_2*1e3, gaussian_norm(intensity_2, 0, rms_2), label='Final Gaussian')
         xlim = ax.get_xlim()
         xrange = abs(xlim[1]-xlim[0])
         if rms_theory != 0.0:
             alpha_plot = max(-1.0*9.0*2.0*rms_theory/xrange*0.75 + 1.0, 0.25)
-            x_model = np.arange(xlim[0], xlim[1], abs(intensity_2[1]-intensity_2[0]))
-            ax.fill(x_model, gaussian_norm(x_model, 0, rms_theory),
+            x_model = np.arange(xlim[0], xlim[1], abs(intensity_2[1]-intensity_2[0])*1e3)
+            ax.fill(x_model, gaussian_norm(x_model/1e3, 0, rms_theory),
                     color='gray', label='Theoretical Sensitivity', alpha=alpha_plot)
         ax.legend(fontsize=10)
         ax.set_xlabel('Intensity (mJy/Beam)')
