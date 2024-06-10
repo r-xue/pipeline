@@ -646,7 +646,7 @@ class SelfcalHeuristics(object):
                             LOG.info('****************Attempting amplitude selfcal*************')
                             continue
 
-                        selfcal_library[target][band]['Stop_Reason'] = 'Estimated_SNR_too_low_for_solint '+solints[band][iteration]
+                        selfcal_library[target][band]['Stop_Reason'] = 'Estimated SNR too low for solint='+solints[band][iteration]
                         break
                     else:
                         solint = solints[band][iteration]
