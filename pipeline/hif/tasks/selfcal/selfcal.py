@@ -541,7 +541,7 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         final_scal_target = []
         for scal_target in scal_targets:
-            disable_mosaic = True
+            disable_mosaic = False
             if disable_mosaic and scal_target['is_mosaic']:
                 LOG.warning(
                     'The self-calibration heuristics do not fully support mosaic yet. Skipping target=%r spw=%r.',
