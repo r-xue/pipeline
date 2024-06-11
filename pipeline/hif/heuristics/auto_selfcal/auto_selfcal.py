@@ -217,10 +217,13 @@ class SelfcalHeuristics(object):
                 self.remove_dirs([imagename+ext for ext in image_exts])
             tc_ret = self.cts.tclean(**tclean_args)
 
-        # this step is a workaround a bug in tclean that doesn't always save the model during multiscale clean. See the "Known Issues" section for CASA 5.1.1 on NRAO's website
         if savemodel == 'modelcolumn':
             LOG.info("")
             LOG.info("Running tclean in the prediction-only setting to fill the MS model column.")
+            # A workaround for CAS-14386
+            if 'mosaic' in tclean_args['gridder']:
+                LOG.debug("A parallel model write operation does not work with gridder='mosaic': enforcing parallel=False.")
+                parallel = False
             tclean_args.update({'niter': 0,
                                 'interactive': False,
                                 'nsigma': 0.0,
