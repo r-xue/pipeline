@@ -209,8 +209,13 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
     def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
         """Tclean deconvolver parameter heuristics.
-        See PIPE-679 and CASR-543"""
-        return 'mtmfs'
+        
+        See PIPE-679 and CASR-543
+        """
+        if specmode == 'cube':
+            return 'hogbom'
+        else:
+            return 'mtmfs'
 
     def _get_vla_band(self, spwspec):
         """Get VLA band from spwspec, assuming spwspec from the same band."""
