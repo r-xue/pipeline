@@ -69,7 +69,7 @@ class PriorcalsInputs(vdp.StandardInputs):
         self.apply_antpos = apply_antpos
         self.apply_swpowcal = apply_swpowcal
         if apply_swpowcal:
-            apply_rqcal = False
+            self.apply_rqcal = False
 
     def to_casa_args(self):
         raise NotImplementedError
