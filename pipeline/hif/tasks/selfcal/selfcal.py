@@ -539,13 +539,14 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         final_scal_target = []
         for scal_target in scal_targets:
-            if scal_target['heuristics'].is_mosaic(scal_target['field'], scal_target['intent']):
+            disable_mosaic = True
+            if disable_mosaic and scal_target['is_mosaic']:
                 LOG.warning(
                     'The self-calibration heuristics do not fully support mosaic yet. Skipping target=%r spw=%r.',
                     scal_target['field'],
                     scal_target['spw'])
                 continue
-            if scal_target['heuristics'].is_eph_obj(scal_target['field']):
+            if scal_target['is_eph_obj']:
                 LOG.warning(
                     'The self-calibration heuristics do not fully support ephemeris sources yet. Skipping target=%r spw=%r.',
                     scal_target['field'],
@@ -592,6 +593,8 @@ class Selfcal(basetask.StandardTaskTemplate):
             else:
                 is_representative = False
             scal_target['is_repr_target'] = is_representative
+            scal_target['is_mosaic'] = scal_target['heuristics'].is_mosaic(scal_target['field'], scal_target['intent'])
+            scal_target['is_eph_obj'] = scal_target['heuristics'].is_eph_obj(scal_target['field'])
 
         return scal_targets
 

@@ -17,13 +17,13 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         scores = []
 
-        is_newmode = False
         targets = []
         targets_exception = []          # An exception is triggered during the selfcal-solver execution
         targets_attempt = []            # At least one solint is attempted in the selfcal-solver.
         targets_success = []            # Selfcal is successful and a solution is applied
         targets_improved = []           # Selfcal is applied and the RMS is improved
         targets_unimproved = []         # Selfcal is applied but the RMS is not improved
+        targets_mosaic = []             # Targets observed as mosaic
 
         for target in result.targets:
 
@@ -33,6 +33,8 @@ class SelfcalQAHandler(pqa.QAPlugin):
             band = target['sc_band'].replace('_', ' ')
 
             targets.append((target['field_name'], band))
+            if target.get('is_mosaic', None):
+                targets_mosaic.append((target['field_name'], band))
             if target['sc_exception']:
                 targets_exception.append((target['field_name'], band))
                 continue
@@ -49,9 +51,29 @@ class SelfcalQAHandler(pqa.QAPlugin):
             else:
                 targets_unimproved.append((target['field_name'], band))
 
+        LOG.debug('QA targets: %s', targets)
+        LOG.debug('QA targets_attempt: %s', targets_attempt)
+        LOG.debug('QA targets_success: %s', targets_success)
+        LOG.debug('QA targets_improved: %s', targets_improved)
+        LOG.debug('QA targets_unimproved: %s', targets_unimproved)
+        LOG.debug('QA targets_mosaic: %s', targets_mosaic)
+
         if not targets:
             score = None
             longmsg = 'No self-calibration attempted, modes not supported (e.g. ephemeris targets)'
+            shortmsg = longmsg
+            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
+
+        if targets_mosaic:
+            score = 0.90
+            targets_desc = utils.commafy([name+' / '+band for name, band in targets_mosaic], quotes=False)
+            longmsg = f'A new mode is used during self-calibration for {targets_desc}'
+            shortmsg = longmsg
+            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
+
+        if targets and not targets_exception and not targets_attempt:
+            score = 1.0
+            longmsg = f'No field has sufficient SNR to attempt self-calibration.'
             shortmsg = longmsg
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
@@ -64,8 +86,8 @@ class SelfcalQAHandler(pqa.QAPlugin):
         if targets and len(targets) == len(targets_attempt) and not targets_success:
             # pass
             score = 0.99
-            longmsg = 'No field has sufficient SNR to attempt self-calibration. lomg'
-            shortmsg = 'No field has sufficient SNR to attempt self-calibration. short'
+            longmsg = 'No field has sufficient SNR to attempt self-calibration.'
+            shortmsg = longmsg
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         if targets_success and not targets_unimproved:
@@ -81,12 +103,6 @@ class SelfcalQAHandler(pqa.QAPlugin):
             targets_desc2 = utils.commafy([name+' / '+band for name, band in targets_improved], quotes=False)
             targets_desc3 = utils.commafy([name+' / '+band for name, band in targets_unimproved], quotes=False)
             longmsg = f'Self-calibrations applied for {targets_desc1}. SNR and RMS improved for fields {targets_desc2}. SNR improved but RMS increased by more than 2% not for {targets_desc3}'
-            shortmsg = longmsg
-            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
-
-        if is_newmode:
-            score = 0.90
-            longmsg = 'new mode used during self-calibration: [mosaics / long baseline heuristics]'
             shortmsg = longmsg
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
