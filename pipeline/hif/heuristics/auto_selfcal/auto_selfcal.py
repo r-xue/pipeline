@@ -1025,13 +1025,42 @@ class SelfcalHeuristics(object):
                             vislist[0]][solint]['Beam_major_post'] * selfcal_library[target][band][
                             vislist[0]][solint]['Beam_minor_post']
                         delta_beamarea = (beamarea_post-beamarea_orig)/beamarea_orig
-                        ##
-                        # if S/N improvement, and beamarea is changing by < delta_beam_thresh, accept solutions to main calibration dictionary
-                        # allow to proceed if solint was inf_EB and SNR decrease was less than 2%
-                        ##
-                        if ((post_SNR >= SNR) and (delta_beamarea < self.delta_beam_thresh)) or ((solint == 'inf_EB') and ((post_SNR-SNR)/SNR > -0.02) and (delta_beamarea < self.delta_beam_thresh)):
+
+                        # PIPE-2192: use the updated self-calibration succeeding criteria.
+
+                        # Check if a marginal inf_EB result will attempt inf next; otherwise, fail a marginal inf_EB
+                        marginal_inf_EB_will_attempt_next_solint = (
+                            solint == 'inf_EB'
+                            and delta_beamarea < self.delta_beam_thresh
+                            and (
+                                (-0.02 < (post_SNR - SNR) / SNR < 0.00)
+                                or (-0.02 < (post_SNR_NF - SNR_NF) / SNR_NF < 0.00)
+                            )
+                            and solint_snr[target][band][solints[band][target][iteration+1]] >= self.minsnr_to_proceed
+                        )
+
+                        # Check if RMS change is acceptable
+                        RMS_change_acceptable = (
+                            post_RMS / RMS < 1.05 and post_RMS_NF / RMS_NF < 1.05
+                        ) or (
+                            (post_RMS / RMS > 1.05 or post_RMS_NF / RMS_NF > 1.05)
+                            and solint_snr[target][band][solint] > 5
+                        )
+
+                        # Check overall conditions for self-calibration success
+                        if RMS_change_acceptable and (
+                            (post_SNR >= SNR and post_SNR_NF >= SNR_NF and delta_beamarea < self.delta_beam_thresh)
+                            or (
+                                solint == 'inf_EB'
+                                and marginal_inf_EB_will_attempt_next_solint
+                                and (post_SNR - SNR) / SNR > -0.02
+                                and (post_SNR_NF - SNR_NF) / SNR_NF > -0.02
+                                and delta_beamarea < self.delta_beam_thresh
+                            )
+                        ):
                             selfcal_library[target][band]['SC_success'] = True
                             selfcal_library[target][band]['Stop_Reason'] = 'None'
+
                             # keep track of whether inf_EB had a S/N decrease
                             if solint == 'inf_EB':
                                 if (post_SNR-SNR)/SNR >= 0.0 and (post_SNR_NF - SNR_NF)/SNR_NF >= 0.0:
@@ -1074,13 +1103,19 @@ class SelfcalHeuristics(object):
 
                         else:
 
-                            reason = ''
-                            if (post_SNR <= SNR):
-                                reason = reason+' S/N decrease'
-                            if (delta_beamarea > self.delta_beam_thresh):
-                                if reason != '':
-                                    reason = reason+'; '
-                                reason = reason+'Beam change beyond '+str(self.delta_beam_thresh)
+                            reasons = []
+                            if post_SNR <= SNR:
+                                reasons.append('S/N decrease')
+                            if post_SNR_NF < SNR_NF:
+                                reasons.append('NF S/N decrease')
+                            if delta_beamarea > self.delta_beam_thresh:
+                                reasons.append(f'Beam change beyond {self.delta_beam_thresh}')
+                            if post_RMS / RMS > 1.05 and solint_snr[target][band][solint] <= 5:
+                                reasons.append('RMS increase beyond 5%')
+                            if post_RMS_NF / RMS_NF > 1.05 and solint_snr[target][band][solint] <= 5:
+                                reasons.append('NF RMS increase beyond 5%')
+                            reason = '; '.join(reasons)
+
                             selfcal_library[target][band]['Stop_Reason'] = reason
                             for vis in vislist:
                                 selfcal_library[target][band][vis][solint]['Pass'] = False
