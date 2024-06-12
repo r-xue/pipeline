@@ -64,6 +64,7 @@ class SelfcalHeuristics(object):
         self.field = scal_target['field']
         self.target = utils.dequote(scal_target['field'])
         self.uvrange = scal_target['uvrange']
+        self.reffreq = scal_target['reffreq']
 
         self.n_solints = n_solints
         self.do_amp_selfcal = do_amp_selfcal
@@ -107,8 +108,6 @@ class SelfcalHeuristics(object):
         Wrapper for tclean with keywords set to values desired for the Large Program imaging
         See the CASA 6.1.1 documentation for tclean to get the definitions of all the parameters
         """
-
-        phasecenter = self.phasecenter
 
         LOG.info('NF RMS Multiplier: %r', nfrms_multiplier)
         # Minimize out the nfrms_multiplier at 1.
@@ -200,7 +199,8 @@ class SelfcalHeuristics(object):
                        'uvrange': uvrange,
                        'threshold': threshold,
                        'parallel': parallel,
-                       'phasecenter': phasecenter,
+                       'phasecenter': self.phasecenter,
+                       'reffreq': self.reffreq,
                        'startmodel': startmodel,
                        'datacolumn': datacolumn,
                        'spw': spw,
@@ -420,9 +420,9 @@ class SelfcalHeuristics(object):
                 selfcal_library[target][band]['spw_map'] = get_spw_map(selfcal_library,
                                                                        target, band, self.telescope)
 
-                #code to work around some VLA data not having the same number of spws due to missing BlBPs
-                #selects spwlist from the visibilities with the greates number of spws
-                #PS: We now track spws on an EB by EB basis soI have removed much of the maxspwvis code.
+                # code to work around some VLA data not having the same number of spws due to missing BlBPs
+                # selects spwlist from the visibilities with the greates number of spws
+                # PS: We now track spws on an EB by EB basis soI have removed much of the maxspwvis code.
                 spw_bandwidths_dict = {}
                 spw_effective_bandwidths_dict = {}
                 for vis in selfcal_library[target][band]['vislist']:
@@ -934,7 +934,7 @@ class SelfcalHeuristics(object):
                             nfrms_multiplier=nfsnr_modifier)
 
                         ##
-                        ## Do the assessment of the post- (and pre-) selfcal images.
+                        # Do the assessment of the post- (and pre-) selfcal images.
                         ##
 
                         LOG.info('Pre selfcal assessemnt: '+target)
@@ -966,7 +966,7 @@ class SelfcalHeuristics(object):
                         for vis in vislist:
 
                             ##
-                            ## record self cal results/details for this solint
+                            # record self cal results/details for this solint
                             ##
                             selfcal_library[target][band][vis][solint] = {}
                             selfcal_library[target][band][vis][solint]['SNR_pre'] = SNR.copy()
@@ -1235,7 +1235,7 @@ class SelfcalHeuristics(object):
                         nfsnr_modifier = selfcal_library[target][band]['RMS_NF_curr'] / selfcal_library[target][band]['RMS_curr']
                         sensitivity_agg, sens_bw = self.get_sensitivity()
                         sensitivity_scale_factor = selfcal_library[target][band]['RMS_curr']/sensitivity_agg
-                        
+
                         if selfcal_library[target][band]['SC_success']:
                             self.tclean_wrapper(vislist, sani_target + '_' + band + '_' + spw + '_final', band_properties, band,
                                                 telescope=self.telescope, nsigma=4.0,
@@ -1247,7 +1247,7 @@ class SelfcalHeuristics(object):
                                                 nfrms_multiplier=nfsnr_modifier)
                         else:
                             copy_products(sani_target + '_' + band + '_' + spw + '_initial', sani_target + '_' + band + '_' + spw + '_final')
-                        
+
                         final_per_spw_SNR, final_per_spw_RMS = estimate_SNR(sani_target+'_'+band+'_'+spw+'_final.image.tt0')
                         if self.telescope != 'ACA':
                             final_per_spw_NF_SNR, final_per_spw_NF_RMS = estimate_near_field_SNR(
