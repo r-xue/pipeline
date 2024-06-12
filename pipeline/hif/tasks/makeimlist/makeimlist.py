@@ -1296,6 +1296,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                                                                                    local_selected_datatype_str, target_heuristics)
 
                                 reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
+                                if inputs.specmode == 'cube':
+                                    gridder = target_heuristics.gridder(field_intent[1], field_intent[0])
+                                else:
+                                    # PIPE-1346: only trigger the VLA/spw-band wproject gridder heuristics for non-cube-imaging operations
+                                    gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec)
 
                                 target = CleanTarget(
                                     antenna=antenna,
@@ -1311,7 +1316,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     phasecenter=phasecenters[field_intent[0]],
                                     psf_phasecenter=psf_phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
-                                    gridder=target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec),
+                                    gridder=gridder,
                                     imagename=imagename,
                                     start=inputs.start,
                                     width=widths[(field_intent[0], spwspec)],
