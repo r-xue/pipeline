@@ -119,6 +119,11 @@ class SelfcalHeuristics(object):
             usemask = 'user'
         if threshold != '0.0Jy':
             nsigma = 0.0
+
+        if nsigma != 0.0:
+            if nsigma*nfrms_multiplier*0.66 > nsigma:
+                nsigma = nsigma*nfrms_multiplier*0.66
+
         if telescope == 'ALMA':
             sidelobethreshold = 2.5
             smoothfactor = 1.0
@@ -938,6 +943,7 @@ class SelfcalHeuristics(object):
                         ##
 
                         LOG.info('Pre selfcal assessemnt: '+target)
+
                         SNR, RMS = estimate_SNR(sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'.image.tt0',
                                                 maskname=sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.mask')
                         if self.telescope != 'ACA':
@@ -948,7 +954,6 @@ class SelfcalHeuristics(object):
                             SNR_NF, RMS_NF = SNR, RMS
 
                         LOG.info('Post selfcal assessemnt: '+target)
-                        # copy mask for use in post-selfcal SNR measurement
 
                         post_SNR, post_RMS = estimate_SNR(
                             sani_target+'_'+band+'_'+solint+'_'+str(iteration)+'_post.image.tt0')
@@ -959,12 +964,12 @@ class SelfcalHeuristics(object):
                                 las=selfcal_library[target][band]['LAS'])
                         else:
                             post_SNR_NF, post_RMS_NF = post_SNR, post_RMS
+
                         if selfcal_library[target][band]['nterms'] < 2:
                             # Change nterms to 2 if needed based on fracbw and SNR
                             selfcal_library[target][band]['nterms'] = get_nterms(selfcal_library[target][band]['fracbw'], post_SNR)
 
                         for vis in vislist:
-
                             ##
                             # record self cal results/details for this solint
                             ##
