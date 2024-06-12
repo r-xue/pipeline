@@ -65,7 +65,7 @@ class swpowSummaryChart(object):
 
 
 class swpowPerAntennaChart(object):
-    def __init__(self, context, result, yaxis):
+    def __init__(self, context, result, yaxis, science_scan_ids):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
@@ -80,6 +80,7 @@ class swpowPerAntennaChart(object):
         self.json_filename = os.path.join(context.report_dir,
                                           'stage%s' % result.stage_number,
                                           yaxis + 'swpow-%s.json' % ms)
+        self.science_scan_ids = science_scan_ids
 
     def plot(self):
         context = self.context
@@ -130,7 +131,7 @@ class swpowPerAntennaChart(object):
                                      plotrange=plotrange, coloraxis='',
                                      title='Switched Power  swpow.tbl   Antenna: {!s}'.format(antName),
                                      titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                     xconnector='line')
+                                     xconnector='line', scan=self.science_scan_ids)
 
                     job.execute()
 

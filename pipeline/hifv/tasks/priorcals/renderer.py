@@ -106,6 +106,9 @@ class T2_4MDetailspriorcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             spw[ms] = result.oc_result.spw.split(',')
             center_frequencies[ms] = result.oc_result.center_frequencies
             opacities[ms] = result.oc_result.opacities
+            # PIPE-2184: plot data points only for science scans
+            m = context.observing_run.get_ms(ms)
+            science_scan_ids = ','.join(str(scan.id) for scan in m.scans if not {'SYSTEM_CONFIGURATION', 'UNSPECIFIED#UNSPECIFIED'} & scan.intents)
 
             plotter = opacitiesdisplay.opacitiesSummaryChart(context, result)
             plots = plotter.plot()
@@ -117,7 +120,7 @@ class T2_4MDetailspriorcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             summary_plots[ms] = None
 
             # generate switched power plots and JSON file
-            plotter = swpowdisplay.swpowPerAntennaChart(context, result, 'spgain')
+            plotter = swpowdisplay.swpowPerAntennaChart(context, result, 'spgain', science_scan_ids)
             if result.sw_result.final:
                 plots = plotter.plot()
             else:
@@ -131,7 +134,7 @@ class T2_4MDetailspriorcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 swpowspgain_subpages[ms] = renderer.filename
 
             # generate switched power plots and JSON file
-            plotter = swpowdisplay.swpowPerAntennaChart(context, result, 'tsys')
+            plotter = swpowdisplay.swpowPerAntennaChart(context, result, 'tsys', science_scan_ids)
             if result.sw_result.final:
                 plots = plotter.plot()
             else:
