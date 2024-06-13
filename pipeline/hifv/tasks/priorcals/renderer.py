@@ -108,7 +108,8 @@ class T2_4MDetailspriorcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             opacities[ms] = result.oc_result.opacities
             # PIPE-2184: plot data points only for science scans
             m = context.observing_run.get_ms(ms)
-            science_scan_ids = ','.join(str(scan.id) for scan in m.scans if not {'SYSTEM_CONFIGURATION', 'UNSPECIFIED#UNSPECIFIED'} & scan.intents)
+            science_scan_ids = ','.join(str(scan.id) for scan in m.scans
+                                        if not {'SYSTEM_CONFIGURATION', 'UNSPECIFIED#UNSPECIFIED', 'FOCUS', 'POINTING'} & scan.intents)
 
             plotter = opacitiesdisplay.opacitiesSummaryChart(context, result)
             plots = plotter.plot()

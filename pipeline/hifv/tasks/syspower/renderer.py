@@ -117,7 +117,8 @@ class T2_4MDetailssyspowerRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if result.template_table:
                 # PIPE-2184: plot data points only for science scans
                 m = context.observing_run.get_ms(ms)
-                science_scan_ids = ','.join(str(scan.id) for scan in m.scans if not {'SYSTEM_CONFIGURATION', 'UNSPECIFIED#UNSPECIFIED'} & scan.intents)
+                science_scan_ids = ','.join(str(scan.id) for scan in m.scans
+                                            if not {'SYSTEM_CONFIGURATION', 'UNSPECIFIED#UNSPECIFIED', 'FOCUS', 'POINTING'} & scan.intents)
 
                 for band in result.template_table:
                     plotter = syspowerdisplay.syspowerBoxChart(context, result, result.dat_common[band], band)
