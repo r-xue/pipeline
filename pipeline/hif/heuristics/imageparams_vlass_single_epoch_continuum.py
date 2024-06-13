@@ -179,7 +179,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def pb_correction(self) -> bool:
         return False
 
-    def pblimits(self, pb: Union[None, str]) -> Tuple[float, float]:
+    def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
 
         pblimit_image, pblimit_cleanmask = super().pblimits(pb)
@@ -636,7 +636,7 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
         # Might change to True based on stackholder feedback
         return False
 
-    def pblimits(self, pb: Union[None, str]) -> Tuple[float, float]:
+    def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
         pblimit_image, pblimit_cleanmask = super().pblimits(pb)
 
