@@ -65,7 +65,7 @@ class swpowSummaryChart(object):
 
 
 class swpowPerAntennaChart(object):
-    def __init__(self, context, result, yaxis, science_scan_ids):
+    def __init__(self, context, result, yaxis, science_scan_ids, band, selectbasebands, spw):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
@@ -75,6 +75,9 @@ class swpowPerAntennaChart(object):
             self.caltable = result.sw_result.final[0].gaintable
         else:
             self.caltable = ''
+        self.band = band
+        self.spw = spw
+        self.selectbasebands = selectbasebands
 
         self.json = {}
         self.json_filename = os.path.join(context.report_dir,
@@ -91,10 +94,10 @@ class swpowPerAntennaChart(object):
 
         LOG.info("Plotting swpowcal charts for " + self.yaxis)
         nplots = numAntenna
-
+        antName = ''
         for ii in range(nplots):
 
-            filename = 'swpow_' + self.yaxis + str(ii) + '.png'
+            filename = 'swpow_' + self.yaxis + '_' + str(ii) + '_{!s}'.format(self.band) + '.png'
             antPlot = str(ii)
 
             stage = 'stage%s' % result.stage_number
@@ -125,15 +128,25 @@ class swpowPerAntennaChart(object):
 
                     LOG.debug("Switched Power Plot, using antenna={!s} and spw={!s}".format(antName,
                                                                                             self.result.sw_result.spw))
-
-                    job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
-                                     antenna=antPlot, spw=self.result.sw_result.spw, timerange='',
-                                     plotrange=plotrange, coloraxis='',
-                                     title='Switched Power  swpow.tbl   Antenna: {!s}'.format(antName),
-                                     titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                     xconnector='line', scan=self.science_scan_ids)
-
-                    job.execute()
+                    numspws = len(self.spw.split(','))
+                    pindexlist = list(range(numspws))
+                    cplots = [False for i in pindexlist]
+                    cplots[0] = True
+                    # Extra check for single spw, single baseband SDMs
+                    if numspws == 1:
+                        pindexlist = [0]
+                    for pindex in pindexlist:
+                        spwtouse = str(self.spw.split(',')[pindex])
+                        baseband = self.selectbasebands[pindex]
+                        spwobj = m.get_spectral_windows(task_arg=spwtouse)[0]
+                        mean_freq = spwobj.mean_frequency
+                        job = casa_tasks.plotms(vis=self.caltable, xaxis='time', yaxis=self.yaxis, field='',
+                                                antenna=antPlot, spw=spwtouse, timerange='',
+                                                plotindex=pindex, overwrite=True, gridrows=numspws, gridcols=1, rowindex=pindex,
+                                                plotrange=plotrange, coloraxis='corr', colindex=0, clearplots=cplots[pindex],
+                                                title='Switched Power  swpow.tbl   Antenna: {!s}  {!s}-band {!s} SPW: {!s} Mean Frequency:{!s}'.format(antName, self.band, baseband, spwtouse, mean_freq),
+                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile, scan=self.science_scan_ids)
+                        job.execute()
 
                 except Exception as ex:
                     LOG.warning("Unable to plot " + filename)
@@ -142,10 +155,11 @@ class swpowPerAntennaChart(object):
 
             try:
                 plot = logger.Plot(figfile, x_axis='Time', y_axis=self.yaxis.title(), field='',
-                                   parameters={'spw': '',
+                                   parameters={'spw': self.spw,
                                                'pol': '',
                                                'ant': antName,
                                                'type': self.yaxis,
+                                               'band': self.band,
                                                'file': os.path.basename(figfile)})
                 plots.append(plot)
             except Exception as ex:
