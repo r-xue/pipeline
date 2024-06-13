@@ -27,7 +27,8 @@ def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, appl
     apply_opcal          Apply opacities correction, default True
     apply_rqcal          Apply requantizer gains correction, default True
     apply_antpos         Apply antenna position corrections, default True.
-    apply_swpowcal       Apply switched power table, default False. If set True, turns off the requantizer table
+    apply_swpowcal       Apply switched power table, default False.  If set True,
+                         apply_rqcal is ignored and no requantizer gain correction will be applied.
     swpow_spw            Spectral-window(s) for plotting: "" ==>all, spw="6,14"
     ant_pos_time_limit   Antenna position time limit in days, default to 150 days
     --------- examples -----------------------------------------------------------
