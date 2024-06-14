@@ -604,8 +604,7 @@ class Tclean(cleanbase.CleanBase):
         # Determine the optimal reffreq from the sensitivity-weighted spw center frequency
         # This is only triggered if the reffreq is not specified in the Tclean/input (therefore from MakeImList or Editimlist)
         # and the deconvolver is mtmfs.
-        sens_reffreq = None
-        if inputs.reffreq is None and sens_reffreq is not None and inputs.deconvolver == 'mtmfs':
+        if inputs.reffreq is None and sens_reffreq is not None and inputs.deconvolver == 'mtmfs' and inputs.specmode == 'cont':
             inputs.reffreq = f'{sens_reffreq/1e9}Hz'
 
         # Choose TOPO frequency selections
