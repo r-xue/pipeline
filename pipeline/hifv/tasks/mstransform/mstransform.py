@@ -112,11 +112,11 @@ class VlaMstransform(mst.Mstransform):
             LOG.warning(f"Caught mstransform exception: {ee}")
 
         # Save flags from line MS without rfi flagging
-        task = casa_tasks.flagmanager(vis=outputvis_for_line, mode='save', versionname='before_rflag_statwt')
+        task = casa_tasks.flagmanager(vis=inputs.outputvis_for_line, mode='save', versionname='before_rflag_statwt')
         self._executor.execute(task)
 
         # Copy across requisite XML files.
-        mst.Mstransform._copy_xml_files(inputs.vis, outputvis_for_line)
+        mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis_for_line)
 
         # Restore RFI flags to main MS
         #task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='rfi_flagged_statwt')
