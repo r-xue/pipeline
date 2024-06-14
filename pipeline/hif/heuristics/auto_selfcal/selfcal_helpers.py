@@ -123,9 +123,9 @@ def fetch_scan_times(vislist, targets):
             integrationsdict[vis][target] = integrations.copy()
         msmd.close()
     if np.mean(n_spws) != np.max(n_spws):
-        LOG.warning('Inconsistent number of spws in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
+        LOG.debug('Inconsistent number of spws in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
     if np.max(min_spws) != np.min(min_spws):
-        LOG.warning('Inconsistent minimum spwid in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
+        LOG.debug('Inconsistent minimum spwid in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
     for vis in vislist:
         spwslist_dict[vis] = np.unique(spwslist_dict[vis]).astype(int)
     # jump through some hoops to get the dictionary that has spws per scan into a dictionary of unique
