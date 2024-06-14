@@ -71,7 +71,7 @@ class VlaMstransform(mst.Mstransform):
 
         # Create the results structure
         result = VlaMstransformResults(vis=inputs.vis, outputvis=inputs.outputvis,
-                                       outputvis_for_line=outputvis_for_line)
+                                       outputvis_for_line=inputs.outputvis_for_line)
 
         # Run CASA task to create the output MS for continuum data
         mstransform_args = inputs.to_casa_args()
