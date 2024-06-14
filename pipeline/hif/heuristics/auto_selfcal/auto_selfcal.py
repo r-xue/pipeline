@@ -353,6 +353,7 @@ class SelfcalHeuristics(object):
                 else:
                     dirty_NF_SNR, dirty_NF_RMS = dirty_SNR, dirty_RMS
                 dr_mod = 1.0
+
                 if self.telescope == 'ALMA' or self.telescope == 'ACA':
                     sensitivity = get_sensitivity(
                         vislist, selfcal_library[target][band], target,
@@ -364,6 +365,9 @@ class SelfcalHeuristics(object):
                     # note: sensitivity here is numpy.float64 and .copy() is allowed.
                     sensitivity_nomod = sensitivity.copy()
                     LOG.info(f'DR modifier: {dr_mod}')
+                else:
+                    sensitivity_vla, sens_bw_vla, self.reffreq = self.get_sensitivity()
+                
                 if os.path.exists(sani_target+'_'+band+'_initial.image.tt0'):
                     self.cts.rmtree(sani_target+'_'+band+'_initial.image.tt0')
                 if self.telescope == 'ALMA' or self.telescope == 'ACA':
@@ -393,7 +397,8 @@ class SelfcalHeuristics(object):
                     selfcal_library[target][band]['theoretical_sensitivity'] = sensitivity_nomod
                     selfcal_library[target][band]['clean_threshold_orig'] = sensitivity*4.0
                 if 'VLA' in self.telescope:
-                    selfcal_library[target][band]['theoretical_sensitivity'] = -99.0
+                    # selfcal_library[target][band]['theoretical_sensitivity'] = -99.0
+                    selfcal_library[target][band]['theoretical_sensitivity'] = sensitivity_vla
                     if initial_tclean_return is not None and initial_tclean_return['iterdone'] > 0:
                         selfcal_library[target][band]['clean_threshold_orig'] = initial_tclean_return['summaryminor'][0][0][0]['peakRes'][-1]
                     else:

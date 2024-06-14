@@ -218,9 +218,9 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
 
     if len(n_spws) > 0:
         if np.mean(n_spws) != np.max(n_spws):
-            LOG.warning('Inconsistent number of spws in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
+            LOG.debug('Inconsistent number of spws in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
         if np.max(min_spws) != np.min(min_spws):
-            LOG.warning('Inconsistent minimum spwid in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
+            LOG.debug('Inconsistent minimum spwid in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
         spwslist = np.unique(spwslist).astype(int)
     else:
         return scantimesdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, integrationtimes, -99, -99, spwslist, spws_set_dict, mosaic_field
