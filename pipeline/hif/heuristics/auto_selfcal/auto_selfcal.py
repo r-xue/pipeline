@@ -5,6 +5,7 @@ see: https://github.com/jjtobin/auto_selfcal
 
 import glob
 import os
+import fnmatch
 
 import numpy as np
 import pipeline.infrastructure as infrastructure
@@ -276,17 +277,25 @@ class SelfcalHeuristics(object):
             LOG.info("%s does not exist", old_dirname)
 
     def get_sensitivity(self, spw=None):
+        """Calculate sensitivty from the Pipeline standard imaging heuristics."""
         if spw is None:
             spw = self.spw_virtual
 
+        def custom_filter(record):
+            return not fnmatch.fnmatch(record.getMessage(), '*channel bandwidths ratio*')
+
         gridder = self.image_heuristics.gridder('TARGET', self.field)
         # PIPE-1827: filter out the "channel bandwidths ratio" warning messages during sensitivity calculations.
-        with logging.log_level('pipeline.hif.heuristics.imageparams_base', logging.WARNING+1):
-            sensitivity, eff_ch_bw, sens_bw, known_per_spw_cont_sensitivities_all_chan = self.image_heuristics.calc_sensitivities(
+        with logging.log_level('pipeline.hif.heuristics.imageparams_base', level=None, filter=custom_filter):
+            sensitivity, eff_ch_bw, sens_bw, sens_reffreq, known_per_spw_cont_sensitivities_all_chan = self.image_heuristics.calc_sensitivities(
                 self.vislist, self.field, 'TARGET', spw, -1, {},
                 'cont', gridder, self.cellsize, self.imsize, 'briggs', self.robust, self.uvtaper, True, {},
-                False)
-        return sensitivity[0], sens_bw[0]
+                False, calc_reffreq=True)
+        # Note: sensitivity and sens_bw are expected to be one-elements Numpy arrays.
+        sensitivity = sensitivity[0]
+        sens_bw = sens_bw[0]
+
+        return sensitivity, sens_bw, sens_reffreq
 
     def get_dr_correction(self):
         raise NotImplementedError(f'{self.__class__.__name__}.get_dr_correction() is not implemented yet!')
@@ -350,8 +359,9 @@ class SelfcalHeuristics(object):
                         virtual_spw='all',
                         imsize=imsize[0],
                         cellsize=cellsize[0])
-                    sensitivity, sens_bw = self.get_sensitivity()
+                    sensitivity, sens_bw, sens_reffreq = self.get_sensitivity()
                     dr_mod = get_dr_correction(self.telescope, dirty_SNR*dirty_RMS, sensitivity, vislist)
+                    # note: sensitivity here is numpy.float64 and .copy() is allowed.
                     sensitivity_nomod = sensitivity.copy()
                     LOG.info(f'DR modifier: {dr_mod}')
                 if os.path.exists(sani_target+'_'+band+'_initial.image.tt0'):
@@ -487,7 +497,7 @@ class SelfcalHeuristics(object):
                                     virtual_spw=spw,
                                     imsize=imsize[0],
                                     cellsize=cellsize[0])
-                                sensitivity, sens_bw = self.get_sensitivity(spw=spw)
+                                sensitivity, sens_bw, sens_reffreq = self.get_sensitivity(spw=spw)
                                 dr_mod = get_dr_correction(self.telescope, dirty_per_spw_SNR*dirty_per_spw_RMS, sensitivity, vislist)
                                 LOG.info(f'DR modifier: {dr_mod}  SPW: {spw}')
                                 sensitivity = sensitivity*dr_mod
@@ -605,7 +615,7 @@ class SelfcalHeuristics(object):
                         virtual_spw='all',
                         imsize=imsize[0],
                         cellsize=cellsize[0])
-                    sensitivity, sens_bw = self.get_sensitivity()
+                    sensitivity, sens_bw, sens_reffeq = self.get_sensitivity()
                     if band == 'Band_9' or band == 'Band_10':   # adjust for DSB noise increase
                         sensitivity = sensitivity*4.0
                     if ('VLA' in self.telescope):
@@ -1257,7 +1267,7 @@ class SelfcalHeuristics(object):
                                 virtual_spw=spw,
                                 imsize=imsize[0],
                                 cellsize=cellsize[0])
-                            sensitivity, sens_bw = self.get_sensitivity(spw=spw)
+                            sensitivity, sens_bw, sens_reffreq = self.get_sensitivity(spw=spw)
                             dr_mod = 1.0
                             # fetch the DR modifier if selfcal failed on source
                             if not selfcal_library[target][band]['SC_success']:
@@ -1273,7 +1283,7 @@ class SelfcalHeuristics(object):
                             sensitivity = 0.0
                         spws_per_vis = self.image_heuristics.observing_run.get_real_spwsel([spw]*len(vislist), vislist)
                         nfsnr_modifier = selfcal_library[target][band]['RMS_NF_curr'] / selfcal_library[target][band]['RMS_curr']
-                        sensitivity_agg, sens_bw = self.get_sensitivity()
+                        sensitivity_agg, sens_bw, sens_reffreq = self.get_sensitivity()
                         sensitivity_scale_factor = selfcal_library[target][band]['RMS_curr']/sensitivity_agg
 
                         if selfcal_library[target][band]['SC_success']:

@@ -575,19 +575,20 @@ class Tclean(cleanbase.CleanBase):
             self.cont_freq_ranges = ''
 
         # Get sensitivity
+        sens_reffreq = None
         if inputs.sensitivity is not None:
             # Override with manually set value
             sensitivity = qaTool.convert(inputs.sensitivity, 'Jy')['value']
             eff_ch_bw = 1.0
         else:
             # Get a noise estimate from the CASA sensitivity calculator
-            (sensitivity, eff_ch_bw, _, per_spw_cont_sensitivities_all_chan) = \
+            (sensitivity, eff_ch_bw, _, sens_reffreq, per_spw_cont_sensitivities_all_chan) = \
                 self.image_heuristics.calc_sensitivities(inputs.vis, inputs.field, inputs.intent, inputs.spw,
                                                          inputs.nbin, spw_topo_chan_param_dict, inputs.specmode,
                                                          inputs.gridder, inputs.cell, inputs.imsize, inputs.weighting,
                                                          inputs.robust, inputs.uvtaper,
                                                          known_sensitivities=per_spw_cont_sensitivities_all_chan,
-                                                         force_calc=inputs.calcsb)
+                                                         force_calc=inputs.calcsb, calc_reffreq=True)
 
         if sensitivity is None:
             LOG.error('Could not calculate the sensitivity for Field %s Intent %s SPW %s' % (inputs.field,
@@ -599,6 +600,13 @@ class Tclean(cleanbase.CleanBase):
                                         specmode=inputs.specmode)
             error_result.error = '%s/%s/spw%s clean error: no sensitivity' % (inputs.field, inputs.intent, inputs.spw)
             return error_result
+
+        # Determine the optimal reffreq from the sensitivity-weighted spw center frequency
+        # This is only triggered if the reffreq is not specified in the Tclean/input (therefore from MakeImList or Editimlist)
+        # and the deconvolver is mtmfs.
+        sens_reffreq = None
+        if inputs.reffreq is None and sens_reffreq is not None and inputs.deconvolver == 'mtmfs':
+            inputs.reffreq = f'{sens_reffreq/1e9}Hz'
 
         # Choose TOPO frequency selections
         if inputs.specmode != 'cube':
