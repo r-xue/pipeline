@@ -1,11 +1,12 @@
 import re
-import numpy as np
+from typing import List, Optional
 
-from typing import List, Union, Optional
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
+
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
@@ -479,8 +480,8 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return True
 
-    def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
-        """Tclean reffreq parameter heuristics."""
+    def reffreq(self, deconvolver: Optional[str] = None, specmode: Optional[str] = None, spwsel: Optional[dict] = None) -> Optional[str]:
+        """PIPE-1838: Tclean reffreq parameter heuristics."""
 
         if deconvolver != 'mtmfs' or specmode != 'cont':
             return None
@@ -495,17 +496,19 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         d_sum = 0.0
         p = re.compile(r'([\d.]*\s*)(~\s*)([\d.]*\s*)([A-Za-z]*\s*)(;?)')
         freqRangeFound = False
-        for spwsel_v in spwsel.values():
+        for spwsel_k, spwsel_v in spwsel.items():
             try:
                 if spwsel_v not in ('', 'NONE'):
                     freq_ranges, frame = spwsel_v.rsplit(' ', maxsplit=1)
                     freqRangeFound = True
                     freq_intervals = p.findall(freq_ranges)
+                    LOG.debug('ALMA reffreq heuristics: spwsel - key:value - %s:%s', spwsel_k, spwsel_v)
                     for freq_interval in freq_intervals:
                         f_low = qaTool.quantity(float(freq_interval[0]), freq_interval[3])
                         f_low_v = float(qaTool.getvalue(qaTool.convert(f_low, 'GHz')))
                         f_high = qaTool.quantity(float(freq_interval[2]), freq_interval[3])
                         f_high_v = float(qaTool.getvalue(qaTool.convert(f_high, 'GHz')))
+                        LOG.debug('ALMA reffreq heuristics: aggregating interval: f_low_v / f_high_v: %s / %s GHz', f_low_v, f_high_v)
                         n_sum += f_high_v**2-f_low_v**2
                         d_sum += f_high_v-f_low_v
             except:
