@@ -1,10 +1,11 @@
 """QA score module for selfcal task."""
 import collections
+
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
-from . import selfcal
 
+from . import selfcal
 
 LOG = logging.get_logger(__name__)
 
@@ -27,9 +28,6 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         for target in result.targets:
 
-            slib = target['sc_lib']
-            vislist = slib['vislist']
-            solints = target['sc_solints']
             band = target['sc_band'].replace('_', ' ')
 
             targets.append((target['field_name'], band))
@@ -38,6 +36,10 @@ class SelfcalQAHandler(pqa.QAPlugin):
             if target['sc_exception']:
                 targets_exception.append((target['field_name'], band))
                 continue
+            # if the worker exception happens, the 'sc_lib' key will not exist in target.
+            slib = target['sc_lib']
+            vislist = slib['vislist']
+            solints = target['sc_solints']
             if not set(solints).isdisjoint(slib[vislist[-1]].keys()):
                 targets_attempt.append((target['field_name'], band))
             else:
