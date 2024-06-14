@@ -1046,7 +1046,7 @@ class SelfcalHeuristics(object):
                                 (-0.02 < (post_SNR - SNR) / SNR < 0.00)
                                 or (-0.02 < (post_SNR_NF - SNR_NF) / SNR_NF < 0.00)
                             )
-                            and solint_snr[target][band][solints[band][target][iteration+1]] >= self.minsnr_to_proceed
+                            and solint_snr[target][band][solints[band][iteration+1]] >= self.minsnr_to_proceed
                         )
 
                         # Check if RMS change is acceptable
