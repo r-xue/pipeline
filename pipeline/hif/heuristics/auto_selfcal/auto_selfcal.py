@@ -65,6 +65,7 @@ class SelfcalHeuristics(object):
         self.field = scal_target['field']
         self.target = utils.dequote(scal_target['field'])
         self.uvrange = scal_target['uvrange']
+        # Note: scal_target['reffreq'] is either None or a frequency (in GHz) string representation
         self.reffreq = scal_target['reffreq']
 
         self.n_solints = n_solints
@@ -294,6 +295,7 @@ class SelfcalHeuristics(object):
         # Note: sensitivity and sens_bw are expected to be one-elements Numpy arrays.
         sensitivity = sensitivity[0]
         sens_bw = sens_bw[0]
+        sens_reffreq = f'{sens_reffreq/1e9}GHz'
 
         return sensitivity, sens_bw, sens_reffreq
 
