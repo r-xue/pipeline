@@ -62,15 +62,17 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         if not targets:
             score = None
-            longmsg = 'No self-calibration attempted, modes not supported (e.g. ephemeris targets)'
+            longmsg = 'No self-calibration attempted, modes not supported (e.g. ephemeris targets).'
             shortmsg = longmsg
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         if targets_mosaic:
             score = 0.90
             targets_desc = utils.commafy([name+' / '+band for name, band in targets_mosaic], quotes=False)
-            longmsg = f'A new mode is used during self-calibration for {targets_desc}'
-            shortmsg = longmsg
+            longmsg = f'A new mode is used during self-calibration for {targets_desc}.'
+            n_field = len(targets_mosaic)
+            s_field = 'target field' if n_field == 1 else 'target fields'
+            shortmsg = f'A new mode is used during self-calibration for {n_field} {s_field}.'
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         if targets and not targets_exception and not targets_attempt:
@@ -81,8 +83,11 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         if targets_exception:
             score = 0.8
-            longmsg = f'An exception is triggered when resolving self-calibration solutions: {targets_exception}'
-            shortmsg = longmsg
+            targets_desc = utils.commafy([name+' / '+band for name, band in targets_exception], quotes=False)
+            longmsg = f'An exception is triggered when resolving self-calibration solutions for {targets_desc}.'
+            n_field = len(targets_exception)
+            s_field = 'target field' if n_field == 1 else 'target fields'
+            shortmsg = f'An exception is triggered when resolving self-calibration solutions for {n_field} {s_field}.'
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         if targets and len(targets) == len(targets_attempt) and not targets_success:
@@ -96,7 +101,9 @@ class SelfcalQAHandler(pqa.QAPlugin):
             score = 0.98
             targets_desc = utils.commafy([name+' / '+band for name, band in targets_improved], quotes=False)
             longmsg = f'Self-calibrations applied for {targets_desc}.'
-            shortmsg = longmsg
+            n_field = len(targets_improved)
+            s_field = 'target field' if n_field == 1 else 'target fields'
+            shortmsg = f'Self-calibrations applied for {n_field} {s_field}.'
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         if targets_success and targets_unimproved:
@@ -104,8 +111,14 @@ class SelfcalQAHandler(pqa.QAPlugin):
             targets_desc1 = utils.commafy([name+' / '+band for name, band in targets_success], quotes=False)
             targets_desc2 = utils.commafy([name+' / '+band for name, band in targets_improved], quotes=False)
             targets_desc3 = utils.commafy([name+' / '+band for name, band in targets_unimproved], quotes=False)
-            longmsg = f'Self-calibrations applied for {targets_desc1}. SNR and RMS improved for fields {targets_desc2}. SNR improved but RMS increased by more than 2% not for {targets_desc3}'
-            shortmsg = longmsg
+            n_field1 = len(targets_success)
+            s_field1 = 'target field' if n_field1 == 1 else 'target fields'
+            n_field2 = len(targets_improved)
+            s_field2 = 'target field' if n_field2 == 1 else 'target fields'
+            n_field3 = len(targets_unimproved)
+            s_field3 = 'target field' if n_field3 == 1 else 'target fields'
+            longmsg = f'Self-calibrations applied for {targets_desc1}. SNR and RMS improved for {targets_desc2}. SNR improved but RMS increased by more than 2% not for {targets_desc3}'
+            shortmsg = f'Self-calibrations applied for {n_field1} {s_field1}. SNR and RMS improved for {n_field2} {s_field2}. SNR improved but RMS increased by more than 2% not for {n_field3} {s_field3}.'
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         result.qa.pool[:] = scores
