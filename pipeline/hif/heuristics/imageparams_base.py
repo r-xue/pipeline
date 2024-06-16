@@ -1,17 +1,20 @@
 import collections
 import copy
+import fnmatch
 import math
 import operator
 import os.path
 import re
 import shutil
 import uuid
-from typing import Union
+from typing import List, Union, Optional
 
+import astropy.units as u
 import numpy as np
-
+from astropy.coordinates import SkyCoord
 from casatasks.private.imagerhelpers.imager_base import PySynthesisImager
-from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
+from casatasks.private.imagerhelpers.imager_parallel_continuum import \
+    PyParallelContSynthesisImager
 from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
 
 import pipeline.domain.measures as measures
@@ -22,6 +25,8 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 from pipeline.hif.heuristics import mosaicoverlap
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils.conversion import (phasecenter_to_skycoord,
+                                                      refcode_to_skyframe)
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -146,7 +151,7 @@ class ImageParamsHeuristics(object):
                 cont_ranges_spwsel[source_name] = {}
                 all_continuum_spwsel[source_name] = {}
                 for spwid in self.spwids:
-                    cont_ranges_spwsel[source_name][str(spwid)] = ''
+                    cont_ranges_spwsel[source_name][str(spwid)] = 'NONE'
                     all_continuum_spwsel[source_name][str(spwid)] = False
 
         contfile = self.contfile if self.contfile is not None else ''
@@ -496,8 +501,12 @@ class ImageParamsHeuristics(object):
                         if self.is_eph_obj(field):
                             phasecenter = 'TRACKFIELD'
                         else:
-                            phasecenter = self.phasecenter(field_ids, vislist=valid_vis_list, shift_to_nearest_field=shift,
-                                                           primary_beam=largest_primary_beam_size, intent=intent)
+                            # Note that the local phasecenter variable is intentionally set to the
+                            # second return parameter which is psf_phasecenter. In case "shift" is
+                            # True this may be a different coordinate of the mosaic pointing closest
+                            # to the original phase center value.
+                            _, phasecenter = self.phasecenter(field_ids, vislist=valid_vis_list, shift_to_nearest_field=shift,
+                                                              primary_beam=largest_primary_beam_size, intent=intent)
                         do_parallel = mpihelpers.parse_mpi_input_parameter(parallel)
                         paramList = ImagerParameters(msname=valid_vis_list,
                                                      scan=valid_scanids_list,
@@ -687,6 +696,13 @@ class ImageParamsHeuristics(object):
         cme = casa_tools.measures
         cqa = casa_tools.quanta
 
+        # Return None for each return value if no fields are input
+        if len(fields) == 1 and fields[0] == '':
+            if centreonly:
+                return None, None
+            else:
+                return None, None, None, None
+
         if vislist is None:
             vislist = self.vislist
 
@@ -801,8 +817,10 @@ class ImageParamsHeuristics(object):
 
         center = cme.direction(ref, m0, m1)
         phase_center = '%s %s %s' % (ref, m0, m1)
+        psf_phase_center = phase_center
 
-        # if the image center is outside of the mosaic pointings, shift to the nearest field
+        # If the image center is outside of the mosaic pointings, calculate a PSF phase center
+        # pointing to the nearest field. Both the actual and the PSF phase centers are returned.
         if shift_to_nearest_field:
             nearest_field_to_center = self.center_field_ids(vislist, field_names[0], intent, phase_center)[0]
             ms = self.observing_run.get_ms(name=vislist[0])
@@ -811,7 +829,7 @@ class ImageParamsHeuristics(object):
                 pb_dist = 0.408
                 if cqa.getvalue(cqa.convert(cme.separation(center, nearest), 'arcsec'))[0] > pb_dist * primary_beam:
                     LOG.info('The nearest pointing is > {pb_dist}pb away from image center.  '
-                             'Shifting the phase center to the '
+                             'Shifting the PSF phase center to the '
                              'nearest field (id = {nf})'.format(pb_dist=pb_dist, nf=nearest_field_to_center))
                     LOG.info('Old phasecenter: {}'.format(phase_center))
                     # convert to strings (CASA 4.0 returns as list for some reason hence 0 index)
@@ -822,19 +840,16 @@ class ImageParamsHeuristics(object):
                     else:
                         m0 = cqa.angle(m0, prec=9)[0]
                     m1 = cqa.angle(m1, prec=9)[0]
-                    phase_center = '%s %s %s' % (ref, m0, m1)
-                    LOG.info('New phasecenter: {}'.format(phase_center))
-                    LOG.warning('Source {src} is an odd-shaped mosaic -- there is no mosaic field at the image '
-                                'phasecenter and imaging is likely to fail. The phasecenter of nearest pointing to '
-                                'the image center is {pc}'.format(src=field_names[0], pc=phase_center))
+                    psf_phase_center = '%s %s %s' % (ref, m0, m1)
+                    LOG.info('New PSF phasecenter: {}'.format(phase_center))
             else:
-                LOG.warning('No primary beam supplied.  Will not attempt to shift phasecenter to '
+                LOG.warning('No primary beam supplied.  Will not attempt to shift PSF phasecenter to '
                             'nearest field w/o a primary beam distance check.')
 
         if centreonly:
-            return phase_center
+            return phase_center, psf_phase_center
         else:
-            return phase_center, xspread, yspread
+            return phase_center, psf_phase_center, xspread, yspread
 
     def field(self, intent, field, exclude_intent=None, vislist=None):
 
@@ -875,6 +890,64 @@ class ImageParamsHeuristics(object):
             field_str_list.append(field_string)
 
         return field_str_list
+
+    def select_fields(self, intent='TARGET', name=None, phasecenter=None, offsets=None):
+        """Select fields id based on intent, field name, or separation constrains from the phasecenter
+
+        This method selects fields based on the following search rules:
+            intent: restrict the search by the field intent
+            name: restrict the search id by the field name.
+            phasecenter, offsets: restrict the search area in an on-sky box centered around phasecenter
+
+        Args:
+            intent (str, optional): intent string. Defaults to 'TARGET'.
+            name (str, optional): name string, which could be a wildcard like '1*,2*,0*' Defaults to None.
+            phasecenter (str, optional): center of the search box. Defaults to None.
+            offsets (optional): sky offsets search limits along the longitude/ latitude direction in the reference frame. 
+                Defaults to None.
+
+        Returns:
+            list: a list; each element is the selected field id list per measurement sets.
+        """
+
+        fields_list = []
+
+        for vis in self.vislist:
+            ms = self.observing_run.get_ms(name=vis)
+            fields = list(ms.fields)
+            select = np.full(len(fields), True)
+
+            if isinstance(intent, str) and intent not in ('', '*'):
+                intent_set = intent.split(',')
+                select = select & np.array([not field.intents.isdisjoint(intent_set) for field in fields])
+
+            if isinstance(name, str) and name not in ('', '*'):
+                name_pats = name.split(',')
+                select = select & np.array([any([fnmatch.fnmatch(field.name, name_pat) for name_pat in name_pats]) for field in fields])
+
+            if isinstance(phasecenter, str):
+
+                coord_phasecenter = phasecenter_to_skycoord(phasecenter)
+                frame = refcode_to_skyframe(fields[0].frame)
+                coord_phasecenter = coord_phasecenter.transform_to(frame)
+
+                coords = SkyCoord(
+                    [field.longitude['value'] for field in fields],
+                    [field.latitude['value'] for field in fields],
+                    frame=frame,
+                    unit=(fields[0].longitude['unit'], fields[0].latitude['unit']))
+                dra, ddec = coord_phasecenter.spherical_offsets_to(coords)
+                if not isinstance(offsets, (list, tuple)):
+                    offsets_limit = (offsets, offsets)
+                else:
+                    offsets_limit = offsets
+                LOG.info('Searching for fields within the maximum sky offsets of %s from %s .', offsets_limit, phasecenter)
+                select = select & (np.abs(dra) < u.Quantity(offsets_limit[0])) & (np.abs(ddec) < u.Quantity(offsets_limit[1]))
+
+            LOG.info('Found %s of %s fields out meeting the selection rule(s) in %s', select.sum(), select.size, os.path.basename(vis))
+            fields_list.append([field.id for idx, field in enumerate(fields) if select[idx]])
+
+        return fields_list
 
     def _is_mosaic(self, field_str_list):
         """Determine if it's a mosaic or not.
@@ -957,7 +1030,20 @@ class ImageParamsHeuristics(object):
                 max_frequency_Hz = float(spw.max_frequency.convert_to(measures.FrequencyUnits.HERTZ).value)
                 spw_frequency_ranges.append([min_frequency_Hz, max_frequency_Hz])
             except Exception as e:
-                LOG.warn(f'Could not determine aggregate bandwidth frequency range for spw {spwid}. Exception: {str(e)}')
+                # The warning message should only be logged if not in ALMA B2B mode (PIPE-832).
+                # Eventually, the "aggregrate_bandwidth" method should not even be called for
+                # spws that do not have data for a given field. This requires more elaborate
+                # refactoring of standard science spws given to the heuristics and in particular
+                # to the "representative_target" method.
+                try:
+                    # One can not try the above "ms" object as it will be undefined when checking
+                    # LF spws. So here just trying the first in the list.
+                    checkMS = self.observing_run.get_ms(self.vislist[0])
+                    b2bMode = checkMS.is_band_to_band
+                except:
+                    b2bMode = False
+                if not b2bMode:
+                    LOG.warn(f'Could not determine aggregate bandwidth frequency range for spw {spwid}. Exception: {str(e)}')
 
         aggregate_bandwidth_Hz = np.sum([r[1] - r[0] for r in utils.merge_ranges(spw_frequency_ranges)])
 
@@ -1081,7 +1167,7 @@ class ImageParamsHeuristics(object):
         if centreonly:
             xspread = yspread = 0.0
         else:
-            ignore, xspread, yspread = self.phasecenter(fields, centreonly=centreonly, vislist=vislist)
+            _, _, xspread, yspread = self.phasecenter(fields, centreonly=centreonly, vislist=vislist)
 
         cqa = casa_tools.quanta
         csu = casa_tools.synthesisutils
@@ -1687,9 +1773,10 @@ class ImageParamsHeuristics(object):
             approximateEffectiveBW = (nchan + 1.12 * (spwchan - nchan) / spwchan / N_smooth) * float(physicalBW_of_1chan)
             SCF = (optimisticBW / approximateEffectiveBW) ** 0.5
         else:
+            approximateEffectiveBW = nchan * float(physicalBW_of_1chan)
             SCF = 1.0
 
-        return SCF, physicalBW_of_1chan, effectiveBW_of_1chan
+        return SCF, physicalBW_of_1chan, effectiveBW_of_1chan, approximateEffectiveBW
 
     def calc_sensitivities(self, vis, field, intent, spw, nbin, spw_topo_chan_param_dict, specmode, gridder, cell, imsize, weighting, robust, uvtaper, center_only=False, known_sensitivities={}, force_calc=False):
         """Compute sensitivity estimate using CASA."""
@@ -1709,7 +1796,7 @@ class ImageParamsHeuristics(object):
         sens_bws = {}
 
         field_ids = self.field(intent, field, vislist=vis)  # list of strings with comma separated IDs per MS
-        phasecenter = self.phasecenter(field_ids, vislist=vis)  # string
+        phasecenter, _ = self.phasecenter(field_ids, vislist=vis)  # string
         center_field_ids = self.center_field_ids(vis, field, intent, phasecenter)  # list of integer IDs per MS
 
         for ms_index, msname in enumerate(vis):
@@ -1814,7 +1901,7 @@ class ImageParamsHeuristics(object):
                         chansel_corrected_center_field_sensitivity = center_field_full_spw_sensitivity
 
                     # Correct for effective bandwidth effects
-                    bw_corr_factor, physicalBW_of_1chan, effectiveBW_of_1chan = self.get_bw_corr_factor(ms, intSpw, nchan_sel)
+                    bw_corr_factor, physicalBW_of_1chan, effectiveBW_of_1chan, _ = self.get_bw_corr_factor(ms, intSpw, nchan_sel)
                     center_field_sensitivity = chansel_corrected_center_field_sensitivity * bw_corr_factor
                     if bw_corr_factor != 1.0:
                         LOG.info('Effective BW heuristic: Correcting sensitivity for EB %s Field %s SPW %s by %.3g from %.3g Jy/beam to %.3g Jy/beam' % (os.path.basename(msname).replace('.ms', ''), field, str(intSpw), bw_corr_factor, chansel_corrected_center_field_sensitivity, center_field_sensitivity))
@@ -1925,7 +2012,7 @@ class ImageParamsHeuristics(object):
                 cstart, cstop = list(map(int, chanrange.split('~')))
                 nchan = cstop - cstart + 1
 
-                SCF, physicalBW_of_1chan, effectiveBW_of_1chan = self.get_bw_corr_factor(ms_do, spw, nchan)
+                SCF, physicalBW_of_1chan, effectiveBW_of_1chan, _ = self.get_bw_corr_factor(ms_do, spw, nchan)
                 sens_bw += nchan * physicalBW_of_1chan
 
                 chansel_sensitivities.append(apparentsens_value)
@@ -2011,8 +2098,8 @@ class ImageParamsHeuristics(object):
             ms_do = self.observing_run.get_ms(msname)
             min_diameter = min(min_diameter, min([antenna.diameter for antenna in ms_do.antennas]))
             percentileBaselineLengths.append(
-                np.percentile([float(baseline.length.to_units(measures.DistanceUnits.METRE))
-                               for baseline in ms_do.antenna_array.baselines], percentile))
+                np.percentile(ms_do.antenna_array.baselines_m, percentile)
+            )
 
         return np.median(percentileBaselineLengths), min_diameter
 
@@ -2052,6 +2139,9 @@ class ImageParamsHeuristics(object):
     def cycleniter(self, iteration):
         return None
 
+    def nmajor(self, iteration):
+        return None
+
     def scales(self, iteration=None):
         return None
 
@@ -2061,7 +2151,7 @@ class ImageParamsHeuristics(object):
     def uvrange(self, field=None, spwspec=None):
         return None, None
 
-    def reffreq(self):
+    def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         return None
 
     def restfreq(self):
@@ -2111,6 +2201,12 @@ class ImageParamsHeuristics(object):
                                                            if antenna.diameter == majority_diameter]
 
         return majority_antenna_ids
+
+    def arrays(self, vislist: Optional[List[str]] = None) -> str:
+
+        """Return the array descriptions."""
+
+        return None
 
     def antenna_ids(self, intent, vislist=None):
 

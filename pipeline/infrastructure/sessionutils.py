@@ -65,6 +65,11 @@ def group_into_sessions(context, all_results, measurement_sets=None):
     """
     Return results grouped into lists by session.
 
+    Sessions and results are sorted chronologically.
+
+    In terms of the returned dictionary, it means that keys and
+    each list associated with the key are all sorted chronologically.
+
     :param context: pipeline context
     :type context: Context
     :param all_results: result to be grouped
@@ -92,9 +97,24 @@ def group_into_sessions(context, all_results, measurement_sets=None):
         basename = os.path.basename(r[0])
         return ms_start_times.get(basename, datetime.datetime.utcfromtimestamp(0))
 
-    results_by_session = sorted(all_results, key=get_session)
-    return {session_id: sorted(results_for_session, key=get_start_time)
-            for session_id, results_for_session in itertools.groupby(results_by_session, get_session)}
+    def chrono_sort_results(arg_tuple):
+        session_id, results = arg_tuple
+        return session_id, sorted(results, key=get_start_time)
+
+    def get_session_start_time(arg_tuple):
+        # precondition: results are sorted within session in advance
+        session_id, results = arg_tuple
+        # start time of the session is start time of the first MS in the session
+        return get_start_time(results[0])
+
+    # group results by session, and sort results chronologically within session
+    results_grouped_by_session = map(
+        chrono_sort_results,
+        itertools.groupby(sorted(all_results, key=get_session), key=get_session)
+    )
+
+    # sort session chronologically and generate ordered dictionary
+    return dict(sorted(results_grouped_by_session, key=get_session_start_time))
 
 
 def group_vislist_into_sessions(context, vislist):
@@ -387,7 +407,7 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
                     # for importdata/restoredata tasks, input and output vis
                     # can be different. sessionutils seems to require vis to
                     # be output vis
-                    if isinstance(worker_result, collections.Iterable):
+                    if isinstance(worker_result, collections.abc.Iterable):
                         result = worker_result[0]
                     else:
                         result = worker_result
@@ -410,7 +430,7 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
         # retrieve measurementset domain objects from the results
         mses = []
         for _, _, vis_result in assessed:
-            if isinstance(vis_result, collections.Iterable):
+            if isinstance(vis_result, collections.abc.Iterable):
                 for r in vis_result:
                     mses.extend(getattr(r, 'mses', []))
             else:
@@ -425,7 +445,7 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
                     final_result.append(fake_result)
 
                 else:
-                    if isinstance(vis_result, collections.Iterable):
+                    if isinstance(vis_result, collections.abc.Iterable):
                         final_result.extend(vis_result)
                     else:
                         final_result.append(vis_result)

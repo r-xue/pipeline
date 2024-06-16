@@ -10,7 +10,8 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                    hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
                    hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
                    hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
-                   cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, parallel=None):
+                   cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, vlass_plane_reject_im=None,
+                   parallel=None):
 
     """
     hif_makeimages ---- Compute clean map
@@ -59,7 +60,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
     hm_weighting            Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])
     hm_cleaning             Pipeline cleaning mode
     tlimit                  Times the sensitivity limit for cleaning
-    drcorretion             Override the default heuristics-based DR correction (for ALMA data only)
+    drcorrect               Override the default heuristics-based DR correction (for ALMA data only)
     masklimit               Times good mask pixels for cleaning
     cleancontranges         Clean continuum frequency ranges in cubes
     calcsb                  Force (re-)calculation of sensitivities and beams
@@ -77,6 +78,17 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                             exported to the products/ directory. The first exported
                             product retains the same name.  Additional products start
                             counting with 'v2', 'v3', etc.
+    vlass_plane_reject_im   Only used for the 'VLASS-SE-CUBE' imaging mode. default: True
+                            If True, reject VLASS Coarse Cube planes with high flagging percentages or outlier beam sizes (see the heuristics details below)
+                            If False, do not perform the post-imaging VLASS Coarse Cube plane rejection.
+                            If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.
+                            The optional keys could be:
+                            - exclude_spw, default: ''
+                                Spectral windows to be excluded from the VLASS Coarse Cube post-imaging plane rejection consideration, i.e. always preserve.
+                            - flagpct_thresh, default: 0.8
+                                The flagging percentage across the entire mosaic to be considered to be high flagging level for the plane rejection.
+                            - beamdev_thresh: default: 0.2
+                                Threshold for the fractional beam deviation from the expected value required for the plane rejection.                                  
     parallel                Clean images using MPI cluster
 
     --------- examples -----------------------------------------------------------

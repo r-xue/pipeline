@@ -3,11 +3,11 @@ Created on 7 Jan 2015
 
 @author: sjw
 """
-import traceback
 import collections
 import itertools
 import os
 import string
+import traceback
 from random import randint
 
 import numpy as np
@@ -17,8 +17,9 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tasks, casa_tools
+from pipeline.infrastructure.utils.weblog import plots_to_html
+
 from . import display
 
 LOG = logging.get_logger(__name__)
@@ -69,6 +70,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         have_polcal_fit = False
 
+        extra_logrecords_handler = logging.CapturingHandler(logging.WARNING)
+        logging.add_handler(extra_logrecords_handler)
         for r in clean_results:
             if r.empty() or not r.iterations:
                 continue
@@ -303,7 +306,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     row_model_neg_flux = None
                     row_model_flux_inner_deg = None
 
-                row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats_vlass(
+                row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats(
                     context, makeimages_result, r)
 
                 #
@@ -770,6 +773,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # PIPE-1723: display a message in the weblog depending on the observatory
         imaging_mode = clean_results[0].imaging_mode  if len(clean_results)>0  else  None
 
+        extra_logrecords = extra_logrecords_handler.buffer
         ctx.update({
             'imaging_mode': imaging_mode,
             'plots': plots,
@@ -779,7 +783,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'have_polcal_fit': have_polcal_fit,
             'chk_fit_info': chk_fit_rows,
             'pol_fit_info': pol_fit_rows,
-            'pol_fit_plots': pol_fit_plots
+            'pol_fit_plots': pol_fit_plots,
+            'extra_logrecords': extra_logrecords
         })
 
 
@@ -881,7 +886,12 @@ class TCleanTablesRenderer(basetemplates.CommonRenderer):
 
 def get_plot(plots, prefix, datatype, field, spw, stokes, i, colname, moment):
     try:
-        return plots[prefix][datatype][field][spw][stokes][i][colname][moment]
+        plot = plots[prefix][datatype][field][spw][stokes][i][colname][moment]
+        if not os.path.exists(plot.abspath):
+            # PIPE-2022: Generate a warning if the PNG file is missing. The
+            # message is caught by a local logging handler for the weblog.
+            LOG.warning(f'Plot {plot.abspath} is missing on disk')
+        return plot
     except KeyError:
         return None
 
@@ -971,6 +981,8 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
         have_polcal_fit = False
 
+        extra_logrecords_handler = logging.CapturingHandler(logging.WARNING)
+        logging.add_handler(extra_logrecords_handler)
         for r in clean_results:
 
             if r.empty() or not r.iterations:
@@ -1209,7 +1221,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     row_model_neg_flux = None
                     row_model_flux_inner_deg = None
 
-                row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats_vlass(
+                row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats(
                     context, makeimages_result, r)
 
                 #
@@ -1693,20 +1705,31 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                                                    pola_thumbnail=row.pola_thumbnail))
         pol_fit_rows = utils.merge_td_columns(pol_fit_rows, num_to_merge=4)
 
+        vlass_cubesummary_plots = display.VlassCubeSummary(context, makeimages_result).plot()
+
+        if vlass_cubesummary_plots:
+            vlass_cubesummary_plots_html = plots_to_html(vlass_cubesummary_plots, report_dir=context.report_dir)[0]
+        else:
+            vlass_cubesummary_plots_html = None
+
+        plane_keep = makeimages_result.metadata['vlass_cube_metadata']['plane_keep']
+        spwgroup_list = makeimages_result.metadata['vlass_cube_metadata']['spwgroup_list']
+        plane_keep_dict = {spwgroup: plane_keep[idx] for idx, spwgroup in enumerate(spwgroup_list)}
+
+        extra_logrecords = extra_logrecords_handler.buffer
         ctx.update({
             'plots': plots,
             'plots_dict': plots_dict,
             'image_info': final_rows,
             'dirname': weblog_dir,
-            'chk_fit_info': chk_fit_rows,
-            'have_polcal_fit': have_polcal_fit,
-            'pol_fit_info': pol_fit_rows,
-            'pol_fit_plots': pol_fit_plots
+            'vlass_cubesummary_plots_html': vlass_cubesummary_plots_html,
+            'plane_keep_dict': plane_keep_dict,
+            'extra_logrecords': extra_logrecords
         })
 
 
-def get_cycle_stats_vlass(context, makeimages_result, r):
-    """Get the major cycle statistics for VLASS."""
+def get_cycle_stats(context, makeimages_result, r):
+    """Get the major cycle statistics."""
 
     row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = None, None, None, None
 
@@ -1756,5 +1779,14 @@ def get_cycle_stats_vlass(context, makeimages_result, r):
                         'iteration': [k for k in row_nmajordone_per_iter],
                         'cleanmask': [item['cleanmask'] for iter, item in row_nmajordone_per_iter.items()],
                         'nmajordone': [item['nmajordone'] for iter, item in row_nmajordone_per_iter.items()]}}
+    else:
+        # Just nmajor for other modes
+        row_nmajordone_per_iter = {}
+        for iteration, iterdata in r.iterations.items():
+            iter_dict = {'nmajordone': iterdata['nmajordone'] if 'nmajordone' in iterdata else 0}
+            row_nmajordone_per_iter[iteration] = iter_dict
+
+        # sum the major cycle done over all 'iter's of Tclean
+        row_nmajordone_total = np.sum([item['nmajordone'] for key, item in row_nmajordone_per_iter.items()])
 
     return row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict

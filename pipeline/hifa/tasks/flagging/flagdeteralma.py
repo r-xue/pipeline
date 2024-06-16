@@ -285,10 +285,11 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                   ' that are too close to the baseband edge.'.format(spw.id))
 
         # For the given spectral window, identify the corresponding SQLD
-        # spectral window with TARGET intent, which is representative of the
-        # baseband.
+        # spectral window(s) with TARGET intent taken in same baseband with same
+        # spectral tuning (SpectralSpec, PIPE-1991).
         bb_spw = [s for s in self.inputs.ms.get_spectral_windows(science_windows_only=False)
-                  if s.baseband == spw.baseband and s.type == 'SQLD' and 'TARGET' in s.intents]
+                  if s.baseband == spw.baseband and s.spectralspec == spw.spectralspec and s.type == 'SQLD'
+                  and 'TARGET' in s.intents]
 
         # If no baseband spw could be identified, add the spw to the list of missing basebands
         # and return with no new flagging commands.
