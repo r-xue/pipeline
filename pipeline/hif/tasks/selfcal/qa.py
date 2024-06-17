@@ -117,8 +117,19 @@ class SelfcalQAHandler(pqa.QAPlugin):
             s_field2 = 'target field' if n_field2 == 1 else 'target fields'
             n_field3 = len(targets_unimproved)
             s_field3 = 'target field' if n_field3 == 1 else 'target fields'
-            longmsg = f'Self-calibrations applied for {targets_desc1}. SNR and RMS improved for {targets_desc2}. SNR improved but RMS increased by more than 2% not for {targets_desc3}'
-            shortmsg = f'Self-calibrations applied for {n_field1} {s_field1}. SNR and RMS improved for {n_field2} {s_field2}. SNR improved but RMS increased by more than 2% not for {n_field3} {s_field3}.'
+            longmsg = []
+            shortmsg = []
+            if n_field1 > 0:
+                longmsg.append(f'Self-calibrations applied for {targets_desc1}.')
+                shortmsg.append(f'Self-calibrations applied for {n_field1} {s_field1}.')
+            if n_field2 > 0:
+                longmsg.append(f'SNR and RMS improved for {targets_desc2}.')
+                shortmsg.append(f'SNR and RMS improved for {n_field2} {s_field2}.')
+            if n_field3 > 0:
+                longmsg.append(f'SNR improved but RMS increased by more than 2% for {targets_desc3}.')
+                shortmsg.append(f'SNR improved but RMS increased by more than 2% for {n_field3} {s_field3}.')
+            longmsg = ' '.join(longmsg)
+            shortmsg = ' '.join(shortmsg)
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         result.qa.pool[:] = scores
