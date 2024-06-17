@@ -79,6 +79,9 @@ differing flux densities in their calibrated XX and YY visibilities.</p>
             <li><a href="#adopted">Measurement sets using adopted flux calibrations</a></li>
         %endif
         <li><a href="#antennas">Antennas used for flux scaling</a></li>
+        % if flagtable:
+            <li><a href="#flagging">Flagging</a></li>
+        % endif
         <li><a href="#computed">Computed flux densities</a></li>
     </ul>
     <li>Plots:</li>
@@ -150,6 +153,28 @@ differing flux densities in their calibrated XX and YY visibilities.</p>
 	</tbody>
 </table>
 
+% if flagtable:
+    <h3 id="flagging">Flagging</h3>
+    <table class="table table-bordered table-striped">
+        <caption>Report Files</caption>
+        <thead>
+            <tr>
+                <th>Measurement Set</th>
+                <th>Flagging Commands</th>
+                <th>Number of Statements</th>
+            </tr>
+        </thead>
+        <tbody>
+        % for msname, relpath in flagtable.items():
+            <tr>
+                <td>${msname}</td>
+                <td><a class="replace-pre" href="${relpath}">${os.path.basename(relpath)}</a></td>
+                <td>${rendererutils.num_lines(os.path.join(pcontext.report_dir, relpath))}</td>
+            </tr>
+        % endfor
+        </tbody>
+    </table>
+% endif
 
 <h3 id="computed">Computed Flux Densities</h3>
 

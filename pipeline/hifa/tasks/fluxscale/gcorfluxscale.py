@@ -48,10 +48,15 @@ ORIGIN = 'gcorfluxscale'
 
 class GcorFluxscaleResults(commonfluxresults.FluxCalibrationResults):
     def __init__(self, vis, resantenna=None, uvrange=None, measurements=None, fluxscale_measurements=None,
-                 applies_adopted=False):
+                 applies_adopted=False, flagcmds=None):
         super(GcorFluxscaleResults, self).__init__(vis, resantenna=resantenna, uvrange=uvrange,
                                                    measurements=measurements)
         self.applies_adopted = applies_adopted
+
+        # PIPE-2155: to flagging commands for amplitude caltable.
+        if flagcmds is None:
+            flagcmds = []
+        self.flagcmds = flagcmds
 
         # To store the fluxscale derived flux measurements:
         if fluxscale_measurements is None:
@@ -175,8 +180,9 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             LOG.error('Unable to complete flux scaling operation for MS %s' % (os.path.basename(inputs.vis)))
             return result
 
-        # PIPE-2155: examine amplitude caltable and flag outliers.
-        self._flag_ampcal(caltable)
+        # PIPE-2155: flag outliers in the  amplitude caltable and store the
+        # resulting flagging commands in the result.
+        result.flagcmds = self._flag_ampcal(caltable)
 
         # PIPE-644: derive both fluxscale-based scaling factors, as well as
         # calibrated visibility fluxes.
@@ -827,7 +833,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         LOG.debug(f'Adding calibration to callibrary:\n{new_calapp.calto}\n{new_calapp.calfrom}')
         inputs.context.callibrary.add(new_calapp.calto, new_calapp.calfrom)
 
-    def _flag_ampcal(self, caltable: str):
+    def _flag_ampcal(self, caltable: str) -> List[str]:
         # Get fields and SpWs to evaluate.
         fields = self.inputs.ms.get_fields(name=','.join([self.inputs.transfer, self.inputs.reference]))
         scispws = self.inputs.ms.get_spectral_windows()
@@ -882,6 +888,9 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             flagsettertask = FlagdataSetter(flagsetterinputs)
             flagsettertask.flags_to_set(flagcmds)
             self._executor.execute(flagsettertask)
+
+        # Return flag commands for rendering in weblog.
+        return flagcmds
 
 
 class SessionGcorFluxscaleInputs(GcorFluxscaleInputs):
