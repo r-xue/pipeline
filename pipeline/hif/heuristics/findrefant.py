@@ -189,7 +189,7 @@ class RefAntHeuristics(object, metaclass=vdp.PipelineInputsMeta):
         names = self._get_names()
         LOG.debug('Got antenna name list {0}'.format(names))
 
-        score = {n: 0.0 for n in names}
+        scores = {n: 0.0 for n in names}
 
         # For each selected heuristic, add the score for each antenna
         if self.geometry:
@@ -197,21 +197,34 @@ class RefAntHeuristics(object, metaclass=vdp.PipelineInputsMeta):
             geoScore = geoClass.calc_score()
             for n in names:
                 if n in geoScore:
-                    score[n] += geoScore[n]
-                    LOG.debug('Antenna {0} geometry score {1}  total score {2}'.format(n, geoScore[n], score[n]))
+                    scores[n] += geoScore[n]
+                    LOG.debug(f'{self.vis}: Antenna {n} geometry score {geoScore[n]}  total score {scores[n]}')
 
         if self.flagging:
             flagClass = RefAntFlagging(self.vis, self.field, self.spw, self.intent)
             flagScore = flagClass.calc_score()
             for n in names:
                 if n in flagScore:
-                    score[n] += flagScore[n]
-                    LOG.info('Antenna {0} flagging score {1} total score {2}'.format(n, flagScore[n], score[n]))
+                    scores[n] += flagScore[n]
+                    LOG.info(f'{self.vis}: Antenna {n} flagging score {flagScore[n]} total score {scores[n]}')
+
+            # PIPE-1805: identify antennas for which the flagging sub-score is
+            # zero. Remove these from the list of refants to consider, unless
+            # this would lead to an empty refant list.
+            ants_to_remove = {ant for ant, score in flagScore.items() if score == 0}
+            if ants_to_remove:
+                # Ensure the ants to remove do not comprise all considered ants.
+                if set(names).intersection(ants_to_remove) != set(names):
+                    LOG.info(f"{self.vis}: Removing antenna(s) {', '.join(ants_to_remove)} from consideration for"
+                             f" refant because flagging sub-score is zero.")
+                    scores = {k: v for k, v in scores.items() if k not in ants_to_remove}
+                else:
+                    LOG.warning(f"{self.vis}: all antennas considered for refant have flagging sub-score of zero.")
 
         # Calculate the final score and return the list of ranked
         # reference antennas.  NB: The best antennas have the highest
         # score, so a reverse sort is required.
-        return [k for k, _ in sorted(score.items(), key=operator.itemgetter(1), reverse=True)]
+        return [k for k, _ in sorted(scores.items(), key=operator.itemgetter(1), reverse=True)]
 
 # ------------------------------------------------------------------------------
 
