@@ -1,6 +1,9 @@
 import collections
+import io
 import os
 import shutil
+import sys
+import tarfile
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 from pipeline.h.tasks.common import manifest
@@ -8,6 +11,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure.utils import utils
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks
 from . import almaifaqua
 
 LOG = infrastructure.get_logger(__name__)
@@ -207,3 +211,39 @@ finally:
                 break
 
         return
+    
+    def _export_final_flagversion(self, vis, flag_version_name, products_dir):
+        """
+        Save the final flags version to a compressed tarfile in products.
+        """
+        # Define the name of the output tarfile
+        visname = os.path.basename(vis)
+        tarfilename = visname + '.flagversions.tgz'
+        LOG.info('Storing final flags for %s in %s', visname, tarfilename)
+
+        # retrieve all flagversions saved
+        task = casa_tasks.flagmanager(vis=visname, mode='list')
+        flag_dict = self._executor.execute(task)
+
+        # Define the directory to be saved, and where to store in tar archive.
+        flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
+        flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
+        LOG.info('Saving flag version %s', flag_version_name)
+
+        # Define the versions list file to be saved
+        flag_version_list = os.path.join(visname + '.flagversions', 'FLAG_VERSION_LIST')
+        ti = tarfile.TarInfo(flag_version_list)
+        line = "{} : Final pipeline flags\n".format(flag_version_name).encode(sys.stdout.encoding)
+        # save deterministic flags created for PIPE-933
+        if "after_deterministic_flagging" in flag_dict:
+            line += "{} : {}\n".format("after_deterministic_flagging", flag_dict["after_deterministic_flagging"])
+        ti.size = len(line)
+        LOG.info('Saving flag version list')
+
+        # Create the tar file
+        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+        tar.add(flagsname, arcname=flagsarcname)
+        tar.addfile(ti, io.BytesIO(line))
+        tar.close()
+
+        return tarfilename
