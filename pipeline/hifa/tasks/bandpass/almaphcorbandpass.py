@@ -33,6 +33,10 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
     minbpsnr = vdp.VisDependentProperty(default=20.0)
     evenbpints = vdp.VisDependentProperty(default=True)
 
+    # Boolean declaring how to populate the bandpass solution parameter
+    # "fillgaps" (PIPE-2116, also depends on hm_bandpass modes).
+    hm_auto_fillgaps = vdp.VisDependentProperty(default=True)
+
     # Bandpass heuristics, options are 'fixed', 'smoothed', and 'snr'
     hm_bandpass = vdp.VisDependentProperty(default='snr')
 
@@ -63,18 +67,17 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
     solint = vdp.VisDependentProperty(default='inf')
     # PIPE-628: new parameter to unregister existing bcals before appending to callibrary 
     unregister_existing = vdp.VisDependentProperty(default=False)
-    # PIPE-712: Expose fillgaps parameter 
-    fillgaps = vdp.VisDependentProperty(default=0)
 
     def __init__(self, context, output_dir=None, vis=None, mode='channel', hm_phaseup=None, phaseupbw=None,
                  phaseupsolint=None, phaseupsnr=None, phaseupnsols=None, hm_bandpass=None, solint=None,
                  maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None, unregister_existing=None, 
-                 fillgaps=None, **parameters):
+                 hm_auto_fillgaps=None, **parameters):
         super(ALMAPhcorBandpassInputs, self).__init__(context, output_dir=output_dir, vis=vis, mode=mode, **parameters)
         self.bpnsols = bpnsols
         self.bpsnr = bpsnr
         self.minbpsnr = minbpsnr
         self.evenbpints = evenbpints
+        self.hm_auto_fillgaps = hm_auto_fillgaps
         self.hm_bandpass = hm_bandpass
         self.hm_phaseup = hm_phaseup
         self.maxchannels = maxchannels
@@ -84,7 +87,6 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
         self.phaseupsolint = phaseupsolint
         self.solint = solint
         self.unregister_existing = unregister_existing
-        self.fillgaps = fillgaps
 
 
 @task_registry.set_equivalent_casa_task('hifa_bandpass')
@@ -378,6 +380,13 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 else:
                     inputs.solint = orig_solint
 
+                # PIPE-2116: if requested, set fillgaps to a quarter of the
+                # number of channels of current SpW.
+                if inputs.hm_auto_fillgaps:
+                    inputs.fillgaps = int(spw.num_channels / 4)
+                else:
+                    inputs.fillgaps = 0
+
                 # Compute and append bandpass solution
                 inputs.spw = spw.id
                 bandpass_task = bandpassmode.BandpassMode(inputs)
@@ -472,6 +481,13 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                     inputs.solint = orig_solint
                     LOG.warning("Reverting to default bandpass solint %s for spw %s in MS %s" %
                                 (inputs.solint, spw.id, inputs.ms.basename))
+
+                # PIPE-2116: if requested, set fillgaps to a quarter of the
+                # number of channels of current SpW.
+                if inputs.hm_auto_fillgaps:
+                    inputs.fillgaps = int(spw.num_channels / 4)
+                else:
+                    inputs.fillgaps = 0
 
                 # Compute and append bandpass solution
                 inputs.spw = spw.id
