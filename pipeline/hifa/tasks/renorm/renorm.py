@@ -87,13 +87,6 @@ class SerialRenorm(basetask.StandardTaskTemplate):
     def prepare(self):
         inp = self.inputs
 
-        # FIXME: Remove? almarenorm.py could do this check if necessary.
-        if not isinstance(inp.excludechan, dict):
-            msg = "excludechan parameter requires dictionary input. {0} with type {1} is not valid input." \
-                  "".format(inp.excludechan, type(inp.excludechan).__name__)
-            LOG.error(msg)
-            raise TypeError(msg)
-
         # FIXME: this is evaluating the presence of band 9/10 for all MSes in the observing run, even though the task
         #  is expected to operate only on the current MS.
         # Issue warning if band 9 and 10 data is found
