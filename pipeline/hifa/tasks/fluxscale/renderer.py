@@ -152,10 +152,11 @@ def make_flag_table(context, results):
     weblog_dir = os.path.join(context.report_dir, f"stage{results.stage_number}")
     flagtable = {}
     for result in results:
-        table_basename = os.path.basename(result.vis)
-        flagcmd_abspath = write_flagcmds_to_disk(weblog_dir, table_basename, result.flagcmds)
-        flagcmd_relpath = os.path.relpath(flagcmd_abspath, context.report_dir)
-        flagtable[table_basename] = flagcmd_relpath
+        for table_name, flagcmds in result.ampcal_flagcmds.items():
+            table_basename = os.path.basename(table_name)
+            flagcmd_abspath = write_flagcmds_to_disk(weblog_dir, table_basename, flagcmds)
+            flagcmd_relpath = os.path.relpath(flagcmd_abspath, context.report_dir)
+            flagtable[table_basename] = flagcmd_relpath
 
     return flagtable
 

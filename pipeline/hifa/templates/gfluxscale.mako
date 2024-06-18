@@ -156,10 +156,11 @@ differing flux densities in their calibrated XX and YY visibilities.</p>
 % if flagtable:
     <h3 id="flagging">Flagging</h3>
     <table class="table table-bordered table-striped">
-        <caption>Report Files</caption>
+        <caption>The temporary amplitude caltable(s) in this table are used only in this stage to derive flux scaling
+           factors, and are not registered to be applied to the measurement set(s).</caption>
         <thead>
             <tr>
-                <th>Measurement Set</th>
+                <th>Temporary Caltable</th>
                 <th>Flagging Commands</th>
                 <th>Number of Statements</th>
             </tr>
@@ -168,7 +169,7 @@ differing flux densities in their calibrated XX and YY visibilities.</p>
         % for msname, relpath in flagtable.items():
             <tr>
                 <td>${msname}</td>
-                <td><a class="replace-pre" href="${relpath}">${os.path.basename(relpath)}</a></td>
+                <td><a class="replace-pre" href="${relpath}">Flag commands file</a></td>
                 <td>${rendererutils.num_lines(os.path.join(pcontext.report_dir, relpath))}</td>
             </tr>
         % endfor

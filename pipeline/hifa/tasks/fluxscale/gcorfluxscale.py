@@ -48,15 +48,15 @@ ORIGIN = 'gcorfluxscale'
 
 class GcorFluxscaleResults(commonfluxresults.FluxCalibrationResults):
     def __init__(self, vis, resantenna=None, uvrange=None, measurements=None, fluxscale_measurements=None,
-                 applies_adopted=False, flagcmds=None):
+                 applies_adopted=False, ampcal_flagcmds=None):
         super(GcorFluxscaleResults, self).__init__(vis, resantenna=resantenna, uvrange=uvrange,
                                                    measurements=measurements)
         self.applies_adopted = applies_adopted
 
         # PIPE-2155: to flagging commands for amplitude caltable.
-        if flagcmds is None:
-            flagcmds = []
-        self.flagcmds = flagcmds
+        if ampcal_flagcmds is None:
+            ampcal_flagcmds = {}
+        self.ampcal_flagcmds = ampcal_flagcmds
 
         # To store the fluxscale derived flux measurements:
         if fluxscale_measurements is None:
@@ -180,9 +180,9 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             LOG.error('Unable to complete flux scaling operation for MS %s' % (os.path.basename(inputs.vis)))
             return result
 
-        # PIPE-2155: flag outliers in the  amplitude caltable and store the
+        # PIPE-2155: flag outliers in the amplitude caltable and store the
         # resulting flagging commands in the result.
-        result.flagcmds = self._flag_ampcal(caltable)
+        result.ampcal_flagcmds[caltable] = self._flag_ampcal(caltable)
 
         # PIPE-644: derive both fluxscale-based scaling factors, as well as
         # calibrated visibility fluxes.
