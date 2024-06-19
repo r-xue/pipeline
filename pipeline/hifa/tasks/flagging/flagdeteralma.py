@@ -1,26 +1,19 @@
 from typing import List
 
 import numpy as np
-from astropy.coordinates import SkyCoord, EarthLocation, AltAz
+from astropy.coordinates import AltAz, EarthLocation, SkyCoord
 from astropy.time import Time
-from astropy.utils.iers import conf as iers_conf
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.extern.adopted import getMedianPWV
 from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.common.arrayflaggerbase import channel_ranges
 from pipeline.h.tasks.flagging import flagdeterbase
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tools, task_registry
 from pipeline.infrastructure.utils import utils
-from pipeline.infrastructure import casa_tools
-from pipeline.extern.adopted import getMedianPWV
-
-# PIPE-2195: use a longer period for auto_max_age (default=30.), which was
-# proposed (but rejected) for Astropy>=6.0 .
-# see https://github.com/astropy/astropy/issues/14756
-iers_conf.auto_max_age = 180
 
 __all__ = [
     'FlagDeterALMA',
