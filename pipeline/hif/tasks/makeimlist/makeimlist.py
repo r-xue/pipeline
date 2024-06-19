@@ -636,7 +636,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             vislists = [inputs.vis]
 
-        if 'VLA' in imaging_mode and inputs.specmode == 'cont':
+        if 'VLA' in imaging_mode:
             ref_ms = inputs.context.observing_run.get_ms(inputs.vis[0])
             vla_band = ref_ms.get_vla_spw2band()
             band_spws = {}
