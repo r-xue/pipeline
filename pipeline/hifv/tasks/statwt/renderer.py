@@ -108,7 +108,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # When the table column has only one or zero entires, it doesn't make sense to compare
             # it to "the other values in the table"
-            if len(summary) <= 1: 
+            if len(summary) <= 1 or eval(value) == 0:
                 return ''
 
             median = np.nanmedian(summary)
