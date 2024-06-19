@@ -10,6 +10,7 @@ import shutil
 import collections
 import datetime
 import functools
+import itertools
 import math
 import operator
 import os
@@ -2733,7 +2734,9 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
         and/or deviation masks
     """
     line_detection_scores = []
-    deviation_mask_scores = []
+    # deviation_mask_qa_data collects set of (spw_id, antenna_id, masked_ranges)
+    # data per field per EB
+    deviation_mask_qa_data = {}
     deviation_mask_all = result.outcome['deviation_mask']
     for bl in result.outcome['baselined']:
         reduction_group_id = bl['group_id']
@@ -2749,26 +2752,11 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
             )
 
             if deviation_masks:
-                score = 0.65
-                msg = 'Deviation mask was triggered'
-
+                data_per_field = deviation_mask_qa_data.setdefault(field_name, collections.defaultdict(list))
                 spw_id = reduction_group_member.spw_id
                 ms_name = reduction_group_member.ms.origin_ms
                 antenna_name = reduction_group_member.antenna_name
-                shortmsg = f'{msg}.'
-                longmsg = f'{msg} in Spw {spw_id}, EB {ms_name}, Field {field_name}, Antenna {antenna_name}.'
-                metric_value = ';'.join([f'{left}~{right}' for left, right in deviation_masks])
-                origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                                      metric_score=metric_value,
-                                      metric_units='Channel range(s) possibly affected by instrumental instatbilities')
-                selection = pqa.TargetDataSelection(vis=set([ms_name]),
-                                                    spw=set([spw_id]),
-                                                    field=set([field_name]),
-                                                    ant=set([antenna_name]),
-                                                    intent={'TARGET'})
-                deviation_mask_scores.append(
-                    pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
-                )
+                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks))
 
         # spectral lines
         lines = get_line_ranges(bl['lines'])
@@ -2827,6 +2815,43 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
                 origin=origin, applies_to=selection
             )
         )
+
+    # generate deviation mask QA scores with merged spws and antennas
+    deviation_mask_scores = []
+    for field_name, data_per_ms in deviation_mask_qa_data.items():
+        for ms_name, data in data_per_ms.items():
+            spw_ids = {x[0] for x in data}
+            antenna_names = {x[1] for x in data}
+
+            # score is fixed to 0.65. See PIPE-2136 and PIPEREQ-304.
+            score = 0.65
+            msg = 'Deviation mask was triggered'
+            shortmsg = f'{msg}.'
+            spw_string = ', '.join(map(str, sorted(spw_ids)))
+            antenna_string = ', '.join(sorted(antenna_names))
+            longmsg = f'{msg} in EB {ms_name}, Field {field_name}, Spw {spw_string}, Antenna {antenna_string}.'
+
+            # get list of unique mask ranges per spw
+            deviation_masks_per_spw = collections.defaultdict(set)
+            for spw_id, _, deviation_mask in data:
+                deviation_masks_per_spw[spw_id].update(map(tuple, deviation_mask))
+
+            # metric value format: spw0:c0~c1:c2~c3,spw1:c4~c5
+            metric_value = ','.join([
+                f'{spw_id}:' + ';'.join([f'{left}~{right}' for left, right in sorted(deviation_masks)])
+                for spw_id, deviation_masks in deviation_masks_per_spw.items()
+            ])
+            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                                  metric_score=metric_value,
+                                  metric_units='Channel range(s) possibly affected by instrumental instatbilities')
+            selection = pqa.TargetDataSelection(vis=set([ms_name]),
+                                                spw=spw_ids,
+                                                field=set([field_name]),
+                                                ant=antenna_names,
+                                                intent={'TARGET'})
+            deviation_mask_scores.append(
+                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+            )
 
     return line_detection_scores + deviation_mask_scores
 
