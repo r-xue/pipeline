@@ -2843,7 +2843,7 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
             ])
             origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                                   metric_score=metric_value,
-                                  metric_units='Channel range(s) possibly affected by instrumental instatbilities')
+                                  metric_units='Channel range(s) possibly affected by instrumental instabilities')
             selection = pqa.TargetDataSelection(vis=set([ms_name]),
                                                 spw=spw_ids,
                                                 field=set([field_name]),
