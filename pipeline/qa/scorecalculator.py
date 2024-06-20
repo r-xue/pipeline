@@ -2786,7 +2786,7 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
             spw = ', '.join(map(str, spw_ids))
             spw_desc = f'Spws {spw}' if len(spw_ids) > 1 else f'Spw {spw}'
             shortmsg = f'{msg}.'
-            longmsg = f'{msg} in Spw {spw_desc}, Field {field_name}.'
+            longmsg = f'{msg} in Field {field_name}, Spw {spw_desc}.'
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines])
             origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                                   metric_score=metric_value,
