@@ -102,7 +102,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
         LOG.info('Residual max: %s min: %s' % (residual_max, residual_min))
 
-        residual_stats = image.statistics(robust=True)
+        residual_stats = image.statistics(robust=True, excludepix=0.0)
         residual_robust_rms = residual_stats['medabsdevmed'][0] * 1.4826  # see CAS-9631
         LOG.debug('residual scaled MAD: %s' % residual_robust_rms)
 
