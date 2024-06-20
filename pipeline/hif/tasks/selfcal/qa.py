@@ -28,15 +28,22 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         for target in result.targets:
 
-            band = target['sc_band'].replace('_', ' ')
+            if target['sc_exception']:
+                # If a self-calibration worker encounters an exception, none of the "sc_*"" keys will exist in "target".
+                # In this case, we collect the basic information and exit early.
+                band = 'spw='+target['spw']
+                targets.append((target['field_name'], band))
+                if target.get('is_mosaic', None):
+                    targets_mosaic.append((target['field_name'], band))
+                targets_exception.append((target['field_name'], band))
+                continue
 
+            # if not exception, we will use the "sc_*"" keys.
+            band = target['sc_band'].replace('_', ' ')
             targets.append((target['field_name'], band))
             if target.get('is_mosaic', None):
                 targets_mosaic.append((target['field_name'], band))
-            if target['sc_exception']:
-                targets_exception.append((target['field_name'], band))
-                continue
-            # if the worker exception happens, the 'sc_lib' key will not exist in target.
+
             slib = target['sc_lib']
             vislist = slib['vislist']
             solints = target['sc_solints']
@@ -84,10 +91,10 @@ class SelfcalQAHandler(pqa.QAPlugin):
         if targets_exception:
             score = 0.8
             targets_desc = utils.commafy([name+' / '+band for name, band in targets_exception], quotes=False)
-            longmsg = f'An exception is triggered when resolving self-calibration solutions for {targets_desc}.'
+            longmsg = f'The self-calibration worker failed for {targets_desc}.'
             n_field = len(targets_exception)
             s_field = 'target field' if n_field == 1 else 'target fields'
-            shortmsg = f'An exception is triggered when resolving self-calibration solutions for {n_field} {s_field}.'
+            shortmsg = f'The self-calibration worker failed for {n_field} {s_field}.'
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         if targets and len(targets) == len(targets_attempt) and not targets_success:
