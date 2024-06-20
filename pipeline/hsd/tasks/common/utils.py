@@ -1,12 +1,15 @@
 """A collection of Single Dish utility methods and classes."""
 import collections
 import contextlib
+import datetime
 import functools
 import os
 import sys
 import time
 from logging import Logger as pyLogger
 from typing import Any, Callable, Dict, Generator, Iterable, List, NewType, Optional, Sequence, Union, Tuple
+
+from astropy.time import Time
 
 # Imported for annotation pupose only. Use table in casa_tools in code.
 from casatools import table as casa_table
@@ -281,6 +284,20 @@ def parseEdge(edge: Union[float, List[float]]) -> Tuple[float, float]:
     return EdgeL, EdgeR
 
 
+def mjd_to_datetime(val: float) -> datetime.datetime:
+    """Convert MJD to datetime instance.
+
+    Args:
+        val: MJD value in day.
+
+    Returns:
+        datetime.datetime: datetime instance
+    """
+    t = Time(val, format='mjd')
+    date_time = t.datetime
+    return date_time
+
+
 def mjd_to_datestring(t: float, unit: str='sec') -> str:
     """
     Convert a given Modified Julian Date (MJD) to a date string.
@@ -305,18 +322,14 @@ def mjd_to_datestring(t: float, unit: str='sec') -> str:
         'Wed Nov 17 00:00:00 1858 UTC'
     """
     if unit in ['sec', 's']:
-        mjd = t
+        # 1 day = 24hour * 60min * 60sec = 86400sec
+        mjd = t / 86400.0
     elif unit in ['day', 'd']:
-        mjd = t * 86400.0
+        mjd = t
     else:
         mjd = 0.0
-    import datetime
-    mjdzero = datetime.datetime(1858, 11, 17, 0, 0, 0)
-    zt = time.gmtime(0.0)
-    timezero = datetime.datetime(zt.tm_year, zt.tm_mon, zt.tm_mday, zt.tm_hour, zt.tm_min, zt.tm_sec)
-    dtd = timezero-mjdzero
-    dtsec = mjd-(float(dtd.days)*86400.0+float(dtd.seconds)+float(dtd.microseconds)*1.0e-6)
-    mjdstr = time.asctime(time.gmtime(dtsec))+' UTC'
+    date_time = mjd_to_datetime(mjd)
+    mjdstr = time.asctime(date_time.timetuple()) + ' UTC'
     return mjdstr
 
 
