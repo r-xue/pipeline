@@ -404,8 +404,8 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                                  f" {spw.id}.")
                 else:
                     inputs.solint = orig_solint
-                    LOG.info(f"Reverting to default bandpass solint {inputs.solint} for spw {spw.id} in MS"
-                             f" {inputs.ms.basename}")
+                    LOG.warning(f"Reverting to default bandpass solint {inputs.solint} for spw {spw.id} in MS"
+                                f" {inputs.ms.basename}")
 
                 # Compute and append bandpass solution
                 inputs.spw = spw.id
@@ -486,8 +486,8 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                     LOG.info('Setting bandpass solint to %s for spw %s' % (inputs.solint, spw.id))
 
                 elif ncorr * spw.num_channels > 256:
-                    LOG.info(f"{inputs.ms.basename}: no SNR based bandpass solint was found for spw {spw.id}, reverting"
-                             f" to smoothing algorithm.")
+                    LOG.warning(f"{inputs.ms.basename}: no SNR based bandpass solint was found for spw {spw.id},"
+                                f" reverting to smoothing algorithm.")
                     if (spw.num_channels // inputs.maxchannels) < 1:
                         LOG.info(f"{inputs.ms.basename}: Too few channels ({spw.num_channels}) in SpW {spw.id} to use"
                                  f" smoothing (maxchannels={inputs.maxchannels}), reverting to default bandpass solint"
