@@ -2783,15 +2783,14 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
                 msg = 'Line ranges were detected'
 
             spw_ids = set(reduction_group_desc[m].spw_id for m in member_list)
-            spw = ', '.join(map(str, spw_ids))
-            spw_desc = f'Spws {spw}' if len(spw_ids) > 1 else f'Spw {spw}'
+            spw_desc = ', '.join(map(str, spw_ids))
             shortmsg = f'{msg}.'
             longmsg = f'{msg} in Field {field_name}, Spw {spw_desc}.'
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines])
             origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                                   metric_score=metric_value,
                                   metric_units='Channel range(s) of detected lines')
-            selection = pqa.TargetDataSelection(spw=set(spw.split(', ')),
+            selection = pqa.TargetDataSelection(spw=set(spw_desc.split(', ')),
                                                 field=set([field_name]),
                                                 intent={'TARGET'})
             line_detection_scores.append(
