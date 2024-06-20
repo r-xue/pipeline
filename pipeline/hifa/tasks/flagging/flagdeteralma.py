@@ -1,25 +1,19 @@
 from typing import List
 
 import numpy as np
-from astropy.coordinates import SkyCoord, EarthLocation, AltAz
+from astropy.coordinates import AltAz, EarthLocation, SkyCoord
 from astropy.time import Time
-from astropy.utils.iers import conf as iers_conf
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.extern.adopted import getMedianPWV
 from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.common.arrayflaggerbase import channel_ranges
 from pipeline.h.tasks.flagging import flagdeterbase
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 from pipeline.infrastructure.utils import utils
-from pipeline.infrastructure import casa_tools, casa_tasks
-from pipeline.extern.adopted import getMedianPWV
-
-# Avoid downloading the updated IERS tables from the internet because an
-#  approximate value is enough in this case
-iers_conf.auto_max_age = None
 
 __all__ = [
     'FlagDeterALMA',
