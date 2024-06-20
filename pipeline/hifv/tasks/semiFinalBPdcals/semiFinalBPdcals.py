@@ -196,15 +196,15 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
         refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-        refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
-                                                geometry=True, flagging=True, intent='',
-                                                spw='', refantignore=refantignore)
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
+                                                    geometry=True, flagging=True, intent='',
+                                                    spw='', refantignore=refantignore)
 
-        RefAntOutput = refantobj.calculate()
-        # PIPE-595: extending reference antenna list by adding user specified reference antenna list
-        RefAntOutput.extend(self.inputs.refant)
-        # Keeping unique antennas
-        RefAntOutput = list(set(RefAntOutput))
+            RefAntOutput = refantobj.calculate()
+        else:
+            RefAntOutput = self.inputs.refant
 
         self._do_gtype_delaycal(caltable=gtypecaltable, RefAntOutput=RefAntOutput, spwlist=spwlist)
 

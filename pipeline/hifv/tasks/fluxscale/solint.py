@@ -232,16 +232,15 @@ class Solint(basetask.StandardTaskTemplate):
 
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
         refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
+                                                    geometry=True, flagging=True, intent='',
+                                                    spw='', refantignore=refantignore)
 
-        refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
-                                                geometry=True, flagging=True, intent='',
-                                                spw='', refantignore=refantignore)
-
-        RefAntOutput = refantobj.calculate()
-        # PIPE-595: extending reference antenna list by adding user specified reference antenna list
-        RefAntOutput.extend(self.inputs.refant)
-        # Keeping unique antennas
-        RefAntOutput = list(set(RefAntOutput))
+            RefAntOutput = refantobj.calculate()
+        else:
+            RefAntOutput = self.inputs.refant
         refAnt = ','.join(RefAntOutput)
 
         bpdgain_touse = tablebase + table_suffix[0]
