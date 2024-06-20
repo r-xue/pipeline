@@ -2780,7 +2780,7 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
             else:
                 # detected lines do not harm baseline subtraction
                 score = 1.0
-                msg = 'Spectral lines were detected'
+                msg = 'Line ranges were detected'
 
             spw_ids = set(reduction_group_desc[m].spw_id for m in member_list)
             spw = ', '.join(map(str, spw_ids))
@@ -2802,8 +2802,8 @@ def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineRe
         # add new entry with score of 0.8 if no spectral lines
         # were detected in any spws/fields
         score = 0.8
-        longmsg = 'No spectral lines were detected.'
-        shortmsg = 'No spectral lines were detected.'
+        longmsg = 'No line ranges were detected in all SPWs.'
+        shortmsg = 'No line ranges were detected in all SPWs.'
 
         origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                               metric_score='N/A',
