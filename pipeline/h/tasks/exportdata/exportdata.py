@@ -765,7 +765,7 @@ class ExportData(basetask.StandardTaskTemplate):
         """
 
         LOG.info('Saving final flags for %s in flag version %s', os.path.basename(vis), flag_version_name)
-        task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name)
+        task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name, comment="Final pipeline flags")
         self._executor.execute(task)
 
     def _export_final_flagversion(self, vis, flag_version_name, products_dir):
@@ -775,24 +775,46 @@ class ExportData(basetask.StandardTaskTemplate):
         # Define the name of the output tarfile
         visname = os.path.basename(vis)
         tarfilename = visname + '.flagversions.tgz'
+        if os.path.exists(tarfilename):
+            os.remove(tarfilename)
         LOG.info('Storing final flags for %s in %s', visname, tarfilename)
-
-        # Define the directory to be saved, and where to store in tar archive.
-        flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
-        flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
-        LOG.info('Saving flag version %s', flag_version_name)
-
-        # Define the versions list file to be saved
-        flag_version_list = os.path.join(visname + '.flagversions', 'FLAG_VERSION_LIST')
-        ti = tarfile.TarInfo(flag_version_list)
-        line = "{} : Final pipeline flags\n".format(flag_version_name).encode(sys.stdout.encoding)
-        ti.size = len(line)
-        LOG.info('Saving flag version list')
 
         # Create the tar file
         tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+
+        # Define the versions list file to be saved
+        flag_version_list = os.path.join(visname + '.flagversions', 'FLAG_VERSION_LIST')
+        tar_info = tarfile.TarInfo(flag_version_list)
+        LOG.info('Saving flag version list')
+
+        # retrieve all flagversions saved
+        task = casa_tasks.flagmanager(vis=visname, mode='list')
+        flag_dict = self._executor.execute(task)
+        # remove MS key entry if it exists; MS key does not conform with other entries
+        # more information about flagmanager return dictionary here:
+        # https://casadocs.readthedocs.io/en/stable/api/tt/casatasks.flagging.flagmanager.html#mode
+        flag_dict.pop('MS', None)
+        flag_dict = {x['name']:x['comment'] for _, x in flag_dict.items()}
+
+        # Define the versions list file to be saved
+        # Define the directory to be saved, and where to store in tar archive.
+        LOG.info('Saving flag version %s', flag_version_name)
+        flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
+        flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
+        line = "{} : {}\n".format(flag_version_name, flag_dict[flag_version_name])
         tar.add(flagsname, arcname=flagsarcname)
-        tar.addfile(ti, io.BytesIO(line))
+        # PIPE-933: Add flag version 'after_deterministic_flagging' to tarfile
+        if "after_deterministic_flagging" in flag_dict:
+            flag_version_name = "after_deterministic_flagging"
+            LOG.info('Saving flag version %s', flag_version_name)
+            flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
+            flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
+            line += "{} : {}\n".format(flag_version_name, flag_dict[flag_version_name])
+            tar.add(flagsname, arcname=flagsarcname)
+        
+        line = line.encode(sys.stdout.encoding)
+        tar_info.size = len(line)
+        tar.addfile(tar_info, io.BytesIO(line))
         tar.close()
 
         return tarfilename
