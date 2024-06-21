@@ -99,6 +99,7 @@ class TcleanResult(basetask.Results):
         # Flag to indicate usage of psfphasecenter parameter
         self.used_psfphasecenter = False
         self.imaging_metadata = {}
+        self.im_names = {}
 
     def merge_with_context(self, context):
         # Calculated beams for later stages

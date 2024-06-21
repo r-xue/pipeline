@@ -678,6 +678,8 @@ class CleanBase(basetask.StandardTaskTemplate):
         elif os.path.exists(mask_name):
             im_names['cleanmask'] = mask_name
 
+        result.im_names.update(im_names)
+
         for im_type, im_name in im_names.items():
             # Set misc info on imaging products
             # - Usually we only need to do this for a single image per image type;
