@@ -114,7 +114,7 @@ class VersionInfo:
         if branch == "main" or branch.startswith("release/"):
             local_version_label = '+dirty' if self.dirty else ''
         else:
-            local_version_label = f'+{commit_hash}-{branch}'
+            local_version_label = '+' + self._sanitise(f'{commit_hash}-{branch}')
 
         local_version_label = self._sanitise(local_version_label)
 
