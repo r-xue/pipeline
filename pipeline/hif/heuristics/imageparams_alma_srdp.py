@@ -1,10 +1,19 @@
+# This imaging mode is presently only used by hif_mageprecheck. It was
+# added in PIPE-1712 to support merging hifas_imageprecheck with
+# hifa_imageprecheck. It could be expanded to a fully-fledged imaging mode
+# in the future.
+
+import math
+
+import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
+
 from .imageparams_alma import ImageParamsHeuristicsALMA
 
+LOG = infrastructure.get_logger(__name__)
 
-# This imaging mode is presently only used by imageprecheck. It was
-# added in PIPE-1712 to support merging hifas_imageprecheck with
-# hifa_imageprecheck. It could be expanded to a fully
-# fledged imaging mode in the future.
+
 class ImageParamsHeuristicsALMASrdp(ImageParamsHeuristicsALMA):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
@@ -53,7 +62,7 @@ class ImageParamsHeuristicsALMASrdp(ImageParamsHeuristicsALMA):
         tap_bminor = 1.0 / (bminor * des_bminor / (math.sqrt(bminor ** 2 - des_bminor ** 2)))
 
         # Assume symmetric beam
-        tap_angle = math.sqrt( (tap_bmajor ** 2 + tap_bminor ** 2) / 2.0 )
+        tap_angle = math.sqrt((tap_bmajor ** 2 + tap_bminor ** 2) / 2.0)
 
         # Convert angle to baseline
         ARCSEC_PER_RAD = 206264.80624709636
@@ -65,7 +74,7 @@ class ImageParamsHeuristicsALMASrdp(ImageParamsHeuristicsALMA):
         # PIPE-1104: Limit such that the image includes the baselines from at least 20 antennas.
         # Limit should be set to: (N*(N-1)/2)=the length of the 190th baseline.
         uvtaper_limit = tapering_limit / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * \
-                        cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
+            cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
         # Limit uvtaper
         if uvtaper_value < uvtaper_limit:
             uvtaper_value = uvtaper_limit
