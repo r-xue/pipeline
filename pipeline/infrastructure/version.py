@@ -108,13 +108,15 @@ class VersionInfo:
 
     @property
     def pipeline_version(self) -> str:
-        commit_hash = 'unknown_hash' if self.commit_hash == 'N/A' else self._sanitise(self.commit_hash)
-        branch = 'unknown_branch' if self.branch in ('N/A', 'HEAD') else self._sanitise(self.branch)
+        commit_hash = 'unknown_hash' if self.commit_hash == 'N/A' else self.commit_hash
+        branch = 'unknown_branch' if self.branch in ('N/A', 'HEAD') else self.branch
 
         if branch == "main" or branch.startswith("release/"):
             local_version_label = '+dirty' if self.dirty else ''
         else:
             local_version_label = f'+{commit_hash}-{branch}'
+
+        local_version_label = self._sanitise(local_version_label)
 
         return f"{self.release_tag}{local_version_label}"
 
