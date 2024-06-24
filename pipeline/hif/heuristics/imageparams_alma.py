@@ -487,16 +487,26 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         n_sum = 0.0
         d_sum = 0.0
         p = re.compile(r'([\d.]*\s*)(~\s*)([\d.]*\s*)([A-Za-z]*\s*)(;?)')
+        freqRangeFound = False
         for spwsel_v in spwsel.values():
-            freq_ranges, frame = spwsel_v.rsplit(' ', maxsplit=1)
-            freq_intervals = p.findall(freq_ranges)
-            for freq_interval in freq_intervals:
-                f_low = qaTool.quantity(float(freq_interval[0]), freq_interval[3])
-                f_low_v = float(qaTool.getvalue(qaTool.convert(f_low, 'GHz')))
-                f_high = qaTool.quantity(float(freq_interval[2]), freq_interval[3])
-                f_high_v = float(qaTool.getvalue(qaTool.convert(f_high, 'GHz')))
-                n_sum += f_high_v**2-f_low_v**2
-                d_sum += f_high_v-f_low_v
+            try:
+                if spwsel_v not in ('', 'NONE'):
+                    freq_ranges, frame = spwsel_v.rsplit(' ', maxsplit=1)
+                    freqRangeFound = True
+                    freq_intervals = p.findall(freq_ranges)
+                    for freq_interval in freq_intervals:
+                        f_low = qaTool.quantity(float(freq_interval[0]), freq_interval[3])
+                        f_low_v = float(qaTool.getvalue(qaTool.convert(f_low, 'GHz')))
+                        f_high = qaTool.quantity(float(freq_interval[2]), freq_interval[3])
+                        f_high_v = float(qaTool.getvalue(qaTool.convert(f_high, 'GHz')))
+                        n_sum += f_high_v**2-f_low_v**2
+                        d_sum += f_high_v-f_low_v
+            except:
+                LOG.attention('Cannot calculate reference frequency for mtmfs cleaning.')
+                return None
+        if not freqRangeFound:
+            LOG.info('No continuum frequency ranges found. No reference frequency calculated.')
+            return None
         d_sum *= 2
 
         if d_sum != 0.0:

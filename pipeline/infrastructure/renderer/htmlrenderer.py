@@ -316,7 +316,7 @@ class T1_1Renderer(RendererBase):
     TableRow = collections.namedtuple(
                 'Tablerow', 
                 'ousstatus_entity_id schedblock_id schedblock_name session '
-                'execblock_id ms acs_software_version acs_software_build_version href filesize ' 
+                'execblock_id ms acs_software_version acs_software_build_version observing_modes href filesize ' 
                 'receivers '
                 'num_antennas beamsize_min beamsize_max '
                 'time_start time_end time_on_source '
@@ -504,6 +504,7 @@ class T1_1Renderer(RendererBase):
                                             ms=ms.basename,
                                             acs_software_version = ms.acs_software_version,             # None for VLA
                                             acs_software_build_version = ms.acs_software_build_version, # None for VLA
+                                            observing_modes=ms.observing_modes,
                                             href=href,
                                             filesize=ms.filesize,
                                             receivers=receivers,
@@ -736,9 +737,12 @@ class T1_3MRenderer(RendererBase):
                         for field in resultitem.flagsummary:
                             # Get the field intents, but only for those that
                             # the pipeline processes. This can be an empty
-                            # list (PIPE-394: POINTING, WVR intents; PIPE-1806: DIFFGAIN).
-                            intents_list = [f.intents for f in ms.get_fields(
-                                intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET,DIFFGAIN')
+                            # list (PIPE-394: POINTING, WVR intents; PIPE-1806:
+                            # DIFFGAIN* intents).
+                            intents_list = [f.intents
+                                            for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,'
+                                                                          'POLANGLE,POLLEAKAGE,CHECK,TARGET,'
+                                                                          'DIFFGAINREF,DIFFGAINSRC')
                                             if field in f.name]
                             if len(intents_list) == 0:
                                 continue
