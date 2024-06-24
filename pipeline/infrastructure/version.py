@@ -15,15 +15,17 @@ from typing import Optional
 
 try:
     from logging import getLogger
-except AttributeError:
-    # When run from setup.py, the pipeline.infrastructure.logging module cannot
-    # be imported and we get this error:
+except (ModuleNotFoundError, AttributeError):
+    # * ModuleNotFoundError = when running setup.py without CASA libs
+    #   installed, e.g., a pristine venv
+    # * AttributeError = CASA libs present but pipeline.infrastructure.logging
+    #   module cannot be imported, resulting in this error:
     #
     #   AttributeError: partially initialized module 'logging' has no attribute
     #   'getLogger' (most likely due to a circular import)
     #
-    # Detect this failure and fake the logger functionality required by this
-    # module.
+    # For both cases, which only occur when run through setup.py, detect the
+    # failure and fake the logger functionality required by this module.
     def getLogger(name):
         class FakeLogger:
             def exception(self, msg, *args, **kwargs):
