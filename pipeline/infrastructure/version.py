@@ -116,8 +116,6 @@ class VersionInfo:
         else:
             local_version_label = '+' + self._sanitise(f'{commit_hash}-{branch}')
 
-        local_version_label = self._sanitise(local_version_label)
-
         return f"{self.release_tag}{local_version_label}"
 
     @staticmethod
