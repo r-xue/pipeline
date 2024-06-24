@@ -527,14 +527,16 @@ class Fluxboot(basetask.StandardTaskTemplate):
         else:
             fitorder = 1
             LOG.warning('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
-        # PIPE-1603, add fluxboot heuristics to use fitorder=0
-        if len(spws) == 1 or len(spws) == 2:
-            mhz_deltaf = deltaf.to_units(FrequencyUnits.MEGAHERTZ) if len(spws) == 1 \
-                else (abs((spws[1].centre_frequency - spws[0].centre_frequency).to_units(FrequencyUnits.MEGAHERTZ)) \
-                      if len(spws) == 2 else None )
 
-            for band in unique_bands:
-                if ((band == "L" and mhz_deltaf < 64) or (band != "L" and mhz_deltaf < 128)):
+        # PIPE-1603, add fluxboot heuristics to use fitorder=0
+        if len(spws) == 1:
+            mhz_deltaf = deltaf.to_units(FrequencyUnits.MEGAHERTZ)
+            if ((spws[0].band == "L" and mhz_deltaf < 64) or (mhz_deltaf < 128)):
+                fitorder = 0
+        else:
+            for i, spw in enumerate(spws[:-1]):
+                mhz_deltaf = abs((spws[i + 1].centre_frequency - spw.centre_frequency).to_units(FrequencyUnits.MEGAHERTZ))
+                if (spws[i + 1].band == "L" and spw.band == "L" and mhz_deltaf < 64) or mhz_deltaf < 128:
                     fitorder = 0
 
         LOG.info('Displaying fit order heuristics...')
@@ -734,6 +736,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 if len(logfittedfluxd) > 1:
                     coef = [fitflx, spix, curvature, gamma, delta]
                     coef_errors = [fitflxerr, spixerr, curvatureerr, gammaerr, deltaerr]
+
                     ref_freq = reffreq
 
                     # first coefficient is log S
@@ -752,6 +755,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                             print('  {0:.4f} +/- {1:.4f}'.format(coef[j], coef_errors[j]))
                     print('------------------------------------------------------')
                     print('Old reffreq: {0:.6f}      New reffreq: {1:.6f}'.format(ref_freq, bandcenterfreq/1.e9))
+
                     new_coef = self.re_reference_polynomial(coef, ref_freq, bandcenterfreq/1.e9)
 
                     # bootstrap new coefficient errors
@@ -1098,11 +1102,15 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 p2.coefficients(np.array):  re-referenced coefficients
 
         """
+
         shift = np.log10(new_ref_freq / original_ref_freq)
         p1 = np.poly1d(c1[::-1])
         r2 = np.roots(p1) - shift
         c2 = np.poly(r2)
-        c2 = c2 * p1(shift) / c2[-1]
+        if isinstance(c2, float):
+           c2 = c2 * p1(shift)
+        else:
+            c2 = c2 * p1(shift) / c2[-1]
         # c2 = c2 * p1(shift) / np.asarray(c2)[-1]
         p2 = np.poly1d(c2)
         return p2.coefficients[::-1]
