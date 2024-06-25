@@ -876,8 +876,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
                 # Generate flagging commands for outlier timestamps.
                 for idx in idx_to_flag:
-                    start = casa_tools.quanta.time(casa_tools.quanta.quantity(times[idx] - 0.002, 's'), form=['ymd'])
-                    end = casa_tools.quanta.time(casa_tools.quanta.quantity(times[idx] + 0.002, 's'), form=['ymd'])
+                    start = casa_tools.quanta.time(casa_tools.quanta.quantity(times[idx] - 0.5, 's'), form=['ymd'])
+                    end = casa_tools.quanta.time(casa_tools.quanta.quantity(times[idx] + 0.5, 's'), form=['ymd'])
                     flagcmds.append(f"mode='manual' antenna='{antenna_id_to_name[antennas[idx]]}' spw='{spw.id}'"
                                     f" field='{field.id}' timerange='{start[0]}~{end[0]}'"
                                     f" reason='QA2:gfluxscale_amp_time_sigma={sigma[idx]:.6f}'")
