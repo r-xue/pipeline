@@ -344,10 +344,16 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
 
         x_min = 1e99
         x_max = 0
+        # Cycle through flux measurements, ordered by SpW ID, to plot the
+        # calibrated fluxes.
+        # PIPE-2083: keep a record of which SpW IDs are getting plotted here,
+        # to restrict which SpWs it needs to overplot catalogue fluxes for.
+        spws_plotted = []
         for m in sorted(measurements, key=operator.attrgetter('spw_id')):
             # cycle colours so that windows centred on the same frequency are distinguishable
             symbol, colour = next(symbols_and_colours)
 
+            spws_plotted.append(m.spw_id)
             spw = ms.get_spectral_window(m.spw_id)
             x = spw.centre_frequency.to_units(FrequencyUnits.GIGAHERTZ)
             x_unc = decimal.Decimal('0.5') * spw.bandwidth.to_units(FrequencyUnits.GIGAHERTZ)
@@ -375,7 +381,9 @@ def create_flux_comparison_plots(context, output_dir, result, showatm=True):
 
         ages = []
         for origin, label in catalogue_fluxes.items():
-            fluxes = [f for f in field.flux_densities if f.origin == origin]
+            # PIPE-2083: select which catalog fluxes to plot, based on origin
+            # and for which SpWs the flux measurements were plotted earlier.
+            fluxes = [f for f in field.flux_densities if f.origin == origin and f.spw_id in spws_plotted]
             if not fluxes:
                 continue
 

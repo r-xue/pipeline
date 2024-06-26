@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=None, createmms=None,
-                    ocorr_mode=None, datacolumns=None, parallel=None):
+                    ocorr_mode=None, datacolumns=None, specline_spws=None, parallel=None):
 
     """
     hifv_importdata ---- Imports data into the VLA pipeline
@@ -69,7 +69,13 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
                   {'data':'raw','corrected':'regcal_contline'}
                   or {'data':'raw'} will be assumed, depending on
                   whether the corrected column exists or not.
-    parallel      Execute using CASA HPC functionality, if available.                  
+    specline_spws String indicating how the pipeline should determine whether a spw should
+                  be processed as a spectral line window or continuum. The default setting of 
+                  'auto' will use defined heuristics to determine this definition. Accepted
+                  values are 'auto', 'none' (no spws will be defined as spectral line), or 
+                  a string of spw definitions in the CASA format
+                  example: specline_spws='2,3,4~9,23'
+    parallel      Execute using CASA HPC functionality, if available.
 
     --------- examples -----------------------------------------------------------
 
