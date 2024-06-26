@@ -97,10 +97,10 @@ class SelfcalQAHandler(pqa.QAPlugin):
             shortmsg = f'The self-calibration worker failed for {n_field} {s_field}.'
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
-        if targets and len(targets) == len(targets_attempt) and not targets_success:
+        if targets and targets_attempt and not targets_success:
             # pass
             score = 0.99
-            longmsg = 'No field has sufficient SNR to attempt self-calibration.'
+            longmsg = 'Self-calibration attempted but not applied for any fields.'
             shortmsg = longmsg
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
