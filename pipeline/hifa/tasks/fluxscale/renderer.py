@@ -59,14 +59,20 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         flux_comparison_plots = self.create_flux_comparison_plots(pipeline_context, results)
 
+        # Generate rows for table of computed flux densities.
         table_rows = make_flux_table(pipeline_context, results)
 
+        # Generate rows for table of adopted flux densities.
         adopted_rows = make_adopted_table(results)
+
+        # Generate flagging commands summary table (PIPE-2155).
+        flagtable = make_flag_table(pipeline_context, results)
 
         mako_context.update({
             'adopted_table': adopted_rows,
             'ampuv_allant_plots': ampuv_allant_plots,
             'ampuv_ant_plots': ampuv_ant_plots,
+            'flagtable': flagtable,
             'flux_plots': flux_comparison_plots,
             'table_rows': table_rows
         })
@@ -140,6 +146,30 @@ class T2_4MDetailsGFluxscaleRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 
 FluxTR = collections.namedtuple('FluxTR', 'vis field spw freqbw i q u v fluxratio spix')
+
+
+def make_flag_table(context, results):
+    weblog_dir = os.path.join(context.report_dir, f"stage{results.stage_number}")
+    flagtable = {}
+    for result in results:
+        for table_name, flagcmds in result.ampcal_flagcmds.items():
+            table_basename = os.path.basename(table_name)
+            flagcmd_abspath = write_flagcmds_to_disk(weblog_dir, table_basename, flagcmds)
+            flagcmd_relpath = os.path.relpath(flagcmd_abspath, context.report_dir)
+            flagtable[table_basename] = flagcmd_relpath
+
+    return flagtable
+
+
+def write_flagcmds_to_disk(weblog_dir, basename, flagcmds):
+    filename = os.path.join(weblog_dir, f"{basename}-flag_commands.txt")
+    with open(filename, 'w') as flagfile:
+        flagfile.writelines([f"# Flag commands for {basename}\n#\n"])
+        flagfile.writelines([f"{flagcmd}\n" for flagcmd in flagcmds])
+        if not flagcmds:
+            flagfile.writelines(["# No flag commands generated\n"])
+
+    return filename
 
 
 def make_flux_table(context, results):
