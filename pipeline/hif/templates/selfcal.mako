@@ -129,17 +129,19 @@ def fm_reason(slib):
         <tr>
             <th>Field</th>
             <th>Band</th>
-            <th>spw</th>
-            <th>phasecenter</th>
-            <th>cell</th>
-            <th>imsize</th>
-            <th>Solints to Attempt</th>
+            <th>SpW</th>
+            <th>Phasecenter</th>
+            <th>Cell</th>
+            <th>Imsize</th>
+            <th>Solints to attempt</th>
             <th>Success</th>
             <th>Contline<br>applied</th>
             <th>Line<br>applied</th>
         <tr>
   </thead>
-  <caption>Self-calibration Target(s) Summary</caption>
+  <caption>
+    Self-Calibration Targets Summary: All attempted solution intervals (solints) are shown in <b>bold</b>. If a solint is highlighted in <b><a style="color:blue">blue</a></b>, it represents the final applied solint.
+  </caption>
   <tbody>
   % for tr in targets_summary_table:
     <tr>

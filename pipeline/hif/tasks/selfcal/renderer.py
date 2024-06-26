@@ -136,8 +136,44 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             else:
                 return '<span class="glyphicon glyphicon-remove"></span>'
 
-        def color_success(str):
-            return f'<b><a style="color:blue">{str}</a></b>'
+        def format_solints(target):
+            """
+            Formats the solution intervals (solints) for a given target by adding HTML tags to highlight
+            the final and attempted solints.
+
+            Args:
+                target (dict): A dictionary containing the following keys:
+                    - 'sc_lib' (dict): A dictionary representing the solution library.
+                        - 'vislist' (list): A list of visibility keys.
+                        - 'final_solint' (str, optional): The final solution interval, if successful.
+                        - 'SC_success' (bool): Indicates if the solution was successful.
+                    - 'sc_solints' (list): A list of solution intervals to be formatted.
+
+            Returns:
+                list: A list of formatted solution intervals as strings with HTML tags applied to
+                the final and attempted solints.
+            """
+            slib = target['sc_lib']
+            solints = target['sc_solints']
+            vislist = slib['vislist']
+            vis_keys = set(slib[vislist[-1]])
+
+            # The final solint presents the applied/successful solint.
+            final_solint = slib.get('final_solint', None) if slib.get('SC_success') else None
+
+            # Aggregate the actually attempted solints
+            attempted_solints = set(solint for solint in solints if solint in vis_keys)
+
+            formated_solints = []
+            for solint in solints:
+                formated_solint = solint
+                if solint == final_solint:
+                    formated_solint = f"<a style='color:blue'>{formated_solint}</a>"
+                if solint in attempted_solints:
+                    formated_solint = f"<strong>{formated_solint}</strong>"
+                formated_solints.append(formated_solint)
+
+            return formated_solints
 
         for target in targets:
             row = []
@@ -149,14 +185,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             row.append(target['phasecenter'])
             row.append(target['cell'])
             row.append(target['imsize'])
-            if target['sc_lib']['SC_success']:
-                final_solint = target['sc_lib']['final_solint']
-                sc_solints_list = [
-                    color_success(final_solint)
-                    if solint == final_solint else solint for solint in target['sc_solints']]
-            else:
-                sc_solints_list = target['sc_solints']
-            row.append(', '.join(sc_solints_list))
+            row.append(', '.join(format_solints(target)))
             row.append(bool2icon(target['sc_lib']['SC_success']))
             row.append(bool2icon(target['sc_lib']['SC_success'] and r.applycal_result_contline is not None))
             row.append(bool2icon(target['sc_lib']['SC_success'] and r.applycal_result_line is not None))
