@@ -25,7 +25,7 @@ class ContFileHandler(object):
         self.p = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
         self.cont_ranges = self.read(warn_nonexist=warn_nonexist)
 
-    def read(self, skip_none=False, warn_nonexist=False):
+    def read(self, warn_nonexist=False):
 
         if self.filename is None:
             return {}
@@ -42,10 +42,10 @@ class ContFileHandler(object):
         for item in cont_region_data:
             try:
                 if ((item.find('SpectralWindow:') == -1) and
-                        (item.find('SPW') == -1) and
-                        (item.find('~') == -1) and
-                        (item != 'NONE') and
-                        (item != 'ALL')):
+                    (item.find('SPW') == -1 or item.find('SPW') > 0) and
+                    (item.find('Flags') == -1) and
+                    (item.find('~') == -1) and
+                    (item not in ('NONE', 'ALL', 'ALLCONT'))):
                     if item.find('Field:') == 0:
                         field_name = item.split('Field:')[1].strip()
                     else:
@@ -58,31 +58,39 @@ class ContFileHandler(object):
                     spw_id = item.split('SPW')[1].strip()
                     cont_ranges['fields'][field_name][spw_id] = []
                 elif item.find('SpectralWindow:') == 0:
-                    cont_ranges['version'] = 2
-                    spw_id = item.split('SpectralWindow:')[1].strip()
-                    cont_ranges['fields'][field_name][spw_id] = []
-                elif item == 'ALL':
-                    cont_ranges['fields'][field_name][spw_id].append('ALL')
-                elif (item == 'NONE') and not skip_none:
-                    cont_ranges['fields'][field_name][spw_id].append('NONE')
+                    spw_items = item.split()
+                    if len(spw_items) == 2:
+                        cont_ranges['version'] = 2
+                        spw_id = spw_items[1]
+                        spw_name = f'spw{spw_items[1]}'
+                    elif len(spw_items) == 3:
+                        cont_ranges['version'] = 3
+                        spw_id = spw_items[1]
+                        spw_name = spw_items[2]
+                    cont_ranges['fields'][field_name][spw_id] = {'name': spw_name, 'flags': [], 'ranges': []}
+                elif item.find('Flags:') == 0:
+                    flags = item.split()
+                    cont_ranges['fields'][field_name][spw_id]['flags'].extend(flags[1:])
+                    cont_ranges['version'] = 3
                 else:
                     cont_regions = self.p.findall(item.replace(';', ''))
                     for cont_region in cont_regions:
                         if cont_ranges['version'] == 1:
                             unit = cont_region[3]
                             refer = 'TOPO'
-                        elif cont_ranges['version'] == 2:
+                        elif cont_ranges['version'] in (2, 3):
                             unit, refer = cont_region[3].split()
                         fLow = casa_tools.quanta.convert('%s%s' % (cont_region[0], unit), 'GHz')['value']
                         fHigh = casa_tools.quanta.convert('%s%s' % (cont_region[2], unit), 'GHz')['value']
-                        cont_ranges['fields'][field_name][spw_id].append({'range': (fLow, fHigh), 'refer': refer})
-            except:
-                pass
+                        cont_ranges['fields'][field_name][spw_id]['ranges'].append({'range': (fLow, fHigh), 'refer': refer})
+            except Exception as e:
+                LOG.error(f'Could not read cont file {self.filename}: {e}')
+                raise e
 
         for fkey in cont_ranges['fields']:
             for skey in cont_ranges['fields'][fkey]:
-                if cont_ranges['fields'][fkey][skey] == []:
-                    cont_ranges['fields'][fkey][skey] = ['NONE']
+                if cont_ranges['fields'][fkey][skey]['ranges'] == []:
+                    cont_ranges['fields'][fkey][skey]['ranges'] = ['NONE']
 
         return cont_ranges
 
@@ -99,50 +107,76 @@ class ContFileHandler(object):
             for field_name in cont_ranges['fields']:
                 if cont_ranges['version'] == 1:
                     fd.write('%s\n\n' % (field_name.replace('"', '')))
-                elif cont_ranges['version'] == 2:
+                elif cont_ranges['version'] in (2, 3):
                     fd.write('Field: %s\n\n' % (field_name.replace('"', '')))
                 for spw_id in cont_ranges['fields'][field_name]:
                     if cont_ranges['version'] == 1:
                         fd.write('SPW%s\n' % spw_id)
-                    elif cont_ranges['version'] == 2:
-                        fd.write('SpectralWindow: %s\n' % spw_id)
-                    if cont_ranges['fields'][field_name][spw_id] in ([], ['NONE']):
-                        fd.write('NONE\n')
-                    elif cont_ranges['fields'][field_name][spw_id] == ['ALL']:
-                        fd.write('ALL\n')
+                    elif cont_ranges['version'] in (2, 3):
+                        fd.write('SpectralWindow: %s' % spw_id)
+                        if cont_ranges['version'] == 3:
+                            fd.write(f" {cont_ranges['fields'][field_name][spw_id]['name']}\n")
+                        else:
+                            fd.write('\n')
+                    if cont_ranges['fields'][field_name][spw_id]['flags'] != [] and cont_ranges['version'] == 3:
+                        fd.write(f"Flags: {' '.join(cont_ranges['fields'][field_name][spw_id]['flags'])}\n")
+                    if cont_ranges['fields'][field_name][spw_id]['ranges'] in ([], ['NONE']):
+                        if cont_ranges['version'] == 2:
+                            fd.write('NONE\n')
+                    elif cont_ranges['fields'][field_name][spw_id]['ranges'] == ['ALL']:
+                        if cont_ranges['version'] == 2:
+                            fd.write('ALL\n')
                     else:
-                        for freq_range in cont_ranges['fields'][field_name][spw_id]:
-                            if freq_range == 'NONE':
-                                fd.write('NONE\n')
-                            elif freq_range == 'ALL':
-                                fd.write('ALL\n')
+                        for freq_range in cont_ranges['fields'][field_name][spw_id]['ranges']:
+                            if freq_range in ('ALL', 'ALLCONT', 'NONE'):
+                                if cont_ranges['version'] == 2:
+                                    fd.write(f'{freq_range}\n')
+                                elif cont_ranges['version'] == 3:
+                                    fd.write(f'Flags: {freq_range}\n')
                             else:
                                 if cont_ranges['version'] == 1:
                                     fd.write('%.10f~%.10fGHz\n' % (float(freq_range['range'][0]), float(freq_range['range'][1])))
-                                elif cont_ranges['version'] == 2:
+                                elif cont_ranges['version'] in (2, 3):
                                     fd.write('%.10f~%.10fGHz %s\n' % (float(freq_range['range'][0]), float(freq_range['range'][1]),
                                                                 freq_range['refer']))
                     fd.write('\n')
         fd.close()
 
-    def get_merged_selection(self, field_name, spw_id, cont_ranges=None):
+    def get_merged_selection(self, field_name: str, spw_def: str, cont_ranges: Union[Dict, None]=None):
+        """
+        field_name: field name
+        spw_def: spw ID (digits) or spw name
+        cont_ranges: Optional user supplied continuum ranges lookup dictionary
+        """
 
         field_name = str(field_name)
-        spw_id = str(spw_id)
+        spw_def = str(spw_def)
 
         if cont_ranges is None:
             cont_ranges = self.cont_ranges
 
         all_continuum = False
         if field_name in cont_ranges['fields']:
+            if spw_def.isdigit():
+                # "Old" style spw ID lookup
+                spw_id = spw_def
+            else:
+                # spw name lookup
+                spw_id = None
+                for s in cont_ranges['fields'][field_name]:
+                    if cont_ranges['fields'][field_name][s]['name'] == spw_def:
+                        spw_id = s
+                        break
+                if spw_id is None:
+                    return '', False
             if spw_id in cont_ranges['fields'][field_name]:
-                if cont_ranges['fields'][field_name][spw_id] not in (['ALL'], [], ['NONE']):
+                if cont_ranges['fields'][field_name][spw_id]['ranges'] not in (['ALL'], [], ['NONE']) and 'ALLCONT' not in cont_ranges['fields'][field_name][spw_id]['flags']:
                     merged_cont_ranges = utils.merge_ranges(
-                        [cont_range['range'] for cont_range in cont_ranges['fields'][field_name][spw_id] if isinstance(cont_range, dict)])
+                        [cont_range['range'] for cont_range in cont_ranges['fields'][field_name][spw_id]['ranges'] if isinstance(cont_range, dict)])
                     cont_ranges_spwsel = ';'.join(['%.10f~%.10fGHz' % (float(spw_sel_interval[0]), float(spw_sel_interval[1]))
                                                    for spw_sel_interval in merged_cont_ranges])
                     refers = np.array([cont_range['refer']
-                                       for cont_range in cont_ranges['fields'][field_name][spw_id] if isinstance(cont_range, dict)])
+                                       for cont_range in cont_ranges['fields'][field_name][spw_id]['ranges'] if isinstance(cont_range, dict)])
                     if (refers == 'TOPO').all():
                         refer = 'TOPO'
                     elif (refers == 'LSRK').all():
@@ -152,9 +186,9 @@ class ContFileHandler(object):
                     else:
                         refer = 'UNDEFINED'
                     cont_ranges_spwsel = '%s %s' % (cont_ranges_spwsel, refer)
-                    if 'ALL' in cont_ranges['fields'][field_name][spw_id]:
+                    if 'ALL' in cont_ranges['fields'][field_name][spw_id]['ranges']:
                         all_continuum = True
-                elif cont_ranges['fields'][field_name][spw_id] == ['ALL']:
+                elif cont_ranges['fields'][field_name][spw_id]['ranges'] == ['ALL'] or 'ALLCONT' in cont_ranges['fields'][field_name][spw_id]['flags']:
                     cont_ranges_spwsel = 'ALL'
                     all_continuum = True
                 else:
@@ -263,7 +297,7 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
         spwstring = ''
         for spw in contdict['fields'][field]:
-            crange_list = [crange for crange in contdict['fields'][field][spw] if crange != 'ALL']
+            crange_list = [crange for crange in contdict['fields'][field][spw]['ranges'] if crange not in ('NONE', 'ALL')]
             if crange_list[0]['refer'] in ('LSRK', 'SOURCE'):
                 LOG.info("Converting from %s to TOPO...", crange_list[0]['refer'])
                 sname = field
@@ -311,7 +345,7 @@ def contfile_to_chansel(vis, context, contfile='cont.dat', excludechans=False):
     The return is a dictionary with field names with keys and chansel as values, e.g.,
         {'04287+1801': '20:327~328,26:340~341'}
     The channel selection string is in real SPWs of input vis.
-    If excludechans=True, the returned string will select channels outside the continuum ranges instead.        
+    If excludechans=True, the returned string will select channels outside the continuum ranges instead.
     """
 
     spwsel_dict = contfile_to_spwsel(vis, context, contfile, use_realspw=True)
@@ -328,7 +362,7 @@ def spwsel2chansel(vis, field, spwsel, excludechans):
     This function can convert selections of spws/chans in to channel indexes.
     If excludechans=True, it will select channels outside of the input selection.
 
-    This function starts as a copy of a private helper function (_quantityRangesToChannels) from 
+    This function starts as a copy of a private helper function (_quantityRangesToChannels) from
         casatasks.private.task_uvcontsub_old._quantityRangesToChannels (ver6.5.2/6.5.3)
         casatasks.private.task_uvcontsub._quantityRangesToChannels (ver6.5.1)
     https://open-bitbucket.nrao.edu/projects/CASA/repos/casa6/browse/casatasks/src/private/task_uvcontsub_old.py?at=refs%2Ftags%2F6.5.3.28#316
