@@ -2691,7 +2691,7 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
 
 
 @log_qa
-def score_overall_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> List[pqa.QAScore]:
+def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> List[pqa.QAScore]:
     """Compute QA score based on the line detection result.
 
     QA scores are evaluated based on the line detection result for

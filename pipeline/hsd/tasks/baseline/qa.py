@@ -43,9 +43,7 @@ class SDBaselineQAHandler(pqa.QAPlugin):
                                                            qstat.spw, qstat.pol, qstat.stat))
 
         scores.extend(
-            qacalc.score_overall_sd_line_detection(
-                context.observing_run.ms_reduction_group, result
-            )
+            qacalc.score_sd_line_detection(context.observing_run.ms_reduction_group, result)
         )
 
         result.qa.pool.extend(scores)
