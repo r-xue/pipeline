@@ -57,7 +57,7 @@ class FindContHeuristics(object):
             frequency_ranges_GHz = [{'range': item, 'refer': refer} for item in utils.chan_selection_to_frequencies(dirty_cube, channel_selection, 'GHz')]
 
         if warning_strings[0]:
-            flags.append('LOWBW')
+            flags.append('LOWBANDWIDTH')
         if warning_strings[1]:
             flags.append('LOWSPREAD')
 

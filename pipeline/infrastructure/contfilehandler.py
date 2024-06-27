@@ -144,9 +144,17 @@ class ContFileHandler(object):
 
     def get_merged_selection(self, field_name: str, spw_def: str, cont_ranges: Union[Dict, None]=None):
         """
+        Inputs:
+
         field_name: field name
         spw_def: spw ID (digits) or spw name
         cont_ranges: Optional user supplied continuum ranges lookup dictionary
+
+        Returns:
+        merged continuum selection: string
+        all continuum flag: boolean
+        low bandwidth flag: boolean
+        low spread flag: boolean
         """
 
         field_name = str(field_name)
@@ -156,6 +164,8 @@ class ContFileHandler(object):
             cont_ranges = self.cont_ranges
 
         all_continuum = False
+        low_bandwidth = False
+        low_spread = False
         if field_name in cont_ranges['fields']:
             if spw_def.isdigit():
                 # "Old" style spw ID lookup
@@ -168,7 +178,7 @@ class ContFileHandler(object):
                         spw_id = s
                         break
                 if spw_id is None:
-                    return '', False
+                    return '', False, False, False
             if spw_id in cont_ranges['fields'][field_name]:
                 if cont_ranges['fields'][field_name][spw_id]['ranges'] not in (['ALL'], [], ['NONE']) and 'ALLCONT' not in cont_ranges['fields'][field_name][spw_id]['flags']:
                     merged_cont_ranges = utils.merge_ranges(
@@ -189,16 +199,18 @@ class ContFileHandler(object):
                     if 'ALL' in cont_ranges['fields'][field_name][spw_id]['ranges']:
                         all_continuum = True
                 elif cont_ranges['fields'][field_name][spw_id]['ranges'] == ['ALL'] or 'ALLCONT' in cont_ranges['fields'][field_name][spw_id]['flags']:
-                    cont_ranges_spwsel = 'ALL'
+                    cont_ranges_spwsel = 'ALLCONT'
                     all_continuum = True
                 else:
                     cont_ranges_spwsel = 'NONE'
+                low_bandwidth = 'LOWBANDWIDTH' in cont_ranges['fields'][field_name][spw_id]['flags']
+                low_spread = 'LOWSPREAD' in cont_ranges['fields'][field_name][spw_id]['flags']
             else:
                 cont_ranges_spwsel = ''
         else:
             cont_ranges_spwsel = ''
 
-        return cont_ranges_spwsel, all_continuum
+        return cont_ranges_spwsel, all_continuum, low_bandwidth, low_spread
 
     def to_topo(self, selection: str, msnames: List[str], fields: List[Union[int, str]], spw_id: Union[int, str], observing_run: Any, ctrim: int = 0, ctrim_nchan: int = -1) -> Tuple[List[str], List[str], Dict]:
 
@@ -305,7 +317,7 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
                 cranges_spwsel = collections.OrderedDict()
                 cranges_spwsel[sname] = collections.OrderedDict()
-                cranges_spwsel[sname][spw], _ = contfile_handler.get_merged_selection(sname, spw)
+                cranges_spwsel[sname][spw], _, _, _ = contfile_handler.get_merged_selection(sname, spw)
 
                 freq_ranges, _, _ = contfile_handler.to_topo(
                     cranges_spwsel[sname][spw], [vis], [field_id], int(spw),

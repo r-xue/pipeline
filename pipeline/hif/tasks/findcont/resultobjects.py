@@ -40,6 +40,8 @@ class FindContResult(basetask.Results):
                     new_spw_sel = 'NEW' in [self.result_cont_ranges[source_name][spwid]['status'] for spwid in spwids.split(',')]
 
                     all_continuum = True
+                    low_bandwidth = True
+                    low_spread = True
                     if new_spw_sel:
                         spwsel = {}
                         for spwid in spwids.split(','):
@@ -49,6 +51,8 @@ class FindContResult(basetask.Results):
                                 all_continuum = False
                             elif self.cont_ranges['fields'][source_name][spwid]['ranges'] == ['ALL']:
                                 spwsel['spw%s' % (spwid)] = 'ALL'
+                            elif self.cont_ranges['fields'][source_name][spwid]['ranges'] == ['ALLCONT']:
+                                spwsel['spw%s' % (spwid)] = 'ALLCONT'
                             else:
                                 new_spwids.append(spwid)
                                 spwsel['spw%s' % (spwid)] = ';'.join(['%.10f~%.10fGHz' % (float(cont_range['range'][0]), float(cont_range['range'][1])) for cont_range in
@@ -63,8 +67,11 @@ class FindContResult(basetask.Results):
                                 else:
                                     refer = 'UNDEFINED'
                                 spwsel['spw%s' % (spwid)] = '%s %s' % (spwsel['spw%s' % (spwid)], refer)
-                                if 'ALL' not in self.cont_ranges['fields'][source_name][spwid]['ranges']:
+                                if 'ALL' not in self.cont_ranges['fields'][source_name][spwid]['ranges'] or 'ALLCONT' not in self.cont_ranges['fields'][source_name][spwid]['flags']:
                                     all_continuum = False
+
+                            low_bandwidth = low_bandwidth and 'LOWBANDWIDTH' in self.cont_ranges['fields'][source_name][spwid]['flags']
+                            low_spread = low_spread and 'LOWSPREAD' in self.cont_ranges['fields'][source_name][spwid]['flags']
 
                         new_spwids = ','.join(new_spwids)
                         if (new_spwids == '') and (target['intent'] == 'TARGET'):
@@ -75,6 +82,8 @@ class FindContResult(basetask.Results):
                             new_target['spw'] = new_spwids
                             new_target['spwsel_lsrk'] = spwsel
                             new_target['spwsel_all_cont'] = all_continuum
+                            new_target['spwsel_low_bandwidth'] = low_bandwidth
+                            new_target['spwsel_low_spread'] = low_spread
 
                 if target_ok:
                     clean_list_pending.append(new_target)

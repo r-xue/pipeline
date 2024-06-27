@@ -132,8 +132,8 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
                  weighting=None, robust=None, uvtaper=None, scales=None, cycleniter=None, cyclefactor=None,
                  hm_minpsffraction=None, hm_maxpsffraction=None,
                  sensitivity=None, reffreq=None, restfreq=None, conjbeams=None, is_per_eb=None, antenna=None,
-                 usepointing=None, mosweight=None, spwsel_all_cont=None, num_all_spws=None, num_good_spws=None,
-                 bl_ratio=None, cfcache_nowb=None,
+                 usepointing=None, mosweight=None, spwsel_all_cont=None, spwsel_low_bandwidth=None,
+                 spwsel_low_spread=None, num_all_spws=None, num_good_spws=None, bl_ratio=None, cfcache_nowb=None,
                  # End of extra parameters
                  heuristics=None, pbmask=None):
         super(TcleanInputs, self).__init__(context, output_dir=output_dir, vis=vis, imagename=imagename, antenna=antenna,
@@ -169,6 +169,8 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.spwsel_lsrk = spwsel_lsrk
         self.spwsel_topo = spwsel_topo
         self.spwsel_all_cont = spwsel_all_cont
+        self.spwsel_low_bandwidth = spwsel_low_bandwidth
+        self.spwsel_low_spread = spwsel_low_spread
         self.num_all_spws = num_all_spws
         self.num_good_spws = num_good_spws
         self.bl_ratio = bl_ratio
@@ -544,12 +546,16 @@ class Tclean(cleanbase.CleanBase):
         # this does not (yet) happen in hif_editimlist.
         if inputs.spwsel_lsrk == {}:
             all_continuum = True
+            low_bandwidth = True
+            low_spread = True
             for spwid in inputs.spw.split(','):
 
 
-                cont_ranges_spwsel, all_continuum_spwsel = self.image_heuristics.cont_ranges_spwsel()
+                cont_ranges_spwsel, all_continuum_spwsel, low_bandwidth_spwsel, low_spread_spwsel = self.image_heuristics.cont_ranges_spwsel()
                 spwsel_spwid = cont_ranges_spwsel.get(utils.dequote(inputs.field), {}).get(spwid, 'NONE')
                 all_continuum = all_continuum and all_continuum_spwsel.get(utils.dequote(inputs.field), {}).get(spwid, False)
+                low_bandwidth = low_bandwidth and low_bandwidth_spwsel.get(utils.dequote(inputs.field), {}).get(spwid, False)
+                low_spread = low_spread and low_spread_spwsel.get(utils.dequote(inputs.field), {}).get(spwid, False)
 
                 if inputs.intent == 'TARGET':
                     if (spwsel_spwid == 'NONE') and self.image_heuristics.warn_missing_cont_ranges():
@@ -570,6 +576,8 @@ class Tclean(cleanbase.CleanBase):
 
                 inputs.spwsel_lsrk['spw%s' % spwid] = spwsel_spwid
             inputs.spwsel_all_cont = all_continuum
+            inputs.spwsel_low_bandwidth = low_bandwidth
+            inputs.spwsel_low_spread = low_spread
 
         # Get TOPO frequency ranges for all MSs
         (spw_topo_freq_param, _, _, spw_topo_chan_param_dict, _, _, self.aggregate_lsrk_bw) = self.image_heuristics.calc_topo_ranges(inputs)
@@ -1364,6 +1372,8 @@ class Tclean(cleanbase.CleanBase):
                                                   spw=inputs.spw,
                                                   spwsel=inputs.spwsel_topo,
                                                   spwsel_all_cont=inputs.spwsel_all_cont,
+                                                  spwsel_low_bandwidth=inputs.spwsel_low_bandwidth,
+                                                  spwsel_low_spread=inputs.spwsel_low_spread,
                                                   reffreq=inputs.reffreq,
                                                   restfreq=inputs.restfreq,
                                                   conjbeams=inputs.conjbeams,

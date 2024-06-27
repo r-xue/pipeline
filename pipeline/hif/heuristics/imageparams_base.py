@@ -141,13 +141,19 @@ class ImageParamsHeuristics(object):
         # initialize lookup dictionary for all possible source names
         cont_ranges_spwsel = {}
         all_continuum_spwsel = {}
+        low_bandwidth_spwsel = {}
+        low_spread_spwsel = {}
         for ms_ref in self.observing_run.get_measurement_sets():
             for source_name in [s.name for s in ms_ref.sources]:
                 cont_ranges_spwsel[source_name] = {}
                 all_continuum_spwsel[source_name] = {}
+                low_bandwidth_spwsel[source_name] = {}
+                low_spread_spwsel[source_name] = {}
                 for spwid in self.spwids:
                     cont_ranges_spwsel[source_name][str(spwid)] = ''
                     all_continuum_spwsel[source_name][str(spwid)] = False
+                    low_bandwidth_spwsel[source_name][str(spwid)] = False
+                    low_spread_spwsel[source_name][str(spwid)] = False
 
         contfile = self.contfile if self.contfile is not None else ''
         linesfile = self.linesfile if self.linesfile is not None else ''
@@ -161,7 +167,7 @@ class ImageParamsHeuristics(object):
             # Collect the merged the ranges
             for field_name in cont_ranges_spwsel:
                 for spw_id in cont_ranges_spwsel[field_name]:
-                    cont_ranges_spwsel[field_name][spw_id], all_continuum_spwsel[field_name][spw_id] = contfile_handler.get_merged_selection(field_name, spw_id)
+                    cont_ranges_spwsel[field_name][spw_id], all_continuum_spwsel[field_name][spw_id], low_bandwidth_spwsel[field_name][spw_id], low_spread_spwsel[field_name][spw_id] = contfile_handler.get_merged_selection(field_name, spw_id)
 
         # alternatively read and merge line regions and calculate continuum regions
         elif os.path.isfile(linesfile):
@@ -203,7 +209,7 @@ class ImageParamsHeuristics(object):
                 except Exception as e:
                     LOG.warn(f'Could not determine continuum ranges for spw {spwid}. Exception: {str(e)}')
 
-        return cont_ranges_spwsel, all_continuum_spwsel
+        return cont_ranges_spwsel, all_continuum_spwsel, low_bandwidth_spwsel, low_spread_spwsel
 
     def field_intent_list(self, intent, field):
         intent_list = intent.split(',')
@@ -1390,7 +1396,7 @@ class ImageParamsHeuristics(object):
                 total_topo_freq_ranges.append((min_frequency, max_frequency))
 
                 if 'spw%s' % (spwid) in inputs.spwsel_lsrk:
-                    if (inputs.spwsel_lsrk['spw%s' % (spwid)] not in ['ALL', '', 'NONE']):
+                    if (inputs.spwsel_lsrk['spw%s' % (spwid)] not in ('ALL', 'ALLCONT', '', 'NONE')):
                         freq_selection, refer = inputs.spwsel_lsrk['spw%s' % (spwid)].split()
                         if (refer in ('LSRK', 'SOURCE', 'REST')):
                             # Convert to TOPO
@@ -1428,7 +1434,7 @@ class ImageParamsHeuristics(object):
                             spw_topo_chan_param_dict[os.path.basename(msname)][spwid] = ''
                         topo_freq_ranges.append((min_frequency, max_frequency))
                         aggregate_spw_lsrk_bw = '%.10fGHz' % (max_frequency - min_frequency)
-                        if (inputs.spwsel_lsrk['spw%s' % (spwid)] != 'ALL') and (inputs.intent == 'TARGET') and (inputs.specmode in ('mfs', 'cont') and self.warn_missing_cont_ranges()):
+                        if (inputs.spwsel_lsrk['spw%s' % (spwid)] not in ('ALL', 'ALLCONT')) and (inputs.intent == 'TARGET') and (inputs.specmode in ('mfs', 'cont') and self.warn_missing_cont_ranges()):
                             LOG.warning('No continuum frequency selection for Target Field %s SPW %s' % (inputs.field, spwid))
                 else:
                     spw_topo_freq_param_lists.append([spwid] * len(inputs.vis))
