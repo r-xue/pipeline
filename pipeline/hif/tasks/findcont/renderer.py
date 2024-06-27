@@ -75,6 +75,8 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 status = ranges_dict[field][spw]['status']
 
                 ranges_for_spw = ranges_dict[field][spw].get('cont_ranges', ['NONE'])
+                if ranges_for_spw != ['NONE']:
+                    ranges_for_spw = ranges_for_spw['ranges']
 
                 if ranges_for_spw in non_detection:
                     rows.append(TR(field='<b>{:s}</b>'.format(field), spw=spw, min='None', max='',

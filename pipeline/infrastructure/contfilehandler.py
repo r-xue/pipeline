@@ -30,7 +30,7 @@ class ContFileHandler(object):
         if self.filename is None:
             return {}
 
-        cont_ranges = {'fields': {}, 'version': 2}
+        cont_ranges = {'fields': {}, 'version': 3}
 
         try:
             cont_region_data = [item.replace('\n', '') for item in open(self.filename, 'r').readlines() if item != '\n']
@@ -67,7 +67,7 @@ class ContFileHandler(object):
                         cont_ranges['version'] = 3
                         spw_id = spw_items[1]
                         spw_name = spw_items[2]
-                    cont_ranges['fields'][field_name][spw_id] = {'name': spw_name, 'flags': [], 'ranges': []}
+                    cont_ranges['fields'][field_name][spw_id] = {'spwname': spw_name, 'flags': [], 'ranges': []}
                 elif item.find('Flags:') == 0:
                     flags = item.split()
                     cont_ranges['fields'][field_name][spw_id]['flags'].extend(flags[1:])
@@ -115,7 +115,7 @@ class ContFileHandler(object):
                     elif cont_ranges['version'] in (2, 3):
                         fd.write('SpectralWindow: %s' % spw_id)
                         if cont_ranges['version'] == 3:
-                            fd.write(f" {cont_ranges['fields'][field_name][spw_id]['name']}\n")
+                            fd.write(f" {cont_ranges['fields'][field_name][spw_id]['spwname']}\n")
                         else:
                             fd.write('\n')
                     if cont_ranges['fields'][field_name][spw_id]['flags'] != [] and cont_ranges['version'] == 3:
@@ -164,7 +164,7 @@ class ContFileHandler(object):
                 # spw name lookup
                 spw_id = None
                 for s in cont_ranges['fields'][field_name]:
-                    if cont_ranges['fields'][field_name][s]['name'] == spw_def:
+                    if cont_ranges['fields'][field_name][s]['spwname'] == spw_def:
                         spw_id = s
                         break
                 if spw_id is None:
