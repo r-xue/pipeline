@@ -91,10 +91,11 @@ class SelfcalQAHandler(pqa.QAPlugin):
         if targets_exception:
             score = 0.8
             targets_desc = utils.commafy([name+' / '+band for name, band in targets_exception], quotes=False)
-            longmsg = f'The self-calibration worker failed for {targets_desc}.'
             n_field = len(targets_exception)
             s_field = 'target field' if n_field == 1 else 'target fields'
-            shortmsg = f'The self-calibration worker failed for {n_field} {s_field}.'
+            it_them = 'it' if n_field == 1 else 'them'
+            longmsg = f'The self-calibration worker failed for {targets_desc} and no calibration solutions could be applied for {it_them}.'
+            shortmsg = f'The self-calibration worker failed for {n_field} {s_field} and no calibration solutions could be applied for {it_them}.'
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         if targets and targets_attempt and not targets_success:
