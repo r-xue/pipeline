@@ -158,8 +158,14 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             vislist = slib['vislist']
             vis_keys = set(slib[vislist[-1]])
 
-            # The final solint presents the applied/successful solint.
-            final_solint = slib.get('final_solint', None) if slib.get('SC_success') else None
+            # A final solint presents one successful/applied solint gain solution
+            final_solints = []
+            if slib.get('SC_success'):
+                if 'inf_EB' in solints:
+                    final_solints.append('inf_EB')
+                if slib.get('final_solint', None) is not None:
+                    final_solints.append(slib.get('final_solint'))
+            final_solints = set(final_solints)
 
             # Aggregate the actually attempted solints
             attempted_solints = set(solint for solint in solints if solint in vis_keys)
@@ -167,7 +173,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             formated_solints = []
             for solint in solints:
                 formated_solint = solint
-                if solint == final_solint:
+                if solint in final_solints:
                     formated_solint = f"<a style='color:blue'>{formated_solint}</a>"
                 if solint in attempted_solints:
                     formated_solint = f"<strong>{formated_solint}</strong>"
