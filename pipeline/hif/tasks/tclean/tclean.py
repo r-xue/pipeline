@@ -562,7 +562,7 @@ class Tclean(cleanbase.CleanBase):
                         LOG.warning('No continuum frequency range information detected for %s, spw %s.' % (inputs.field,
                                                                                                            spwid))
 
-                if spwsel_spwid in ('ALL', '', 'NONE'):
+                if spwsel_spwid in ('ALL', 'ALLCONT', '', 'NONE'):
                     if self.image_heuristics.is_eph_obj(inputs.field):
                         spwsel_spwid_refer = 'SOURCE'
                     else:
@@ -1539,7 +1539,7 @@ class Tclean(cleanbase.CleanBase):
         if cont_chan_ranges[0] != 'NONE':
 
             # Create a channel ranges string.
-            if cont_chan_ranges[0] == 'ALL':
+            if cont_chan_ranges[0] in ('ALL', 'ALLCONT'):
                 cont_chan_ranges_str = ''
                 cont_chan_indices = slice(None)
             else:

@@ -309,7 +309,7 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
         spwstring = ''
         for spw in contdict['fields'][field]:
-            crange_list = [crange for crange in contdict['fields'][field][spw]['ranges'] if crange not in ('NONE', 'ALL')]
+            crange_list = [crange for crange in contdict['fields'][field][spw]['ranges'] if crange not in ('NONE', 'ALL', 'ALLCONT')]
             if crange_list[0]['refer'] in ('LSRK', 'SOURCE'):
                 LOG.info("Converting from %s to TOPO...", crange_list[0]['refer'])
                 sname = field
