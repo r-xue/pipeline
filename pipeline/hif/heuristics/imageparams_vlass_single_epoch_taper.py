@@ -65,7 +65,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         """Tclean scales parameter heuristics."""
         return [0]
 
-    def uvtaper(self, beam_natural=None, protect_long=None) -> Union[str, list]:
+    def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None) -> Union[str, list]:
         """Tclean uvtaper parameter heuristics."""
         return ['7.0arcsec']
 
