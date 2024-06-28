@@ -54,17 +54,17 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
 
     --------- parameter descriptions ---------------------------------------------
 
-    fitfunc             fitting function for baseline subtraction. You can only
-                        choose cubic spline ('spline' or 'cspline')
+    fitfunc             Fitting function for baseline subtraction. You can choose
+                        either cubic spline ('spline' or 'cspline') or polynomial
+                        ('poly' or 'polynomial'). Default is 'cspline'.
 
     fitorder            Fitting order for polynomial. For cubic spline, it is used
                         to determine how much the spectrum is segmented into.
                         Default (-1) is to determine the order automatically.
 
-    switchpoly          If True, switch to 1st or 2nd order polynomial fit when
-                        large mask exists at edge regardless of whatever fitfunc
-                        or fitorder are specified. Condition for switching is as
-                        follows:
+    switchpoly          Whether to fall back the fits from cubic spline to 1st or
+                        2nd order polynomial when large masks exist at the edges
+                        of the spw. Condition for switching is as follows:
                             if nmask > nchan/2      => 1st order polynomial
                             else if nmask > nchan/4 => 2nd order polynomial
                             else                    => use fitfunc and fitorder

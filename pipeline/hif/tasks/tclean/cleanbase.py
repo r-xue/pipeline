@@ -29,6 +29,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     deconvolver = vdp.VisDependentProperty(default='')
     cycleniter = vdp.VisDependentProperty(default=-999)
     cyclefactor = vdp.VisDependentProperty(default=-999.0)
+    nmajor = vdp.VisDependentProperty(default=None)
     cfcache = vdp.VisDependentProperty(default='')
     field = vdp.VisDependentProperty(default='')
     gridder = vdp.VisDependentProperty(default='')
@@ -50,6 +51,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
     mosweight = vdp.VisDependentProperty(default=None)
     nchan = vdp.VisDependentProperty(default=-1)
+    nbin = vdp.VisDependentProperty(default=-1)
     niter = vdp.VisDependentProperty(default=5000)
     hm_nsigma = vdp.VisDependentProperty(default=0.0)
     hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
@@ -121,9 +123,9 @@ class CleanBaseInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, datacolumn=None, datatype=None, datatype_info=None, intent=None, field=None,
                  spw=None, spwsel=None, spwsel_all_cont=None, uvrange=None, orig_specmode=None, specmode=None, gridder=None, deconvolver=None,
-                 uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, hm_minpsffraction=None,
+                 uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, nmajor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, scales=None, outframe=None, imsize=None,
-                 cell=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, stokes=None, weighting=None,
+                 cell=None, phasecenter=None, psf_phasecenter=None, nchan=None, nbin=None, start=None, width=None, stokes=None, weighting=None,
                  robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, startmodel=None, hm_masking=None,
                  hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None, wprojplanes=None,
                  hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None, hm_dogrowprune=None,
@@ -156,6 +158,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.nterms = nterms
         self.cycleniter = cycleniter
         self.cyclefactor = cyclefactor
+        self.nmajor = nmajor
         self.hm_minpsffraction = hm_minpsffraction
         self.hm_maxpsffraction = hm_maxpsffraction
         self.scales = scales
@@ -165,6 +168,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.phasecenter = phasecenter
         self.psf_phasecenter = psf_phasecenter
         self.nchan = nchan
+        self.nbin = nbin
         self.start = start
         self.width = width
         self.stokes = stokes
@@ -368,7 +372,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             #tclean_job_parameters['parallel'] = False
         else:
             tclean_job_parameters['phasecenter'] = inputs.phasecenter
-            if inputs.gridder == 'mosaic' and inputs.psf_phasecenter != inputs.phasecenter:
+            if inputs.gridder in ('mosaic', 'awproject') and inputs.psf_phasecenter != inputs.phasecenter:
                 tclean_job_parameters['psfphasecenter'] = inputs.psf_phasecenter
                 result.used_psfphasecenter = True
             else:
@@ -377,6 +381,10 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         if scanidlist not in [[], None]:
             tclean_job_parameters['scan'] = scanidlist
+
+        # special frequency interpolation setting for cube mode and nbin=2 (PIPE-2115)
+        if inputs.specmode == 'cube' and inputs.nbin == 2:
+            tclean_job_parameters['interpolation'] = 'nearest'
 
         # Set up masking parameters
         if inputs.hm_masking == 'auto':
@@ -492,6 +500,13 @@ class CleanBase(basetask.StandardTaskTemplate):
             cycleniter = inputs.heuristics.cycleniter(iter)
             if cycleniter is not None:
                 tclean_job_parameters['cycleniter'] = cycleniter
+
+        if inputs.nmajor not in (None, -999):
+            tclean_job_parameters['nmajor'] = inputs.nmajor
+        else:
+            nmajor = inputs.heuristics.nmajor(iter)
+            if nmajor is not None:
+                tclean_job_parameters['nmajor'] = nmajor
 
         if inputs.scales:
             tclean_job_parameters['scales'] = inputs.scales
@@ -716,8 +731,9 @@ class CleanBase(basetask.StandardTaskTemplate):
     def _copy_restoringbeam_from_psf(self, imagename):
         """Copy the per-plane beam set from .psf image to .image/.residual.
 
-        Note: this is a short-term workaround for CAS-13401, in which CASA/tclean(stokes='IQUV') doesn't save
+        Note: this is a workaround for CAS-13401, in which CASA/tclean(stokes='IQUV') doesn't save
               the per-plane restoring beam information into the residual and restored images.
+              For CASA ver>=6.6.0 (after the CAS-13401 implementation), this block should act as a no-op.
         """
         bm_src = '.psf'
         bm_src_ext_try = ['', '.tt0']
@@ -742,17 +758,20 @@ class CleanBase(basetask.StandardTaskTemplate):
                 for bm_ext0 in bm_dst_ext:
                     if os.path.exists(imagename+bm_dst0+bm_ext0):
                         with casa_tools.ImageReader(imagename+bm_dst0+bm_ext0) as bm_dst_im:
-                            LOG.info(f'Copy the per-plane beam set to {imagename+bm_dst0+bm_ext0}')
-                            dst_shape = bm_dst_im.shape()
-                            if (dst_shape == src_shape).all():
+                            if (bm_dst_im.shape() == src_shape).all() and not bm_dst_im.restoringbeam():
+                                # PIPE-2061: we only copy the beam info if the target and source images have the same shape
+                                # and the target image doesn't have a beam.
+                                LOG.info(f'Copy the per-plane beam set to {imagename+bm_dst0+bm_ext0}')
                                 for idx_c in range(src_shape[3]):
                                     for idx_p in range(src_shape[2]):
                                         LOG.debug(f'working on idx_chan={idx_c}, idx_pol={idx_p}')
                                         bm = bm_src_im.restoringbeam(channel=idx_c, polarization=idx_p)
                                         bm_dst_im.setrestoringbeam(beam=bm, channel=idx_c, polarization=idx_p)
                             else:
-                                LOG.warning(
-                                    'The restoring beam information source and destination images have different shapes. We will not copy the per-plane beam set.')
+                                LOG.info(
+                                    'The restoring beam copying source and target images have different shapes or the target '
+                                    'image already has a beam. We will skip copying the restoring beam')
+
 
 def rename_image(old_name, new_name, extensions=['']):
     """

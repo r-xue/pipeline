@@ -3,6 +3,7 @@ import datetime
 
 import numpy as np
 import matplotlib.pyplot as plt
+from astropy.time import Time as atime
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -195,8 +196,10 @@ class compressionSummary(object):
 
         for scan in scans:
             epoch = scan.start_time
-            t = qa.splitdate(epoch['m0'])
-            dd = datetime.datetime(t['year'], t['month'], t['monthday'], t['hour'], t['min'], t['sec'], t['usec'])
+            # PIPE-2156, replacing quanta.splitdate with astropy.time
+            # to resolve a bug in plotting
+            t = atime(epoch['m0']["value"], format='mjd')
+            dd = t.datetime
             # datestring = dd.strftime('%Y-%m-%dT%H:%M:%S')
             scantimes.append({'scanid': scan.id, 'time': dd})
 
@@ -335,8 +338,10 @@ class medianSummary(object):
 
         for scan in scans:
             epoch = scan.start_time
-            t = qa.splitdate(epoch['m0'])
-            dd = datetime.datetime(t['year'], t['month'], t['monthday'], t['hour'], t['min'], t['sec'], t['usec'])
+            # PIPE-2156, replacing quanta.splitdate with astropy.time
+            # to resolve a bug in plotting
+            t = atime(epoch['m0']["value"], format='mjd')
+            dd = t.datetime
             # datestring = dd.strftime('%Y-%m-%dT%H:%M:%S')
             scantimes.append({'scanid': scan.id, 'time': dd})
 
