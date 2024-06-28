@@ -417,7 +417,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             (2.0, str(default_uvtaper)): beamRatio_2p0
         }
 
-        if cqa.getvalue(userAngResolution)[0] == 0.0:
+        if imaging_mode != 'ALMA-SRDP':
             # The below is for the ALMA-PI pipeline. userAngResolution)[0] will be 0.0 because desired_angular_resolution is not provided.
             # It's equal to this code block:
             #   https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hifa/tasks/imageprecheck/imageprecheck.py?until=24152b4b508ec7e19a7dd360ff30c5c71755802e&untilPath=pipeline%2Fhifa%2Ftasks%2Fimageprecheck%2Fimageprecheck.py#357-462
