@@ -685,6 +685,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                     if (not repr_target_mode) or (repr_target_mode and image_repr_target):
                         field_intent_list = self.heuristics.field_intent_list(
                           intent=inputs.intent, field=inputs.field)
+                        if not field_intent_list:
+                            continue
                     else:
                         continue
 
@@ -733,6 +735,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                         if vislist_for_field != []:
                             vislist_field_spw_combinations[field_intent[0]]['vislist'] = vislist_for_field
                             vislist_field_spw_combinations[field_intent[0]]['spwids'] = sorted(list(spwids_for_field), key=int)
+                            # Count the observed field/spw combinations. If the selected data type
+                            # is not available, the counter will be decremented later since that
+                            # check happens further below.
+                            if inputs.specmode == 'cont':
+                                expected_num_targets += 1
+                            else:
+                                expected_num_targets += len(spwids_for_field)
 
                     # Save original vislist_field_spw_combinations dictionary to be able to generate
                     # proper messages if the vis list changes when falling back to a different data
@@ -746,56 +755,47 @@ class MakeImList(basetask.StandardTaskTemplate):
                     # cell and imsize heuristic results which work on the
                     # highest/lowest frequency spw only.
                     all_spw_keys = []
-                    if field_intent_list != set([]):
-                        valid_data = {}
-                        filtered_spwlist = []
-                        valid_data[str(vislist)] = {}
-                        for vis in vislist:
-                            ms_domain_obj = inputs.context.observing_run.get_ms(vis)
-                            valid_data[vis] = {}
-                            for field_intent in field_intent_list:
-                                valid_data[vis][field_intent] = {}
-                                if field_intent not in valid_data[str(vislist)]:
-                                    valid_data[str(vislist)][field_intent] = {}
-                                # Check only possible field/spw combinations to speed up
-                                if vislist_field_spw_combinations.get(field_intent[0], None) is not None:
-                                    # Check if this field is present in the current MS and has the necessary intent.
-                                    # Using get_fields(name=...) since it does not throw an exception if the field is not found.
-                                    if ms_domain_obj.get_fields(name=field_intent[0], intent=field_intent[1]) != []:
-                                        observed_vis_list = vislist_field_spw_combinations.get(field_intent[0], None).get('vislist', None)
-                                        observed_spwids_list = vislist_field_spw_combinations.get(field_intent[0], None).get('spwids', None)
-                                        if observed_vis_list is not None and observed_spwids_list is not None:
-                                            # Save spws in main list
-                                            all_spw_keys.extend(map(str, observed_spwids_list))
-                                            # Also save cont selection
-                                            all_spw_keys.append(','.join(map(str, observed_spwids_list)))
-                                            for observed_spwid in map(str, observed_spwids_list):
-                                                valid_data[vis][field_intent][str(observed_spwid)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=observed_spwid, vislist=[vis])[field_intent]
-                                                if not valid_data[vis][field_intent][str(observed_spwid)] and vis in observed_vis_list:
-                                                    LOG.warning('Data for EB {}, field {}, spw {} is completely flagged.'.format(
-                                                        os.path.basename(vis), field_intent[0], observed_spwid))
-                                                # Aggregated value per vislist (replace with lookup pattern later)
-                                                if str(observed_spwid) not in valid_data[str(vislist)][field_intent]:
-                                                    valid_data[str(vislist)][field_intent][str(observed_spwid)] = valid_data[vis][field_intent][str(observed_spwid)]
-                                                else:
-                                                    valid_data[str(vislist)][field_intent][str(observed_spwid)] = valid_data[str(vislist)][field_intent][str(observed_spwid)] or valid_data[vis][field_intent][str(observed_spwid)]
-                                                if valid_data[vis][field_intent][str(observed_spwid)]:
-                                                    filtered_spwlist.append(observed_spwid)
-                        filtered_spwlist = sorted(list(set(filtered_spwlist)), key=int)
-                    else:
-                        continue
+                    valid_data = {}
+                    filtered_spwlist = []
+                    valid_data[str(vislist)] = {}
+                    for vis in vislist:
+                        ms_domain_obj = inputs.context.observing_run.get_ms(vis)
+                        valid_data[vis] = {}
+                        for field_intent in field_intent_list:
+                            valid_data[vis][field_intent] = {}
+                            if field_intent not in valid_data[str(vislist)]:
+                                valid_data[str(vislist)][field_intent] = {}
+                            # Check only possible field/spw combinations to speed up
+                            if vislist_field_spw_combinations.get(field_intent[0], None) is not None:
+                                # Check if this field is present in the current MS and has the necessary intent.
+                                # Using get_fields(name=...) since it does not throw an exception if the field is not found.
+                                if ms_domain_obj.get_fields(name=field_intent[0], intent=field_intent[1]) != []:
+                                    observed_vis_list = vislist_field_spw_combinations.get(field_intent[0], None).get('vislist', None)
+                                    observed_spwids_list = vislist_field_spw_combinations.get(field_intent[0], None).get('spwids', None)
+                                    if observed_vis_list is not None and observed_spwids_list is not None:
+                                        # Save spws in main list
+                                        all_spw_keys.extend(map(str, observed_spwids_list))
+                                        # Also save cont selection
+                                        all_spw_keys.append(','.join(map(str, observed_spwids_list)))
+                                        for observed_spwid in map(str, observed_spwids_list):
+                                            valid_data[vis][field_intent][str(observed_spwid)] = self.heuristics.has_data(field_intent_list=[field_intent], spwspec=observed_spwid, vislist=[vis])[field_intent]
+                                            if not valid_data[vis][field_intent][str(observed_spwid)] and vis in observed_vis_list:
+                                                LOG.warning('Data for EB {}, field {}, spw {} is completely flagged.'.format(
+                                                    os.path.basename(vis), field_intent[0], observed_spwid))
+                                            # Aggregated value per vislist (replace with lookup pattern later)
+                                            if str(observed_spwid) not in valid_data[str(vislist)][field_intent]:
+                                                valid_data[str(vislist)][field_intent][str(observed_spwid)] = valid_data[vis][field_intent][str(observed_spwid)]
+                                            else:
+                                                valid_data[str(vislist)][field_intent][str(observed_spwid)] = valid_data[str(vislist)][field_intent][str(observed_spwid)] or valid_data[vis][field_intent][str(observed_spwid)]
+                                            if valid_data[vis][field_intent][str(observed_spwid)]:
+                                                filtered_spwlist.append(observed_spwid)
+                    filtered_spwlist = sorted(list(set(filtered_spwlist)), key=int)
 
                     # Collapse cont spws
                     if inputs.specmode == 'cont':
                         filtered_spwlist_local = [','.join(filtered_spwlist)]
-                        # PIPE-1900: Count missing cont target.
-                        if len(filtered_spwlist) == 0:
-                            expected_num_targets += 1
                     else:
                         filtered_spwlist_local = filtered_spwlist
-                        # PIPE-1900: Counting flagged spws as expected imaging targets.
-                        if len(filtered_spwlist) != 0:
-                            expected_num_targets = expected_num_targets + len(list(map(str, observed_spwids_list))) - len(filtered_spwlist)
 
                     if filtered_spwlist_local == [] or filtered_spwlist_local == ['']:
                         LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
@@ -1092,6 +1092,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     (local_ms_objects_and_columns, local_selected_datatype) = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[DataType[selected_datatype_str]], msonly=False, source=field_intent[0], spw=adjusted_spwspec, vis=vislist)
 
                                 if local_selected_datatype is None:
+                                    expected_num_targets -= 1
                                     LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
                                     continue
 
@@ -1105,6 +1106,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                         local_selected_datatype_info = f'{local_selected_datatype_str} instead of {selected_datatype_str} due to source/spw selection'
                                     else:
                                         # Manually selected data type unavailable -> skip making an imaging target
+                                        expected_num_targets -= 1
                                         LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
                                         continue
 
@@ -1141,8 +1143,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 local_selected_datatype = global_datatype
                                 local_selected_datatype_str = global_datatype_str
                                 local_selected_datatype_info = global_datatype_info
-
-                            expected_num_targets += 1
 
                             # PIPE-1710: add a suffix to image file name depending on datatype
                             if local_selected_datatype_str.lower().startswith('regcal'):
