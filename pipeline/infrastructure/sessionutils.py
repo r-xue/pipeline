@@ -231,7 +231,15 @@ class VDPTaskFactory(object):
         is_mpi_ready = mpihelpers.is_mpi_ready()
         is_tier0_job = is_mpi_ready
 
-        parallel_wanted = mpihelpers.parse_mpi_input_parameter(self.__inputs.parallel)
+        # PIPE-2114: always execute per-EB tasks from the MPI client for one-EB data processing job.
+        vis_list = as_list(self.__inputs.vis)
+        parallel_input = self.__inputs.parallel
+        if parallel_input and len(vis_list) == 1:
+            LOG.debug('Only a single EB is detected in the input vis list; switch to parallel=False '
+                      'to execute the task on the MPIclient.')
+            parallel_input = False
+
+        parallel_wanted = mpihelpers.parse_mpi_input_parameter(parallel_input)
 
         if is_tier0_job and parallel_wanted:
             executable = mpihelpers.Tier0PipelineTask(self.__task, valid_args, self.__context_path)
@@ -395,13 +403,6 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
         assessed = []
 
         vis_list = as_list(inputs.vis)
-
-        # PIPE-2114: always execute per-EB tasks from the MPI client for one-EB data processing job.
-        if len(vis_list) == 1:
-            LOG.debug('Only a single EB is detected in the input vis list; switch to parallel=False '
-                      'to execute the task on the MPIclient.')
-            inputs.parallel = False
-
         with VDPTaskFactory(inputs, self._executor, self.Task) as factory:
             task_queue = [(vis, factory.get_task(vis)) for vis in vis_list]
 
