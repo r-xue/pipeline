@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>test_hifv_spectral_lines</ProcedureTitle>
+    <ProcedureTitle>test_hifv_cubeimage</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
