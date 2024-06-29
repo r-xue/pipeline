@@ -473,13 +473,6 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return 'briggsbwtaper'
 
-    def perchanweightdensity(self, specmode: str) -> bool:
-        """Determine the perchanweightdensity parameter."""
-        if specmode in ('mfs', 'cont'):
-            return False
-        else:
-            return True
-
     def reffreq(self, deconvolver: Optional[str] = None, specmode: Optional[str] = None, spwsel: Optional[dict] = None) -> Optional[str]:
         """PIPE-1838: Tclean reffreq parameter heuristics."""
 
