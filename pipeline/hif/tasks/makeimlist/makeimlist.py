@@ -999,7 +999,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                             'POLARIZATION',
                                             'POLANGLE',
                                             'POLLEAKAGE',
-                                            'DIFFGAIN'
+                                            'DIFFGAINREF',
+                                            'DIFFGAINSRC',
                                             ]:
                                         h_imsize = [min(npix, inputs.calmaxpix) for npix in h_imsize]
                                     imsizes[(field_intent[0], spwspec)] = h_imsize
@@ -1453,8 +1454,10 @@ _DESCRIPTIONS = {
     ('POLANGLE', 'cont'): 'polarization calibrator',
     ('POLLEAKAGE', 'mfs'): 'polarization calibrator',
     ('POLLEAKAGE', 'cont'): 'polarization calibrator',
-    ('DIFFGAIN', 'mfs'): 'diffgain calibrator',
-    ('DIFFGAIN', 'cont'): 'diffgain calibrator',
+    ('DIFFGAINREF', 'mfs'): 'diffgain calibrator',
+    ('DIFFGAINREF', 'cont'): 'diffgain calibrator',
+    ('DIFFGAINSRC', 'mfs'): 'diffgain calibrator',
+    ('DIFFGAINSRC', 'cont'): 'diffgain calibrator',
     ('CHECK', 'mfs'): 'check source',
     ('CHECK', 'cont'): 'check source',
     ('TARGET', 'mfs'): 'target per-spw continuum',
@@ -1470,8 +1473,10 @@ _SIDEBAR_SUFFIX = {
     ('BANDPASS', 'cont'): 'cals',
     ('AMPLITUDE', 'mfs'): 'cals',
     ('AMPLITUDE', 'cont'): 'cals',
-    ('DIFFGAIN', 'mfs'): 'cals',
-    ('DIFFGAIN', 'cont'): 'cals',
+    ('DIFFGAINREF', 'mfs'): 'cals',
+    ('DIFFGAINREF', 'cont'): 'cals',
+    ('DIFFGAINSRC', 'mfs'): 'cals',
+    ('DIFFGAINSRC', 'cont'): 'cals',
     ('POLARIZATION', 'mfs'): 'pol',
     ('POLARIZATION', 'cont'): 'pol',
     ('POLANGLE', 'mfs'): 'pol',
