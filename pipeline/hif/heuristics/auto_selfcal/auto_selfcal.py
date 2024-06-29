@@ -55,6 +55,7 @@ class SelfcalHeuristics(object):
         self.imsize = scal_target['imsize']
         self.phasecenter = scal_target['phasecenter']  # explictly set phasecenter for now
         self.spw_virtual = scal_target['spw']
+        self.gridder = scal_target['gridder']
         self.vislist = scal_target['sc_vislist']
         self.parallel = scal_target['sc_parallel']
         self.telescope = scal_target['sc_telescope']
@@ -102,7 +103,7 @@ class SelfcalHeuristics(object):
             self, vis, imagename, band_properties, band, telescope='undefined', scales=[0],
             smallscalebias=0.6, mask='', nsigma=5.0, imsize=None, cellsize=None, interactive=False, robust=0.5, gain=0.1, niter=50000,
             cycleniter=300, uvtaper=[],
-            savemodel='none', gridder='standard', sidelobethreshold=3.0, smoothfactor=1.0,  noisethreshold=5.0, lownoisethreshold=1.5,
+            savemodel='none', sidelobethreshold=3.0, smoothfactor=1.0,  noisethreshold=5.0, lownoisethreshold=1.5,
             parallel=False, nterms=1, cyclefactor=3, uvrange='', threshold='0.0Jy', startmodel='', pblimit=0.1, pbmask=0.1, field='',
             datacolumn='', spw='', obstype='single-point', nfrms_multiplier=1.0,
             savemodel_only=False, resume=False):
@@ -154,25 +155,7 @@ class SelfcalHeuristics(object):
             cycleniter = -1
             cyclefactor = 3.0
             pbmask = 0.0
-        wprojplanes = 1
-        if band == 'EVLA_L' or band == 'EVLA_S':
-            gridder = 'wproject'
-            wplanes = 384  # normalized to S-band A-config
-            # scale by 75th percentile uv distance divided by A-config value
-            wplanes = wplanes * band_properties[vis[0]][band]['75thpct_uv']/20000.0
-            if band == 'EVLA_L':
-                wplanes = wplanes*2.0  # compensate for 1.5 GHz being 2x longer than 3 GHz
-            wprojplanes = int(wplanes)
-        if (band == 'EVLA_L' or band == 'EVLA_S') and obstype == 'mosaic':
-            LOG.info('WARNING DETECTED VLA L- OR S-BAND MOSAIC; WILL USE gridder="mosaic" IGNORING W-TERM')
-        if obstype == 'mosaic':
-            gridder = 'mosaic'
-        else:
-            if gridder != 'wproject':
-                gridder = 'standard'
 
-        if gridder == 'mosaic' and startmodel != '':
-            parallel = False
 
         tclean_args = {'vis': vis,
                        'imagename': imagename,
@@ -180,7 +163,7 @@ class SelfcalHeuristics(object):
                        'specmode': 'mfs',
                        'deconvolver': 'mtmfs',
                        'scales': scales,
-                       'gridder': gridder,
+                       'gridder': self.gridder,
                        'weighting': 'briggs',
                        'robust': robust,
                        'gain': gain,
@@ -211,7 +194,6 @@ class SelfcalHeuristics(object):
                        'startmodel': startmodel,
                        'datacolumn': datacolumn,
                        'spw': spw,
-                       'wprojplanes': wprojplanes,
                        'fullsummary': False,
                        'verbose': True}
 
@@ -228,9 +210,10 @@ class SelfcalHeuristics(object):
             LOG.info("")
             LOG.info("Running tclean in the prediction-only setting to fill the MS model column.")
             # A workaround for CAS-14386
-            if 'mosaic' in tclean_args['gridder']:
+            parallel_predict = parallel
+            if parallel_predict and 'mosaic' in tclean_args['gridder']:
                 LOG.debug("A parallel model write operation does not work with gridder='mosaic': enforcing parallel=False.")
-                parallel = False
+                parallel_predict = False
             tclean_args.update({'niter': 0,
                                 'interactive': False,
                                 'nsigma': 0.0,
@@ -241,7 +224,7 @@ class SelfcalHeuristics(object):
                                 'calcpsf': False,
                                 'restoration': False,
                                 'threshold': '0.0mJy',
-                                'parallel': parallel,
+                                'parallel': parallel_predict,
                                 'startmodel': ''})
             tc_ret = self.cts.tclean(**tclean_args)
 
@@ -285,12 +268,11 @@ class SelfcalHeuristics(object):
         def custom_filter(record):
             return not fnmatch.fnmatch(record.getMessage(), '*channel bandwidths ratio*')
 
-        gridder = self.image_heuristics.gridder('TARGET', self.field)
         # PIPE-1827: filter out the "channel bandwidths ratio" warning messages during sensitivity calculations.
         with logging.log_level('pipeline.hif.heuristics.imageparams_base', level=None, filter=custom_filter):
             sensitivity, eff_ch_bw, sens_bw, sens_reffreq, known_per_spw_cont_sensitivities_all_chan = self.image_heuristics.calc_sensitivities(
                 self.vislist, self.field, 'TARGET', spw, -1, {},
-                'cont', gridder, self.cellsize, self.imsize, 'briggs', self.robust, self.uvtaper, True, {},
+                'cont', self.gridder, self.cellsize, self.imsize, 'briggs', self.robust, self.uvtaper, True, {},
                 False, calc_reffreq=True)
         # Note: sensitivity and sens_bw are expected to be one-elements Numpy arrays.
         sensitivity = sensitivity[0]
