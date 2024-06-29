@@ -2199,7 +2199,7 @@ class ImageParamsHeuristics(object):
     def scales(self, iteration=None):
         return None
 
-    def uvtaper(self, beam_natural=None, protect_long=None):
+    def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None):
         return None
 
     def uvrange(self, field=None, spwspec=None):

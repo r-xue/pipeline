@@ -29,7 +29,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return 0.5
 
-    def uvtaper(self, beam_natural=None, protect_long=3):
+    def uvtaper(self, beam_natural=None, protect_long=3, beam_user=None, tapering_limit=None, repr_freq=None):
         """Adjustment of uvtaper parameter based on desired resolution or representative baseline length."""
 
         # Disabled heuristic for ALMA Cycle 6

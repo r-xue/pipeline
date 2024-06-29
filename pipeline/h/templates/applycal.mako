@@ -179,6 +179,9 @@ def format_spwmap(spwmap, scispws):
     <i>Intents</i> column. If a field name is ambiguous and does not uniquely identify a field, e.g., when a field is
     observed with multiple intents, then the unambiguous field ID is listed instead of the field name. The order of
     entries in the <i>Fields</i> and <i>Intents</i> columns has no significance.</p>
+% if parang:
+    <p>Applycal was invoked with parang=True.</p>
+% endif
 <table class="table table-bordered table-striped table-condensed"
 	   summary="Applied Calibrations">
 	<caption>Applied Calibrations</caption>
