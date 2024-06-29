@@ -503,7 +503,10 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 #
                 if r.qa.representative is not None:
                     badge_class = rendererutils.get_badge_class(r.qa.representative)
-                    row_score = '<span class="badge %s">%0.2f</span>' % (badge_class, r.qa.representative.score)
+                    if r.qa.representative.score is None:
+                        row_score = '<span class="badge {:s}">N/A</span>'.format(badge_class)
+                    else:
+                        row_score = '<span class="badge %s">%0.2f</span>' % (badge_class, r.qa.representative.score)
                 else:
                     row_score = '-'
 

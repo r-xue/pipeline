@@ -302,7 +302,7 @@ class Tclean(cleanbase.CleanBase):
         self.image_heuristics = inputs.image_heuristics
 
         # Set initial masking limits
-        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(None)
+        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(None, inputs.specmode)
         if not inputs.pblimit:
             inputs.pblimit = self.pblimit_image
 
@@ -1093,7 +1093,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
-        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(result.flux+extension)
+        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(result.flux+extension, specmode=inputs.specmode)
 
         # Keep pblimits for mom8_fc QA statistics and score (PIPE-704)
         result.set_pblimit_image(self.pblimit_image)

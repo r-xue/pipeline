@@ -60,6 +60,10 @@ class Pbcor(basetask.StandardTaskTemplate):
             keep = sci_im['metadata'].get('keep', True)
             pbname = basename + '.pb'
 
+            # PIPE-2205: do not run impbcor on VLA cube images
+            if '.cube.' in basename:
+                continue
+            
             pbcor_images = []
             term_ext_list = multiterm_ext_list if sci_im['multiterm'] else ['']
 

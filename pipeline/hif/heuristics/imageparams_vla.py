@@ -1,5 +1,5 @@
 import re
-from typing import Union
+from typing import Union, Optional
 
 import numpy as np
 import pipeline.domain.measures as measures
@@ -148,17 +148,20 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             # Use complete uvrange
             return '>0.0klambda', ratio
 
-    def pblimits(self, pb):
+    def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None):
         """PB gain level at which to cut off normalizations (tclean parameter).
         See PIPE-674 and CASR-543
         """
         # pblimits used in pipeline tclean._do_iterative_imaging() method (eventually in cleanbox.py) for
         # computing statistics on residual image products.
         if (pb not in [None, '']):
-            pblimit_image, pblimit_cleanmask = super().pblimits(pb)
+            pblimit_image, pblimit_cleanmask = super().pblimits(pb, specmode=specmode)
         # used for setting CASA tclean task pblimit parameter in pipeline tclean.prepare() method
         else:
-            pblimit_image = -0.1
+            if specmode == 'cube':
+                pblimit_image = 0.2
+            else:
+                pblimit_image = -0.1
             pblimit_cleanmask = 0.3
 
         return pblimit_image, pblimit_cleanmask
@@ -209,8 +212,13 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
     def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
         """Tclean deconvolver parameter heuristics.
-        See PIPE-679 and CASR-543"""
-        return 'mtmfs'
+        
+        See PIPE-679 and CASR-543
+        """
+        if specmode == 'cube':
+            return 'hogbom'
+        else:
+            return 'mtmfs'
 
     def _get_vla_band(self, spwspec):
         """Get VLA band from spwspec, assuming spwspec from the same band."""
@@ -221,23 +229,37 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             vla_band = find_EVLA_band(mean_freq_hz)
         return vla_band
 
-    def gridder(self, intent, field, spwspec=None) -> str:
-        """Tclean gridder parameter heuristics for VLA."""
+    def gridder(self, intent: str, field: str, spwspec: Optional[str] = None) -> str:
+        """Determine the appropriate tclean gridder parameter for VLA.
 
-        # the field heuristic which decides whether this is a mosaic or not
+        Args:
+            intent (str): The intent of the observation.
+            field (str): The field of the observation.
+            spwspec (str, optional): The spectral window specification. Defaults to None.
+
+        Returns:
+            str: The selected gridder parameter.
+        """
+
+        # Default gridder selection.
+        gridder_select = 'standard'
+
+        # The heuristic which decides whether this is a mosaic or not.
         field_str_list = self.field(intent, field)
         is_mosaic = self._is_mosaic(field_str_list)
 
-        gridder_select = 'standard'
-
-        # not really necessary for VLA, but as a placeholder for PIPE-684.
+        # Adjust gridder selection based on mosaic status and antenna diameters.
+        # Not really necessary for VLA, but as a placeholder for PIPE-684.
         if is_mosaic or (len(self.antenna_diameters()) > 1):
             gridder_select = 'mosaic'
 
         # PIPE-1641: switch to gridder='wproject' for L and S band sci-target imaging
-        vla_band = self._get_vla_band(spwspec)
-        if vla_band in ['L', 'S'] and 'TARGET' in intent:
-            gridder_select = 'wproject'
+        # PIPE-2225: disable the L/S-band wproject heuristics for efficient imaging
+        use_wproject = False
+        if use_wproject:
+            vla_band = self._get_vla_band(spwspec)
+            if vla_band in ['L', 'S'] and 'TARGET' in intent:
+                gridder_select = 'wproject'
 
         return gridder_select
 

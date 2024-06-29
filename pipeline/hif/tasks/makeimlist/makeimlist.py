@@ -637,7 +637,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             vislists = [inputs.vis]
 
-        if 'VLA' in imaging_mode and inputs.specmode == 'cont':
+        if 'VLA' in imaging_mode:
             ref_ms = inputs.context.observing_run.get_ms(inputs.vis[0])
             vla_band = ref_ms.get_vla_spw2band()
             band_spws = {}
@@ -1299,6 +1299,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                                                                    local_selected_datatype_str, target_heuristics)
 
                                 reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
+                                gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec)
 
                                 target = CleanTarget(
                                     antenna=antenna,
@@ -1314,7 +1315,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     phasecenter=phasecenters[field_intent[0]],
                                     psf_phasecenter=psf_phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
-                                    gridder=target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec),
+                                    gridder=gridder,
                                     imagename=imagename,
                                     start=inputs.start,
                                     width=widths[(field_intent[0], spwspec)],
