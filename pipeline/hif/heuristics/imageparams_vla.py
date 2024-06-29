@@ -229,23 +229,37 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             vla_band = find_EVLA_band(mean_freq_hz)
         return vla_band
 
-    def gridder(self, intent, field, spwspec=None) -> str:
-        """Tclean gridder parameter heuristics for VLA."""
+    def gridder(self, intent: str, field: str, spwspec: Optional[str] = None) -> str:
+        """Determine the appropriate tclean gridder parameter for VLA.
 
-        # the field heuristic which decides whether this is a mosaic or not
+        Args:
+            intent (str): The intent of the observation.
+            field (str): The field of the observation.
+            spwspec (str, optional): The spectral window specification. Defaults to None.
+
+        Returns:
+            str: The selected gridder parameter.
+        """
+
+        # Default gridder selection.
+        gridder_select = 'standard'
+
+        # The heuristic which decides whether this is a mosaic or not.
         field_str_list = self.field(intent, field)
         is_mosaic = self._is_mosaic(field_str_list)
 
-        gridder_select = 'standard'
-
-        # not really necessary for VLA, but as a placeholder for PIPE-684.
+        # Adjust gridder selection based on mosaic status and antenna diameters.
+        # Not really necessary for VLA, but as a placeholder for PIPE-684.
         if is_mosaic or (len(self.antenna_diameters()) > 1):
             gridder_select = 'mosaic'
 
         # PIPE-1641: switch to gridder='wproject' for L and S band sci-target imaging
-        vla_band = self._get_vla_band(spwspec)
-        if vla_band in ['L', 'S'] and 'TARGET' in intent:
-            gridder_select = 'wproject'
+        # PIPE-2225: disable the L/S-band wproject heuristics for efficient imaging
+        use_wproject = False
+        if use_wproject:
+            vla_band = self._get_vla_band(spwspec)
+            if vla_band in ['L', 'S'] and 'TARGET' in intent:
+                gridder_select = 'wproject'
 
         return gridder_select
 
