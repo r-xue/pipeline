@@ -20,7 +20,7 @@ from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
                               compare_beams, estimate_near_field_SNR,
                               estimate_SNR, fetch_targets,
                               get_dr_correction, get_intflux, get_n_ants,
-                              get_nterms, get_sensitivity, get_SNR_self,
+                              get_nterms, get_SNR_self,
                               get_SNR_self_update, get_solints_simple, get_spw_map,
                               get_spw_bandwidth, get_uv_range, importdata,
                               copy_products, rank_refants)
@@ -156,7 +156,6 @@ class SelfcalHeuristics(object):
             cyclefactor = 3.0
             pbmask = 0.0
 
-
         tclean_args = {'vis': vis,
                        'imagename': imagename,
                        'field': field,
@@ -196,6 +195,11 @@ class SelfcalHeuristics(object):
                        'spw': spw,
                        'fullsummary': False,
                        'verbose': True}
+        # PIPE-2173: only use the Pipeline heuristics reffreq in hif_selfcal() when:
+        #     * deconvolver: 'mtmfs', and
+        #     * nterms = None (casa default to 2) or nterms >=2
+        if not (tclean_args['nterms'] is None or tclean_args['nterms'] >= 2):
+            tclean_args.pop('reffreq', None)
 
         tc_ret = None
         if not savemodel_only:
@@ -313,6 +317,14 @@ class SelfcalHeuristics(object):
         for target in all_targets:
             sani_target = 'sc.'+filenamer.sanitize(target)
             for band in selfcal_library[target].keys():
+
+                if self.telescope == 'ALMA' or self.telescope == 'ACA':
+                    # note: sensitivity here is numpy.float64 and .copy() is allowed.
+                    sensitivity, _, _ = self.get_sensitivity()
+                    sensitivity_nomod = sensitivity.copy()
+                else:
+                    sensitivity_vla, _, self.reffreq = self.get_sensitivity()
+
                 # make images using the appropriate tclean heuristics for each telescope
                 if os.path.exists(sani_target+'_'+band+'_dirty.image.tt0'):
                     self.cts.rmtree(sani_target+'_'+band+'_dirty.image.tt0')
@@ -336,21 +348,11 @@ class SelfcalHeuristics(object):
                         sani_target+'_'+band+'_dirty.image.tt0', las=selfcal_library[target][band]['LAS'])
                 else:
                     dirty_NF_SNR, dirty_NF_RMS = dirty_SNR, dirty_RMS
+                
                 dr_mod = 1.0
-
                 if self.telescope == 'ALMA' or self.telescope == 'ACA':
-                    sensitivity = get_sensitivity(
-                        vislist, selfcal_library[target][band], target,
-                        virtual_spw='all',
-                        imsize=imsize[0],
-                        cellsize=cellsize[0])
-                    sensitivity, sens_bw, sens_reffreq = self.get_sensitivity()
                     dr_mod = get_dr_correction(self.telescope, dirty_SNR*dirty_RMS, sensitivity, vislist)
-                    # note: sensitivity here is numpy.float64 and .copy() is allowed.
-                    sensitivity_nomod = sensitivity.copy()
                     LOG.info(f'DR modifier: {dr_mod}')
-                else:
-                    sensitivity_vla, sens_bw_vla, self.reffreq = self.get_sensitivity()
                 
                 if os.path.exists(sani_target+'_'+band+'_initial.image.tt0'):
                     self.cts.rmtree(sani_target+'_'+band+'_initial.image.tt0')
@@ -481,12 +483,7 @@ class SelfcalHeuristics(object):
                             dirty_per_spw_NF_SNR, dirty_per_spw_NF_RMS = dirty_per_spw_SNR, dirty_per_spw_RMS
                         if not os.path.exists(sani_target+'_'+band+'_'+spw+'_initial.image.tt0'):
                             if self.telescope == 'ALMA' or self.telescope == 'ACA':
-                                sensitivity = get_sensitivity(
-                                    vislist, selfcal_library[target][band], target,
-                                    virtual_spw=spw,
-                                    imsize=imsize[0],
-                                    cellsize=cellsize[0])
-                                sensitivity, sens_bw, sens_reffreq = self.get_sensitivity(spw=spw)
+                                sensitivity, _, _ = self.get_sensitivity(spw=spw)
                                 dr_mod = get_dr_correction(self.telescope, dirty_per_spw_SNR*dirty_per_spw_RMS, sensitivity, vislist)
                                 LOG.info(f'DR modifier: {dr_mod}  SPW: {spw}')
                                 sensitivity = sensitivity*dr_mod
@@ -599,12 +596,7 @@ class SelfcalHeuristics(object):
                                           len(solints[band]) - n_ap_solints),
                         np.array([10 ** (np.log10(3.0))] * n_ap_solints))
                 if self.telescope == 'ALMA' or self.telescope == 'ACA':  # or ('VLA' in telescope)
-                    sensitivity = get_sensitivity(
-                        vislist, selfcal_library[target][band], target,
-                        virtual_spw='all',
-                        imsize=imsize[0],
-                        cellsize=cellsize[0])
-                    sensitivity, sens_bw, sens_reffeq = self.get_sensitivity()
+                    sensitivity, _, _ = self.get_sensitivity()
                     if band == 'Band_9' or band == 'Band_10':   # adjust for DSB noise increase
                         sensitivity = sensitivity*4.0
                     if ('VLA' in self.telescope):
@@ -1251,12 +1243,7 @@ class SelfcalHeuristics(object):
                             self.cts.rmtree(sani_target + '_' + band + '_' + spw + '_final.image.tt0')
                         vlist = [vis for vis in vislist if vis in selfcal_library[target][band]['spw_map'][spw]]
                         if self.telescope == 'ALMA' or self.telescope == 'ACA':
-                            sensitivity = get_sensitivity(
-                                vlist, selfcal_library[target][band], target,
-                                virtual_spw=spw,
-                                imsize=imsize[0],
-                                cellsize=cellsize[0])
-                            sensitivity, sens_bw, sens_reffreq = self.get_sensitivity(spw=spw)
+                            sensitivity, _, _ = self.get_sensitivity(spw=spw)
                             dr_mod = 1.0
                             # fetch the DR modifier if selfcal failed on source
                             if not selfcal_library[target][band]['SC_success']:
