@@ -616,11 +616,15 @@ class Selfcal(basetask.StandardTaskTemplate):
     def _split_scaltargets(self, scal_targets):
         """Split the input MSes into smaller MSes per cleantargets effeciently."""
 
-        outputvis_list = []
-        parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
+        # mt_inputvis_list aggregates input vis argument values of expected mstransform calls
+        # therefore len(mt_inputvis_list) represents the number of ms to be split out
+        mt_inputvis_list = [vis for target in scal_targets for vis in target['vis']]
 
-        taskqueue_parallel_request = len(scal_targets) > 1 and parallel
-        with utils.ignore_pointing(self.inputs.vis):
+        parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
+        taskqueue_parallel_request = len(mt_inputvis_list) > 1 and parallel
+
+        outputvis_list = []
+        with utils.ignore_pointing(utils.deduplicate(mt_inputvis_list)):
             with TaskQueue(parallel=taskqueue_parallel_request) as tq:
 
                 for target in scal_targets:
