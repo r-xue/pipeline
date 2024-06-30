@@ -601,12 +601,22 @@ class Tclean(cleanbase.CleanBase):
             error_result.error = '%s/%s/spw%s clean error: no sensitivity' % (inputs.field, inputs.intent, inputs.spw)
             return error_result
 
-        # Determine the optimal reffreq from the sensitivity-weighted spw center frequency for the VLA-PI workflow.
-        # This is only triggered if the reffreq is not specified in the Tclean/input (therefore from MakeImList or Editimlist)
-        # and the deconvolver is mtmfs.
-        if inputs.reffreq is None and sens_reffreq is not None and inputs.deconvolver == 'mtmfs' \
-                and inputs.specmode == 'cont' and self.image_heuristics.imaging_mode in ('VLA', 'VLA-SCAL'):
-            inputs.reffreq = f'{sens_reffreq/1e9}GHz'
+        # PIPE-2130: for the VLA-PI workflow only, determine the optimal reffreq value from spw center frequencies
+        # weighted by predicted per-spw sensitivity.
+        # This is only triggered if all below conditions meet:
+        #   * reffreq is not specified in the Tclean/input (from MakeImList or Editimlist)
+        #   * deconvolver is mtmfs
+        #   * nterms>=2 or CASA default nterms=None
+        if (
+            self.image_heuristics.imaging_mode in {"VLA", "VLA-SCAL"}
+            and inputs.specmode == "cont"
+            and inputs.deconvolver == "mtmfs"
+            and (inputs.nterms is None or inputs.nterms >= 2)
+            and inputs.reffreq is None
+            and sens_reffreq is not None
+        ):
+            # Set reffreq in GHz
+            inputs.reffreq = f"{sens_reffreq/1e9}GHz"
 
         # Choose TOPO frequency selections
         if inputs.specmode != 'cube':
