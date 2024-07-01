@@ -89,7 +89,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_ms_history_entries_present',
            'score_contiguous_session',
            'score_multiply',
-           'score_mom8_fc_image']
+           'score_mom8_fc_image',
+           'score_iersstate']
 
 LOG = logging.get_logger(__name__)
 
@@ -3812,3 +3813,41 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
                           metric_units='Peak SNR / Histogram asymmetry, Max. segment size in beams, Max. segment fraction')
 
     return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+
+
+@log_qa
+def score_iersstate(mses) -> pqa.QAScore:
+    """
+    Check state of IERS tables relative to observation date
+    """
+
+    iers_info = utils.IERSInfo()
+    # reorder MSes by start time
+    by_start = sorted(mses,
+                      key=lambda m: utils.get_epoch_as_datetime(m.start_time))
+
+    # create an interval for each one, including our tolerance
+    scores = []
+    for ms in by_start:
+        msg = ""
+        time_end = utils.get_epoch_as_datetime(ms.end_time)
+
+        if iers_info.validate_date(time_end):
+            score = 1.0
+        elif iers_info.date_message_type(time_end) == "INFO":
+            score = 0.9
+            msg = "MS dates not fully covered by IERSeop2000. CASA will use IERSpredict."
+        elif iers_info.date_message_type(time_end) == "WARN":
+            score = 0.5
+            msg = "MS dates not fully covered by IERSeop2000. CASA will use IERSpredict."
+        else:
+            score = 0.3
+            msg = "MS dates not fully covered by IERSpredict. Please update your data repository."
+
+        origin = pqa.QAOrigin(metric_name='score_iersstate',
+                            metric_score=score,
+                            metric_units='state of IERS tables relative to observation date')
+
+        scores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
+
+    return scores
