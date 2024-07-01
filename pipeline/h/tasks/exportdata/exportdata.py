@@ -1202,6 +1202,14 @@ finally:
                         key = 'spwnam{:02d}'.format(i)
                         fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
 
+                if 'nsessio' in ff[0].header:
+                    nsession = ff[0].header['nsessio']
+                    session = ''
+                    for i in range(1, nsession+1):
+                        key = 'sessio{:02d}'.format(i)
+                        session += str(ff[0].header.get(key, 'N/A'))
+                    fits_keywords['session'] = session
+
                 # Some names and/or values need to be mapped
                 fits_keywords['imagemin'] = str(ff[0].header.get('datamin', 'N/A'))
                 fits_keywords['imagemax'] = str(ff[0].header.get('datamax', 'N/A'))

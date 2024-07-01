@@ -1,16 +1,15 @@
 import copy
 import os
-import numpy as np
 
+import numpy as np
 from casatasks import imsmooth
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks, task_registry
-from pipeline.infrastructure import casa_tools
-
-from pipeline.hifv.heuristics.vip_helper_functions import mask_from_catalog, edit_pybdsf_islands, run_bdsf
+from pipeline import infrastructure
+from pipeline.hifv.heuristics.vip_helper_functions import (edit_pybdsf_islands,
+                                                           mask_from_catalog,
+                                                           run_bdsf)
+from pipeline.infrastructure import (basetask, casa_tasks, casa_tools,
+                                     task_registry, vdp)
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -44,7 +43,7 @@ class VlassmaskingResults(basetask.Results):
             combinedmask(str):  Final combined mask
 
         """
-        super(VlassmaskingResults, self).__init__()
+        super().__init__()
 
         self.catalog_fits_file = catalog_fits_file
         self.catalog_search_size = catalog_search_size
@@ -136,6 +135,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
 
     """
     Inputs = VlassmaskingInputs
+    is_multi_vis_task = True
 
     def prepare(self):
         """Method where the VLASS Masking operation is executed.
@@ -210,11 +210,11 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             tier1mask = maskname_base + QLmask
 
             number_islands_found, \
-            number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
-                                                            catalog_search_size=self.inputs.catalog_search_size,
-                                                            mask_shape=mask_shape, frequency=frequency, cell=cell,
-                                                            phasecenter=phasecenter,
-                                                            mask_name=tier1mask, csys_rec=mask_csys_rec)
+                number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
+                                                                catalog_search_size=self.inputs.catalog_search_size,
+                                                                mask_shape=mask_shape, frequency=frequency, cell=cell,
+                                                                phasecenter=phasecenter,
+                                                                mask_name=tier1mask, csys_rec=mask_csys_rec)
 
             # Compute fraction of pixels enclosed in the tier-1 mask
             with casa_tools.ImageReader(tier1mask) as myia:
@@ -268,11 +268,11 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                 LOG.error("Catalog file {!s} does not exist.".format(catalog_fits_file))
 
             number_islands_found, \
-            number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
-                                                            catalog_search_size=self.inputs.catalog_search_size,
-                                                            mask_shape=mask_shape, frequency=frequency, cell=cell,
-                                                            phasecenter=phasecenter,
-                                                            mask_name=tier2mask, csys_rec=mask_csys_rec)
+                number_islands_found_onedeg = mask_from_catalog(catalog_fits_file=catalog_fits_file,
+                                                                catalog_search_size=self.inputs.catalog_search_size,
+                                                                mask_shape=mask_shape, frequency=frequency, cell=cell,
+                                                                phasecenter=phasecenter,
+                                                                mask_name=tier2mask, csys_rec=mask_csys_rec)
 
             # combine first and second order masks
             try:
@@ -315,7 +315,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             LOG.info(" ")
             LOG.info("Pixel fraction over entire tier-2 mask: {!s}".format(pixelfractions['tier2']))
             LOG.info("Pixel fraction over inner {!s} degree of tier-2 mask: {!s}".format(widthdeg,
-                                                                                         pixelfractions['tier2_onedeg'] ))
+                                                                                         pixelfractions['tier2_onedeg']))
             LOG.info(" ")
 
             # Compute fraction of pixels enclosed in the final mask
@@ -336,8 +336,10 @@ class Vlassmasking(basetask.StandardTaskTemplate):
             # Compute the fractional increase of masked pixels in Final mask relative to Quicklook Mask
             # Compute the fractional increase of masked pixels in Final mask relative to Quicklook Mask in the inner
             # square degree
-            relativefraction_str = str((finalpixelsum - tier1pixelsum) / tier1pixelsum) + ' =  (('+str(finalpixelsum) +' - '+str(tier1pixelsum) + ') /' + str(tier1pixelsum) + ')'
-            relativefraction_onedeg_str = str((finalpixelsum_onedeg - tier1pixelsum_onedeg) / tier1pixelsum_onedeg) + ' =  (('+str(finalpixelsum_onedeg) +' - '+str(tier1pixelsum_onedeg) + ') /' + str(tier1pixelsum_onedeg) +')'
+            relativefraction_str = str(
+                (finalpixelsum - tier1pixelsum) / tier1pixelsum) + ' =  (('+str(finalpixelsum) + ' - '+str(tier1pixelsum) + ') /' + str(tier1pixelsum) + ')'
+            relativefraction_onedeg_str = str((finalpixelsum_onedeg - tier1pixelsum_onedeg) / tier1pixelsum_onedeg) + ' =  (('+str(
+                finalpixelsum_onedeg) + ' - '+str(tier1pixelsum_onedeg) + ') /' + str(tier1pixelsum_onedeg) + ')'
 
             LOG.info("Relative fraction: {!s}".format(relativefraction_str))
             LOG.info("Relative fraction (inner square degree): {!s}".format(relativefraction_onedeg_str))
@@ -376,8 +378,6 @@ class Vlassmasking(basetask.StandardTaskTemplate):
                                             fitsimage=fitsimage)
         runtask = self._executor.execute(export_task)
 
-        # subprocess.call(['/users/jmarvil/scripts/run_bdsf.py',
-        #                  imagename_base+'iter1b.image.smooth5.fits'],env={'PYTHONPATH':''})
         bdsf_result = run_bdsf(infile=fitsimage)
 
         # Return the catalogue fits file name
@@ -391,8 +391,8 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         The 'STAGENUMBER' substring is replaced by the current stage number.
         """
         # context.stage is defined as '{context.task_counter}_{context.subtask_counter}'
-        # Because this is a not multi_vis task (is_multi_vis_task=False, in contrast of hif_makeimages), the mask creation is done 
-        # as a subtask, with subtask_counter increases for each MS. Here we use '{context.task_counter}_0' to keep the 
+        # Because this is a not multi_vis task (is_multi_vis_task=False, in contrast of hif_makeimages), the mask creation is done
+        # as a subtask, with subtask_counter increases for each MS. Here we use '{context.task_counter}_0' to keep the
         # consistency with the naming convention of imaging products.
 
         if 'imagename' in self.inputs.context.clean_list_pending[0].keys():
