@@ -182,9 +182,21 @@
                 <Keyword xmlns="">maximsize</Keyword>
                 <Value xmlns="">16384</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">maxcubesize</Keyword>
+                <Value xmlns="">40.0</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">maxcubelimit</Keyword>
+                <Value xmlns="">60.0</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">maxproductsize</Keyword>
+                <Value xmlns="">500.0</Value>
+            </Parameter>            
         </ParameterSet>
     </ProcessingCommand>
-
+ 
     <!-- cont imaging -->
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
@@ -203,12 +215,11 @@
                 <Keyword xmlns="">hm_cyclefactor</Keyword>
                 <Value xmlns="">3.0</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">hm_masking</Keyword>
-                <Value xmlns="">none</Value>
-            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
+
+
+  
 
     <!-- line imaging -->
     <ProcessingCommand>
@@ -233,24 +244,6 @@
         </ParameterSet>
     </ProcessingCommand>
 
-    <ProcessingCommand>
-        <Command xmlns="">hif_checkproductsize</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">maxcubesize</Keyword>
-                <Value xmlns="">40.0</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">maxcubelimit</Keyword>
-                <Value xmlns="">60.0</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">maxproductsize</Keyword>
-                <Value xmlns="">500.0</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-        
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <!-- Needs updates for VLA to not use deconvolver='mtmfs'-->
