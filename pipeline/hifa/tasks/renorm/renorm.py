@@ -117,23 +117,11 @@ class SerialRenorm(basetask.StandardTaskTemplate):
     def prepare(self):
         inp = self.inputs
 
-        # FIXME: Remove? almarenorm.py could do this check if necessary.
-        if not isinstance(inp.excludechan, dict):
-            msg = "excludechan parameter requires dictionary input. {0} with type {1} is not valid input." \
-                  "".format(inp.excludechan, type(inp.excludechan).__name__)
-            LOG.error(msg)
-            raise TypeError(msg)
-
-        # FIXME: this is evaluating the presence of band 9/10 for all MSes in the observing run, even though the task
-        #  is expected to operate only on the current MS.
-        # Issue warning if band 9 and 10 data is found
-        bands = [s.band
-                 for sub in [m.get_spectral_windows() for m in inp.context.observing_run.measurement_sets]
-                 for s in sub]
-        if 'ALMA Band 9' in bands:
-            LOG.warning('Running hifa_renorm on ALMA Band 9 (DSB) data')
-        if 'ALMA Band 10' in bands:
-            LOG.warning('Running hifa_renorm on ALMA Band 10 (DSB) data')
+        # Issue warning if current MS contains Band 9 and/or 10 data.
+        bands_in_ms = {spw.band for spw in inp.ms.get_spectral_windows()}
+        for band in ('ALMA Band 9', 'ALMA Band 10'):
+            if band in bands_in_ms:
+                LOG.warning(f"{inp.ms.basename}: running hifa_renorm on {band} (DSB) data.")
 
         # PIPE-2150: safely create the "RN_plots" directory before calling the renormalization external code to prevent
         # potential race condition when checking/examining the directory existence in the tier0 setup.

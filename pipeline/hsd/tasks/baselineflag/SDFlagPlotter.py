@@ -178,7 +178,7 @@ class SDFlagPlotter(object):
 
         # Running mean flag before baseline fit
         for pol in pollist:
-            PlotData_dict['data'] = NPp_dict[pol]['data']['RunMeanPreFitFlag']
+            PlotData_dict[pol]['data'] = NPp_dict[pol]['data']['RunMeanPreFitFlag']
             PlotData_dict[pol]['flag'] = NPp_dict[pol]['flag']['RunMeanPreFitFlag']
             PlotData_dict[pol]['thre'] = [threshold_dict[pol][3][1]]
             PlotData_dict[pol]['title'] = "RMS ({}) for Baseline Deviation from the running mean (Nmean={:d}) before baseline subtraction".format(bunit, FlagRule_local_dict[pol]['RunMeanPreFitFlag']['Nmean'])

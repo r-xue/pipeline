@@ -1,25 +1,19 @@
 from typing import List
 
 import numpy as np
-from astropy.coordinates import SkyCoord, EarthLocation, AltAz
+from astropy.coordinates import AltAz, EarthLocation, SkyCoord
 from astropy.time import Time
-from astropy.utils.iers import conf as iers_conf
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.extern.adopted import getMedianPWV
 from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.common.arrayflaggerbase import channel_ranges
 from pipeline.h.tasks.flagging import flagdeterbase
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tools, task_registry
 from pipeline.infrastructure.utils import utils
-from pipeline.infrastructure import casa_tools
-from pipeline.extern.adopted import getMedianPWV
-
-# Avoid downloading the updated IERS tables from the internet because an
-#  approximate value is enough in this case
-iers_conf.auto_max_age = None
 
 __all__ = [
     'FlagDeterALMA',
@@ -285,10 +279,11 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                   ' that are too close to the baseband edge.'.format(spw.id))
 
         # For the given spectral window, identify the corresponding SQLD
-        # spectral window with TARGET intent, which is representative of the
-        # baseband.
+        # spectral window(s) with TARGET intent taken in same baseband with same
+        # spectral tuning (SpectralSpec, PIPE-1991).
         bb_spw = [s for s in self.inputs.ms.get_spectral_windows(science_windows_only=False)
-                  if s.baseband == spw.baseband and s.type == 'SQLD' and 'TARGET' in s.intents]
+                  if s.baseband == spw.baseband and s.spectralspec == spw.spectralspec and s.type == 'SQLD'
+                  and 'TARGET' in s.intents]
 
         # If no baseband spw could be identified, add the spw to the list of missing basebands
         # and return with no new flagging commands.

@@ -22,6 +22,7 @@ from pipeline.infrastructure.launcher import Context
 
 from ..common import direction_utils as dirutil
 from ..common import rasterutil
+from ..common.utils import mjd_to_datetime
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -46,8 +47,9 @@ def mjdsec2str(t: float) -> str:
     Returns:
         str: formatted datetime
     """
-    qa = casa_tools.quanta
-    return '{year}/{month}/{monthday}/{hour}:{min}:{s:.7f}'.format(**qa.splitdate(qa.quantity(t, 's')))
+    date_time = mjd_to_datetime(t / 86400)
+    attributes = ('year', 'month', 'day', 'hour', 'minute', 'second', 'microsecond')
+    return '{}/{}/{}/{}:{}:{}.{:0>6d}'.format(*[getattr(date_time, name) for name in attributes])
 
 
 def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:

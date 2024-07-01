@@ -22,7 +22,7 @@ class VLARestoreDataInputs(restoredata.RestoreDataInputs):
 
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None,
                  output_dir=None, session=None, vis=None, bdfflags=None, lazy=None, asis=None,
-                 ocorr_mode=None, gainmap=None):
+                 ocorr_mode=None, gainmap=None, specline_spws=None):
         super(VLARestoreDataInputs, self).__init__(context, copytoraw=copytoraw,
                                                    products_dir=products_dir, rawdata_dir=rawdata_dir,
                                                    output_dir=output_dir, session=session,
@@ -30,6 +30,7 @@ class VLARestoreDataInputs(restoredata.RestoreDataInputs):
                                                    ocorr_mode=ocorr_mode)
 
         self.gainmap = gainmap
+        self.specline_spws = specline_spws
 
 
 @task_registry.set_equivalent_casa_task('hifv_restoredata')
@@ -108,7 +109,8 @@ class VLARestoreData(restoredata.RestoreData):
             importdata.VLAImportData, inputs.context,
             vis=vislist, session=sessionlist, save_flagonline=False,
             lazy=inputs.lazy, bdfflags=inputs.bdfflags,
-            asis=inputs.asis, ocorr_mode=inputs.ocorr_mode)
+            asis=inputs.asis, ocorr_mode=inputs.ocorr_mode,
+            specline_spws=inputs.specline_spws)
         importdata_task = importdata.VLAImportData(container)
         return self._executor.execute(importdata_task, merge=True)
 

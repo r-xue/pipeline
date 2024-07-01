@@ -151,7 +151,7 @@ class ImageParamsHeuristics(object):
                 cont_ranges_spwsel[source_name] = {}
                 all_continuum_spwsel[source_name] = {}
                 for spwid in self.spwids:
-                    cont_ranges_spwsel[source_name][str(spwid)] = ''
+                    cont_ranges_spwsel[source_name][str(spwid)] = 'NONE'
                     all_continuum_spwsel[source_name][str(spwid)] = False
 
         contfile = self.contfile if self.contfile is not None else ''
@@ -1030,7 +1030,20 @@ class ImageParamsHeuristics(object):
                 max_frequency_Hz = float(spw.max_frequency.convert_to(measures.FrequencyUnits.HERTZ).value)
                 spw_frequency_ranges.append([min_frequency_Hz, max_frequency_Hz])
             except Exception as e:
-                LOG.warn(f'Could not determine aggregate bandwidth frequency range for spw {spwid}. Exception: {str(e)}')
+                # The warning message should only be logged if not in ALMA B2B mode (PIPE-832).
+                # Eventually, the "aggregrate_bandwidth" method should not even be called for
+                # spws that do not have data for a given field. This requires more elaborate
+                # refactoring of standard science spws given to the heuristics and in particular
+                # to the "representative_target" method.
+                try:
+                    # One can not try the above "ms" object as it will be undefined when checking
+                    # LF spws. So here just trying the first in the list.
+                    checkMS = self.observing_run.get_ms(self.vislist[0])
+                    b2bMode = checkMS.is_band_to_band
+                except:
+                    b2bMode = False
+                if not b2bMode:
+                    LOG.warn(f'Could not determine aggregate bandwidth frequency range for spw {spwid}. Exception: {str(e)}')
 
         aggregate_bandwidth_Hz = np.sum([r[1] - r[0] for r in utils.merge_ranges(spw_frequency_ranges)])
 
@@ -2132,7 +2145,7 @@ class ImageParamsHeuristics(object):
     def scales(self, iteration=None):
         return None
 
-    def uvtaper(self, beam_natural=None, protect_long=None):
+    def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None):
         return None
 
     def uvrange(self, field=None, spwspec=None):
