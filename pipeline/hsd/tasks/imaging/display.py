@@ -1028,23 +1028,14 @@ class SDChannelMapDisplay(SDImageDisplay):
             )
 
             # vertical lines for integrated spectrum #2
-            for i in range(self.NumChannelMap + 1):
-                idx_chan_left_end = int(idx_left_end + i * indices_width_of_line)
-                vel_chan_left_end = None
+            y_vel = self.velocity[idx_left_end:-1]
+            x_chan = numpy.arange(idx_left_end, idx_left_end + len(y_vel))
+            chan2vel = interpolate.interp1d(x_chan, y_vel, bounds_error=False, fill_value='extrapolate')
 
-                if 0 <= idx_chan_left_end < self.nchan:
-                    if idx_chan_left_end == 0:
-                        vel_chan_left_end = 0.5 * (self.velocity[idx_chan_left_end] -
-                                                   self.velocity[idx_chan_left_end + 1])
-                    else:
-                        vel_chan_left_end = 0.5 * (self.velocity[idx_chan_left_end] + 
-                                                   self.velocity[idx_chan_left_end - 1])
-                    vel_chan_left_end -= velocity_line_center
-                else:
-                    LOG.warn(f'Omitting the vertical line: index:{idx_chan_left_end} on ChannelMap:{i}')
-
-                if vel_chan_left_end is not None:
-                    vertical_lines.append(
+            _upperside = x_chan[0] + indices_width_of_line * (self.NumChannelMap + 1)
+            for i in range( x_chan[0], _upperside, indices_width_of_line):
+                vel_chan_left_end = chan2vel( i - 0.5 ) - velocity_line_center
+                vertical_lines.append(
                         axes_integsp2.axvline(x=vel_chan_left_end, linewidth=0.3, color='r')
                     )
                 LOG.debug(f'i, Vel[idx_chan_left_end] : {i}, {vel_chan_left_end}')
