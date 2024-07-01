@@ -158,12 +158,12 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             vislist = slib['vislist']
             vis_keys = set(slib[vislist[-1]])
 
-            # A final solint presents one successful/applied solint gain solution
+            # A final solint here presents one successful/applied solint gain solution
             final_solints = []
             if slib.get('SC_success'):
                 if 'inf_EB' in solints:
                     final_solints.append('inf_EB')
-                if slib.get('final_solint', None) is not None:
+                if slib.get('final_solint', None) not in (None, 'None'):
                     final_solints.append(slib.get('final_solint'))
             final_solints = set(final_solints)
 

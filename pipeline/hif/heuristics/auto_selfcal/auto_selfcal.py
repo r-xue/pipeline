@@ -989,6 +989,7 @@ class SelfcalHeuristics(object):
                             selfcal_library[target][band][vis][solint]['RMS_post'] = post_RMS.copy()
                             selfcal_library[target][band][vis][solint]['SNR_NF_post'] = post_SNR_NF.copy()
                             selfcal_library[target][band][vis][solint]['RMS_NF_post'] = post_RMS_NF.copy()
+                            
                             # Update RMS value if necessary
                             if selfcal_library[target][band][vis][solint]['RMS_post'] < selfcal_library[target][band]['RMS_curr'] and vis == vislist[-1]:
                                 selfcal_library[target][band]['RMS_curr'] = selfcal_library[target][band][vis][solint][
@@ -1076,24 +1077,17 @@ class SelfcalHeuristics(object):
                             selfcal_library[target][band]['final_solint'] = solint
                             selfcal_library[target][band]['final_solint_mode'] = solmode[band][iteration]
                             selfcal_library[target][band]['iteration'] = iteration
-                            # (iteration == 0) and
-                            if (iteration < len(solints[band])-1) and (selfcal_library[target][band][vis][solint]['SNR_post'] > selfcal_library[target][band]['SNR_orig']):
-                                LOG.info('Updating solint = '+solints[band][iteration+1]+' SNR')
-                                LOG.info(f'Was: {solint_snr[target][band][solints[band][iteration+1]]}')
-                                get_SNR_self_update([target], band, vislist, selfcal_library, n_ants, solint,
-                                                    solints[band][iteration+1], integration_time, solint_snr)
-                                LOG.info(f'Now: {solint_snr[target][band][solints[band][iteration+1]]}')
+                        else:
+                            for vis in vislist:
+                                selfcal_library[target][band][vis][solint]['Pass'] = False
 
-                            if iteration < (len(solints[band])-1):
-                                LOG.info('****************Selfcal passed, shortening solint*************')
-                            else:
-                                LOG.info('****************Selfcal passed for Minimum solint*************')
                         ##
                         # if S/N worsens, and/or beam area increases reject current solutions and reapply previous (or revert to origional data)
                         ##
 
-                        else:
-
+                        if not selfcal_library[target][band][
+                                vislist[0]][solint]['Pass'] or (
+                                solint == 'inf_EB' and selfcal_library[target][band]['inf_EB_SNR_decrease']):
                             reasons = []
                             if post_SNR <= SNR:
                                 reasons.append('S/N decrease')
@@ -1106,15 +1100,13 @@ class SelfcalHeuristics(object):
                             if post_RMS_NF / RMS_NF > 1.05 and solint_snr[target][band][solint] <= 5:
                                 reasons.append('NF RMS increase beyond 5%')
                             reason = '; '.join(reasons)
-
                             selfcal_library[target][band]['Stop_Reason'] = reason
                             for vis in vislist:
-                                selfcal_library[target][band][vis][solint]['Pass'] = False
+                                # selfcal_library[target][band][vis][solint]['Pass'] = False
                                 selfcal_library[target][band][vis][solint]['Fail_Reason'] = reason
-                            LOG.info('****************Selfcal failed*************')
-                            LOG.info('REASON: '+reason)
-                            LOG.info('****************Reapplying previous solint solutions where available*************')
 
+                        if not selfcal_library[target][band][vislist[0]][solint]['Pass']:
+                            LOG.info('****************Reapplying previous solint solutions where available*************')
                             # if the final successful solint was inf_EB but inf_EB had a S/N decrease, don't count it as a success and revert to no selfcal
                             if selfcal_library[target][band]['final_solint'] == 'inf_EB' and selfcal_library[target][band][
                                     'inf_EB_SNR_decrease']:
@@ -1147,6 +1139,20 @@ class SelfcalHeuristics(object):
                                     selfcal_library[target][band]['RMS_post'] = selfcal_library[target][band][
                                         'RMS_orig'].copy()
 
+                        if selfcal_library[target][band][vislist[0]][solint]['Pass']:
+                            if (iteration < len(solints[band])-1) and (selfcal_library[target][band][vis][solint]['SNR_post'] > selfcal_library[target][band]['SNR_orig']):
+                                LOG.info('Updating solint = '+solints[band][iteration+1]+' SNR')
+                                LOG.info(f'Was: {solint_snr[target][band][solints[band][iteration+1]]}')
+                                get_SNR_self_update([target], band, vislist, selfcal_library, n_ants, solint,
+                                                    solints[band][iteration+1], integration_time, solint_snr)
+                                LOG.info(f'Now: {solint_snr[target][band][solints[band][iteration+1]]}')
+                            if iteration < (len(solints[band])-1):
+                                LOG.info('****************Selfcal passed, shortening solint*************')
+                            else:
+                                LOG.info('****************Selfcal passed for Minimum solint*************')
+                        else:
+                            LOG.info('****************Selfcal failed*************')
+                            LOG.info('REASON: '+reason)
                             # if a solution interval shorter than inf for phase-only SC has passed, attempt amplitude selfcal
                             if iteration > 1 and solmode[band][iteration] != 'ap' and self.do_amp_selfcal:
                                 iterjump = solmode[band].index('ap')
