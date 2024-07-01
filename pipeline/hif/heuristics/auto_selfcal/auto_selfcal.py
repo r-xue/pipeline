@@ -687,7 +687,7 @@ class SelfcalHeuristics(object):
                             scales=[0],
                             threshold=str(
                                 selfcal_library[target][band]['nsigma'][iteration] *
-                                selfcal_library[target][band]['RMS_curr']) + 'Jy', savemodel='none',
+                                selfcal_library[target][band]['RMS_NF_curr']) + 'Jy', savemodel='none',
                             parallel=parallel, cellsize=cellsize,
                             imsize=imsize,
                             nterms=selfcal_library[target][band]['nterms'],
@@ -724,7 +724,7 @@ class SelfcalHeuristics(object):
                             scales=[0],
                             threshold=str(
                                 selfcal_library[target][band]['nsigma'][iteration] *
-                                selfcal_library[target][band]['RMS_curr']) + 'Jy', savemodel='modelcolumn',
+                                selfcal_library[target][band]['RMS_NF_curr']) + 'Jy', savemodel='modelcolumn',
                             parallel=parallel, cellsize=cellsize,
                             imsize=imsize,
                             nterms=selfcal_library[target][band]['nterms'],
@@ -921,7 +921,7 @@ class SelfcalHeuristics(object):
                             telescope=self.telescope, nsigma=selfcal_library[target][band]['nsigma'][iteration],
                             scales=[0],
                             threshold=str(
-                                selfcal_library[target][band]['nsigma'][iteration] * selfcal_library[target][band]['RMS_curr']) +
+                                selfcal_library[target][band]['nsigma'][iteration] * selfcal_library[target][band]['RMS_NF_curr']) +
                             'Jy', savemodel='none', parallel=parallel, cellsize=cellsize, imsize=imsize,
                             nterms=selfcal_library[target][band]['nterms'],
                             field=self.field, spw=selfcal_library[target][band]['spws_per_vis'],
@@ -980,7 +980,7 @@ class SelfcalHeuristics(object):
                             selfcal_library[target][band][vis][solint]['gaincal_combine'] = inf_EB_gaincal_combine_dict[target][band][
                                 vis] + '' if solint == 'inf_EB' else gaincal_combine[band][iteration] + ''
                             selfcal_library[target][band][vis][solint]['clean_threshold'] = selfcal_library[target][band]['nsigma'][
-                                iteration] * selfcal_library[target][band]['RMS_curr']
+                                iteration] * selfcal_library[target][band]['RMS_NF_curr']
                             selfcal_library[target][band][vis][solint]['intflux_pre'], selfcal_library[target][band][vis][solint][
                                 'e_intflux_pre'] = get_intflux(sani_target + '_' + band + '_' + solint + '_' + str(iteration) + '.image.tt0', RMS)
                             selfcal_library[target][band][vis][solint]['fallback'] = fallback[vis]+''
@@ -1266,7 +1266,7 @@ class SelfcalHeuristics(object):
                         spws_per_vis = self.image_heuristics.observing_run.get_real_spwsel([spw]*len(vislist), vislist)
                         nfsnr_modifier = selfcal_library[target][band]['RMS_NF_curr'] / selfcal_library[target][band]['RMS_curr']
                         sensitivity_agg, sens_bw, sens_reffreq = self.get_sensitivity()
-                        sensitivity_scale_factor = selfcal_library[target][band]['RMS_curr']/sensitivity_agg
+                        sensitivity_scale_factor = selfcal_library[target][band]['RMS_NF_curr']/sensitivity_agg
 
                         if selfcal_library[target][band]['SC_success']:
                             self.tclean_wrapper(vislist, sani_target + '_' + band + '_' + spw + '_final', band_properties, band,
