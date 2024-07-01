@@ -1032,7 +1032,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             x_chan = numpy.arange(idx_left_end, idx_left_end + len(y_vel))
             chan2vel = interpolate.interp1d(x_chan, y_vel, bounds_error=False, fill_value='extrapolate')
 
-            _upperside = x_chan[0] + indices_width_of_line * (self.NumChannelMap + 1)
+            _upperside = x_chan[0] + indices_width_of_line * (self.NumChannelMap) + 1
             for i in range( x_chan[0], _upperside, indices_width_of_line):
                 vel_chan_left_end = chan2vel( i - 0.5 ) - velocity_line_center
                 vertical_lines.append(
