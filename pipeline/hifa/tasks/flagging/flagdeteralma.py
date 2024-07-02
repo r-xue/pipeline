@@ -117,8 +117,8 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
 
         # PIPE-933
         # save deterministic flag state
-        task = casa_tasks.flagmanager(self.inputs.vis, mode='save', versionname="after_deterministic_flagging", 
-                                      comment="Flags after hifa_flagdata stage")
+        task = casa_tasks.flagmanager(self.inputs.ms.basename, mode='save', versionname="after_deterministic_flagging",
+                                      comment="save deterministic flag state")
         self._executor.execute(task)
 
         return results

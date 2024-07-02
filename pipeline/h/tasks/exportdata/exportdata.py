@@ -798,18 +798,17 @@ class ExportData(basetask.StandardTaskTemplate):
 
         # Define the versions list file to be saved
         # Define the directory to be saved, and where to store in tar archive.
-        LOG.info('Saving flag version %s', flag_version_name)
-        flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
-        flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
-        line = "{} : {}\n".format(flag_version_name, flag_dict[flag_version_name])
-        tar.add(flagsname, arcname=flagsarcname)
+        if flag_version_name is not list:
+            flag_version_name = [flag_version_name]
         # PIPE-933: Add flag version 'after_deterministic_flagging' to tarfile
-        if "after_deterministic_flagging" in flag_dict:
-            flag_version_name = "after_deterministic_flagging"
-            LOG.info('Saving flag version %s', flag_version_name)
-            flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
-            flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
-            line += "{} : {}\n".format(flag_version_name, flag_dict[flag_version_name])
+        if "ALMA" in self.inputs._context.project_summary.observatory:
+            flag_version_name.append("after_deterministic_flagging")
+        line = ""
+        for f in flag_version_name:
+            LOG.info('Saving flag version %s', f)
+            flagsname = os.path.join(vis + '.flagversions', 'flags.' + f)
+            flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + f)
+            line += "{} : {}\n".format(f, flag_dict[f])
             tar.add(flagsname, arcname=flagsarcname)
         
         line = line.encode(sys.stdout.encoding)
