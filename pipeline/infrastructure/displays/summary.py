@@ -246,7 +246,7 @@ class ParameterVsTimeChart(object):
         ('REFERENCE', 'deepskyblue'),
         ('PHASE', 'cyan'),
         ('CHECK', '#700070'),  # slightly darker than 'purple'
-        ('BANDPASS', 'red'),
+        ('BANDPASS', 'orangered'),
         ('AMPLITUDE', 'green'),
         ('ATMOSPHERE', 'magenta'),
         ('POINTING', 'yellow'),
