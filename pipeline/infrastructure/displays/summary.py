@@ -1,5 +1,4 @@
 import datetime
-import itertools
 import math
 import operator
 import os
@@ -247,7 +246,7 @@ class ParameterVsTimeChart(object):
         ('REFERENCE', 'deepskyblue'),
         ('PHASE', 'cyan'),
         ('CHECK', '#700070'),  # slightly darker than 'purple'
-        ('BANDPASS', 'orangered'),
+        ('BANDPASS', 'red'),
         ('AMPLITUDE', 'green'),
         ('ATMOSPHERE', 'magenta'),
         ('POINTING', 'yellow'),
@@ -1167,8 +1166,7 @@ class SpwIdVsFreqChart(object):
         max_spws_to_annotate_VLA = 16  # request for VLA, PIPE-1415.
         max_spws_to_annotate_ALMA_NRO = np.inf  # annotate all spws for ALMA/NRO
         colorcycle = matplotlib.rcParams['axes.prop_cycle']()
-        atm_color_plot = [0.17, 0.17, 0.17, 0.6]  # gray, alpha=0.6
-        atm_color_tick_label = [0.17, 0.17, 0.17, 1.0]  # gray, alpha=1.0
+        atm_color = [0.17, 0.17, 0.17]  # very dark gray
         ax_atm = ax_spw.twinx()
 
         # plot spws
@@ -1182,6 +1180,7 @@ class SpwIdVsFreqChart(object):
             max_spws_to_annotate = max_spws_to_annotate_ALMA_NRO
         xmin, xmax = np.inf, -np.inf
         totalnum_spws = len(scan_spws)
+        rmin = np.inf
         idx = 0
         for spwid_list in spw_list_generator:
             color = next(colorcycle)['color']
@@ -1195,14 +1194,39 @@ class SpwIdVsFreqChart(object):
                 # 2. annotate each bars
                 if totalnum_spws <= max_spws_to_annotate or spwid in [spwid_list[0], spwid_list[-1]]:
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
+                resolution = abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2])
+                rmin = min(rmin, resolution)
                 idx += 1
         # 3. Frequency vs. ATM transmission
+        LOG.info("Culculating ATM transmission data.")
+        LOG.info("Criterions of a resolution and a number of data points are defined to show the finest features of ATM transmission within 1 minute runtime.")
+        LOG.info("The criterion of resolution is 500kHz.")
+        LOG.info("The criterion of number of data points is 48000, derived from (maximum frequency range 24GHz)/500kHz.")
         center_freq = (xmin + xmax) / 2.0
-        resolution = abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2])
+        LOG.info("Minimum resolution through spws: {}".format(rmin))
+        if rmin > 0.0005:
+            LOG.info("The minimum resolution is coarser than 500kHz.")
+            if (xmax - xmin) / rmin > 48000:
+                resolution = (xmax - xmin) / 48000
+                LOG.info("The number of data points is larger than 48000.")
+                LOG.info("The resolution is set to {}, which is the value which is equivalent to 48000 points.".format(resolution))
+            else:
+                resolution = 0.0005
+                LOG.info("The number of data points is smaller than 48000.")
+                LOG.info("The resolution is set to 500kHz.")
+        else:
+            LOG.info("The minimum resolution is finer than 500kHz.")
+            if (xmax - xmin) / rmin > 48000:
+                resolution = (xmax - xmin) / 48000
+                LOG.info("The number of data points is larger than 48000.")
+                LOG.info("The resolution is set to {}, which is the value which is equivalent to 48000 points.".format(resolution))
+            else:
+                resolution = rmin
+                LOG.info("The minimum resolution {} is used.".format(resolution))
         nchan = round((xmax - xmin) / resolution)
-        elevation = atmutil.get_median_elevation(ms.name, antid)
-        atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, elevation=elevation, doplot=False)
-        ax_atm.plot(atm_freq, atm_transmission, color=atm_color_plot, linestyle='-', linewidth=2.0)
+        LOG.info("The number of data points = {}".format(nchan))
+        atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
+        ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
         ax_spw.set_ylim(totalnum_spws + totalnum_spws/20.0, -1.0 - totalnum_spws/20.0)  # The spw indices are from 0 to totalnum_spws. y-axis is inverted. totalnum_spws/20.0 is a mergin. -1.0 is upper edge.
@@ -1211,9 +1235,9 @@ class SpwIdVsFreqChart(object):
         ax_spw.grid(axis='x')
         ax_spw.tick_params(labelsize=13)
         ax_spw.set_yticks([])
-        ax_atm.set_ylabel('ATM Transmission', color=atm_color_tick_label, labelpad=2, fontsize=14)
+        ax_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
         ax_atm.set_ylim(0, 1.05)
-        ax_atm.tick_params(direction='out', colors=atm_color_tick_label, labelsize=13)
+        ax_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
         ax_atm.yaxis.set_major_formatter(ticker.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
         ax_atm.yaxis.tick_right()
         fig.savefig(filename)
