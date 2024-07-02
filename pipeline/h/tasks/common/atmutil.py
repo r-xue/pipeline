@@ -37,8 +37,8 @@ def init_at(at: casatools.atmosphere, humidity: float = 20.0,
     Initialize atmospheric profile and spectral window setting.
 
     Initialize atmospheric profile and spectral window setting in CASA
-    atmosphere tool using input antenna site parameters and spectral window
-    frequencies.
+    atmosphere tool using input antenna site parameters and the center
+    frequency and the width of a frequency range.
 
     Args:
         at: CASA atmosphere tool instance to initialize.
@@ -48,9 +48,9 @@ def init_at(at: casatools.atmosphere, humidity: float = 20.0,
         atmtype: An AtmType enum that defines a type of atmospheric profile.
         altitude: The altitude of antenna site to calculate atmospheric
             transmission (unit: m).
-        fcenter: The center frequency of spectral window (unit: GHz).
-        nchan: The number of channels in spectral window.
-        resolution: The channel width of spectral window (unit: GHz).
+        fcenter: The center frequency for a frequency range (unit: GHz).
+        nchan: The number for the frequency range.
+        resolution: The channel width for the frequency range (unit: GHz).
     """
     myqa = casa_tools.quanta
     at.initAtmProfile(humidity=humidity,
@@ -348,7 +348,7 @@ def get_representative_elevation(vis, antenna_id: int) -> float:
     myqa = casa_tools.quanta
     myme = casa_tools.measures
 
-    # correct necessary information using msmd tool
+    # collect necessary information using msmd tool
     with casa_tools.MSMDReader(vis) as mymsmd:
         mposition = mymsmd.antennaposition(antenna_id)
         target_field = mymsmd.fieldsforintent('OBSERVE_TARGET*')[0]
@@ -415,7 +415,7 @@ def get_altitude(vis: str) -> float:
 def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
                      doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Calculate atmospheric transmission of an antenna and a spectral window.
+    Calculate atmospheric transmission of an antenna and spectral window.
 
     Calculate the atmospheric transmission of a given spectral window for an
     elevation angle corresponding to pointings of a given antenna in a
@@ -433,35 +433,25 @@ def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
         frequency.
     """
     center_freq, nchan, resolution = get_spw_spec(vis, spw_id)
-    # first try computing elevation value from phasecenter
-    # if it fails, inspect POINTING table
-    try:
-        elevation = get_representative_elevation(vis, antenna_id)
-    except Exception:
-        elevation = get_median_elevation(vis, antenna_id)
 
-    return get_transmission_for_range(vis, center_freq, nchan, resolution, elevation, doplot)
+    return get_transmission_for_range(vis, center_freq, nchan, resolution, antenna_id, doplot)
 
 
-def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, elevation: float, doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
+def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, antenna_id: int = 0, doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
     """
     Calculate atmospheric transmission covering a range of frequency.
-
-    Calculate the atmospheric transmission from a center frequency,
-    a number of channels and a resolution of a frequency range
-    and the median elevation.
-    The atmospheric profile is constructed by default site parameters of
-    the function, init_at. The median of zenith water vapor column (pwv)
-    is used to calculate the transmission.
+    A number of channels, a resolution of a frequency range, and the median
+    of elevations in all pointings of the selected antenna is used in calculation. 
+    The atmospheric profile is constructed by default site parameters of the 
+    function, init_at. The median of zenith water vapor column (pwv) is used 
+    to calculate the transmission.
 
     Args:
         vis: Path to MeasurementSet.
-        center_freq: The center frequency (unit: GHz) of a frequency range
-                     given by (maximum frequency - minimum frequency)/2.
-        nchan: The number of channels given by
-               (maximum frequency - minimum frequency)/resolution.
+        center_freq: The center frequency (unit: GHz).
+        nchan: The number of channels.
         resolution: The channel width of a spectral window (unit: GHz).
-        elevation: The median of elevation of selected antenna (unit: degree).
+        antenna_id: The antenna ID to select.
         doplot: If True, plot the atmospheric transmission and opacities.
 
     Returns:
@@ -469,8 +459,6 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
         unit of GHz, and the other is the atmospheric transmission at each
         frequency.
     """
-    # set pwv to 1.0
-    # pwv = 1.0
     # get median PWV using Todd's script
     (pwv, pwvmad) = adopted.getMedianPWV(vis=vis)
 
@@ -481,6 +469,13 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
     init_at(myat, fcenter=center_freq, nchan=nchan, resolution=resolution,
             altitude=altitude)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
+
+    # first try computing elevation value from phasecenter
+    # if it fails, inspect POINTING table
+    try:
+        elevation = get_representative_elevation(vis, antenna_id)
+    except Exception:
+        elevation = get_median_elevation(vis, antenna_id)
 
     airmass = calc_airmass(elevation)
     dry_opacity = get_dry_opacity(myat)
