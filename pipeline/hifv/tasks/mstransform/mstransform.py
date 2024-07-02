@@ -25,8 +25,7 @@ class VlaMstransformInputs(mst.MstransformInputs):
     def outputvis_for_line(self):
         vis_root = os.path.splitext(self.vis)[0]
         return vis_root + '_targets.ms'
-    
-    # TODO: conversion for spw_line
+
     # Find all the spws with TARGET intent. These may be a subset of the
     # science spws which include calibration spws.
     @vdp.VisDependentProperty
@@ -76,7 +75,6 @@ class VlaMstransform(mst.Mstransform):
         # Run CASA task to create the output MS for continuum data
         mstransform_args = inputs.to_casa_args()
         # Remove input member variables that don't belong as input to the mstransform task
-        # TODO: Handle this in a better way.
         mstransform_args.pop('outputvis_for_line', None)
         mstransform_args.pop('spw_line', None)
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
@@ -93,17 +91,36 @@ class VlaMstransform(mst.Mstransform):
         # The main goal is to get an MS with the same shape as the _target.ms to
         # get the flags for non-RFI flagged data
 
+        # Identify flags from before RFI flagging was applied
+        pre_rfi_flagversion_name = None
+        flags_list_task = casa_tasks.flagmanager(vis=inputs.vis, mode="list")
+        flags_dict = self._executor.execute(flags_list_task)
+        for value in flags_dict.values():
+            if 'name' in value:
+                if 'hifv_checkflag_target-vla' in value['name']:
+                    pre_rfi_flagversion_name = value['name']
+
+        if pre_rfi_flagversion_name is None: 
+            msg = "For {}: could not locate the pre-RFI flags to restore".format(inputs.vis)
+            LOG.error(msg)
+            raise Exception(msg)
+
         # Restore flags from before RFI flagging was applied
-        task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='before_rflag_statwt')
+        task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=pre_rfi_flagversion_name)
         self._executor.execute(task)
 
         # Run CASA task to create the output MS for the line data
         mstransform_args['outputvis'] = inputs.outputvis_for_line
 
-        # TODO: add ability to also split off pre-identified SPWs here, in addition or instead of 
-        # ones specified directly as task input
         if inputs.spw_line:
             mstransform_args['spw'] = inputs.spw_line
+        else:  # check to see if any spws have been identified as spectral lines for this MS
+            specline_spws = []
+            for spw in inputs.ms.get_spectral_windows(science_windows_only=True):
+                if spw.specline_window: 
+                    specline_spws.append(spw)
+            if specline_spws:
+                mstransform_args['spw'] = ','.join([str(spw.id) for spw in specline_spws])
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
         try:
@@ -112,15 +129,14 @@ class VlaMstransform(mst.Mstransform):
             LOG.warning(f"Caught mstransform exception: {ee}")
 
         # Save flags from line MS without rfi flagging
-        task = casa_tasks.flagmanager(vis=inputs.outputvis_for_line, mode='save', versionname='before_rflag_statwt')
+        task = casa_tasks.flagmanager(vis=inputs.outputvis_for_line, mode='save', versionname=pre_rfi_flagversion_name)
         self._executor.execute(task)
 
         # Copy across requisite XML files.
         mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis_for_line)
 
         # Restore RFI flags to main MS
-        #task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='rfi_flagged_statwt')
-        task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='statwt_1')
+        task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='rfi_flagged_statwt')
         self._executor.execute(task)
 
         return result
@@ -148,7 +164,9 @@ class VlaMstransform(mst.Mstransform):
                 LOG.debug('Setting data_column and origin_ms.')
                 ms.origin_ms = self.inputs.ms.origin_ms
                 ms.set_data_column(datatype, 'DATA')
-
+                # Propagate spectral line spw designation from source MS
+                for spw in ms.get_all_spectral_windows():
+                    spw.specline_window = self.inputs.ms.get_spectral_window(spw.id).specline_window
             result.mses.extend(observing_run.measurement_sets)
 
         # Import the new measurement sets.

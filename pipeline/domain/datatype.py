@@ -44,13 +44,20 @@ class DataType(Enum):
         in order of preference for the automatic choice of datatype (if not manually overridden).
         """
         if intent == 'TARGET':
-            if specmode in ('mfs', 'cont'):
+            if specmode == 'mfs':
                 # The preferred data types are SELFCAL_CONTLINE_SCIENCE and REGCAL_CONTLINE_SCIENCE.
                 # For VLA, also SELFCAL_CONT_SCIENCE and REGCAL_CONT_SCIENCE.
                 # The remaining fallback values are just there to support experimental usage of
                 # the first set of MSes.
                 specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE,
-                                      DataType.SELFCAL_CONT_SCIENCE, DataType.REGCAL_CONT_SCIENCE,
+                                      DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+            elif specmode == 'cont':
+                # The preferred data types are SELFCAL_CONTLINE_SCIENCE and REGCAL_CONTLINE_SCIENCE.
+                # For VLA, also SELFCAL_CONT_SCIENCE and REGCAL_CONT_SCIENCE.
+                # The remaining fallback values are just there to support experimental usage of
+                # the first set of MSes.
+                specmode_datatypes = [DataType.SELFCAL_CONT_SCIENCE, DataType.REGCAL_CONT_SCIENCE,
+                                      DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE,
                                       DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
             else:
                 # The preferred data types for cube and repBW specmodes are SELFCAL_LINE_SCIENCE and
