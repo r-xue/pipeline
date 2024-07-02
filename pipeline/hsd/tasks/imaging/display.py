@@ -1047,8 +1047,9 @@ class SDChannelMapDisplay(SDImageDisplay):
             LOG.debug('Velocity of a vertical line: %s', _vertlines)
 
             # MEMO: 
-            # - the 16 vertical lines in the velocity plot #2 could be drawn even if the position of them
-            #   were out of lange, but the frequency plot #1, the vertical line of right side is limited by nchan.
+            # - the 16 vertical lines in the velocity plot #2 will be drawn even if the position of them
+            #   are out of lange of self.velocity, but the frequency plot #1, the vertical line of right
+            #   side is limited by nchan.
             # - V0 and V1 are related to plotting all channelMaps. If we use the both side of _vertlines
             #   as V0 and V1, we must care about channelMap existance at the values of _vertlines.
 
