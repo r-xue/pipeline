@@ -1,6 +1,5 @@
 import os
 import shutil
-import numpy
 from typing import Type, Dict, List
 
 import pipeline.infrastructure as infrastructure
@@ -102,12 +101,12 @@ class Hanning(basetask.StandardTaskTemplate):
                     spw_preaverage = dict()
                     LOG.debug('Column SDM_NUM_BIN was not found in the SDM.')
             else:
-                LOG.info("MS has already had offline hanning smoothing applied. Skipping this stage.")
+                LOG.warning("MS has already had offline hanning smoothing applied. Skipping this stage.")
                 return HanningResults()
 
         with casa_tools.MSReader(self.inputs.vis, nomodify=False) as mset:
             ms_info = mset.getspectralwindowinfo()
-            hs_dict = {x: False for x in ms_info.keys()}
+            hs_dict = {x: False for x in ms_info}
             if spw_preaverage:
                 smoothing_windows = self._getsmoothingwindows(spw_preaverage)
                 if smoothing_windows:
@@ -131,7 +130,7 @@ class Hanning(basetask.StandardTaskTemplate):
             except Exception as ex:
                 LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
             finally:
-                hs_dict = {x: True for x in hs_dict.keys()}
+                hs_dict = {x: True for x in hs_dict}
         # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
         self._track_hsmooth(hs_dict)
 
