@@ -1034,14 +1034,23 @@ class SDChannelMapDisplay(SDImageDisplay):
             x_chan = numpy.arange(idx_left_end, idx_left_end + len(y_vel))
             chan2vel = interpolate.interp1d(x_chan, y_vel, bounds_error=False, fill_value='extrapolate')
 
-            _idx_1st_vertline = x_chan[0]
-            _idx_16th_vertline = _idx_1st_vertline + indices_width_of_line * self.NumChannelMap
-            for i in range( _idx_1st_vertline, _idx_16th_vertline + 1, indices_width_of_line):
+            _vertline_1st = x_chan[0]
+            _vertline_16th = _vertline_1st + indices_width_of_line * self.NumChannelMap
+            _vertlines = []
+            for i in range( _vertline_1st, _vertline_16th + 1, indices_width_of_line):
                 _vertline = chan2vel(i - 0.5) - velocity_line_center
                 vertical_lines.append(
                         axes_integsp2.axvline(x=_vertline, linewidth=0.3, color='r')
                     )
-                LOG.debug(f'i, Velocity of a vertical line : {i}, {_vertline}')
+                _vertlines.append(_vertline)
+
+            LOG.debug('Velocity of a vertical line: %s', _vertlines)
+
+            # MEMO: 
+            # - the 16 vertical lines in the velocity plot #2 could be drawn even if the position of them
+            #   were out of lange, but the frequency plot #1, the vertical line of right side is limited by nchan.
+            # - V0 and V1 are related to plotting all channelMaps. If we use the both side of _vertlines
+            #   as V0 and V1, we must care about channelMap existance at the values of _vertlines.
 
             # loop over polarizations
             for pol in range(self.npol):
