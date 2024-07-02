@@ -45,6 +45,13 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hifv_syspower</Command>
+        <ParameterSet>
+
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifv_testBPdcals</Command>
         <ParameterSet>
         </ParameterSet>
@@ -164,6 +171,17 @@
         </ParameterSet>
     </ProcessingCommand>
 
+    <ProcessingCommand>
+        <Command xmlns="">hif_checkproductsize</Command>
+        <!--This will likely be updated, see PIPEREQ-302 -->
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maximsize</Keyword>
+                <Value xmlns="">16384</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
     <!-- cont imaging -->
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
@@ -224,6 +242,12 @@
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_pbcor</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
