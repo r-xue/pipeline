@@ -12,6 +12,7 @@
 # 11-07-2023. Version 3.3. Changes to find_repeated peaks. Filter on prominence over 5. Making the large contamination warning on full spw.
 #                          Channel avoidance in puff.
 # 25-09-2023. Version 3.4. Subtracting a cubic fitting to detect peaks in the bandpass.
+from ..infrastructure.renderer import logger as pllogger
 
 VERSION = "3.5"
 
@@ -1502,6 +1503,8 @@ def get_tsys_contaminated_intervals(
     relative_detection_factor=0.05,  # v3.1
     n_sigma_detection_limit=7,
 ):
+    plot_wrappers = []  # list to hold pipeline plot wrappers. New variable introduced during initial import PIPE-2009
+
     warnings_list = []
     tsys = tsysdata  ###
 
@@ -1876,6 +1879,7 @@ def get_tsys_contaminated_intervals(
         if plot:
             if large_baseline_residual:
                 LOG.info("%s large_baseline_residual: %s", key, large_baseline_residual)
+            plot_figfile = f"{savefigfile}_spw{spw}_field{field}.png" if savefigfile is not None else None
             plot_source_bp_normalized_residuals(
                 source_tsys=spec_s,
                 bandpass_tsys=spec_b,
@@ -1887,11 +1891,7 @@ def get_tsys_contaminated_intervals(
                 tsys_contamination_intervals=merge_intervals(line_intervals),
                 first_plot_title=f'{tsys.msfile.replace(".ms","")}: spw{spw} field={field} intent={intent_dict[field]}',
                 background="mistyrose" if large_baseline_residual else None,  # v3.3
-                savefigfile=(
-                    None
-                    if savefigfile is None
-                    else f"{savefigfile}_spw{spw}_field{field}.png"
-                ),
+                savefigfile=plot_figfile,
                 label_source=intent_dict[field],
                 other_emphasized_intervals={
                     "Tsys contamination?": {
@@ -1923,6 +1923,19 @@ def get_tsys_contaminated_intervals(
                 },
                 sci_spw_intervals=sci_spw_intervals_in_tsys_channels,
             )
+            if plot_figfile is not None and os.path.exists(plot_figfile):
+                wrapper = pllogger.Plot(
+                    plot_figfile,
+                    x_axis='channel',
+                    y_axis='tsys',
+                    parameters={
+                        'vis': os.path.basename(tsysdata.msfile),
+                        'field': field,
+                        'tsys_spw': spw,
+                        'intent': intent_dict[field],
+                    }
+                )
+                plot_wrappers.append(wrapper)
 
         result[key] = {
             "possible_tsys_contamination": merge_intervals(possible_line_intervals),
@@ -1934,7 +1947,7 @@ def get_tsys_contaminated_intervals(
             ),
         }
 
-    return result, warnings_list
+    return result, warnings_list, plot_wrappers
 
 
 def separate_non_intersecting_sci_spw(tsysdata, chan_tsys_intervals, tsysspw):  # v2.4
@@ -2132,7 +2145,7 @@ def main():
             # rmtree(baktbl)
             copytree(tsystable, baktbl)
         LOG.info("%s\n%s\n%s", ("-" * 40), tsys.msfile, ("-" * 40))  # v2.3
-        line_contamination_intervals, warnings_list = get_tsys_contaminated_intervals(
+        line_contamination_intervals, warnings_list, _ = get_tsys_contaminated_intervals(
             tsys,
             plot=True,  # large baseline residual v3.3
             # spwlist=[np.int(30)],fieldlist=[np.int64(2)],# this selection does not work with the saved spool sample
