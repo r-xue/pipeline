@@ -1618,8 +1618,9 @@ def get_tsys_contaminated_intervals(
             large_baseline_residual = True
             large_residual.append(key)  # v3.4
             warning = f"YELLOW Warning! Large baseline residual."
-            _ = key.split("_")
-            warnings_list.append([warning, f"Detected in spw {_[0]}, field {_[1]}."])
+            msg_spw, msg_field = key.split("_")
+            warnings_list.append([warning, f"Detected in spw {msg_spw}, field {msg_field}."])
+            LOG.warning("Large baseline residual detected in spw %s field %s", msg_spw, msg_field)
         # print(f" sigma_mad_dif={sigma_mad_dif} sigma_smooth_bp = {sigma_smooth_bp} sigma_quot={sigma_smooth_s/sigma_smooth_bp}")
 
         co_telluric = co_telluric_intervals(spec_b / sigma_smooth_bp, freqs_b)
@@ -1698,6 +1699,13 @@ def get_tsys_contaminated_intervals(
                                 "YELLOW Warning: large difference between bandpass and field telluric CO line.",
                                 f"CO Line {LINES_12C16O[np.abs(freqs_b[int(pclp)]-LINES_12C16O)<chansize_mhz]} MHz in spw{spw}, comparing field={field} and bandpass.",
                             ]
+                        )
+                        LOG.warning(
+                            "Large difference between bandpass and field telluric CO line. "
+                            "CO Line %s MHz in spw %s, comparing field=%s and bandpass.",
+                            {LINES_12C16O[np.abs(freqs_b[int(pclp)] - LINES_12C16O) < chansize_mhz]},
+                            spw,
+                            field
                         )
                     telluric_intervals.append(pcli)
                 elif np.any(
@@ -1855,6 +1863,7 @@ def get_tsys_contaminated_intervals(
                 )
 
                 warnings_list.append([warning, message])
+                LOG.warning("Large contaminated region range rejected as line. %s", message)
             LOG.info(
                 "Range %s equivalent to %s km/s or %d%% of the SpW", i, velocity_width_kms, abs(i[1]-i[0])/nchan*100
             )
@@ -2169,7 +2178,6 @@ def main():
         for w in warnings_list:
             _ = " ".join(w)
             f.write(f"# {_}\n")
-            LOG.info("# %s", _)
 
         for field in field_contamination:
             field = np.int64(field)
