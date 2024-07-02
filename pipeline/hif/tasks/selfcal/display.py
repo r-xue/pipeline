@@ -350,32 +350,61 @@ class SelfcalSummary(object):
     @staticmethod
     @matplotlibrc_formal
     def create_noise_histogram_plots(N_1, N_2, intensity_1, intensity_2, rms_1, rms_2, outfile, rms_theory=0.0):
-        # intensity_1, intensity_2, rms_1, rms_2, and rms_theory, are in mJy/beam
+        """Create and save noise histogram plots comparing initial and final data.
 
+        This function generates and saves a histogram plot comparing the noise characteristics
+        of initial and final data sets, including Gaussian fits and theoretical sensitivity.
+
+        Args:
+            N_1 (array-like): Histogram counts for the initial data.
+            N_2 (array-like): Histogram counts for the final data.
+            intensity_1 (array-like): Intensity values for the initial data in Jy/beam.
+            intensity_2 (array-like): Intensity values for the final data in Jy/beam.
+            rms_1 (float): RMS noise value for the initial data in Jy/beam.
+            rms_2 (float): RMS noise value for the final data in Jy/beam.
+            outfile (str): File path to save the plot.
+            rms_theory (float, optional): Theoretical RMS noise value in Jy/beam. Defaults to 0.0.
+
+        """
+
+        # Define a Gaussian normalization function
         def gaussian_norm(x, mean, sigma):
             gauss_dist = np.exp(-(x-mean)**2/(2*sigma**2))
             norm_gauss_dist = gauss_dist/np.max(gauss_dist)
             return norm_gauss_dist
 
+        # Create the plot
         fig, ax = plt.subplots(figsize=(9.6, 7.2))
         ax.set_yscale('log')
         plt.ylim([0.0001, 2.0])
+
+        # Plot initial and final data histograms
         ax.step(intensity_1*1e3, N_1/np.max(N_1), label='Initial Data')
         ax.step(intensity_2*1e3, N_2/np.max(N_2), label='Final Data')
+
+        # Plot Gaussian fits for initial and final data
         ax.plot(intensity_1*1e3, gaussian_norm(intensity_1, 0, rms_1), label='Initial Gaussian')
         ax.plot(intensity_2*1e3, gaussian_norm(intensity_2, 0, rms_2), label='Final Gaussian')
+
+        # Get plot limits
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
         xrange = abs(xlim[1]-xlim[0])
+
+        # Plot theoretical sensitivity if provided
         if rms_theory != 0.0:
-            alpha_plot = max(-1.0*9.0*2.0*rms_theory/xrange*0.75 + 1.0, 0.25)
+            alpha_plot = max(-1.0*9.0*2.0*rms_theory*1e3/xrange*0.75 + 1.0, 0.25)
             x_model = np.arange(xlim[0], xlim[1], abs(intensity_2[1]-intensity_2[0])*1e3)
-            ax.fill_between(x_model, gaussian_norm(x_model/1e3, 0, rms_theory), np.ones_like(x_model)*ylim[0]*0.1,
+            ax.fill_between(x_model, gaussian_norm(x_model, 0, rms_theory*1e3), np.ones_like(x_model)*ylim[0]*0.1,
                             color='gray', label='Theoretical Sensitivity', alpha=alpha_plot)
+
+        # Add legend, labels, and title
         ax.legend(fontsize=10)
         ax.set_xlabel('Intensity (mJy/Beam)')
         ax.set_ylabel('N')
         ax.set_title('Initial vs. Final Noise (Unmasked Pixels)', fontsize=20)
+
+        # Save the figure and close the plot
         fig.savefig(outfile)
         plt.close(fig)
 

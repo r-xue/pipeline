@@ -1417,23 +1417,45 @@ def importdata(vislist, all_targets, telescope):
 
 
 def get_flagged_solns_per_spw(spwlist, gaintable):
-    # Get the antenna names and offsets.
+    """Calculate the number of flagged and unflagged solutions per spectral window (spw).
+
+    This function examines a gain table and calculates the number of flagged and unflagged 
+    solutions for each spectral window (spw) provided in the spwlist. It also calculates 
+    the fraction of flagged solutions.
+
+    Args:
+        spwlist (list): List of spectral window IDs to examine.
+        gaintable (str): Path to the gain table directory.
+
+    Returns:
+        tuple: A tuple containing three elements:
+            - nflags (list): Number of flagged solutions per spw.
+            - nunflagged (list): Number of unflagged solutions per spw.
+            - fracflagged (numpy.ndarray): Fraction of flagged solutions per spw.
+
+    Raises:
+        FileNotFoundError: If the specified gain table directory does not exist.
+
+    """
+
+    if not os.path.isdir(gaintable):
+        LOG.warning('The gaintable to be examined %s does not exist', gaintable)
+        return 0, 0, 1
+
+    gaintable_temp = 'tempgaintable.g'
+    shutil.copytree(gaintable, gaintable_temp, dirs_exist_ok=True)
 
     tb = casa_tools.table
-
-    # Calculate the number of flags for each spw.
-    # gaintable='"'+gaintable+'"'
-    os.system('cp -r '+gaintable.replace(' ', '\ ')+' tempgaintable.g')
-    gaintable = 'tempgaintable.g'
-    nflags = [tb.calc('[select from '+gaintable+' where SPECTRAL_WINDOW_ID==' +
+    nflags = [tb.calc('[select from '+gaintable_temp+' where SPECTRAL_WINDOW_ID==' +
                       spwlist[i]+' giving  [ntrue(FLAG)]]')['0'].sum() for i in
               range(len(spwlist))]
-    nunflagged = [tb.calc('[select from '+gaintable+' where SPECTRAL_WINDOW_ID==' +
+    nunflagged = [tb.calc('[select from '+gaintable_temp+' where SPECTRAL_WINDOW_ID==' +
                           spwlist[i]+' giving  [nfalse(FLAG)]]')['0'].sum() for i in
                   range(len(spwlist))]
-    os.system('rm -rf tempgaintable.g')
+
+    shutil.rmtree(gaintable_temp, ignore_errors=True)
+    
     fracflagged = np.array(nflags)/(np.array(nflags)+np.array(nunflagged))
-    # Calculate a score based on those two.
     return nflags, nunflagged, fracflagged
 
 
