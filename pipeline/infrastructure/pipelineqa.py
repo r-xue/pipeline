@@ -306,7 +306,10 @@ class QAPlugin(object, metaclass=abc.ABCMeta):
         try:
             self.handle(context, result)
         except Exception as ex:
-            result.qa.pool.append(QAScore(0.0, 'QA heuristics execution failed: %s' % ex, 'QA heuristics execution failed'))
+            # PIPE-2216: use a short generic message and score=0 for QA execution failures and
+            # present the exception error message in warning.
+            result.qa.pool.append(QAScore(0.0, 'Unable to calculate QA scores.', 'Unable to calculate QA scores'))
+            LOG.warning('QA execution failed with an exception: %s', ex)
 
 class QARegistry(object):
     """
