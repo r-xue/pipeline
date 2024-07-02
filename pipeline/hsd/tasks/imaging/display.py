@@ -1028,17 +1028,20 @@ class SDChannelMapDisplay(SDImageDisplay):
             )
 
             # vertical lines for integrated spectrum #2
+            # The velocity of each vertical line position is determined by interpolation.
+            # If it must plot a point at out of the right side of velocity, it is extrapolated.
             y_vel = self.velocity[idx_left_end:-1]
             x_chan = numpy.arange(idx_left_end, idx_left_end + len(y_vel))
             chan2vel = interpolate.interp1d(x_chan, y_vel, bounds_error=False, fill_value='extrapolate')
 
-            _upperside = x_chan[0] + indices_width_of_line * (self.NumChannelMap) + 1
-            for i in range( x_chan[0], _upperside, indices_width_of_line):
-                vel_chan_left_end = chan2vel( i - 0.5 ) - velocity_line_center
+            _idx_1st_vertline = x_chan[0]
+            _idx_16th_vertline = _idx_1st_vertline + indices_width_of_line * self.NumChannelMap
+            for i in range( _idx_1st_vertline, _idx_16th_vertline + 1, indices_width_of_line):
+                _vertline = chan2vel(i - 0.5) - velocity_line_center
                 vertical_lines.append(
-                        axes_integsp2.axvline(x=vel_chan_left_end, linewidth=0.3, color='r')
+                        axes_integsp2.axvline(x=_vertline, linewidth=0.3, color='r')
                     )
-                LOG.debug(f'i, Vel[idx_chan_left_end] : {i}, {vel_chan_left_end}')
+                LOG.debug(f'i, Velocity of a vertical line : {i}, {_vertline}')
 
             # loop over polarizations
             for pol in range(self.npol):
