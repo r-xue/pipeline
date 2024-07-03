@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, transintent=None, refspwmap=None,
                     reffile=None, phaseupsolint=None, solint=None, minsnr=None, refant=None, hm_resolvecals=None,
-                    antenna=None, peak_fraction=None):
+                    antenna=None, peak_fraction=None, amp_outlier_sigma=None):
     """
     hifa_gfluxscale ---- Derive flux density scales from standard calibrators
 
@@ -26,6 +26,9 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
       windows using calibrator data selected with ``reference`` and
       ``refintent`` parameters and the ``transfer`` and ``transintent``
       parameters, the value of the ``solint`` parameter.
+
+    - examining the amplitude-only solutions for obvious outliers and flagging
+      them in the caltable.
 
     - transferring the flux scale from the reference calibrators to the transfer
       calibrators using ``refspwmap`` for windows without data in the reference
@@ -126,6 +129,11 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
                     antennas to be included in the flux calibration. Defined as
                     the point where the calibrator visibilities have fallen to
                     ``peak_fraction`` of the peak value.
+    amp_outlier_sigma
+                    Sigma threshold used to identify outliers in the amplitude
+                    caltable. Default: 50.0
+
+                    Example: amp_outlier_sigma=30.0
 
     --------- examples -----------------------------------------------------------
 

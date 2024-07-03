@@ -16,7 +16,6 @@ Task = namedtuple('Task', 'name short description parameters examples')
 task_groups = {"h": "Generic",
                "hif": "Interferometry Generic",
                "hifa": "Interferometry ALMA",
-               "hifas": "Interferometry ALMA SRDP",
                "hifv": "Interferometry VLA",
                "hsd": "Single Dish",
                "hsdn": "Nobeyama"}
@@ -226,7 +225,6 @@ def create_docs(outdir=None, srcdir=None, missing_report=False, tasks_to_exclude
     tasks_by_group = {"h": [],
                       "hif": [],
                       "hifa": [],
-                      "hifas": [],
                       "hifv": [],
                       "hsd": [],
                       "hsdn": []}

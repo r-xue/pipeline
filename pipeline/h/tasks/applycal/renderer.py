@@ -68,13 +68,17 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # return all agents so we get ticks and crosses against each one
         agents = ['before', 'applycal']
 
+        # Denote whether applycal was invoked with parang=True.
+        parang = result[0].inputs['parang'] if result else False
+
         mako_context.update({
             'flags': flag_totals,
             'calapps': calapps,
             'caltypes': caltypes,
             'agents': agents,
             'dirname': weblog_dir,
-            'filesizes': filesizes
+            'filesizes': filesizes,
+            'parang': parang,
         })
 
         # these dicts map vis to the hrefs of the detail pages

@@ -11,7 +11,6 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
-from numbers import Integral
 from pipeline.domain import DataType
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.hsd.heuristics import MaskDeviationHeuristic
@@ -121,11 +120,21 @@ class SDBaselineInputs(vdp.StandardInputs):
                             and validation result. Defaults to 'replace' if None is given.
             edge: Edge channels to exclude. Defaults to None, which means that all channels are processed.
             broadline: Detect broadline component or not. Defaults to True if None is given.
-            fitorder: Manual fit order. If None is given, run heuristics to determine fit order.
-            fitfunc: Fit function to use. Only cubic spline ('spline' or 'cspline') is available
-                     so far.
-            switchpoly: Whther or not fall back to low order polynomial fit when large mask
-                        exist at the edge of spw. Defaults to True if None is given.
+            fitorder: Fitting order for polynomial. For cubic spline, it is used to determine
+                      how much the spectrum is segmented into. None is equivalent to -1.
+                      Default (-1) is to determine the order automatically.
+            fitfunc: Fitting function for baseline subtraction. You can choose
+                     either cubic spline ('spline' or 'cspline') or polynomial
+                     ('poly' or 'polynomial'). Default is 'cspline'.
+            switchpoly: Whether to fall back the fits from cubic spline to 1st or
+                        2nd order polynomial when large masks exist at the edges
+                        of the spw. Condition for switching is as follows:
+                            if nmask > nchan/2      => 1st order polynomial
+                            else if nmask > nchan/4 => 2nd order polynomial
+                            else                    => use fitfunc and fitorder
+                        where nmask is a number of channels for mask at edge while
+                        nchan is a number of channels of entire spectral window.
+                        Defaults to True if None is given.
             clusteringalgorithm: Clustering algorithm to use. Choices are 'kmean', 'hierarchy',
                                  or 'both', which merges results from two clustering algorithms.
                                  Defaults to 'hierarchy' if None is given.
@@ -312,6 +321,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         edge = inputs.edge
         broadline = inputs.broadline
         fitorder = 'automatic' if inputs.fitorder is None or inputs.fitorder < 0 else inputs.fitorder
+        fitfunc = inputs.fitfunc
         switchpoly = inputs.switchpoly
         clusteringalgorithm = inputs.clusteringalgorithm
         deviationmask = inputs.deviationmask
@@ -476,11 +486,10 @@ class SDBaseline(basetask.StandardTaskTemplate):
         plan = [registry[ms] for ms in registry]
         blparam = [blparam_file(ms) for ms in registry]
         deviationmask_list = [deviation_mask[ms.basename] for ms in registry]
-        # 21/05/2018 TN temporal workaround
-        # I don't know how to use vdp.ModeInputs so directly specify worker task class here
-        worker_cls = worker.CubicSplineBaselineSubtractionWorker
+        worker_cls = worker.BaselineSubtractionWorker
         fitter_inputs = vdp.InputsContainer(worker_cls, context,
                                             vis=vislist, plan=plan,
+                                            fit_func=fitfunc,
                                             fit_order=fitorder, switchpoly=switchpoly,
                                             edge=edge, blparam=blparam,
                                             deviationmask=deviationmask_list,

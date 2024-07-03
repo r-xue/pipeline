@@ -84,13 +84,14 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
                  hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None,
                  combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None, antnegsig=None, antpossig=None,
                  tmantint=None, tmint=None, tmbl=None, antblnegsig=None, antblpossig=None, relaxed_factor=None,
-                 niter=None, mode='channel'):
+                 niter=None, mode='channel', hm_auto_fillgaps=None):
         super().__init__(
             context, output_dir=output_dir, vis=vis, caltable=caltable, intent=intent, field=field, spw=spw,
             antenna=antenna, hm_phaseup=hm_phaseup, phaseupsolint=phaseupsolint, phaseupbw=phaseupbw,
             phaseupsnr=phaseupsnr, phaseupnsols=phaseupnsols, hm_bandpass=hm_bandpass, solint=solint,
             maxchannels=maxchannels, evenbpints=evenbpints, bpsnr=bpsnr, minbpsnr=minbpsnr, bpnsols=bpnsols,
-            combine=combine, refant=refant, minblperant=minblperant, minsnr=minsnr, solnorm=solnorm, mode=mode
+            combine=combine, refant=refant, minblperant=minblperant, minsnr=minsnr, solnorm=solnorm, mode=mode,
+            hm_auto_fillgaps=hm_auto_fillgaps
         )
 
         # flagging parameters
@@ -152,7 +153,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             evenbpints=inputs.evenbpints, bpsnr=inputs.bpsnr, minbpsnr=inputs.minbpsnr,
             bpnsols=inputs.bpnsols, combine=inputs.combine,
             refant=inputs.refant, solnorm=inputs.solnorm,
-            minblperant=inputs.minblperant, minsnr=inputs.minsnr)
+            minblperant=inputs.minblperant, minsnr=inputs.minsnr, hm_auto_fillgaps=inputs.hm_auto_fillgaps)
         # Create and execute bandpass task.
         bptask = bandpass.ALMAPhcorBandpass(bpinputs)
         bpresult = self._executor.execute(bptask)
