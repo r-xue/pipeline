@@ -25,7 +25,7 @@ __all__ = [
     'VisResultTuple'
 ]
 
-LOG = logging.get_logger(__file__)
+LOG = logging.get_logger(__name__)
 
 # VisResultTuple is a data structure used by VDPTaskFactor to group
 # inputs and results.
