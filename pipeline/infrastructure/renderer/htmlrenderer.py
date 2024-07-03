@@ -26,7 +26,7 @@ import pipeline.infrastructure.displays.summary as summary
 import pipeline.infrastructure.logging as logging
 from pipeline import environment
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tools, mpihelpers
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
 from pipeline.infrastructure.launcher import Context
@@ -341,14 +341,14 @@ class T1_1Renderer(RendererBase):
         CPU_TYPE = 'CPU'
         LOGICAL_CPU_CORES = 'Logical CPU cores'
         PHYSICAL_CPU_CORES = 'Physical CPU cores'
-        NUM_MPI_SERVERS = "# MPI servers"
+        NUM_MPI_SERVERS = "Number of MPI servers"
         RAM = "RAM"
         SWAP = "Swap"
         OS = "OS"
         ULIMIT_FILES = "Max open file descriptors"
         ULIMIT_MEM = "Memory usage ulimit"
         ULIMIT_CPU = "CPU time ulimit in seconds"
-        CASA_CORES = "CPU cores reported available by CASA"
+        CASA_CORES = "CASA-reported CPU cores availability"
         CASA_THREADS = "Max OpenMP threads per CASA instance"
         CASA_MEMORY = "Memory available to pipeline"
         CGROUP_NUM_CPUS = "Cgroup CPU allocation"
