@@ -1179,7 +1179,10 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
 
     # PIPE-119, part a
     max_res = max(max(res) for res in fractional_residuals)
-    score = 1.0 - max_res
+    if max_res < 0.01:
+        score = 1.0
+    else:
+        score = 1.0 - max_res
 
     # PIPE-119 part b
     if min([min(res) for res in fractional_residuals]) > 0.3:
