@@ -67,7 +67,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
     refantignore = vdp.VisDependentProperty(default='')
     leakage_poltype = vdp.VisDependentProperty(default='')
     mbdkcross = vdp.VisDependentProperty(default=True)
-    refant = vdp.VisDependentProperty(default='')
+    refant = vdp.VisDependentProperty(default=[])
 
     @vdp.VisDependentProperty
     def clipminmax(self):

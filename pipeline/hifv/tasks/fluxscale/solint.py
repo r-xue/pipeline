@@ -33,7 +33,7 @@ class SolintInputs(vdp.StandardInputs):
     """
     limit_short_solint = vdp.VisDependentProperty(default='')
     refantignore = vdp.VisDependentProperty(default='')
-    refant = vdp.VisDependentProperty(default='')
+    refant = vdp.VisDependentProperty(default=[])
 
     def __init__(self, context, vis=None, limit_short_solint=None, refantignore=None, refant=None):
         """
