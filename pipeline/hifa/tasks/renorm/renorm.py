@@ -19,18 +19,16 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RenormResults(basetask.Results):
-    def __init__(self, renorm_applied, vis, createcaltable, threshold, correctATM, spw, excludechan, corrApplied, corrColExists,
+    def __init__(self, vis, createcaltable, threshold, correctATM, spw, excludechan, calTableCreated,
                  stats, rnstats, alltdm, atmAutoExclude, atmWarning, atmExcludeCmd, bwthreshspw, caltable, calapps, exception=None):
         super().__init__()
-        self.renorm_applied = renorm_applied
         self.vis = vis
         self.createcaltable = createcaltable
         self.threshold = threshold
         self.correctATM = correctATM
         self.spw = spw
         self.excludechan = excludechan
-        self.corrApplied = corrApplied
-        self.corrColExists = corrColExists
+        self.calTableCreated = calTableCreated
         self.stats = stats
         self.rnstats = rnstats
         self.alltdm = alltdm
@@ -58,7 +56,6 @@ class RenormResults(basetask.Results):
 
     def __repr__(self):
         return (f'RenormResults:\n'
-                f'\trenorm_applied={self.renorm_applied}\n'
                 f'\tvis={self.vis}\n'
                 f'\tcreatecaltable={self.createcaltable}\n'
                 f'\tthreshold={self.threshold}\n'
@@ -145,12 +142,12 @@ class SerialRenorm(basetask.StandardTaskTemplate):
         # result.
         try:
             LOG.info("Calling the renormalization heuristic function.")
-            alltdm, atmExcludeCmd, atmWarning, corrApplied, corrColExists, renorm_applied, rnstats, stats = \
+            alltdm, atmExcludeCmd, atmWarning, calTableCreated, rnstats, stats = \
                 alma_renorm(**alma_renorm_inputs)
             rnstats_light = self._get_rnstats_light(stats, rnstats)
 
             calapps = []
-            if inp.createcaltable:
+            if inp.createcaltable and calTableCreated:
                 msObj = inp.context.observing_run.get_ms(inp.vis)
 
                 origin = callibrary.CalAppOrigin(task=SerialRenorm, inputs=inp.to_casa_args())
@@ -182,14 +179,14 @@ class SerialRenorm(basetask.StandardTaskTemplate):
 
                     calapps.append(callibrary.CalApplication(calto, calfrom, origin))
 
-            result = RenormResults(renorm_applied, inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
-                                   inp.excludechan, corrApplied, corrColExists, stats, rnstats_light, alltdm,
+            result = RenormResults(inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
+                                   inp.excludechan, calTableCreated, stats, rnstats_light, alltdm,
                                    inp.atm_auto_exclude, atmWarning, atmExcludeCmd, inp.bwthreshspw, inp.caltable, calapps)
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
             LOG.error(traceback.format_exc())
-            result = RenormResults(False, inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
-                                   inp.excludechan, False, False, {}, {}, True, inp.atm_auto_exclude, {}, {}, {}, inp.caltable, [], e)
+            result = RenormResults(inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
+                                   inp.excludechan, False, {}, {}, False, inp.atm_auto_exclude, {}, {}, {}, inp.caltable, [], e)
 
         return result
 

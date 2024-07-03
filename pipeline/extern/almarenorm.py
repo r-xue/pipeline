@@ -161,12 +161,6 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
     # that the weblog is rendered properly.
     alltdm = rn.tdm_only
 
-    # Check if the correction has already been applied.
-    corrApplied = rn.checkApply()
-
-    # Check whether the dataset has a corrected data column.
-    corrColExists = rn.correxists
-
     # Only attempt the correction if the data are not all TDM.
     if not alltdm:
         # Run the renormalisation.
@@ -176,25 +170,25 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
         # Create spectra plots.
         rn.plotSpectra(includeSummary=False)
 
-        # Check if the renormalisation has been applied. This flag will be
-        # passed back to caller, for future export to the manifest and use
-        # during restore.
-        if apply and rn.checkApply():
-            renorm_applied = True
+        # Check if the renormalisation has been saved to a cal table. 
+        calTableCreated = os.path.exists(rn.rntable)
 
         # Get stats (dictionary) indexed by source, spw
         stats = rn.rnpipestats
+
         # Get all factors for QA
         rnstats = rn.stats()
+
         # get information related to detecting false positives caused by
         # atmospheric features, also needed for QA.
         atmWarning = rn.atmWarning
         atmExcludeCmd = rn.atmExcludeCmd
-
+    
+    
     # Clean up.
     rn.close()
 
-    return alltdm, atmExcludeCmd, atmWarning, corrApplied, corrColExists, renorm_applied, rnstats, stats  
+    return alltdm, atmExcludeCmd, atmWarning, calTableCreated, rnstats, stats
 
 
 
@@ -268,14 +262,7 @@ class ACreNorm(object):
         # set a B0 as its way easier just to then index this array with Band
 
         self.docorrApply={} # - this is to record if the field in a given SPW is
-        # above the threshold for application, in which case that field in that
-        # SPW will always be corrected and a boolean can be stored in this dictionary
-        # one caveat is what about boarderline data around the threshold
-        # and some scans are above, and some are below? Do we add a buffer? - it would be wrong
-        # to scale e.g. only half the scans for a field. Code is iterative, so doesn't
-        # know about later scans in advanced..so must be based on first scan assessment of the field only
-        # usually scalng per scan for same fields is roughtly similar/constant 
-        
+        # above the threshold for application      
  
         self.states=[]
 
@@ -447,6 +434,7 @@ class ACreNorm(object):
             mytb.close()
         return d
 
+    # DEPRECATED - Solutions are now written to a cal table so accessing the XC data is no longer necessary
     def getXCdata(self,scan,spw,field,datacolumn='CORRECTED_DATA'):
         casalog.post('  Extracting CROSS-correlation data from spw='+str(spw)+' and scan='+str(scan)+' and field='+str(field))
 
@@ -505,17 +493,7 @@ class ACreNorm(object):
         # probably this could be coded better - instead of the loop??? - but is relatively fast as robust 
 
         return (aout)
-
-    def putXCdata(self,scan,spw,field,cd,datacolumn='CORRECTED_DATA'):
-        casalog.post('  Writing CROSS-correlation data to spw='+str(spw)+' and scan='+str(scan)+' and field='+str(field))
-
-        mytb.open(self.msname,nomodify=False)
-        ddid=str(list(self.msmeta.datadescids(spw)))
-        st=mytb.query('SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
-        d=st.putcol(datacolumn,cd)
-        st.close()
-        mytb.close()
-
+ 
 
     def getTsysSpectra(self,scan,spw):
 
@@ -598,8 +576,6 @@ class ACreNorm(object):
         plt.title(self.msname,{'horizontalalignment': 'left', 'fontsize': 'medium','verticalalignment': 'bottom'})
         plt.ticklabel_format(style='plain', useOffset=False)
         if hardcopy:
-            #if not os.path.exists('RN_plots'):
-            #    os.mkdir('RN_plots')
             os.makedirs('RN_plots', exist_ok=True)
             fname=self.msname+'_ReNormSpwVsFreq.png'
             casalog.post('Saving hardcopy plot: '+fname)
@@ -833,8 +809,6 @@ class ACreNorm(object):
             plt.subplots_adjust(wspace=0.3)
 
         if hardcopy:
-            #if not os.path.exists('RN_plots'):
-            #    os.mkdir('RN_plots')
             os.makedirs('RN_plots', exist_ok=True)
             fname=self.msname+'_RelTsysSpectra.png'
             casalog.post('Saving hardcopy plot: '+fname)
@@ -850,8 +824,6 @@ class ACreNorm(object):
             return flch
 
 
-
-    # LM added / edited lots
     def renormalize(self, spws=[], excludespws=[], targscans=[], 
             excludeants=[], excludechan={}, excflagged=True, fixOutliers=True, mededge=0.01,  
             atmAutoExclude=True, checkFalsePositives=True, correctATM=False, limATM=0.85, plotATM=True, 
@@ -1085,10 +1057,8 @@ class ACreNorm(object):
                 Default: datacolumn = 'CORRECTED_DATA'
 
             docorr : boolean
-                Specify whether or not to apply the calculated scaling spectrum
-                to the MS. If a correction is applied, a history note is 
-                written into the MS indicating application, this is checked for
-                before application to prevent double application. 
+                Specify whether or not to create a calibration table which can 
+                then be applied to the MS via an applycal. 
                 Default: docorr=False
 
             docorrThresh : None or float
@@ -1148,7 +1118,7 @@ class ACreNorm(object):
         
         Outputs:
             Varies by the options selected above but at minimum the scaling 
-            spectra are calculated and optionally applied directly to the data.
+            spectra are calculated and optionally a cal table is produced.
         """
         # Starting CASA logger message
         casalog.post('*** ALMA almarenorm.py ***', 'INFO', 'ReNormalize')   
@@ -1172,21 +1142,10 @@ class ACreNorm(object):
         # Handle correction request
         if docorr:
             if datacolumn=='CORRECTED_DATA' and not self.correxists:
-                casalog.post('Correction of CORRECTED_DATA requested, but column does not exist! Cannot procede.')
-                casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                raise RuntimeError('Correction of CORRECTED_DATA requested but column does not exist.')
+                casalog.post('Correction of CORRECTED_DATA requested, but column does not exist! Switching to DATA column.')
+                datacolumn='DATA'
 
-            casalog.post('The '+str(datacolumn)+' column will be corrected!')
-
-            # Check of the MS history as the renorm code now writes in that application was made
-            alreadyApp = self.checkApply()
-            if alreadyApp:
-                casalog.post('')
-                casalog.post('Correction requested, but these data have already been ReNormalized! Cannot procede')
-                casalog.post('                      set docorr=False for plots only')
-                casalog.post('')
-                casalog.post('*** Terminating renormalization run ***', 'INFO', 'ReNormalize')   
-                raise Exception('Correction requested but these data have already been renormalized.')
+            casalog.post('The '+str(datacolumn)+' column will be analyzed for normalization issues.')
 
             # One has the ability to input the name of a caltable while creating the ACreNorm object.
             # If that hasn't been done yet, default to a simple name.
@@ -2124,21 +2083,6 @@ class ACreNorm(object):
                                     self.writeCalTable(ispw, ifld, iscan, N, rntb_iter)
                                     rntb_iter += 1  
 
-                                    # apply the correction
-                                    # Antenna-based Correction factors are in voltage units (pair products are power)
-                                    #Nv=np.sqrt(N)
-                                    #self.applyReNorm(iscan,ispw,ifld,Nv,datacolumn) 
-                            
-                                    # do self.recordApply here and pass scan, spw, field too
-                                    #self.recordApply(iscan,ispw,ifld)
-
-                                    # ****
-                                    # In combination with the docorrApply dictionary, and the printed message
-                                    # PLWG might want to include also Keyword dictionaries into the MS
-                                    # here might be a good place for this
-                                    # ****
-
-                                    #casalog.post('Application of the ReNormalization was written to the MS history for spw'+str(ispw)+' scan'+str(iscan)+' field'+str(ifld))
 
                             # closes the data check to see if the AC data is confirmed to be filled 
                             #    - only gets here if None was returned
@@ -3194,9 +3138,6 @@ class ACreNorm(object):
                 # Otherwise, produce interactive plot and wait for user 
                 # input to go on to the next plot.
                 if hardcopy:
-                    # Ensure the plots directory exists, if not, create it.
-                    #if not os.path.exists('RN_plots'):
-                    #    os.mkdir('RN_plots')
                     os.makedirs('RN_plots', exist_ok=True)
                     fname = self.msname \
                             + '_'+target \
@@ -3287,8 +3228,6 @@ class ACreNorm(object):
             plt.text(loscan+0.25,0.9*Fmax,'Spw='+str(spw))
 
         if hardcopy:
-            #if not os.path.exists('RN_plots'):
-            #    os.mkdir('RN_plots')
             os.makedirs('RN_plots', exist_ok=True)
             fname=self.msname+'_ReNormAmpVsScan.png'
             casalog.post('Saving hardcopy plot: '+fname)
@@ -3337,8 +3276,6 @@ class ACreNorm(object):
                 )
        
         if hardcopy:
-            #if not os.path.exists('RN_plots'):
-            #    os.mkdir('RN_plots')
             os.makedirs('RN_plots', exist_ok=True)
             fname=self.msname+'_ReNormAmpVsSpw.png'
             casalog.post('Saving hardcopy plot: '+fname)
@@ -3347,23 +3284,6 @@ class ACreNorm(object):
         else:
             plt.show()
 
-    ## LM added field input
-    # AL added XX only case
-    def applyReNorm(self,scan,spw,field,rN,datacolumn='CORRECTED_DATA'):
-
-        (a1,a2,X)=self.getXCdata(scan,spw,field,datacolumn)
-
-        (nCor,nCha,nRow)=X.shape
-        for irow in range(nRow):
-            for icor in range(nCor):
-                if nCor==1:
-                    X[icor,:,irow]*=(rN[icor,:,a1[irow]]*rN[icor,:,a2[irow]])
-                elif nCor==2:
-                    X[icor,:,irow]*=(rN[icor,:,a1[irow]]*rN[icor,:,a2[irow]])
-                elif nCor==4:
-                    X[icor,:,irow]*=(rN[int(icor/2),:,a1[irow]]*rN[int(icor%2),:,a2[irow]])
-                    
-        self.putXCdata(scan,spw,field,X,datacolumn)
 
     def calcReNorm1(self, R, checkFit=False, doplot=False, iden='', verbose=True):   
         """
@@ -3973,8 +3893,6 @@ class ACreNorm(object):
                     # Save a hardcopy of the plots if desired 
                     # or show plots interactively
                     if hardcopy:
-                        #if not os.path.exists('RN_plots'):
-                        #    os.mkdir('RN_plots')
                         os.makedirs('RN_plots', exist_ok=True)
                         if verbose:
                             casalog.post('\tSaving hardcopy plot: '+fname)
@@ -4298,8 +4216,6 @@ class ACreNorm(object):
             ax_atm.set_yticklabels([str(int(ylbl)) for ylbl in ylabels[ylabels_mask]])
             
         # Save the plotted figure, setting up the plot directory if it doesn't already exist.
-        #if not os.path.exists('RN_plots'):
-        #    os.mkdir('RN_plots')
         os.makedirs('RN_plots', exist_ok=True)
         fnameM=self.msname+'_ReNormDiagnosticCheck_'+target+'_spw'+str(spwin) \
                 +'_scan'+str(scanin)+'_field'+str(fldin)        
@@ -4859,43 +4775,7 @@ class ACreNorm(object):
             return cmd
         else:
             return ranges
-
-    def recordApply(self, scanout=None, spwout=None, fldout=None):
-        """
-        Purpose:
-            This will write to the history of the dataset upon application of
-            renorm (i.e. self.renormalize(docorr=True)). Within the 
-            renormalize() method, a check of the MS HISTORY table is performed
-            to ensure that double application is avoided. 
-
-        Inputs:
-            scanout, spwout, fldout : int : OPTIONAL
-                The scan, spw, and field numbers where renormalization was 
-                applied. If set to None then a generic message is filled.
-            Default: None
-        """
-        if (scanout is not None) and (spwout is not None) and (fldout is not None):
-            messageIn = 'ReNormalization correction applied to spw'+str(spwout) \
-                    +' scan'+str(scanout)+' field'+str(fldout)+' '+self.RNversion
-        else:
-            messageIn = 'ReNormalization correction applied '+self.RNversion
-        myms.open(self.msname)
-        myms.writehistory(messageIn)
-        myms.close()
-
-    def checkApply(self):
-        # just need to get the history column
-        # appears that list history is useless and only writes to the logger ?
-        mytb.open(self.msname+'/HISTORY')
-        messageOut = list(mytb.getcol('MESSAGE'))
-        applyStatus = False # i.e. assume not applied
-        for messLine in messageOut:
-            # only need to check for this statement
-            if 'ReNormalization' in messLine:
-                applyStatus = True
-        mytb.close()
-
-        return applyStatus
+ 
 
     def getband(self,freq):
         """ 
@@ -5680,3 +5560,6 @@ class ACreNorm(object):
         fWidthSB = chansepSB*len(fSB)
 
         return fSB, chansepSB, fCenterSB, fWidthSB
+
+
+        

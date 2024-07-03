@@ -24,7 +24,7 @@ class RenormQAHandler(pqa.QAPlugin):
         # the automatic defaults in almarenorm. In that case the threshold
         # per spw needs to be fetched from the stats dictionary in the spw
         # loop below (result.stats[source][spw]['threshold']).
-        threshold = result.threshold 
+        threshold = result.threshold
         if result.exception is not None:
             score = 0.0
             shortmsg = 'Failure in renormalization'
@@ -32,23 +32,14 @@ class RenormQAHandler(pqa.QAPlugin):
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
             return
 
-        # TODO: corrApplied will not be True after PIPE-2151. But do we need a "hifa_renorm has already been run"
-        # flag or will the PL simply use the last cal table? How do other cal tasks handle this?
-        #if result.createcaltable and result.corrApplied:
-        #    # Request for correcting data that has already been corrected
-        #    score = 0.0
-        #    shortmsg = 'Corrections already applied'
-        #    longmsg = 'EB {}: Corrections already applied to data'.format(os.path.basename(result.vis))
-        #    result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
-
-        if result.createcaltable and result.caltable is not None and not os.path.exists(result.caltable):
+        if result.createcaltable and result.caltable is not None and not result.alltdm and not result.calTableCreated:
             # Cal table not created
             score = 0.0
             shortmsg = 'No cal table created'
             longmsg = 'EB {}: No cal table was created.'.format(os.path.basename(result.vis))
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
-        for source in result.stats: 
+        for source in result.stats:
             for spw in result.stats[source]:
                 try:
                     max_factor = result.stats[source][spw]['max_rn']
@@ -94,15 +85,15 @@ class RenormQAHandler(pqa.QAPlugin):
                     pass
 
         # Make a copy of this dict to keep track of whether a QA message was issued for
-        # each excludechan SPW yet. 
+        # each excludechan SPW yet.
         excludechan = copy.deepcopy(result.excludechan)
 
         # Only warn about spws in excludechan not matching the spws for the automated suggestions if there are whole suggested spws
-        # not covered by the input excludechan dict. (Without this, there is a QA warning when the input excludechan values are 
-        # so close to the ones that would be recommeded by renorm, that no additional automated suggestions are made.) 
+        # not covered by the input excludechan dict. (Without this, there is a QA warning when the input excludechan values are
+        # so close to the ones that would be recommeded by renorm, that no additional automated suggestions are made.)
         warn_excludechan_spw = False
 
-        for target in result.atmWarning: 
+        for target in result.atmWarning:
             for spw in result.atmWarning[target]:
                 if result.atmWarning[target][spw]:
                     if not result.createcaltable:
@@ -113,14 +104,14 @@ class RenormQAHandler(pqa.QAPlugin):
                     else:
                         if excludechan:
                             excluded_spws = excludechan.keys()
-                            if spw in excluded_spws: 
+                            if spw in excluded_spws:
                                 longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
                                       "exclusion: {}".format(excludechan[spw], spw, result.atmExcludeCmd[target][spw])
                                 # Since we printed a message about the excluded channels for this SPW, remove it from the list that haven't yet been covered.
                                 del excludechan[spw]
-                            else: 
+                            else:
                                 longmsg = "No channels are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
-                                      "exclusion: {}".format(spw, result.atmExcludeCmd[target][spw]) 
+                                      "exclusion: {}".format(spw, result.atmExcludeCmd[target][spw])
                                 warn_excludechan_spw = True
                             atm_score = 0.85
                             shortmsg = "Channels are being excluded from renormalization correction"
@@ -129,7 +120,7 @@ class RenormQAHandler(pqa.QAPlugin):
                             shortmsg = "Channels are being excluded from renormalization correction due to an atmospheric feature"
                             longmsg = "Channels {} are being excluded from renormalization correction to SPW {} due to an atmospheric " \
                                       "feature.".format(result.atmExcludeCmd[target][spw], spw)
-                        else: 
+                        else:
                             atm_score = 0.66
                             shortmsg = "Renormalization correction may be incorrectly applied"
                             longmsg = "A renormalization correction may be incorrectly applied to SPW {} due to an atmospheric feature. " \
