@@ -1,25 +1,19 @@
 from typing import List
 
 import numpy as np
-from astropy.coordinates import SkyCoord, EarthLocation, AltAz
+from astropy.coordinates import AltAz, EarthLocation, SkyCoord
 from astropy.time import Time
-from astropy.utils.iers import conf as iers_conf
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.extern.adopted import getMedianPWV
 from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.common.arrayflaggerbase import channel_ranges
 from pipeline.h.tasks.flagging import flagdeterbase
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tools, task_registry
 from pipeline.infrastructure.utils import utils
-from pipeline.infrastructure import casa_tools
-from pipeline.extern.adopted import getMedianPWV
-
-# Avoid downloading the updated IERS tables from the internet because an
-#  approximate value is enough in this case
-iers_conf.auto_max_age = None
 
 __all__ = [
     'FlagDeterALMA',
@@ -285,23 +279,38 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                   ' that are too close to the baseband edge.'.format(spw.id))
 
         # For the given spectral window, identify the corresponding SQLD
-        # spectral window(s) with TARGET intent taken in same baseband with same
-        # spectral tuning (SpectralSpec, PIPE-1991).
-        bb_spw = [s for s in self.inputs.ms.get_spectral_windows(science_windows_only=False)
-                  if s.baseband == spw.baseband and s.spectralspec == spw.spectralspec and s.type == 'SQLD'
-                  and 'TARGET' in s.intents]
+        # spectral window(s) with TARGET intent taken in same baseband.
+        bb_spws = [s for s in self.inputs.ms.get_spectral_windows(science_windows_only=False)
+                   if s.baseband == spw.baseband and s.type == 'SQLD' and 'TARGET' in s.intents]
 
-        # If no baseband spw could be identified, add the spw to the list of missing basebands
-        # and return with no new flagging commands.
-        if not bb_spw:
+        # If no baseband spw could be identified, add the spw to the list of
+        # missing basebands and return with no new flagging commands.
+        if not bb_spws:
             self.missing_baseband_spws.append(spw.id)
             return []
+        # If exactly 1 matching baseband spw was found, use that.
+        elif len(bb_spws) == 1:
+            bb_spw = bb_spws[0]
+        # If multiple matches were found within the same baseband, then
+        # attempt to further match against the same spectral tuning
+        # (SpectralSpec, PIPE-1991).
+        else:
+            bb_spws_same_ss = [s for s in bb_spws if s.spectralspec == spw.spectralspec]
+            # If exactly 1 match was found with same SpectralSpec, use that.
+            if len(bb_spws_same_ss) == 1:
+                bb_spw = bb_spws_same_ss[0]
+            # Otherwise, log a warning that no unambiguous match could be found,
+            # and proceed to use first match from original filter.
+            else:
+                bb_spw = bb_spws[0]
+                LOG.warning(f"{self.inputs.ms.basename}: unable to find unambiguous match of baseband SpW for science"
+                            f" SpW {spw.id}, selected first match (SpW {bb_spw.id}).")
 
         # Compute frequency ranges for which any channel that falls within the
         # range should be flagged; these ranges are set by the baseband edges
         # and the provided threshold.
-        bb_edges = [measures.FrequencyRange(bb_spw[0].min_frequency, bb_spw[0].min_frequency + threshold),
-                    measures.FrequencyRange(bb_spw[0].max_frequency - threshold, bb_spw[0].max_frequency)]
+        bb_edges = [measures.FrequencyRange(bb_spw.min_frequency, bb_spw.min_frequency + threshold),
+                    measures.FrequencyRange(bb_spw.max_frequency - threshold, bb_spw.max_frequency)]
 
         # Compute list of channels to flag as those channels that have an
         # overlap with either edge range of the baseband.

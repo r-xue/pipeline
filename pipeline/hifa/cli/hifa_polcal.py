@@ -3,7 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
-def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None):
+def hifa_polcal(vis=None, minpacov=None, solint_chavg=None, vs_stats=None, vs_thresh=None):
     """
     hifa_polcal ---- Derive instrumental polarization calibration for ALMA.
 
@@ -22,6 +22,15 @@ def hifa_polcal(vis=None, solint_chavg=None, vs_stats=None, vs_thresh=None):
                     MeasurementSets specified in the pipeline context.
 
                     Example: ['M32A.ms', 'M32B.ms']
+    minpacov
+                    Minimum Parallactic Angle Coverage (degrees) required for
+                    Q, U estimation in task polfromgain. This enables avoiding
+                    pathological cases of antennas with insufficient parallactic
+                    angle coverage which can yield spurious source polarization
+                    solutions or cause polfromgain to fail to find any
+                    solutions.
+
+                    Default: 30.0
     solint_chavg
                     Channel averaging to include in solint for gaincal steps
                     producing cross-hand delay, cross-hand phase, and leakage
