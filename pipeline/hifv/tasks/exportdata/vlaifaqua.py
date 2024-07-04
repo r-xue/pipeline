@@ -8,6 +8,7 @@ import pipeline.infrastructure.launcher as launcher
 
 import pipeline.h.tasks.exportdata.aqua as aqua
 from pipeline.h.tasks.exportdata.aqua import UNDEFINED, export_to_disk
+from pipeline import environment
 
 LOG = logging.get_logger(__name__)
 
@@ -58,6 +59,34 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
     def __init__(self):
         super(VLAAquaXmlGenerator, self).__init__()
+
+    def get_report_xml(self, context):
+        report = super().get_report_xml(context)
+        report.append(self.get_processing_environment())
+        return report
+
+    def get_processing_environment(self):
+        root = ElementTree.Element('ProcessingEnvironment')
+        nodes = environment.cluster_details
+        nx = ElementTree.Element("execution_mode")
+        nmpiservers = None
+        if len(nodes) > 1:
+            nx.text = "parallel"
+            nmpiservers = ElementTree.Element("mpiservers")
+            nmpiservers.text = str(len(nodes))
+        else:
+            nx.text = "serial"
+        root.append(nx)
+        if nmpiservers is not None:
+            root.append(nmpiservers)
+        for node in nodes:
+            nx = ElementTree.Element("Host")
+            ElementTree.SubElement(nx, 'HostName').text = node['hostname']
+            ElementTree.SubElement(nx, 'OperatingSystem').text = node['os']
+            ElementTree.SubElement(nx, 'Cores').text = str(node['num_cores'])
+            ElementTree.SubElement(nx, 'RAM').text = str(measures.FileSize(node['ram'], measures.FileSizeUnits.BYTES))
+            root.append(nx)
+        return root
 
     def get_project_structure(self, context):
         # get base XML from base class
