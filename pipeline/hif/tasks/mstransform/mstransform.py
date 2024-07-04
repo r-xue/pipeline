@@ -191,9 +191,6 @@ class Mstransform(basetask.StandardTaskTemplate):
             LOG.debug('Setting data_column and origin_ms.')
             ms.origin_ms = self.inputs.ms.origin_ms
             ms.set_data_column(DataType.REGCAL_CONTLINE_SCIENCE, 'DATA')
-            # Propagate spectral line spw designation from source MS
-            for spw in ms.get_all_spectral_windows():
-                spw.specline_window = self.inputs.ms.get_spectral_window(spw.id).specline_window
 
         result.mses.extend(observing_run.measurement_sets)
 

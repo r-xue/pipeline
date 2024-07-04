@@ -41,10 +41,9 @@ def detect_spectral_lines(mset: Type[MeasurementSet], specline_spws: str='auto')
         LOG.info("Spectral line assignment defined by user.")
         LOG.info('The user identified the following spws for spectral line analysis: {}. '
                     'All other spws will be regarded as continuum.'.format(specline_spws))
-    if spec_windows:
-        for spw in spws:
-            if int(spw.id) in spec_windows:
-                spw.specline_window = True
+    for spw in spws:
+        if int(spw.id) in spec_windows:
+            spw.specline_window = True
 
 def _auto_detector(spw: Type[SpectralWindow]) -> None:
     """Determines if a spectral window should be designated as a spectral line window using the following criteria:
