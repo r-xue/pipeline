@@ -1044,7 +1044,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                     )
                 _vertlines.append(_vertline)
 
-            LOG.debug('Velocity of a vertical line: %s', _vertlines)
+            LOG.debug('Velocities of the vertical lines: %s', _vertlines)
 
             # MEMO: 
             # - The velocity plot #2, the 16 vertical lines are drawn at the positions of the velocity
