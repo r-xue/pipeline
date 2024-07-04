@@ -2700,6 +2700,31 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
     return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
 
 
+def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, ranges: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+    edge_left, edge_right = edge
+
+    # offset channel ranges
+    def offset_range(x):
+        return x - edge_left
+
+    _ranges_image = map(
+        lambda x: (offset_range(x[0]), offset_range(x[1])), ranges
+    )
+
+    if sideband == -1:
+        # if LSB, channel ranges must be reversed
+        nchan_image = nchan - edge_left - edge_right
+
+        def reverse_range(x):
+            return nchan_image - 1 - x
+
+        _ranges_image = map(
+            lambda x: (reverse_range(x[1]), reverse_range(x[0])), _ranges_image
+        )
+
+    return sorted(_ranges_image)
+
+
 @log_qa
 def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> List[pqa.QAScore]:
     """Compute QA score based on the line detection result.

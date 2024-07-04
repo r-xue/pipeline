@@ -79,3 +79,19 @@ def test_test_sd_edge_lines(lines: List[Tuple[int, int]], nchan: int, edge: Tupl
 def test_test_sd_wide_lines(lines: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int], expected: float):
     score = qacalc.test_sd_wide_lines(lines, nchan, edge)
     assert score == expected
+
+
+@pytest.mark.parametrize(
+    'edge, nchan, sideband, ranges, expected',
+    [
+        ((0, 0), 16, 1, [(3, 5), (9, 12)], [(3, 5), (9, 12)]),
+        ((0, 0), 16, -1, [(3, 5), (9, 12)], [(3, 6), (10, 12)]),
+        ((1, 0), 16, 1, [(3, 5), (9, 12)], [(2, 4), (8, 11)]),
+        ((1, 1), 16, 1, [(3, 5), (9, 12)], [(2, 4), (8, 11)]),
+        ((1, 0), 16, -1, [(3, 5), (9, 12)], [(3, 6), (10, 12)]),
+        ((1, 1), 16, -1, [(3, 5), (9, 12)], [(2, 5), (9, 11)]),
+    ]
+)
+def test_channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, ranges: List[Tuple[int, int]], expected: List[Tuple[int, int]]):
+    ranges_image = qacalc.channel_ranges_for_image(edge, nchan, sideband, ranges)
+    assert ranges_image == expected
