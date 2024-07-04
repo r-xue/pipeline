@@ -3,7 +3,7 @@ scorecalculator_test.py : Unit tests for "qa/scorecalculator.py".
 
 Unit tests for "qa/scorecalculator.py"
 """
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 import pytest
 
