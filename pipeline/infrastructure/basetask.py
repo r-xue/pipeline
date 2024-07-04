@@ -101,7 +101,7 @@ def capture_log(method):
 
         # To save space in the pickle, delete any inner CASA logs. The web
         # log will only write the outer CASA log to disk
-        if isinstance(result, collections.Iterable):
+        if isinstance(result, collections.abc.Iterable):
             for r in result:
                 if hasattr(r, 'casalog'):
                     del r.casalog
@@ -654,9 +654,8 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
                 if isinstance(self.inputs, vdp.InputsContainer) or isinstance(self.inputs.vis, list):
                     return self._handle_multiple_vis(**parameters)
 
-            if isinstance(self.inputs, vdp.InputsContainer):
-                container = self.inputs
-                LOG.info('Equivalent CASA call: %s', container._pipeline_casa_task)
+            if isinstance(self.inputs, vdp.InputsContainer) and self.inputs._pipeline_casa_task is not None:
+                LOG.info('Equivalent Pipeline CLI call: %s', self.inputs._pipeline_casa_task)
 
             # We should not pass unused parameters to prepare(), so first
             # inspect the signature to find the names the arguments and then
@@ -766,7 +765,8 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
             return ResultsList()
 
         container = self.inputs
-        LOG.info('Equivalent CASA call: %s', container._pipeline_casa_task)
+        if container._pipeline_casa_task is not None:
+            LOG.info('Equivalent Pipeline CLI call: %s', container._pipeline_casa_task)
 
         results = ResultsList()
         try:

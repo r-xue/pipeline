@@ -13,7 +13,7 @@ LOG = logging.get_logger(__name__)
 class VLAImportDataQAHandler(hqa.ImportDataQAHandler, pqa.QAPlugin):
     result_cls = importdata.VLAImportDataResults
     child_cls = None
-    generating_task = importdata.VLAImportData
+    generating_task = importdata.SerialVLAImportData
 
     def handle(self, context, result):
         score1 = self._check_intents(result.mses)
@@ -43,7 +43,7 @@ class VLAImportDataQAHandler(hqa.ImportDataQAHandler, pqa.QAPlugin):
 
 
 class VLAImportDataListQAHandler(pqa.QAPlugin):
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = importdata.VLAImportDataResults
 
     def handle(self, context, result):

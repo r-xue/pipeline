@@ -17,6 +17,7 @@ class CleanTarget(dict):
         self['imsize'] = None          # string / list
         self['pblimit'] = None         # float
         self['phasecenter'] = None     # string
+        self['psf_phasecenter'] = None # string
         self['specmode'] = None        # string
         self['gridder'] = None         # string
         self['datacolumn'] = None      # string
@@ -38,6 +39,7 @@ class CleanTarget(dict):
         self['niter'] = None           # int
         self['cycleniter'] = None      # int
         self['cyclefactor'] = None     # float
+        self['nmajor'] = None          # int
         self['sensitivity'] = None     # string
         self['threshold'] = None       # string
         self['reffreq'] = None         # string
@@ -48,6 +50,7 @@ class CleanTarget(dict):
         self['usepointing'] = None     # boolean
         self['mosweight'] = None       # boolean
         self['drcorrect'] = None       # float
+        self['flagpct'] = None         # float
 
         dict.__init__(self, *args, **kwargs)
 
