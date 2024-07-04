@@ -1028,7 +1028,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             )
 
             # vertical lines for integrated spectrum #2
-            # The positions of vertical lines are calculated by interpolation. See the MEMO below.
+            # The positions of vertical lines are calculated by linear interpolation. See the MEMO below.
             width_emission_line = indices_width_of_line * self.NumChannelMap
             y_vel = self.velocity[idx_left_end:idx_left_end + width_emission_line]
             x_chan = numpy.arange(idx_left_end, idx_left_end + width_emission_line)
