@@ -104,22 +104,21 @@ class Hanning(basetask.StandardTaskTemplate):
                 LOG.warning("MS has already had offline hanning smoothing applied. Skipping this stage.")
                 return HanningResults()
 
-        with casa_tools.MSReader(self.inputs.vis, nomodify=False) as mset:
-            ms_info = mset.getspectralwindowinfo()
-            hs_dict = {x: False for x in ms_info}
-            if spw_preaverage:
-                smoothing_windows = self._getsmoothingwindows(spw_preaverage)
-                if smoothing_windows:
-                    message = find_ranges(smoothing_windows)
-                    LOG.info("Smoothing spectral window(s) {}.".format(message))
-                    staql = {'spw': ",".join(smoothing_windows)}
-                    mset.msselect(staql)
-                    mset.hanningsmooth('data')
-                    for spw in smoothing_windows:
-                        hs_dict[spw] = True
+        # Retrieve SPWs information and determine which to smooth
+        spws = self.inputs.context.observing_run.measurement_sets[0].get_all_spectral_windows()
+        hs_dict = dict()
+        for spw in spws:
+            if spw.sdm_num_bin > 1 or spw.specline_window:
+                if self._checkmaserline(str(spw.id)):
+                    hs_dict[spw.id] = True
                 else:
-                    LOG.info("None of the SPWs were selected for smoothing.")
-        if not spw_preaverage:
+                    hs_dict[spw.id] = False
+            else:
+                hs_dict[spw.id] = True
+        
+        if not any(hs_dict.values()):
+            LOG.info("None of the SPWs were selected for smoothing.")
+        elif all(hs_dict.values()):
             LOG.info("All spectral windows were selected for hanning smoothing")
             try:
                 self._do_hanningsmooth()
@@ -129,8 +128,18 @@ class Hanning(basetask.StandardTaskTemplate):
                 os.rename('temphanning.ms', self.inputs.vis)
             except Exception as ex:
                 LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
-            finally:
-                hs_dict = {x: True for x in hs_dict}
+        else:
+            smoothing_windows = [str(x) for x, y in hs_dict.items() if y]
+            message = find_ranges(smoothing_windows)
+            LOG.info("Smoothing spectral window(s) {}.".format(message))
+            try:
+                with casa_tools.MSReader(self.inputs.vis, nomodify=False) as mset:
+                    staql = {'spw': ",".join(smoothing_windows)}
+                    mset.msselect(staql)
+                    mset.hanningsmooth('data')
+            except Exception as ex:
+                LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
+
         # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
         self._track_hsmooth(hs_dict)
 
@@ -162,28 +171,6 @@ class Hanning(basetask.StandardTaskTemplate):
                                         outputvis='temphanning.ms')
 
         return self._executor.execute(task)
-    
-    def _getsmoothingwindows(self, spw_preaverage: Dict[str, int]) -> List[str]:
-        """Retrieve a list of windows that are not pre-averaged and should be hanning-smoothed
-
-        Args:
-            spw_preaverage(dict): SDM_NUM_BIN column from SPECTRAL_WINDOW table of vis
-
-        Return: List
-            Spectral window IDs that need to be hanning smoothed; an empty list will mean no windows should be smoothed
-        """
-
-        smooth_windows = list()
-        for key, value in spw_preaverage.items():
-            spw = str(int(key.split("r")[1]) - 1)
-            if value > 1:
-                # smooth preaveraged windows if maser line possible in window to avoid Gibbs ringing
-                if self._checkmaserline(spw):
-                    smooth_windows.append(spw)
-            else:
-                smooth_windows.append(spw)
-
-        return sorted(smooth_windows, key=int)
 
     def _checkmaserline(self, spw: str) -> bool:
         """Confirm if known maser line(s) appear in frequency range of spectral window
