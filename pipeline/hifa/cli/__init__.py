@@ -4,6 +4,7 @@ from .hifa_antpos import hifa_antpos
 from .hifa_bandpass import hifa_bandpass
 from .hifa_bandpassflag import hifa_bandpassflag
 from .hifa_bpsolint import hifa_bpsolint
+from .hifa_diffgaincal import hifa_diffgaincal
 from .hifa_exportdata import hifa_exportdata
 from .hifa_flagdata import hifa_flagdata
 from .hifa_flagtargets import hifa_flagtargets
@@ -31,6 +32,7 @@ __all__ = ['hifa_antpos',
            'hifa_bandpass',
            'hifa_bandpassflag',
            'hifa_bpsolint',
+           'hifa_diffgaincal',
            'hifa_exportdata',
            'hifa_flagdata',
            'hifa_flagtargets',

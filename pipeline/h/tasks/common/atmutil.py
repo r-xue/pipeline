@@ -7,7 +7,7 @@ Examples:
 """
 import math
 import os
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 import casatools
 import matplotlib.pyplot as plt
@@ -459,8 +459,21 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
         unit of GHz, and the other is the atmospheric transmission at each
         frequency.
     """
+    # first try computing elevation value from phasecenter
+    # if it fails, inspect POINTING table
+    try:
+        elevation = get_representative_elevation(vis, antenna_id)
+    except Exception:
+        elevation = get_median_elevation(vis, antenna_id)
+
     # get median PWV using Todd's script
-    (pwv, pwvmad) = adopted.getMedianPWV(vis=vis)
+    if get_table_nrow(vis+'/ASDM_CALATMOSPHERE') or get_table_nrow(vis+'/ASDM_CALWVR'):
+        # PIPE-2212: Ensure that PWV is checked only if the relevant subtable exists and is not empty.
+        # This prevents open table tool istance from being left behind by adopted.getMedianPWV().
+        pwv, _ = adopted.getMedianPWV(vis=vis)
+    else:
+        # fallback to pwv=0.0
+        pwv = 0.0
 
     altitude = get_altitude(vis)
 
@@ -469,13 +482,6 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
     init_at(myat, fcenter=center_freq, nchan=nchan, resolution=resolution,
             altitude=altitude)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
-
-    # first try computing elevation value from phasecenter
-    # if it fails, inspect POINTING table
-    try:
-        elevation = get_representative_elevation(vis, antenna_id)
-    except Exception:
-        elevation = get_median_elevation(vis, antenna_id)
 
     airmass = calc_airmass(elevation)
     dry_opacity = get_dry_opacity(myat)
@@ -488,3 +494,25 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
 
     myat.done()
     return frequency, transmission
+
+
+def get_table_nrow(table_name: str) -> Optional[int]:
+    """Get the number of rows in a specified table.
+
+    This function checks if the table exists, logs a debug message if it does not, and returns None.
+    If the table exists, it opens the table, retrieves the number of rows, and returns that number.
+
+    Args:
+        table_name (str): The name of the table to check.
+
+    Returns:
+        Optional[int]: The number of rows in the table, or None if the table does not exist.
+    """
+    if not os.path.exists(table_name):
+        LOG.debug('%s does not exist.', table_name)
+        return
+
+    with casa_tools.TableReader(table_name) as mytb:
+        nrow = mytb.nrows()
+
+    return nrow

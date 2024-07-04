@@ -7,9 +7,7 @@ result = task.execute()
 result.accept(context)
 
 """
-import datetime
 import os
-import urllib
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -38,18 +36,30 @@ class PriorcalsInputs(vdp.StandardInputs):
     swpow_spw = vdp.VisDependentProperty(default='')
     show_tec_maps = vdp.VisDependentProperty(default=True)
     apply_tec_correction = vdp.VisDependentProperty(default=False)
+    apply_gaincurves = vdp.VisDependentProperty(default=True)
+    apply_opcal = vdp.VisDependentProperty(default=True)
+    apply_rqcal = vdp.VisDependentProperty(default=True)
+    apply_antpos = vdp.VisDependentProperty(default=True)
+    apply_swpowcal = vdp.VisDependentProperty(default=False)
     ant_pos_time_limit = vdp.VisDependentProperty(default=150)
 
-    def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, swpow_spw=None, ant_pos_time_limit=None):
+    def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, apply_gaincurves=None, apply_opcal=None,
+                 apply_rqcal=None, apply_antpos=None, apply_swpowcal=None, swpow_spw=None, ant_pos_time_limit=None):
         """
         Args:
             context (:obj:): Pipeline context
             vis(str):  Measurement set
-            show_tec_maps(bool):  Display the plot output from the CASA tec_maps recipe function
-            apply_tec_correction:  CASA tec_maps recipe function is executed - this bool determines if gencal is
-                                   executed and the resulting table applied
-            swpow_spw(str):  spws for switched power
-
+            show_tec_maps(bool):    Display the plot output from the CASA tec_maps recipe function
+            apply_tec_correction:   CASA tec_maps recipe function is executed - this bool determines if gencal is
+                                    executed and the resulting table applied
+            apply_gaincurves(bool): Flag to apply gain curves correction. Default is True.
+            apply_opcal(bool):      Flag to apply opacities correction. Default is True.
+            apply_rqcal(bool):      Flag to apply requantizer gains correction. Default is True.
+            apply_antpos(bool):     Flag to apply antenna position correction. Default is True.
+            apply_swpowcal(bool):   Flag to apply switched power table. Default is False. If set True,
+                                    apply_rqcal is ignored and no requantizer gain correction will be applied.
+            swpow_spw(str):         spws for switched power
+            ant_pos_time_limit(int): Antenna position time limit in days. Default is 150 days.
         """
         self.context = context
         self.vis = vis
@@ -57,6 +67,18 @@ class PriorcalsInputs(vdp.StandardInputs):
         self.apply_tec_correction = apply_tec_correction
         self.swpow_spw = swpow_spw
         self.ant_pos_time_limit = ant_pos_time_limit
+        self.apply_gaincurves = apply_gaincurves
+        self.apply_opcal = apply_opcal
+        self.apply_rqcal = apply_rqcal
+        self.apply_antpos = apply_antpos
+        self.apply_swpowcal = apply_swpowcal
+        # PIPE-1665: comment from the ticket
+        # If I can added a requirement, there should also be the ability to apply the switched power table.
+        # The default for the switched power table should be to not apply it. However, if a user sets application
+        # of switched power to true, this should implicity turn off the requantizer table, because switched power
+        # includes the requantizer gain information implicitly.
+        if apply_swpowcal:
+            self.apply_rqcal = False
 
     def to_casa_args(self):
         raise NotImplementedError

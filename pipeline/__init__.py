@@ -9,6 +9,8 @@ import pkg_resources
 import threading
 import webbrowser
 
+from astropy.utils.iers import conf as iers_conf
+
 from . import domain
 from . import environment
 from . import infrastructure
@@ -18,7 +20,6 @@ from .infrastructure import Pipeline, Context
 from . import h
 from . import hif
 from . import hifa
-from . import hifas
 from . import hsd
 from . import hifv
 from . import hsdn
@@ -30,6 +31,12 @@ from casatasks import casalog
 # Modify filter to get INFO1 message which the pipeline
 # treats as ATTENTION level.
 casalog.filter('INFO1')
+
+# PIPE-2195: Extend auto_max_age to reduce the frequency of IERS Bulletin-A table auto-updates. 
+# This change increases the maximum age of predictive data before auto-downloading is triggered.
+# Note that the default auto_max_age value is 30 days as of Astropy ver 6.0.1:
+# https://docs.astropy.org/en/stable/utils/iers.html
+iers_conf.auto_max_age = 180
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -153,7 +160,7 @@ def initcli(user_globals=None):
     else:
         my_globals = user_globals
 
-    for package in ['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd', 'hsdn']:
+    for package in ['h', 'hif', 'hifa', 'hifv', 'hsd', 'hsdn']:
         abs_cli_package = 'pipeline.{package}.cli'.format(package=package)
         try:
             # Check the existence of the generated __init__ modules

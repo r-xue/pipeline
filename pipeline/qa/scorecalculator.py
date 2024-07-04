@@ -36,10 +36,11 @@ from pipeline.infrastructure import casa_tools
 if TYPE_CHECKING:
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
+    from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
+    from pipeline.infrastructure.launcher import Context
 
 __all__ = ['score_polintents',                                # ALMA specific
            'score_bands',                                     # ALMA specific
-           'score_bwswitching',                               # ALMA specific
            'score_science_spw_names',                         # ALMA specific
            'score_tsysspwmap',                                # ALMA specific
            'score_number_antenna_offsets',                    # ALMA specific
@@ -59,6 +60,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_checksources',                              # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
+           'score_observing_modes',                           # ALMA specific
            'score_renorm',                                    # ALMA IF specific
            'score_polcal_gain_ratio',                         # ALMA IF specific
            'score_polcal_gain_ratio_rms',                     # ALMA IF specific
@@ -404,74 +406,67 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
 
 
 @log_qa
-def score_bwswitching(mses):
+def score_observing_modes(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
-    Score a MeasurementSet object based on the presence of
-    bandwidth switching observings. For bandwidth switched
-    observations the TARGET and PHASE spws are different.
-    """
-    nophasecals_all = set()   # track any spws that have no phase calibration across all MSes
-    num_b2b = 0    # number of MSes that have bandwidth switching in the B2B mode
-    num_bwsw = 0   # number of MSes that have bandwidth switching not in the B2B mode
-    complaints = []
+    This QA heuristic evaluates a list of measurement sets, creating a QA score
+    for each MS, and returning the aggregate list of QA scores for all MSes.
+    Each MS is scored based on consistency checks between their registered
+    Observing Mode(s) and e.g. the presence of differential gain SpWs / fields.
 
-    # analyse each MS
+    Args:
+        mses: list of measurement sets to score.
+
+    Returns:
+        List of QA scores.
+    """
+    # Create separate score for each MS.
+    scores = []
     for ms in mses:
-        # Get the science spws
-        scispws = {spw.id for spw in ms.get_spectral_windows(science_windows_only=True)}
+        # If the Observing Modes include "band to band", perform a few validity
+        # checks w.r.t. the presence of DIFFGAIN* fields and diffgain SpW setup:
+        if 'BandToBand Interferometry' in ms.observing_modes:
+            if ms.get_diffgain_mode() != 'B2B':
+                score = 0.0
+                shortmsg = 'Incorrect Observing Mode'
+                longmsg = f'Incorrect BandToBand Observing Mode, {ms.basename} does not contain a DIFFGAIN* intent' \
+                          f' and/or SpW setup consistent with band-to-band.'
+            elif len(ms.get_fields(intent="DIFFGAINREF,DIFFGAINSRC")) > 1:
+                score = 0.0
+                shortmsg = 'Too many DIFFGAIN* fields'
+                longmsg = f'Unable to process BandToBand dataset {ms.basename}, found more than 1 DIFFGAIN* field'
+            else:
+                score = 0.9
+                shortmsg = 'BandToBand mode used'
+                longmsg = f'BandToBand mode used in {ms.basename}'
 
-        # Get phase calibrator science spw ids
-        phasespws = []
-        for scan in ms.get_scans(scan_intent='PHASE'):
-            phasespws.extend([spw.id for spw in scan.spws])
-        phasespws = set(phasespws).intersection(scispws)
+        # If the Observing Modes do not include "band to band", but the MS
+        # contains a DIFFGAIN* intent and a SpW setup consistent with
+        # band-to-band, then lower the score.
+        elif 'BandToBand Interferometry' not in ms.observing_modes and ms.get_diffgain_mode() == 'B2B':
+            score = 0.0
+            shortmsg = 'Incorrect Observing Mode'
+            longmsg = f'Incorrect Observing Mode, unexpectedly found a BandToBand DIFFGAIN* intent in {ms.basename}'
 
-        # Get science target science spw ids
-        targetspws = []
-        for scan in ms.get_scans(scan_intent='TARGET'):
-            targetspws.extend([spw.id for spw in scan.spws])
-        targetspws = set(targetspws).intersection(scispws)
+        # If the Observing Modes include "bandwidth switching", then lower the
+        # score, since processing these data has not yet been validated.
+        elif 'BandwidthSwitching Interferometry' in ms.observing_modes:
+            score = 0.0
+            shortmsg = 'BandwidthSwitching mode used'
+            longmsg = f'BandwidthSwitching mode used in {ms.basename}'
 
-        # Determine the difference between the two
-        nophasecals = targetspws.difference(phasespws)
-        if len(nophasecals) == 0:
-            continue
-
-        nophasecals_all.update(nophasecals)
-
-        # the following section is invoked for B2B and BWSW modes
-        diffgain_mode = ms.get_diffgain_mode()
-        if diffgain_mode == 'B2B':
-            num_b2b += 1
-            complaints.append('%s uses the B2B mode' % ms.basename)
-        elif diffgain_mode == 'BWSW':
-            num_bwsw += 1
-            complaints.append('%s contains no phase calibrations for target spws %s' %
-                              (ms.basename, utils.commafy(list(nophasecals), quotes=False)))
-
-    if num_bwsw == 0 and num_b2b == 0:
-        longmsg = ('Phase calibrations found for all target spws in %s.' % (
-            utils.commafy([ms.basename for ms in mses], quotes=False)))
-        shortmsg = 'Phase calibrations found for all target spws'
-        score = 1.0
-    else:
-        longmsg = '%s.' % utils.commafy(complaints, False)
-        if num_bwsw > 0:   # at least one MS has no phase calibration and is not in a B2B mode
-            shortmsg = 'No phase calibrations found for target spws %s' % list(nophasecals_all)
-            if num_bwsw > 1:
-                shortmsg += ' in %i MSes' % num_bwsw
-            score = 0.0   # indicates that this mode is currently not supported by the pipeline
+        # If all validity checks are passed, score the MS as ok.
         else:
-            shortmsg = 'B2B mode'
-            if num_b2b > 1:
-                shortmsg += ' in %i MSes' % num_b2b
-            score = 0.9
+            score = 1.0
+            shortmsg = 'Observing mode(s) ok.'
+            longmsg = f'Observing mode(s) ok for {ms.basename}'
 
-    origin = pqa.QAOrigin(metric_name='score_bwswitching',
-                          metric_score=score,
-                          metric_units='MS score based on the number of spws without phase calibrators')
+        # Append score for current MS.
+        origin = pqa.QAOrigin(metric_name='score_observing_modes',
+                              metric_score=score,
+                              metric_units='MS score based on the observing modes')
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return scores
 
 
 @log_qa
@@ -1866,23 +1861,23 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
     if median_snr <= 0.3 * snr_threshold:
         score = rutils.SCORE_THRESHOLD_ERROR
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 30% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
         score = rutils.SCORE_THRESHOLD_WARNING
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 50% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
         score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 75% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
     else:
         score = 1.0
         shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is > 75% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
 
     origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
                           metric_score=median_snr,
@@ -2003,23 +1998,23 @@ def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_thres
     if median_snr <= 0.3 * snr_threshold:
         score = 0.7
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 30% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
         score = 0.8
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 50% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
         score = 0.9
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is <= 75% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
     else:
         score = 1.0
         shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR ({median_snr:.1f}) is > 75% of the' \
-                  f' phase SNR threshold ({snr_threshold:.1f}).'
+        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
 
     origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
                           metric_score=median_snr,
@@ -2634,6 +2629,7 @@ def score_sd_line_detection(group_id_list, spw_id_list, lines_list):
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
+
 @log_qa
 def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
                               pol: str, stat: List[tuple]) -> pqa.QAScore:
@@ -2679,6 +2675,7 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
                           metric_units='Statistics of binned spectra')
 
     return pqa.QAScore(final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
 
 @log_qa
 def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gfluxscale_err):
@@ -3242,6 +3239,58 @@ def score_sdimage_masked_pixels(context, result):
 
 
 @log_qa
+def score_sdimage_contamination(context: 'Context', result: 'SDImagingResultItem') -> pqa.QAScore:
+    """Evaluate QA score based on the absorption feature in the image.
+
+    If there is an emission at OFF_SOURCE position (contamination),
+    it is emerged as an absorption feature in the calibrated spectra.
+    Therefore, this QA score utilizes any significant absorption
+    features as an indicator of potential contamination.
+
+    Requirements (PIPE-2066):
+        - QA score should be
+          - 0.65 if absorption feature exists
+          - 1.0 if absorption feature does not exist
+
+    Args:
+        context: Pipeline context
+        result: Imaging result instance
+
+    Returns:
+        QAScore -- QAScore instance holding the score based on the
+                   existence of the absorption feature in the image
+    """
+    contaminated = result.outcome.get('contaminated', False)
+    imageitem = result.outcome['image']
+    field = imageitem.sourcename
+    spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+    if contaminated:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'Possible astronomical line contamination was detected. '
+                'Please check the contamination plots.')
+        smsg = 'Possible astronomical line contamination was detected.'
+        score = 0.65
+    else:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'No astronomical line contamintaion was detected.')
+        smsg = 'No astronomical line contamination was detected.'
+        score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='SingleDishImageContamination',
+                          metric_score=contaminated,
+                          metric_units='Sign of possible line contamination')
+    selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
+                                        field=set(result.outcome['assoc_fields']),
+                                        intent={'TARGET'},
+                                        pol={'I'})
+    return pqa.QAScore(score,
+                       longmsg=lmsg,
+                       shortmsg=smsg,
+                       origin=origin,
+                       applies_to=selection)
+
+
+@log_qa
 def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     """ Convert internal spw_id-spw_id consistency ratio to a QA score.
 
@@ -3328,8 +3377,8 @@ def score_renorm(result):
         score = 1.0
 
     origin = pqa.QAOrigin(metric_name='score_renormalize',
-                            metric_score=score,
-                            metric_units='')
+                          metric_score=score,
+                          metric_units='')
     return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
@@ -3716,9 +3765,6 @@ def score_fluxcsv(result):
                           metric_score=score,
                           metric_units='flux csv')
     return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
-
-
-
 
 
 @log_qa

@@ -112,7 +112,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return [0]
 
-    def uvtaper(self, beam_natural=None, protect_long=None) -> Union[str, list]:
+    def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None) -> Union[str, list]:
         """Tclean uvtaper parameter heuristics."""
         if self.vlass_stage == 3:
             return ''
