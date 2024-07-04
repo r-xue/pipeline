@@ -1029,22 +1029,19 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             # vertical lines for integrated spectrum #2
             # The positions of vertical lines are calculated by linear interpolation. See the MEMO below.
-            width_emission_line = indices_width_of_line * self.NumChannelMap
-            y_vel = self.velocity[idx_left_end:idx_left_end + width_emission_line]
-            x_chan = numpy.arange(idx_left_end, idx_left_end + width_emission_line)
-            chan2vel = interpolate.interp1d(x_chan, y_vel, bounds_error=False, fill_value='extrapolate')
+            _indices_width_of_emission_line = indices_width_of_line * self.NumChannelMap
+            _x_chan = numpy.arange(idx_left_end, idx_left_end + _indices_width_of_emission_line)
+            _y_vel = self.velocity[idx_left_end:idx_left_end + _indices_width_of_emission_line]
+            chan2vel = interpolate.interp1d(_x_chan, _y_vel, bounds_error=False, fill_value='extrapolate')
 
-            _vertline_1st = x_chan[0]
-            _vertline_16th = _vertline_1st + indices_width_of_line * self.NumChannelMap
-            _vertlines = []
-            for i in range( _vertline_1st, _vertline_16th + 1, indices_width_of_line):
-                _vertline = chan2vel(i - 0.5) - velocity_line_center
-                vertical_lines.append(
-                        axes_integsp2.axvline(x=_vertline, linewidth=0.3, color='r')
-                    )
-                _vertlines.append(_vertline)
+            _chans = [idx_left_end + i * indices_width_of_line - 0.5 for i in range(self.NumChannelMap + 1)]
+            vertlines = chan2vel(_chans) - velocity_line_center
+            
+            vertical_lines.extend(
+                (axes_integsp2.axvline(x, linewidth=0.3, color='r') for x in vertlines)
+            )
 
-            LOG.debug('Velocities of the vertical lines: %s', _vertlines)
+            LOG.debug('Velocities of the vertical lines: %s', vertlines)
 
             # MEMO: 
             # - The velocity plot #2, the 16 vertical lines are drawn at the positions of the velocity
