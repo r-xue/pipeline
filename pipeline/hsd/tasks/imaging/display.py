@@ -1034,7 +1034,10 @@ class SDChannelMapDisplay(SDImageDisplay):
             _y_vel = self.velocity[idx_left_end:idx_left_end + _indices_width_of_emission_line]
             chan2vel = interpolate.interp1d(_x_chan, _y_vel, bounds_error=False, fill_value='extrapolate')
 
+            # channel range using interpolation
             _chans = [idx_left_end + i * indices_width_of_a_stripe - 0.5 for i in range(self.NUM_STRIPES_IN_CHANNELMAP + 1)]
+
+            # get the positions of red vertical lines
             vertlines = chan2vel(_chans) - velocity_line_center
             
             vertical_lines.extend(
@@ -1044,17 +1047,19 @@ class SDChannelMapDisplay(SDImageDisplay):
             LOG.debug('Velocities of the vertical lines: %s', vertlines)
 
             # MEMO: 
-            # - The velocity plot #2, the 16 vertical lines are drawn at the positions of the velocity
+            # - The velocity plot #2, the red vertical lines are drawn at the positions of the velocity
             #   values calculated by linear interpolation.
-            #   When considering a channel as a velocity-bin, the center value of the bin is an item of
-            #   self.velocity. The velocity values to drawing the vertical lines of #2 are at the left
-            #   edge of the channel-bins, and these values are calculated by interpolation using self.velocity.
-            #   If the edges of self.velocity overlap with the edges of the emission line, those positions
-            #   fall outside of range can interpolate, and are therefore obtained by extrapolation.
-            # - On the other hand, in the frequency plot #1, the positions of the two vertical lines are
-            #   limited within nchan definition with self.frequency.
-            # - V0 and V1 are related to plotting all channelMaps. If we use the both side of _vertlines
-            #   as V0 and V1, we must care about channelMap existance at the values of _vertlines.
+            #   These lines indicate the boundaries of the number of stripes defined by NUM_STRIPES_IN_-
+            #   CHANNELMAP stripes, with each stripe having a number of indices_width_of_a_stripe channels.
+            #   The velocity values at the boundaries of the stripes are calculated by linear interpolating
+            #   the channel-center velocity values (self.velocity[]). Extrapolation for 1/2 channels will
+            #   be done to calculate the velocity values at the very end of the emission line range.
+            # - On the other hand, for the frequency plot #1, the channel-center velocity values
+            #   (self.velocity[]) are directly used to indicate the validated emmision line width as two
+            #   red vertical lines, hence no interpolations. Therefore the positions of the red lines
+            #   may not match the both ends of NUM_STRIPES_IN_CHANNELMAP stripes in Plot #2.
+            # - V0 and V1 are related to plotting all channelMaps. If we use the both ends of vertlines
+            #   as V0 and V1, we must care about channelMap existance at the values of vertlines.
 
             # loop over polarizations
             for pol in range(self.npol):
