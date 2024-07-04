@@ -2768,13 +2768,21 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
     # data per field per EB
     deviation_mask_qa_data = {}
     deviation_mask_all = result.outcome['deviation_mask']
+
+    # edge parameter
+    # channels specified by edge will be excluded from resulting images
     _edge = result.outcome['edge']
     edge = (_edge, _edge) if isinstance(_edge, int) else tuple(_edge[:2])
+
     for bl in result.outcome['baselined']:
         reduction_group_id = bl['group_id']
         reduction_group_desc = reduction_group[reduction_group_id]
         member_list = bl['members']
         field_name = reduction_group_desc.field_name
+        spw = reduction_group_desc[member_list[0]].spw
+        # sideband is 1 for USB, -1 for LSB
+        sideband = int(spw.sideband)
+        nchan = reduction_group_desc.nchan
 
         # deviation mask
         for member_id in member_list:
@@ -2796,7 +2804,6 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             # sort lines by left channel
             lines.sort(key=operator.itemgetter(0))
 
-            nchan = reduction_group_desc.nchan
             is_edge_line = test_sd_edge_lines(lines, nchan, edge)
             is_wide_line = test_sd_wide_lines(lines, nchan, edge)
 
@@ -2818,7 +2825,8 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             spw_desc = ', '.join(map(str, spw_ids))
             shortmsg = f'{msg}.'
             longmsg = f'{msg} in Field {field_name}, Spw {spw_desc}.'
-            metric_value = ';'.join([f'{left}~{right}' for left, right in lines])
+            lines_image = channel_ranges_for_image(edge, nchan, sideband, lines)
+            metric_value = ';'.join([f'{left}~{right}' for left, right in lines_image])
             origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                                   metric_score=metric_value,
                                   metric_units='Channel range(s) of detected lines')
@@ -2847,6 +2855,20 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             )
         )
 
+    # dictionary for spw setup
+    spw_config_dict = {}
+    for reduction_group_desc in reduction_group.values():
+        for reduction_group_member in reduction_group_desc:
+            ms_name = reduction_group_member.ms.origin_ms
+            spw = reduction_group_member.spw
+            spw_id = spw.id
+            nchan = spw.num_channels
+            sideband = int(spw.sideband)
+            dict_for_ms = spw_config_dict.setdefault(ms_name, {})
+            dict_for_spw = dict_for_ms.setdefault(spw_id, {})
+            dict_for_spw['nchan'] = nchan
+            dict_for_spw['sideband'] = sideband
+
     # generate deviation mask QA scores with merged spws and antennas
     deviation_mask_scores = []
     for field_name, data_per_ms in deviation_mask_qa_data.items():
@@ -2868,9 +2890,17 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 deviation_masks_per_spw[spw_id].update(map(tuple, deviation_mask))
 
             # metric value format: spw0:c0~c1:c2~c3,spw1:c4~c5
+            deviation_masks_for_image = []
+            for spw_id, deviation_masks in deviation_masks_per_spw.items():
+                spw_config = spw_config_dict[ms_name][spw_id]
+                nchan = spw_config['nchan']
+                sideband = spw_config['sideband']
+                devmasks_image = channel_ranges_for_image(edge, nchan, sideband, sorted(deviation_masks))
+                deviation_masks_for_image.append((spw_id, devmasks_image))
+
             metric_value = ','.join([
                 f'{spw_id}:' + ';'.join([f'{left}~{right}' for left, right in sorted(deviation_masks)])
-                for spw_id, deviation_masks in deviation_masks_per_spw.items()
+                for spw_id, deviation_masks in deviation_masks_for_image
             ])
             origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                                   metric_score=metric_value,
