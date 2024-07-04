@@ -1028,8 +1028,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             )
 
             # vertical lines for integrated spectrum #2
-            # The velocity of each vertical line position is determined by interpolation.
-            # If it must plot a point at out of the right side of velocity, it is extrapolated.
+            # The positions of vertical lines are calculated by interpolation. See the MEMO below.
             y_vel = self.velocity[idx_left_end:-1]
             x_chan = numpy.arange(idx_left_end, idx_left_end + len(y_vel))
             chan2vel = interpolate.interp1d(x_chan, y_vel, bounds_error=False, fill_value='extrapolate')
@@ -1047,9 +1046,15 @@ class SDChannelMapDisplay(SDImageDisplay):
             LOG.debug('Velocity of a vertical line: %s', _vertlines)
 
             # MEMO: 
-            # - the 16 vertical lines in the velocity plot #2 will be drawn even if the position of them
-            #   are out of lange of self.velocity, but the frequency plot #1, the vertical line of right
-            #   side is limited by nchan.
+            # - The velocity plot #2, the 16 vertical lines are drawn at the positions of the velocity
+            #   values calculated by linear interpolation.
+            #   When considering a channel as a velocity-bin, the center value of the bin is an item of
+            #   self.velocity. The velocity values to drawing the vertical lines of #2 are at the left
+            #   edge of the channel-bins, and these values are calculated by interpolation using self.velocity.
+            #   If the edges of self.velocity overlap with the edges of the emission line, those positions
+            #   fall outside of range can interpolate, and are therefore obtained by extrapolation.
+            # - On the other hand, in the frequency plot #1, the positions of the two vertical lines are
+            #   limited within nchan definition with self.frequency.
             # - V0 and V1 are related to plotting all channelMaps. If we use the both side of _vertlines
             #   as V0 and V1, we must care about channelMap existance at the values of _vertlines.
 
