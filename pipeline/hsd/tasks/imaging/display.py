@@ -1027,39 +1027,35 @@ class SDChannelMapDisplay(SDImageDisplay):
                 axes_integsp1.axvline(x=self.frequency[chan1], linewidth=0.3, color='r')
             )
 
-            # vertical lines for integrated spectrum #2
-            # The positions of vertical lines are calculated by linear interpolation. See the MEMO below.
+            # Drawing red vertical lines for integrated spectrum #2
+            # For detail, see the MEMO below.
             _indices_width_of_emission_line = indices_slice_width * self.NUM_CHANNELMAP
             _x_chan = numpy.arange(idx_left_end, idx_left_end + _indices_width_of_emission_line)
             _y_vel = self.velocity[idx_left_end:idx_left_end + _indices_width_of_emission_line]
             chan2vel = interpolate.interp1d(_x_chan, _y_vel, bounds_error=False, fill_value='extrapolate')
 
-            # channel range using interpolation
+            # calculate relative velocities for red vertical lines
             _chans = [idx_left_end + i * indices_slice_width - 0.5 for i in range(self.NUM_CHANNELMAP + 1)]
-
-            # get the positions of red vertical lines
             vertlines = chan2vel(_chans) - velocity_line_center
             
             vertical_lines.extend(
                 (axes_integsp2.axvline(x, linewidth=0.3, color='r') for x in vertlines)
             )
 
-            LOG.debug('Velocities of the vertical lines: %s', vertlines)
+            LOG.debug('Relative velocities of the vertical lines: %s', vertlines)
 
             # MEMO: 
-            # - The velocity plot #2, the red vertical lines are drawn at the positions of the velocity
+            # - For the velocity plot #2, the red vertical lines are drawn at the relative velocity
             #   values calculated by linear interpolation.
-            #   These lines indicate the boundaries of the number of slices defined by NUM_CHANNELMAP,
-            #   with each slice having a number of indices_slice_width channels. The velocity values at
-            #   the boundaries of the slices are calculated by linear interpolating the channel-center
-            #   velocity values (self.velocity[]). Extrapolation for 1/2 channels will be done to
-            #   calculate the velocity values at the very end of the emission line range.
+            #   These lines indicate the boundaries of NUM_CHANNELMAP slices, with each slice having
+            #   a number of indices_slice_width channels. The velocity values at the boundaries are
+            #   calculated by linear interpolating the channel-center velocity values (self.velocity[]).
+            #   Extrapolation for 1/2 channels will be done to calculate the velocity values at the
+            #   very end of the line_window.
             # - On the other hand, for the frequency plot #1, the channel-center velocity values
-            #   (self.velocity[]) are directly used to indicate the validated emmision line width as two
+            #   (self.velocity[]) are directly used to indicate the bounderies of the line_window as two
             #   red vertical lines, hence no interpolations. Therefore the positions of the red lines of
-            #   plot #1 are slightly shifted by 0.5 ch compared to the relevant lines in plot #2.
-            # - V0 and V1 are related to plotting all channelMaps. If we use the both ends of vertlines
-            #   as V0 and V1, we must care about channelMap existance at the values of vertlines.
+            #   plot #1 are slightly shifted by 0.5 ch compared to the corresponding lines in plot #2.
 
             # loop over polarizations
             for pol in range(self.npol):
