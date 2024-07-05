@@ -74,7 +74,7 @@ class SelfcalSummary(object):
         image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=False, figsize=(8, 6), dpi=900).plot_per_stokes(
             self.context, im_pre, reportdir=self.stage_dir, intent='', collapseFunction='mean',
             vmin=vmin, vmax=vmax,
-            result_mask=im_pre_mask))
+            maskname=im_pre_mask))
         image_plots[-1].parameters['title'] = 'Pre-Selfcal Image'
         image_plots[-1].parameters['caption'] = f'Pre-Selfcal Image<br>Solint: {solint}'
         image_plots[-1].parameters['group'] = 'Pre-/Post-Selfcal Image Comparison'
@@ -82,7 +82,7 @@ class SelfcalSummary(object):
         image_plots.extend(sky.SkyDisplay(exclude_desc=True, overwrite=False, figsize=(8, 6), dpi=900).plot_per_stokes(
             self.context, im_post, reportdir=self.stage_dir, intent='', collapseFunction='mean',
             vmin=vmin, vmax=vmax,
-            result_mask=im_post_mask))
+            maskname=im_post_mask))
         image_plots[-1].parameters['title'] = 'Post-Selfcal Image'
         image_plots[-1].parameters['caption'] = f'Post-Selfcal Image<br>Solint: {solint}'
         image_plots[-1].parameters['group'] = 'Pre-/Post-Selfcal Image Comparison'
@@ -296,7 +296,7 @@ class SelfcalSummary(object):
                 plot_wrappers.extend(sky.SkyDisplay(exclude_desc=True, overwrite=False, dpi=900).plot_per_stokes(
                     self.context, ims[image_type], reportdir=self.stage_dir, intent='', collapseFunction='mean',
                     vmin=vmin, vmax=vmax,
-                    result_mask=ims[image_type].replace('.image.tt0', '.mask')))
+                    maskname=ims[image_type].replace('.image.tt0', '.mask')))
                 plot_wrappers[-1].parameters['title'] = image_desc
                 plot_wrappers[-1].parameters['caption'] = image_desc
                 plot_wrappers[-1].parameters['group'] = 'Initial/Final Comparisons'
