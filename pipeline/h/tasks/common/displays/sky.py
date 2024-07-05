@@ -124,13 +124,17 @@ class SkyDisplay(object):
         if self._dpi is not None:
             return self._dpi
 
-        # PIPE-1083: for making VLA hif_makeimages sky plot, we default to 300 dpi
         last_result = context.results[-1]
+
+        # PIPE-1083: when making VLA/SS hif_makeimages sky plot, we default to 400 dpi
         if last_result.taskname == 'hif_makeimages':
             if last_result.results:
                 first_result = last_result.results[0]
-                if first_result.imaging_mode in ('VLA', 'EVLA', 'JVLA'):
+                if first_result.imaging_mode in ('VLA', 'EVLA', 'JVLA') or first_result.imaging_mode.startswith('VLASS'):
                     return 400.0
+
+        # PIPE-1083: when making sky plots for the tasks/stages below, we default to 400 dpi.
+        #     hif_makermsimages, hif_makecutoutsimages, and hifv_pbcor
         if last_result.taskname in ('hif_makermsimages', 'hif_makecutoutimages', 'hifv_pbcor'):
             return 400.0
 
@@ -138,6 +142,7 @@ class SkyDisplay(object):
 
     def _get_vla_band(self, context, miscinfo):
         """Get the VLA band string, only for VLA aggregated cont imaging."""
+
         last_result = context.results[-1]
         if last_result.taskname == 'hif_makeimages':
             if (context.results[-1].results[0].imaging_mode in ('VLA', 'EVLA', 'JVLA') and
