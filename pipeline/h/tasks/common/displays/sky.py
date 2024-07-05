@@ -34,7 +34,6 @@ from matplotlib.offsetbox import AnnotationBbox, HPacker, TextArea
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
-from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
 from pipeline.infrastructure import casa_tasks, casa_tools, filenamer
 from pipeline.infrastructure.utils import get_stokes
 
@@ -127,12 +126,28 @@ class SkyDisplay(object):
 
         # PIPE-1083: for making VLA hif_makeimages sky plot, we default to 300 dpi
         last_result = context.results[-1]
-        if isinstance(last_result, MakeImagesResult):
+        if last_result.taskname == 'hif_makeimages':
             if last_result.results:
                 first_result = last_result.results[0]
                 if first_result.imaging_mode in ('VLA', 'EVLA', 'JVLA'):
                     return 400.0
+        if last_result.taskname in ('hif_makermsimages', 'hif_makecutoutimages', 'hifv_pbcor'):
+            return 400.0
 
+        return None
+
+    def _get_vla_band(self, context, miscinfo):
+        """Get the VLA band string, only for VLA aggregated cont imaging."""
+        last_result = context.results[-1]
+        if last_result.taskname == 'hif_makeimages':
+            if (context.results[-1].results[0].imaging_mode in ('VLA', 'EVLA', 'JVLA') and
+                    context.results[-1].results[0].specmode == 'cont'):
+                ms = context.observing_run.get_measurement_sets()[0]  # only 1 ms for VLA
+                spw2band = ms.get_vla_spw2band()
+                bands = {spw2band[int(spw)] for spw in miscinfo['virtspw'].split(',') if int(spw) in spw2band}
+                # VLA imaging only happens per-band and you will likely end up with one-element set
+                if bands:
+                    return ','.join(bands)
         return None
 
     def plot(self, context, imagename, reportdir, intent=None, collapseFunction='mean',
@@ -516,16 +531,3 @@ class SkyDisplay(object):
             yoff -= 0.03 * ny_subplot * mult
         yoff -= 0.01 * ny_subplot * mult
         return yoff
-
-    def _get_vla_band(self, context, miscinfo):
-        """Get the VLA band string, only for VLA aggregated cont imaging."""
-        if isinstance(context.results[-1], MakeImagesResult):
-            if (context.results[-1].results[0].imaging_mode in ('VLA', 'EVLA', 'JVLA') and
-                    context.results[-1].results[0].specmode == 'cont'):
-                ms = context.observing_run.get_measurement_sets()[0]  # only 1 ms for VLA
-                spw2band = ms.get_vla_spw2band()
-                bands = {spw2band[int(spw)] for spw in miscinfo['virtspw'].split(',') if int(spw) in spw2band}
-                # VLA imaging only happens per-band and you will likely end up with one-element set
-                if bands:
-                    return ','.join(bands)
-        return
