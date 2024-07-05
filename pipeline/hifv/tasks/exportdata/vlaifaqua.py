@@ -63,16 +63,17 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
     def get_report_xml(self, context):
         report = super().get_report_xml(context)
         report.append(self.get_processing_environment())
+        report.append(self.get_calibrators(context))
         return report
 
     def get_processing_environment(self):
         root = ElementTree.Element('ProcessingEnvironment')
         nodes = environment.cluster_details
-        nx = ElementTree.Element("execution_mode")
+        nx = ElementTree.Element("ExecutionMode")
         nmpiservers = None
         if len(nodes) > 1:
             nx.text = "parallel"
-            nmpiservers = ElementTree.Element("mpiservers")
+            nmpiservers = ElementTree.Element("MPIServers")
             nmpiservers.text = str(len(nodes))
         else:
             nx.text = "serial"
@@ -86,6 +87,19 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             ElementTree.SubElement(nx, 'Cores').text = str(node['num_cores'])
             ElementTree.SubElement(nx, 'RAM').text = str(measures.FileSize(node['ram'], measures.FileSizeUnits.BYTES))
             root.append(nx)
+        return root
+
+    def get_calibrators(self,context):
+        mslist = context.observing_run.get_measurement_sets()
+        root = ElementTree.Element("Calibrators")
+        for ms in mslist:
+            calibrators = [[source.name,source.intents] for source in ms.sources if 'TARGET' not in source.intents]
+            for calibrator in calibrators:
+                nx = ElementTree.Element("Calibrator")
+                ElementTree.SubElement(nx, 'Name').text = calibrator[0]
+                ElementTree.SubElement(nx, 'Intents').text = ",".join(calibrator[1])
+                root.append(nx)
+
         return root
 
     def get_project_structure(self, context):
