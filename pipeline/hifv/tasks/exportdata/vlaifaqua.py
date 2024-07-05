@@ -64,6 +64,8 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         report = super().get_report_xml(context)
         report.append(self.get_processing_environment())
         report.append(self.get_calibrators(context))
+        report.append(self.get_science_spws(context))
+        report.append(self.get_scans(context))
         return report
 
     def get_processing_environment(self):
@@ -89,7 +91,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             root.append(nx)
         return root
 
-    def get_calibrators(self,context):
+    def get_calibrators(self, context):
         mslist = context.observing_run.get_measurement_sets()
         root = ElementTree.Element("Calibrators")
         for ms in mslist:
@@ -98,6 +100,36 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                 nx = ElementTree.Element("Calibrator")
                 ElementTree.SubElement(nx, 'Name').text = calibrator[0]
                 ElementTree.SubElement(nx, 'Intents').text = ",".join(calibrator[1])
+                root.append(nx)
+
+        return root
+
+    def get_science_spws(self, context):
+        mslist = context.observing_run.get_measurement_sets()
+        root = ElementTree.Element("ScienceSPWs")
+        for ms in mslist:
+            spwlist = ms.get_spectral_windows(science_windows_only=True)
+            for spw in spwlist:
+                nx = ElementTree.Element("SPW")
+                chanfreq = [str(t) for t in spw.channels.chan_freqs]
+                ElementTree.SubElement(nx, 'Frequency').text = ",".join(chanfreq)
+                root.append(nx)
+
+        return root
+
+    def get_scans(self, context):
+        mslist = context.observing_run.get_measurement_sets()
+        root = ElementTree.Element("Scans")
+        for ms in mslist:
+            scans = ms.scans
+            for sc in scans:
+                nx = ElementTree.Element("Scan")
+                ElementTree.SubElement(nx, 'ID').text = str(sc.id)
+                ElementTree.SubElement(nx, 'Start').text = str(sc.start_time["m0"]["value"])
+                ElementTree.SubElement(nx, 'End').text = str(sc.end_time["m0"]["value"])
+                ElementTree.SubElement(nx, 'SPWIDs').text = ",".join([str(spw.id) for spw in sc.spws])
+                ElementTree.SubElement(nx, 'FieldIDs').text = ",".join([str(field.id) for field in sc.fields])
+                ElementTree.SubElement(nx, 'Intents').text = ",".join([str(intent) for intent in sc.intents])
                 root.append(nx)
 
         return root
