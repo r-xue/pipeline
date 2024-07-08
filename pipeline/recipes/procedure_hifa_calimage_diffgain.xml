@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifa_calimage</ProcedureTitle>
+    <ProcedureTitle>hifa_calimage_diffgain</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
@@ -45,6 +45,20 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_tsysflag</Command>
         <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_renorm</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">apply</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">atm_auto_exclude</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -187,20 +201,6 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifa_renorm</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">apply</Keyword>
-                <Value xmlns="">True</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">atm_auto_exclude</Keyword>
-                <Value xmlns="">True</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
         <Command xmlns="">hifa_exportdata</Command>
         <ParameterSet>
         </ParameterSet>
@@ -273,7 +273,73 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">repBW</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_selfcal</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">mfs</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cont</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cube</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">best</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -290,6 +356,10 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">repBW</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
