@@ -53,6 +53,8 @@ class SDImagingListQAHandler(pqa.QAPlugin):
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
 
+        score_resterscan = qacalc.score_rasterscan_correctness(result)
+        result.qa.pool.extend(score_resterscan) 
 
 aqua_exporter = aqua.xml_generator_for_metric('SingleDishImageMaskedPixels', '{:0.3}')
 aqua.register_aqua_metric(aqua_exporter)

@@ -15,7 +15,7 @@ import operator
 import os
 import re
 import traceback
-from typing import List, Tuple, TYPE_CHECKING
+from typing import List, Tuple, TYPE_CHECKING, Union
 
 import numpy as np
 from scipy import interpolate
@@ -24,6 +24,8 @@ from scipy.special import erf
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
+from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 import pipeline.infrastructure.basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -3812,3 +3814,60 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
                           metric_units='Peak SNR / Histogram asymmetry, Max. segment size in beams, Max. segment fraction')
 
     return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+
+
+@log_qa
+def score_rasterscan_correctness(result: Union[SDImportDataResults, SDImagingResultItem]) -> List[pqa.QAScore]:
+    """Generate score of Rasterscan correctness of importdata or imaging.
+
+    Args:
+        result (Union[SDImportDataResults, SDImagingResultItem]): A result object of hsd_importdata or hsd_imaging
+            treats QAScore of raster scan analysis.
+
+    Returns:
+        List[pqa.QAScore]: lists contains QAScore objects.
+    """
+
+    # get dict {originmsname: [RasterscanHeuristicsResult]} from Results
+    if isinstance(result, SDImportDataResults) and hasattr(result, 'rasterscan_heuristics'):
+        rasterscan_results = result.rasterscan_heuristics
+    elif isinstance(result, SDImagingResultItem) and result.outcome.get('rasterscan_heuristics', False):
+        rasterscan_results = result.outcome.get('rasterscan_heuristics')
+    else:
+        return []
+
+    qa_scores = []  # [pqa.QAScore]
+    results_per_eb = {}  # {EB_ID: {RasterscanHeuristicsResult_SubClass_Name : [RasterscanHeuristicsResult]}}
+
+    # converting dict from results per MS to results per EB
+    for rasterscan_result in rasterscan_results.values():
+        results_per_eb.setdefault(rasterscan_result.ms.execblock_id, {}) \
+                      .setdefault(rasterscan_result.__class__.__name__, []).append(rasterscan_result)
+    
+    # converting results that have bad antennas to QA score per EB
+    for _execblock_id, _rasterscan_results in results_per_eb.items():
+        for _results_list in _rasterscan_results.values():
+            _failed_ants = np.unique([r.get_antennas_rasterscan_failed() for r in _results_list])
+            if len(_failed_ants) > 0:
+                qa_scores.append(_rasterscan_failed_per_eb(_execblock_id, _failed_ants, _results_list[0].msg))
+
+    return qa_scores
+
+
+def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str) -> 'pqa.QAScore':
+    """Return an object which has FAILED information in raster scan analysis.
+
+    Args:
+        execblock_id (str): Execute Block ID
+        failed_ants (list[str]): List of antenna names
+        msg: short message for QA
+
+    Returns:
+        pqa.QAScore: QA score object
+    """
+    SCORE_FAIL = 0.8
+    longmsg = msg + f' : EB:{execblock_id}:{",".join(failed_ants)}'
+    origin = pqa.QAOrigin(metric_name='score_rasterscan_correctness',
+                        metric_score=SCORE_FAIL,
+                        metric_units='raster scan correctness')
+    return pqa.QAScore(SCORE_FAIL, longmsg=longmsg, shortmsg=msg, origin=origin)

@@ -9,7 +9,7 @@ import pipeline.infrastructure as infrastructure
 from pipeline.domain.datatable import DataTableImpl
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.domain.singledish import MSReductionGroupDesc
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicResult, RasterScanHeuristicsFailure
 from pipeline.hsd.tasks.common.inspection_util import (inspect_reduction_group,
                                                        set_beam_size)
 # import pipeline.domain.singledish as singledish
@@ -148,7 +148,7 @@ class SDInspection(object):
         if is_alma and is_raster:
             worker.generate_flagcmd()
 
-        return reduction_group, org_directions, msglist
+        return reduction_group, org_directions, msglist, grouping_result['RASTERHEURISTICS']
 
 #     def _inspect_reduction_group(self):
 #         reduction_group = {}
@@ -331,6 +331,7 @@ class SDInspection(object):
         LOG.debug('TIMEGRP: starting ID is %s' % timegrp_id)
 
         ms = self.ms
+        raster_heuristics_result = RasterScanHeuristicResult.generate(ms, RasterScanHeuristicResult.IMPORTDATA)
         for ant, vant in by_antenna.items():
             LOG.debug('Start ant %s' % ant)
             pattern_dict = {}
@@ -421,10 +422,11 @@ class SDInspection(object):
                             sdec_sel = numpy.take(offset_dec, id_list)
                             _log_dict = {'ANTENNA': ms.antennas[ant].name,
                                          'EB': ms.execblock_id}
-                            merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel, _log_dict)
+                            merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel, _log_dict, raster_heuristics_result)
                             raster_heuristic_ok = True
                         except RasterScanHeuristicsFailure as e:
                             LOG.warn('{} This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.'.format(e))
+                            raster_heuristics_result.set_result_false(ant, spw, field_id)
                             raster_heuristic_ok = False
 
                     if pattern != 'RASTER' or self.hm_rasterscan == 'time' or raster_heuristic_ok is False:
@@ -474,6 +476,7 @@ class SDInspection(object):
         grouping_result['TIMEGRP_LIST'] = timegrp_list
         grouping_result['TIMEGRP'] = timegrp
         grouping_result['TIMEGAP'] = timegap
+        grouping_result['RASTERHEURISTICS'] = raster_heuristics_result
         # grouping_result['OBSERVING_PATTERN'] = observing_pattern
 
         ms.observing_pattern = observing_pattern

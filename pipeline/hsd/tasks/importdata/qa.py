@@ -3,6 +3,7 @@
 from typing import List
 
 import pipeline.h.tasks.importdata.qa as importdataqa
+from pipeline.infrastructure.launcher import Context
 import pipeline.infrastructure.logging as logging
 import pipeline.qa.scorecalculator as qacalc
 from pipeline.domain.measurementset import MeasurementSet
@@ -39,6 +40,29 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
             QAScore object
         """
         return qacalc.score_missing_intents(mses, array_type='ALMA_TP')
+
+    def _check_rasterscan_failure(self, context: 'Context', result: 'importdata.SDImportDataResults') -> QAScore:
+        """Wrap to execute qacalc.score_rasterscan_correctness_in_importdata.
+
+        Args:
+            context (Context): The context object of pipeline executing.
+            result (importdata.SDImportDataResults): The result object of SDImportData executing.
+
+        Returns:
+            QAScore: An bject of QA score.
+        """
+        return qacalc.score_rasterscan_correctness(context, result)
+
+    def handle(self, context:'Context', result:'importdata.SDImportDataResults'):
+        """Collate the QAScores from result, and pulling them into QAscore pool of the result.
+
+        Args:
+            context (Context): The context object of pipeline executing.
+            result (importdata.SDImportDataResults): The result object of SDImportData executing.
+        """
+        super().handle(context, result)
+        score = self._check_rasterscan_failure(result)
+        result.qa.pool.extend(score)
 
 
 class SDImportDataListQAHandler(importdataqa.ImportDataListQAHandler, QAPlugin):

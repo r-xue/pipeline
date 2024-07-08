@@ -21,7 +21,7 @@ from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicResult, RasterScanHeuristicsFailure
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
 from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy, rasterutil, sdtyping
@@ -1837,8 +1837,12 @@ class SDImaging(basetask.StandardTaskTemplate):
             format(_tirp.msobj.basename, __field_name, _tirp.spwid,
                    _tirp.msobj.get_antenna(_tirp.antid)[0].name, str(_tirp.pol_names)))
         if _tirp.raster_info is None:
-            LOG.warning('Raster scan analysis failed. Skipping further calculation on '
-                        f'{_tirp.msobj.antennas[_tirp.antid].name}, {_tirp.msobj.execblock_id}')
+            __rsres = _rgp.imager_result.outcome.setdefault('rasterscan_heuristics', {}) \
+                          .setdefault(_tirp.msobj.origin_ms, 
+                                      RasterScanHeuristicResult.generate(_tirp.msobj,
+                                                                           RasterScanHeuristicResult.IMAGING_SKIP))
+            __rsres.set_result_false(_tirp.msobj.antennas[_tirp.antid].name, _tirp.spwid, _tirp.fieldid)
+            LOG.warning(f'{__rsres.msg} : {_tirp.msobj.antennas[_tirp.antid].name}, {_tirp.msobj.execblock_id}')
             return __SKIP
         _tirp.dt = _cp.dt_dict[_tirp.msobj.basename]
         _tirp.index_list = common.get_index_list_for_ms(_tirp.dt, [_tirp.msobj.origin_ms],
@@ -1850,7 +1854,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
 
 def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
-                            fieldid: int, spwid: int, antid: int) -> RasterInfo:
+                            fieldid: int, spwid: int, antid: int, rgp: 'imaging_params.ReductionGroupParameters') -> RasterInfo:
     """Analyze raster scan pattern from pointing in DataTable.
 
     Args:
@@ -1859,6 +1863,7 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
         fieldid : A field ID to process
         spwid : An SpW ID to process
         antid : An antenna ID to process
+        rgp : Reduction group parameter object of prepare()
 
     Returns:
         A named Tuple of RasterInfo
@@ -1879,10 +1884,15 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
     _log_dict = {'ANTENNA': msobj.antennas[antid].name,
                  'EB': msobj.execblock_id}
+    _rsres = rgp.imager_result.outcome.setdefault('rasterscan_heuristics', {}) \
+                .setdefault(msobj.origin_ms,
+                            RasterScanHeuristicResult.generate(msobj,
+                                                                 RasterScanHeuristicResult.IMAGING_GAP))
     try:
-        gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list, _log_dict)
+        gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list, _log_dict, _rsres)
     except Exception as e:
         if isinstance(e, RasterScanHeuristicsFailure):
+            _rsres.set_result_false(antid, spwid, fieldid)
             LOG.warning('{}'.format(e))
         try:
             dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)

@@ -9,15 +9,20 @@ observing region.
 Note that it does not check if observing pattern is raster.
 """
 # import standard modules
-from typing import Dict, List, Optional, Tuple, Union
+from abc import ABC
+from typing import Dict, List, Optional, Tuple, TYPE_CHECKING, Union
 
 # import 3rd party modules
 import numpy as np
 
 # import pipeline submodules
+from pipeline.domain.measurementset import MeasurementSet
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.utils.compatibility as compatibility
 import pipeline.infrastructure.logging as logging
+
+if TYPE_CHECKING:
+    from . import RasterScanHeuristicResult
 
 LOG = logging.get_logger(__name__)
 
@@ -535,9 +540,92 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[i
 
     return distance_list
 
+class RasterScanHeuristicResult(ABC):
+    """Abstract result class of raster scan analysis."""
+    
+    IMPORTDATA = 'importdata'
+    IMAGING_GAP = 'imaging_gap'
+    IMAGING_SKIP = 'imaging_skip'
+    
+    @staticmethod
+    def generate(ms: MeasurementSet, name:str) -> RasterScanHeuristicResult:
+        """Generate an instance of subclass of RasterScanHeuristicResult.
 
-def find_raster_gap(ra: np.ndarray[np.float64], dec: np.ndarray[np.float64], dtrow_list: List[np.ndarray[np.int64]],
-                    msg_dict: Dict[str, str]=None) -> np.ndarray[np.int64]:
+        Args:
+            ms (MeasurementSet): MeasurementSet
+            name (str): keyword to determine the Subclass generating
+
+        Returns:
+            RasterScanHeuristicResult: subclass instance of RasterScanHeuristicResult
+        """
+
+        if name == RasterScanHeuristicResult.IMPORTDATA:
+            return ImportDataRasterScanHeuristicResult(ms)
+        elif name == RasterScanHeuristicResult.IMAGING_GAP:
+            return ImagingGapRasterScanHeuristicResult(ms)
+        elif name == RasterScanHeuristicResult.IMAGING_SKIP:
+            return ImagingIncompreteRasterScanHeuristicResult(ms)
+        else:
+            return None
+
+    def __init__(self, ms: MeasurementSet):
+        """Initialize an object.
+
+        Args:
+            ms (MeasurementSet): an MeasurementSet object related to the instance.
+        """
+        self.__ms = ms
+        self.__antenna = {}
+    
+    @property
+    def ms(self):
+        return self.__ms
+
+    @property
+    def antenna(self):
+        return self.__antenna
+    
+    def set_result_false(self, antid, spwid, fieldid):
+        self.set_result(antid, spwid, fieldid, False)
+
+    def set_result(self, antid, spwid, fieldid, result):
+        field = self.antenna.setdefault(antid, {}) \
+                            .setdefault(spwid, {}) \
+                            .setdefault(fieldid, {})
+        field[fieldid] = result
+
+    def get_antennas_rasterscan_failed(self) -> List[str]:
+        """Get antenna IDs which have had some error in raster scan analysis of the self.ms.
+
+        Returns:
+            List[str]: List of antenna names
+        """
+        def _contains_fail(value:Union[str, Dict[str]]):
+            if isinstance(value, dict):
+                return any(_contains_fail(v) for v in value.values())
+            return value is False
+        
+        antenna_ids = np.unique([k for k, v in self.__antenna.items() if _contains_fail(v)])
+        return sorted([self.ms.antennas[id].name for id in antenna_ids])
+
+
+class ImportDataRasterScanHeuristicResult(RasterScanHeuristicResult):
+    """Subclass of RasterScanHeuristicResult to generate messages of LOG.warning and QAScore for importdata"""
+    msg = 'Directional raster scan analysis failed, fallback to time-domain analysis'
+
+
+class ImagingGapRasterScanHeuristicResult(RasterScanHeuristicResult):
+    """Subclass of RasterScanHeuristicResult to generate messages of LOG.warning and QAScore for imaging"""
+    msg = 'Unable to identify gap between raster map iteration'
+
+
+class ImagingIncompreteRasterScanHeuristicResult(RasterScanHeuristicResult):
+    """Subclass of RasterScanHeuristicResult to generate messages of LOG.warning and QAScore for imaging"""
+    msg = 'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS'
+
+
+def find_raster_gap(ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]', dtrow_list: 'List[np.ndarray[np.int64]]',
+                    msg_dict: Dict[str, str], raster_heuristics_result: RasterScanHeuristicResult) -> 'np.ndarray[np.int64]':
     """
     Find gaps between individual raster map.
 
@@ -557,18 +645,22 @@ def find_raster_gap(ra: np.ndarray[np.float64], dec: np.ndarray[np.float64], dtr
         dec: np.ndarray of Dec
         dtrow_list: List of np.ndarray holding array indices for ra and dec.
                     Each index array is supposed to represent single raster row.
-        msg_dict (default to None): string dict for a log message
+        msg_dict : string dict for a log message
+
+    Raises:
+        RasterScanHeuristicsFailure:
+        irregular row input or unsupported raster mapping
 
     Returns:
         np.ndarray of index for dtrow_list indicating boundary between raster maps
     """
+    msg = raster_heuristics_result.msg
 
-    msg = 'Failed to identify gap between raster map iteration'
     if msg_dict is not None:
-        _msg = [msg_dict[k] for k in ['ANTENNA', 'EB'] if msg_dict.get(k, False)]
+        _msg = [msg_dict[k] for k in ['EB', 'ANTENNA'] if msg_dict.get(k, False)]
         if _msg:
             msg += ' : ' + ', '.join(_msg)
-
+    #raise RasterScanHeuristicsFailure(msg)  # for debug
     if len(dtrow_list) == 0:
         raise RasterScanHeuristicsFailure(msg)
 
@@ -599,8 +691,9 @@ def find_raster_gap(ra: np.ndarray[np.float64], dec: np.ndarray[np.float64], dtr
 class RasterScanHeuristic(api.Heuristic):
     """Heuristic to analyze raster scan pattern."""
 
-    def calculate(self, ra: np.ndarray[np.float64], dec: np.ndarray[np.float64],
-                  msg_dict: Dict[str, str]=None) -> Tuple[List[np.ndarray[np.int64]], List[np.ndarray[np.int64]]]:
+    def calculate(self, ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]',
+                  msg_dict: Dict[str, str]=None, raster_heuristics_result: RasterScanHeuristicResult=None) \
+                      -> 'Tuple[List[np.ndarray[np.int64]], List[np.ndarray[np.int64]]]':
         """Detect gaps that separate individual raster rows and raster maps.
 
         Detected gaps are transrated into TimeTable and TimeGap described below.
@@ -609,6 +702,11 @@ class RasterScanHeuristic(api.Heuristic):
             ra: horizontal position list
             dec: vertical position list
             msg_dict (default to None): string dict for a log message in find_raster_gap()
+
+        Raises:
+            RasterScanHeuristicsFailure (raised from find_raster_row() or find_raster_gap()):
+                scan pattern is not likely to be raster scan or
+                irregular row input, or unsupported raster mapping
 
         Returns:
             Two-tuple containing information on group membership
@@ -640,7 +738,7 @@ class RasterScanHeuristic(api.Heuristic):
         # gaplist_row = ret[2]
         idx_iter = zip(gaplist_row[:-1], gaplist_row[1:])
         dtrow_list = [np.arange(s, e, dtype=int) for s, e in idx_iter]
-        gaplist_map = find_raster_gap(ra, dec, dtrow_list, msg_dict)
+        gaplist_map = find_raster_gap(ra, dec, dtrow_list, msg_dict, raster_heuristics_result)
         LOG.info('large gap list: %s', gaplist_map)
 
         # construct return value that is compatible with grouping2 heuristics
