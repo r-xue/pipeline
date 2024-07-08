@@ -55,22 +55,22 @@ class ContFileHandler(object):
                         cont_ranges['fields'][field_name] = {}
                 elif item.find('SPW') == 0:
                     cont_ranges['version'] = 1
-                    spw_id = item.split('SPW')[1].strip()
-                    cont_ranges['fields'][field_name][spw_id] = []
+                    virt_spw_id = item.split('SPW')[1].strip()
+                    cont_ranges['fields'][field_name][virt_spw_id] = []
                 elif item.find('SpectralWindow:') == 0:
                     spw_items = item.split()
                     if len(spw_items) == 2:
                         cont_ranges['version'] = 2
-                        spw_id = spw_items[1]
+                        virt_spw_id = spw_items[1]
                         spw_name = f'spw{spw_items[1]}'
                     elif len(spw_items) == 3:
                         cont_ranges['version'] = 3
-                        spw_id = spw_items[1]
+                        virt_spw_id = spw_items[1]
                         spw_name = spw_items[2]
-                    cont_ranges['fields'][field_name][spw_id] = {'spwname': spw_name, 'flags': [], 'ranges': []}
+                    cont_ranges['fields'][field_name][virt_spw_id] = {'spwname': spw_name, 'flags': [], 'ranges': []}
                 elif item.find('Flags:') == 0:
                     flags = item.split()
-                    cont_ranges['fields'][field_name][spw_id]['flags'].extend(flags[1:])
+                    cont_ranges['fields'][field_name][virt_spw_id]['flags'].extend(flags[1:])
                     cont_ranges['version'] = 3
                 else:
                     cont_regions = self.p.findall(item.replace(';', ''))
@@ -82,7 +82,7 @@ class ContFileHandler(object):
                             unit, refer = cont_region[3].split()
                         fLow = casa_tools.quanta.convert('%s%s' % (cont_region[0], unit), 'GHz')['value']
                         fHigh = casa_tools.quanta.convert('%s%s' % (cont_region[2], unit), 'GHz')['value']
-                        cont_ranges['fields'][field_name][spw_id]['ranges'].append({'range': (fLow, fHigh), 'refer': refer})
+                        cont_ranges['fields'][field_name][virt_spw_id]['ranges'].append({'range': (fLow, fHigh), 'refer': refer})
             except Exception as e:
                 LOG.error(f'Could not read cont file {self.filename}: {e}')
                 raise e
@@ -109,27 +109,27 @@ class ContFileHandler(object):
                         fd.write('%s\n\n' % (field_name.replace('"', '')))
                     elif cont_ranges['version'] in (2, 3):
                         fd.write('Field: %s\n\n' % (field_name.replace('"', '')))
-                    for spw_id in cont_ranges['fields'][field_name]:
+                    for virt_spw_id in cont_ranges['fields'][field_name]:
                         if cont_ranges['version'] == 1:
-                            fd.write('SPW%s\n' % spw_id)
+                            fd.write('SPW%s\n' % virt_spw_id)
                         elif cont_ranges['version'] in (2, 3):
-                            fd.write('SpectralWindow: %s' % spw_id)
+                            fd.write('SpectralWindow: %s' % virt_spw_id)
                             if cont_ranges['version'] == 3:
-                                fd.write(f" {cont_ranges['fields'][field_name][spw_id]['spwname']}\n")
+                                fd.write(f" {cont_ranges['fields'][field_name][virt_spw_id]['spwname']}\n")
                             else:
                                 fd.write('\n')
 
-                        if cont_ranges['fields'][field_name][spw_id]['flags'] != [] and cont_ranges['version'] == 3:
-                            fd.write(f"Flags: {' '.join(cont_ranges['fields'][field_name][spw_id]['flags'])}\n")
+                        if cont_ranges['fields'][field_name][virt_spw_id]['flags'] != [] and cont_ranges['version'] == 3:
+                            fd.write(f"Flags: {' '.join(cont_ranges['fields'][field_name][virt_spw_id]['flags'])}\n")
 
-                        if cont_ranges['fields'][field_name][spw_id]['ranges'] in ([], ['NONE']):
+                        if cont_ranges['fields'][field_name][virt_spw_id]['ranges'] in ([], ['NONE']):
                             if cont_ranges['version'] == 2:
                                 fd.write('NONE\n')
-                        elif cont_ranges['fields'][field_name][spw_id]['ranges'] == ['ALL']:
+                        elif cont_ranges['fields'][field_name][virt_spw_id]['ranges'] == ['ALL']:
                             if cont_ranges['version'] == 2:
                                 fd.write('ALL\n')
                         else:
-                            for freq_range in cont_ranges['fields'][field_name][spw_id]['ranges']:
+                            for freq_range in cont_ranges['fields'][field_name][virt_spw_id]['ranges']:
                                 if freq_range in ('ALL', 'NONE') and cont_ranges['version'] == 2:
                                     fd.write(f'{freq_range}\n')
                                 else:
@@ -140,7 +140,7 @@ class ContFileHandler(object):
                                                                     freq_range['refer']))
                         fd.write('\n')
 
-    def get_merged_selection(self, field_name: str, spw_def: str, cont_ranges: Union[Dict, None]=None):
+    def get_merged_selection(self, field_name:str, spw_id:str, spw_name:str=None, cont_ranges:Union[Dict, None]=None):
         """
         Inputs:
 
@@ -156,7 +156,9 @@ class ContFileHandler(object):
         """
 
         field_name = str(field_name)
-        spw_def = str(spw_def)
+        spw_id = str(spw_id)
+        if spw_name is not None:
+            spw_name = str(spw_name)
 
         if cont_ranges is None:
             cont_ranges = self.cont_ranges
@@ -165,26 +167,37 @@ class ContFileHandler(object):
         low_bandwidth = False
         low_spread = False
         if field_name in cont_ranges['fields']:
-            if spw_def.isdigit():
-                # "Old" style spw ID lookup
-                spw_id = spw_def
-            else:
-                # spw name lookup
-                spw_id = None
+            # Internally the lookup dictionary still relies on virtual spw IDs.
+            # But with PIPE-2128 we introduced writing spw names to cont.dat.
+            # If the spw name is given, it is preferred for the lookup.
+
+            virt_spw_id = None
+
+            if spw_name is not None:
                 for s in cont_ranges['fields'][field_name]:
-                    if cont_ranges['fields'][field_name][s]['spwname'] == spw_def:
-                        spw_id = s
+                    if cont_ranges['fields'][field_name][s]['spwname'] == spw_name:
+                        virt_spw_id = s
                         break
-                if spw_id is None:
-                    return '', False, False, False
-            if spw_id in cont_ranges['fields'][field_name]:
-                if cont_ranges['fields'][field_name][spw_id]['ranges'] not in (['ALL'], [], ['NONE']) and 'ALLCONT' not in cont_ranges['fields'][field_name][spw_id]['flags']:
+                if virt_spw_id is None:
+                    LOG.info('spw name not found. Falling back to spw ID lookup.')
+
+            if virt_spw_id is None:
+                if not spw_id.isdigit():
+                    msg = f'spw ID must be an integer.'
+                    LOG.error(msg)
+                    raise Exception(msg)
+                else:
+                    # "Old" style spw ID lookup
+                    virt_spw_id = spw_id
+
+            if virt_spw_id in cont_ranges['fields'][field_name]:
+                if cont_ranges['fields'][field_name][virt_spw_id]['ranges'] not in (['ALL'], [], ['NONE']) and 'ALLCONT' not in cont_ranges['fields'][field_name][virt_spw_id]['flags']:
                     merged_cont_ranges = utils.merge_ranges(
-                        [cont_range['range'] for cont_range in cont_ranges['fields'][field_name][spw_id]['ranges'] if isinstance(cont_range, dict)])
+                        [cont_range['range'] for cont_range in cont_ranges['fields'][field_name][virt_spw_id]['ranges'] if isinstance(cont_range, dict)])
                     cont_ranges_spwsel = ';'.join(['%.10f~%.10fGHz' % (float(spw_sel_interval[0]), float(spw_sel_interval[1]))
                                                    for spw_sel_interval in merged_cont_ranges])
                     refers = np.array([cont_range['refer']
-                                       for cont_range in cont_ranges['fields'][field_name][spw_id]['ranges'] if isinstance(cont_range, dict)])
+                                       for cont_range in cont_ranges['fields'][field_name][virt_spw_id]['ranges'] if isinstance(cont_range, dict)])
                     if (refers == 'TOPO').all():
                         refer = 'TOPO'
                     elif (refers == 'LSRK').all():
@@ -194,34 +207,38 @@ class ContFileHandler(object):
                     else:
                         refer = 'UNDEFINED'
                     cont_ranges_spwsel = '%s %s' % (cont_ranges_spwsel, refer)
-                    if 'ALL' in cont_ranges['fields'][field_name][spw_id]['ranges']:
+                    if 'ALL' in cont_ranges['fields'][field_name][virt_spw_id]['ranges']:
                         all_continuum = True
-                elif cont_ranges['fields'][field_name][spw_id]['ranges'] == ['ALL'] or 'ALLCONT' in cont_ranges['fields'][field_name][spw_id]['flags']:
+                elif cont_ranges['fields'][field_name][virt_spw_id]['ranges'] == ['ALL'] or 'ALLCONT' in cont_ranges['fields'][field_name][virt_spw_id]['flags']:
                     cont_ranges_spwsel = 'ALLCONT'
                     all_continuum = True
                 else:
                     cont_ranges_spwsel = 'NONE'
-                low_bandwidth = 'LOWBANDWIDTH' in cont_ranges['fields'][field_name][spw_id]['flags']
-                low_spread = 'LOWSPREAD' in cont_ranges['fields'][field_name][spw_id]['flags']
+                low_bandwidth = 'LOWBANDWIDTH' in cont_ranges['fields'][field_name][virt_spw_id]['flags']
+                low_spread = 'LOWSPREAD' in cont_ranges['fields'][field_name][virt_spw_id]['flags']
             else:
+                LOG.info(f'spw ID {virt_spw_id} not found in cont file.')
                 cont_ranges_spwsel = ''
         else:
+            LOG.info(f'Field {field_name} not found in cont file.')
             cont_ranges_spwsel = ''
 
         return cont_ranges_spwsel, all_continuum, low_bandwidth, low_spread
 
-    def to_topo(self, selection: str, msnames: List[str], fields: List[Union[int, str]], spw_id: Union[int, str], observing_run: Any, ctrim: int = 0, ctrim_nchan: int = -1) -> Tuple[List[str], List[str], Dict]:
+    def to_topo(self, selection:str, msnames:List[str], fields:List[Union[int, str]], spw_id:Union[int, str], observing_run:Any, ctrim:int=0, ctrim_nchan:int=-1) -> Tuple[List[str], List[str], Dict]:
 
         frame_freq_selection, refer = selection.split()
         if refer not in ('LSRK', 'SOURCE'):
-            LOG.error('Original reference frame must be LSRK or SOURCE.')
-            raise Exception('Original reference frame must be LSRK or SOURCE.')
+            msg = 'Original reference frame must be LSRK or SOURCE.'
+            LOG.error(msg)
+            raise Exception(msg)
 
         if len(msnames) != len(fields):
-            LOG.error('MS names and fields lists must match in length.')
-            raise Exception('MS names and fields lists must match in length.')
+            msg = 'MS names and fields lists must match in length.'
+            LOG.error(msg)
+            raise Exception(msg)
 
-        spw_id = int(spw_id)
+        virt_spw_id = int(spw_id)
 
         qaTool = casa_tools.quanta
         suTool = casa_tools.synthesisutils
@@ -240,7 +257,7 @@ class ContFileHandler(object):
         topo_freq_selections = []
         for i in range(len(msnames)):
             msname = msnames[i]
-            real_spw_id = observing_run.virtual2real_spw_id(spw_id, observing_run.get_ms(msname))
+            real_spw_id = observing_run.virtual2real_spw_id(virt_spw_id, observing_run.get_ms(msname))
             field = int(fields[i])
             topo_chan_selection = []
             topo_freq_selection = []
