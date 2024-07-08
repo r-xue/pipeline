@@ -129,7 +129,7 @@ class SerialRenorm(basetask.StandardTaskTemplate):
         alma_renorm_inputs = {
             'vis': inp.vis,
             'spw': [int(x) for x in inp.spw.split(',') if x],  # alma_renorm expects SpWs as list of integers
-            'apply': inp.createcaltable,
+            'create_cal_table': inp.createcaltable,
             'threshold': inp.threshold,
             'excludechan': copy.deepcopy(inp.excludechan),  # create copy, PIPE-1612.
             'correct_atm': inp.correctATM,

@@ -30,7 +30,7 @@
 #   and scans (excluding spws as specified), but making NO change in
 #   MS:
 #
-#  RN.renormalize(docorr=False)
+#  RN.renormalize(createCalTable=False)
 #
 # (The renormalize function will nominally auto-detect all FDM and
 #  science scans to evaluate - without extra options runs default paramaters)
@@ -46,7 +46,7 @@
 #  CORRECTED_DATA by default, applies the renormalization correction and writes
 #  it back (plot* commands can also be run after this):
 #
-#  RN.renormalize(docorr=True)
+#  RN.renormalize(createCalTable=True)
 #  
 ## Close the ACreNorm tool (detaches from MS, etc.)
 #
@@ -101,7 +101,7 @@ mycb=cbtool()
 
 
 # Interface function for use by ALMA Pipeline renormalization task (PIPE-1687).
-def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, float], excludechan: Dict,
+def alma_renorm(vis: str, spw: List[int], create_cal_table: bool, threshold: Union[None, float], excludechan: Dict,
         correct_atm: bool, atm_auto_exclude: bool, bwthreshspw: Dict, caltable: str) -> tuple:   ## PIPE-1469 for bwthreshspw
     """
     Interface function for ALMA Pipeline: this runs the ALMA renormalization
@@ -111,7 +111,7 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
     Args:
         vis: path to the measurement set to renormalize.
         spw: Spectral Window IDs to process.
-        apply: apply the correction or not.
+        create_cal_table: save renorm corrections to a calibration table.
         threshold: the threshold above which the scaling must exceed for the
             renormalization correction to be applied. If set to None, then use
             a pre-defined threshold appropriate for the ALMA Band.
@@ -138,10 +138,8 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
         - boolean declaring whether data are all TDM
         - ATM exclusion command
         - ATM warning
-        - boolean declaring whether the renormalization correction was found
-          to have already been applied.
-        - boolean declaring whether a corrected data column was found.
-        - boolean declaring whether the renormalization correction was applied.
+        - boolean declaring whether the renormalization correction was saved
+          to a calibration table.
         - dictionary containing factors for Pipeline QA.
         - dictionary containing renormalization statistics indexed by source
           and SpW.
@@ -155,7 +153,7 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
     rnstats = {}
     atmWarning = {}
     atmExcludeCmd = {}
-    renorm_applied = False
+    calTableCreated = False
 
     # Store "all TDM" information before trying the renormalization so
     # that the weblog is rendered properly.
@@ -164,7 +162,7 @@ def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, fl
     # Only attempt the correction if the data are not all TDM.
     if not alltdm:
         # Run the renormalisation.
-        rn.renormalize(docorr=apply, docorrThresh=threshold, correctATM=correct_atm, spws=spw, excludechan=excludechan,
+        rn.renormalize(createCalTable=create_cal_table, docorrThresh=threshold, correctATM=correct_atm, spws=spw, excludechan=excludechan,
                        atmAutoExclude=atm_auto_exclude, bwthreshspw=bwthreshspw, datacolumn='DATA') # add bwthreshspw
 
         # Create spectra plots.
@@ -828,7 +826,7 @@ class ACreNorm(object):
             excludeants=[], excludechan={}, excflagged=True, fixOutliers=True, mededge=0.01,  
             atmAutoExclude=True, checkFalsePositives=True, correctATM=False, limATM=0.85, plotATM=True, 
             bwdiv='odd', bwthresh=120e6, bwthreshspw={}, checkLineForest=True, nfit=5, useDynamicSegments=True,
-            datacolumn='CORRECTED_DATA', docorr=False, docorrThresh=None, usePhaseAC=False,
+            datacolumn='CORRECTED_DATA', createCalTable=False, docorr=False, docorrThresh=None, usePhaseAC=False,
             antHeuristicsSpectra=True, diagSpectra=True, fthresh=0.01, 
             verbose=False):
         """
@@ -1057,9 +1055,12 @@ class ACreNorm(object):
                 Default: datacolumn = 'CORRECTED_DATA'
 
             docorr : boolean
+                DEPRECATED - Now performs the same function as createCalTable.
+
+            createCalTable : boolean
                 Specify whether or not to create a calibration table which can 
                 then be applied to the MS via an applycal. 
-                Default: docorr=False
+                Default: createCalTable=False
 
             docorrThresh : None or float
                 The threshold above which to apply the scaling spectrum to the 
@@ -1140,7 +1141,9 @@ class ACreNorm(object):
             casalog.post('Will account for any ATM lines within the SPWs')
 
         # Handle correction request
-        if docorr:
+        if docorr or createCalTable:
+            createCalTable = True
+            docorr = True
             if datacolumn=='CORRECTED_DATA' and not self.correxists:
                 casalog.post('Correction of CORRECTED_DATA requested, but column does not exist! Switching to DATA column.')
                 datacolumn='DATA'
@@ -1173,7 +1176,7 @@ class ACreNorm(object):
             rntb_iter = 0
 
         else:
-            casalog.post('No corrections will be applied (docorr=False)!')
+            casalog.post('No corrections will be saved (createCalTable=False)!')
 
         # Check if docorrThresh is set correctly
         if docorrThresh is not None:
@@ -1192,10 +1195,10 @@ class ACreNorm(object):
         else:  
             hardLim = self.bandThresh[self.Band]
         
-        if docorr:
+        if createCalTable:
             casalog.post('####################')
-            casalog.post('Using Application threshold for ReNorm ='+str(hardLim))
-            casalog.post('Only spws where fields exceed this will be corrected')
+            casalog.post(f'Using threshold for Renorm = {hardLim}')
+            casalog.post('Only spws where fields exceed this will have corrections saved')
             casalog.post('####################')
         else:
             casalog.post('Using threshold limit of '+str(hardLim)+' for renormalization determination')
@@ -1356,7 +1359,7 @@ class ACreNorm(object):
         casalog.post('    bwdiv='+str(bwdiv)+', bwthresh='+str(bwthresh)+', bwthreshspw='+str(bwthreshspw) \
                 +', checkLineForest='+str(checkLineForest)+', nfit='+str(nfit)+', useDynamicSegments=' \
                 +str(useDynamicSegments))
-        casalog.post('    datacolumn='+str(datacolumn)+', docorr='+str(docorr)+', docorrThresh='+str(docorrThresh) \
+        casalog.post('    datacolumn='+str(datacolumn)+', createCalTable='+str(createCalTable)+', docorrThresh='+str(docorrThresh) \
                 +', usePhaseAC='+str(usePhaseAC))
         casalog.post('    antHeuristicsSpectra='+str(antHeuristicsSpectra)+', diagSpectra='+str(diagSpectra) \
                 +', fthresh='+str(fthresh))
@@ -1468,7 +1471,7 @@ class ACreNorm(object):
 
                 # We want to apply over all fields even if only one field of a mosaic is over the limit. 
                 # This will also catch anything that wobbles around the limit and make sure it is applied.
-                if docorr: 
+                if createCalTable: 
                     num_passes = 2
                 else:
                     num_passes = 1
@@ -2078,7 +2081,7 @@ class ACreNorm(object):
                                         self.docorrApply[target][str(ispw)]=False
                                 
                                 # If we want to apply the correction and it's the second time through the data
-                                if docorr and second_pass: 
+                                if createCalTable and second_pass: 
                                     casalog.post(f'Writing solutions to table {self.rntable}')
                                     self.writeCalTable(ispw, ifld, iscan, N, rntb_iter)
                                     rntb_iter += 1  
@@ -2096,9 +2099,9 @@ class ACreNorm(object):
                                 if ifld == max(Tarfld):
                                     casalog.post('  Max peak renormalization factor (power) over scan '+str(iscan)+' = '+str(max(scanNmax)))
 
-                        # After doing the first pass, if docorr is True and docorrApply was set to True, 
+                        # After doing the first pass, if createCalTable is True and docorrApply was set to True, 
                         # we now need to go through again and actually apply the renormalization 
-                        if docorr and not second_pass and self.docorrApply[target][str(ispw)]:
+                        if createCalTable and not second_pass and self.docorrApply[target][str(ispw)]:
                             second_pass_required = True
 
 
@@ -2143,7 +2146,7 @@ class ACreNorm(object):
                     self.rnpipestats[trg][spw]['seg_change'] = False
 
         # If we have been applying solutions, close the table as we finish.
-        if docorr:
+        if createCalTable:
             self.rntb.close()
 
         # final log end of the renormalize function
@@ -3310,6 +3313,16 @@ class ACreNorm(object):
         Outputs:
             None directly, but note that the input scaling spectrum will be 
             adjusted directly.
+
+        Notes for Improvement:
+            In some cases, there are segments where an ATM feature is near the
+            edge of the segment and leaves just a few channels of data. Thus,
+            there are a few valid channels, then a gap, then the rest of the 
+            segment data. The few channels of data will sometimes end up 
+            just outside the threshold and then end up skewed wildly and can
+            result in false application. One could force the fit to always
+            include data from both sides of an ATM feature but what if it's
+            a real feature? Force a wider segment?
         """
         # NB:  R will be adjust in place
 
