@@ -33,7 +33,7 @@ class ContFileHandler(object):
         cont_ranges = {'fields': {}, 'version': 3}
 
         try:
-            cont_region_data = [item.replace('\n', '').strip() for item in open(self.filename, 'r').readlines() if item.replace('\n', '').strip()]
+            cont_region_data = [item.strip() for item in open(self.filename, 'r').readlines() if item.strip()]
         except:
             cont_region_data = []
             if warn_nonexist:
