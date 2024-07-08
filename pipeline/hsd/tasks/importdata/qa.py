@@ -41,18 +41,6 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
         """
         return qacalc.score_missing_intents(mses, array_type='ALMA_TP')
 
-    def _check_rasterscan_failure(self, context: 'Context', result: 'importdata.SDImportDataResults') -> QAScore:
-        """Wrap to execute qacalc.score_rasterscan_correctness_in_importdata.
-
-        Args:
-            context (Context): The context object of pipeline executing.
-            result (importdata.SDImportDataResults): The result object of SDImportData executing.
-
-        Returns:
-            QAScore: An bject of QA score.
-        """
-        return qacalc.score_rasterscan_correctness(context, result)
-
     def handle(self, context:'Context', result:'importdata.SDImportDataResults'):
         """Collate the QAScores from result, and pulling them into QAscore pool of the result.
 
@@ -61,7 +49,7 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
             result (importdata.SDImportDataResults): The result object of SDImportData executing.
         """
         super().handle(context, result)
-        score = self._check_rasterscan_failure(result)
+        score = qacalc.score_rasterscan_correctness(result)
         result.qa.pool.extend(score)
 
 

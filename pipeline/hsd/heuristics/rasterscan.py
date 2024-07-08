@@ -600,7 +600,7 @@ class RasterScanHeuristicResult(ABC):
         Returns:
             List[str]: List of antenna names
         """
-        def _contains_fail(value:Union[str, Dict[str]]):
+        def _contains_fail(value:Union[str, Dict[str, Dict]]):
             if isinstance(value, dict):
                 return any(_contains_fail(v) for v in value.values())
             return value is False
