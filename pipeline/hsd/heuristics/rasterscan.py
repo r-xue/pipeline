@@ -548,7 +548,7 @@ class RasterScanHeuristicResult(ABC):
     IMAGING_SKIP = 'imaging_skip'
     
     @staticmethod
-    def generate(ms: MeasurementSet, name:str) -> RasterScanHeuristicResult:
+    def generate(ms: MeasurementSet, name:str) -> 'RasterScanHeuristicResult':
         """Generate an instance of subclass of RasterScanHeuristicResult.
 
         Args:
