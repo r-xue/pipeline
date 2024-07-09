@@ -1182,9 +1182,7 @@ class SpwIdVsFreqChart(object):
         xmin, xmax = np.inf, -np.inf
         totalnum_spws = len(scan_spws)
         idx = 0
-        min_resol = 5e-4  # 500kHz
         rmin = np.inf
-        max_nchan = 48000  # derived from (maximum frequency range 24GHz)/500kHz.
         for spwid_list in spw_list_generator:
             color = next(colorcycle)['color']
             for spwid in spwid_list:
@@ -1204,8 +1202,10 @@ class SpwIdVsFreqChart(object):
         # Determining the resolution value so that generates fine ATM transmission
         # curve: it is set to smaller than 500kHz but is set to larger than
         # that corresponding to 48000 data points.
-        if rmin > min_resol:
-            resolution = min_resol
+        upperlimit_resol = 5e-4  # 500kHz, to show fine features of line within reasonable runtime.
+        max_nchan = 48000  # derived from (maximum frequency range 24GHz)/500kHz.
+        if rmin > upperlimit_resol:
+            resolution = upperlimit_resol
         else:
             resolution = rmin
         if (xmax - xmin) / resolution > max_nchan:
