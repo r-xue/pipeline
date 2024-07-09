@@ -859,6 +859,11 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
             # Evaluate each SpW separately.
             for spw in scispws:
+                # Skip evaluation if no data are available for current field and
+                # SpW; this occurs for example with BandToBand datasets.
+                if spw not in field.valid_spws:
+                    continue
+
                 # Retrieve unflagged amplitudes, timestamps, and antennas for
                 # current field and SpW from amplitude caltable.
                 with casa_tools.TableReader(caltable) as table:
