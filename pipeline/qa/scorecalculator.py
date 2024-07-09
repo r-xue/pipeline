@@ -3840,9 +3840,11 @@ def score_rasterscan_correctness(result: Union[SDImportDataResults, SDImagingRes
     results_per_eb = {}  # {EB_ID: {RasterscanHeuristicsResult_SubClass_Name : [RasterscanHeuristicsResult]}}
 
     # converting dict from results per MS to results per EB
-    for rasterscan_result in rasterscan_results.values():
-        results_per_eb.setdefault(rasterscan_result.ms.execblock_id, {}) \
-                      .setdefault(rasterscan_result.__class__.__name__, []).append(rasterscan_result)
+    for dict_subclass in [sc for sc in rasterscan_results.values()]:
+        for subclass_key, rses in dict_subclass.items():
+            for rasterscan_result in [rs for rs in rses if len(rs.antenna) > 0]:
+                results_per_eb.setdefault(rasterscan_result.ms.execblock_id, {}) \
+                            .setdefault(subclass_key, []).append(rasterscan_result)
     
     # converting results that have bad antennas to QA score per EB
     for _execblock_id, _rasterscan_results in results_per_eb.items():

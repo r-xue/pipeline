@@ -14,6 +14,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicResult
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.domain.observingrun import ObservingRun
 from pipeline.domain.singledish import MSReductionGroupDesc
@@ -207,7 +208,8 @@ class SerialSDImportData(importdata.ImportData):
         myresults.origin = results.origin
         myresults.msglist = msglist
         for rsh in rasterscan_heuristics_list:
-            myresults.rasterscan_heuristics[rsh.ms.origin_ms] = rsh
+            myresults.rasterscan_heuristics.setdefault(rsh.ms.origin_ms, {}) \
+                     .setdefault(RasterScanHeuristicResult.IMPORTDATA, []).append(rsh)
         return myresults
 
     def _get_fluxes(self, context, observing_run):

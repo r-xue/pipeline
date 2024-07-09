@@ -542,6 +542,7 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[i
 
 class RasterScanHeuristicResult(ABC):
     """Abstract result class of raster scan analysis."""
+    msg = 'inherit it'
     
     IMPORTDATA = 'importdata'
     IMAGING_GAP = 'imaging_gap'
@@ -595,7 +596,7 @@ class RasterScanHeuristicResult(ABC):
         field[fieldid] = result
 
     def get_antennas_rasterscan_failed(self) -> List[str]:
-        """Get antenna IDs which have had some error in raster scan analysis of the self.ms.
+        """Get antennas which have had some error in raster scan analysis of the self.ms.
 
         Returns:
             List[str]: List of antenna names
@@ -645,7 +646,8 @@ def find_raster_gap(ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]',
         dec: np.ndarray of Dec
         dtrow_list: List of np.ndarray holding array indices for ra and dec.
                     Each index array is supposed to represent single raster row.
-        msg_dict : string dict for a log message
+        msg_dict : string dict to use for a warning message.
+        raster_heuristics_result : RasterHeuristicsResult object to use for a warning message.
 
     Raises:
         RasterScanHeuristicsFailure:
@@ -657,10 +659,11 @@ def find_raster_gap(ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]',
     msg = raster_heuristics_result.msg
 
     if msg_dict is not None:
-        _msg = [msg_dict[k] for k in ['EB', 'ANTENNA'] if msg_dict.get(k, False)]
-        if _msg:
-            msg += ' : ' + ', '.join(_msg)
-    #raise RasterScanHeuristicsFailure(msg)  # for debug
+        msg += (' EB:' +
+                ','.join([msg_dict[k] for k in ['EB'] if msg_dict.get(k, False)]) +
+                ':' +
+                ','.join([msg_dict[k] for k in ['ANTENNA'] if msg_dict.get(k, False)]))
+    raise RasterScanHeuristicsFailure(msg)  # for debug
     if len(dtrow_list) == 0:
         raise RasterScanHeuristicsFailure(msg)
 
@@ -692,7 +695,7 @@ class RasterScanHeuristic(api.Heuristic):
     """Heuristic to analyze raster scan pattern."""
 
     def calculate(self, ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]',
-                  msg_dict: Dict[str, str]=None, raster_heuristics_result: RasterScanHeuristicResult=None) \
+                  msg_dict: Dict[str, str], raster_heuristics_result: RasterScanHeuristicResult) \
                       -> 'Tuple[List[np.ndarray[np.int64]], List[np.ndarray[np.int64]]]':
         """Detect gaps that separate individual raster rows and raster maps.
 
@@ -701,7 +704,8 @@ class RasterScanHeuristic(api.Heuristic):
         Args:
             ra: horizontal position list
             dec: vertical position list
-            msg_dict (default to None): string dict for a log message in find_raster_gap()
+            msg_dict : string dict to use for a warnging message in find_raster_gap()
+            raster_heuristics_result : RasterHeuristicsResult object to use for a warnging message in find_raster_gap()
 
         Raises:
             RasterScanHeuristicsFailure (raised from find_raster_row() or find_raster_gap()):

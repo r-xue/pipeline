@@ -1533,7 +1533,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 raster_info_list.append(None)
             dt = _cp.dt_dict[msobj.basename]
             try:
-                raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid))
+                raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid, _rgp))
             except Exception:
                 f = msobj.get_fields(field_id=fieldid)[0]
                 a = msobj.get_antenna(antid)[0]
@@ -1837,12 +1837,13 @@ class SDImaging(basetask.StandardTaskTemplate):
             format(_tirp.msobj.basename, __field_name, _tirp.spwid,
                    _tirp.msobj.get_antenna(_tirp.antid)[0].name, str(_tirp.pol_names)))
         if _tirp.raster_info is None:
-            __rsres = _rgp.imager_result.outcome.setdefault('rasterscan_heuristics', {}) \
-                          .setdefault(_tirp.msobj.origin_ms, 
-                                      RasterScanHeuristicResult.generate(_tirp.msobj,
-                                                                           RasterScanHeuristicResult.IMAGING_SKIP))
-            __rsres.set_result_false(_tirp.msobj.antennas[_tirp.antid].name, _tirp.spwid, _tirp.fieldid)
-            LOG.warning(f'{__rsres.msg} : {_tirp.msobj.antennas[_tirp.antid].name}, {_tirp.msobj.execblock_id}')
+            __rsres = RasterScanHeuristicResult.generate(_tirp.msobj, RasterScanHeuristicResult.IMAGING_SKIP)
+            _rgp.imager_result.outcome.setdefault('rasterscan_heuristics', {}) \
+                              .setdefault(_tirp.msobj.origin_ms, {}) \
+                              .setdefault(RasterScanHeuristicResult.IMAGING_SKIP, []) \
+                              .append(__rsres)
+            __rsres.set_result_false(_tirp.antid, _tirp.spwid, _tirp.fieldid)
+            LOG.warning(f'{__rsres.msg} : EB:{_tirp.msobj.execblock_id}:{_tirp.msobj.antennas[_tirp.antid].name}')
             return __SKIP
         _tirp.dt = _cp.dt_dict[_tirp.msobj.basename]
         _tirp.index_list = common.get_index_list_for_ms(_tirp.dt, [_tirp.msobj.origin_ms],
@@ -1884,10 +1885,11 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
     _log_dict = {'ANTENNA': msobj.antennas[antid].name,
                  'EB': msobj.execblock_id}
-    _rsres = rgp.imager_result.outcome.setdefault('rasterscan_heuristics', {}) \
-                .setdefault(msobj.origin_ms,
-                            RasterScanHeuristicResult.generate(msobj,
-                                                                 RasterScanHeuristicResult.IMAGING_GAP))
+    _rsres = RasterScanHeuristicResult.generate(msobj, RasterScanHeuristicResult.IMAGING_GAP)
+    rgp.imager_result.outcome.setdefault('rasterscan_heuristics', {}) \
+                     .setdefault(msobj.origin_ms, {}) \
+                     .setdefault(RasterScanHeuristicResult.IMAGING_GAP, []) \
+                     .append(_rsres)
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list, _log_dict, _rsres)
     except Exception as e:
