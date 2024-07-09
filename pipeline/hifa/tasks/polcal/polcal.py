@@ -59,6 +59,12 @@ class PolcalSessionResults(basetask.Results):
             final = []
         if pool is None:
             pool = []
+        if vislist is None:
+            vislist = []
+        if uncal_pfg_result is None:
+            uncal_pfg_result = {}
+        if cal_pfg_result is None:
+            cal_pfg_result = {}
 
         self.session = session
         self.vis = vis
