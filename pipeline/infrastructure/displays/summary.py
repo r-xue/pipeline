@@ -1201,13 +1201,17 @@ class SpwIdVsFreqChart(object):
                 rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
+        # Determining the resolution value so that generates fine ATM transmission
+        # curve: it is set to smaller than 500kHz but is set to larger than
+        # that corresponding to 48000 data points.
         if rmin > min_resol:
             resolution = min_resol
         else:
             resolution = rmin
-        if round((xmax - xmin) / resolution) > max_nchan:
+        if (xmax - xmin) / resolution > max_nchan:
             resolution = (xmax - xmin) / max_nchan
         nchan = round((xmax - xmin) / resolution)
+        LOG.info("Adopted frequency resolution of ATM transmission: {} kHz".format(resolution*e6))
         atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
         ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
