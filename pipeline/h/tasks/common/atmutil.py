@@ -16,8 +16,8 @@ import numpy as np
 import pipeline.extern.adopted as adopted
 from pipeline.infrastructure import casa_tools, get_logger
 
-
 LOG = get_logger(__name__)
+
 
 class AtmType(object):
     """Atmosphere type enum class."""
@@ -50,7 +50,7 @@ def init_at(at: casatools.atmosphere, humidity: float = 20.0,
             transmission (unit: m).
         fcenter: The center frequency for a frequency range (unit: GHz).
         nchan: The number of all data points for the frequency range.
-        resolution: The frequency width between the first data point 
+        resolution: The frequency width between the first data point
             and the second data point (unit: GHz).
      """
     myqa = casa_tools.quanta
@@ -441,21 +441,23 @@ def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
 def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, antenna_id: int = 0, doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
     """
     Calculate atmospheric transmission covering a range of frequency.
-    A number of channels, a resolution of a frequency range, and the median
-    of elevations in all pointings of the selected antenna is used in calculation. 
-    The atmospheric profile is constructed by default site parameters of the 
-    function, init_at. The median of zenith water vapor column (pwv) is used 
-    to calculate the transmission.
+    A number of channels, a resolution of a frequency range, and
+    the median of elevations in all pointings of the selected antenna
+    is used in calculation.
+    The atmospheric profile is constructed by default site parameters
+    of the function, init_at.
+    The median of zenith water vapor column (pwv) is used to calculate
+    the transmission.
 
     Args:
         vis: Path to MeasurementSet.
         center_freq: The center frequency for a frequency range (unit: GHz).
         nchan: The number of all channels for the frequency range.
-        resolution: The frequency width between the first data point 
+        resolution: The frequency width between the first data point
             and the second data point (unit: GHz).
         antenna_id: The antenna ID.
         doplot: If True, plot the atmospheric transmission and opacities.
- 
+
     Returns:
         A tuple of 2 arrays. The first one is an array of frequencies in the
         unit of GHz, and the other is the atmospheric transmission at each
