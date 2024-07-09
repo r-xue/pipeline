@@ -2614,8 +2614,8 @@ def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, in
     for line in lines:
         center, width, is_valid = line[:3]
         if is_valid:
-            chan_left = int(np.floor(center - width / 2))
-            chan_right = int(np.ceil(center + width / 2))
+            chan_left = int(np.floor(center - width / 2 + 0.5))
+            chan_right = int(np.floor(center + width / 2 + 0.5))
             line_ranges.append((chan_left, chan_right))
 
     return line_ranges

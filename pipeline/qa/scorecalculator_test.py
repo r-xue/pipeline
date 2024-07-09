@@ -13,8 +13,12 @@ import pipeline.qa.scorecalculator as qacalc
 @pytest.mark.parametrize(
     'lines, expected',
     [
-        ([(10, 5, True)], [(7, 13)]),
+        ([(10, 5, True)], [(8, 13)]),
         ([(10, 5, False)], []),
+        # round-off tests
+        ([(5.0, 10, True)], [(0, 10)]),
+        ([(5.2, 10.1, True)], [(0, 10)]),
+        ([(5.6, 10.1, True)], [(1, 11)])
     ]
 )
 def test_get_line_ranges(lines: List[Tuple[int, int, bool]], expected: List[Tuple[int, int]]):
