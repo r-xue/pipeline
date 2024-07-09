@@ -140,7 +140,7 @@ class ContFileHandler(object):
                                                                     freq_range['refer']))
                         fd.write('\n')
 
-    def get_merged_selection(self, field_name:str, spw_id:str, spw_name:str=None, cont_ranges:Union[Dict, None]=None):
+    def get_merged_selection(self, field_name:str, spw_id:str, spw_name:Union[str, None]=None, cont_ranges:Union[Dict, None]=None):
         """
         Inputs:
 
@@ -170,25 +170,7 @@ class ContFileHandler(object):
             # Internally the lookup dictionary still relies on virtual spw IDs.
             # But with PIPE-2128 we introduced writing spw names to cont.dat.
             # If the spw name is given, it is preferred for the lookup.
-
-            virt_spw_id = None
-
-            if spw_name is not None:
-                for s in cont_ranges['fields'][field_name]:
-                    if cont_ranges['fields'][field_name][s]['spwname'] == spw_name:
-                        virt_spw_id = s
-                        break
-                if virt_spw_id is None:
-                    LOG.info('spw name not found. Falling back to spw ID lookup.')
-
-            if virt_spw_id is None:
-                if not spw_id.isdigit():
-                    msg = f'spw ID must be an integer.'
-                    LOG.error(msg)
-                    raise Exception(msg)
-                else:
-                    # "Old" style spw ID lookup
-                    virt_spw_id = spw_id
+            virt_spw_id = self.get_cont_dat_virt_spw_id(spw_id, spw_name)
 
             if virt_spw_id in cont_ranges['fields'][field_name]:
                 if cont_ranges['fields'][field_name][virt_spw_id]['ranges'] not in (['ALL'], [], ['NONE']):
@@ -225,7 +207,7 @@ class ContFileHandler(object):
 
         return cont_ranges_spwsel, all_continuum, low_bandwidth, low_spread
 
-    def to_topo(self, selection:str, msnames:List[str], fields:List[Union[int, str]], spw_id:Union[int, str], observing_run:Any, ctrim:int=0, ctrim_nchan:int=-1) -> Tuple[List[str], List[str], Dict]:
+    def to_topo(self, selection:str, msnames:List[str], fields:List[Union[int, str]], spw_id:Union[int, str], observing_run:Any, spw_name:Union[str, None]=None, ctrim:int=0, ctrim_nchan:int=-1) -> Tuple[List[str], List[str], Dict]:
 
         frame_freq_selection, refer = selection.split()
         if refer not in ('LSRK', 'SOURCE'):
@@ -238,7 +220,7 @@ class ContFileHandler(object):
             LOG.error(msg)
             raise Exception(msg)
 
-        virt_spw_id = int(spw_id)
+        virt_spw_id = int(self.get_cont_dat_virt_spw_id(spw_id, spw_name))
 
         qaTool = casa_tools.quanta
         suTool = casa_tools.synthesisutils
@@ -297,6 +279,28 @@ class ContFileHandler(object):
 
         return topo_freq_selections, topo_chan_selections, aggregate_frame_bw
 
+    def get_cont_dat_virt_spw_id(self, spw_id:str, spw_name:Union[str, None]):
+
+        virt_spw_id = None
+        if spw_name is not None:
+            for field_name in self.cont_ranges['fields']:
+                for spw_id in self.cont_ranges['fields'][field_name]:
+                    if self.cont_ranges['fields'][field_name][spw_id]['spwname'] == spw_name:
+                        virt_spw_id = spw_id
+                        break
+                if virt_spw_id is None:
+                    LOG.info('SPW name not found. Falling back to SPW ID lookup.')
+
+        if virt_spw_id is None:
+            if not spw_id.isdigit():
+                msg = f'SPW ID string must be an integer.'
+                LOG.error(msg)
+                raise Exception(msg)
+            else:
+                # "Old" style SPW ID lookup
+                virt_spw_id = spw_id
+
+        return virt_spw_id
 
 def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
     """Translate continuum ranges specified in contfile to frequency selection string.
@@ -337,7 +341,7 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
                 freq_ranges, _, _ = contfile_handler.to_topo(
                     cranges_spwsel[sname][virt_spw_id], [vis], [field_id], int(virt_spw_id),
-                    context.observing_run)
+                    context.observing_run, spw_name)
                 freq_ranges_list = freq_ranges[0].split(';')
                 spwstring = spwstring + virt_spw_id + ':'
                 for freqrange in freq_ranges_list:
