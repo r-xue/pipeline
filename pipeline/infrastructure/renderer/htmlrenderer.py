@@ -382,6 +382,13 @@ class T1_1Renderer(RendererBase):
             if is_singledish_ms(ctx):
                 rows = [r for r in rows if r != T1_1Renderer.EnvironmentProperty.CASA_MEMORY]
 
+            # getNumCPUs is confusing when run in an MPI context, giving the
+            # number of cores that the process can migrate to rather than
+            # number of cores used by CASA. To avoid confusion, we remove the
+            # CASA cores row completely for MPI runs.
+            if mpihelpers.is_mpi_ready():
+                rows = [r for r in rows if r != T1_1Renderer.EnvironmentProperty.CASA_CORES]
+
             unmerged_rows = [(prop.description(ctx), *data[prop]) for prop in rows]
             merged_rows = utils.merge_td_rows(utils.merge_td_columns(unmerged_rows))
 
