@@ -1206,12 +1206,16 @@ class SpwIdVsFreqChart(object):
         max_nchan = 48000  # derived from (maximum frequency range 24GHz)/500kHz.
         if rmin > upperlimit_resol:
             resolution = upperlimit_resol
+            LOG.info("Frequency resolution: a default value is applied.")
         else:
             resolution = rmin
+            LOG.info("Frequency resolution: a minimum value through the frequency range is applied.")
         if (xmax - xmin) / resolution > max_nchan:
             resolution = (xmax - xmin) / max_nchan
+            LOG.info("Frequency resolution: a mitigated value is reapplied.")
         nchan = round((xmax - xmin) / resolution)
         LOG.info("Adopted frequency resolution of ATM transmission: {} kHz".format(resolution*1e6))
+        LOG.info("Adopted number of points of ATM transmission: {}".format(nchan))
         atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
         ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
