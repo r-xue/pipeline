@@ -1181,8 +1181,10 @@ class SpwIdVsFreqChart(object):
             max_spws_to_annotate = max_spws_to_annotate_ALMA_NRO
         xmin, xmax = np.inf, -np.inf
         totalnum_spws = len(scan_spws)
-        rmin = np.inf
         idx = 0
+        min_resol = 5e-4  # 500kHz
+        rmin = np.inf
+        max_nchan = 48000  # derived from (maximum frequency range 24GHz)/500kHz.
         for spwid_list in spw_list_generator:
             color = next(colorcycle)['color']
             for spwid in spwid_list:
@@ -1195,37 +1197,17 @@ class SpwIdVsFreqChart(object):
                 # 2. annotate each bars
                 if totalnum_spws <= max_spws_to_annotate or spwid in [spwid_list[0], spwid_list[-1]]:
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
-                resolution = abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2])
-                rmin = min(rmin, resolution)
                 idx += 1
+                rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
         # 3. Frequency vs. ATM transmission
-        LOG.info("Culculating ATM transmission data.")
-        LOG.info("Criterions of a resolution and a number of data points are defined to show the finest features of ATM transmission within 1 minute runtime.")
-        LOG.info("The criterion of resolution is 500kHz.")
-        LOG.info("The criterion of number of data points is 48000, derived from (maximum frequency range 24GHz)/500kHz.")
         center_freq = (xmin + xmax) / 2.0
-        LOG.info("Minimum resolution through spws: {}".format(rmin))
-        if rmin > 0.0005:
-            LOG.info("The minimum resolution is coarser than 500kHz.")
-            if (xmax - xmin) / rmin > 48000:
-                resolution = (xmax - xmin) / 48000
-                LOG.info("The number of data points is larger than 48000.")
-                LOG.info("The resolution is set to {}, which is the value which is equivalent to 48000 points.".format(resolution))
-            else:
-                resolution = 0.0005
-                LOG.info("The number of data points is smaller than 48000.")
-                LOG.info("The resolution is set to 500kHz.")
+        if rmin > min_resol:
+            resolution = min_resol
         else:
-            LOG.info("The minimum resolution is finer than 500kHz.")
-            if (xmax - xmin) / rmin > 48000:
-                resolution = (xmax - xmin) / 48000
-                LOG.info("The number of data points is larger than 48000.")
-                LOG.info("The resolution is set to {}, which is the value which is equivalent to 48000 points.".format(resolution))
-            else:
-                resolution = rmin
-                LOG.info("The minimum resolution {} is used.".format(resolution))
+            resolution = rmin
+        if round((xmax - xmin) / resolution) > max_nchan:
+            resolution = (xmax - xmin) / max_nchan
         nchan = round((xmax - xmin) / resolution)
-        LOG.info("The number of data points = {}".format(nchan))
         atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
         ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
