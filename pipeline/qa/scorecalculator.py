@@ -2701,6 +2701,24 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
 
 
 def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, ranges: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+    """Convert channel ranges in MS coordinate to those in image coordinate.
+
+    Frequency coordinates are different between MS and image product.
+    This method converts channel ranges in MS coordinate into the ranges
+    in image coordinate. The conversion includes the following operations.
+
+        - to reverse channels if spw is LSB
+        - to shift channels by the amount specified by edge parameter
+
+    Args:
+        edge: Number of edge channels excluded
+        nchan: Number of channels
+        sideband: 1 for USB, -1 for LSB
+        ranges: List of two tuples representing channel ranges
+
+    Returns:
+        Converted channel ranges
+    """
     edge_left, edge_right = edge
 
     if sideband == -1:
