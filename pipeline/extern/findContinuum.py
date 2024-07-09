@@ -10,7 +10,7 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2024 (as of June 18, 2024)
+Code changes for Pipeline2024 (as of July 1, 2024)
 0) No longer disable onlyExtraMask when returnBluePoints==True
 1) No longer search for vis in cube dir if not specified, only if vis=='auto'
 2) Remove two print statements at import
@@ -39,6 +39,7 @@ Code changes for Pipeline2024 (as of June 18, 2024)
 20) Reduce the length of cyan line for single channel case    2024-06-01
 21) Fix for PIPE-2188 (try harder to avoid LowSpread)  2024-06-03
 22) Fix for PIPE-1992: if dynamic range of mom0 is high (>90), raise the mom0minsnr mask threshold to 8
+23) Add spectralDynamicRangeString to first line of legend
 
 
 Code changes for Pipeline2023 (as of June 12, 2023)
@@ -301,7 +302,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle11.py,v 7.14 2024/06/18 19:50:00 we Exp $" 
+    myversion = "$Id: findContinuumCycle11.py,v 7.19 2024/07/08 16:56:47 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -1437,7 +1438,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                                   returnBluePoints=returnBluePoints,
                                   removeOutlierBaselineChannels=removeOutlierBaselineChannels, 
                                   enableInitialQuadratic=enableInitialQuadratic,
-                                  useBaseline=useBaseline)
+                                  useBaseline=useBaseline, spectralDynamicRangeString=spectralDynamicRangeString)
         if result is None:
             return
         if amendMaskIterationName in ['.extraMask','.onlyExtraMask','.autoLower','.autoLower2']:
@@ -1523,7 +1524,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                                                   mom08simultaneous=mom08simultaneous, useUncorrectedMedian=useUncorrectedMedian,
                                                   returnBluePoints=returnBluePoints,
                                                   removeOutlierBaselineChannels=removeOutlierBaselineChannels,
-                                                  enableInitialQuadratic=enableInitialQuadratic, useBaseline=useBaseline)
+                                                  enableInitialQuadratic=enableInitialQuadratic, useBaseline=useBaseline, spectralDynamicRangeString=spectralDynamicRangeString)
 
                         if result is None:
                             return
@@ -1642,7 +1643,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                                           mom08simultaneous=mom08simultaneous, useUncorrectedMedian=useUncorrectedMedian,
                                           returnBluePoints=returnBluePoints,
                                           removeOutlierBaselineChannels=removeOutlierBaselineChannels,
-                                          enableInitialQuadratic=enableInitialQuadratic, useBaseline=useBaseline)
+                                          enableInitialQuadratic=enableInitialQuadratic, useBaseline=useBaseline, spectralDynamicRangeString=spectralDynamicRangeString)
                 selection, mypng, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, selectionPreBluePruning, finalSigmaFindContinuum, jointMask, avgspectrumAboveThreshold, medianTrue, labelDescs, ax1, ax2, positiveThreshold, areaString, rangesDropped, effectiveSigma, baselineMAD, upperXlabel, allBaselineChannelsXY, nbin, initialPeakOverMad, negativeThreshold = result   # used to say selectionPreBlueTruncation
                 if png == '' or amendMask:
                     if png == '':
@@ -2789,7 +2790,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
     # the png returned, and the final image returned to the .original versions of these files.
     ##########################################################################################
     if amendMask:
-        casalogPost("Check for need to revert")
+        casalogPost("Check for need to revert.")
         reversionCodes = ['HHHH','HHHS']
         revert = False
         if momDiffCode is None:
@@ -2799,35 +2800,55 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                 casalogPost('This mom8fc code triggers reversion to original result.')
         else: 
             code = momDiffCode
-            if momDiffCode in reversionCodes and momDiffSNR > momDiffLevel:
+            if momDiffCode in reversionCodes and momDiffSNR > momDiffLevel: # and False: # temporary test for PIPE-2188
                 revert = True
                 casalogPost('This momDiff code with momDiffSNR>%.1f triggers reversion to original result.'%(momDiffLevel))
         if not revert:
+            casalogPost("No need for reversion.")
             warnings = gatherWarnings(selection, chanInfo, smallBandwidthFraction, smallSpreadFraction)
 #            if len(warnings[0]) > 0 and len(warnings[1]) > 0: # PL2023
             if len(warnings[1]) > 0:  # LowSpread    # PL2024
                 casalogPost("Will try to fix the LowSpread condition")    # PL2024
-                # do our addition
+                # do our addition of new channel range(s)
                 continuumChannels = convertSelectionIntoChannelList(selection)
                 if continuumChannels[0] > (nchan-continuumChannels[-1]):
-                    endchan = continuumChannels[-1] - nchan*smallSpreadFraction - 1
+                    # channels are in increasing order;  don't look beyond the half-way point of the spectrum
+                    endchan = int(np.min([continuumChannels[-1] - nchan*smallSpreadFraction - 1, nchan//2]))
                     channelRange = [0,endchan]
                 else:
-                    startchan = continuumChannels[0] + nchan*smallSpreadFraction + 1
+                    startchan = int(continuumChannels[0] + nchan*smallSpreadFraction + 1)
                     channelRange = [startchan,nchan]
                 mylist = findWidestContiguousListInChannelRange(allBaselineChannelsXY[0], channelRange, continuumChannels)
                 if mylist is None:
-                    casalogPost('  %s ****** No blue points found in the wider side of the spectrum' % (projectCode))
-                    # now need to look for points within the min/max range of blue points
+                    casalogPost('  %s ****** No blue points found in the wider side of the spectrum: %s' % (projectCode,str(channelRange)))
+                    # now need to look for non-blue points within the min/max range of blue points
                     mylist = findChannelsInChannelRangeWithComparableIntensity(allBaselineChannelsXY[0], channelRange, continuumChannels, avgspectrumAboveThreshold)  # PL2024
                     if len(mylist) == 0:
                         mylist = None
-                else:
-                    mylist = [mylist] # convert single range to list of 1 range
+#                else:
+#                    mylist = [mylist] # convert single range to list of 1 range
+
+                # Need to check if most of the points are beyond 1 sigma MAD of all points (for PIPE-2188)
+                # and if so, then reject it since it might be the shoulders of a real line.
+                if mylist is not None:
+                    MADofBaselineChannels = MAD(avgspectrumAboveThreshold[allBaselineChannelsXY[0]])
+                    medianNegativeSigma = (negativeThreshold - np.median(avgspectrumAboveThreshold[np.array(mylist).flatten()])) / MADofBaselineChannels
+                    medianPositiveSigma = (np.median(avgspectrumAboveThreshold[mylist]) - positiveThreshold) / MADofBaselineChannels
+                    casalogPost('medianNegativeSigma = %f, medianPositiveSigma = %f' % (medianNegativeSigma, medianPositiveSigma))
+                    if medianNegativeSigma > 1:
+                        casalogPost('Rejecting new range because the median value is %.1f (> 1) scaled MAD beyond one of the dotted lines (negativeThreshold).' % (medianNegativeSigma))
+                        mylist = None
+                    if medianPositiveSigma > 1:
+                        casalogPost('Rejecting new range because the median value is %.1f (> 1) scaled MAD beyond one of the dotted lines (positiveThreshold).' % (medianPositiveSigma))
+                        mylist = None
+                        
                 if mylist is None:
                     casalogPost('  %s ****** No points with intensity in the range of the blue points were found in the wider side of the spectrum' % (projectCode))
                 else:
                     # we added 1 (or more) new selections, so need to update everything
+                    print("mylist before split: ", str(mylist))
+                    mylist = splitListIntoContiguousLists(mylist)
+                    print("mylist after split: ", str(mylist))
                     groups = len(mylist)
                     for group in range(groups):
                         print("group %d: %s" % (group,mylist[group]))
@@ -2968,7 +2989,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                             casalogPost('This mom8fc code triggers reversion to original result.')
                     else: 
                         code = momDiffCode
-                        if momDiffCode in reversionCodes and momDiffSNR > momDiffLevel:
+                        if momDiffCode in reversionCodes and momDiffSNR > momDiffLevel: # and False: # temporary test for PIPE-2188
                             revert = True
                             casalogPost('This momDiff code with momDiffSNR>%.1f triggers reversion to original result.'%(momDiffLevel))
                 if len(warnings[0]) > 0 and len(warnings[1]) > 0:
@@ -4792,7 +4813,8 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
                      useUncorrectedMedian=False, 
                      returnBluePoints=False,
                      removeOutlierBaselineChannels=False,
-                     enableInitialQuadratic=False, useBaseline='auto'):
+                     enableInitialQuadratic=False, useBaseline='auto',
+                     spectralDynamicRangeString=''):
     """
     This function is called by findContinuum.  It calls functions that:
     1) compute the mean spectrum of a dirty cube
@@ -5947,16 +5969,16 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
     if meanSpectrumMethod == 'mom0mom8jointMask':
         bottomLegend += ', pixMom8=%d' % (numberPixelsInMom8Mask)
     if bottomLegend != '':
-        pl.text(0.5,0.01,bottomLegend, ha='center', size=fontsize-1, 
+        pl.text(0.5,0.01,bottomLegend, ha='center', size=fontsize-2, 
                 transform=ax1.transAxes)
     effectiveSigma = sigmaFindContinuum*correctionFactor
     if meanSpectrumMethod.find('mean') >= 0:
-        pl.text(0.5,0.99-i*inc,'bl=(%s,%s), narrow=%s, sCube=%.1f, sigmaEff=%.2f*%.2f=%.2f, trim=%s' % (baselineModeA,baselineModeB,narrowString,sigmaCube,sigmaFindContinuum,correctionFactor,effectiveSigma,trimString),transform=ax1.transAxes, ha='center',size=fontsize)
+        pl.text(0.5,0.99-i*inc,'bl=(%s,%s), sCube=%.1f, sigmaEff=%.2f*%.2f=%.2f, trim=%s' % (baselineModeA,baselineModeB,sigmaCube,sigmaFindContinuum,correctionFactor,effectiveSigma,trimString),transform=ax1.transAxes, ha='center',size=fontsize)
     else:
         pl.text(
-            0.5, 0.99-i*inc, ' baselineModeB=%s, narrow=%s, sigmaFC=%.2f*%.2f=%.2f, trim=%s, maxBase=%.0fm' %
-            (baselineModeB, narrowString, sigmaFindContinuum, correctionFactor, effectiveSigma, trimString, maxBaseline),
-            transform=ax1.transAxes, ha='center', size=fontsize-1)
+            0.5, 0.99-i*inc, ' baselineModeB=%s, sFC=%.2f*%.2f=%.2f, trim=%s, sdrBW=%s, maxBase=%.0fm' %
+            (baselineModeB, sigmaFindContinuum, correctionFactor, effectiveSigma, trimString, spectralDynamicRangeString, maxBaseline),
+            transform=ax1.transAxes, ha='center', size=fontsize-2)
     i += 1
     peak = np.max(avgSpectrumNansReplaced)
     peakFeatureSigma = (peak-medianTrue)/mad
@@ -5984,10 +6006,10 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         pl.text(0.5,0.99-i*inc,'chans>median: %d (sum=%.4f), chans<median: %d (sum=%.4f), ratio: %.2f (%.2f)'%(channelsAboveMedian,sumAboveMedian,channelsBelowMedian,sumBelowMedian,channelRatio,sumRatio),
                 transform=ax1.transAxes, ha='center', size=fontsize-1)
     if (negativeThreshold is not None):
-        pl.text(0.5,0.99-i*inc,'mad: %.3g; levs: %.3g, %.3g (dot); median: %.3g (solid), medmin: %.3g (dash) cyan: %.3g'%(mad, threshold,negativeThreshold,medianTrue,median,cyanLevel), transform=ax1.transAxes, ha='center', size=fontsize-2)
+        pl.text(0.5,0.99-i*inc,'narrow=%s, mad: %.3g; levs: %.3g, %.3g (dot); median: %.3g (solid), medmin: %.3g (dash) cyan: %.3g'%(narrowString, mad, threshold,negativeThreshold,medianTrue,median,cyanLevel), transform=ax1.transAxes, ha='center', size=fontsize-3)
     else:
-        pl.text(0.5,0.99-i*inc,'mad: %.3g; threshold: %.3g (dot); median: %.3g (solid), medmin: %.3g (dash) cyan: %.3g'%(mad,threshold,medianTrue,median,cyanLevel), 
-                transform=ax1.transAxes, ha='center', size=fontsize-1)
+        pl.text(0.5,0.99-i*inc,'narrow=%s, mad: %.3g; threshold: %.3g (dot); median: %.3g (solid), medmin: %.3g (dash) cyan: %.3g'%(narrowString,mad,threshold,medianTrue,median,cyanLevel), 
+                transform=ax1.transAxes, ha='center', size=fontsize-3)
     i += 1
     if meanSpectrumMethod == 'mom0mom8jointMask':
         if pbBasedMask:
@@ -6278,16 +6300,21 @@ def findChannelsInChannelRangeWithComparableIntensity(channels, channelRange, co
     intensity: intensity of whole spectrum (an array)
     channelRange: range of channels to look for widest set of blue points [first,final]
     continuumChannels: current selection of continuuum channels
+    withinSigma: fix for PIPE-2188
+    Returns: a list of channels, possibly non-contiguous, sorted low to high
     """
     imin = np.min(intensity[channels])
     imax = np.max(intensity[channels])
     newList = []
-    sigma = np.std(intensity[channels])
+#    sigma = np.std(intensity[channels])  fc <= v7.16
+    sigma = MAD(intensity[channels])   # fc v7.17
     for channel in range(int(channelRange[0]), int(channelRange[1])):
         if (imin-withinSigma*sigma) < intensity[channel] < (imax+withinSigma*sigma):
+            distance = np.min([imax-intensity[channel], intensity[channel]-imin])/sigma
+            casalogPost('Channel %d is within %.1f scaled MAD of nearest blue point intensity' % (channel,distance))
             newList.append(channel)
-    newLists = splitListIntoContiguousLists(sorted(newList))
-    return(newLists)
+#    newLists = splitListIntoContiguousLists(sorted(newList))
+    return(sorted(newList))
     
 def findWidestContiguousListInChannelRange(channels, channelRange, continuumChannels):
     """
@@ -6298,6 +6325,7 @@ def findWidestContiguousListInChannelRange(channels, channelRange, continuumChan
     channels: list of blue points channel numbers
     channelRange: range of channels to look for widest set of blue points
     continuumChannels: current selection of continuuum channels
+    Returns: a list of contiguous channels
     """
     contiguousLists = splitListIntoContiguousLists(sorted(channels))
     currentRange = continuumChannels[-1]-continuumChannels[0] + 1
@@ -6559,7 +6587,7 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
         if useBaseline == 'auto' and amendMaskIterationName.find('xtra') < 0 and amendMaskIterationName.find('autoLower') < 0: # to not conflict with 46 lines down
             # Introduced the lowHighBaselineThreshold factor on Aug 31, 2016 for CAS-8938
             whichBaseline = np.argmin([mad0, lowHighBaselineThreshold*mad1, lowHighBaselineThreshold*madMiddleChannels])
-            casalogPost('Using automatic heuristic of useBaseline = %s, which picked whichBaseline=%d' % (useBaseline,whichBaseline))
+            casalogPost('Using automatic heuristic of useBaseline = %s, which picked whichBaseline=%d because mads: %f, %f, %f' % (useBaseline,whichBaseline,mad0, lowHighBaselineThreshold*mad1, lowHighBaselineThreshold*madMiddleChannels))
             leftmostHighChannel = np.min(idx[-nBaselineChannels:])
             rightmostHighChannel = np.max(idx[-nBaselineChannels:])
             noBluePointInterruptsHighestChannels = len(np.intersect1d(range(leftmostHighChannel,rightmostHighChannel), idx[:nBaselineChannels])) == 0
@@ -6613,9 +6641,11 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
             mad0 = MAD(intensityAllBaselineChannels)
             useLowBaseline = False
             useMiddleChannels = True
-            casalogPost('***** Temporary test: Forcing use of middle channels in %s' % (amendMaskIterationName))
+            casalogPost('***** PL2024: Forcing use of middle channels in %s' % (amendMaskIterationName))
+            # This was found to work better on the extra mask construction as positive
+            # features (emission) and negative features (missing flux) are often both present.
             if returnBluePoints:
-                casalogPost('***** Temporary test: Forcing returnBluePoints=False')
+                casalogPost('***** PL2024: Forcing returnBluePoints=False')
                 returnBluePoints = False
         casalogPost("Median of all channels = %f,  MAD of selected baseline channels = %f" % (medianOfAllChannels,mad0))
         madRatio = None
