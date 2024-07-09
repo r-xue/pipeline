@@ -66,6 +66,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_polcal_gain_ratio_rms',                     # ALMA IF specific
            'score_polcal_leakage',                            # ALMA IF specific
            'score_polcal_residual_pol',                       # ALMA IF specific
+           'score_polcal_results',                            # ALMA IF specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -3620,6 +3621,34 @@ def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: fl
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
+
+
+@log_qa
+def score_polcal_results(session_name: str, caltables: list) -> pqa.QAScore:
+    """
+    This heuristic tests whether calibrations were derived for a polcal session.
+
+    Args:
+        session_name: name of session being evaluated.
+        caltables: list of calibration tables derived for session.
+
+    Returns:
+        QAScore object
+    """
+    if not caltables:
+        score = 0.0
+        longmsg = f"No polarisation calibration derived for session '{session_name}'."
+        shortmsg = "No polarisation calibration for session"
+    else:
+        score = 1.0
+        longmsg = f"Polarisation calibration derived for session '{session_name}'."
+        shortmsg = "Polarisation calibration derived for session"
+
+    origin = pqa.QAOrigin(metric_name='score_polcal_results',
+                          metric_score=score,
+                          metric_units='polarisation caltables')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa

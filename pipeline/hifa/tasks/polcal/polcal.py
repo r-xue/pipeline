@@ -216,6 +216,12 @@ class Polcal(basetask.StandardTaskTemplate):
         # calibrator.
         LOG.info(f"{session_msname}: compute estimate of polarization.")
         uncal_pfg_result = self._compute_polfromgain(session_msname, init_gcal_result, self.inputs.minpacov)
+        # If polfromgain did not find any solutions, then log a warning and
+        # return early (PIPE-2159).
+        if not uncal_pfg_result:
+            LOG.warning(f"Unable to derive polarization calibration for session '{session_name}', no solutions returned"
+                        f" by polfromgain.")
+            return PolcalSessionResults(session=session_name)
 
         # Retrieve fractional Stokes results for averaged SpW for the
         # polarization calibrator field.
@@ -254,6 +260,10 @@ class Polcal(basetask.StandardTaskTemplate):
         # calibration.
         LOG.info(f"{session_msname}: recompute polarization of polarization calibrator after calibration.")
         cal_pfg_result = self._compute_polfromgain(session_msname, final_gcal_result, self.inputs.minpacov)
+        if not cal_pfg_result:
+            LOG.warning(f"Unable to derive polarization calibration for session '{session_name}', no solutions returned"
+                        f" by polfromgain when recomputing polarization after calibration.")
+            return PolcalSessionResults(session=session_name)
 
         # (Re-)register the final gain, XY delay, and XY phase caltables.
         self._register_calapps_from_results([final_gcal_result, kcross_result, polcal_phase_result])
