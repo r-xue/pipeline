@@ -2622,8 +2622,8 @@ def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, in
 
 
 @log_qa
-def test_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
-    """Test the existence of lines at edge channels.
+def examine_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
+    """Examine the existence of lines at edge channels.
 
     This function checks if there is lines that spans edge channels.
     Excluded channels via edge parameter are taken into account.
@@ -2647,8 +2647,8 @@ def test_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tup
 
 
 @log_qa
-def test_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
-    """Test the existence of wide lines.
+def examine_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
+    """Examine the existence of wide lines.
 
     This function returns True if there is a line with the width
     exceeding 1/3 of spw bandwidth. If there are multiple lines
@@ -2824,8 +2824,8 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             # sort lines by left channel
             lines.sort(key=operator.itemgetter(0))
 
-            is_edge_line = test_sd_edge_lines(lines, nchan, edge)
-            is_wide_line = test_sd_wide_lines(lines, nchan, edge)
+            is_edge_line = examine_sd_edge_lines(lines, nchan, edge)
+            is_wide_line = examine_sd_wide_lines(lines, nchan, edge)
 
             if is_edge_line and is_wide_line:
                 score = 0.55  # min(0.55, 0.6)

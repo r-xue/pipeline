@@ -50,7 +50,7 @@ def test_get_line_ranges(lines: List[Tuple[int, int, bool]], expected: List[Tupl
     ]
 )
 def test_test_sd_edge_lines(lines: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int], expected: float):
-    score = qacalc.test_sd_edge_lines(lines, nchan, edge)
+    score = qacalc.examine_sd_edge_lines(lines, nchan, edge)
     assert score == expected
 
 
@@ -77,7 +77,7 @@ def test_test_sd_edge_lines(lines: List[Tuple[int, int]], nchan: int, edge: Tupl
     ]
 )
 def test_test_sd_wide_lines(lines: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int], expected: float):
-    score = qacalc.test_sd_wide_lines(lines, nchan, edge)
+    score = qacalc.examine_sd_wide_lines(lines, nchan, edge)
     assert score == expected
 
 
