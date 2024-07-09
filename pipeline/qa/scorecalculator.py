@@ -2703,26 +2703,28 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
 def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, ranges: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
     edge_left, edge_right = edge
 
-    # offset channel ranges
-    def offset_range(x):
-        return x - edge_left
-
-    _ranges_image = map(
-        lambda x: (offset_range(x[0]), offset_range(x[1])), ranges
-    )
-
     if sideband == -1:
-        # if LSB, channel ranges must be reversed
-        nchan_image = nchan - edge_left - edge_right
+        # LSB
+        chan_offset = edge_right
 
-        def reverse_range(x):
-            return nchan_image - 1 - x
+        def _reverse_range(x):
+            return nchan - 1 - x
 
-        _ranges_image = map(
-            lambda x: (reverse_range(x[1]), reverse_range(x[0])), _ranges_image
-        )
+        _ranges_image = (map(_reverse_range, x[::-1]) for x in ranges)
 
-    return sorted(_ranges_image)
+    else:
+        # USB
+        chan_offset = edge_left
+
+        _ranges_image = ranges
+
+    # offset channel ranges
+    def _offset_range(x):
+        return x - chan_offset
+
+    _ranges_image = (map(_offset_range, x) for x in _ranges_image)
+
+    return sorted(tuple(x) for x in _ranges_image)
 
 
 @log_qa
