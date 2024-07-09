@@ -105,7 +105,7 @@ class Hanning(basetask.StandardTaskTemplate):
                 return HanningResults()
 
         # Retrieve SPWs information and determine which to smooth
-        spws = self.inputs.context.observing_run.measurement_sets[0].get_all_spectral_windows()
+        spws = self.inputs.context.observing_run.get_ms(self.inputs.vis).get_all_spectral_windows()
         hs_dict = dict()
         for spw in spws:
             if spw.sdm_num_bin > 1 or spw.specline_window:
@@ -115,7 +115,7 @@ class Hanning(basetask.StandardTaskTemplate):
                     hs_dict[spw.id] = False
             else:
                 hs_dict[spw.id] = True
-        
+
         if not any(hs_dict.values()):
             LOG.info("None of the SPWs were selected for smoothing.")
         elif all(hs_dict.values()):
