@@ -191,7 +191,7 @@ class ContFileHandler(object):
                     virt_spw_id = spw_id
 
             if virt_spw_id in cont_ranges['fields'][field_name]:
-                if cont_ranges['fields'][field_name][virt_spw_id]['ranges'] not in (['ALL'], [], ['NONE']) and 'ALLCONT' not in cont_ranges['fields'][field_name][virt_spw_id]['flags']:
+                if cont_ranges['fields'][field_name][virt_spw_id]['ranges'] not in (['ALL'], [], ['NONE']):
                     merged_cont_ranges = utils.merge_ranges(
                         [cont_range['range'] for cont_range in cont_ranges['fields'][field_name][virt_spw_id]['ranges'] if isinstance(cont_range, dict)])
                     cont_ranges_spwsel = ';'.join(['%.10f~%.10fGHz' % (float(spw_sel_interval[0]), float(spw_sel_interval[1]))
@@ -207,7 +207,7 @@ class ContFileHandler(object):
                     else:
                         refer = 'UNDEFINED'
                     cont_ranges_spwsel = '%s %s' % (cont_ranges_spwsel, refer)
-                    if 'ALL' in cont_ranges['fields'][field_name][virt_spw_id]['ranges']:
+                    if 'ALL' in cont_ranges['fields'][field_name][virt_spw_id]['ranges'] or 'ALLCONT' in cont_ranges['fields'][field_name][virt_spw_id]['flags']:
                         all_continuum = True
                 elif cont_ranges['fields'][field_name][virt_spw_id]['ranges'] == ['ALL'] or 'ALLCONT' in cont_ranges['fields'][field_name][virt_spw_id]['flags']:
                     cont_ranges_spwsel = 'ALLCONT'
@@ -323,8 +323,9 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
             continue
 
         spwstring = ''
-        for spw in contdict['fields'][field]:
-            crange_list = [crange for crange in contdict['fields'][field][spw]['ranges'] if crange not in ('NONE', 'ALL', 'ALLCONT')]
+        for virt_spw_id in contdict['fields'][field]:
+            spw_name = context.observing_run.virtual_science_spw_ids[int(virt_spw_id)]
+            crange_list = [crange for crange in contdict['fields'][field][virt_spw_id]['ranges'] if crange not in ('NONE', 'ALL', 'ALLCONT')]
             if crange_list[0]['refer'] in ('LSRK', 'SOURCE'):
                 LOG.info("Converting from %s to TOPO...", crange_list[0]['refer'])
                 sname = field
@@ -332,13 +333,13 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
                 cranges_spwsel = collections.OrderedDict()
                 cranges_spwsel[sname] = collections.OrderedDict()
-                cranges_spwsel[sname][spw], _, _, _ = contfile_handler.get_merged_selection(sname, spw)
+                cranges_spwsel[sname][virt_spw_id], _, _, _ = contfile_handler.get_merged_selection(sname, virt_spw_id, spw_name)
 
                 freq_ranges, _, _ = contfile_handler.to_topo(
-                    cranges_spwsel[sname][spw], [vis], [field_id], int(spw),
+                    cranges_spwsel[sname][virt_spw_id], [vis], [field_id], int(virt_spw_id),
                     context.observing_run)
                 freq_ranges_list = freq_ranges[0].split(';')
-                spwstring = spwstring + spw + ':'
+                spwstring = spwstring + virt_spw_id + ':'
                 for freqrange in freq_ranges_list:
                     spwstring = spwstring + freqrange.replace(' TOPO', '') + ';'
                 spwstring = spwstring[:-1]
@@ -346,7 +347,7 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
             if crange_list[0]['refer'] == 'TOPO':
                 LOG.info("Using TOPO frequency specified in {!s}".format(contfile))
-                spwstring = spwstring + spw + ':'
+                spwstring = spwstring + virt_spw_id + ':'
                 for freqrange in crange_list:
                     spwstring = spwstring + str(freqrange['range'][0]) + '~' + str(freqrange['range'][1]) + 'GHz;'
                 spwstring = spwstring[:-1]
