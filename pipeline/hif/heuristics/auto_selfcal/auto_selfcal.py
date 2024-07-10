@@ -1182,8 +1182,8 @@ class SelfcalHeuristics(object):
                     selfcal_library[target][band]['RMS_NF_curr'] * 3.0)
                 if selfcal_library[target][band]['clean_threshold_orig'] < selfcal_library[target][band][
                         'RMS_NF_curr'] * 3.0:
-                    LOG.info(
-                        "The clean threshold used for the initial image was less than 3*RMS_NF_curr, using that for the final image threshold instead.")
+                    LOG.info('The clean threshold used for the initial image was less than 3*RMS_NF_curr; '
+                             'the final image will use the same threshold as the initial image')
                 if selfcal_library[target][band]['SC_success']:
                     self.tclean_wrapper(
                         vislist, sani_target + '_' + band + '_final', band_properties, band, telescope=self.telescope,
