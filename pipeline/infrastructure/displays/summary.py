@@ -1202,17 +1202,17 @@ class SpwIdVsFreqChart(object):
         # Determining the resolution value so that generates fine ATM transmission
         # curve: it is set to smaller than 500kHz but is set to larger than
         # that corresponding to 48000 data points.
-        upperlimit_resol = 5e-4  # 500kHz, to show fine features of line within reasonable runtime.
-        max_nchan = 48000  # derived from (maximum frequency range 24GHz)/500kHz.
-        if rmin > upperlimit_resol:
-            resolution = upperlimit_resol
-            LOG.info("Frequency resolution: a default value is applied.")
+        default_resolution = 5e-4  # 500kHz/ch, to give four data points for about 2MHz FWHM of atmospheric ozone line.
+        max_nchan = 48000  # 24GHz/500kHz, to cover maximum frequency range from the end of LSB to the end of USB, if Band 1, 9 or 10 are used.
+        if rmin > default_resolution:
+            resolution = default_resolution
+            LOG.debug("Frequency resolution: a default value is applied.")
         else:
             resolution = rmin
-            LOG.info("Frequency resolution: a minimum value through the frequency range is applied.")
+            LOG.debug("Frequency resolution: a minimum value through the frequency range is applied.")
         if (xmax - xmin) / resolution > max_nchan:
             resolution = (xmax - xmin) / max_nchan
-            LOG.info("Frequency resolution: a mitigated value is reapplied.")
+            LOG.debug("Frequency resolution: a mitigated value is reapplied.")
         nchan = round((xmax - xmin) / resolution)
         LOG.info("Adopted frequency resolution of ATM transmission: {} kHz".format(resolution*1e6))
         LOG.info("Adopted number of points of ATM transmission: {}".format(nchan))
