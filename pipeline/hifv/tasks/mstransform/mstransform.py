@@ -26,31 +26,7 @@ class VlaMstransformInputs(mst.MstransformInputs):
         vis_root = os.path.splitext(self.vis)[0]
         return vis_root + '_targets.ms'
 
-    # Find all the spws with TARGET intent. These may be a subset of the
-    # science spws which include calibration spws.
-    @vdp.VisDependentProperty
-    def spw_line(self):
-        science_target_intents = set(self.intent.split(','))
-        science_target_spws = []
-
-        science_spws = [spw for spw in self.ms.get_spectral_windows(science_windows_only=True)]
-        for spw in science_spws:
-            if spw.intents.intersection(science_target_intents):
-                science_target_spws.append(spw)
-
-        return ','.join([str(spw.id) for spw in science_target_spws])
-
-    @spw_line.convert
-    def spw_line(self, value):
-        science_target_intents = set(self.intent.split(','))
-        science_target_spws = []
-
-        science_spws = [spw for spw in self.ms.get_spectral_windows(task_arg=value, science_windows_only=True)]
-        for spw in science_spws:
-            if spw.intents.intersection(science_target_intents):
-                science_target_spws.append(spw)
-
-        return ','.join([str(spw.id) for spw in science_target_spws])
+    spw_line = vdp.VisDependentProperty(default='')
 
     def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None,
                  spw_line=None, chanbin=None, timebin=None, outputvis_for_line=None):
@@ -112,28 +88,33 @@ class VlaMstransform(mst.Mstransform):
         # Run CASA task to create the output MS for the line data
         mstransform_args['outputvis'] = inputs.outputvis_for_line
 
+        produce_lines_ms = False
         if inputs.spw_line:
             mstransform_args['spw'] = inputs.spw_line
+            produce_lines_ms = True
         else:  # check to see if any spws have been identified as spectral lines for this MS
             specline_spws = []
             for spw in inputs.ms.get_spectral_windows(science_windows_only=True):
-                if spw.specline_window: 
+                if spw.specline_window:
                     specline_spws.append(spw)
             if specline_spws:
                 mstransform_args['spw'] = ','.join([str(spw.id) for spw in specline_spws])
-        mstransform_job = casa_tasks.mstransform(**mstransform_args)
+                produce_lines_ms = True
 
-        try:
-            self._executor.execute(mstransform_job)
-        except OSError as ee:
-            LOG.warning(f"Caught mstransform exception: {ee}")
+        if produce_lines_ms:
+            mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
-        # Save flags from line MS without rfi flagging
-        task = casa_tasks.flagmanager(vis=inputs.outputvis_for_line, mode='save', versionname=pre_rfi_flagversion_name)
-        self._executor.execute(task)
+            try:
+                self._executor.execute(mstransform_job)
+            except OSError as ee:
+                LOG.warning(f"Caught mstransform exception: {ee}")
 
-        # Copy across requisite XML files.
-        mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis_for_line)
+            # Save flags from line MS without rfi flagging
+            task = casa_tasks.flagmanager(vis=inputs.outputvis_for_line, mode='save', versionname=pre_rfi_flagversion_name)
+            self._executor.execute(task)
+
+            # Copy across requisite XML files.
+            mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis_for_line)
 
         # Restore RFI flags to main MS
         task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='rfi_flagged_statwt')
@@ -145,15 +126,13 @@ class VlaMstransform(mst.Mstransform):
 
         # Check for existence of the output vis.
         if not os.path.exists(result.outputvis):
-            LOG.debug('Error creating science targets cont+line MS for continuum %s' % (os.path.basename(result.outputvis)))
+            LOG.debug('Error creating science targets cont+line MS for continuum: %s' % (os.path.basename(result.outputvis)))
             return result
 
         # Check for existence of the output vis for line processing.
         if not os.path.exists(result.outputvis_for_line):
-            LOG.debug('Error creating science targets cont+line MS for line %s' % (os.path.basename(result.outputvis_for_line)))
-            return result
+            LOG.debug('Could not create science targets cont+line MS for line imaging: %s. Subsequent stages will not do line imaging.' % (os.path.basename(result.outputvis_for_line)))
 
-        # TODO: probably move this function
         def _import_new_ms(to_import, datatype):
             observing_run = tablereader.ObservingRunReader.get_observing_run(to_import)
 
@@ -173,8 +152,9 @@ class VlaMstransform(mst.Mstransform):
         try:
             to_import = os.path.relpath(result.outputvis)
             _import_new_ms(to_import, datatype=DataType.REGCAL_CONT_SCIENCE)
-            to_import_for_line = os.path.relpath(result.outputvis_for_line)
-            _import_new_ms(to_import_for_line, datatype=DataType.REGCAL_CONTLINE_SCIENCE)
+            if os.path.exists(result.outputvis_for_line):
+                to_import_for_line = os.path.relpath(result.outputvis_for_line)
+                _import_new_ms(to_import_for_line, datatype=DataType.REGCAL_CONTLINE_SCIENCE)
         except Exception:
             traceback.print_exec()
 

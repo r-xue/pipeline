@@ -46,7 +46,6 @@ class DataType(Enum):
         if intent == 'TARGET':
             if specmode == 'mfs':
                 # The preferred data types are SELFCAL_CONTLINE_SCIENCE and REGCAL_CONTLINE_SCIENCE.
-                # For VLA, also SELFCAL_CONT_SCIENCE and REGCAL_CONT_SCIENCE.
                 # The remaining fallback values are just there to support experimental usage of
                 # the first set of MSes.
                 specmode_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE,

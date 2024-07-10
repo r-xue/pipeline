@@ -49,12 +49,13 @@ def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=No
                         By default only TARGET data is selected.
 
                         Examples: 'PHASE,BANDPASS'
-    spw                 Select spectral window/channels to image for continuum imaging. By default all
+    spw                 Select spectral window/channels to include for continuum imaging. By default all
                         science spws for which the specified intent is valid are
                         selected.
-    spw_line            Select spectral window/channels to image for line imaging. 
-                        By default all science spws for which the specified intent is valid are
-                        selected.
+    spw_line            Select spectral window/channels to include for line imaging.
+                        If specified, these will override the default, which
+                        is to use the spws identified as specline_windows in hifv_importdata
+                        or hifv_restoredata.
     chanbin             Width (bin) of input channels to average to form an output
                         channel. If chanbin > 1 then chanaverage is automatically
                         switched to True.
