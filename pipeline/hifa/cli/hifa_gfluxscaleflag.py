@@ -8,16 +8,16 @@ def hifa_gfluxscaleflag(vis=None, intent=None, phaseupsolint=None, solint=None, 
                         antnegsig=None, antpossig=None, tmantint=None, tmint=None, tmbl=None, antblnegsig=None,
                         antblpossig=None, relaxed_factor=None, niter=None):
     """
-    hifa_gfluxscaleflag ---- Flag the phase, pol, flux calibrators
+    hifa_gfluxscaleflag ---- Flag the flux, diffgain, phase calibrators and check source
 
 
-    This task computes the flagging heuristics on the phase calibrator and flux
-    calibrator by calling hif_correctedampflag which looks for outlier
-    visibility points by statistically examining the scalar difference of
-    corrected amplitudes minus model amplitudes, and flags those outliers. The
-    philosophy is that only outlier data points that have remained outliers
-    after calibration will be flagged. The heuristic works equally well on
-    resolved calibrators and point sources because it is not performing a
+    This task computes the flagging heuristics on the flux, diffgain, and phase
+    calibrators and the check source, by calling hif_correctedampflag which
+    looks for outlier visibility points by statistically examining the scalar
+    difference of corrected amplitudes minus model amplitudes, and flags those
+    outliers. The philosophy is that only outlier data points that have remained
+    outliers after calibration will be flagged. The heuristic works equally well
+    on resolved calibrators and point sources because it is not performing a
     vector difference, and thus is not sensitive to nulls in the flux density
     vs. uvdistance domain. Note that the phase of the data is not assessed.
 

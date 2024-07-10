@@ -24,7 +24,7 @@ class TcleanQAHandler(pqa.QAPlugin):
 
         qaTool = casa_tools.quanta
 
-        data_selection = pqa.TargetDataSelection(session={context.observing_run.get_ms(result.vis[0]).session},
+        data_selection = pqa.TargetDataSelection(session={','.join(context.observing_run.get_ms(_vis).session for _vis in result.vis)},
                                                  vis=set(result.vis), spw={result.spw}, field={result.sourcename},
                                                  intent={result.intent}, pol={result.stokes})
 
@@ -60,9 +60,14 @@ class TcleanQAHandler(pqa.QAPlugin):
                 # set the score to the lowest (but still yellow) value
                 result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
                                                   weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
+                return result
 
             # PIPE-1790: if tclean failed to produce an image, skip any subsequent processing and report QAscore=0.34
             if result.image is None:
+                longmsg = 'tclean failed to produce an image'
+                shortmsg = 'no image'
+                result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
+                                                  weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
                 return result
 
             # Image RMS based score
@@ -73,8 +78,8 @@ class TcleanQAHandler(pqa.QAPlugin):
 
                 if (np.isnan(rms_score)):
                     rms_score = 0.0
-                    longmsg='Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
-                    shortmsg='RMS is NaN'
+                    longmsg = 'Cleaning diverged, RMS is NaN. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
+                    shortmsg = 'RMS is NaN'
                 else:
                     if rms_score > 0.66:
                         longmsg = 'RMS vs. DR corrected sensitivity. Field: %s Intent: %s SPW: %s' % (result.inputs['field'], result.intent, result.spw)
@@ -110,6 +115,18 @@ class TcleanQAHandler(pqa.QAPlugin):
 
             # Add score to pool
             result.qa.pool.append(pqa.QAScore(rms_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=data_selection))
+
+            # psfphasecenter usage score
+            # PIPE-98 asked for a QA score of 0.9 when the psfphasecenter parameter
+            # is used in the tclean calls for odd-shaped mosaics.
+            if result.used_psfphasecenter:
+                psfpc_score = 0.9
+                longmsg = f"Field {result.sourcename} has an odd-shaped mosaic - setting psfphasecenter to the position of the nearest pointing for SPW {result.spw}"
+                shortmsg = 'Odd-shaped mosaic'
+                origin = pqa.QAOrigin(metric_name='psfphasecenter', metric_score='N/A', metric_units='N/A')
+                # Add a hidden QA score. The psfphasecenter scores are aggregated in hif_makeimages to create
+                # scores per field and list of spws to be shown in the weblog.
+                result.qa.pool.append(pqa.QAScore(psfpc_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=data_selection, weblog_location=pqa.WebLogLocation.HIDDEN))
 
             # MOM8_FC based score
             if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None:
@@ -264,7 +281,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                                           origin=origin, applies_to=data_selection))
 
 class TcleanListQAHandler(pqa.QAPlugin):
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = resultobjects.TcleanResult
 
     def handle(self, context, result):

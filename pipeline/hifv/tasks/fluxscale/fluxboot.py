@@ -515,9 +515,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
             fitorder = 1
         elif ((len(unique_bands) > 2) or
               (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands))):
-            if fractional_bandwidth > 1.6:
+            # PIPE-1758: lower dnu/nu = 1.5 for 4th order fit
+            if fractional_bandwidth >= 1.5:
                 fitorder = 4
-            elif 0.8 <= fractional_bandwidth < 1.6:
+            elif 0.8 <= fractional_bandwidth < 1.5:
                 fitorder = 3
             elif 0.4 <= fractional_bandwidth < 0.8:
                 fitorder = 2

@@ -31,7 +31,7 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifas_imageprecheck</Command>
+        <Command xmlns="">hifa_imageprecheck</Command>
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">desired_angular_resolution</Keyword>
@@ -84,6 +84,10 @@
     <ProcessingCommand>
         <Command xmlns="">hif_uvcontsub</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">field</Keyword>
+                <Value xmlns="">{{{field_list}}}</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 

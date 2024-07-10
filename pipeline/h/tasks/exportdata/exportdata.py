@@ -1192,7 +1192,7 @@ finally:
                             'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
                             'naxis4', 'ctype4', 'cunit4', 'crpix4', 'crval4', 'cdelt4',
                             'bmaj', 'bmin', 'bpa', 'robust', 'weight',
-                            'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays', 'modifier']:
+                            'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays', 'modifier', 'session']:
                     fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
 
                 if 'nspwnam' in ff[0].header:
@@ -1201,6 +1201,14 @@ finally:
                     for i in range(1, nspwnam+1):
                         key = 'spwnam{:02d}'.format(i)
                         fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
+
+                if 'nsessio' in ff[0].header:
+                    nsession = ff[0].header['nsessio']
+                    session = ''
+                    for i in range(1, nsession+1):
+                        key = 'sessio{:02d}'.format(i)
+                        session += str(ff[0].header.get(key, 'N/A'))
+                    fits_keywords['session'] = session
 
                 # Some names and/or values need to be mapped
                 fits_keywords['imagemin'] = str(ff[0].header.get('datamin', 'N/A'))
