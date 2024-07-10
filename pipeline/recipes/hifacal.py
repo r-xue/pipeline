@@ -49,9 +49,6 @@ def hifacal(vislist, importonly=True, dbservice=True, interactive=True):
         # Flag system temperature calibration
         hifa_tsysflag()
 
-        # Run renormalization
-        hifa_renorm(createcaltable=True, atm_auto_exclude=True)
-
         # Flag system temperature calibration
         hifa_antpos()
 
@@ -89,6 +86,9 @@ def hifacal(vislist, importonly=True, dbservice=True, interactive=True):
 
         # Flag ultrahigh calibrated target data
         hifa_targetflag()
+
+        # Run renormalization
+        hifa_renorm(createcaltable=True, atm_auto_exclude=True)
 
         # Apply the calibrations
         hif_applycal()
