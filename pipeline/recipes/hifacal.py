@@ -49,6 +49,9 @@ def hifacal(vislist, importonly=True, dbservice=True, interactive=True):
         # Flag system temperature calibration
         hifa_tsysflag()
 
+        # flag line contamination
+        hifa_tsysflagcontamination()
+
         # Flag system temperature calibration
         hifa_antpos()
 
