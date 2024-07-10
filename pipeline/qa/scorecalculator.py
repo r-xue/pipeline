@@ -1185,8 +1185,10 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
         score = 1.0 - max_res
 
     # PIPE-119 part b
-    if min([min(res) for res in fractional_residuals]) > 0.3:
-        LOG.warning("All fractional residuals are > 0.3")
+    for res in fractional_residuals:
+        if max(np.abs(res))> 0.3:
+            LOG.warning("Fractional residuals are > 0.3")
+            break
 
     # PIPE-119 part c
     bool_spix = [True if eval(spix) < -3 or eval(spix) > 2 else False for spix in spixl]
