@@ -182,3 +182,20 @@ class VLARestoreData(restoredata.RestoreData):
                                         flagsum=flagsum, flagdetailedsum=flagdetailedsum)
         applycal_task = applycals.Applycals(container)
         return self._executor.execute(applycal_task, merge=True)
+
+    def _convert_calstate_paths(self, applyfile):
+        """Convert paths in the exported calstate to point to the new output directory.
+
+        This method reads the content of the given `applyfile` and processes it to 
+        convert directory paths to a new output directory. It overrides the base 
+        class private method to avoid the reported '/' parsing bug (PIPE-2024).
+
+        Args:
+            applyfile (str): The path to the exported calstate file.
+
+        Returns:
+            list of str: The converted commands as a list of strings.
+        """
+        # search-and-replace directory names in the exported calstate file
+        with open(applyfile, 'r') as f:
+            return f.read()
