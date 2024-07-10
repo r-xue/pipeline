@@ -626,7 +626,7 @@ class ImagingIncompreteRasterScanHeuristicResult(RasterScanHeuristicResult):
 
 
 def find_raster_gap(ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]', dtrow_list: 'List[np.ndarray[np.int64]]',
-                    msg_dict: Dict[str, str], raster_heuristics_result: RasterScanHeuristicResult) -> 'np.ndarray[np.int64]':
+                    msg_dict: Dict[str, str] = None, raster_heuristics_result: RasterScanHeuristicResult = None) -> 'np.ndarray[np.int64]':
     """
     Find gaps between individual raster map.
 
@@ -646,8 +646,8 @@ def find_raster_gap(ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]',
         dec: np.ndarray of Dec
         dtrow_list: List of np.ndarray holding array indices for ra and dec.
                     Each index array is supposed to represent single raster row.
-        msg_dict : string dict to use for a warning message.
-        raster_heuristics_result : RasterHeuristicsResult object to use for a warning message.
+        msg_dict : string dict to use for a warning message. Default to None.
+        raster_heuristics_result : RasterHeuristicsResult object to use for a warning message. Default to None.
 
     Raises:
         RasterScanHeuristicsFailure:
@@ -656,7 +656,9 @@ def find_raster_gap(ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]',
     Returns:
         np.ndarray of index for dtrow_list indicating boundary between raster maps
     """
-    msg = raster_heuristics_result.msg
+    msg = 'Failed to identify gap between raster map iteration.'
+    if raster_heuristics_result is not None:
+        msg = raster_heuristics_result.msg
 
     if msg_dict is not None:
         msg += (' EB:' +
