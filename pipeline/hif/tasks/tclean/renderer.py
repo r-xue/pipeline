@@ -242,11 +242,11 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 #
                 # theoretical sensitivity
                 #
-                if 'VLA' in r.imaging_mode:
-                    row_sensitivity = '-'
-                else:
+                if r.sensitivity is not None and r.sensitivity > 0.0:
                     sp_str, sp_scale = utils.get_si_prefix(r.sensitivity, lztol=1)
                     row_sensitivity = '{:.2g} {}'.format(r.sensitivity/sp_scale, sp_str+brightness_unit)
+                else:
+                    row_sensitivity = '-'
 
                 #
                 # Model image statistics for VLASS, PIPE-991
