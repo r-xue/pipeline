@@ -215,6 +215,10 @@
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">mfs</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">REGCAL_LINE_SCIENCE</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -236,6 +240,10 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cube</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">REGCAL_LINE_SCIENCE</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
