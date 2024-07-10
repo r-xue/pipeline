@@ -230,6 +230,30 @@ def ImageCoordinateUtil(
     return phasecenter, cellx, celly, nx, ny, org_direction
 
 
+def get_brightness_unit(infiles: List[str]) -> str:
+    """Return image brightness unit according to the unit of input MSes.
+
+    If multiple units were detected, it will warn it and
+    return one of the units detected. What is returned is
+    uncertain.
+
+    Args:
+        infiles: List of MS names
+
+    Returns:
+        Brightness unit string
+    """
+    units = {utils.get_brightness_unit(infile) for infile in infiles}
+    num_units = len(units)
+    LOG.info(f'units {units}')
+    brightnessunit = units.pop()
+
+    if num_units > 1:
+        LOG.warning(f'Brightness unit is not consistent among input MSes. Will use {brightnessunit}, but result may not correct.')
+
+    return brightnessunit
+
+
 class SDImagingWorkerInputs(vdp.StandardInputs):
     """Inputs class for imaging worker.
 
@@ -559,6 +583,9 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             phasecenter = 'TRACKFIELD'
             LOG.info("phasecenter is overrided with \'TRACKFIELD\'")
 
+        # brightness unit
+        brightnessunit = get_brightness_unit(infiles)
+
         qa = casa_tools.quanta
         image_args = {'mode': mode,
                       'intent': "OBSERVE_TARGET#ON_SOURCE",
@@ -577,7 +604,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                       'phasecenter': phasecenter,
                       'restfreq': restfreq,
                       'stokes': stokes,
-                      'ephemsrcname': ephemsrcname}
+                      'ephemsrcname': ephemsrcname,
+                      'brightnessunit': brightnessunit}
 
         # remove existing image explicitly
         for rmname in [imagename, imagename.rstrip('/') + '.weight']:
