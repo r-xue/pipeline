@@ -32,7 +32,11 @@ def make_mstransform_table(context, results):
     for single_result in results:
         vis_cell = os.path.basename(single_result.inputs['vis'])
         outputvis_cell = os.path.basename(single_result.inputs['outputvis'])
-        outputvis_line_cell = os.path.basename(single_result.inputs['outputvis_for_line'])
+        outputvis_line_name = os.path.basename(single_result.inputs['outputvis_for_line'])
+        if os.path.exists(outputvis_line_name):
+            outputvis_line_cell = outputvis_line_name
+        else:
+            outputvis_line_cell = "N/A"
         tr = MstransformTR(vis_cell, outputvis_cell, outputvis_line_cell)
         rows.append(tr)
 
