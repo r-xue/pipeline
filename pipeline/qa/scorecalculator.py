@@ -2625,7 +2625,7 @@ def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, in
 def examine_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
     """Examine the existence of lines at edge channels.
 
-    This function checks if there is lines that spans edge channels.
+    This function checks if there are lines that spans edge channels.
     Excluded channels via edge parameter are taken into account.
 
     Args:
