@@ -304,7 +304,7 @@ class Tclean(cleanbase.CleanBase):
         self.image_heuristics = inputs.image_heuristics
 
         # Set initial masking limits
-        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(None)
+        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(None, inputs.specmode)
         if not inputs.pblimit:
             inputs.pblimit = self.pblimit_image
 
@@ -583,19 +583,20 @@ class Tclean(cleanbase.CleanBase):
             self.cont_freq_ranges = ''
 
         # Get sensitivity
+        sens_reffreq = None
         if inputs.sensitivity is not None:
             # Override with manually set value
             sensitivity = qaTool.convert(inputs.sensitivity, 'Jy')['value']
             eff_ch_bw = 1.0
         else:
             # Get a noise estimate from the CASA sensitivity calculator
-            (sensitivity, eff_ch_bw, _, per_spw_cont_sensitivities_all_chan) = \
+            (sensitivity, eff_ch_bw, _, sens_reffreq, per_spw_cont_sensitivities_all_chan) = \
                 self.image_heuristics.calc_sensitivities(inputs.vis, inputs.field, inputs.intent, inputs.spw,
                                                          inputs.nbin, spw_topo_chan_param_dict, inputs.specmode,
                                                          inputs.gridder, inputs.cell, inputs.imsize, inputs.weighting,
                                                          inputs.robust, inputs.uvtaper,
                                                          known_sensitivities=per_spw_cont_sensitivities_all_chan,
-                                                         force_calc=inputs.calcsb)
+                                                         force_calc=inputs.calcsb, calc_reffreq=True)
 
         if sensitivity is None:
             LOG.error('Could not calculate the sensitivity for Field %s Intent %s SPW %s' % (inputs.field,
@@ -607,6 +608,23 @@ class Tclean(cleanbase.CleanBase):
                                         specmode=inputs.specmode)
             error_result.error = '%s/%s/spw%s clean error: no sensitivity' % (inputs.field, inputs.intent, inputs.spw)
             return error_result
+
+        # PIPE-2130: for the VLA-PI workflow only, determine the optimal reffreq value from spw center frequencies
+        # weighted by predicted per-spw sensitivity.
+        # This is only triggered if all below conditions meet:
+        #   * reffreq is not specified in the Tclean/input (from MakeImList or Editimlist)
+        #   * deconvolver is mtmfs
+        #   * nterms>=2 or CASA default nterms=None
+        if (
+            self.image_heuristics.imaging_mode in {"VLA", "VLA-SCAL"}
+            and inputs.specmode == "cont"
+            and inputs.deconvolver == "mtmfs"
+            and (inputs.nterms is None or inputs.nterms >= 2)
+            and inputs.reffreq is None
+            and sens_reffreq is not None
+        ):
+            # Set reffreq in GHz
+            inputs.reffreq = f"{sens_reffreq/1e9}GHz"
 
         # Choose TOPO frequency selections
         if inputs.specmode != 'cube':
@@ -1093,7 +1111,7 @@ class Tclean(cleanbase.CleanBase):
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
-        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(result.flux+extension)
+        self.pblimit_image, self.pblimit_cleanmask = self.image_heuristics.pblimits(result.flux+extension, specmode=inputs.specmode)
 
         # Keep pblimits for mom8_fc QA statistics and score (PIPE-704)
         result.set_pblimit_image(self.pblimit_image)
