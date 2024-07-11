@@ -1,6 +1,6 @@
 import os
 import shutil
-from typing import Type, Dict, List
+from typing import Type, Dict
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -94,13 +94,7 @@ class Hanning(basetask.StandardTaskTemplate):
         """
 
         with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
-            if 'OFFLINE_HANNING_SMOOTH' not in table.colnames():
-                try:
-                    spw_preaverage = table.getvarcol('SDM_NUM_BIN')
-                except Exception as e:
-                    spw_preaverage = dict()
-                    LOG.debug('Column SDM_NUM_BIN was not found in the SDM.')
-            else:
+            if 'OFFLINE_HANNING_SMOOTH' in table.colnames():
                 LOG.warning("MS has already had offline hanning smoothing applied. Skipping this stage.")
                 return HanningResults()
 
@@ -108,11 +102,12 @@ class Hanning(basetask.StandardTaskTemplate):
         spws = self.inputs.context.observing_run.get_ms(self.inputs.vis).get_all_spectral_windows()
         hs_dict = dict()
         for spw in spws:
-            if spw.sdm_num_bin > 1 or spw.specline_window:
+            if 'TARGET' not in spw.intents:
+                # keep all science spws to False
+                continue
+            elif spw.sdm_num_bin > 1 or spw.specline_window:
                 if self._checkmaserline(str(spw.id)):
                     hs_dict[spw.id] = True
-                else:
-                    hs_dict[spw.id] = False
             else:
                 hs_dict[spw.id] = True
 
@@ -231,7 +226,7 @@ class Hanning(basetask.StandardTaskTemplate):
                 return True
         return False
 
-    def _track_hsmooth(self, hs_dict: Dict[str, bool]):
+    def _track_hsmooth(self, hs_dict: Dict[int, bool]):
         """Modify SPECTRAL_WINDOW table to track hanning smoothing
 
         Args:
@@ -249,4 +244,4 @@ class Hanning(basetask.StandardTaskTemplate):
         with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW', nomodify=False) as tb:
             tb.addcols(desc)
             for spw, value in hs_dict.items():
-                tb.putcell('OFFLINE_HANNING_SMOOTH', int(spw), value)
+                tb.putcell('OFFLINE_HANNING_SMOOTH', spw, value)
