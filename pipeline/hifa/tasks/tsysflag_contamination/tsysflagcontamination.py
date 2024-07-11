@@ -7,6 +7,7 @@ import numpy as np
 import pipeline.extern.tsys_contamination as extern
 import pipeline.h.tasks.tsysflag.tsysflag as tsysflag
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.extern.TsysDataClassFile import TsysData
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
@@ -100,6 +101,7 @@ class ExternFunctionArguments:
     Adapter class to adapt TsysflagContaminationInputs task inputs class to
     the function arguments required by the external heuristic.
     """
+
     vis: str
     diagnostic_plots: bool
     tsystable: str
@@ -125,7 +127,7 @@ class ExternFunctionArguments:
             logpath=inputs.logpath,
             filetemplate=inputs.filetemplate,
             pl_run_dir=inputs.context.output_dir,
-            plots_path=weblog_dir
+            plots_path=weblog_dir,
         )
 
 
@@ -154,25 +156,73 @@ class TsysFlagContamination(StandardTaskTemplate):
 
     Inputs = TsysFlagContaminationInputs
 
+    def _assert_data_preconditions(self):
+        """
+        Preflight checks to identify data that the heuristic cannot handle.
+        """
+        errors = []
+
+        ms = self.inputs.ms
+        science_spws = ms.get_spectral_windows(science_windows_only=True)
+
+        # exclude multi-source, multi-tuning (script fails in EE10).
+        if len(ms.get_spectral_specs()) > 1:
+            errors.append(f"multiple spectral tunings present")
+
+        # exclude full polarization
+        polarizations = {
+            ms.get_data_description(spw=spw.id).num_polarizations
+            for spw in science_spws
+        }
+        if any(n > 2 for n in polarizations):
+            errors.append(f"full polarization data present")
+
+        # exclude TP (fails by design; needs bandpass intent scan)
+        if "BANDPASS" not in ms.intents:
+            errors.append(f"BANDPASS data missing")
+
+        return errors
+
     def prepare(self):
         result = TsysflagResults()
         result.vis = self.inputs.vis
         result.caltable = self.inputs.caltable
 
+        # step 1: do not run the heuristic on data we know it cannot handle
+        # see https://open-jira.nrao.edu/browse/PIPE-2009?focusedId=215037&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-215037
+        preflight_errors = self._assert_data_preconditions()
+        if preflight_errors:
+            reasons = "; ".join(preflight_errors)
+            result.task_incomplete_reason = f"Line contamination heuristic cannot process {self.inputs.vis}: {reasons}"
+            result.metric_order = "manual"  # required for renderer
+            return result
+
+        # step 2: run extern heuristic
         extern_fn_args = ExternFunctionArguments.from_inputs(self.inputs)
         try:
             plot_wrappers, warnings = self._call_extern_heuristic(extern_fn_args)
         except Exception:
-            result.task_incomplete_reason = 'Line contamination heuristic failed'
-            result.metric_order = 'manual'  # required for renderer
+            result.task_incomplete_reason = "Line contamination heuristic failed"
+            result.metric_order = "manual"  # required for renderer
             return result
 
+        result.plots = plot_wrappers
+        result.line_contamination_warnings = warnings
+
+        # Step 3: do not flag data for DSB data
+        # Set manual flagging template to that written by the heuristic unless it's a DSB EB.
+        ms = self.inputs.ms
+        spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
+        rx_map = utils.get_receiver_type_for_spws(ms, spw_ids)
+        filetemplate = None if "DSB" in rx_map.values() else self.inputs.filetemplate
+
+        # Always run the child task - even for DSB - as the results are required by the Tsyscalflag renderer
         child_inputs = tsysflag.Tsysflag.Inputs(
             self.inputs.context,
             output_dir=self.inputs.output_dir,
             vis=self.inputs.vis,
             caltable=self.inputs.caltable,
-            filetemplate=self.inputs.filetemplate,
+            filetemplate=filetemplate,
             flag_birdies=False,
             flag_derivative=False,
             flag_edgechans=False,
@@ -180,7 +230,7 @@ class TsysFlagContamination(StandardTaskTemplate):
             flag_nmedian=False,
             flag_toomany=False,
             fnm_byfield=False,
-            normalize_tsys=False
+            normalize_tsys=False,
         )
         child_task = tsysflag.Tsysflag(child_inputs)
         child_result = self._executor.execute(child_task)
@@ -191,8 +241,6 @@ class TsysFlagContamination(StandardTaskTemplate):
         result.summaries = child_result.summaries
         result.error.update(child_result.error)
         result.metric_order = list(child_result.metric_order)
-
-        result.plots = plot_wrappers
 
         return result
 
