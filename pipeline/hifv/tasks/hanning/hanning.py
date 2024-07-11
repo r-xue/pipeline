@@ -99,22 +99,19 @@ class Hanning(basetask.StandardTaskTemplate):
                 return HanningResults()
 
         # Retrieve SPWs information and determine which to smooth
-        spws = self.inputs.context.observing_run.get_ms(self.inputs.vis).get_all_spectral_windows()
+        spws = self.inputs.context.observing_run.get_ms(self.inputs.vis).get_spectral_windows(science_windows_only=True)
         hs_dict = dict()
         for spw in spws:
-            if 'TARGET' not in spw.intents:
-                # keep all science spws to False
-                continue
-            elif spw.sdm_num_bin > 1 or spw.specline_window:
+            if spw.sdm_num_bin > 1 or spw.specline_window:
                 if self._checkmaserline(str(spw.id)):
                     hs_dict[spw.id] = True
             else:
                 hs_dict[spw.id] = True
 
         if not any(hs_dict.values()):
-            LOG.info("None of the SPWs were selected for smoothing.")
+            LOG.info("None of the science spectral windows were selected for smoothing.")
         elif all(hs_dict.values()):
-            LOG.info("All spectral windows were selected for hanning smoothing")
+            LOG.info("All science spectral windows were selected for hanning smoothing")
             try:
                 self._do_hanningsmooth()
                 LOG.info("Removing original VIS " + self.inputs.vis)
