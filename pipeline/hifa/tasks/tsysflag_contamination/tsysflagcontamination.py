@@ -1,6 +1,10 @@
+import dataclasses
 import os
 import re
 
+import numpy as np
+
+import pipeline.extern.tsys_contamination as extern
 import pipeline.h.tasks.tsysflag.tsysflag as tsysflag
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
@@ -8,8 +12,6 @@ from pipeline.extern.TsysDataClassFile import TsysData
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.h.tasks.tsysflag.resultobjects import TsysflagResults
 from pipeline.infrastructure import task_registry
-import pipeline.extern.tsys_contamination as extern
-import numpy as np
 
 __all__ = ["TsysFlagContamination", "TsysFlagContaminationInputs"]
 
@@ -22,6 +24,13 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
     """
     TsysFlagContaminationInputs defines the inputs for the TsysFlagContamination
     pipeline task.
+
+    Heuristic parameters specific to this task are:
+
+    - remove_n_extreme: defaults to 2
+    - relative_detection_factor: defaults to 0.005
+    - diagnostic_plots: include diagnostic plots in the weblog. Defaults to
+      True.
     """
 
     @vdp.VisDependentProperty
@@ -51,6 +60,7 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
 
     remove_n_extreme = vdp.VisDependentProperty(default=2)
     relative_detection_factor = vdp.VisDependentProperty(default=0.005)
+    diagnostic_plots = vdp.VisDependentProperty(default=True)
 
     def __init__(
         self,
@@ -62,6 +72,7 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
         logpath=None,
         remove_n_extreme=None,
         relative_detection_factor=None,
+        diagnostic_plots=None,
     ):
         super(TsysFlagContaminationInputs, self).__init__()
 
@@ -76,10 +87,46 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
 
         self.filetemplate = filetemplate
         self.logpath = logpath
+        self.diagnostic_plots = diagnostic_plots
 
         # heuristic parameter arguments
         self.remove_n_extreme = remove_n_extreme
         self.relative_detection_factor = relative_detection_factor
+
+
+@dataclasses.dataclass
+class ExternFunctionArguments:
+    """
+    Adapter class to adapt TsysflagContaminationInputs task inputs class to
+    the function arguments required by the external heuristic.
+    """
+    vis: str
+    diagnostic_plots: bool
+    tsystable: str
+    remove_n_extreme: float
+    relative_detection_factor: float
+    logpath: str
+    filetemplate: str
+    pl_run_dir: str
+    plots_path: str
+
+    @staticmethod
+    def from_inputs(inputs: TsysFlagContaminationInputs) -> "ExternFunctionArguments":
+        context = inputs.context
+        weblog_dir = os.path.join(context.report_dir, f"stage{context.task_counter}")
+        os.makedirs(weblog_dir, exist_ok=True)
+
+        return ExternFunctionArguments(
+            vis=inputs.vis,
+            diagnostic_plots=inputs.diagnostic_plots,
+            tsystable=inputs.caltable,
+            remove_n_extreme=inputs.remove_n_extreme,
+            relative_detection_factor=inputs.relative_detection_factor,
+            logpath=inputs.logpath,
+            filetemplate=inputs.filetemplate,
+            pl_run_dir=inputs.context.output_dir,
+            plots_path=weblog_dir
+        )
 
 
 @task_registry.set_equivalent_casa_task("hifa_tsysflagcontamination")
@@ -87,14 +134,81 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
     "Line contamination in the Tsys tables is detected and flagged."
 )
 class TsysFlagContamination(StandardTaskTemplate):
+    """
+    Flag line contamination in the Tsys tables.
+
+    This purpose of this class is to call the external flagging heuristic to
+    generate flagging commands based on line contamination in Tsys tables, and
+    then pass those flagging commands to the standard h_tsysflag child task in
+    manual flagging mode.
+
+    The bulk of what you see here comes directly from the extern code,
+    sandwiched between a few lines of code to extract input parameters and
+    pass them to the heuristic, followed at the end of the method by
+    wrapping and adapting the results - a list of flagging commands - into
+    a manual flagging request for the existing h_tsysflag task. The results
+    of this child task are then captured and adapted so that the QA and
+    weblog rendering code can operate on the results of this line
+    contamination task.
+    """
+
     Inputs = TsysFlagContaminationInputs
 
     def prepare(self):
-        tsystable = self.inputs.caltable
-        context = self.inputs.context
-        vis = self.inputs.vis
-        weblog_dir = os.path.join(context.report_dir, f'stage{context.task_counter}')
-        os.makedirs(weblog_dir, exist_ok=True)
+        result = TsysflagResults()
+        result.vis = self.inputs.vis
+        result.caltable = self.inputs.caltable
+
+        extern_fn_args = ExternFunctionArguments.from_inputs(self.inputs)
+        try:
+            plot_wrappers, warnings = self._call_extern_heuristic(extern_fn_args)
+        except Exception:
+            result.task_incomplete_reason = 'Line contamination heuristic failed'
+            result.metric_order = 'manual'  # required for renderer
+            return result
+
+        child_inputs = tsysflag.Tsysflag.Inputs(
+            self.inputs.context,
+            output_dir=self.inputs.output_dir,
+            vis=self.inputs.vis,
+            caltable=self.inputs.caltable,
+            filetemplate=self.inputs.filetemplate,
+            flag_birdies=False,
+            flag_derivative=False,
+            flag_edgechans=False,
+            flag_fieldshape=False,
+            flag_nmedian=False,
+            flag_toomany=False,
+            fnm_byfield=False,
+            normalize_tsys=False
+        )
+        child_task = tsysflag.Tsysflag(child_inputs)
+        child_result = self._executor.execute(child_task)
+
+        result.pool.extend(child_result.pool)
+        result.final.extend(child_result.final)
+        result.components.update(child_result.components)
+        result.summaries = child_result.summaries
+        result.error.update(child_result.error)
+        result.metric_order = list(child_result.metric_order)
+
+        result.plots = plot_wrappers
+
+        return result
+
+    def analyse(self, result):
+        return result
+
+    def _call_extern_heuristic(self, fn_args: ExternFunctionArguments):
+        vis = fn_args.vis
+        diagnostic_plots = fn_args.diagnostic_plots
+        tsystable = fn_args.tsystable
+        remove_n_extreme = fn_args.remove_n_extreme
+        relative_detection_factor = fn_args.relative_detection_factor
+        logpath = fn_args.logpath
+        filetemplate = fn_args.filetemplate
+        pl_run_dir = fn_args.pl_run_dir
+        plots_path = fn_args.plots_path
 
         single_polarization = (
             tsystable == "uid___A002_X10ac6bc_Xc408.ms.h_tsyscal.s6_1.tsyscal.tbl"
@@ -109,11 +223,10 @@ class TsysFlagContamination(StandardTaskTemplate):
         line_contamination_intervals, warnings_list, plot_wrappers = (
             extern.get_tsys_contaminated_intervals(
                 tsys,
-                plot=True,
-                # spwlist=[np.int(30)],fieldlist=[np.int64(2)],# this selection does not work with the saved spool sample
-                remove_n_extreme=self.inputs.remove_n_extreme,
-                relative_detection_factor=self.inputs.relative_detection_factor,
-                savefigfile=f"{weblog_dir}/{vis}.tsyscontamination",
+                plot=diagnostic_plots,
+                remove_n_extreme=remove_n_extreme,
+                relative_detection_factor=relative_detection_factor,
+                savefigfile=f"{plots_path}/{vis}.tsyscontamination",
             )
         )
 
@@ -121,9 +234,6 @@ class TsysFlagContamination(StandardTaskTemplate):
             if np.sum(np.array([len(vv) for vv in v.values()])) == 0:
                 del line_contamination_intervals[k]
 
-        # start --------------------------------------
-
-        # to replace
         [intents, scans, fields] = [
             tsys.tsysdata[tsys.tsysfields.index(f)] for f in ["intent", "scan", "field"]
         ]
@@ -137,9 +247,9 @@ class TsysFlagContamination(StandardTaskTemplate):
 
         all_freqs_mhz = tsys.specdata[tsys.specfields.index("freq_mhz")]
 
-        with open(self.inputs.logpath, "w") as f:
-            with open(self.inputs.filetemplate, "a") as ft:
-                pl_run_dir = self.inputs.context.output_dir
+        with open(logpath, "w") as f:
+            with open(filetemplate, "a") as ft:
+                pl_run_dir = pl_run_dir
                 f.write(
                     f"\n# script version {extern.VERSION} {pl_run_dir}\n# {tsystable}\n"
                 )
@@ -212,37 +322,4 @@ class TsysFlagContamination(StandardTaskTemplate):
                     f.write(msg)
                     LOG.info(msg)
 
-        child_inputs = tsysflag.Tsysflag.Inputs(
-            self.inputs.context,
-            output_dir=self.inputs.output_dir,
-            vis=self.inputs.vis,
-            caltable=self.inputs.caltable,
-            filetemplate=self.inputs.filetemplate,
-            flag_birdies=False,
-            flag_derivative=False,
-            flag_edgechans=False,
-            flag_fieldshape=False,
-            flag_nmedian=False,
-            flag_toomany=False,
-            fnm_byfield=False,
-            normalize_tsys=False,
-        )
-        child_task = tsysflag.Tsysflag(child_inputs)
-        child_result = self._executor.execute(child_task)
-
-        result = TsysflagResults()
-        result.vis = child_result.vis
-        result.caltable = child_result.caltable
-        result.pool.extend(child_result.pool)
-        result.final.extend(child_result.final)
-        result.components.update(child_result.components)
-        result.summaries = child_result.summaries
-        result.error.update(child_result.error)
-        result.metric_order = list(child_result.metric_order)
-
-        result.plots = plot_wrappers
-
-        return result
-
-    def analyse(self, result):
-        return result
+        return plot_wrappers, warnings_list

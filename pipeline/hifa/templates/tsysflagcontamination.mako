@@ -53,17 +53,23 @@ def flagcmd_file_data(caltable, flagcmd_file):
   </ul>
 % endif
 
+% if any([summary_plots, updated_refants, summary_plots, flags, flagcmd_files]):
 <h2>Contents</h2>
 <ul>
 % if updated_refants:
     <li><a href="#refants">Reference antenna update</a></li>
 % endif
+% if summary_plots:
     <li><a href="#plots">T<sub>sys</sub> after flagging</a></li>
+% endif
+% if flags:
     <li><a href="#summarytable">Flagged data summary</a></li>
+% endif
 % if flagcmd_files:
     <li><a href="#contamination">Contamination flagging details</a></li>
 % endif
 </ul>
+% endif
 
 % if updated_refants:
 <h2 id="refants" class="jumptarget">Reference Antenna update</h2>
@@ -164,7 +170,7 @@ def flagcmd_file_data(caltable, flagcmd_file):
 
 </%self:plot_group>
 
-
+% if flags:
 <h2>Flagged data summary</h2>
 
 % for ms in flags:
@@ -208,7 +214,9 @@ def flagcmd_file_data(caltable, flagcmd_file):
 </table>
 
 % endfor
+% endif
 
+% if flagcmd_files:
 <h2>Flag Step Details</h2>
 <p>
     The following section provides details of the flagging commands used to
@@ -216,7 +224,6 @@ def flagcmd_file_data(caltable, flagcmd_file):
     measurements.
 </p>
 
-% if flagcmd_files:
 	<h3 id="contamination" class="jumptarget">Astrophysical line contamination</h3>
 	Flag astrophysical line contamination in T<sub>sys</sub> spectra. If contamination is detected, the regions to mask
 	are written to a template file and the caltable is flagged. 

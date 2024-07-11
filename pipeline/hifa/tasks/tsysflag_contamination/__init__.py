@@ -1,7 +1,7 @@
 import pipeline.infrastructure.renderer.weblog as weblog
-
-from .tsysflagcontamination import TsysFlagContamination
+from . import qa
 from .renderer import T2_4MDetailsTsysflagContaminationRenderer
+from .tsysflagcontamination import TsysFlagContamination
 
 weblog.add_renderer(
     TsysFlagContamination,

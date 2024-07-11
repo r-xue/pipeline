@@ -39,7 +39,8 @@ class T2_4MDetailsTsysflagContaminationRenderer(T2_4MDetailsTsysflagRenderer):
             plots = self.post_process_plots(
                 pipeline_context, spw_map, getattr(result, "plots", [])
             )
-            plot_pages[vis] = plots
+            if plots:
+                plot_pages[vis] = plots
 
             renderer = TsysContaminationPlotRenderer(pipeline_context, result, plots)
             with renderer.get_file() as fileobj:
