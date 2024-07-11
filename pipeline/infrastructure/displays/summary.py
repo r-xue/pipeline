@@ -1199,11 +1199,12 @@ class SpwIdVsFreqChart(object):
                 rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
-        # Determining the resolution value so that generates fine ATM transmission
-        # curve: it is set to smaller than 500kHz but is set to larger than
-        # that corresponding to 48000 data points.
-        default_resolution = 5e-4  # 500kHz/ch, to give four data points for about 2MHz FWHM of atmospheric ozone line.
-        max_nchan = 48000  # 24GHz/500kHz, to cover maximum frequency range from the end of LSB to the end of USB, if Band 1, 9 or 10 are used.
+        # Determining the resolution value so that generates fine ATM transmission curve: it is set
+        # to smaller than 500kHz but is set to larger than that corresponding to 48000 data points.
+        default_resolution = 5e-4  # 500 kHz/ch, to give five data points for about 2 MHz FWHM of 
+                                   # atmospheric ozone line: 2 MHz/(5-1) = 500 kHz.
+        max_nchan = 48000  # 24 GHz/500 kHz, where 24 GHz covers both sidebands of a 4-12 GHz IF 
+                           # for a single LO tuning.
         if rmin > default_resolution:
             resolution = default_resolution
             LOG.debug("Frequency resolution: a default value is applied.")
@@ -1214,8 +1215,7 @@ class SpwIdVsFreqChart(object):
             resolution = (xmax - xmin) / max_nchan
             LOG.debug("Frequency resolution: a mitigated value is reapplied.")
         nchan = round((xmax - xmin) / resolution)
-        LOG.info("Adopted frequency resolution of ATM transmission: {} kHz".format(resolution*1e6))
-        LOG.info("Adopted number of points of ATM transmission: {}".format(nchan))
+        LOG.info("{} plots the atmospheric transmission with {} data points at {} kHz intervals.".format(filename, nchan, resolution*1e6))
         atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
         ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
