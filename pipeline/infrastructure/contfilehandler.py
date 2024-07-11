@@ -211,7 +211,7 @@ class ContFileHandler(object):
 
         frame_freq_selection, refer = selection.split()
         if refer not in ('LSRK', 'SOURCE'):
-            msg = 'Original reference frame must be LSRK or SOURCE.'
+            msg = f'Original reference frame must be LSRK or SOURCE, not {refer}.'
             LOG.error(msg)
             raise Exception(msg)
 
@@ -289,11 +289,11 @@ class ContFileHandler(object):
                         virt_spw_id = spw_id
                         break
                 if virt_spw_id is None:
-                    LOG.info('SPW name not found. Falling back to SPW ID lookup.')
+                    LOG.info(f'SPW name: {spw_name} not found. Falling back to SPW ID lookup.')
 
         if virt_spw_id is None:
             if not spw_id.isdigit():
-                msg = f'SPW ID string must be an integer.'
+                msg = f'SPW ID string must be an integer, not {spw_id}.'
                 LOG.error(msg)
                 raise Exception(msg)
             else:
