@@ -42,13 +42,10 @@ def flagcmd_file_data(caltable, flagcmd_file):
 <%block name="title">Flag T<sub>sys</sub> astrophysical line contamination</%block>
 
 % if any([msg for msg in task_incomplete_msg.values()]):
-  <h2>Error report</h2>
-  
-  <p>For the following measurement sets, the Tsysflag task ended prematurely with the following error message:</p>
+  <p>For the following measurement sets, the task ended prematurely with the following message:</p>
   <ul>
   % for vis, msg in task_incomplete_msg.items():
-  	<li>${os.path.basename(vis)} :<br>
-  	${msg}</li>
+  	<li>${msg}</li>
   % endfor
   </ul>
 % endif
@@ -226,7 +223,7 @@ def flagcmd_file_data(caltable, flagcmd_file):
 
 	<h3 id="contamination" class="jumptarget">Astrophysical line contamination</h3>
 	Flag astrophysical line contamination in T<sub>sys</sub> spectra. If contamination is detected, the regions to mask
-	are written to a template file and the caltable is flagged. 
+	are written to a template file and the caltable is flagged, unless the data is Band 9 or 10.
 
     <h4>Template files</h4>
     <table class="table table-bordered table-striped">
