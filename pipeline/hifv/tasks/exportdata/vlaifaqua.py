@@ -66,6 +66,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         report.append(self.get_calibrators(context))
         report.append(self.get_science_spws(context))
         report.append(self.get_scans(context))
+        report.append(self.get_observation_summary(context))
         return report
 
     def get_processing_environment(self):
@@ -84,10 +85,11 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             root.append(nmpiservers)
         for node in nodes:
             nx = ElementTree.Element("Host")
-            ElementTree.SubElement(nx, 'HostName').text = node['hostname']
-            ElementTree.SubElement(nx, 'OperatingSystem').text = node['os']
-            ElementTree.SubElement(nx, 'Cores').text = str(node['num_cores'])
-            ElementTree.SubElement(nx, 'RAM').text = str(measures.FileSize(node['ram'], measures.FileSizeUnits.BYTES))
+            ElementTree.SubElement(nx, "HostName").text = node['hostname']
+            ElementTree.SubElement(nx, "OperatingSystem").text = node['os']
+            ElementTree.SubElement(nx, "Cores").text = str(node['num_cores'])
+            ElementTree.SubElement(nx, "Memory").text = str(measures.FileSize(node['ram'], measures.FileSizeUnits.BYTES))
+            ElementTree.SubElement(nx, "CPU").text = str(node['cpu'])
             root.append(nx)
         return root
 
@@ -132,6 +134,23 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                 ElementTree.SubElement(nx, 'Intents').text = ",".join([str(intent) for intent in sc.intents])
                 root.append(nx)
 
+        return root
+
+    def get_observation_summary(self, context):
+        mslist = context.observing_run.get_measurement_sets()
+        root = ElementTree.Element("ObservationSummary")
+        # from IPython import embed; embed()
+        for ms in mslist:
+            nx = ElementTree.Element("StartTime")
+            nx.text = str(ms.start_time["m0"]["value"])
+            root.append(nx)
+            nx = ElementTree.Element("EndTime")
+            nx.text = str(ms.end_time["m0"]["value"])
+            root.append(nx)
+            nx = ElementTree.Element("Baseline")
+            ElementTree.SubElement(nx, "Min").text = str(ms.antenna_array.baseline_min.length.value)
+            ElementTree.SubElement(nx, "Max").text = str(ms.antenna_array.baseline_max.length.value)
+            root.append(nx)
         return root
 
     def get_project_structure(self, context):
