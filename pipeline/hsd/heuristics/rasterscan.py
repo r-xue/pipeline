@@ -565,7 +565,7 @@ class RasterScanHeuristicResult(ABC):
         elif name == RasterScanHeuristicResult.IMAGING_GAP:
             return ImagingGapRasterScanHeuristicResult(ms)
         elif name == RasterScanHeuristicResult.IMAGING_SKIP:
-            return ImagingIncompreteRasterScanHeuristicResult(ms)
+            return ImagingIncompleteRasterScanHeuristicResult(ms)
         else:
             return None
 
@@ -635,7 +635,7 @@ class ImagingGapRasterScanHeuristicResult(RasterScanHeuristicResult):
     msg = 'Unable to identify gap between raster map iteration'
 
 
-class ImagingIncompreteRasterScanHeuristicResult(RasterScanHeuristicResult):
+class ImagingIncompleteRasterScanHeuristicResult(RasterScanHeuristicResult):
     """Subclass of RasterScanHeuristicResult to generate messages of LOG.warning and QAScore for imaging"""
     msg = 'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS'
 
