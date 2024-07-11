@@ -1201,8 +1201,8 @@ class SpwIdVsFreqChart(object):
         center_freq = (xmin + xmax) / 2.0
         # Determining the resolution value so that generates fine ATM transmission curve: it is set
         # to smaller than 500kHz but is set to larger than that corresponding to 48000 data points.
-        default_resolution = 5e-4  # 500 kHz/ch, to give five data points for about 2 MHz FWHM of 
-                                   # atmospheric ozone line: 2 MHz/(5-1) = 500 kHz.
+        default_resolution = 5e-4  # To have 5 data points within the ozone feature of 2 MHz FWHM:
+                                   # 2 MHz/(5-1) = 500 kHz.
         max_nchan = 48000  # 24 GHz/500 kHz, where 24 GHz covers both sidebands of a 4-12 GHz IF 
                            # for a single LO tuning.
         if rmin > default_resolution:
