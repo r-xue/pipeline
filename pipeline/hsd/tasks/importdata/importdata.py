@@ -184,15 +184,15 @@ class SerialSDImportData(importdata.ImportData):
         table_prefix = relative_path(os.path.join(self.inputs.context.name, 'MSDataTable.tbl'),
                                      self.inputs.output_dir)
         reduction_group_list = []
-        rasterscan_heuristics_list = []
+        rasterscan_heuristics_result_list = []
         org_directions_dict = {}
         for ms in results.mses:
             LOG.debug('Start inspection for %s' % ms.basename)
             table_name = os.path.join(table_prefix, ms.basename)
             inspector = inspection.SDInspection(self.inputs.context, table_name, ms=ms, hm_rasterscan=self.inputs.hm_rasterscan)
-            reduction_group, org_directions, msglist, raster_heuristic = self._executor.execute(inspector, merge=False)
+            reduction_group, org_directions, msglist, raster_heuristics_result = self._executor.execute(inspector, merge=False)
             reduction_group_list.append(reduction_group)
-            rasterscan_heuristics_list.append(raster_heuristic)
+            rasterscan_heuristics_result_list.append(raster_heuristics_result)
 
             # update org_directions_dict for only new keys in org_directions
             for key in org_directions:
@@ -207,7 +207,7 @@ class SerialSDImportData(importdata.ImportData):
 
         myresults.origin = results.origin
         myresults.msglist = msglist
-        for rsh in rasterscan_heuristics_list:
+        for rsh in rasterscan_heuristics_result_list:
             myresults.rasterscan_heuristics.setdefault(rsh.ms.origin_ms, {}) \
                      .setdefault(RasterScanHeuristicResult.IMPORTDATA, []).append(rsh)
         return myresults
