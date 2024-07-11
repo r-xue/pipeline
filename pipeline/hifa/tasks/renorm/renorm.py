@@ -144,40 +144,10 @@ class SerialRenorm(basetask.StandardTaskTemplate):
             LOG.info("Calling the renormalization heuristic function.")
             alltdm, atmExcludeCmd, atmWarning, calTableCreated, rnstats, stats = \
                 alma_renorm(**alma_renorm_inputs)
+
             rnstats_light = self._get_rnstats_light(stats, rnstats)
 
-            calapps = []
-            if inp.createcaltable and calTableCreated:
-                msObj = inp.context.observing_run.get_ms(inp.vis)
-
-                origin = callibrary.CalAppOrigin(task=SerialRenorm, inputs=inp.to_casa_args())
-
-                with casa_tools.TableReader(inp.caltable) as table:
-                    field_ids = table.getcol('FIELD_ID')
-                    spw_ids = table.getcol('SPECTRAL_WINDOW_ID')
-
-                # Get unique field/spw combinations
-                field_spw = collections.defaultdict(set)
-                for f_id, s_id in zip(field_ids, spw_ids):
-                    field_name = msObj.get_fields(field_id=f_id)[0].name
-                    field_spw[field_name].add(str(s_id))
-
-                for field_name in field_spw:
-                    spw = ','.join(field_spw[field_name])
-
-                    calto_args = {'vis': inp.vis,
-                                  'intent': 'TARGET',
-                                  'field': field_name,
-                                  'spw': spw}
-                    calto = callibrary.CalTo(**calto_args)
-
-                    # The renorm results are applied like a Tsys calibration
-                    calfrom_args = {'gaintable': inp.caltable,
-                                    'caltype': 'tsys',
-                                    'interp': 'nearest'}
-                    calfrom = callibrary.CalFrom(**calfrom_args)
-
-                    calapps.append(callibrary.CalApplication(calto, calfrom, origin))
+            calapps = self._get_calapps(calTableCreated)
 
             result = RenormResults(inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
                                    inp.excludechan, calTableCreated, stats, rnstats_light, alltdm,
@@ -212,6 +182,48 @@ class SerialRenorm(basetask.StandardTaskTemplate):
                 rnstats_light['invalid'][source][spw] = np.isnan(rnstats['N'].get(source, {}).get(spw, np.nan)).any()
 
         return rnstats_light
+
+    def _get_calapps(self, calTableCreated):
+        """
+        Collects the necessary calapps.
+        """
+
+        inp = self.inputs
+
+        calapps = []
+        if inp.createcaltable and calTableCreated:
+            msObj = inp.context.observing_run.get_ms(inp.vis)
+
+            origin = callibrary.CalAppOrigin(task=SerialRenorm, inputs=inp.to_casa_args())
+
+            with casa_tools.TableReader(inp.caltable) as table:
+                field_ids = table.getcol('FIELD_ID')
+                spw_ids = table.getcol('SPECTRAL_WINDOW_ID')
+
+            # Get unique field/spw combinations
+            field_spw = collections.defaultdict(set)
+            for f_id, s_id in zip(field_ids, spw_ids):
+                field_name = msObj.get_fields(field_id=f_id)[0].name
+                field_spw[field_name].add(str(s_id))
+
+            for field_name in field_spw:
+                spw = ','.join(field_spw[field_name])
+
+                calto_args = {'vis': inp.vis,
+                              'intent': 'TARGET',
+                              'field': field_name,
+                              'spw': spw}
+                calto = callibrary.CalTo(**calto_args)
+
+                # The renorm results are applied like a Tsys calibration
+                calfrom_args = {'gaintable': inp.caltable,
+                                'caltype': 'tsys',
+                                'interp': 'nearest'}
+                calfrom = callibrary.CalFrom(**calfrom_args)
+
+                calapps.append(callibrary.CalApplication(calto, calfrom, origin))
+
+        return calapps
 
 @task_registry.set_equivalent_casa_task('hifa_renorm')
 @task_registry.set_casa_commands_comment('Renormalize data affected by strong line emission.')

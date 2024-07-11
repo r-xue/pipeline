@@ -124,7 +124,7 @@
         <Command xmlns="">hifa_renorm</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">apply</Keyword>
+                <Keyword xmlns="">createcaltable</Keyword>
                 <Value xmlns="">True</Value>
             </Parameter>
             <Parameter>

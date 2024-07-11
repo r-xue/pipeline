@@ -86,10 +86,6 @@ class ALMAExportData(exportdata.ExportData):
             manifest_file = os.path.join(self.inputs.products_dir, results.manifest)
             self._add_to_manifest(manifest_file, auxfproducts, auxcaltables, auxcalapplys, pipe_aqua_reportfile, oussid)
 
-        # PIPE-2151: We no longer export renorm results since this case is
-        #            now covered via cal tables.
-        #self._export_renorm_to_manifest(results.manifest)
-
         return results
 
     def _do_aux_session_products(self, context, oussid, session_names, session_vislists, products_dir):
