@@ -11,7 +11,6 @@
     <ProcessingCommand>
         <Command xmlns="">hifv_hanning</Command>
         <ParameterSet>
-        <!--spw input?-->
         </ParameterSet>
     </ProcessingCommand>
 
@@ -48,7 +47,6 @@
     <ProcessingCommand>
         <Command xmlns="">hifv_syspower</Command>
         <ParameterSet>
-        <!-- delibrately excluded? -->
         </ParameterSet>
     </ProcessingCommand>
 
@@ -115,14 +113,12 @@
                 <Keyword xmlns="">checkflagmode</Keyword>
                 <Value xmlns="">target-vla</Value>
             </Parameter>
-            <!-- back up flags before flagging with clear unique name-->
         </ParameterSet>
     </ProcessingCommand>   
 
     <ProcessingCommand>
         <Command xmlns="">hifv_statwt</Command>
         <ParameterSet>
-        <!-- rfi_flagged_statwt -->
         </ParameterSet>
     </ProcessingCommand>
 
@@ -184,7 +180,6 @@
         </ParameterSet>
     </ProcessingCommand>    
 
- 
     <!-- cont imaging -->
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
@@ -207,21 +202,20 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hif_checkproductsize</Command> 
-        <!-- delibrately excluded? -->
+        <Command xmlns="">hif_checkproductsize</Command>
         <ParameterSet>
             <Parameter>
+                <Keyword xmlns="">maxproductsize</Keyword>
+                <Value xmlns="">400.0</Value>
+            </Parameter>
+            <Parameter>
                 <Keyword xmlns="">maxcubesize</Keyword>
-                <Value xmlns="">40.0</Value>
+                <Value xmlns="">20.0</Value>
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">maxcubelimit</Keyword>
-                <Value xmlns="">60.0</Value>
+                <Value xmlns="">40.0</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">maxproductsize</Keyword>
-                <Value xmlns="">500.0</Value>
-            </Parameter>            
         </ParameterSet>
     </ProcessingCommand>
 
@@ -250,7 +244,6 @@
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
-        <!-- Needs updates for VLA to not use deconvolver='mtmfs'-->
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
@@ -266,8 +259,85 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_pbcor</Command> 
-        <!-- delibrately excluded ?-->
+        <Command xmlns="">hif_checkproductsize</Command>
+        <!--This will likely be updated, see PIPEREQ-302 -->
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maximsize</Keyword>
+                <Value xmlns="">16384</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_selfcal</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <!-- cont imaging -->
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cont</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">3.0</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+    <ProcessingCommand>
+        <Command xmlns="">hif_checkproductsize</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maxproductsize</Keyword>
+                <Value xmlns="">400.0</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">maxcubesize</Keyword>
+                <Value xmlns="">20.0</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">maxcubelimit</Keyword>
+                <Value xmlns="">40.0</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cube</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>    
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_pbcor</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>    
