@@ -426,7 +426,7 @@ class SDInspection(object):
                             raster_heuristic_ok = True
                         except RasterScanHeuristicsFailure as e:
                             LOG.warn('{} This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.'.format(e))
-                            raster_heuristics_result.set_result_false(ant, spw, field_id)
+                            raster_heuristics_result.set_result_fail(ant, spw, field_id)
                             raster_heuristic_ok = False
 
                     if pattern != 'RASTER' or self.hm_rasterscan == 'time' or raster_heuristic_ok is False:

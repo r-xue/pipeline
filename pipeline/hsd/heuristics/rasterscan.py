@@ -586,10 +586,25 @@ class RasterScanHeuristicResult(ABC):
     def antenna(self):
         return self.__antenna
     
-    def set_result_false(self, antid, spwid, fieldid):
-        self.set_result(antid, spwid, fieldid, False)
+    def set_result_fail(self, antid: int, spwid: int, fieldid: int):
+        """Set False means raster analysis failure to self.antenna dictionary that is used for getting fail antennas.
 
-    def set_result(self, antid, spwid, fieldid, result):
+        Args:
+            antid (int): An Antenna ID of the result
+            spwid (int): An SpW ID of the result
+            fieldid (int): A field ID of the result
+        """
+        self._set_result(antid, spwid, fieldid, False)
+
+    def _set_result(self, antid: int, spwid: int, fieldid: int, result: bool):
+        """Set boolean that appears the result of raster analysis to self.antenna dictionary that is used for getting fail antennas.
+
+        Args:
+            antid (int): An Antenna ID of the result
+            spwid (int): An SpW ID of the result
+            fieldid (int): A field ID of the result
+            result (bool): result of raster analysis
+        """
         field = self.antenna.setdefault(antid, {}) \
                             .setdefault(spwid, {}) \
                             .setdefault(fieldid, {})

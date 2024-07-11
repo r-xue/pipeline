@@ -1842,7 +1842,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                               .setdefault(_tirp.msobj.origin_ms, {}) \
                               .setdefault(RasterScanHeuristicResult.IMAGING_SKIP, []) \
                               .append(__rsres)
-            __rsres.set_result_false(_tirp.antid, _tirp.spwid, _tirp.fieldid)
+            __rsres.set_result_fail(_tirp.antid, _tirp.spwid, _tirp.fieldid)
             LOG.warning(f'{__rsres.msg} : EB:{_tirp.msobj.execblock_id}:{_tirp.msobj.antennas[_tirp.antid].name}')
             return __SKIP
         _tirp.dt = _cp.dt_dict[_tirp.msobj.basename]
@@ -1894,7 +1894,7 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list, _log_dict, _rsres)
     except Exception as e:
         if isinstance(e, RasterScanHeuristicsFailure):
-            _rsres.set_result_false(antid, spwid, fieldid)
+            _rsres.set_result_fail(antid, spwid, fieldid)
             LOG.warning('{}'.format(e))
         try:
             dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
