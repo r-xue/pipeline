@@ -1504,6 +1504,7 @@ def get_tsys_contaminated_intervals(
     n_sigma_detection_limit=7,
 ):
     plot_wrappers = []  # list to hold pipeline plot wrappers. New variable introduced during initial import PIPE-2009
+    vis = tsysdata.msfile  # short alias to MS name. new variable added in PIPE-2009.
 
     warnings_list = []
     tsys = tsysdata  ###
@@ -1620,10 +1621,10 @@ def get_tsys_contaminated_intervals(
         ):  # v3.4
             large_baseline_residual = True
             large_residual.append(key)  # v3.4
-            warning = f"YELLOW Warning! Large baseline residual."
+            warning = f"Large baseline residual."
             msg_spw, msg_field = key.split("_")
-            warnings_list.append([warning, f"Detected in spw {msg_spw}, field {msg_field}."])
-            LOG.warning("Large baseline residual detected in spw %s field %s", msg_spw, msg_field)
+            warnings_list.append([warning, f"Large baseline residual detected in {vis}, spw {msg_spw}, field {msg_field}."])
+            LOG.info("Large baseline residual detected in %s spw %s field %s", vis, msg_spw, msg_field)
         # print(f" sigma_mad_dif={sigma_mad_dif} sigma_smooth_bp = {sigma_smooth_bp} sigma_quot={sigma_smooth_s/sigma_smooth_bp}")
 
         co_telluric = co_telluric_intervals(spec_b / sigma_smooth_bp, freqs_b)
@@ -1699,14 +1700,15 @@ def get_tsys_contaminated_intervals(
                     if interval_comparison < 0.7:
                         warnings_list.append(
                             [
-                                "YELLOW Warning: large difference between bandpass and field telluric CO line.",
-                                f"CO Line {LINES_12C16O[np.abs(freqs_b[int(pclp)]-LINES_12C16O)<chansize_mhz]} MHz in spw{spw}, comparing field={field} and bandpass.",
+                                "Large difference between bandpass and field telluric CO line.",
+                                f"Large difference between CO Line {LINES_12C16O[np.abs(freqs_b[int(pclp)]-LINES_12C16O)<chansize_mhz]} MHz in {vis} spw {spw}, comparing field {field} and bandpass.",
                             ]
                         )
-                        LOG.warning(
+                        LOG.info(
                             "Large difference between bandpass and field telluric CO line. "
-                            "CO Line %s MHz in spw %s, comparing field=%s and bandpass.",
+                            "CO Line %s MHz in %s spw %s, comparing field=%s and bandpass.",
                             {LINES_12C16O[np.abs(freqs_b[int(pclp)] - LINES_12C16O) < chansize_mhz]},
+                            vis,
                             spw,
                             field
                         )
@@ -1852,7 +1854,7 @@ def get_tsys_contaminated_intervals(
                 else:
                     possible_line_intervals = np.append(possible_line_intervals, i)
                 wide = True
-                warning = f"YELLOW Warning! Large contaminated range rejected as line."
+                warning = f"Large contaminated range rejected as line."
                 message = " ".join(
                     [
                         f"Channel range {int(i[0])}~{int(i[1])} equivalent to",
@@ -1861,12 +1863,12 @@ def get_tsys_contaminated_intervals(
                             if dv_criterion
                             else f"{int(abs(i[1]-i[0])/nchan*100)}% of the spw"
                         ),
-                        f"in spw{spw} and field={field}.",
+                        f"in {vis}, spw {spw}, field {field}.",
                     ]
                 )
 
                 warnings_list.append([warning, message])
-                LOG.warning("Large contaminated region range rejected as line. %s", message)
+                LOG.info("Large contaminated region range rejected as line. %s", message)
             LOG.info(
                 "Range %s equivalent to %s km/s or %d%% of the SpW", i, velocity_width_kms, abs(i[1]-i[0])/nchan*100
             )

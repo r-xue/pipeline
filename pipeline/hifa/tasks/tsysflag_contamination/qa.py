@@ -1,4 +1,5 @@
 import collections
+import os
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -24,6 +25,26 @@ class TsysflagContaminationQAHandler(pqa.QAPlugin):
         # registration only works on classes that directly extend QAPlugin
         delegate = TsysflagQAHandler()
         delegate.handle(context, result)
+
+        vis = os.path.basename(result.inputs["vis"])
+        origin = pqa.QAOrigin(
+            metric_name="pipeline.extern.tsys_contamination",
+            metric_score="N/A",
+            metric_units="",
+        )
+        for shortmsg, longmsg in getattr(result, "extern_warnings", []):
+            extern_score = pqa.QAScore(
+                score=0.6,  # as requested in PIPE-2009
+                longmsg=f"{longmsg} Check the Tsys plots.",
+                shortmsg=shortmsg,
+                applies_to=pqa.TargetDataSelection(vis={vis}),
+                origin=origin,
+            )
+            result.qa.pool.append(extern_score)
+
+        # The heuristic cannot operate on some kinds of data (multispec, DSB,
+        # etc.). Skipping the task in these cases should not result in a QA
+        # failure.
         result.qa.pool = [
             score
             for score in result.qa.pool

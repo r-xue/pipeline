@@ -207,7 +207,7 @@ class TsysFlagContamination(StandardTaskTemplate):
             return result
 
         result.plots = plot_wrappers
-        result.line_contamination_warnings = warnings
+        result.extern_warnings = warnings
 
         # Step 3: do not flag data for DSB data
         # Set manual flagging template to that written by the heuristic unless it's a DSB EB.
