@@ -73,14 +73,14 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         score9 = _check_fluxservicestatuscodes(result)
 
         # Check state of IERS tables relative to observation date (PIPE-2137)
-        scores10 = _check_iersstate(result.mses)
+        # scores10 = _check_iersstate(result.mses)
 
         # Add all scores to QA score pool in result.
         result.qa.pool.extend(polcal_scores)
         result.qa.pool.extend([score2, score4, score5, score6, score8, score9])
         result.qa.pool.extend(scores3)
         result.qa.pool.extend(scores7)
-        result.qa.pool.extend(scores10)
+        # result.qa.pool.extend(scores10)
 
 
 def _check_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
@@ -200,12 +200,12 @@ def _check_calobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.
 
     return qacalc.score_samecalobjects(recipe_name, mses)
 
-def _check_iersstate(mses) -> pqa.QAScore:
-    """
-    Check state of IERS tables relative to observation date
-    """
+# def _check_iersstate(mses) -> pqa.QAScore:
+#     """
+#     Check state of IERS tables relative to observation date
+#     """
 
-    return qacalc.score_iersstate(mses)
+#     return qacalc.score_iersstate(mses)
 
 
 # - functions to measure parallactic angle coverage of polarisation calibrator ----------------------------------------
