@@ -3829,12 +3829,7 @@ def score_rasterscan_correctness(result: Union[SDImportDataResults, SDImagingRes
     """
 
     # get dict {originmsname: [RasterscanHeuristicsResult]} from Results
-    if isinstance(result, SDImportDataResults) and hasattr(result, 'rasterscan_heuristics'):
-        rasterscan_results = result.rasterscan_heuristics
-    elif isinstance(result, SDImagingResultItem) and result.outcome.get('rasterscan_heuristics', False):
-        rasterscan_results = result.outcome.get('rasterscan_heuristics')
-    else:
-        return []
+    rasterscan_results = result.rasterscan_heuristics_results
 
     qa_scores = []  # [pqa.QAScore]
     results_per_eb = {}  # {EB_ID: {RasterscanHeuristicsResult_SubClass_Name : [RasterscanHeuristicsResult]}}

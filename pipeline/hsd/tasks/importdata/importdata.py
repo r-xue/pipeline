@@ -128,7 +128,7 @@ class SDImportDataResults(basetask.Results):
         self.setjy_results = setjy_results
         self.org_directions = org_directions
         self.origin = {}
-        self.rasterscan_heuristics = {}
+        self.rasterscan_heuristics_results = {}
         self.results = importdata.ImportDataResults(mses=mses, setjy_results=setjy_results)
 
     def merge_with_context(self, context: Context):
@@ -208,7 +208,7 @@ class SerialSDImportData(importdata.ImportData):
         myresults.origin = results.origin
         myresults.msglist = msglist
         for rsh in rasterscan_heuristics_result_list:
-            myresults.rasterscan_heuristics.setdefault(rsh.ms.origin_ms, {}) \
+            myresults.rasterscan_heuristics_results.setdefault(rsh.ms.origin_ms, {}) \
                      .setdefault(RasterScanHeuristicResult.IMPORTDATA, []).append(rsh)
         return myresults
 

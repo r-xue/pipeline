@@ -1838,7 +1838,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                    _tirp.msobj.get_antenna(_tirp.antid)[0].name, str(_tirp.pol_names)))
         if _tirp.raster_info is None:
             __rsres = RasterScanHeuristicResult.generate(_tirp.msobj, RasterScanHeuristicResult.IMAGING_SKIP)
-            _rgp.imager_result.outcome.setdefault('rasterscan_heuristics', {}) \
+            _rgp.imager_result.rasterscan_heuristics_results \
                               .setdefault(_tirp.msobj.origin_ms, {}) \
                               .setdefault(RasterScanHeuristicResult.IMAGING_SKIP, []) \
                               .append(__rsres)
@@ -1886,7 +1886,7 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     _log_dict = {'ANTENNA': msobj.antennas[antid].name,
                  'EB': msobj.execblock_id}
     _rsres = RasterScanHeuristicResult.generate(msobj, RasterScanHeuristicResult.IMAGING_GAP)
-    rgp.imager_result.outcome.setdefault('rasterscan_heuristics', {}) \
+    rgp.imager_result.rasterscan_heuristics_results \
                      .setdefault(msobj.origin_ms, {}) \
                      .setdefault(RasterScanHeuristicResult.IMAGING_GAP, []) \
                      .append(_rsres)

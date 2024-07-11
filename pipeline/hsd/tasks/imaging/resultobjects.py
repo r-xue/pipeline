@@ -19,6 +19,7 @@ class SDImagingResultItem(common.SingleDishResults):
         self.frequency_channel_reversed = frequency_channel_reversed
         # logrecords attribute is mandatory but not created unless Result is returned by execute.
         self.logrecords = []
+        self.rasterscan_heuristics_results = {}
 
     def merge_with_context(self, context):
         super(SDImagingResultItem, self).merge_with_context(context)
