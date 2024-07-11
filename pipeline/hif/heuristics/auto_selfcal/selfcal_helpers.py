@@ -17,10 +17,10 @@ import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.casa_tasks import casa_tasks as cts
-from pipeline.infrastructure.casa_tools import image as ia
 from pipeline.infrastructure.casa_tools import imager as im
 from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure.casa_tools import table as tb
+from pipeline.infrastructure.contfilehandler import ContFileHandler
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -788,47 +788,41 @@ def get_sensitivity(vislist, selfcal_library, field='', specmode='mfs', virtual_
 
 
 def parse_contdotdat(contdotdat_file, target):
+    """Parse the continuum frequency range specified in cont.dat.
+
+    This function mimics the output of the "parse_contdot_dat" helper function 
+    from GH:auto_selfcal.selfcal_helpers.
+
+    Args:
+        contdotdat_file (str): Path to the cont.dat file.
+        target (str): The target field to parse from the cont.dat file.
+
+    Returns:
+        dict: A dictionary where keys are virtual spw ids (integers) and values are 
+        numpy arrays of frequency ranges.
+
+    Example:
+        ```python
+        CASA <30>: from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import parse_contdotdat
+            ...: contfile='cont.dat'
+            ...: contdotdat=parse_contdotdat(contfile,'helms30')
+            ...: pprint(contdotdat)
+        {16: array([[214.48924823, 215.08298911],
+                    [215.28611099, 216.19234708]]),
+         18: array([[216.36433767, 218.0986862 ]]),
+         20: array([[232.48638245, 234.22073239]]),
+         22: array([[230.61129118, 232.34564096]])}
+        ```
     """
-    Parses the cont.dat file that includes line emission automatically identified by the ALMA pipeline.
-
-    Parameters
-    ==========
-    msfile: Name of the cont.dat file (string)
-
-    Returns
-    =======
-    Dictionary with the boundaries of the frequency range including line emission. The dictionary keys correspond to the spectral windows identified 
-    in the cont.dat file, and the entries include numpy arrays with shape (nline, 2), with the 2 corresponding to min and max frequencies identified.
-    """
-    f = open(contdotdat_file, 'r')
-    lines = f.readlines()
-    f.close()
-
-    while '\n' in lines:
-        lines.remove('\n')
+    contfile_handler = ContFileHandler(contdotdat_file)
+    contdict = contfile_handler.read(warn_nonexist=False)['fields']
 
     contdotdat = {}
-    desiredTarget = False
-    for i, line in enumerate(lines):
-        if 'ALL' in line:
-            continue
-        if 'Field' in line:
-            field = line.split()[-1]
-            if field == target:
-                desiredTarget = True
-                continue
-            else:
-                desiredTarget = False
-                continue
-        if desiredTarget == True:
-            if 'SpectralWindow' in line:
-                spw = int(line.split()[-1])
-                contdotdat[spw] = []
-            else:
-                contdotdat[spw] += [line.split()[0].split("G")[0].split("~")]
 
-    for spw in contdotdat:
-        contdotdat[spw] = np.array(contdotdat[spw], dtype=float)
+    if target in contdict:
+        contdict_field = contdict[target]
+        contdotdat = {int(k): np.array([rg['range'] for rg in v['ranges']])
+                      for k, v in contdict_field.items()}
 
     return contdotdat
 
@@ -1454,7 +1448,7 @@ def get_flagged_solns_per_spw(spwlist, gaintable):
                   range(len(spwlist))]
 
     shutil.rmtree(gaintable_temp, ignore_errors=True)
-    
+
     fracflagged = np.array(nflags)/(np.array(nflags)+np.array(nunflagged))
     return nflags, nunflagged, fracflagged
 
