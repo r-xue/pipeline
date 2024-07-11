@@ -49,8 +49,8 @@ def init_at(at: casatools.atmosphere, humidity: float = 20.0,
         altitude: The altitude of antenna site to calculate atmospheric
             transmission (unit: m).
         fcenter: Center frequency of the frequency range. (unit: GHz)
-        nchan: Number of channels in the frequency range.
-        resolution: Frequency resolution. (unit: GHz/ch)
+        nchan: The number of data points within the frequency range.
+        resolution: The frequency interval of the data points.
      """
     myqa = casa_tools.quanta
     at.initAtmProfile(humidity=humidity,
