@@ -112,12 +112,20 @@ class ExternFunctionArguments:
     filetemplate: str
     pl_run_dir: str
     plots_path: str
+    single_polarization: bool
 
     @staticmethod
     def from_inputs(inputs: TsysFlagContaminationInputs) -> "ExternFunctionArguments":
         context = inputs.context
         weblog_dir = os.path.join(context.report_dir, f"stage{context.task_counter}")
         os.makedirs(weblog_dir, exist_ok=True)
+
+        # TBC: is this what the heuristic means by 'single polarization'?
+        num_polarizations = {
+            inputs.ms.get_data_description(spw=spw.id).num_polarizations
+            for spw in inputs.ms.get_spectral_windows(intent="TARGET")
+        }
+        single_polarization = all(n == 1 for n in num_polarizations)
 
         return ExternFunctionArguments(
             vis=inputs.vis,
@@ -129,6 +137,7 @@ class ExternFunctionArguments:
             filetemplate=inputs.filetemplate,
             pl_run_dir=inputs.context.output_dir,
             plots_path=weblog_dir,
+            single_polarization=single_polarization,
         )
 
 
@@ -232,10 +241,7 @@ class TsysFlagContamination(StandardTaskTemplate):
         filetemplate = fn_args.filetemplate
         pl_run_dir = fn_args.pl_run_dir
         plots_path = fn_args.plots_path
-
-        single_polarization = (
-            tsystable == "uid___A002_X10ac6bc_Xc408.ms.h_tsyscal.s6_1.tsyscal.tbl"
-        )
+        single_polarization = fn_args.single_polarization
 
         tsys = TsysData(
             tsystable=tsystable,
@@ -365,7 +371,7 @@ class TsysFlagContamination(StandardTaskTemplate):
         ms = self.inputs.ms
         qa_scores = []
 
-        # exclude multi-source, multi-tuning (script fails in EE10).
+        # TBC: is this sufficient to identify multi-source multi-tuning?
         science_source_ids = {
             field.source_id for field in ms.get_fields(intent="TARGET")
         }
@@ -390,7 +396,7 @@ class TsysFlagContamination(StandardTaskTemplate):
         ms = self.inputs.ms
         science_spws = ms.get_spectral_windows(science_windows_only=True)
 
-        # exclude full polarization
+        # TBC: is requiring num pols <= 2 too restrictive?
         polarizations = {
             ms.get_data_description(spw=spw.id).num_polarizations
             for spw in science_spws
