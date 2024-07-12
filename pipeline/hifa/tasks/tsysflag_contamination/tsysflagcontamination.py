@@ -1,22 +1,23 @@
 import dataclasses
 import os
 import re
+from typing import List
 
 import numpy as np
 
 import pipeline.extern.tsys_contamination as extern
 import pipeline.h.tasks.tsysflag.tsysflag as tsysflag
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.extern.TsysDataClassFile import TsysData
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.h.tasks.tsysflag.resultobjects import TsysflagResults
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.basetask import StandardTaskTemplate
+from pipeline.infrastructure.pipelineqa import QAScore, TargetDataSelection
 
 __all__ = ["TsysFlagContamination", "TsysFlagContaminationInputs"]
 
-from pipeline.infrastructure.basetask import StandardTaskTemplate
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -156,44 +157,21 @@ class TsysFlagContamination(StandardTaskTemplate):
 
     Inputs = TsysFlagContaminationInputs
 
-    def _assert_data_preconditions(self):
-        """
-        Preflight checks to identify data that the heuristic cannot handle.
-        """
-        errors = []
-
-        ms = self.inputs.ms
-        science_spws = ms.get_spectral_windows(science_windows_only=True)
-
-        # exclude multi-source, multi-tuning (script fails in EE10).
-        if len(ms.get_spectral_specs()) > 1:
-            errors.append(f"multiple spectral tunings present")
-
-        # exclude full polarization
-        polarizations = {
-            ms.get_data_description(spw=spw.id).num_polarizations
-            for spw in science_spws
-        }
-        if any(n > 2 for n in polarizations):
-            errors.append(f"full polarization data present")
-
-        # exclude TP (fails by design; needs bandpass intent scan)
-        if "BANDPASS" not in ms.intents:
-            errors.append(f"BANDPASS data missing")
-
-        return errors
-
     def prepare(self):
         result = TsysflagResults()
         result.vis = self.inputs.vis
         result.caltable = self.inputs.caltable
 
+        # TODO from PIPE-2009: adding new attributes to the result after
+        # instance construction isn't great but we don't have time to
+        # rationalise and refactor the base class right now
+        result.qascores_from_task = []
+
         # step 1: do not run the heuristic on data we know it cannot handle
-        # see https://open-jira.nrao.edu/browse/PIPE-2009?focusedId=215037&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-215037
-        preflight_errors = self._assert_data_preconditions()
-        if preflight_errors:
-            reasons = "; ".join(preflight_errors)
-            result.task_incomplete_reason = f"Line contamination heuristic cannot process {self.inputs.vis}: {reasons}"
+        preflight_qascores = self._assert_heuristic_preconditions()
+        result.qascores_from_task.extend(preflight_qascores)
+        if preflight_qascores:
+            result.task_incomplete_reason = f"Preconditions for line contamination heuristic not met. See QA scores for details."
             result.metric_order = "manual"  # required for renderer
             return result
 
@@ -202,7 +180,7 @@ class TsysFlagContamination(StandardTaskTemplate):
         try:
             plot_wrappers, warnings = self._call_extern_heuristic(extern_fn_args)
         except Exception:
-            result.task_incomplete_reason = "Line contamination heuristic failed"
+            result.task_incomplete_reason = f"Line contamination heuristic failed while processing {self.inputs.vis}"
             result.metric_order = "manual"  # required for renderer
             return result
 
@@ -211,10 +189,7 @@ class TsysFlagContamination(StandardTaskTemplate):
 
         # Step 3: do not flag data for DSB data
         # Set manual flagging template to that written by the heuristic unless it's a DSB EB.
-        ms = self.inputs.ms
-        spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
-        rx_map = utils.get_receiver_type_for_spws(ms, spw_ids)
-        filetemplate = None if "DSB" in rx_map.values() else self.inputs.filetemplate
+        filetemplate = None if self._contains_dsb() else self.inputs.filetemplate
 
         # Always run the child task - even for DSB - as the results are required by the Tsyscalflag renderer
         child_inputs = tsysflag.Tsysflag.Inputs(
@@ -371,3 +346,93 @@ class TsysFlagContamination(StandardTaskTemplate):
                     LOG.info(msg)
 
         return plot_wrappers, warnings_list
+
+    def _assert_heuristic_preconditions(self) -> List[QAScore]:
+        """
+        Preflight checks to identify data that the heuristic cannot handle.
+        """
+        qa_scores = []
+        qa_scores.extend(self._assert_not_multisource_multituning())
+        qa_scores.extend(self._assert_not_full_polarization())
+        qa_scores.extend(self._assert_bandpass_is_present())
+        return qa_scores
+
+    def _assert_not_multisource_multituning(self) -> List[QAScore]:
+        """
+        Returns a list containing an appropriate QAScore if multitunings are
+        present, otherwise an empty list is returned.
+        """
+        ms = self.inputs.ms
+        qa_scores = []
+
+        # exclude multi-source, multi-tuning (script fails in EE10).
+        science_source_ids = {
+            field.source_id for field in ms.get_fields(intent="TARGET")
+        }
+        if len(science_source_ids) > 1 and len(ms.get_spectral_specs()) > 1:
+            s = QAScore(
+                score=0.6,
+                shortmsg="Multi-source multi-tuning EB",
+                longmsg=f"Line contamination heuristic not validated for multi-source multi-tunings present in {ms.basename}.",
+                applies_to=TargetDataSelection(vis={ms.basename}),
+            )
+            qa_scores.append(s)
+
+        return qa_scores
+
+    def _assert_not_full_polarization(self) -> List[QAScore]:
+        """
+        Returns a list containing an appropriate QAScore if full polarization
+        data are present, otherwise an empty list is returned.
+        """
+        qa_scores = []
+
+        ms = self.inputs.ms
+        science_spws = ms.get_spectral_windows(science_windows_only=True)
+
+        # exclude full polarization
+        polarizations = {
+            ms.get_data_description(spw=spw.id).num_polarizations
+            for spw in science_spws
+        }
+        if any(n > 2 for n in polarizations):
+            s = QAScore(
+                score=0.6,
+                shortmsg="Full polarization data",
+                longmsg=f"Line contamination heuristic not validated for full polarization data in {ms.basename}.",
+                applies_to=TargetDataSelection(vis={ms.basename}),
+            )
+            qa_scores.append(s)
+
+        return qa_scores
+
+    def _assert_bandpass_is_present(self) -> List[QAScore]:
+        """
+        Returns a list containing an appropriate QAScore if BANDPASS data are
+        missing, otherwise an empty list is returned.
+        """
+        qa_scores = []
+
+        ms = self.inputs.ms
+
+        # exclude TP (fails by design; needs bandpass intent scan)
+        if "BANDPASS" not in ms.intents:
+            s = QAScore(
+                score=0.6,
+                shortmsg="No BANDPASS data",
+                longmsg=f"No bandpass scans in {ms.basename} for the line contamination heuristic to process.",
+                applies_to=TargetDataSelection(vis={ms.basename}),
+            )
+            qa_scores.append(s)
+
+        return qa_scores
+
+    def _contains_dsb(self) -> bool:
+        """
+        Returns True if any science spectral window uses a DSB receiver.
+        """
+        ms = self.inputs.ms
+        receivers = [
+            spw.receiver for spw in ms.get_spectral_windows(science_windows_only=True)
+        ]
+        return "DSB" in receivers
