@@ -283,10 +283,10 @@ class ContFileHandler(object):
 
         virt_spw_id = None
         if spw_name is not None:
-            for field_name in self.cont_ranges['fields']:
-                for spw_id in self.cont_ranges['fields'][field_name]:
-                    if self.cont_ranges['fields'][field_name][spw_id]['spwname'] == spw_name:
-                        virt_spw_id = spw_id
+            for f in self.cont_ranges['fields']:
+                for s in self.cont_ranges['fields'][f]:
+                    if self.cont_ranges['fields'][f][s]['spwname'] == spw_name:
+                        virt_spw_id = s
                         break
                 if virt_spw_id is None:
                     LOG.info(f'SPW name: {spw_name} not found. Falling back to SPW ID lookup.')
