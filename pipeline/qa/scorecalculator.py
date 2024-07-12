@@ -93,6 +93,9 @@ __all__ = ['score_polintents',                                # ALMA specific
 
 LOG = logging.get_logger(__name__)
 
+# QA score that will direct the EB to QA slow lane for further inspection
+SLOW_LANE_QA_SCORE = 0.6
+
 
 # - utility functions --------------------------------------------------------------------------------------------------
 
@@ -3812,3 +3815,56 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
                           metric_units='Peak SNR / Histogram asymmetry, Max. segment size in beams, Max. segment fraction')
 
     return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+
+
+@log_qa
+def score_tsysflagcontamination_contamination_flagged(vis, caltable, summaries) -> pqa.QAScore:
+    """
+    Calculate a score for the hifa_tsysflagcontamination task based on whether
+    any line contamination was flagged.
+
+    0% flagged  -> 1
+    >0% flagged -> 0.9
+    """
+    # Calculate fraction of flagged data.
+    frac_flagged = calc_frac_newly_flagged(summaries)
+
+    if frac_flagged:
+        score = 0.9
+        longmsg = f'Line contamination detected and flagged in {caltable}'
+        shortmsg = 'Line contamination flagged'
+    else:
+        score = 1.0
+        longmsg = f'No line contamination detected in {caltable}'
+        shortmsg = 'No line contamination flagged'
+
+    origin = pqa.QAOrigin(metric_name='score_tsys_line_contamination_flagged',
+                          metric_score=frac_flagged,
+                          metric_units='Fraction of Tsys data that was identified as line contamination and flagged')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(vis), origin=origin)
+
+
+@log_qa
+def score_tsysflagcontamination_external_heuristic(vis, warnings) -> List[pqa.QAScore]:
+    """
+    Convert QA scores that originate from the Tsysflag line contamination
+    heuristic.
+    """
+    # now add any QA scores originating from the heuristic itself,
+    # denoting data that requires further inspection
+    origin = pqa.QAOrigin(
+        metric_name="score_tsysflagcontamination_external_heuristic",
+        metric_score="N/A",
+        metric_units="",
+    )
+    qascores = []
+    for shortmsg, longmsg in warnings:
+        extern_score = pqa.QAScore(
+            score=SLOW_LANE_QA_SCORE,
+            longmsg=f"{longmsg} Check the Tsys plots.",
+            shortmsg=shortmsg,
+            applies_to=pqa.TargetDataSelection(vis={vis}),
+            origin=origin,
+        )
+        qascores.append(extern_score)
+    return qascores
