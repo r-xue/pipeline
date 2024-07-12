@@ -642,7 +642,7 @@ def ignore_pointing(vis):
         ls -lih test_small.ms/POINTING
 
     """
-    if isinstance(vis, list):
+    if isinstance(vis, (list, set)):
         vis_list = vis
     else:
         vis_list = [vis]

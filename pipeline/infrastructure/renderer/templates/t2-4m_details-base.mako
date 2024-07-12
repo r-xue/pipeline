@@ -255,7 +255,7 @@ if len(optimal_scores) > 0:
                         <u><i><b>All QA Scores (${', '.join(score_color_counts)})</b></i></u>
                         </a>
                     % else:
-                        QA Score: &nbsp; N/A &nbsp;
+                        QA Score: &nbsp; N/A &nbsp; ${representative_score.longmsg if representative_score.shortmsg!='No QA' else ''}
                         <a data-toggle="collapse" data-parent="#qa-details-accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                         <u><i><b>All QA Scores (${', '.join(score_color_counts)})</b></i></u>
                         </a>
@@ -267,7 +267,7 @@ if len(optimal_scores) > 0:
                         </tr>
                     % else:
                         <tr class="${representative_score_render_class}">
-                        QA Score: &nbsp; N/A
+                        QA Score: &nbsp; N/A &nbsp; ${representative_score.longmsg if representative_score.shortmsg!='No QA' else ''}
                         </tr>
                     % endif
                 % endif
