@@ -961,7 +961,8 @@ def write_pipeline_casa_tasks(context):
 
     task_string = '\n'.join(['    %s' % t for t in pipeline_tasks])
     # replace the working directory with ''
-    task_string = re.sub(r'%s/' % context.output_dir, '', task_string)
+    if os.path.isdir(context.output_dir):
+        task_string = re.sub(r'%s/' % context.output_dir, '', task_string)
 
     state_commands = []
     for o in (context.project_summary, context.project_structure, context.project_performance_parameters):
