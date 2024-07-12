@@ -1094,8 +1094,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                             actual_spwspec_list = []
                             spwsel = {}
                             all_continuum = True
+                            low_bandwidth = True
+                            low_spread = True
                             cont_ranges_spwsel_dict = {}
                             all_continuum_spwsel_dict = {}
+                            low_bandwidth_spwsel_dict = {}
+                            low_spread_spwsel_dict = {}
                             spwsel_spwid_dict = {}
 
                             # Check if the globally selected data type is available for this field/spw combination.
@@ -1174,7 +1178,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                             target_heuristics.vislist = vislist_field_intent_spw_combinations[field_intent]['vislist']
 
                             for spwid in adjusted_spwspec.split(','):
-                                cont_ranges_spwsel_dict[spwid], all_continuum_spwsel_dict[spwid] = target_heuristics.cont_ranges_spwsel()
+                                cont_ranges_spwsel_dict[spwid], all_continuum_spwsel_dict[spwid], low_bandwidth_spwsel_dict[spwid], low_spread_spwsel_dict[spwid] = target_heuristics.cont_ranges_spwsel()
                                 spwsel_spwid_dict[spwid] = cont_ranges_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, 'NONE')
 
                             no_cont_ranges = False
@@ -1202,8 +1206,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     #    LOG.warning('Empty continuum frequency range for %s, spw %s. Run hif_findcont ?' % (field_intent[0], spwid))
 
                                 all_continuum = all_continuum and all_continuum_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
+                                low_bandwidth = low_bandwidth and low_bandwidth_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
+                                low_spread = low_spread and low_spread_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
 
-                                if spwsel_spwid in ('ALL', '', 'NONE'):
+                                if spwsel_spwid in ('ALL', 'ALLCONT', '', 'NONE'):
                                     spwsel_spwid_freqs = ''
                                     if target_heuristics.is_eph_obj(field_intent[0]):
                                         spwsel_spwid_refer = 'SOURCE'
@@ -1304,6 +1310,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     spw=actual_spwspec,
                                     spwsel_lsrk=spwsel,
                                     spwsel_all_cont=all_continuum,
+                                    spwsel_low_bandwidth=low_bandwidth,
+                                    spwsel_low_spread=low_spread,
                                     num_all_spws=num_all_spws,
                                     num_good_spws=num_good_spws,
                                     cell=cells[spwspec],
