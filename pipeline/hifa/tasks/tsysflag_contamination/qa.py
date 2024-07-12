@@ -26,6 +26,14 @@ class TsysflagContaminationQAHandler(pqa.QAPlugin):
         delegate = TsysflagQAHandler()
         delegate.handle(context, result)
 
+        # add any QA scores generated during task execution, such as the
+        # preflight checks on data. Here we use the qascores_from_task
+        # property added on-the-fly by hifa_tsysflagcontamination, which is
+        # not an 'official' TsysflagResults property.
+        result.qa.pool.extend(result.qascores_from_task)
+
+        # now add any QA scores originating from the heuristic itself,
+        # denoting data that requires further inspection
         vis = os.path.basename(result.inputs["vis"])
         origin = pqa.QAOrigin(
             metric_name="pipeline.extern.tsys_contamination",
@@ -44,12 +52,13 @@ class TsysflagContaminationQAHandler(pqa.QAPlugin):
 
         # The heuristic cannot operate on some kinds of data (multispec, DSB,
         # etc.). Skipping the task in these cases should not result in a QA
-        # failure.
-        result.qa.pool = [
-            score
-            for score in result.qa.pool
-            if score.longmsg != "Task ended prematurely"
-        ]
+        # -0.1 failure.
+        if result.qascores_from_task:
+            result.qa.pool = [
+                score
+                for score in result.qa.pool
+                if score.longmsg != "Task ended prematurely"
+            ]
 
 
 class TsysflagContaminationListQAHandler(pqa.QAPlugin):

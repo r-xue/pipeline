@@ -1621,10 +1621,10 @@ def get_tsys_contaminated_intervals(
         ):  # v3.4
             large_baseline_residual = True
             large_residual.append(key)  # v3.4
-            warning = f"Large baseline residual."
+            warning = f"Large residual."
             msg_spw, msg_field = key.split("_")
-            warnings_list.append([warning, f"Large baseline residual detected in {vis}, spw {msg_spw}, field {msg_field}."])
-            LOG.info("Large baseline residual detected in %s spw %s field %s", vis, msg_spw, msg_field)
+            warnings_list.append([warning, f"Large residual detected in {vis}, spw {msg_spw}, field {msg_field}."])
+            LOG.info("Large residual detected in %s spw %s field %s", vis, msg_spw, msg_field)
         # print(f" sigma_mad_dif={sigma_mad_dif} sigma_smooth_bp = {sigma_smooth_bp} sigma_quot={sigma_smooth_s/sigma_smooth_bp}")
 
         co_telluric = co_telluric_intervals(spec_b / sigma_smooth_bp, freqs_b)
