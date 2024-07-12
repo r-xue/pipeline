@@ -6,6 +6,10 @@ import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.tsysflag.qa import TsysflagQAHandler
 from pipeline.h.tasks.tsysflag.resultobjects import TsysflagResults
+from pipeline.qa.scorecalculator import (
+    score_tsysflagcontamination_external_heuristic,
+    score_tsysflagcontamination_contamination_flagged,
+)
 from .tsysflagcontamination import TsysFlagContamination
 
 LOG = logging.get_logger(__name__)
@@ -32,23 +36,24 @@ class TsysflagContaminationQAHandler(pqa.QAPlugin):
         # not an 'official' TsysflagResults property.
         result.qa.pool.extend(result.qascores_from_task)
 
-        # now add any QA scores originating from the heuristic itself,
-        # denoting data that requires further inspection
+        # other scores are added following the standard pattern with score
+        # heuristics from the scorecalculator module
         vis = os.path.basename(result.inputs["vis"])
-        origin = pqa.QAOrigin(
-            metric_name="pipeline.extern.tsys_contamination",
-            metric_score="N/A",
-            metric_units="",
+        heuristic_warnings = getattr(result, "extern_warnings", [])
+        result.qa.pool.extend(
+            score_tsysflagcontamination_external_heuristic(vis, heuristic_warnings)
         )
-        for shortmsg, longmsg in getattr(result, "extern_warnings", []):
-            extern_score = pqa.QAScore(
-                score=0.6,  # as requested in PIPE-2009
-                longmsg=f"{longmsg} Check the Tsys plots.",
-                shortmsg=shortmsg,
-                applies_to=pqa.TargetDataSelection(vis={vis}),
-                origin=origin,
+
+        # only add a score for line contamination flagging if the heuristic
+        # actually ran
+        if not result.task_incomplete_reason:
+            caltable = os.path.basename(result.inputs["caltable"])
+            summaries = getattr(result, "summaries", {})
+            result.qa.pool.append(
+                score_tsysflagcontamination_contamination_flagged(
+                    vis, caltable, summaries
+                )
             )
-            result.qa.pool.append(extern_score)
 
         # The heuristic cannot operate on some kinds of data (multispec, DSB,
         # etc.). Skipping the task in these cases should not result in a QA

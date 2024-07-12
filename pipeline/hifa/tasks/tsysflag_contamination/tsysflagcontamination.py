@@ -14,7 +14,9 @@ from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.h.tasks.tsysflag.resultobjects import TsysflagResults
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.basetask import StandardTaskTemplate
+from pipeline.infrastructure.exceptions import PipelineException
 from pipeline.infrastructure.pipelineqa import QAScore, TargetDataSelection
+from pipeline.qa.scorecalculator import SLOW_LANE_QA_SCORE
 
 __all__ = ["TsysFlagContamination", "TsysFlagContaminationInputs"]
 
@@ -27,12 +29,20 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
     TsysFlagContaminationInputs defines the inputs for the TsysFlagContamination
     pipeline task.
 
+    The continue_on_failure parameter sets the task behaviour when an
+    exception is raised by the heuristic. When continue_on_failure = True, the
+    failure is logged and a QA score of -0.1 recorded, but when set to False,
+    the failure is handled by the pipeline's standard task failure mechanisms,
+    where no QA score is recorded and the pipeline run terminates.
+
     Heuristic parameters specific to this task are:
 
     - remove_n_extreme: defaults to 2
     - relative_detection_factor: defaults to 0.005
     - diagnostic_plots: include diagnostic plots in the weblog. Defaults to
       True.
+    - continue_on_failure: continue after heuristic failure (True) or terminate
+      pipeline run. (False).
     """
 
     @vdp.VisDependentProperty
@@ -63,6 +73,7 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
     remove_n_extreme = vdp.VisDependentProperty(default=2)
     relative_detection_factor = vdp.VisDependentProperty(default=0.005)
     diagnostic_plots = vdp.VisDependentProperty(default=True)
+    continue_on_failure = vdp.VisDependentProperty(default=True)
 
     def __init__(
         self,
@@ -75,6 +86,7 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
         remove_n_extreme=None,
         relative_detection_factor=None,
         diagnostic_plots=None,
+        continue_on_failure=None,
     ):
         super(TsysFlagContaminationInputs, self).__init__()
 
@@ -90,6 +102,7 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
         self.filetemplate = filetemplate
         self.logpath = logpath
         self.diagnostic_plots = diagnostic_plots
+        self.continue_on_failure = continue_on_failure
 
         # heuristic parameter arguments
         self.remove_n_extreme = remove_n_extreme
@@ -188,10 +201,24 @@ class TsysFlagContamination(StandardTaskTemplate):
         extern_fn_args = ExternFunctionArguments.from_inputs(self.inputs)
         try:
             plot_wrappers, warnings = self._call_extern_heuristic(extern_fn_args)
-        except Exception:
-            result.task_incomplete_reason = f"Line contamination heuristic failed while processing {self.inputs.vis}"
-            result.metric_order = "manual"  # required for renderer
-            return result
+        except Exception as e:
+            reason = f"Line contamination heuristic failed while processing {self.inputs.vis}"
+
+            if self.inputs.continue_on_failure:
+                # soft failure: QA score of -0.1 but do not halt the pipeline
+                s = QAScore(
+                    score=-0.1,
+                    shortmsg="Line contamination heuristic failed",
+                    longmsg=reason,
+                    applies_to=TargetDataSelection(vis={self.inputs.vis}),
+                )
+                result.qascores_from_task.append(s)
+                result.task_incomplete_reason = reason
+                result.metric_order = "manual"  # required for renderer
+                return result
+            else:
+                # hard failure: raise exception, let the framework deal with it
+                raise PipelineException(reason) from e
 
         result.plots = plot_wrappers
         result.extern_warnings = warnings
@@ -371,13 +398,28 @@ class TsysFlagContamination(StandardTaskTemplate):
         ms = self.inputs.ms
         qa_scores = []
 
-        # TBC: is this sufficient to identify multi-source multi-tuning?
-        science_source_ids = {
-            field.source_id for field in ms.get_fields(intent="TARGET")
+        # 1. Identify all Field-Id with CALIBRATE_ATMOSPHERE intents.
+        # 2. Among those Field-Ids identified above, identify all which are
+        #    associated with OBSERVE_TARGET intent (in other scans)
+        # 3. If there is more than 1 distinct Field IDs with the above two
+        #    requirements, then the EB is "multi-source"
+        dual_intent_fields = [
+            f for f in ms.get_fields(intent="ATMOSPHERE") if "TARGET" in f.intents
+        ]
+        is_multi_source_eb = len(dual_intent_fields) > 1
+
+        # 4. If in addition the EB has more than one science spectral spec
+        #    (disregarding pointing spectral specs etc.), then the EB is
+        #    "multi-tuning multi-source" type.
+        science_specs = {
+            spw.spectralspec
+            for spw in ms.get_spectral_windows(science_windows_only=True)
         }
-        if len(science_source_ids) > 1 and len(ms.get_spectral_specs()) > 1:
+        is_multi_tuning_eb = len(science_specs) > 1
+
+        if is_multi_tuning_eb and is_multi_source_eb:
             s = QAScore(
-                score=0.6,
+                score=SLOW_LANE_QA_SCORE,
                 shortmsg="Multi-source multi-tuning EB",
                 longmsg=f"Line contamination heuristic not validated for multi-source multi-tunings present in {ms.basename}.",
                 applies_to=TargetDataSelection(vis={ms.basename}),
@@ -396,14 +438,13 @@ class TsysFlagContamination(StandardTaskTemplate):
         ms = self.inputs.ms
         science_spws = ms.get_spectral_windows(science_windows_only=True)
 
-        # TBC: is requiring num pols <= 2 too restrictive?
         polarizations = {
             ms.get_data_description(spw=spw.id).num_polarizations
             for spw in science_spws
         }
         if any(n > 2 for n in polarizations):
             s = QAScore(
-                score=0.6,
+                score=SLOW_LANE_QA_SCORE,
                 shortmsg="Full polarization data",
                 longmsg=f"Line contamination heuristic not validated for full polarization data in {ms.basename}.",
                 applies_to=TargetDataSelection(vis={ms.basename}),
@@ -424,7 +465,7 @@ class TsysFlagContamination(StandardTaskTemplate):
         # exclude TP (fails by design; needs bandpass intent scan)
         if "BANDPASS" not in ms.intents:
             s = QAScore(
-                score=0.6,
+                score=SLOW_LANE_QA_SCORE,
                 shortmsg="No BANDPASS data",
                 longmsg=f"No bandpass scans in {ms.basename} for the line contamination heuristic to process.",
                 applies_to=TargetDataSelection(vis={ms.basename}),

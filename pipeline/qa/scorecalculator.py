@@ -100,6 +100,9 @@ __all__ = ['score_polintents',                                # ALMA specific
 
 LOG = logging.get_logger(__name__)
 
+# QA score that will direct the EB to QA slow lane for further inspection
+SLOW_LANE_QA_SCORE = 0.6
+
 
 # - utility functions --------------------------------------------------------------------------------------------------
 
@@ -4227,7 +4230,7 @@ def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, Raste
     """
 
     qa_scores = []  # [pqa.QAScore]
-    
+
     # converting rasterscan_heuristics_results to QA score
     for _execblock_id, _rasterscan_heuristics_results_list in rasterscan_heuristics_results.items():
         for _results_list in _rasterscan_heuristics_results_list:
@@ -4255,3 +4258,56 @@ def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str
                         metric_score=SCORE_FAIL,
                         metric_units='raster scan correctness')
     return pqa.QAScore(SCORE_FAIL, longmsg=longmsg, shortmsg=msg, origin=origin)
+
+
+@log_qa
+def score_tsysflagcontamination_contamination_flagged(vis, caltable, summaries) -> pqa.QAScore:
+    """
+    Calculate a score for the hifa_tsysflagcontamination task based on whether
+    any line contamination was flagged.
+
+    0% flagged  -> 1
+    >0% flagged -> 0.9
+    """
+    # Calculate fraction of flagged data.
+    frac_flagged = calc_frac_newly_flagged(summaries)
+
+    if frac_flagged:
+        score = 0.9
+        longmsg = f'Line contamination detected and flagged in {caltable}'
+        shortmsg = 'Line contamination flagged'
+    else:
+        score = 1.0
+        longmsg = f'No line contamination detected in {caltable}'
+        shortmsg = 'No line contamination flagged'
+
+    origin = pqa.QAOrigin(metric_name='score_tsys_line_contamination_flagged',
+                          metric_score=frac_flagged,
+                          metric_units='Fraction of Tsys data that was identified as line contamination and flagged')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(vis), origin=origin)
+
+
+@log_qa
+def score_tsysflagcontamination_external_heuristic(vis, warnings) -> List[pqa.QAScore]:
+    """
+    Convert QA scores that originate from the Tsysflag line contamination
+    heuristic.
+    """
+    # now add any QA scores originating from the heuristic itself,
+    # denoting data that requires further inspection
+    origin = pqa.QAOrigin(
+        metric_name="score_tsysflagcontamination_external_heuristic",
+        metric_score="N/A",
+        metric_units="",
+    )
+    qascores = []
+    for shortmsg, longmsg in warnings:
+        extern_score = pqa.QAScore(
+            score=SLOW_LANE_QA_SCORE,
+            longmsg=f"{longmsg} Check the Tsys plots.",
+            shortmsg=shortmsg,
+            applies_to=pqa.TargetDataSelection(vis={vis}),
+            origin=origin,
+        )
+        qascores.append(extern_score)
+    return qascores
