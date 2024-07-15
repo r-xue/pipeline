@@ -24,6 +24,7 @@ from .hifa_spwphaseup import hifa_spwphaseup
 from .hifa_targetflag import hifa_targetflag
 from .hifa_timegaincal import hifa_timegaincal
 from .hifa_tsysflag import hifa_tsysflag
+from .hifa_tsysflagcontamination import hifa_tsysflagcontamination
 from .hifa_unlock_refant import hifa_unlock_refant
 from .hifa_wvrgcal import hifa_wvrgcal
 from .hifa_wvrgcalflag import hifa_wvrgcalflag
@@ -52,6 +53,7 @@ __all__ = ['hifa_antpos',
            'hifa_targetflag',
            'hifa_timegaincal',
            'hifa_tsysflag',
+           'hifa_tsysflagcontamination',
            'hifa_unlock_refant',
            'hifa_wvrgcal',
            'hifa_wvrgcalflag']
