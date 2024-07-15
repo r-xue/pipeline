@@ -8,6 +8,7 @@ from pipeline.h.tasks.common import manifest
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure.utils import utils
+from pipeline.infrastructure import pipeline_statistics
 from pipeline.infrastructure import task_registry
 from . import almaifaqua
 
@@ -135,14 +136,7 @@ class ALMAExportData(exportdata.ExportData):
         stats_file = os.path.join(context.output_dir, statsfile_name)
         LOG.info('Generating pipeline statistics file')
 
-        # TODO: remove hard-coded output json example
-        stats_dict = {}
-        stats_dict['name'] = "project_uid"
-        stats_dict['origin'] = "base"
-        stats_dict['longdescription'] = "Proposal id number"
-        stats_dict['units'] = "None"
-        stats_dict['value'] = list(context.observing_run.project_ids)
-        stats_dict['score'] = "None"
+        stats_dict = pipeline_statistics._generate_stats(context)
 
         # Write the stats file to disk
         with open(stats_file, 'w', encoding='utf-8') as f:
@@ -159,7 +153,7 @@ class ALMAExportData(exportdata.ExportData):
         # Get the output file name
         ps = context.project_structure
         script_file = os.path.join(context.report_dir, script_name)
-        out_script_file = self.NameBuilder.casa_script(script_name, 
+        out_script_file = self.NameBuilder.casa_script(script_name,
                                                        project_structure=ps,
                                                        ousstatus_entity_id=oussid,
                                                        output_dir=products_dir)
