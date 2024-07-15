@@ -97,14 +97,31 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         mslist = context.observing_run.get_measurement_sets()
         root = ElementTree.Element("Calibrators")
         for ms in mslist:
-            calibrators = [[source.name,source.intents] for source in ms.sources if 'TARGET' not in source.intents]
-            for calibrator in calibrators:
-                nx = ElementTree.Element("Calibrator")
-                ElementTree.SubElement(nx, 'Name').text = calibrator[0]
-                ElementTree.SubElement(nx, 'Intents').text = ",".join(calibrator[1])
-                root.append(nx)
+            if len(context.evla['msinfo'][ms.name].spindex_results) != 0 :
+                for calibrator in context.evla['msinfo'][ms.name].spindex_results:
+                    nx = ElementTree.Element("Calibrator")
+                    ElementTree.SubElement(nx, 'Name').text = calibrator["source"]
+
+                    ElementTree.SubElement(nx, 'Fitorder').text = calibrator["fitorder"]
+                    ElementTree.SubElement(nx, 'FluxDensity').text = ','.join([str(fitflx) for fitflx in calibrator["fitflx"]])
+                    ElementTree.SubElement(nx, 'SpectralIndex').text = str(calibrator["spix"])
+                    root.append(nx)
+
+                    source_intents = self.get_source_intents(ms, calibrator["source"])
+                    if source_intents is not None:
+                        ElementTree.SubElement(nx, 'Intents').text = source_intents
+                    else:
+                        LOG.warning("Unable to get source intents for AQUA report")
 
         return root
+
+    def get_source_intents(self, ms, source):
+        source_intents = None
+        for s in ms.sources:
+            if s.name == source:
+                source_intents = ",".join(s.intents)
+                break
+        return source_intents
 
     def get_science_spws(self, context):
         mslist = context.observing_run.get_measurement_sets()

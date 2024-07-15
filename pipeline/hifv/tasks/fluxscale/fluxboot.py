@@ -126,6 +126,8 @@ class FluxbootResults(basetask.Results):
         context.evla['msinfo'][m.name].fluxscale_spws = self.spws
         context.evla['msinfo'][m.name].fluxscale_result = self.fluxscale_result
         context.evla['msinfo'][m.name].fbversion = self.fbversion
+        # PIPE-730: adding spindex_results for AQUA report
+        context.evla['msinfo'][m.name].spindex_results = self.spindex_results
 
 
 @task_registry.set_equivalent_casa_task('hifv_fluxboot')

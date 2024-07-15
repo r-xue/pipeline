@@ -440,6 +440,7 @@ class VLAScanHeuristics(object):
         self.fluxscale_sources = []
         self.fluxscale_flux_densities = []
         self.fluxscale_spws = []
+        self.spindex_results = []
 
         self.flagspw1  = ''
         self.flagspw1b = ''
