@@ -8,6 +8,7 @@ import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 from pipeline.domain.field import Field
 from pipeline.domain.measurementset import MeasurementSet
+import pipeline.h.tasks.importdata.qa as importdataqa
 from pipeline.h.tasks.exportdata import aqua
 from pipeline.infrastructure import casa_tools
 from .almaimportdata import ALMAImportDataResults
@@ -18,7 +19,7 @@ aqua_exporter = aqua.xml_generator_for_metric('ScoreParallacticAngle', '{:0.3f}'
 aqua.register_aqua_metric(aqua_exporter)
 
 
-class ALMAImportDataListQAHandler(pqa.QAPlugin):
+class ALMAImportDataListQAHandler(importdataqa.ImportDataListQAHandler, pqa.QAPlugin):
     result_cls = collections.abc.Iterable
     child_cls = ALMAImportDataResults
 
@@ -38,7 +39,7 @@ class ALMAImportDataListQAHandler(pqa.QAPlugin):
         result.parang_ranges = parang_ranges
 
 
-class ALMAImportDataQAHandler(pqa.QAPlugin):
+class ALMAImportDataQAHandler(importdataqa.ImportDataQAHandler, pqa.QAPlugin):
     result_cls = ALMAImportDataResults
     child_cls = None
 
@@ -73,14 +74,14 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
         score9 = _check_fluxservicestatuscodes(result)
 
         # Check state of IERS tables relative to observation date (PIPE-2137)
-        # scores10 = _check_iersstate(result.mses)
+        scores10 = _check_iersstate(result.mses)
 
         # Add all scores to QA score pool in result.
         result.qa.pool.extend(polcal_scores)
         result.qa.pool.extend([score2, score4, score5, score6, score8, score9])
         result.qa.pool.extend(scores3)
         result.qa.pool.extend(scores7)
-        # result.qa.pool.extend(scores10)
+        result.qa.pool.extend(scores10)
 
 
 def _check_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
@@ -200,12 +201,12 @@ def _check_calobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.
 
     return qacalc.score_samecalobjects(recipe_name, mses)
 
-# def _check_iersstate(mses) -> pqa.QAScore:
-#     """
-#     Check state of IERS tables relative to observation date
-#     """
+def _check_iersstate(mses) -> pqa.QAScore:
+    """
+    Check state of IERS tables relative to observation date
+    """
 
-#     return qacalc.score_iersstate(mses)
+    return qacalc.score_iersstate(mses)
 
 
 # - functions to measure parallactic angle coverage of polarisation calibrator ----------------------------------------

@@ -182,8 +182,8 @@ class ImportDataQAHandler(pqa.QAPlugin):
         """
         Check state of IERS tables relative to observation date
         """
-
         return qacalc.score_iersstate(mses)
+
 
 class ImportDataListQAHandler(pqa.QAPlugin):
     result_cls = collections.abc.Iterable
