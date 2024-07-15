@@ -65,7 +65,7 @@ class ALMAExportData(exportdata.ExportData):
         # Create and export the pipeline stats file
         pipeline_stats_file = None
         try:
-            pipeline_stats_file = self._export_stats_file(context=self.inputs.context)
+            pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid)
         except Exception as e:
             LOG.info("Unable to output pipeline statistics file: {}".format(e))
             pass
@@ -130,9 +130,9 @@ class ALMAExportData(exportdata.ExportData):
 
         return visdict
 
-    def _export_stats_file(self, context):
+    def _export_stats_file(self, context, oussid=''):
         """Save the stats file"""
-        statsfile_name = "pipeline_stats.json"
+        statsfile_name = "pipeline_stats_{}.json".format(oussid)
         stats_file = os.path.join(context.output_dir, statsfile_name)
         LOG.info('Generating pipeline statistics file')
 

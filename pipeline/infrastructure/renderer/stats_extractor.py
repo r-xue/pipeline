@@ -147,34 +147,34 @@ class FluxcalflagStatsExtractor(StatsExtractor):
         # TODO: populate this value
         calibrated_flux = {}
 
-        ps = pipeline_statistics.PipelineStatistics(name="gfluxscale_calibrated_flux",
-                                                    value=calibrated_flux,
-                                                    longdesc="calibrated flux of the calibrator per intent per spw",
-                                                    level="EB/INTENT/SPW",
-                                                    units="Jy")
+        # ps = pipeline_statistics.PipelineStatistics(name="gfluxscale_calibrated_flux",
+        #                                             value=calibrated_flux,
+        #                                             longdesc="calibrated flux of the calibrator per intent per spw",
+        #                                             level="EB/INTENT/SPW",
+        #                                             units="Jy")
         return ps
 
 
-class GcorFluxscaleStatsExtractor(StatsExtractor):
-    result_cls = GcorFluxscaleResults
-    child_cls = None
+# class GcorFluxscaleStatsExtractor(StatsExtractor):
+#     result_cls = GcorFluxscaleResults
+#     child_cls = None
 
-    def handle(self, result:GcorFluxscaleResults) -> OrderedDict:
-        """
-        Args:
-            result: GfluxscaleflagResults object
+#     def handle(self, result:GcorFluxscaleResults) -> OrderedDict:
+#         """
+#         Args:
+#             result: GfluxscaleflagResults object
 
-        Returns:
-            OrderedDict[str, float]
-        """
-        # _, fluxes = fluxscale_renderer.make_flux_table(context, result)
+#         Returns:
+#             OrderedDict[str, float]
+#         """
+#         # _, fluxes = fluxscale_renderer.make_flux_table(context, result)
 
-        ps = pipeline_statistics.PipelineStatistics(name="gfluxscale_calibrated_flux",
-                                                    value=calibrated_flux,
-                                                    longdesc="calibrated flux of the calibrator per intent per spw",
-                                                    level="EB/INTENT/SPW",
-                                                    units="Jy")
-        return ps
+#         ps = pipeline_statistics.PipelineStatistics(name="gfluxscale_calibrated_flux",
+#                                                     value=calibrated_flux,
+#                                                     longdesc="calibrated flux of the calibrator per intent per spw",
+#                                                     level="EB/INTENT/SPW",
+#                                                     units="Jy")
+#         return ps
 
 
 class ApplycalRegressionExtractor(StatsExtractor):

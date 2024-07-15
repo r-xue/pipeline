@@ -32,10 +32,10 @@ class PipelineStatistics(object):
         if self.origin not in ["", None]:
             stats_dict['origin'] = self.origin
 
-        if self.units not in ["", None]: 
+        if self.units not in ["", None]:
             stats_dict['units'] = self.units
 
-        if self.value not in ["", None]: 
+        if self.value not in ["", None]:
             stats_dict['value'] = self.value
 
         if self.score not in ["", None]:
@@ -50,24 +50,28 @@ def _generate_stats(context):
         name='project_id',
         value=list(context.observing_run.project_ids),
         longdesc='Proposal id number',
+        origin="hifa_importdata",
         level='MOUS')
 
     ps2 = PipelineStatistics(
         name='pipeline_version',
         value=environment.pipeline_revision,
         longdesc="pipeline version string",
+        origin="hifa_importdata",
         level='MOUS')
 
     ps3 = PipelineStatistics(
         name='pipeline_recipe',
         value=context.project_structure.recipe_name,
         longdesc="recipe name",
+        origin="hifa_importdata",
         level='MOUS')
 
     ps4 = PipelineStatistics(
         name='casa_version',
         value=environment.casa_version_string,
         longdesc="casa version string",
+        origin="hifa_importdata",
         level='MOUS')
 
     stats_collection = []
