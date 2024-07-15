@@ -398,14 +398,34 @@ class TsysFlagContamination(StandardTaskTemplate):
         ms = self.inputs.ms
         qa_scores = []
 
+        # Algorithm to detect multi-source multi-tuning EBs is:
+        #
         # 1. Identify all Field-Id with CALIBRATE_ATMOSPHERE intents.
         # 2. Among those Field-Ids identified above, identify all which are
         #    associated with OBSERVE_TARGET intent (in other scans)
         # 3. If there is more than 1 distinct Field IDs with the above two
         #    requirements, then the EB is "multi-source"
-        dual_intent_fields = [
-            f for f in ms.get_fields(intent="ATMOSPHERE") if "TARGET" in f.intents
-        ]
+        # 4. If in addition the EB has more than one science spectral spec
+        #    (disregarding pointing spectral specs etc.), then the EB is
+        #    "multi-tuning multi-source" type.
+        dual_intent_fields = {
+            target_field
+            # So, mapping the implementation to the algorithm above, we:
+            # 1. identify all fields with ATMOSPHERE intent
+            for tsys_field in ms.get_fields(intent="ATMOSPHERE")
+            # 2. get scans for that field that are also associated with TARGET
+            #    intent...
+            for target_scan_on_tsys_field in ms.get_scans(
+                scan_intent="TARGET", field=tsys_field.id
+            )
+            #   ... and iterate over the fields for that scan...
+            for target_field in target_scan_on_tsys_field.fields
+            #   ... but only if this TARGET scan does not also have ATMOSPHERE
+            #   intent, i.e., this has to be TARGET intent in *other* scans
+            #   associated with the Tsys field, not the *same* scan
+            if "ATMOSPHERE" not in target_scan_on_tsys_field.intents
+        }
+        # 3. it's a multi-source EB if more than 1 field meets this requirement
         is_multi_source_eb = len(dual_intent_fields) > 1
 
         # 4. If in addition the EB has more than one science spectral spec
