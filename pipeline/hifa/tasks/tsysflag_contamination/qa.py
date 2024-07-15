@@ -3,8 +3,7 @@ import os
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
-import pipeline.infrastructure.utils as utils
-from pipeline.h.tasks.tsysflag.qa import TsysflagQAHandler
+from pipeline.h.tasks.tsysflag.qa import TsysflagQAHandler, TsysflagListQAHandler
 from pipeline.h.tasks.tsysflag.resultobjects import TsysflagResults
 from pipeline.qa.scorecalculator import (
     score_tsysflagcontamination_external_heuristic,
@@ -76,13 +75,7 @@ class TsysflagContaminationListQAHandler(pqa.QAPlugin):
     generating_task = TsysFlagContamination
 
     def handle(self, context, result):
-        # collate the QAScores from each child result, pulling them into our
-        # own QAscore list
-        collated = utils.flatten([r.qa.pool for r in result])
-        result.qa.pool[:] = collated
-
-        caltables = [r.inputs["caltable"] for r in result]
-        longmsg = "No extra data was flagged in %s".format(
-            utils.commafy(caltables, quotes=False, conjunction="or")
-        )
-        result.qa.all_unity_longmsg = longmsg
+        # Again, we cannot extend TsysflagListQAHandler as plugin registration
+        # only works on classes that directly extend QAPlugin
+        delegate = TsysflagListQAHandler()
+        delegate.handle(context, result)
