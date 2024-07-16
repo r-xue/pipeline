@@ -37,15 +37,15 @@ class TsysflagContaminationQAHandler(pqa.QAPlugin):
 
         # other scores are added following the standard pattern with score
         # heuristics from the scorecalculator module
-        vis = os.path.basename(result.inputs["vis"])
-        heuristic_warnings = getattr(result, "extern_warnings", [])
+        qascores_to_adopt = getattr(result, "extern_qascores", [])
         result.qa.pool.extend(
-            score_tsysflagcontamination_external_heuristic(vis, heuristic_warnings)
+            score_tsysflagcontamination_external_heuristic(qascores_to_adopt)
         )
 
         # only add a score for line contamination flagging if the heuristic
         # actually ran
         if not result.task_incomplete_reason:
+            vis = os.path.basename(result.inputs["vis"])
             caltable = os.path.basename(result.inputs["caltable"])
             summaries = getattr(result, "summaries", {})
             result.qa.pool.append(

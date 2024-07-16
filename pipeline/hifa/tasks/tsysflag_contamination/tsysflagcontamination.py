@@ -200,7 +200,7 @@ class TsysFlagContamination(StandardTaskTemplate):
         # step 2: run extern heuristic
         extern_fn_args = ExternFunctionArguments.from_inputs(self.inputs)
         try:
-            plot_wrappers, warnings = self._call_extern_heuristic(extern_fn_args)
+            plot_wrappers, qascores = self._call_extern_heuristic(extern_fn_args)
         except Exception as e:
             reason = f"Line contamination heuristic failed while processing {self.inputs.vis}"
 
@@ -221,7 +221,7 @@ class TsysFlagContamination(StandardTaskTemplate):
                 raise PipelineException(reason) from e
 
         result.plots = plot_wrappers
-        result.extern_warnings = warnings
+        result.extern_qascores = qascores
 
         # Step 3: do not flag data for DSB data
         # Set manual flagging template to that written by the heuristic unless it's a DSB EB.
@@ -276,7 +276,7 @@ class TsysFlagContamination(StandardTaskTemplate):
             single_polarization=single_polarization,
         )
 
-        line_contamination_intervals, warnings_list, plot_wrappers = (
+        line_contamination_intervals, warnings_list, plot_wrappers, qascores = (
             extern.get_tsys_contaminated_intervals(
                 tsys,
                 plot=diagnostic_plots,
@@ -325,7 +325,7 @@ class TsysFlagContamination(StandardTaskTemplate):
 
                 # v3.3 large baseline residual
                 for w in warnings_list:
-                    msg = " ".join(w)
+                    msg = " ".join(w[:-1])
                     f.write(f"# {msg}\n")
                     LOG.info("# %s", msg)
 
@@ -378,7 +378,7 @@ class TsysFlagContamination(StandardTaskTemplate):
                     f.write(msg)
                     LOG.info(msg)
 
-        return plot_wrappers, warnings_list
+        return plot_wrappers, qascores
 
     def _assert_heuristic_preconditions(self) -> List[QAScore]:
         """
