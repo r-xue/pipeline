@@ -1163,6 +1163,11 @@ class Tclean(cleanbase.CleanBase):
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
                                   effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, modifier=modifier, session=session)
 
+            # PIPE-2211: Update some keywords for manifest usage on all other imaging products
+            for im_name in result.im_names.values():
+                if os.path.exists(im_name):
+                    self._update_miscinfo(imagename=im_name, stokes=inputs.stokes, level='member', obspatt=obspatt, arrays=arrays, modifier=modifier, session=session)
+
             result.set_image_min(pbcor_image_min)
             result.set_image_min_iquv(pbcor_image_min_iquv)
             result.set_image_max(pbcor_image_max)
@@ -1292,6 +1297,11 @@ class Tclean(cleanbase.CleanBase):
                                   nfield=max([len(field_ids.split(',')) for field_ids in self.image_heuristics.field(inputs.intent, inputs.field)]),
                                   datamin=pbcor_image_min, datamax=pbcor_image_max, datarms=nonpbcor_image_non_cleanmask_rms, stokes=inputs.stokes,
                                   effbw=effbw, level='member', ctrfrq=ctrfrq, obspatt=obspatt, arrays=arrays, modifier=modifier, session=session)
+
+            # PIPE-2211: Update some keywords for manifest usage on all other imaging products
+            for im_name in result.im_names.values():
+                if os.path.exists(im_name):
+                    self._update_miscinfo(imagename=im_name, stokes=inputs.stokes, level='member', obspatt=obspatt, arrays=arrays, modifier=modifier, session=session)
 
             keep_iterating, hm_masking = self.image_heuristics.keep_iterating(iteration, inputs.hm_masking,
                                                                               result.tclean_stopcode,
