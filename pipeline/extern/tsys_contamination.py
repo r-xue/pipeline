@@ -1700,12 +1700,12 @@ def get_tsys_contaminated_intervals(
                     if interval_comparison < 0.7:
                         warnings_list.append(
                             [
-                                "Large difference between bandpass and field telluric CO line.",
+                                "Large difference between the bandpass telluric line and other fields",
                                 f"Large difference between CO Line {LINES_12C16O[np.abs(freqs_b[int(pclp)]-LINES_12C16O)<chansize_mhz]} MHz in {vis} spw {spw}, comparing field {field} and bandpass.",
                             ]
                         )
                         LOG.info(
-                            "Large difference between bandpass and field telluric CO line. "
+                            "Large difference between the bandpass telluric line and other fields"
                             "CO Line %s MHz in %s spw %s, comparing field=%s and bandpass.",
                             {LINES_12C16O[np.abs(freqs_b[int(pclp)] - LINES_12C16O) < chansize_mhz]},
                             vis,
@@ -1854,7 +1854,7 @@ def get_tsys_contaminated_intervals(
                 else:
                     possible_line_intervals = np.append(possible_line_intervals, i)
                 wide = True
-                warning = f"Large contaminated range rejected as line."
+                warning = f"Astronomical contamination covering a wide frequency range"
                 message = " ".join(
                     [
                         f"Channel range {int(i[0])}~{int(i[1])} equivalent to",
@@ -1868,7 +1868,7 @@ def get_tsys_contaminated_intervals(
                 )
 
                 warnings_list.append([warning, message])
-                LOG.info("Large contaminated region range rejected as line. %s", message)
+                LOG.info("Astronomical contamination covering a wide frequency range. %s", message)
             LOG.info(
                 "Range %s equivalent to %s km/s or %d%% of the SpW", i, velocity_width_kms, abs(i[1]-i[0])/nchan*100
             )

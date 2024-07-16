@@ -41,6 +41,33 @@ def flagcmd_file_data(caltable, flagcmd_file):
 
 <%block name="title">Flag T<sub>sys</sub> astrophysical line contamination</%block>
 
+<p>This task detects and flags the frequency ranges in the T<sub>sys</sub> calibration table
+affected by astronomical emission.</p>
+
+<p>The QA score of this task is 1.0 (green) if the task runs correctly and there
+are no flags to be applied and 0.9 (blue) if the task runs correctly and flags
+are applied. For some data types for which the task is not designed, the QA
+score will be 0.6 (yellow). The QA score will be 0.6 as well if the task
+detects issues that deserve special attention, such as:<p>
+
+<ol style="list-style-type: lower-roman;">
+
+    <li>if the QA score message says "Large difference between the bandpass telluric
+    line and other fields" it means that there is a possible atmospheric line
+    contamination affecting the autocorrelation renormalization corrections which needs
+    to be excluded manually;</li>
+
+    <li>if the QA score message says "Astronomical
+    contamination covering a wide frequency range" it means that the contaminated
+    line range detected by the algorithm is too wide and needs to be examined. In
+    that case, the flagging associated with the wide range is not applied;</li>
+
+    <li>finally, if the message says "Large residuals" it means that the general T<sub>sys</sub>
+    solution needs to be examined due to instrumental instabilities or very
+    widespread T<sub>sys</sub> contamination.</li>
+
+</ol>
+
 % if any([msg for msg in task_incomplete_msg.values()]):
   <p>For the following measurement sets, the task ended prematurely with the following message:</p>
   <ul>
@@ -143,7 +170,17 @@ def flagcmd_file_data(caltable, flagcmd_file):
 	</%def>
 
 	<%def name="preamble()">
-		<p>Diagnostic plots of the line contamination heuristic indicating any identified regions to flag.</p>
+		<p>The diagnostic plots below show antenna and scan averaged (stacked) T<sub>sys</sub>
+           contamination tables for each spectral window.
+
+           For each spectral windows, there are two graphs. The graph on the left shows
+           the stacked T<sub>sys</sub> spectrum taken toward the bandpass calibrator in orange color.
+           The stacked T<sub>sys</sub> spectrum taken toward other T<sub>sys</sub> field (with
+           CALIBRATE_ATMOSPHERE intent) is shown in blue. The difference between these two
+           (plus a constant to ease the display) is shown in green. The T<sub>sys</sub> contaminated
+           ranges are shown in red. The graph on the right shows this same difference T<sub>sys</sub>
+           spectrum but rectified in order to scatter around zero. It has also been
+           re-scaled by a noise estimation in order to display signal-to-noise ratio.</p>
 	</%def>
 
 	<%def name="mouseover(plot)">Click to show Tₛᵧₛ vs frequency for Tₛᵧₛ spw ${plot.parameters['tsys_spw']}</%def>
