@@ -4288,26 +4288,28 @@ def score_tsysflagcontamination_contamination_flagged(vis, caltable, summaries) 
 
 
 @log_qa
-def score_tsysflagcontamination_external_heuristic(vis, warnings) -> List[pqa.QAScore]:
+def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pqa.QAScore]) -> List[pqa.QAScore]:
     """
-    Convert QA scores that originate from the Tsysflag line contamination
+    Adopt QA scores that originate from the Tsysflag line contamination
     heuristic.
+
+    The QA scores are generated in an external heuristic. This metric
+    is here mainly to log the QA scores to console for non-weblog runs
+    via the @log_qa decorator.
     """
-    # now add any QA scores originating from the heuristic itself,
-    # denoting data that requires further inspection
     origin = pqa.QAOrigin(
         metric_name="score_tsysflagcontamination_external_heuristic",
         metric_score="N/A",
         metric_units="",
     )
     qascores = []
-    for shortmsg, longmsg in warnings:
-        extern_score = pqa.QAScore(
-            score=SLOW_LANE_QA_SCORE,
-            longmsg=f"{longmsg} Check the Tsys plots.",
-            shortmsg=shortmsg,
-            applies_to=pqa.TargetDataSelection(vis={vis}),
-            origin=origin,
+    for fq in foreign_qascores:
+        adopted_qascore = pqa.QAScore(
+            score=fq.score,
+            shortmsg=fq.shortmsg,
+            longmsg=fq.longmsg,
+            applies_to=fq.applies_to,
+            origin=origin
         )
-        qascores.append(extern_score)
+        qascores.append(adopted_qascore)
     return qascores

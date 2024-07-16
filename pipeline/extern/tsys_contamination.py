@@ -38,6 +38,8 @@ from scipy.spatial import ConvexHull
 from scipy.special import legendre
 
 import pipeline.infrastructure.logging
+import pipeline.infrastructure.pipelineqa as pipelineqa
+import pipeline.qa.scorecalculator as scorecalculator
 
 from .TsysDataClassFile import TsysData
 
@@ -1503,8 +1505,11 @@ def get_tsys_contaminated_intervals(
     relative_detection_factor=0.05,  # v3.1
     n_sigma_detection_limit=7,
 ):
-    plot_wrappers = []  # list to hold pipeline plot wrappers. New variable introduced during initial import PIPE-2009
+    # START - new function variables introduced for PIPE-2009
+    plot_wrappers = []  # list to hold pipeline plot wrappers.
+    qascores = []       # list to hold QAScores created alongside warning messages
     vis = tsysdata.msfile  # short alias to MS name. new variable added in PIPE-2009.
+    # END - new function variables introduced for PIPE-2009
 
     warnings_list = []
     tsys = tsysdata  ###
@@ -1621,9 +1626,18 @@ def get_tsys_contaminated_intervals(
         ):  # v3.4
             large_baseline_residual = True
             large_residual.append(key)  # v3.4
-            warning = f"Large residual."
+            warning = f"Large residual"
             msg_spw, msg_field = key.split("_")
-            warnings_list.append([warning, f"Large residual detected in {vis}, spw {msg_spw}, field {msg_field}."])
+            message = f"Large residual detected in {vis}, spw {msg_spw}, field {msg_field}."
+            warnings_list.append([warning, message])
+            qascores.append(
+                pipelineqa.QAScore(
+                    score=scorecalculator.SLOW_LANE_QA_SCORE,
+                    shortmsg=warning,
+                    longmsg=f'{message} Check Tsys plots.',
+                    applies_to=pipelineqa.TargetDataSelection(vis={vis}, spw={msg_spw}, field={msg_field})
+                )
+            )
             LOG.info("Large residual detected in %s spw %s field %s", vis, msg_spw, msg_field)
         # print(f" sigma_mad_dif={sigma_mad_dif} sigma_smooth_bp = {sigma_smooth_bp} sigma_quot={sigma_smooth_s/sigma_smooth_bp}")
 
@@ -1698,11 +1712,16 @@ def get_tsys_contaminated_intervals(
             ):  # v3.1
                 if np.any(np.abs(freqs_b[int(pclp)] - LINES_12C16O) < 2 * chansize_mhz):
                     if interval_comparison < 0.7:
-                        warnings_list.append(
-                            [
-                                "Large difference between the bandpass telluric line and other fields",
-                                f"Large difference between CO Line {LINES_12C16O[np.abs(freqs_b[int(pclp)]-LINES_12C16O)<chansize_mhz]} MHz in {vis} spw {spw}, comparing field {field} and bandpass.",
-                            ]
+                        warning = "Large difference between the bandpass telluric line and other fields"
+                        message = f"Large difference between CO Line {LINES_12C16O[np.abs(freqs_b[int(pclp)] - LINES_12C16O) < chansize_mhz]} MHz in {vis} spw {spw}, comparing field {field} and bandpass."
+                        warnings_list.append([warning, message])
+                        qascores.append(
+                            pipelineqa.QAScore(
+                                    score=scorecalculator.SLOW_LANE_QA_SCORE,
+                                    shortmsg=warning,
+                                    longmsg=f'{message} Check Tsys plots.',
+                                    applies_to=pipelineqa.TargetDataSelection(vis={vis}, spw={spw}, field={field})
+                            )
                         )
                         LOG.info(
                             "Large difference between the bandpass telluric line and other fields"
@@ -1868,6 +1887,14 @@ def get_tsys_contaminated_intervals(
                 )
 
                 warnings_list.append([warning, message])
+                qascores.append(
+                    pipelineqa.QAScore(
+                        score=scorecalculator.SLOW_LANE_QA_SCORE,
+                        shortmsg=warning,
+                        longmsg=f'{message} Check Tsys plots.',
+                        applies_to=pipelineqa.TargetDataSelection(vis={vis}, spw={spw}, field={field})
+                    )
+                )
                 LOG.info("Astronomical contamination covering a wide frequency range. %s", message)
             LOG.info(
                 "Range %s equivalent to %s km/s or %d%% of the SpW", i, velocity_width_kms, abs(i[1]-i[0])/nchan*100
@@ -1949,7 +1976,7 @@ def get_tsys_contaminated_intervals(
             ),
         }
 
-    return result, warnings_list, plot_wrappers
+    return result, warnings_list, plot_wrappers, qascores
 
 
 def separate_non_intersecting_sci_spw(tsysdata, chan_tsys_intervals, tsysspw):  # v2.4
