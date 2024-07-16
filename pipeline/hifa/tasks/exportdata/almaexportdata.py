@@ -136,7 +136,7 @@ class ALMAExportData(exportdata.ExportData):
         stats_file = os.path.join(context.output_dir, statsfile_name)
         LOG.info('Generating pipeline statistics file')
 
-        stats_dict = pipeline_statistics._generate_stats(context)
+        stats_dict = pipeline_statistics.generate_stats(context)
 
         # Write the stats file to disk
         with open(stats_file, 'w', encoding='utf-8') as f:

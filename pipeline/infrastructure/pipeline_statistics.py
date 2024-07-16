@@ -43,9 +43,11 @@ class PipelineStatistics(object):
             self.value = list(self.value)
 
     def to_dict(self):
+        """ Individual statistics item to dict"""
         stats_dict = {}
 
-#        stats_dict['name'] = self.name is the next level up in the dict.
+        stats_dict['name'] = self.name
+
         stats_dict['longdescription'] = self.longdesc
 
         stats_dict['level'] = self.level
@@ -71,9 +73,57 @@ class PipelineStatistics(object):
         return stats_dict
 
 
-def _generate_stats(context):
-    # Set 1: values that can be gathered directly from the context
+def generate_stats(context, output_format="flat"):
+    stats_collection = []
+    # First, gather statistics about the project and pipeline run info
+    product_run_info = _generate_product_pl_run_info(context)
+    stats_collection.append(product_run_info)
+
+    # Set 2: results objects needed
+    stats_from_results = stats_extractor.get_stats_from_results(context)
+    for elt in stats_from_results:
+        # TODO: clean up this results merge
+        if elt not in [[], [[]]]:
+            result = elt[0][0]
+            stats_collection.append(result)
+
+    LOG.info(stats_collection)
+
+    # Construct dictionary representation of all pipeline stats
+    if output_format == "flat":
+        final_dict = to_flat_dict(stats_collection)
+    else:
+        final_dict = to_nested_dict(stats_collection)
+
+    return final_dict
+
+
+def to_nested_dict():
+    """
+    Generates a "nested" output dict with EBs, SPWs, MOUSs just 'tagged' and labeled
+    not as part of the structure
+    """
+    pass
+
+
+def to_flat_dict(stats_collection):
+    """
+    Generates a "flat" output dict with EBs, SPWs, MOUSs just 'tagged' and labeled
+    not as part of the structure
+    """
+    final_dict = {}
+    for stat in stats_collection:
+        final_dict[stat.name] = stat.to_dict()
+    final_dict["version"] = 0.1
+    return final_dict
+
+
+def _generate_product_pl_run_info(context):
+    #  Set 1: values that can be gathered directly from the context
+    stats_collection = []
     mous = context.get_oussid()
+
+    # MOUS-level
     ps1 = PipelineStatistics(
         name='project_id',
         value=context.observing_run.project_ids,
@@ -114,7 +164,6 @@ def _generate_stats(context):
         mous=mous,
         level="MOUS")
 
-    stats_collection = []
     stats_collection.append(ps1)
     stats_collection.append(ps2)
     stats_collection.append(ps3)
@@ -131,6 +180,7 @@ def _generate_stats(context):
             longdesc="Number of antennas per execution block",
             origin="hifa_importdata",
             eb=eb,
+            mous=mous,
             level="EB")
         stats_collection.append(psm1)
 
@@ -140,6 +190,7 @@ def _generate_stats(context):
             longdesc="number of spectral windows",
             origin="hifa_importdata",
             eb=eb,
+            mous=mous,
             level="EB")
         stats_collection.append(psm2)
 
@@ -149,6 +200,7 @@ def _generate_stats(context):
             longdesc="number of scans per science target",
             origin="hifa_importdata",
             eb=eb,
+            mous=mous,
             level="EB")
         stats_collection.append(psm3)
 
@@ -162,6 +214,8 @@ def _generate_stats(context):
                 origin="hifa_importdata",
                 units="MHz",
                 spw=spw.id,
+                eb=eb,
+                mous=mous,
                 level="SPW")
             stats_collection.append(sps1)
 
@@ -172,6 +226,8 @@ def _generate_stats(context):
                 origin="hifa_importdata",
                 units="GHz",
                 spw=spw.id,
+                eb=eb,
+                mous=mous,
                 level="SPW")
             stats_collection.append(sps2)
 
@@ -180,6 +236,8 @@ def _generate_stats(context):
                 value=spw.num_channels,
                 longdesc="number of channels in spectral windows",
                 origin="hifa_importdata",
+                eb=eb,
+                mous=mous,
                 spw=spw.id,
                 level="SPW")
             stats_collection.append(sps3)
@@ -190,6 +248,8 @@ def _generate_stats(context):
                 longdesc="online nbin factors ",
                 origin="hifa_importdata",
                 spw=spw.id,
+                mous=mous,
+                spw=spw.id,                
                 level="SPW")
             stats_collection.append(sps4)
 
@@ -201,20 +261,8 @@ def _generate_stats(context):
                 origin="hifa_importdata",
                 units="MHz",
                 spw=spw.id,
+                mous=mous,
+                spw=spw.id,
                 level="SPW")
             stats_collection.append(sps5)
-
-    # Set 2: results objects needed
-    stats_from_results = stats_extractor.get_stats_from_results(context)
-    for elt in stats_from_results:
-        if elt not in [[], [[]]]:
-            result = elt[0][0]
-            stats_collection.append(result)
-
-    LOG.info(stats_collection)
-    # construct final dictionary
-    final_dict = {}
-    for stat in stats_collection:
-        final_dict[stat.name] = stat.to_dict()
-    final_dict["version"] = 0.1
-    return final_dict
+    return stats_collection
