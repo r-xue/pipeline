@@ -37,8 +37,11 @@ class SDImagingQAHandler(pqa.QAPlugin):
         score_contamination = qacalc.score_sdimage_contamination(context, result)
         result.qa.pool.append(score_contamination)
         
-        score_resterscan = qacalc.score_rasterscan_correctness(result)
-        result.qa.pool.extend(score_resterscan)
+        score_resterscan_raster_gap = qacalc.score_rasterscan_correctness_imaging_raster_gap(result)
+        result.qa.pool.extend(score_resterscan_raster_gap)
+
+        score_resterscan_incomplete = qacalc.score_rasterscan_correctness_imaging_raster_analysis_incomplete(result)
+        result.qa.pool.extend(score_resterscan_incomplete)
 
 
 class SDImagingListQAHandler(pqa.QAPlugin):
