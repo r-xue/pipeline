@@ -140,6 +140,7 @@ class ApplycalResults(basetask.Results):
 
         See :method:`~pipeline.Results.merge_with_context`
         """
+
         if not self.applied:
             LOG.error('No results to merge')
 
@@ -154,6 +155,17 @@ class ApplycalResults(basetask.Results):
             # Temporal workaround: restoredata merges context twice
             if msobj.get_data_column(self.data_type) != colname:
                 msobj.set_data_column(self.data_type, colname)
+        # PIPE-730: adding total flagged fraction to context
+        # so it can be populated in the VLA AQUA report
+        total_flags = 0
+        flagged_flags = 0
+        for record in self.summaries:
+            total_flags = total_flags + record["total"]
+            flagged_flags = flagged_flags + record["flagged"]
+
+        flagged_fraction = (100.0 * flagged_flags) / total_flags
+        ms = context.observing_run.get_ms(self.inputs['vis'])
+        context.evla['msinfo'][ms.name].flagged_fraction = flagged_fraction
 
     def __repr__(self):
         s = 'ApplycalResults:\n'

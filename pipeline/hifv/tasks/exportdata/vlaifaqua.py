@@ -156,7 +156,6 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
     def get_observation_summary(self, context):
         mslist = context.observing_run.get_measurement_sets()
         root = ElementTree.Element("ObservationSummary")
-        # from IPython import embed; embed()
         for ms in mslist:
             nx = ElementTree.Element("StartTime")
             nx.text = str(ms.start_time["m0"]["value"])
@@ -167,6 +166,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             nx = ElementTree.Element("Baseline")
             ElementTree.SubElement(nx, "Min").text = str(ms.antenna_array.baseline_min.length.value)
             ElementTree.SubElement(nx, "Max").text = str(ms.antenna_array.baseline_max.length.value)
+            root.append(nx)
+            nx = ElementTree.Element("FlaggedFraction")
+            nx.text = str(context.evla['msinfo'][ms.name].flagged_fraction)
             root.append(nx)
         return root
 

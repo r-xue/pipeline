@@ -446,6 +446,7 @@ class VLAScanHeuristics(object):
         self.flagspw1b = ''
         self.flagspw2  = ''
 
+        self.flagged_fraction = None
         """
         Prep string listing of correlations from dictionary created by method buildscans
         For now, only use the parallel hands.  Cross hands will be implemented later.
