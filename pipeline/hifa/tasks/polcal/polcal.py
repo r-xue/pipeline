@@ -224,7 +224,7 @@ class Polcal(basetask.StandardTaskTemplate):
         uncal_pfg_result = self._compute_polfromgain(session_msname, init_gcal_result, self.inputs.minpacov)
         # If polfromgain did not find any solutions, then log a warning and
         # return early (PIPE-2159).
-        if not uncal_pfg_result:
+        if not uncal_pfg_result or not list(uncal_pfg_result.values())[0]:
             LOG.warning(f"Unable to derive polarization calibration for session '{session_name}', no solutions returned"
                         f" by polfromgain.")
             return PolcalSessionResults(session=session_name)
