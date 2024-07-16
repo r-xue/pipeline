@@ -13,10 +13,13 @@ from pipeline.h.tasks.applycal.applycal import ApplycalResults
 from pipeline.hif.tasks.applycal.ifapplycal import IFApplycal
 from pipeline.hifa.tasks.fluxscale.gcorfluxscale import GcorFluxscaleResults
 from pipeline.hifa.tasks.gfluxscaleflag.resultobjects import GfluxscaleflagResults
+
+from pipeline.hifa.tasks.flagging.flagdeteralma import FlagDeterALMAResults
 from pipeline.infrastructure.basetask import Results, ResultsList
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure import logging
-
+from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
+import pipeline.infrastructure.utils as utils
 
 LOG = logging.get_logger(__name__)
 
@@ -33,7 +36,7 @@ class StatsExtractor(regression.RegressionExtractor):
     generating_task = None"""
 
     @abc.abstractmethod
-    def handle(self, result:Results):
+    def handle(self, result:Results, context=None):
         """
         [Abstract] Extract values for testing.
 
@@ -79,7 +82,7 @@ class StatsExtractorRegistry(object):
         LOG.debug('Registering {} as new regression result handler for {}'.format(handler.__class__.__name__, s))
         self.__handlers.append(handler)
 
-    def handle(self, result: Union[Results, ResultsList]):
+    def handle(self, result: Union[Results, ResultsList], context=None):
         """
         Extract values from corresponding Extractor object of Result object.
 
@@ -99,7 +102,7 @@ class StatsExtractorRegistry(object):
         # Process leaf results first
         if isinstance(result, collections.abc.Iterable):
             for r in result:
-                d = self.handle(r)
+                d = self.handle(r, context)
                 extracted.append(d)
 
         # process the group-level results.
@@ -107,7 +110,7 @@ class StatsExtractorRegistry(object):
             if handler.is_handler_for(result):
                 LOG.debug('{} extracting stats results for {}'.format(handler.__class__.__name__,
                                                                            result.__class__.__name__))
-                d = handler.handle(result)
+                d = handler.handle(result, context)
                 extracted.append(d)
 
         LOG.info(extracted)
@@ -118,11 +121,55 @@ class StatsExtractorRegistry(object):
 registry = StatsExtractorRegistry()
 
 
+class FlagDeterALMAResultsExtractor(StatsExtractor):
+    result_cls = FlagDeterALMAResults
+    child_cls = None
+
+    def handle(self, result: FlagDeterALMAResults, context) -> OrderedDict:
+
+        intents_to_summarise = flagutils.intents_to_summarise(context)
+        flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
+        flag_table_intents.extend(intents_to_summarise)
+
+        ps = pipeline_statistics.PipelineStatistics(name="flagdata_percentage",
+                                                    value=flag_table_intents,
+                                                    longdesc="temorory value for testing",
+                                                    level="EB")
+        flag_totals = {}
+        flag_totals = utils.dict_merge(flag_totals,
+            flagutils.flags_for_result(result, context, intents_to_summarise=intents_to_summarise))
+
+        print(flag_totals)
+
+        reasons_to_export = ['online', 'shadow', 'qa0', 'qa2', 'before', 'template']
+
+        output_dict = {}
+        for ms in flag_totals:
+            output_dict[ms] = {}
+            print("MS: {}".format(ms))
+            for reason in flag_totals[ms]:
+                print("reason: {}".format(reason))
+                for intent in flag_totals[ms][reason]:
+                    print("intent: {}".format(intent))
+                    if intent in reasons_to_export:
+                        if "TOTAL" in intent:
+                            new = float(flag_totals[ms][reason][intent][0])
+                            total = float(flag_totals[ms][reason][intent][1])
+                            percentage = new/total * 100
+                            output_dict[ms][reason] = percentage
+
+        ps = pipeline_statistics.PipelineStatistics(name="flagdata_percentage",
+                                                    value=output_dict,
+                                                    longdesc="temporory value for testing",
+                                                    level="EB")
+        return ps
+
+
 class FluxcalflagStatsExtractor(StatsExtractor):
     result_cls = GfluxscaleflagResults
     child_cls = None
 
-    def handle(self, result:GfluxscaleflagResults) -> OrderedDict:
+    def handle(self, result:GfluxscaleflagResults, context) -> OrderedDict:
         """
         Args:
             result: GfluxscaleflagResults object
@@ -191,7 +238,7 @@ class ApplycalRegressionExtractor(StatsExtractor):
     child_cls = None
     generating_task = IFApplycal
 
-    def handle(self, result: ApplycalResults) -> OrderedDict:
+    def handle(self, result: ApplycalResults, context) -> OrderedDict:
         """
         Args:
             result: ApplycalResults object
@@ -242,7 +289,7 @@ def get_stats_from_results(context: Context) -> List[str]:
     unified = []
     for results_proxy in context.results:
         results = results_proxy.read()
-        unified.append(registry.handle(results))
+        unified.append(registry.handle(results, context))
 
     return unified
 
