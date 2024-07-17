@@ -142,8 +142,8 @@ class MakeImages(basetask.StandardTaskTemplate):
         result.set_info(inputs.context.clean_list_info)
 
         # Check if this stage has been disabled for vla (never set for ALMA)
-#        if inputs.context.vla_disable_cube_imaging:
-#            return result
+        if inputs.context.vla_disable_cube_imaging:
+            return result
 
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters:
