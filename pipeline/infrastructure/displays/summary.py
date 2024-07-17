@@ -1211,9 +1211,9 @@ class SpwIdVsFreqChart(object):
                            # for a single LO tuning.
         fspan = xmax - xmin
         resolution = min(default_resolution, rmin)
-        nchan = min(max_nchan, math.floor(fspan / resolution) + 1)
+        nchan = min(max_nchan, round(fspan / resolution) + 1)
         resolution = fspan / (nchan - 1)
-        LOG.info("'Spectral Window ID vs. Frequency' plots the atmospheric transmission with {} data points at {} kHz intervals.".format(nchan, resolution*1e6))
+        LOG.info("'Spectral Window ID vs. Frequency' plots the atmospheric transmission with %d data points at %.3f kHz intervals." % (nchan, resolution*1e6))
         atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
 
         ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
