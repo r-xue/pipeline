@@ -47,9 +47,9 @@ def init_at(at: casatools.atmosphere, humidity: float = 20.0,
         pressure: The pressure at the ground (unit: mbar).
         atmtype: An AtmType enum that defines a type of atmospheric profile.
         altitude: The altitude of antenna site to calculate atmospheric
-            transmission (unit: m).
+            transmission (unit: m)
         fcenter: Center frequency of the frequency range. (unit: GHz)
-        nchan: The number of data points within the frequency range.
+        nchan: Number of channels in the frequency range.
         resolution: Frequency resolution. (unit: GHz/ch)
      """
     myqa = casa_tools.quanta
