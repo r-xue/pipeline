@@ -6,6 +6,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
+import pipeline.infrastructure.callibrary as callibrary
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.hif.tasks.mstransform import mstransform as mst
@@ -44,10 +45,6 @@ class VlaMstransform(mst.Mstransform):
     def prepare(self):
         inputs = self.inputs
 
-        # Create the results structure
-        result = VlaMstransformResults(vis=inputs.vis, outputvis=inputs.outputvis,
-                                       outputvis_for_line=inputs.outputvis_for_line)
-
         # Run CASA task to create the output MS for continuum data
         mstransform_args = inputs.to_casa_args()
         # Remove input member variables that don't belong as input to the mstransform task
@@ -76,7 +73,7 @@ class VlaMstransform(mst.Mstransform):
                 if 'hifv_checkflag_target-vla' in value['name']:
                     pre_rfi_flagversion_name = value['name']
 
-        if pre_rfi_flagversion_name is None: 
+        if pre_rfi_flagversion_name is None:
             msg = "For {}: could not locate the pre-RFI flags to restore".format(inputs.vis)
             LOG.error(msg)
             raise Exception(msg)
@@ -87,7 +84,6 @@ class VlaMstransform(mst.Mstransform):
 
         # Run CASA task to create the output MS for the line data
         mstransform_args['outputvis'] = inputs.outputvis_for_line
-
         produce_lines_ms = False
         if inputs.spw_line:
             mstransform_args['spw'] = inputs.spw_line
@@ -119,6 +115,10 @@ class VlaMstransform(mst.Mstransform):
         # Restore RFI flags to main MS
         task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='rfi_flagged_statwt')
         self._executor.execute(task)
+
+        # Create the results structure
+        result = VlaMstransformResults(vis=inputs.vis, outputvis=inputs.outputvis,
+                                       outputvis_for_line=inputs.outputvis_for_line, produce_lines_ms=produce_lines_ms)
 
         return result
 
@@ -162,9 +162,39 @@ class VlaMstransform(mst.Mstransform):
 
 
 class VlaMstransformResults(mst.MstransformResults):
-    def __init__(self, vis, outputvis, outputvis_for_line):
+    def __init__(self, vis, outputvis, outputvis_for_line, produce_lines_ms=False):
         super().__init__(vis, outputvis)
         self.outputvis_for_line = outputvis_for_line
+        self.produce_lines_ms = produce_lines_ms
+
+    def merge_with_context(self, context):
+        # Check for an output vis
+        if not self.mses:
+            LOG.error('No hif_mstransform results to merge')
+            return
+
+        target = context.observing_run
+
+        # Adding mses to context
+        for ms in self.mses:
+            LOG.info('Adding {} to context'.format(ms.name))
+            target.add_measurement_set(ms)
+
+        # Create targets flagging template file if it does not already exist
+        for ms in self.mses:
+            template_flagsfile = os.path.join(
+                self.inputs['output_dir'], os.path.splitext(os.path.basename(self.vis))[0] + '.flagtargetstemplate.txt')
+            self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')
+
+        # Initialize callibrary
+        for ms in self.mses:
+            calto = callibrary.CalTo(vis=ms.name)
+            LOG.info('Registering {} with callibrary'.format(ms.name))
+            context.callibrary.add(calto, [])
+
+        # Set whether to do cube imaging or not
+        if not self.produce_lines_ms:
+            context.vla_disable_cube_imaging = True
 
     def __str__(self):
         # Format the Mstransform results.

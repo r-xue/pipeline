@@ -110,7 +110,11 @@ class Context(object):
     .. py:attribute:: selfcal_resources
 
         list of files/tables required for the self-calibration restoration
+    
+    .. py:attribute:: vla_disable_cube_imaging
 
+        disables the following stages for VLA: hif_makeimlist (mfs, cube), 
+        hif_findcont, hif_uvcontsub, hif_makeimages(mfs, cube)
     """
     def __init__(self, name: Optional[str] = None):
         if name is None:
@@ -154,6 +158,7 @@ class Context(object):
         self.imaging_mode = None
         self.selfcal_targets = []
         self.selfcal_resources = []
+        self.vla_disable_cube_imaging = False
 
         LOG.trace('Creating report directory: %s', self.report_dir)
         utils.mkdir_p(self.report_dir)

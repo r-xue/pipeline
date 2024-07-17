@@ -62,6 +62,11 @@ class FindCont(basetask.StandardTaskTemplate):
         inputs = self.inputs
         context = self.inputs.context
 
+        # Check if this stage has been disabled for VLA (never set for ALMA)
+        if inputs.context.vla_disable_cube_imaging:
+            result = FindContResult({}, {}, '', 0, 0, [])
+            return result
+
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters and \
                 inputs.context.size_mitigation_parameters['status'] == 'ERROR':

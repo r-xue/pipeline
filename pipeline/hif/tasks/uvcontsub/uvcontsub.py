@@ -54,6 +54,12 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
         # frequency ranges to TOPO.
         MinimalTcleanHeuristicsInputsGenerator = namedtuple('MinimalTcleanHeuristicsInputs', 'vis field intent phasecenter spw spwsel_lsrk specmode')
 
+        # Check if this stage has been disabled for vla (never set for ALMA)
+        if inputs.context.vla_disable_cube_imaging:
+            result = UVcontSubResults()
+            result.skip_stage = True
+            return result
+
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters:
             if inputs.context.size_mitigation_parameters['status'] == 'ERROR':
@@ -214,7 +220,7 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
 
-        if not result.mitigation_error:
+        if not result.mitigation_error and not result.skip_stage:
             # Check for existence of the output vis.
             if not os.path.exists(result.outputvis):
                 LOG.debug('Error creating science targets line MS %s' % (os.path.basename(result.outputvis)))
@@ -259,6 +265,7 @@ class UVcontSubResults(basetask.Results):
     def __init__(self):
         super().__init__()
         self.mitigation_error = False
+        self.skip_stage = False
         self.vis = None
         self.outputvis = None
         self.field_intent_spw_list = []
@@ -269,6 +276,11 @@ class UVcontSubResults(basetask.Results):
         self.error_msg = ''
 
     def merge_with_context(self, context):
+        # Check to see if this stage was delibrately skipped
+        if self.skip_stage:
+            LOG.info("Skipping hif_uvcontsub due to VLA spectral lines MS not existing.")
+            return
+
         # Check for an output vis
         if not self.line_mses:
             LOG.error('No hif_uvcontsub results to merge')
