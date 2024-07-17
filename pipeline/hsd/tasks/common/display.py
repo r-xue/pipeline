@@ -24,6 +24,7 @@ from pipeline.infrastructure import casa_tools
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.infrastructure.renderer.logger import Plot
 from pipeline.infrastructure.utils import absolute_path
+from .utils import mjd_to_datetime
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -38,22 +39,6 @@ sd_polmap = {0: 'XX', 1: 'YY', 2: 'XY', 3: 'YX'}
 
 NoData = -32767.0
 NoDataThreshold = NoData + 10000.0
-
-def mjd_to_datetime(val: float) -> datetime.datetime:
-    """Convert MJD to datetime instance.
-
-    Args:
-        val: MJD value in day.
-
-    Returns:
-        datetime.datetime: datetime instance
-    """
-    qa = casa_tools.quanta
-    mjd = qa.splitdate(qa.quantity(val, 'd'))
-    date_time = datetime.datetime(mjd['year'], mjd['month'],
-                                  mjd['monthday'], mjd['hour'],
-                                  mjd['min'], mjd['sec'])
-    return date_time
 
 
 def mjd_to_plotval(mjd_list: Union[List[float], np.ndarray]) -> np.ndarray:
