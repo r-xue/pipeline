@@ -1,6 +1,7 @@
 import collections
 import copy
 import fnmatch
+import inspect
 import math
 import operator
 import os.path
@@ -24,7 +25,7 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 from pipeline.hif.heuristics import mosaicoverlap
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tools, logging
 from pipeline.infrastructure.utils.conversion import (phasecenter_to_skycoord,
                                                       refcode_to_skyframe)
 
@@ -769,13 +770,22 @@ class ImageParamsHeuristics(object):
 
         is_mos_or_het = self._is_mosaic(fields) or len(self.antenna_diameters()) > 1
         if not is_mos_or_het:
-            max_separation_uarcsec = cqa.getvalue(cqa.convert(max_separation, 'uarcsec'))[0]  # in micro arcsec
+            max_separation_uarcsec = cqa.getvalue(cqa.convert(max_separation, "uarcsec"))[0]  # in micro arcsec
+            # PIPE-1504: only issue this message at the WARNING level if it's executed by hifa_imageprecheck
+            if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
+                log_level = logging.WARNING
+            else:
+                log_level = logging.INFO
             for mdirection in mdirections:
                 separation = cme.separation(mdirection, mdirections[0])
                 if cqa.gt(separation, max_separation):
-                    separation_arcsec = cqa.getvalue(cqa.convert(separation, 'arcsec'))[0]
-                    LOG.warning('The separation between %s field centers across EBs is %f arcseconds (larger than the limit of %.1f microarcseconds). This is only normal for an ephemeris source or a source with a large proper motion or parallax.' % (
-                        field_names[0], separation_arcsec, max_separation_uarcsec))
+                    separation_arcsec = cqa.getvalue(cqa.convert(separation, "arcsec"))[0]
+                    LOG.log(
+                        log_level,
+                        "The separation between %s field centers across EBs is %f arcseconds (larger than the limit of %.1f microarcseconds). "
+                        "This is only normal for an ephemeris source or a source with a large proper motion or parallax." %
+                        (field_names[0],
+                         separation_arcsec, max_separation_uarcsec))
             mdirections = [mdirections[0]]
 
         # it should be easy to calculate some 'average' direction
