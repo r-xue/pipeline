@@ -162,7 +162,7 @@ def alma_renorm(vis: str, spw: List[int], create_cal_table: bool, threshold: Uni
     # Only attempt the correction if the data are not all TDM.
     if not alltdm:
         # Run the renormalisation.
-        rn.renormalize(createCalTable=create_cal_table, docorrThresh=threshold, correctATM=correct_atm, spws=spw, excludechan=excludechan,
+        rn.renormalize(createCalTable=create_cal_table, fillTable=True, docorrThresh=threshold, correctATM=correct_atm, spws=spw, excludechan=excludechan,
                        atmAutoExclude=atm_auto_exclude, bwthreshspw=bwthreshspw, datacolumn='DATA') # add bwthreshspw
 
         # Create spectra plots.
@@ -256,15 +256,17 @@ class ACreNorm(object):
 
         # ALMA Bands        0    1   2    3    4    5    6    7    8    9    10
         self.bandThresh=[99.0, 1.02,1.02,1.02,1.02,1.02,1.02,1.02,1.02,1.02,1.02] 
-        # B9/B10 set high now to now correct
         # set a B0 as its way easier just to then index this array with Band
 
         self.docorrApply={} # - this is to record if the field in a given SPW is
         # above the threshold for application      
  
         self.states=[]
-
+        
+        # polynomial fit default for baselining
         self.nfit=5
+
+        # alarm threshold for displaying peak value on plots
         self.fthresh=0.001
         
         self.rnstats={}
@@ -273,6 +275,10 @@ class ACreNorm(object):
         myms.close()
 
         self.fdmspws=self.msmeta.fdmspws()
+        
+        # Collect relevant TDM spws. Need to ignore those used for Tsys only, WVR, Pointing, etc.
+        self.tdmspws = [spw for spw in self.msmeta.tdmspws() if 'OBSERVE_TARGET#ON_SOURCE' in self.msmeta.intentsforspw(spw)]
+
         # Make sure there are FDM windows, if not, work around that.
         if len(self.fdmspws) != 0:
             self.tdm_only = False
@@ -826,7 +832,7 @@ class ACreNorm(object):
             excludeants=[], excludechan={}, excflagged=True, fixOutliers=True, mededge=0.01,  
             atmAutoExclude=True, checkFalsePositives=True, correctATM=False, limATM=0.85, plotATM=True, 
             bwdiv='odd', bwthresh=120e6, bwthreshspw={}, checkLineForest=True, nfit=5, useDynamicSegments=True,
-            datacolumn='CORRECTED_DATA', createCalTable=False, docorr=False, docorrThresh=None, usePhaseAC=False,
+            datacolumn='CORRECTED_DATA', createCalTable=False, fillTable=False, docorr=False, docorrThresh=None, usePhaseAC=False,
             antHeuristicsSpectra=True, diagSpectra=True, fthresh=0.01, 
             verbose=False):
         """
@@ -1062,6 +1068,14 @@ class ACreNorm(object):
                 then be applied to the MS via an applycal. 
                 Default: createCalTable=False
 
+            fillTable : boolean
+                This is a sub-parameter of createCalTable in that it does nothing
+                unless createCalTable is set to True. If this option is set to 
+                True then targets, spws, scans, and fields where renorm is not 
+                needed will still be added to the final calibration table. This
+                also includes TDM spws. 
+                Default: False
+
             docorrThresh : None or float
                 The threshold above which to apply the scaling spectrum to the 
                 data. It has been determined by ALMA that datasets that do not
@@ -1174,6 +1188,10 @@ class ACreNorm(object):
 
             # Need to keep track of the number of times we write to the renorm table. 
             rntb_iter = 0
+
+            if fillTable:
+                casalog.post('All targets, scans, spws will be filled in resulting calibration table. This may greatly enlarge the size of the final table!')
+                casalog.post(f'TDM windows {self.tdmspws} will also be included in {self.rntable}')
 
         else:
             casalog.post('No corrections will be saved (createCalTable=False)!')
@@ -1359,8 +1377,8 @@ class ACreNorm(object):
         casalog.post('    bwdiv='+str(bwdiv)+', bwthresh='+str(bwthresh)+', bwthreshspw='+str(bwthreshspw) \
                 +', checkLineForest='+str(checkLineForest)+', nfit='+str(nfit)+', useDynamicSegments=' \
                 +str(useDynamicSegments))
-        casalog.post('    datacolumn='+str(datacolumn)+', createCalTable='+str(createCalTable)+', docorrThresh='+str(docorrThresh) \
-                +', usePhaseAC='+str(usePhaseAC))
+        casalog.post('    datacolumn='+str(datacolumn)+', createCalTable='+str(createCalTable)+', fillTable='+str(fillTable) \
+                +', docorrThresh='+str(docorrThresh)+', usePhaseAC='+str(usePhaseAC))
         casalog.post('    antHeuristicsSpectra='+str(antHeuristicsSpectra)+', diagSpectra='+str(diagSpectra) \
                 +', fthresh='+str(fthresh))
         casalog.post('    verbose='+str(verbose)+')')
@@ -1487,9 +1505,21 @@ class ACreNorm(object):
                     # Same as previous but if second_pass_required is set to True, we need to apply the correction and run through the scan loop again.
                     elif npass==1 and second_pass_required:
                         second_pass = True
+                        # Reset rntb_iter to remove previous values if any were accidentally written (i.e. corrections waffled near threshold value).
+                        if fillTable and hold_rntb_iter != rntb_iter:
+                            casalog.post('\n     Fixing calibration table - removing last '+str(int((rntb_iter - hold_rntb_iter)*self.nAnt))+' rows and rewriting with true solutions.')
+                            self.fixCalTable(hold_rntb_iter*self.nAnt, rntb_iter*self.nAnt)
+                            rntb_iter = hold_rntb_iter
                         casalog.post('\nThreshold limit was reached for one or more fields/scans of spw '+str(ispw)+' of target '+target+'. Applying renormalization correction to all scans, fields, and polarizations.')
                     else:
                         pass
+                    
+                    # If we find out in the middle of the scan set that a second pass is required and  
+                    # fillTable is set to True, then we will end up duplicating rows instead of overwriting 
+                    # those 1.0's with the real values that we want. Therefore, hold the current rntb_iter 
+                    # value so that we can reset it if needed later.
+                    if fillTable:
+                        hold_rntb_iter = rntb_iter
 
                     for iscan in target_scans:
                         casalog.post(' Processing scan='+str(iscan)+'------------------------------')
@@ -2100,9 +2130,16 @@ class ACreNorm(object):
                                     casalog.post('  Max peak renormalization factor (power) over scan '+str(iscan)+' = '+str(max(scanNmax)))
 
                         # After doing the first pass, if createCalTable is True and docorrApply was set to True, 
-                        # we now need to go through again and actually apply the renormalization 
+                        # we now need to go through again and actually apply the renormalization if it was necessary
                         if createCalTable and not second_pass and self.docorrApply[target][str(ispw)]:
                             second_pass_required = True
+                        # If it wasn't necessary but we still need to fill in the cal table with filler values,
+                        # then do that now. 
+                        elif createCalTable and not second_pass and fillTable:
+                            casalog.post(f'\n   Filling caltable {self.rntable} with value of 1.0 - renorm unnecessary.')
+                            N_fill = np.ones(N.shape)
+                            self.writeCalTable(ispw, ifld, iscan, N_fill, rntb_iter)
+                            rntb_iter += 1
 
 
                     if checkFalsePositives:
@@ -2114,9 +2151,48 @@ class ACreNorm(object):
                             else:
                                 casalog.post('ATM features may be falsely triggering renorm!')
                                 casalog.post('Suggested channel exclusion: '+exclude_cmd)
-                        elif exclude_cmd:
+                        elif exclude_cmd != "No flagging suggested.":
                             casalog.post('Atmospheric features mitigated.')
                             casalog.post('Equivalent manual call: '+exclude_cmd)
+    
+            # If fillTable is selected as an option, then we need to also fill in 
+            # all the science TDM windows as well (if any) for this target.
+            if len(self.tdmspws) > 0 and fillTable:
+                casalog.post(f'Filling in TDM spws in calibration table {self.rntable} with value of 1.0')
+                for ispw in self.tdmspws:
+                    #casalog.post(f'Filling spw {ispw}...')
+                    # Not all targets are in all scans, we need to iterate over only those scans containing the target
+                    target_scans = np.intersect1d(self.msmeta.scansforintent('*TARGET*'), self.msmeta.scansforfield(target))
+
+                    # Make an additional cut to catch only those scans which contain the current spw (usually only relevant
+                    # for spectral scan datasets)
+                    target_scans = np.intersect1d(target_scans, self.msmeta.scansforspw(ispw))
+
+                    # If user input list of scans to use, cross check those with the list of all scans on targets to make
+                    # sure it's necessary to perform this loop. 
+                    target_scans = np.intersect1d(target_scans, targscans)
+
+                    # global list of scans with the current spw
+                    spwscans=list(self.msmeta.scansforspw(ispw))
+
+                    for iscan in target_scans:
+                        #casalog.post(f'Filling scan {iscan}...')
+                        # get the fields to process in this scan - i.e. mosaics have many fields per scan
+                        Tarfld = list(self.msmeta.fieldsforscan(iscan))
+
+                        for ifld in Tarfld:
+                            # Skip over target scans that don't have the current spw - can happen for spectral scans?
+                            if spwscans.count(iscan) == 0:
+                                continue
+                            #casalog.post(f'Filling field {ifld}...')
+                            N_fill = np.ones((self.num_corrs, self.msmeta.nchan(ispw), self.nAnt))
+                            self.writeCalTable(ispw, ifld, iscan, N_fill, rntb_iter)
+                            rntb_iter += 1
+
+
+
+
+
 
         # PIPE 1168 (3)
         # Loops through the scalingValue dict and populates the pipeline needed dictionary
@@ -2154,6 +2230,26 @@ class ACreNorm(object):
         casalog.post('*** '+str(self.RNversion)+' ***', 'INFO', 'ReNormalize')   
         casalog.post('*** End of renormalization run ***', 'INFO', 'ReNormalize')   
 
+    def fixCalTable(self, start, end):
+        """
+        Purpose:
+            This function will be invoked when data wobble around the renorm 
+            threshold value such that some scans do not trigger renorm while
+            some do. When fillTable is set to True, this causes there to be
+            some scans with all values set to 1.0 and others to have valid
+            entries. The renormalize() method will go back and rewrite those
+            rows but this messes up the caltable if the data are already 
+            written. Therefore, this will delete the already added rows.
+        
+        Inputs:
+            num_rows : int
+                The number of rows to delete.
+
+        Outputs:
+            None. The table is directly modified. 
+        """
+        rem_arr = np.arange(start, end)
+        self.rntb.removerows(rownrs=rem_arr)
 
     def writeCalTable(self, spw, field, scan, N, iter_n):
         """
