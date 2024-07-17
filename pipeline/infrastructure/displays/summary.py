@@ -1203,7 +1203,7 @@ class SpwIdVsFreqChart(object):
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
         # Determining the resolution value so that generates fine ATM transmission curve: it is set
-        # to smaller than 500kHz but is set to larger than that corresponding to 48001 data points.
+        # to smaller than 500 kHz but is set to larger than that corresponding to 48001 data points.
         default_resolution = 5e-4  # To have 5 data points within the ozone feature of 2 MHz FWHM:
                                    # 2 MHz/(5-1) = 500 kHz.
         max_nchan = 48001  # 24 GHz/500 kHz, where 24 GHz covers both sidebands of a 4-12 GHz IF
