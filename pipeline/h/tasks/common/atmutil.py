@@ -47,10 +47,10 @@ def init_at(at: casatools.atmosphere, humidity: float = 20.0,
         pressure: The pressure at the ground (unit: mbar).
         atmtype: An AtmType enum that defines a type of atmospheric profile.
         altitude: The altitude of antenna site to calculate atmospheric
-            transmission (unit: m)
-        fcenter: Center frequency of the frequency range. (unit: GHz)
+            transmission (unit: m).
+        fcenter: Center frequency of the frequency range (unit: GHz).
         nchan: Number of channels in the frequency range.
-        resolution: Frequency resolution. (unit: GHz/ch)
+        resolution: Frequency resolution (unit: GHz/ch).
      """
     myqa = casa_tools.quanta
     at.initAtmProfile(humidity=humidity,
@@ -451,9 +451,9 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
 
     Args:
         vis: Path to MeasurementSet.
-        center_freq: Center frequency of the frequency range. (unit: GHz)
+        center_freq: Center frequency of the frequency range (unit: GHz).
         nchan: Number of channels in the frequency range.
-        resolution: Frequency resolution. (unit: GHz/ch)
+        resolution: Frequency resolution (unit: GHz/ch).
         antenna_id: The antenna ID.
         doplot: If True, plot the atmospheric transmission and opacities.
 
