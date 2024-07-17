@@ -21,6 +21,8 @@ class UVcontSubQAHandler(pqa.QAPlugin):
         if result.mitigation_error:
             scores.append(pqa.QAScore(0.0, longmsg='Size mitigation error. No continuum information available.',
                                       shortmsg='Size mitigation error'))
+        elif context.vla_disable_cube_imaging:
+            scores.append(pqa.QAScore(None, longmsg='Stage skipped.', shortmsg='Stage skipped.'))
         else:
             scores.append(pqa.QAScore(1.0, longmsg='Continuum subtraction applied.', shortmsg=''))
 
