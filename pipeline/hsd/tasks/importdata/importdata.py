@@ -14,7 +14,6 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.domain.observingrun import ObservingRun
 from pipeline.domain.singledish import MSReductionGroupDesc
@@ -190,9 +189,9 @@ class SerialSDImportData(importdata.ImportData):
             LOG.debug('Start inspection for %s' % ms.basename)
             table_name = os.path.join(table_prefix, ms.basename)
             inspector = inspection.SDInspection(self.inputs.context, table_name, ms=ms, hm_rasterscan=self.inputs.hm_rasterscan)
-            reduction_group, org_directions, msglist, raster_heuristics_result = self._executor.execute(inspector, merge=False)
+            reduction_group, org_directions, msglist, rasterscan_heuristics_result = self._executor.execute(inspector, merge=False)
             reduction_group_list.append(reduction_group)
-            rasterscan_heuristics_result_list.append(raster_heuristics_result)
+            rasterscan_heuristics_result_list.append(rasterscan_heuristics_result)
 
             # update org_directions_dict for only new keys in org_directions
             for key in org_directions:

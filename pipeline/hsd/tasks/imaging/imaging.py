@@ -21,7 +21,7 @@ from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult, RasterScanHeuristicsFailure
+from pipeline.hsd.heuristics.rasterscan import RasterscanHeuristicsResult, RasterScanHeuristicsFailure
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
 from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy, rasterutil, sdtyping
@@ -1837,7 +1837,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             format(_tirp.msobj.basename, __field_name, _tirp.spwid,
                    _tirp.msobj.get_antenna(_tirp.antid)[0].name, str(_tirp.pol_names)))
         if _tirp.raster_info is None:
-            __rsres = RasterScanHeuristicsResult(_tirp.msobj)
+            __rsres = RasterscanHeuristicsResult(_tirp.msobj)
             _rgp.imager_result.rasterscan_heuristics_results_incomp \
                               .setdefault(_tirp.msobj.origin_ms, []) \
                               .append(__rsres)
@@ -1884,7 +1884,7 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
     _log_dict = {'ANTENNA': msobj.antennas[antid].name,
                  'EB': msobj.execblock_id}
-    _rsres = RasterScanHeuristicsResult(msobj)
+    _rsres = RasterscanHeuristicsResult(msobj)
     rgp.imager_result.rasterscan_heuristics_results_rgap \
                      .setdefault(msobj.origin_ms, []) \
                      .append(_rsres)

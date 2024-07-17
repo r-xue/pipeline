@@ -538,7 +538,7 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[i
     return distance_list
 
 
-class RasterScanHeuristicsResult():
+class RasterscanHeuristicsResult():
     """Result class of raster scan analysis."""
 
     def __init__(self, ms: MeasurementSet):
