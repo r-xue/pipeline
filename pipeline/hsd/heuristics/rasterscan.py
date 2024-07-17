@@ -633,7 +633,7 @@ def find_raster_gap(ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]',
                 ','.join([msg_dict[k] for k in ['EB'] if msg_dict.get(k, False)]) +
                 ':' +
                 ','.join([msg_dict[k] for k in ['ANTENNA'] if msg_dict.get(k, False)]))
-    #raise RasterScanHeuristicsFailure(msg)  # for debug
+
     if len(dtrow_list) == 0:
         raise RasterScanHeuristicsFailure(msg)
 
