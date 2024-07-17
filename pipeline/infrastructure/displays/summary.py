@@ -1198,8 +1198,7 @@ class SpwIdVsFreqChart(object):
                 if totalnum_spws <= max_spws_to_annotate or spwid in [spwid_list[0], spwid_list[-1]]:
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
                 idx += 1
-                resolution = abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2])
-                rmin = min(rmin, resolution)
+                rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
 
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
