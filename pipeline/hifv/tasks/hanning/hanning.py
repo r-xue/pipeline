@@ -20,7 +20,9 @@ class HanningInputs(vdp.StandardInputs):
     The class inherits from vdp.StandardInputs.
 
     """
-    def __init__(self, context, vis=None):
+    maser_detection = vdp.VisDependentProperty(default=True)
+
+    def __init__(self, context, vis=None, maser_detection=None):
         """
         Args:
             context (:obj:): Pipeline context
@@ -30,6 +32,7 @@ class HanningInputs(vdp.StandardInputs):
         super(HanningInputs, self).__init__()
         self.context = context
         self.vis = vis
+        self.maser_detection = maser_detection
 
 
 class HanningResults(basetask.Results):
@@ -99,12 +102,16 @@ class Hanning(basetask.StandardTaskTemplate):
                 return HanningResults()
 
         # Retrieve SPWs information and determine which to smooth
+        if not self.inputs.maser_detection:
+            LOG.info("Maser detection turned off.")
         spws = self.inputs.context.observing_run.get_ms(self.inputs.vis).get_spectral_windows(science_windows_only=True)
         hs_dict = dict()
         for spw in spws:
+            hs_dict[spw.id] = False
             if spw.sdm_num_bin > 1 or spw.specline_window:
-                if self._checkmaserline(str(spw.id)):
-                    hs_dict[spw.id] = True
+                if self.inputs.maser_detection:
+                    if self._checkmaserline(str(spw.id)):
+                        hs_dict[spw.id] = True
             else:
                 hs_dict[spw.id] = True
 
