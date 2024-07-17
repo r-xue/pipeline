@@ -873,6 +873,9 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                         # shape [pol, channel, row], while TIME and ANTENNA1
                         # are of shape [row], hence using 3rd index for latter.
                         idx_unflagged = np.where(subtable.getcol('FLAG') == 0)
+                        # If this SpW is already fully flagged, skip it.
+                        if len(idx_unflagged) < 3:
+                            continue
                         amplitudes = np.abs(subtable.getcol('CPARAM')[idx_unflagged])
                         times = subtable.getcol('TIME')[idx_unflagged[2]]
                         antennas = subtable.getcol('ANTENNA1')[idx_unflagged[2]]
