@@ -112,7 +112,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return [0]
 
-    def uvtaper(self, beam_natural=None, protect_long=None) -> Union[str, list]:
+    def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None) -> Union[str, list]:
         """Tclean uvtaper parameter heuristics."""
         if self.vlass_stage == 3:
             return ''
@@ -179,7 +179,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
     def pb_correction(self) -> bool:
         return False
 
-    def pblimits(self, pb: Union[None, str]) -> Tuple[float, float]:
+    def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
 
         pblimit_image, pblimit_cleanmask = super().pblimits(pb)
@@ -193,8 +193,8 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return True
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper) \
-            -> Tuple[float, None, None]:
-        return 0.0, None, None
+            -> Tuple[float, None, None, None]:
+        return 0.0, None, None, None
 
     def find_fields(self, distance: str = '0deg', phase_center: bool = None, matchregex: str = '') -> list:
 
@@ -636,7 +636,7 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
         # Might change to True based on stackholder feedback
         return False
 
-    def pblimits(self, pb: Union[None, str]) -> Tuple[float, float]:
+    def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
         pblimit_image, pblimit_cleanmask = super().pblimits(pb)
 
