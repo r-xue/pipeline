@@ -42,7 +42,9 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
         return qacalc.score_missing_intents(mses, array_type='ALMA_TP')
 
     def handle(self, context:'Context', result:'importdata.SDImportDataResults'):
-        """Collate the QAScores from result, and pulling them into QAscore pool of the result.
+        """Generate QA score for hsd_importdata.
+        
+        Most scores are calculated with the QA handler of h_importdata.
 
         Args:
             context (Context): The context object of pipeline executing.
