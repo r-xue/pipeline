@@ -1,17 +1,18 @@
 import copy
-import os
 import operator
+import os
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain import DataType
 from pipeline.hif.heuristics import imageparams_factory
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
+from pipeline.infrastructure import casa_tools, task_registry
+
 from .cleantarget import CleanTarget
 from .resultobjects import MakeImListResult
 
@@ -636,7 +637,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             vislists = [inputs.vis]
 
-        if 'VLA' in imaging_mode and inputs.specmode == 'cont':
+        if 'VLA' in imaging_mode:
             ref_ms = inputs.context.observing_run.get_ms(inputs.vis[0])
             vla_band = ref_ms.get_vla_spw2band()
             band_spws = {}
@@ -1094,8 +1095,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                             actual_spwspec_list = []
                             spwsel = {}
                             all_continuum = True
+                            low_bandwidth = True
+                            low_spread = True
                             cont_ranges_spwsel_dict = {}
                             all_continuum_spwsel_dict = {}
+                            low_bandwidth_spwsel_dict = {}
+                            low_spread_spwsel_dict = {}
                             spwsel_spwid_dict = {}
 
                             # Check if the globally selected data type is available for this field/spw combination.
@@ -1174,7 +1179,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                             target_heuristics.vislist = vislist_field_intent_spw_combinations[field_intent]['vislist']
 
                             for spwid in adjusted_spwspec.split(','):
-                                cont_ranges_spwsel_dict[spwid], all_continuum_spwsel_dict[spwid] = target_heuristics.cont_ranges_spwsel()
+                                cont_ranges_spwsel_dict[spwid], all_continuum_spwsel_dict[spwid], low_bandwidth_spwsel_dict[spwid], low_spread_spwsel_dict[spwid] = target_heuristics.cont_ranges_spwsel()
                                 spwsel_spwid_dict[spwid] = cont_ranges_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, 'NONE')
 
                             no_cont_ranges = False
@@ -1202,8 +1207,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     #    LOG.warning('Empty continuum frequency range for %s, spw %s. Run hif_findcont ?' % (field_intent[0], spwid))
 
                                 all_continuum = all_continuum and all_continuum_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
+                                low_bandwidth = low_bandwidth and low_bandwidth_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
+                                low_spread = low_spread and low_spread_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
 
-                                if spwsel_spwid in ('ALL', '', 'NONE'):
+                                if spwsel_spwid in ('ALL', 'ALLCONT', '', 'NONE'):
                                     spwsel_spwid_freqs = ''
                                     if target_heuristics.is_eph_obj(field_intent[0]):
                                         spwsel_spwid_refer = 'SOURCE'
@@ -1289,13 +1296,16 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&'
                                            for v in filtered_vislist]
 
-                                drcorrect = self._get_drcorrect(field_intent[0], actual_spwspec, local_selected_datatype_str)
+                                drcorrect, maxthreshold = self._get_drcorrect_maxthreshold(
+                                    field_intent[0], actual_spwspec, local_selected_datatype_str)
+                                target_heuristics.imaging_params['maxthreshold'] = maxthreshold
 
                                 deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
                                                                                    actual_spwspec, stokes, inputs.specmode,
                                                                                    local_selected_datatype_str, target_heuristics)
 
                                 reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
+                                gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec)
 
                                 target = CleanTarget(
                                     antenna=antenna,
@@ -1304,6 +1314,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     spw=actual_spwspec,
                                     spwsel_lsrk=spwsel,
                                     spwsel_all_cont=all_continuum,
+                                    spwsel_low_bandwidth=low_bandwidth,
+                                    spwsel_low_spread=low_spread,
                                     num_all_spws=num_all_spws,
                                     num_good_spws=num_good_spws,
                                     cell=cells[spwspec],
@@ -1311,7 +1323,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     phasecenter=phasecenters[field_intent[0]],
                                     psf_phasecenter=psf_phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
-                                    gridder=target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec),
+                                    gridder=gridder,
                                     imagename=imagename,
                                     start=inputs.start,
                                     width=widths[(field_intent[0], spwspec)],
@@ -1397,26 +1409,44 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         return deconvolver, nterms
 
-    def _get_drcorrect(self, field, spw, datatype_str):
+    def _get_drcorrect_maxthreshold(self, field, spw, datatype_str):
         """Get the modified drcorrect parameter based on existing selfcal results."""
 
-        drcorrect = None
+        drcorrect = maxthreshold = None
         context = self.inputs.context
 
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
-            return drcorrect
+            return drcorrect, maxthreshold
 
         if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
+
+                    # PIPE-1452: use previous succesfully selfcal results to modify DR correction values
                     drcorrect = sc_target['sc_rms_scale']
                     LOG.info(f"Using drcorrect={drcorrect} for field {field} and spw {spw} based "
                              "on previous selfcal aggregate continuum imaging results.")
+
+                    # PIPE-2117: use previous regcal reuslts to set the cleaning threshold upper limit
+                    for r in context.results:
+                        result = r.read()
+                        if isinstance(result, MakeImagesResult):
+                            for tclean_result in result.results:
+                                if tclean_result.datatype_info.startswith('REGCAL_CONTLINE') and \
+                                        tclean_result.specmode == 'cont' and \
+                                        tclean_result.sourcename == field and \
+                                        im_spw.intersection(set(tclean_result.spw.split(','))):
+                                    maxthreshold = tclean_result.threshold
+                    if maxthreshold is not None:
+                        LOG.info(
+                            f"Define an imaging threshold upper limit of {maxthreshold} for self-calibrated field {field} and spw {spw} "
+                            "based on previous regular aggregate continuum imaging results.")
                     break
 
-        return drcorrect
+        return drcorrect, maxthreshold
 
 
 # maps intent and specmode Inputs parameters to textual description of execution context.

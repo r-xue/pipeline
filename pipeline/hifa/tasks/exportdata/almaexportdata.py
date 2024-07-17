@@ -84,7 +84,8 @@ class ALMAExportData(exportdata.ExportData):
         # Update the manifest
         if auxfproducts is not None or pipe_aqua_reportfile is not None:
             manifest_file = os.path.join(self.inputs.products_dir, results.manifest)
-            self._add_to_manifest(manifest_file, auxfproducts, auxcaltables, auxcalapplys, pipe_aqua_reportfile, oussid)
+            recipe_name = self.inputs.context.project_structure.recipe_name
+            self._add_to_manifest(manifest_file, auxfproducts, auxcaltables, auxcalapplys, pipe_aqua_reportfile, oussid, recipe_name)
 
         self._export_renorm_to_manifest(results.manifest)
 

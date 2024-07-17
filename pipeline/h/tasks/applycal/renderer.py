@@ -68,13 +68,17 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # return all agents so we get ticks and crosses against each one
         agents = ['before', 'applycal']
 
+        # Denote whether applycal was invoked with parang=True.
+        parang = result[0].inputs['parang'] if result else False
+
         mako_context.update({
             'flags': flag_totals,
             'calapps': calapps,
             'caltypes': caltypes,
             'agents': agents,
             'dirname': weblog_dir,
-            'filesizes': filesizes
+            'filesizes': filesizes,
+            'parang': parang,
         })
 
         # these dicts map vis to the hrefs of the detail pages
@@ -315,8 +319,11 @@ class T2_4MDetailsApplycalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             vis = os.path.basename(result.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
 
-            plotter = UVChart(context, ms, customflagged=True, output_dir=weblog_dir, title_prefix="Post applycal: ")
-            uv_plots[vis] = [plotter.plot()]
+            plot = UVChart(context, ms, customflagged=True, output_dir=weblog_dir, title_prefix="Post applycal: ").plot()
+            
+            # PIPE-1294: only attached valid plot wrapper objects.
+            if plot is not None:
+                uv_plots[vis].append(plot)
 
         return uv_plots
 

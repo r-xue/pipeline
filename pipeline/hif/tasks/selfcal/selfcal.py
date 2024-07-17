@@ -31,7 +31,8 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class SelfcalResults(basetask.Results):
-    def __init__(self, targets, applycal_result_contline=None, applycal_result_line=None, selfcal_resources=None, is_restore=False):
+    def __init__(self, targets, applycal_result_contline=None, applycal_result_line=None, selfcal_resources=None,
+                 is_restore=False):
         super().__init__()
         self.pipeline_casa_task = 'Selfcal'
         self.targets = targets
@@ -81,7 +82,8 @@ class SelfcalResults(basetask.Results):
                 if 'CORRECTED_DATA' not in tb.colnames():
                     LOG.warning(f'No CORRECTED_DATA column in {vis}, skip {dtype} registration')
                     continue
-                LOG.info(f'Register the CORRECTED_DATA column as {dtype} for {vis}: field={field_sel!r} spw={spw_sel!r}')
+                LOG.info(
+                    f'Register the CORRECTED_DATA column as {dtype} for {vis}: field={field_sel!r} spw={spw_sel!r}')
                 ms = context.observing_run.get_ms(vis)
                 ms.set_data_column(dtype, 'CORRECTED_DATA', source=field_sel, spw=spw_sel, overwrite=False)
 
@@ -261,7 +263,9 @@ class Selfcal(basetask.StandardTaskTemplate):
                         caltable_list, caltable_ready = self._apply_scal_check_caltable(scal_targets_json)
                         # we verify the existances of required caltables in-flight as the file search progresses.
                         if len(caltable_ready) < len(caltable_list):
-                            LOG.warning('The required selfcal caltable(s) is missing if we use scal_targets from the json file %s', check_file)
+                            LOG.warning(
+                                'The required selfcal caltable(s) is missing if we use scal_targets from the json file %s',
+                                check_file)
                         else:
                             scal_targets = scal_targets_json
             if scal_targets is not None:
@@ -337,7 +341,8 @@ class Selfcal(basetask.StandardTaskTemplate):
 
             if not scal_targets:
                 LOG.info('No single-pointing science target found. Skip selfcal.')
-                return SelfcalResults(scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
+                return SelfcalResults(
+                    scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
 
         if self.inputs.apply:
 
@@ -367,7 +372,8 @@ class Selfcal(basetask.StandardTaskTemplate):
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
                     LOG.info('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
 
-        return SelfcalResults(scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
+        return SelfcalResults(
+            scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
 
     def _solve_selfcal(self):
 
@@ -389,11 +395,11 @@ class Selfcal(basetask.StandardTaskTemplate):
         else:
             inf_EB_gaincal_combine = 'scan'
 
-        tclean_parallel_request = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
-        taskqueue_parallel_request = len(scal_targets) > 1
+        parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
+        taskqueue_parallel_request = len(scal_targets) > 1 and parallel
         with TaskQueue(parallel=taskqueue_parallel_request) as tq:
             for target in scal_targets:
-                target['sc_parallel'] = (tclean_parallel_request and not tq.is_async())
+                target['sc_parallel'] = (parallel and not tq.is_async())
                 tq.add_functioncall(self._run_selfcal_sequence, target,
                                     gaincal_minsnr=self.inputs.gaincal_minsnr,
                                     minsnr_to_proceed=self.inputs.minsnr_to_proceed,
@@ -423,9 +429,8 @@ class Selfcal(basetask.StandardTaskTemplate):
                     # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
                     #       utils.fieldname_for_casa() and
                     #       utils.dequote()
-                    field_name = utils.dequote(target['field'])
+                    field_name = target['field_name']  # the dequoted field name
                     target['sc_lib'] = scal_library[field_name][target['sc_band']]
-                    target['field_name'] = field_name
                     target['sc_rms_scale'] = target['sc_lib']['RMS_final'] / target['sc_lib']['theoretical_sensitivity']
                     target['sc_success'] = target['sc_lib']['SC_success']
                 except Exception as err:
@@ -433,8 +438,11 @@ class Selfcal(basetask.StandardTaskTemplate):
                     LOG.info(traceback_msg)
                     sc_exception = True
             if sc_exception:
-                LOG.error('The self-calibration sequence failed for target=%r spw=%r from the working directory: %s/ .',
-                          target['field'], target['spw'], target['sc_workdir'])
+                LOG.warning(
+                    'An exception was triggered during the self-calibration sequence for target=%r spw=%r in the working directory: %s .',
+                    target['field'],
+                    target['spw'],
+                    target['sc_workdir'])
             target['sc_exception'] = sc_exception
         return scal_targets
 
@@ -466,7 +474,8 @@ class Selfcal(basetask.StandardTaskTemplate):
                 # A side effect of doing this while changing cwd is that the working directory of MPIServers will be "stuck"
                 # to the one where tclean(paralllel=True) started.
                 # As a workaround, we send the chdir command to the MPIServers explicitly.
-                mpihelpers.mpiclient.push_command_request(f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
+                mpihelpers.mpiclient.push_command_request(
+                    f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
 
         return selfcal_library, solints, bands, trackback_msg
 
@@ -496,10 +505,13 @@ class Selfcal(basetask.StandardTaskTemplate):
                             if any(not isinstance(spwmap, list) for spwmap in spwmap_final) or not spwmap_final:
                                 spwmap_final = [spwmap_final]
                             gaintable = os.path.join(sc_workdir, sc_lib[vis]['gaintable_final'][idx])
-                            calfrom = callibrary.CalFrom(gaintable=gaintable,
-                                                         interp=sc_lib[vis]['applycal_interpolate_final'][idx], calwt=False,
-                                                         spwmap=spwmap_final[idx], caltype='gaincal')
-                            calto = callibrary.CalTo(vis=vis_calto, field=cleantarget['field'], spw=cleantarget['spw_real'][vis])
+                            calfrom = callibrary.CalFrom(
+                                gaintable=gaintable, interp=sc_lib[vis]['applycal_interpolate_final'][idx],
+                                calwt=False, spwmap=spwmap_final[idx],
+                                caltype='gaincal')
+                            calto = callibrary.CalTo(
+                                vis=vis_calto, field=cleantarget['field'],
+                                spw=cleantarget['spw_real'][vis])
                             calapps.append(callibrary.CalApplication(calto, calfrom))
                             vislist.append(vis_calto)
 
@@ -507,7 +519,8 @@ class Selfcal(basetask.StandardTaskTemplate):
             self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
         vislist = sorted(set(vislist))
-        taskqueue_parallel_request = len(vislist) > 1
+        parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
+        taskqueue_parallel_request = len(vislist) > 1 and parallel
         with TaskQueue(parallel=taskqueue_parallel_request, executor=self._executor) as tq:
             for vis in vislist:
                 task_args = {'vis': vis, 'applymode': self.inputs.apply_cal_mode_default, 'intent': 'TARGET'}
@@ -528,13 +541,14 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         final_scal_target = []
         for scal_target in scal_targets:
-            if scal_target['heuristics'].is_mosaic(scal_target['field'], scal_target['intent']):
+            disable_mosaic = True
+            if disable_mosaic and scal_target['is_mosaic']:
                 LOG.warning(
                     'The self-calibration heuristics do not fully support mosaic yet. Skipping target=%r spw=%r.',
                     scal_target['field'],
                     scal_target['spw'])
                 continue
-            if scal_target['heuristics'].is_eph_obj(scal_target['field']):
+            if scal_target['is_eph_obj']:
                 LOG.warning(
                     'The self-calibration heuristics do not fully support ephemeris sources yet. Skipping target=%r spw=%r.',
                     scal_target['field'],
@@ -567,7 +581,8 @@ class Selfcal(basetask.StandardTaskTemplate):
                                               clearlist=True,
                                               scal=scal, contfile=self.inputs.contfile,
                                               field=self.inputs.field,
-                                              spw=self.inputs.spw)
+                                              spw=self.inputs.spw,
+                                              parallel=self.inputs.parallel)
         makeimlist_task = MakeImList(makeimlist_inputs)
         makeimlist_results = makeimlist_task.execute()
 
@@ -580,6 +595,13 @@ class Selfcal(basetask.StandardTaskTemplate):
             else:
                 is_representative = False
             scal_target['is_repr_target'] = is_representative
+            scal_target['is_mosaic'] = scal_target['heuristics'].is_mosaic(scal_target['field'], scal_target['intent'])
+            scal_target['is_eph_obj'] = scal_target['heuristics'].is_eph_obj(scal_target['field'])
+            # Note that scal_library is currently keyed by field name without quotes.
+            # We use the 'field_name' value to retrieve self-calibration results from scal_library generated by the self-cal solver.
+            scal_target['field_name'] = utils.dequote(scal_target['field'])
+
+        LOG.debug('scal_targets: %s', scal_targets)
 
         return scal_targets
 
@@ -594,11 +616,15 @@ class Selfcal(basetask.StandardTaskTemplate):
     def _split_scaltargets(self, scal_targets):
         """Split the input MSes into smaller MSes per cleantargets effeciently."""
 
-        outputvis_list = []
-        parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
+        # mt_inputvis_list aggregates input vis argument values of expected mstransform calls
+        # therefore len(mt_inputvis_list) represents the number of ms to be split out
+        mt_inputvis_list = [vis for target in scal_targets for vis in target['vis']]
 
-        taskqueue_parallel_request = len(scal_targets) > 1 and parallel
-        with utils.ignore_pointing(self.inputs.vis):
+        parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
+        taskqueue_parallel_request = len(mt_inputvis_list) > 1 and parallel
+
+        outputvis_list = []
+        with utils.ignore_pointing(utils.deduplicate(mt_inputvis_list)):
             with TaskQueue(parallel=taskqueue_parallel_request) as tq:
 
                 for target in scal_targets:
@@ -630,14 +656,16 @@ class Selfcal(basetask.StandardTaskTemplate):
                         ms = self.inputs.context.observing_run.get_ms(vis)
                         spws = ms.get_spectral_windows(real_spwsel)
 
-                        mean_freq = np.mean([float(spw.mean_frequency.to_units(measures.FrequencyUnits.HERTZ)) for spw in spws])
-                        bwarray = np.array([float(spw.bandwidth.to_units(measures.FrequencyUnits.HERTZ)) for spw in spws])
+                        mean_freq = np.mean([float(spw.mean_frequency.to_units(
+                            measures.FrequencyUnits.HERTZ)) for spw in spws])
+                        bwarray = np.array([float(spw.bandwidth.to_units(measures.FrequencyUnits.HERTZ))
+                                           for spw in spws])
                         chanarray = np.array([spw.num_channels for spw in spws])
                         chanwidth_desired_hz = self.get_desired_width(mean_freq)
                         chanbin = self.get_spw_chanbin(bwarray, chanarray, chanwidth_desired_hz)
 
-                        task_args = {'vis': vis, 'outputvis': outputvis, 'field': field, 'spw': real_spwsel, 'uvrange': uvrange,
-                                     'chanaverage': True, 'chanbin': chanbin, 'usewtspectrum': True,
+                        task_args = {'vis': vis, 'outputvis': outputvis, 'field': field, 'spw': real_spwsel,
+                                     'uvrange': uvrange, 'chanaverage': True, 'chanbin': chanbin, 'usewtspectrum': True,
                                      'datacolumn': 'data', 'reindex': False, 'keepflags': True}
                         outputvis_list.append((vis, outputvis))
 
@@ -734,8 +762,10 @@ class Selfcal(basetask.StandardTaskTemplate):
                 self._executable.flagmanager(vis=vis, mode='save', versionname='before_hif_selfcal')
 
             # note that contfile_to_chansel will do the virtual2real spw translation automatically.
-            lines_sel_dict = contfile_to_chansel(vis, self.inputs.context, contfile=self.inputs.contfile, excludechans=True)
+            lines_sel_dict = contfile_to_chansel(
+                vis, self.inputs.context, contfile=self.inputs.contfile, excludechans=True)
 
             for field, lines_sel in lines_sel_dict.items():
                 LOG.info("Flagging lines in field {} with the spw selection {}".format(field, lines_sel))
-                self._executable.flagdata(vis=vis, field=field, mode='manual', spw=lines_sel, flagbackup=False, action='apply')
+                self._executable.flagdata(vis=vis, field=field, mode='manual',
+                                          spw=lines_sel, flagbackup=False, action='apply')

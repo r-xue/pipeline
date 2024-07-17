@@ -8,7 +8,7 @@ from . import resultobjects
 LOG = logging.get_logger(__name__)
 
 
-class FindContQAHandler(pqa.QAPlugin):    
+class FindContQAHandler(pqa.QAPlugin):
     result_cls = resultobjects.FindContResult
     child_cls = None
 
