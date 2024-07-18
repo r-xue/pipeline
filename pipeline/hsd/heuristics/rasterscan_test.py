@@ -214,7 +214,7 @@ def test_rasterscan_heuristic(oneway_row, oneway_map, scan_angle, interval_facto
         pointing_error=pointing_error
     )
 
-    h = rasterscan.RasterScanHeuristic()
+    h = rasterscan.RasterscanHeuristic()
 
     if oneway_map is False or pointing_error > 0.1:
         # should raise RasterscanHeuristicsFailure
@@ -263,7 +263,7 @@ def test_rasterscan_heuristic_fail_psw():
     print()
 
     ra, dec = generate_position_data_psw()
-    h = rasterscan.RasterScanHeuristic()
+    h = rasterscan.RasterscanHeuristic()
 
     # should raise RasterscanHeuristicsFailure
     with pytest.raises(rasterscan.RasterscanHeuristicsFailure):
