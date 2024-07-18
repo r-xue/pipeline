@@ -9,7 +9,7 @@ import pipeline.infrastructure as infrastructure
 from pipeline.domain.datatable import DataTableImpl
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.domain.singledish import MSReductionGroupDesc
-from pipeline.hsd.heuristics.rasterscan import RasterscanHeuristicsResult, RasterScanHeuristicsFailure
+from pipeline.hsd.heuristics.rasterscan import RasterscanHeuristicsResult, RasterscanHeuristicsFailure
 from pipeline.hsd.tasks.common.inspection_util import (inspect_reduction_group,
                                                        set_beam_size)
 # import pipeline.domain.singledish as singledish
@@ -424,7 +424,7 @@ class SDInspection(object):
                                          'EB': ms.execblock_id}
                             merge_table, merge_gap = raster_heuristic(sra_sel, sdec_sel, _log_dict)
                             raster_heuristic_ok = True
-                        except RasterScanHeuristicsFailure as e:
+                        except RasterscanHeuristicsFailure as e:
                             LOG.warn('{} This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.'.format(e))
                             rasterscan_heuristics_result.set_result_fail(ant, spw, field_id)
                             raster_heuristic_ok = False
