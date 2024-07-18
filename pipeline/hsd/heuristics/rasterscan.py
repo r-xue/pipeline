@@ -13,6 +13,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 # import 3rd party modules
 import numpy as np
+import numpy.typing as npt
 
 # import pipeline submodules
 from pipeline.domain.measurementset import MeasurementSet
@@ -596,8 +597,8 @@ class RasterscanHeuristicsResult():
         return sorted([self.ms.antennas[id].name for id in antenna_ids])
 
 
-def find_raster_gap(ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]', dtrow_list: 'List[np.ndarray[np.int64]]') \
-        -> 'np.ndarray[np.int64]':
+def find_raster_gap(ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64], dtrow_list: List[npt.NDArray[np.int64]]) \
+        -> npt.NDArray[np.int64]:
     """
     Find gaps between individual raster map.
 
