@@ -24,7 +24,7 @@ from scipy.special import erf
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.hsd.heuristics.rasterscan import RasterscanHeuristicsResult
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
 from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
 from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 import pipeline.infrastructure.basetask
@@ -3860,11 +3860,11 @@ def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDIm
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_incomp, msg)
 
 
-def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, RasterscanHeuristicsResult], msg: str) -> List[pqa.QAScore]:
+def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, RasterScanHeuristicsResult], msg: str) -> List[pqa.QAScore]:
     """Generate score of Rasterscan correctness of importdata or imaging.
 
     Args:
-        rasterscan_heuristics_results (Dict[str, RasterscanHeuristicsResult]): Dictionary of raster heuristics result objects
+        rasterscan_heuristics_results (Dict[str, RasterScanHeuristicsResult]): Dictionary of raster heuristics result objects
             treats QAScore of raster scan analysis.
         msg (str): short message for QA
 

@@ -20,8 +20,8 @@ class SDImagingResultItem(common.SingleDishResults):
         # logrecords attribute is mandatory but not created unless Result is returned by execute.
         self.logrecords = []
         # raster scan heuristics results for QAscore calculation
-        self.rasterscan_heuristics_results_rgap = {}  # {originms : [RasterscanHeuristicsResult]}
-        self.rasterscan_heuristics_results_incomp = {}  # {originms : [RasterscanHeuristicsResult]}
+        self.rasterscan_heuristics_results_rgap = {}  # {originms : [RasterScanHeuristicsResult]}
+        self.rasterscan_heuristics_results_incomp = {}  # {originms : [RasterScanHeuristicsResult]}
 
     def merge_with_context(self, context):
         super(SDImagingResultItem, self).merge_with_context(context)

@@ -9,7 +9,7 @@ import pipeline.infrastructure as infrastructure
 from pipeline.domain.datatable import DataTableImpl
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.domain.singledish import MSReductionGroupDesc
-from pipeline.hsd.heuristics.rasterscan import RasterscanHeuristicsResult, RasterScanHeuristicsFailure
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult, RasterScanHeuristicsFailure
 from pipeline.hsd.tasks.common.inspection_util import (inspect_reduction_group,
                                                        set_beam_size)
 # import pipeline.domain.singledish as singledish
@@ -331,7 +331,7 @@ class SDInspection(object):
         LOG.debug('TIMEGRP: starting ID is %s' % timegrp_id)
 
         ms = self.ms
-        rasterscan_heuristics_result = RasterscanHeuristicsResult(ms)
+        rasterscan_heuristics_result = RasterScanHeuristicsResult(ms)
         for ant, vant in by_antenna.items():
             LOG.debug('Start ant %s' % ant)
             pattern_dict = {}
