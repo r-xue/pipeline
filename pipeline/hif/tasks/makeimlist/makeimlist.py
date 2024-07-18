@@ -259,7 +259,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         result.metadata['sidebar suffix'] = '/'.join(sidebar_suffixes)
 
         # Check if this stage has been disabled for vla (never set for ALMA)
-        if inputs.context.vla_disable_cube_imaging and inputs.specmode != "cont":
+        if inputs.context.vla_skip_mfs_and_cube_imaging and inputs.specmode in ('mfs', 'cube'):
             result.set_info({'msg': 'Line imaging stages have been disabled for VLA due to no MS being produced for line imaging.',
                                  'intent': inputs.intent,
                                  'specmode': inputs.specmode})

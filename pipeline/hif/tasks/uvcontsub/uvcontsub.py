@@ -55,7 +55,7 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
         MinimalTcleanHeuristicsInputsGenerator = namedtuple('MinimalTcleanHeuristicsInputs', 'vis field intent phasecenter spw spwsel_lsrk specmode')
 
         # Check if this stage has been disabled for vla (never set for ALMA)
-        if inputs.context.vla_disable_cube_imaging:
+        if inputs.context.vla_skip_mfs_and_cube_imaging:
             result = UVcontSubResults()
             result.skip_stage = True
             return result

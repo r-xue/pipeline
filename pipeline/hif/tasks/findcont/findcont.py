@@ -63,7 +63,7 @@ class FindCont(basetask.StandardTaskTemplate):
         context = self.inputs.context
 
         # Check if this stage has been disabled for VLA (never set for ALMA)
-        if inputs.context.vla_disable_cube_imaging:
+        if inputs.context.vla_skip_mfs_and_cube_imaging:
             result = FindContResult({}, {}, '', 0, 0, [])
             return result
 

@@ -212,7 +212,7 @@ class VlaMstransformResults(mst.MstransformResults):
 
         # Set whether to do cube imaging or not
         if not self.produce_lines_ms:
-            context.vla_disable_cube_imaging = True
+            context.vla_skip_mfs_and_cube_imaging = True
 
     def __str__(self):
         # Format the Mstransform results.

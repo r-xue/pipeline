@@ -16,7 +16,7 @@ class FindContQAHandler(pqa.QAPlugin):
 
         scores = []
 
-        if context.vla_disable_cube_imaging:
+        if context.vla_skip_mfs_and_cube_imaging:
             scores.append(pqa.QAScore(None, longmsg='Stage skipped.', shortmsg='Stage skipped.'))
             result.qa.pool.extend(scores)
             return
