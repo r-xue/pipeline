@@ -15,7 +15,7 @@ import operator
 import os
 import re
 import traceback
-from typing import Dict, List, Tuple, TYPE_CHECKING, Union
+from typing import Dict, List, Tuple, TYPE_CHECKING
 
 import numpy as np
 from scipy import interpolate

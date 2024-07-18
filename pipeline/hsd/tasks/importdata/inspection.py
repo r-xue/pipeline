@@ -2,7 +2,7 @@
 
 import os
 import re
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, Optional, Set, Tuple, Union
 
 import numpy
 import pipeline.infrastructure as infrastructure

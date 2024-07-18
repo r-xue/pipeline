@@ -9,8 +9,7 @@ observing region.
 Note that it does not check if observing pattern is raster.
 """
 # import standard modules
-from abc import ABC
-from typing import Dict, List, Optional, Tuple, TYPE_CHECKING, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 # import 3rd party modules
 import numpy as np
