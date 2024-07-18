@@ -18,8 +18,8 @@ class DataType(Enum):
         REGCAL_CONTLINE_ALL: calibrated data
         BASELINED: data after spectral baseline subtraction
         ATMCORR: data corrected for residual ATM
-        REGCAL_CONT_SCIENCE: calibrated data of target scans used for cont only (vla)
-        SELFCAL_CONT_SCIENCE: self-calibrated data of target scans used for cont only (vla)
+        REGCAL_CONT_SCIENCE: calibrated data of target scans used for cont only
+        SELFCAL_CONT_SCIENCE: self-calibrated data of target scans used for cont only
         REGCAL_CONTLINE_SCIENCE: calibrated data of target scans
         SELFCAL_CONTLINE_SCIENCE: self-calibrated data of target scans
         REGCAL_LINE_SCIENCE: calibrated spectral line data
@@ -30,10 +30,10 @@ class DataType(Enum):
     REGCAL_CONTLINE_ALL = auto()
     ATMCORR = auto()
     BASELINED = auto()
-    REGCAL_CONT_SCIENCE = auto()
-    SELFCAL_CONT_SCIENCE = auto()
     REGCAL_CONTLINE_SCIENCE = auto()
     SELFCAL_CONTLINE_SCIENCE = auto()
+    REGCAL_CONT_SCIENCE = auto()
+    SELFCAL_CONT_SCIENCE = auto()
     REGCAL_LINE_SCIENCE = auto()
     SELFCAL_LINE_SCIENCE = auto()
 

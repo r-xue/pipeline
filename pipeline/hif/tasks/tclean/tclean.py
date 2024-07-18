@@ -36,8 +36,8 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     # This is just an initial default to get any vis. The real selection is
     # usually made in hif_makeimlist and passed on as explicit parameter
     # via hif_makeimages.
-    processing_data_type = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE,
-                            DataType.SELFCAL_CONT_SCIENCE, DataType.REGCAL_CONT_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_type = [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE,  DataType.SELFCAL_CONT_SCIENCE, DataType.REGCAL_CONT_SCIENCE,
+                           DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     # simple properties ------------------------------------------------------------------------------------------------
 

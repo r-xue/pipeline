@@ -377,10 +377,8 @@ class FindCont(basetask.StandardTaskTemplate):
                     spw_transitions = ref_ms.get_spectral_window(real_spwid).transitions
                     single_continuum = any(['Single_Continuum' in t for t in spw_transitions])
                     # PIPE-1855: use spectralDynamicRangeBandWidth from SBSummary if available
-                    try:
-                        dynrange_bw = ref_ms.science_goals['spectralDynamicRangeBandWidth']
-                    except:
-                        dynrange_bw = None
+                    dynrange_bw = ref_ms.science_goals.get('spectralDynamicRangeBandWidth', None)
+
                     if dynrange_bw is not None:  # None means that a value was not provided, and it should remain None
                         dynrange_bw = qaTool.tos(dynrange_bw)
 
