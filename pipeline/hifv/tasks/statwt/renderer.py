@@ -108,6 +108,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # When the table column has only one or zero entires, it doesn't make sense to compare
             # it to "the other values in the table"
+            # PIPE-1737: returning background color for non zero values.
             if len(summary) <= 1 or eval(value) == 0:
                 return ''
 
@@ -118,7 +119,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if abs(dev) > sigma*3.0:
                 bgcolor = dev2shade(dev/sigma, float(value) > median)
                 return f'style="background-color: {bgcolor}"'
-            else: 
+            else:
                 return ''
 
     StatsTR = collections.namedtuple('StatsTR', 'index median q1 q2 mean stdev min max')
