@@ -2773,7 +2773,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
     # Do the fit and compute positions offsets and flux ratios
     fitdict = checksource.checkimage(imagename, rms, refdirection, refflux)
 
-    msnames = ','.join([os.path.basename(ms.name).strip('.ms') for ms in mses])
+    msnames = ','.join(utils.remove_trailing_string(os.path.basename(ms.name), '.ms') for ms in mses)
 
     # Compute the scores the default score is the geometric mean of
     # the position and flux scores if both are available.
