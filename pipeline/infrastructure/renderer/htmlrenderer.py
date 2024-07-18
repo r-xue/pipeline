@@ -26,7 +26,7 @@ import pipeline.infrastructure.displays.summary as summary
 import pipeline.infrastructure.logging as logging
 from pipeline import environment
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tools, mpihelpers
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
 from pipeline.infrastructure.launcher import Context
@@ -341,14 +341,14 @@ class T1_1Renderer(RendererBase):
         CPU_TYPE = 'CPU'
         LOGICAL_CPU_CORES = 'Logical CPU cores'
         PHYSICAL_CPU_CORES = 'Physical CPU cores'
-        NUM_MPI_SERVERS = "# MPI servers"
+        NUM_MPI_SERVERS = "Number of MPI servers"
         RAM = "RAM"
         SWAP = "Swap"
         OS = "OS"
         ULIMIT_FILES = "Max open file descriptors"
         ULIMIT_MEM = "Memory usage ulimit"
         ULIMIT_CPU = "CPU time ulimit in seconds"
-        CASA_CORES = "CPU cores reported available by CASA"
+        CASA_CORES = "CASA-reported CPU cores availability"
         CASA_THREADS = "Max OpenMP threads per CASA instance"
         CASA_MEMORY = "Memory available to pipeline"
         CGROUP_NUM_CPUS = "Cgroup CPU allocation"
@@ -381,6 +381,13 @@ class T1_1Renderer(RendererBase):
             # 'memory available to pipeline' should not be presented for SD data
             if is_singledish_ms(ctx):
                 rows = [r for r in rows if r != T1_1Renderer.EnvironmentProperty.CASA_MEMORY]
+
+            # getNumCPUs is confusing when run in an MPI context, giving the
+            # number of cores that the process can migrate to rather than
+            # number of cores used by CASA. To avoid confusion, we remove the
+            # CASA cores row completely for MPI runs.
+            if mpihelpers.is_mpi_ready():
+                rows = [r for r in rows if r != T1_1Renderer.EnvironmentProperty.CASA_CORES]
 
             unmerged_rows = [(prop.description(ctx), *data[prop]) for prop in rows]
             merged_rows = utils.merge_td_rows(utils.merge_td_columns(unmerged_rows))

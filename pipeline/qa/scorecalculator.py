@@ -69,6 +69,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_polcal_gain_ratio_rms',                     # ALMA IF specific
            'score_polcal_leakage',                            # ALMA IF specific
            'score_polcal_residual_pol',                       # ALMA IF specific
+           'score_polcal_results',                            # ALMA IF specific
            'score_file_exists',
            'score_path_exists',
            'score_flags_exist',
@@ -1164,39 +1165,42 @@ def score_total_data_vla_delay(filename, m):
 
 
 @log_qa
-def score_vla_flux_residual_rms(rmsmeanvalues):
+def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
     """
-    Take the RMS values of the residuals.
-    Input is a list of tuples with (rms, mean, count) per sources
+    score_vla_flux_residual_rms: calculates the score for pipeline task hifv_fluxboot
+
+    output: returns QAscore
+    --------- parameter descriptions ---------------------------------------------
+    fractional_residuals: Take the RMS values of the residuals.
+    nums_spws: number of spws
+    spixl: list of a spectral index
     """
 
-    scores = []
-    rmsvalues = []
-    counts = []
-    for rms, mean, count in rmsmeanvalues:
-        sourcescore = 1.0 - (0.01 * count)
-        rmsvalues.append(rms)
-        counts.append(float(count))
+    # PIPE-119, part a
+    max_res = max(max(res) for res in fractional_residuals)
+    if max_res < 0.01:
+        score = 1.0
+    else:
+        score = 1.0 - max_res
 
-        if sourcescore < 0.0:
-            sourcescore = 0.0
+    # PIPE-119 part b
+    for res in fractional_residuals:
+        if max(np.abs(res))> 0.3:
+            LOG.warning("Fractional residuals are > 0.3")
+            break
 
-        scores.append(sourcescore)
-
-    countfractions = np.array(counts) / np.sum(counts)
-
-    # Weighted average per sources
-    try:
-        score = np.average(scores, weights=countfractions)
-    except Exception as e:
-        score = 0.0
+    # PIPE-119 part c
+    bool_spix = [True if eval(spix) < -3 or eval(spix) > 2 else False for spix in spixl]
+    if num_spws > 1 and all(bool_spix):
+        score = score - 0.5
+        LOG.warning("spix for a band/s is <-3 or >2, reducing score by 0.5")
 
     if score < 0.0:
         score = 0.0
 
     # Set score message and origin
     try:
-        longmsg = 'Max rms of the residuals is {!s}'.format(np.max(rmsvalues))
+        longmsg = 'Max rms of the residuals is {!s}'.format(max_res)
     except Exception as e:
         longmsg = 'No max rms.'
     shortmsg = longmsg
@@ -3623,6 +3627,34 @@ def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: fl
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
+
+
+@log_qa
+def score_polcal_results(session_name: str, caltables: list) -> pqa.QAScore:
+    """
+    This heuristic tests whether calibrations were derived for a polcal session.
+
+    Args:
+        session_name: name of session being evaluated.
+        caltables: list of calibration tables derived for session.
+
+    Returns:
+        QAScore object
+    """
+    if not caltables:
+        score = 0.0
+        longmsg = f"No polarisation calibration derived for session '{session_name}'."
+        shortmsg = "No polarisation calibration for session"
+    else:
+        score = 1.0
+        longmsg = f"Polarisation calibration derived for session '{session_name}'."
+        shortmsg = "Polarisation calibration derived for session"
+
+    origin = pqa.QAOrigin(metric_name='score_polcal_results',
+                          metric_score=score,
+                          metric_units='polarisation caltables')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa

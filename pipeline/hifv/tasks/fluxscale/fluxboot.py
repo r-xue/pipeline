@@ -17,6 +17,7 @@ from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.domain.measures import FrequencyUnits
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -243,7 +244,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
-            refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+            # PIPE-1637: adding ',' in the manual and auto refantignore parameter
+            refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
 
             refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
             refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
@@ -528,6 +530,17 @@ class Fluxboot(basetask.StandardTaskTemplate):
             fitorder = 1
             LOG.warning('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
 
+        # PIPE-1603, add fluxboot heuristics to use fitorder=0
+        if len(spws) == 1:
+            mhz_deltaf = deltaf.to_units(FrequencyUnits.MEGAHERTZ)
+            if ((spws[0].band == "L" and mhz_deltaf < 64) or (mhz_deltaf < 128)):
+                fitorder = 0
+        else:
+            for i, spw in enumerate(spws[:-1]):
+                mhz_deltaf = abs((spws[i + 1].centre_frequency - spw.centre_frequency).to_units(FrequencyUnits.MEGAHERTZ))
+                if (spws[i + 1].band == "L" and spw.band == "L" and mhz_deltaf < 64) or mhz_deltaf < 128:
+                    fitorder = 0
+
         LOG.info('Displaying fit order heuristics...')
         LOG.info('  Number of spws: {!s}'.format(str(len(spws))))
         LOG.info('  Band: {!s}'.format(','.join(unique_bands)))
@@ -722,9 +735,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
                 # ------------------------------------------------------------------------
                 # Re-calculating a new reference frequency for a power-law SED
-                if len(logfittedfluxd) > 1:
+                if len(logfittedfluxd) > 1 and fitorderused != 0:
                     coef = [fitflx, spix, curvature, gamma, delta]
                     coef_errors = [fitflxerr, spixerr, curvatureerr, gammaerr, deltaerr]
+
                     ref_freq = reffreq
 
                     # first coefficient is log S
@@ -1089,6 +1103,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 p2.coefficients(np.array):  re-referenced coefficients
 
         """
+
         shift = np.log10(new_ref_freq / original_ref_freq)
         p1 = np.poly1d(c1[::-1])
         r2 = np.roots(p1) - shift

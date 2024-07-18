@@ -71,6 +71,8 @@ class CleanBaseInputs(vdp.StandardInputs):
     scales = vdp.VisDependentProperty(default=None)
     sensitivity = vdp.VisDependentProperty(default=None)
     spwsel_all_cont = vdp.VisDependentProperty(default=None)
+    spwsel_low_bandwidth = vdp.VisDependentProperty(default=None)
+    spwsel_low_spread = vdp.VisDependentProperty(default=None)
     start = vdp.VisDependentProperty(default='')
     stokes = vdp.VisDependentProperty(default='I')
     threshold = vdp.VisDependentProperty(default=None)
@@ -122,8 +124,8 @@ class CleanBaseInputs(vdp.StandardInputs):
         return []
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, datacolumn=None, datatype=None, datatype_info=None, intent=None, field=None,
-                 spw=None, spwsel=None, spwsel_all_cont=None, uvrange=None, orig_specmode=None, specmode=None, gridder=None, deconvolver=None,
-                 uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, nmajor=None, hm_minpsffraction=None,
+                 spw=None, spwsel=None, spwsel_all_cont=None, spwsel_low_bandwidth=None, spwsel_low_spread=None, uvrange=None, orig_specmode=None,
+                 specmode=None, gridder=None, deconvolver=None, uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, nmajor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, scales=None, outframe=None, imsize=None,
                  cell=None, phasecenter=None, psf_phasecenter=None, nchan=None, nbin=None, start=None, width=None, stokes=None, weighting=None,
                  robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, startmodel=None, hm_masking=None,
@@ -147,6 +149,8 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.spw = spw
         self.spwsel = spwsel
         self.spwsel_all_cont = spwsel_all_cont
+        self.spwsel_low_bandwidth = spwsel_low_bandwidth
+        self.spwsel_low_spread = spwsel_low_spread
         self.uvrange = uvrange
         self.savemodel = savemodel
         self.startmodel = startmodel
@@ -677,6 +681,8 @@ class CleanBase(basetask.StandardTaskTemplate):
             im_names['cleanmask'] = inputs.mask
         elif os.path.exists(mask_name):
             im_names['cleanmask'] = mask_name
+
+        result.im_names.update(im_names)
 
         for im_type, im_name in im_names.items():
             # Set misc info on imaging products
