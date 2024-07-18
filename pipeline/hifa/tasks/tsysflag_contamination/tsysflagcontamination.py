@@ -16,12 +16,17 @@ from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.basetask import StandardTaskTemplate
 from pipeline.infrastructure.exceptions import PipelineException
 from pipeline.infrastructure.pipelineqa import QAScore, TargetDataSelection
-from pipeline.qa.scorecalculator import SLOW_LANE_QA_SCORE
 
 __all__ = ["TsysFlagContamination", "TsysFlagContaminationInputs"]
 
 
 LOG = infrastructure.get_logger(__name__)
+
+# QA score for multi-source, multi-tuning EBs, full polarization EBs, etc.
+# that cannot be processed by the heuristic. The intent is that these EBs
+# be directed to the QA slow lane for inspection and potential manual
+# flagging of line contamination
+UNPROCESSABLE_DATA_QA_SCORE = 0.6
 
 
 class TsysFlagContaminationInputs(vdp.StandardInputs):
@@ -133,7 +138,6 @@ class ExternFunctionArguments:
         weblog_dir = os.path.join(context.report_dir, f"stage{context.task_counter}")
         os.makedirs(weblog_dir, exist_ok=True)
 
-        # TBC: is this what the heuristic means by 'single polarization'?
         num_polarizations = {
             inputs.ms.get_data_description(spw=spw.id).num_polarizations
             for spw in inputs.ms.get_spectral_windows(intent="TARGET")
@@ -439,7 +443,7 @@ class TsysFlagContamination(StandardTaskTemplate):
 
         if is_multi_tuning_eb and is_multi_source_eb:
             s = QAScore(
-                score=SLOW_LANE_QA_SCORE,
+                score=UNPROCESSABLE_DATA_QA_SCORE,
                 shortmsg="Multi-source multi-tuning EB",
                 longmsg=f"Line contamination heuristic not validated for multi-source multi-tunings present in {ms.basename}.",
                 applies_to=TargetDataSelection(vis={ms.basename}),
@@ -464,7 +468,7 @@ class TsysFlagContamination(StandardTaskTemplate):
         }
         if any(n > 2 for n in polarizations):
             s = QAScore(
-                score=SLOW_LANE_QA_SCORE,
+                score=UNPROCESSABLE_DATA_QA_SCORE,
                 shortmsg="Full polarization data",
                 longmsg=f"Line contamination heuristic not validated for full polarization data in {ms.basename}.",
                 applies_to=TargetDataSelection(vis={ms.basename}),
@@ -485,7 +489,7 @@ class TsysFlagContamination(StandardTaskTemplate):
         # exclude TP (fails by design; needs bandpass intent scan)
         if "BANDPASS" not in ms.intents:
             s = QAScore(
-                score=SLOW_LANE_QA_SCORE,
+                score=UNPROCESSABLE_DATA_QA_SCORE,
                 shortmsg="No BANDPASS data",
                 longmsg=f"No bandpass scans in {ms.basename} for the line contamination heuristic to process.",
                 applies_to=TargetDataSelection(vis={ms.basename}),
