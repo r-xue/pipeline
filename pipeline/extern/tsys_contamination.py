@@ -39,11 +39,15 @@ from scipy.special import legendre
 
 import pipeline.infrastructure.logging
 import pipeline.infrastructure.pipelineqa as pipelineqa
-import pipeline.qa.scorecalculator as scorecalculator
 
 from .TsysDataClassFile import TsysData
 
 LOG = pipeline.infrastructure.logging.get_logger(__name__)
+
+# QA score for alerts issues by this heuristic. The intent is that this score
+# direct the EB to QA slow lane for further analysis, which currently applies
+# to anything with a QA score of <0.66,
+WARNINGS_QA_SCORE = 0.6
 
 
 # PREQ 232 in JAOPOST
@@ -1632,7 +1636,7 @@ def get_tsys_contaminated_intervals(
             warnings_list.append([warning, message])
             qascores.append(
                 pipelineqa.QAScore(
-                    score=scorecalculator.SLOW_LANE_QA_SCORE,
+                    score=WARNINGS_QA_SCORE,
                     shortmsg=warning,
                     longmsg=f'{message} Check Tsys plots.',
                     applies_to=pipelineqa.TargetDataSelection(vis={vis}, spw={msg_spw}, field={msg_field})
@@ -1717,7 +1721,7 @@ def get_tsys_contaminated_intervals(
                         warnings_list.append([warning, message])
                         qascores.append(
                             pipelineqa.QAScore(
-                                    score=scorecalculator.SLOW_LANE_QA_SCORE,
+                                    score=WARNINGS_QA_SCORE,
                                     shortmsg=warning,
                                     longmsg=f'{message} Check Tsys plots.',
                                     applies_to=pipelineqa.TargetDataSelection(vis={vis}, spw={spw}, field={field})
@@ -1889,7 +1893,7 @@ def get_tsys_contaminated_intervals(
                 warnings_list.append([warning, message])
                 qascores.append(
                     pipelineqa.QAScore(
-                        score=scorecalculator.SLOW_LANE_QA_SCORE,
+                        score=WARNINGS_QA_SCORE,
                         shortmsg=warning,
                         longmsg=f'{message} Check Tsys plots.',
                         applies_to=pipelineqa.TargetDataSelection(vis={vis}, spw={spw}, field={field})

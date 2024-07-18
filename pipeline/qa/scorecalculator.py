@@ -89,13 +89,11 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_ms_history_entries_present',
            'score_contiguous_session',
            'score_multiply',
-           'score_mom8_fc_image']
+           'score_mom8_fc_image',
+           'score_tsysflagcontamination_contamination_flagged',
+           'score_tsysflagcontamination_external_heuristic']
 
 LOG = logging.get_logger(__name__)
-
-# QA score that will direct the EB to QA slow lane for further inspection
-SLOW_LANE_QA_SCORE = 0.6
-
 
 # - utility functions --------------------------------------------------------------------------------------------------
 
