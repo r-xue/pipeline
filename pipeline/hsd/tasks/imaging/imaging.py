@@ -1882,18 +1882,16 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
-    _log_dict = {'ANTENNA': msobj.antennas[antid].name,
-                 'EB': msobj.execblock_id}
     _rsres = RasterscanHeuristicsResult(msobj)
     rgp.imager_result.rasterscan_heuristics_results_rgap \
                      .setdefault(msobj.origin_ms, []) \
                      .append(_rsres)
     try:
-        gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list, _log_dict)
+        gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
     except Exception as e:
         if isinstance(e, RasterscanHeuristicsFailure):
             _rsres.set_result_fail(antid, spwid, fieldid)
-            LOG.debug('{}'.format(e))
+            LOG.debug('{} : EB:{}:{}'.format(e, msobj.execblock_id, msobj.antennas[antid].name))
         try:
             dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
             se_small = [(v[0], v[-1]) for v in dtrow_list]
