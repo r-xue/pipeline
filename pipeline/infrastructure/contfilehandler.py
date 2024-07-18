@@ -220,7 +220,7 @@ class ContFileHandler(object):
             LOG.error(msg)
             raise Exception(msg)
 
-        virt_spw_id = int(self.get_cont_dat_virt_spw_id(spw_id, spw_name))
+        virt_spw_id = int(self.get_cont_dat_virt_spw_id(str(spw_id), spw_name))
 
         qaTool = casa_tools.quanta
         suTool = casa_tools.synthesisutils

@@ -679,7 +679,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     spwlist = band_spws[band]
                 for vislist in vislists:
                     if inputs.per_eb:
-                        imagename_prefix = os.path.basename(vislist[0]).strip('.ms')
+                        imagename_prefix = utils.remove_trailing_string(os.path.basename(vislist[0]), '.ms')
                     elif inputs.per_session:
                         imagename_prefix = inputs.context.observing_run.get_ms(vislist[0]).session
                     else:

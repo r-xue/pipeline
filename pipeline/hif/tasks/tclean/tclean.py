@@ -407,7 +407,8 @@ class Tclean(cleanbase.CleanBase):
                                             sourcename=inputs.field,
                                             intent=inputs.intent,
                                             spw=inputs.spw,
-                                            specmode=inputs.specmode)
+                                            specmode=inputs.specmode,
+                                            imaging_mode=self.image_heuristics.imaging_mode)
                 error_result.error = '%s/%s/spw%s clean error: No frequency intersect among selected MSs' % (inputs.field, inputs.intent, inputs.spw)
                 return error_result
 
@@ -433,7 +434,8 @@ class Tclean(cleanbase.CleanBase):
                                                 sourcename=inputs.field,
                                                 intent=inputs.intent,
                                                 spw=inputs.spw,
-                                                specmode=inputs.specmode)
+                                                specmode=inputs.specmode,
+                                                imaging_mode=self.image_heuristics.imaging_mode)
                     error_result.error = '%s/%s/spw%s clean error: f_start < f_low_native' % (inputs.field,
                                                                                               inputs.intent, inputs.spw)
                     return error_result
@@ -445,7 +447,8 @@ class Tclean(cleanbase.CleanBase):
                                             sourcename=inputs.field,
                                             intent=inputs.intent,
                                             spw=inputs.spw,
-                                            specmode=inputs.specmode)
+                                            specmode=inputs.specmode,
+                                            imaging_mode=self.image_heuristics.imaging_mode)
                 error_result.error = '%s/%s/spw%s clean error: width and nbin are mutually exclusive' % (inputs.field,
                                                                                                          inputs.intent,
                                                                                                          inputs.spw)
@@ -469,7 +472,8 @@ class Tclean(cleanbase.CleanBase):
                                                 sourcename=inputs.field,
                                                 intent=inputs.intent,
                                                 spw=inputs.spw,
-                                                specmode=inputs.specmode)
+                                                specmode=inputs.specmode,
+                                                imaging_mode=self.image_heuristics.imaging_mode)
                     error_result.error = '%s/%s/spw%s clean error: user channel width too small' % (inputs.field,
                                                                                                     inputs.intent,
                                                                                                     inputs.spw)
@@ -508,7 +512,8 @@ class Tclean(cleanbase.CleanBase):
                                                 sourcename=inputs.field,
                                                 intent=inputs.intent,
                                                 spw=inputs.spw,
-                                                specmode=inputs.specmode)
+                                                specmode=inputs.specmode,
+                                                imaging_mode=self.image_heuristics.imaging_mode)
                     error_result.error = '%s/%s/spw%s clean error: f_stop > f_high' % (inputs.field,
                                                                                        inputs.intent, inputs.spw)
                     return error_result
@@ -606,7 +611,8 @@ class Tclean(cleanbase.CleanBase):
                                         sourcename=inputs.field,
                                         intent=inputs.intent,
                                         spw=inputs.spw,
-                                        specmode=inputs.specmode)
+                                        specmode=inputs.specmode,
+                                        imaging_mode=self.image_heuristics.imaging_mode)
             error_result.error = '%s/%s/spw%s clean error: no sensitivity' % (inputs.field, inputs.intent, inputs.spw)
             return error_result
 
