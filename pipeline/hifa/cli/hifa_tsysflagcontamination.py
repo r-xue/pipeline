@@ -75,7 +75,7 @@ def hifa_tsysflagcontamination(
 
     1. Flag Tsys line contamination using currently recommended parameters:
 
-    >>> hifa_tsysflagcontinuum()
+    >>> hifa_tsysflagcontamination()
 
     2. Halt pipeline execution if a failure occurs in the underlying heuristic:
 
