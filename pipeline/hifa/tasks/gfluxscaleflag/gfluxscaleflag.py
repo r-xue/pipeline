@@ -5,12 +5,14 @@ Created on 01 Jun 2017
 """
 import functools
 import os.path
+from typing import Dict, Optional, Tuple
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import MeasurementSet
 from pipeline.h.tasks.common.displays import applycal as applycal_displays
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal
@@ -18,6 +20,8 @@ from pipeline.hif.tasks import correctedampflag
 from pipeline.hif.tasks import gaincal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.callibrary import CalTo
+from pipeline.infrastructure.launcher import Context
 from .resultobjects import GfluxscaleflagResults
 
 __all__ = [
@@ -65,20 +69,20 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def intent(self):
-        # By default, this task will run for AMPLITUDE, PHASE, and CHECK
-        # intents.
-        intents_to_flag = 'AMPLITUDE,PHASE,CHECK'
+        # By default, this task will run for AMPLITUDE, PHASE, CHECK, and
+        # DIFFGAIN* intents.
+        intents_to_flag = 'AMPLITUDE,PHASE,CHECK,DIFFGAINREF,DIFFGAINSRC'
 
         # Check if any of the AMPLITUDE intent fields were also used for
         # BANDPASS, in which case it has already been flagged by
-        # hifa_bandpassflag, and this task will just do PHASE and CHECK
-        # fields. This assumes that there will only be 1 field for BANDPASS
-        # and 1 field for AMPLITUDE (which can be the same), which is valid as
-        # of Cycle 5.
+        # hifa_bandpassflag, and this task will just do PHASE, CHECK, and
+        # DIFFGAIN* fields. This assumes that there will only be 1 field for
+        # BANDPASS and 1 field for AMPLITUDE (which can be the same), which is
+        # valid as of Cycle 5.
         for field in self.ms.get_fields(intent='AMPLITUDE'):
             for fieldintent in field.intents:
                 if 'BANDPASS' in fieldintent:
-                    intents_to_flag = 'PHASE,CHECK'
+                    intents_to_flag = 'PHASE,CHECK,DIFFGAINREF,DIFFGAINSRC'
         return intents_to_flag
 
     minsnr = vdp.VisDependentProperty(default=2.0)
@@ -186,7 +190,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
         LOG.info('Compute amplitude gaincal table.')
         amp_interp = 'nearest,linear' if inputs.solint == 'inf' else 'linear,linear'
         self._do_gaincal(intent=inputs.intent, gaintype='T', calmode='a', combine='', solint=inputs.solint,
-                         minsnr=inputs.minsnr, refant=inputs.refant, interp=amp_interp, merge=True)
+                         minsnr=inputs.minsnr, refant=inputs.refant, interp=amp_interp)
 
         # Ensure that any flagging applied to the MS by this applycal are
         # reverted at the end, even in the case of exceptions.
@@ -252,7 +256,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _do_applycal(self, merge):
+    def _do_applycal(self, merge: bool) -> Dict:
         inputs = self.inputs
 
         # SJW - always just one job
@@ -272,9 +276,10 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
 
         return callib_map
 
-    def _do_gaincal(self, caltable=None, field=None, intent=None, gaintype='G', calmode=None, combine=None, solint=None,
-                    antenna=None, uvrange='', minsnr=None, refant=None, minblperant=None, spwmap=None, interp=None,
-                    append=None, merge=True):
+    def _do_gaincal(self, field: Optional[str] = None, intent: Optional[str] = None, gaintype: str = 'G',
+                    calmode: Optional[str] = None, combine: Optional[str] = None, solint: Optional[str] = None,
+                    minsnr: Optional[float] = None, refant: Optional[str] = None, spwmap: Optional[list] = None,
+                    interp: Optional[str] = None):
         inputs = self.inputs
         ms = inputs.ms
 
@@ -331,7 +336,6 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 task_inputs = gaincal.GTypeGaincal.Inputs(
                     inputs.context,
                     vis=inputs.vis,
-                    caltable=caltable,
                     field=field,
                     intent=intent,
                     spw=tuning_spw_str,
@@ -341,11 +345,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                     minsnr=minsnr,
                     combine=combine,
                     refant=refant,
-                    antenna=antenna,
-                    uvrange=uvrange,
-                    minblperant=minblperant,
-                    solnorm=False,
-                    append=append)
+                    solnorm=False)
 
                 # if we need to generate multiple caltables, make the caltable
                 # names unique by inserting the intent to prevent them overwriting
@@ -392,10 +392,9 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 result.pool[0] = modified_calapp
                 result.final[0] = modified_calapp
 
-                # If requested, merge the result...
-                if merge:
-                    # Merge result to the local context
-                    result.accept(inputs.context)
+                # Merge the result to the local context to register new caltable
+                # in local context callibrary.
+                result.accept(inputs.context)
 
     def _do_phasecal(self):
         # Note: at present, phaseupsolint is specified as a fixed
@@ -409,7 +408,15 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
         if 'AMPLITUDE' in inputs.intent:
             LOG.info('Compute phase gaincal table for flux calibrator.')
             self._do_gaincal(intent='AMPLITUDE', gaintype='G', calmode='p', combine='', solint=inputs.phaseupsolint,
-                             minsnr=inputs.minsnr, refant=inputs.refant, merge=True)
+                             minsnr=inputs.minsnr, refant=inputs.refant)
+
+        # PIPE-2082: the phase solves for the diffgain calibrator should always
+        # use combine='', gaintype='G', and no spwmap or interp.
+        if ('DIFFGAINSRC' in inputs.intent or 'DIFFGAINREF' in inputs.intent) \
+                and inputs.ms.get_fields(intent='DIFFGAINREF,DIFFGAINSRC'):
+            LOG.info('Compute phase gaincal table for diffgain calibrator.')
+            self._do_gaincal(intent='DIFFGAINREF,DIFFGAINSRC', gaintype='G', calmode='p', combine='',
+                             solint=inputs.phaseupsolint, minsnr=inputs.minsnr, refant=inputs.refant)
 
         # PIPE-1154: for PHASE calibrator and CHECK source fields, create
         # separate phase solutions for each combination of intent, field, and
@@ -419,7 +426,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
             if intent in inputs.intent:
                 self._do_phasecal_per_field_for_intent(intent)
 
-    def _do_phasecal_per_field_for_intent(self, intent):
+    def _do_phasecal_per_field_for_intent(self, intent: str):
         inputs = self.inputs
 
         # Create separate phase solutions for each field covered by requested
@@ -433,10 +440,10 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
             LOG.info(f'Compute phase gaincal table for intent={intent}, field={field.name}.')
             self._do_gaincal(field=field.name, intent=intent, gaintype='G', calmode='p', combine=combine,
                              solint=inputs.phaseupsolint, minsnr=inputs.minsnr, refant=inputs.refant, spwmap=spwmap,
-                             interp=interp, merge=True)
+                             interp=interp)
 
     @staticmethod
-    def _get_phasecal_params(ms, intent, field):
+    def _get_phasecal_params(ms: MeasurementSet, intent: str, field: str) -> Tuple[str, Optional[str], list]:
         # By default, no spw mapping or combining, no interp.
         combine = ''
         interp = None
@@ -492,7 +499,7 @@ class AmpVsXChart(applycal_displays.PlotmsFieldSpwComposite):
     Plotting class that creates an amplitude vs X plot for each field and spw,
     where X is given as a constructor argument.
     """
-    def __init__(self, xaxis, intent, context, output_dir, calto, **overrides):
+    def __init__(self, xaxis: str, intent: str, context: Context, output_dir: str, calto: CalTo, **overrides):
         plot_args = {
             'ydatacolumn': 'corrected',
             'avgtime': '',

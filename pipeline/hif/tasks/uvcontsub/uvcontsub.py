@@ -168,9 +168,16 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
             fitspec[field_ids][real_spw]['fitorder'] = 1
 
             # Check for any user specified fit order.
+            user_fitorder = False
             if minimal_tclean_inputs.field in fitorder:
                 if minimal_tclean_inputs.spw in fitorder[minimal_tclean_inputs.field]:
                     fitspec[field_ids][real_spw]['fitorder'] = fitorder[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]
+                    user_fitorder = True
+
+            # If there was no user defined fit order, check for hif_findcont flags.
+            if not user_fitorder:
+                if imaging_target['spwsel_low_bandwidth'] or imaging_target['spwsel_low_spread']:
+                    fitspec[field_ids][real_spw]['fitorder'] = 0
 
             # Collect fit order for weblog
             topo_freq_fitorder_dict[minimal_tclean_inputs.field][real_spw]['fitorder'] = fitspec[field_ids][real_spw]['fitorder']

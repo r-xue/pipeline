@@ -7,8 +7,7 @@ import pipeline.h.cli.utils as utils
 def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, antenna=None, hm_phaseup=None,
                   phaseupsolint=None, phaseupbw=None, phaseupsnr=None, phaseupnsols=None, hm_bandpass=None, solint=None,
                   maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None, combine=None, refant=None,
-                  solnorm=None, minblperant=None, minsnr=None, unregister_existing=None,
-                  fillgaps=None):
+                  solnorm=None, minblperant=None, minsnr=None, unregister_existing=None, hm_auto_fillgaps=None):
     """
     hifa_bandpass ---- Compute bandpass calibration solutions
 
@@ -179,10 +178,17 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
                         from this task. Defaults to False.
 
                         Example: unregister_existing=True
-    fillgaps
-                        Fill flagged solution channels by interpolation.
+    hm_auto_fillgaps
+                        If True, then the hm_bandpass = 'snr' or 'smoothed'
+                        modes, that solve bandpass per SpW, are performed with
+                        CASA bandpass task parameter 'fillgaps' set to a quarter
+                        of the respective SpW bandwidth (in channels).
 
-                        Example: fillgaps=10
+                        If False, then these bandpass solves will use
+                        fillgaps=0.
+
+                        The hm_bandpass='fixed' mode is unaffected by
+                        'hm_auto_fillgaps' and always uses fillgaps=0.
 
     --------- examples -----------------------------------------------------------
 

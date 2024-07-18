@@ -58,7 +58,8 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
             if row_name == 'Data Type':
                 row_values = ['Prior', 'Post']
             if row_name == 'Image':
-                row_values = plots_to_html(image_plots, report_dir=context.report_dir, title='Prior/Post Image Comparison')
+                row_values = plots_to_html(image_plots, report_dir=context.report_dir,
+                                           title='Prior/Post Image Comparison')
             if row_name == 'SNR':
                 row_values = ['{:0.3f}'.format(slib_solint['SNR_pre']),
                               '{:0.3f}'.format(slib_solint['SNR_post'])]
@@ -135,6 +136,51 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             else:
                 return '<span class="glyphicon glyphicon-remove"></span>'
 
+        def format_solints(target):
+            """
+            Formats the solution intervals (solints) for a given target by adding HTML tags to highlight
+            the final and attempted solints.
+
+            Args:
+                target (dict): A dictionary containing the following keys:
+                    - 'sc_lib' (dict): A dictionary representing the solution library.
+                        - 'vislist' (list): A list of visibility keys.
+                        - 'final_solint' (str, optional): The final solution interval, if successful.
+                        - 'SC_success' (bool): Indicates if the solution was successful.
+                    - 'sc_solints' (list): A list of solution intervals to be formatted.
+
+            Returns:
+                list: A list of formatted solution intervals as strings with HTML tags applied to
+                the final and attempted solints.
+            """
+            slib = target['sc_lib']
+            solints = target['sc_solints']
+            vislist = slib['vislist']
+            vis_keys = set(slib[vislist[-1]])
+
+            # A final solint here presents one successful/applied solint gain solution
+            final_solints = []
+            if slib.get('SC_success'):
+                if 'inf_EB' in solints:
+                    final_solints.append('inf_EB')
+                if slib.get('final_solint', None) not in (None, 'None'):
+                    final_solints.append(slib.get('final_solint'))
+            final_solints = set(final_solints)
+
+            # Aggregate the actually attempted solints
+            attempted_solints = set(solint for solint in solints if solint in vis_keys)
+
+            formated_solints = []
+            for solint in solints:
+                formated_solint = solint
+                if solint in final_solints:
+                    formated_solint = f"<a style='color:blue'>{formated_solint}</a>"
+                if solint in attempted_solints:
+                    formated_solint = f"<strong>{formated_solint}</strong>"
+                formated_solints.append(formated_solint)
+
+            return formated_solints
+
         for target in targets:
             row = []
             valid_chars = "%s%s" % (string.ascii_letters, string.digits)
@@ -145,7 +191,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             row.append(target['phasecenter'])
             row.append(target['cell'])
             row.append(target['imsize'])
-            row.append(', '.join(target['sc_solints']))
+            row.append(', '.join(format_solints(target)))
             row.append(bool2icon(target['sc_lib']['SC_success']))
             row.append(bool2icon(target['sc_lib']['SC_success'] and r.applycal_result_contline is not None))
             row.append(bool2icon(target['sc_lib']['SC_success'] and r.applycal_result_line is not None))
@@ -234,7 +280,8 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if row_name == 'Beam_post':
                 row.append('Beam post')
             if row_name == 'Beam_Ratio':
-                row.append(text_with_tooltip('Ratio of Beam Area', 'The ratio of the beam area before and after self-calibration.'))
+                row.append(text_with_tooltip('Ratio of Beam Area',
+                           'The ratio of the beam area before and after self-calibration.'))
             if row_name == 'clean_threshold':
                 row.append('Clean Threshold')
 
@@ -435,52 +482,73 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for row_name in row_names:
             if row_name == 'Data Type':
                 row_values = ['Initial', 'Final', 'Brightness Dist. / Ratio']
+                if not slib['SC_success']:
+                    row_values = ['Initial/Final', 'Initial/Final', 'Brightness Dist.']
             if row_name == 'Image':
                 summary_plots, noisehist_plot = display.SelfcalSummary(context, r, cleantarget).plot()
                 row_values = plots_to_html(
                     summary_plots[0:2] + [noisehist_plot],
                     report_dir=context.report_dir, title='Initial/Final Image Comparison')
+                if not slib['SC_success']:
+                    row_values = plots_to_html(
+                        [summary_plots[0]]*2 + [noisehist_plot],
+                        report_dir=context.report_dir, title='Initial/Final Image Comparison')
             if row_name == 'Integrated Flux':
                 row_values = [
                     '{:0.3f} &#177 {:0.3f} mJy'.format(slib['intflux_orig'] * 1e3, slib['e_intflux_orig'] * 1e3),
                     '{:0.3f} &#177 {:0.3f} mJy'.format(slib['intflux_final'] * 1e3, slib['e_intflux_final'] * 1e3)] + \
                     ['{:0.3f}'.format(slib['intflux_final']/slib['intflux_orig'])]
+                if not slib['SC_success']:
+                    row_values[2] = row_values[1]
                 row_values = fm_values(row_values, slib['intflux_orig'], slib['intflux_final'])
 
             if row_name == 'SNR':
                 row_values = ['{:0.3f}'.format(slib['SNR_orig']),
                               '{:0.3f}'.format(slib['SNR_final'])] +\
                     ['{:0.3f}'.format(slib['SNR_final']/slib['SNR_orig'])]
+                if not slib['SC_success']:
+                    row_values[2] = row_values[1]
                 row_values = fm_values(row_values, slib['SNR_orig'], slib['SNR_final'])
 
             if row_name == 'SNR (N.F.)':
                 row_values = ['{:0.3f}'.format(slib['SNR_NF_orig']),
                               '{:0.3f}'.format(slib['SNR_NF_final'])] +\
                     ['{:0.3f}'.format(slib['SNR_NF_final']/slib['SNR_NF_orig'])]
+                if not slib['SC_success']:
+                    row_values[2] = row_values[1]
                 row_values = fm_values(row_values, slib['SNR_NF_orig'], slib['SNR_NF_final'])
 
             if row_name == 'RMS':
                 row_values = ['{:0.3f} mJy/bm'.format(slib['RMS_orig']*1e3),
                               '{:0.3f} mJy/bm'.format(slib['RMS_final']*1e3)] +\
                     ['{:0.3f}'.format(slib['RMS_final']/slib['RMS_orig'])]
+                if not slib['SC_success']:
+                    row_values[2] = row_values[1]
                 row_values = fm_values(row_values, slib['RMS_orig'], slib['RMS_final'])
 
             if row_name == 'RMS (N.F.)':
                 row_values = ['{:0.3f} mJy/bm'.format(slib['RMS_NF_orig']*1e3),
                               '{:0.3f} mJy/bm'.format(slib['RMS_NF_final']*1e3)] +\
                     ['{:0.3f}'.format(slib['RMS_NF_final']/slib['RMS_NF_orig'])]
+                if not slib['SC_success']:
+                    row_values[2] = row_values[1]
                 row_values = fm_values(row_values, slib['RMS_NF_orig'], slib['RMS_NF_final'])
 
             if row_name == 'Beam':
-                row_values = ['{:0.3f}"x{:0.3f}" {:0.3f} deg'.format(
-                    slib['Beam_major_orig'],
-                    slib['Beam_minor_orig'],
-                    slib['Beam_PA_orig']),
+                row_values = [
                     '{:0.3f}"x{:0.3f}" {:0.3f} deg'.format(
-                    slib['Beam_major_final'],
-                    slib['Beam_minor_final'],
-                    slib['Beam_PA_final'])] + ['{:0.3f}'.format(
-                        slib['Beam_major_final'] * slib['Beam_minor_final'] / slib['Beam_major_orig'] / slib['Beam_minor_orig'])]
+                        slib['Beam_major_orig'],
+                        slib['Beam_minor_orig'],
+                        slib['Beam_PA_orig']),
+                    '{:0.3f}"x{:0.3f}" {:0.3f} deg'.format(
+                        slib['Beam_major_final'],
+                        slib['Beam_minor_final'],
+                        slib['Beam_PA_final'])] + [
+                    '{:0.3f}'.format(
+                        slib['Beam_major_final'] * slib['Beam_minor_final'] / slib['Beam_major_orig'] /
+                        slib['Beam_minor_orig'])]
+                if not slib['SC_success']:
+                    row_values[2] = row_values[1]
 
             rows.append([row_name]+row_values)
 

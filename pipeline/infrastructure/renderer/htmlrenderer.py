@@ -26,7 +26,7 @@ import pipeline.infrastructure.displays.summary as summary
 import pipeline.infrastructure.logging as logging
 from pipeline import environment
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tools, mpihelpers
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
 from pipeline.infrastructure.launcher import Context
@@ -316,7 +316,7 @@ class T1_1Renderer(RendererBase):
     TableRow = collections.namedtuple(
                 'Tablerow', 
                 'ousstatus_entity_id schedblock_id schedblock_name session '
-                'execblock_id ms acs_software_version acs_software_build_version href filesize ' 
+                'execblock_id ms acs_software_version acs_software_build_version observing_modes href filesize ' 
                 'receivers '
                 'num_antennas beamsize_min beamsize_max '
                 'time_start time_end time_on_source '
@@ -341,14 +341,14 @@ class T1_1Renderer(RendererBase):
         CPU_TYPE = 'CPU'
         LOGICAL_CPU_CORES = 'Logical CPU cores'
         PHYSICAL_CPU_CORES = 'Physical CPU cores'
-        NUM_MPI_SERVERS = "# MPI servers"
+        NUM_MPI_SERVERS = "Number of MPI servers"
         RAM = "RAM"
         SWAP = "Swap"
         OS = "OS"
         ULIMIT_FILES = "Max open file descriptors"
         ULIMIT_MEM = "Memory usage ulimit"
         ULIMIT_CPU = "CPU time ulimit in seconds"
-        CASA_CORES = "CPU cores reported available by CASA"
+        CASA_CORES = "CASA-reported CPU cores availability"
         CASA_THREADS = "Max OpenMP threads per CASA instance"
         CASA_MEMORY = "Memory available to pipeline"
         CGROUP_NUM_CPUS = "Cgroup CPU allocation"
@@ -381,6 +381,13 @@ class T1_1Renderer(RendererBase):
             # 'memory available to pipeline' should not be presented for SD data
             if is_singledish_ms(ctx):
                 rows = [r for r in rows if r != T1_1Renderer.EnvironmentProperty.CASA_MEMORY]
+
+            # getNumCPUs is confusing when run in an MPI context, giving the
+            # number of cores that the process can migrate to rather than
+            # number of cores used by CASA. To avoid confusion, we remove the
+            # CASA cores row completely for MPI runs.
+            if mpihelpers.is_mpi_ready():
+                rows = [r for r in rows if r != T1_1Renderer.EnvironmentProperty.CASA_CORES]
 
             unmerged_rows = [(prop.description(ctx), *data[prop]) for prop in rows]
             merged_rows = utils.merge_td_rows(utils.merge_td_columns(unmerged_rows))
@@ -504,6 +511,7 @@ class T1_1Renderer(RendererBase):
                                             ms=ms.basename,
                                             acs_software_version = ms.acs_software_version,             # None for VLA
                                             acs_software_build_version = ms.acs_software_build_version, # None for VLA
+                                            observing_modes=ms.observing_modes,
                                             href=href,
                                             filesize=ms.filesize,
                                             receivers=receivers,
@@ -736,9 +744,12 @@ class T1_3MRenderer(RendererBase):
                         for field in resultitem.flagsummary:
                             # Get the field intents, but only for those that
                             # the pipeline processes. This can be an empty
-                            # list (PIPE-394: POINTING, WVR intents; PIPE-1806: DIFFGAIN).
-                            intents_list = [f.intents for f in ms.get_fields(
-                                intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET,DIFFGAIN')
+                            # list (PIPE-394: POINTING, WVR intents; PIPE-1806:
+                            # DIFFGAIN* intents).
+                            intents_list = [f.intents
+                                            for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,'
+                                                                          'POLANGLE,POLLEAKAGE,CHECK,TARGET,'
+                                                                          'DIFFGAINREF,DIFFGAINSRC')
                                             if field in f.name]
                             if len(intents_list) == 0:
                                 continue
