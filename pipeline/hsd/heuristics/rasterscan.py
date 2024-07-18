@@ -24,11 +24,11 @@ LOG = logging.get_logger(__name__)
 
 
 class RasterscanHeuristicsFailure(Exception):
-    """Indicates failure of RasterscanHeuristics."""
+    """Indicates failure of RasterScanHeuristics."""
 
 
 class HeuristicsParameter(object):
-    """Holds tunable parameters for RasterscanHeuristic."""
+    """Holds tunable parameters for RasterScanHeuristic."""
 
     # Threshold for contiguous sequence
     AngleThreshold = 45
@@ -654,7 +654,7 @@ def find_raster_gap(ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]',
     return raster_gap
 
 
-class RasterscanHeuristic(api.Heuristic):
+class RasterScanHeuristic(api.Heuristic):
     """Heuristic to analyze raster scan pattern."""
 
     def calculate(self, ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]') \

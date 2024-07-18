@@ -299,7 +299,7 @@ class SDInspection(object):
         obs_heuristic2 = heuristics.ObservingPattern2()
         time_heuristic2 = heuristics.GroupByTime2()
         merge_heuristic2 = heuristics.MergeGapTables2()
-        raster_heuristic = heuristics.RasterscanHeuristic()
+        raster_heuristic = heuristics.RasterScanHeuristic()
         ra = numpy.asarray(datatable.getcol('RA'))
         dec = numpy.asarray(datatable.getcol('DEC'))
         offset_ra = numpy.asarray(datatable.getcol('OFS_RA'))
@@ -416,7 +416,7 @@ class SDInspection(object):
 
                     raster_heuristic_ok = False
                     if pattern == 'RASTER' and self.hm_rasterscan == 'direction':
-                        LOG.info('Performing RasterscanHeuristics for raster scan pattern')
+                        LOG.info('Performing RasterScanHeuristics for raster scan pattern')
                         try:
                             sra_sel = numpy.take(offset_ra, id_list)
                             sdec_sel = numpy.take(offset_dec, id_list)

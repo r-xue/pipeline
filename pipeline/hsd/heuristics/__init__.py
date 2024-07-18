@@ -11,4 +11,4 @@ from .fitorder import FitOrderHeuristics
 from .tsysspwmap import TsysSpwMapHeuristics
 from .MaskDeviation import MaskDeviationHeuristic
 from .baselineparamconfig import BaselineFitParamConfig
-from .rasterscan import RasterscanHeuristic
+from .rasterscan import RasterScanHeuristic
