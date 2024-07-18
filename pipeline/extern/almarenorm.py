@@ -196,7 +196,7 @@ class ACreNorm(object):
     def __init__(self,msname, caltable=None):
 
         # Version
-        self.RNversion='v1.7-2024/04/01-PLWG'
+        self.RNversion='v1.8-2024/07/17-PLWG'
 
         if isinstance(msname, str) == False:
             raise TypeError('Input for msname must be a string')
@@ -1191,7 +1191,7 @@ class ACreNorm(object):
 
             if fillTable:
                 casalog.post('All targets, scans, spws will be filled in resulting calibration table. This may greatly enlarge the size of the final table!')
-                casalog.post(f'TDM windows {self.tdmspws} will also be included in {self.rntable}')
+                casalog.post(f'TDM windows {self.tdmspws} will also be included in {self.rntable}.')
 
         else:
             casalog.post('No corrections will be saved (createCalTable=False)!')
@@ -1216,7 +1216,7 @@ class ACreNorm(object):
         if createCalTable:
             casalog.post('####################')
             casalog.post(f'Using threshold for Renorm = {hardLim}')
-            casalog.post('Only spws where fields exceed this will have corrections saved')
+            casalog.post('Only spws where fields exceed this will have corrections >1.0 saved')
             casalog.post('####################')
         else:
             casalog.post('Using threshold limit of '+str(hardLim)+' for renormalization determination')
@@ -2112,9 +2112,22 @@ class ACreNorm(object):
                                 
                                 # If we want to apply the correction and it's the second time through the data
                                 if createCalTable and second_pass: 
-                                    casalog.post(f'Writing solutions to table {self.rntable}')
+                                    casalog.post(f'Writing solutions to table {self.rntable} for field {ifld} of scan {iscan}, spw {ispw}')
                                     self.writeCalTable(ispw, ifld, iscan, N, rntb_iter)
                                     rntb_iter += 1  
+                                # If renorm didn't trigger but we still need to fill in the cal table with filler values,
+                                # then do that now. If renorm has triggered, then we can ignore this since we'll need to
+                                # overwrite those values anyway.
+                                if not self.docorrApply[target][str(ispw)]:
+                                    if createCalTable and not second_pass and fillTable:
+                                        casalog.post(f'   Filling caltable {self.rntable} with value of 1.0 - renorm unnecessary for field {ifld} of scan {iscan}, spw {ispw}.')
+                                        N_fill = np.ones(N.shape)
+                                        self.writeCalTable(ispw, ifld, iscan, N_fill, rntb_iter)
+                                        rntb_iter += 1
+                                else:
+                                    if createCalTable and not second_pass and fillTable:
+                                        casalog.post('   Renorm triggered, solutions will be re-written to table. Pausing filling of table...')
+
 
 
                             # closes the data check to see if the AC data is confirmed to be filled 
@@ -2133,13 +2146,6 @@ class ACreNorm(object):
                         # we now need to go through again and actually apply the renormalization if it was necessary
                         if createCalTable and not second_pass and self.docorrApply[target][str(ispw)]:
                             second_pass_required = True
-                        # If it wasn't necessary but we still need to fill in the cal table with filler values,
-                        # then do that now. 
-                        elif createCalTable and not second_pass and fillTable:
-                            casalog.post(f'\n   Filling caltable {self.rntable} with value of 1.0 - renorm unnecessary.')
-                            N_fill = np.ones(N.shape)
-                            self.writeCalTable(ispw, ifld, iscan, N_fill, rntb_iter)
-                            rntb_iter += 1
 
 
                     if checkFalsePositives:
@@ -2156,11 +2162,11 @@ class ACreNorm(object):
                             casalog.post('Equivalent manual call: '+exclude_cmd)
     
             # If fillTable is selected as an option, then we need to also fill in 
-            # all the science TDM windows as well (if any) for this target.
+            # all the science TDM windows as well (if any) for this target. 
             if len(self.tdmspws) > 0 and fillTable:
-                casalog.post(f'Filling in TDM spws in calibration table {self.rntable} with value of 1.0')
+                casalog.post(f'\nFilling in TDM spws in calibration table {self.rntable} with value of 1.0')
                 for ispw in self.tdmspws:
-                    #casalog.post(f'Filling spw {ispw}...')
+                    #casalog.post(f' Writing filler solutions for spw {ispw}')
                     # Not all targets are in all scans, we need to iterate over only those scans containing the target
                     target_scans = np.intersect1d(self.msmeta.scansforintent('*TARGET*'), self.msmeta.scansforfield(target))
 
@@ -2176,7 +2182,7 @@ class ACreNorm(object):
                     spwscans=list(self.msmeta.scansforspw(ispw))
 
                     for iscan in target_scans:
-                        #casalog.post(f'Filling scan {iscan}...')
+                        #casalog.post(f'  Scan {iscan}')
                         # get the fields to process in this scan - i.e. mosaics have many fields per scan
                         Tarfld = list(self.msmeta.fieldsforscan(iscan))
 
@@ -2184,13 +2190,10 @@ class ACreNorm(object):
                             # Skip over target scans that don't have the current spw - can happen for spectral scans?
                             if spwscans.count(iscan) == 0:
                                 continue
-                            #casalog.post(f'Filling field {ifld}...')
+                            casalog.post(f' Writing filler solutions for spw {ispw}, scan {iscan}, field {ifld}')
                             N_fill = np.ones((self.num_corrs, self.msmeta.nchan(ispw), self.nAnt))
                             self.writeCalTable(ispw, ifld, iscan, N_fill, rntb_iter)
                             rntb_iter += 1
-
-
-
 
 
 
