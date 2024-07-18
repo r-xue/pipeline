@@ -16,7 +16,6 @@ LOG = infrastructure.get_logger(__name__)
 
 class VlaMstransformInputs(mst.MstransformInputs):
 
-    # New a second MS with a new data type is needed for VLA continuum imaging
     @vdp.VisDependentProperty
     def outputvis(self):
         vis_root = os.path.splitext(self.vis)[0]
@@ -47,6 +46,7 @@ class VlaMstransform(mst.Mstransform):
 
         # Run CASA task to create the output MS for continuum data
         mstransform_args = inputs.to_casa_args()
+
         # Remove input member variables that don't belong as input to the mstransform task
         mstransform_args.pop('outputvis_for_line', None)
         mstransform_args.pop('spw_line', None)
@@ -59,6 +59,51 @@ class VlaMstransform(mst.Mstransform):
 
         # Copy across requisite XML files.
         mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis)
+
+        # Create output MS for line data (_target.ms)
+        produce_lines_ms = self._create_targets_ms(inputs, mstransform_args)
+
+        # Create the results structure
+        result = VlaMstransformResults(vis=inputs.vis, outputvis=inputs.outputvis,
+                                       outputvis_for_line=inputs.outputvis_for_line, produce_lines_ms=produce_lines_ms)
+
+        return result
+
+    def analyse(self, result):
+
+        # Check for existence of the output vis.
+        if not os.path.exists(result.outputvis):
+            LOG.debug('Could not create science targets cont+line MS for continuum: %s' % (os.path.basename(result.outputvis)))
+            return result
+
+        # Check for existence of the output vis for line processing.
+        if not os.path.exists(result.outputvis_for_line):
+            LOG.info('Could not create science targets cont+line MS for line imaging: %s. Subsequent stages will not do line imaging.' % (os.path.basename(result.outputvis_for_line)))
+
+        # Import the new measurement sets.
+        try:
+            to_import = os.path.relpath(result.outputvis)
+            self._import_new_ms(result, to_import, datatype=DataType.REGCAL_CONT_SCIENCE)
+            if os.path.exists(result.outputvis_for_line):
+                to_import_for_line = os.path.relpath(result.outputvis_for_line)
+                self._import_new_ms(result, to_import_for_line, datatype=DataType.REGCAL_CONTLINE_SCIENCE)
+        except Exception:
+            traceback.print_exc()
+            msg = "Failed to import new measurement sets."
+            raise Exception(msg)
+
+        return result
+
+    def _create_targets_ms(self, inputs, mstransform_args) -> bool:
+        """
+        Create _targets.ms for line imaging.
+
+        This will be created if pre-RFI flags exist and there are spectral lines in 
+        any spws.
+
+        Returns True if targets.ms was created, else False.
+        """
+        produce_lines_ms = False
 
         # Split off non-RFI flagged target data
         # The main goal is to get an MS with the same shape as the _target.ms to
@@ -74,9 +119,9 @@ class VlaMstransform(mst.Mstransform):
                     pre_rfi_flagversion_name = value['name']
 
         if pre_rfi_flagversion_name is None:
-            msg = "For {}: could not locate the pre-RFI flags to restore".format(inputs.vis)
-            LOG.error(msg)
-            raise Exception(msg)
+            msg = "For {}: could not locate the pre-RFI flags to restore, so no targets.ms file will be created".format(inputs.vis)
+            LOG.warning(msg)
+            return False
 
         # Restore flags from before RFI flagging was applied
         task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname=pre_rfi_flagversion_name)
@@ -84,7 +129,7 @@ class VlaMstransform(mst.Mstransform):
 
         # Run CASA task to create the output MS for the line data
         mstransform_args['outputvis'] = inputs.outputvis_for_line
-        produce_lines_ms = False
+
         if inputs.spw_line:
             mstransform_args['spw'] = inputs.spw_line
             produce_lines_ms = True
@@ -101,7 +146,7 @@ class VlaMstransform(mst.Mstransform):
             mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
             try:
-                self._executor.execute(mstransform_job)
+                self._executor.execute(mstransform_job)     
             except OSError as ee:
                 LOG.warning(f"Caught mstransform exception: {ee}")
 
@@ -116,49 +161,22 @@ class VlaMstransform(mst.Mstransform):
         task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='rfi_flagged_statwt')
         self._executor.execute(task)
 
-        # Create the results structure
-        result = VlaMstransformResults(vis=inputs.vis, outputvis=inputs.outputvis,
-                                       outputvis_for_line=inputs.outputvis_for_line, produce_lines_ms=produce_lines_ms)
+        return produce_lines_ms
 
-        return result
+    def _import_new_ms(self, result, to_import, datatype):
+        observing_run = tablereader.ObservingRunReader.get_observing_run(to_import)
 
-    def analyse(self, result):
-
-        # Check for existence of the output vis.
-        if not os.path.exists(result.outputvis):
-            LOG.debug('Error creating science targets cont+line MS for continuum: %s' % (os.path.basename(result.outputvis)))
-            return result
-
-        # Check for existence of the output vis for line processing.
-        if not os.path.exists(result.outputvis_for_line):
-            LOG.debug('Could not create science targets cont+line MS for line imaging: %s. Subsequent stages will not do line imaging.' % (os.path.basename(result.outputvis_for_line)))
-
-        def _import_new_ms(to_import, datatype):
-            observing_run = tablereader.ObservingRunReader.get_observing_run(to_import)
-
-            # Adopt same session as source measurement set
-            for ms in observing_run.measurement_sets:
-                LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
-                ms.session = self.inputs.ms.session
-                LOG.debug('Setting data_column and origin_ms.')
-                ms.origin_ms = self.inputs.ms.origin_ms
-                ms.set_data_column(datatype, 'DATA')
-                # Propagate spectral line spw designation from source MS
-                for spw in ms.get_all_spectral_windows():
-                    spw.specline_window = self.inputs.ms.get_spectral_window(spw.id).specline_window
-            result.mses.extend(observing_run.measurement_sets)
-
-        # Import the new measurement sets.
-        try:
-            to_import = os.path.relpath(result.outputvis)
-            _import_new_ms(to_import, datatype=DataType.REGCAL_CONT_SCIENCE)
-            if os.path.exists(result.outputvis_for_line):
-                to_import_for_line = os.path.relpath(result.outputvis_for_line)
-                _import_new_ms(to_import_for_line, datatype=DataType.REGCAL_CONTLINE_SCIENCE)
-        except Exception:
-            traceback.print_exec()
-
-        return result
+        # Adopt same session as source measurement set
+        for ms in observing_run.measurement_sets:
+            LOG.debug('Setting session to %s for %s', self.inputs.ms.session, ms.basename)
+            ms.session = self.inputs.ms.session
+            LOG.debug('Setting data_column and origin_ms.')
+            ms.origin_ms = self.inputs.ms.origin_ms
+            ms.set_data_column(datatype, 'DATA')
+            # Propagate spectral line spw designation from source MS
+            for spw in ms.get_all_spectral_windows():
+                spw.specline_window = self.inputs.ms.get_spectral_window(spw.id).specline_window
+        result.mses.extend(observing_run.measurement_sets)
 
 
 class VlaMstransformResults(mst.MstransformResults):
