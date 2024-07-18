@@ -872,10 +872,11 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                         # Identify unflagged data. Note: CPARAM and FLAG are of
                         # shape [pol, channel, row], while TIME and ANTENNA1
                         # are of shape [row], hence using 3rd index for latter.
-                        idx_unflagged = np.where(subtable.getcol('FLAG') == 0)
+                        flags = subtable.getcol('FLAG')
                         # If this SpW is already fully flagged, skip it.
-                        if len(idx_unflagged) < 3:
+                        if np.all(flags):
                             continue
+                        idx_unflagged = np.where(flags == 0)
                         amplitudes = np.abs(subtable.getcol('CPARAM')[idx_unflagged])
                         times = subtable.getcol('TIME')[idx_unflagged[2]]
                         antennas = subtable.getcol('ANTENNA1')[idx_unflagged[2]]
