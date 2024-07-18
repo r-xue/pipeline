@@ -24,7 +24,7 @@ import pipeline.infrastructure.logging as logging
 LOG = logging.get_logger(__name__)
 
 
-class RasterscanHeuristicsFailure(Exception):
+class RasterScanHeuristicsFailure(Exception):
     """Indicates failure of RasterScanHeuristics."""
 
 
@@ -151,7 +151,7 @@ def find_histogram_peak(hist: np.ndarray) -> List[int]:
         hist: histogram data.
 
     Raises:
-        RasterscanHeuristicsFailure:
+        RasterScanHeuristicsFailure:
             fraction of detected peak region exceeded the threshold
             specified by HeuristicsParameter.AngleHistogramSparseness
 
@@ -180,7 +180,7 @@ def find_histogram_peak(hist: np.ndarray) -> List[int]:
     if np.count_nonzero(mask) / len(mask) > sparseness:
         msg = 'Angle distribution is not likely to be the one for raster scan'
         LOG.warning(msg)
-        raise RasterscanHeuristicsFailure(msg)
+        raise RasterScanHeuristicsFailure(msg)
     return peak_indices
 
 
@@ -422,7 +422,7 @@ def find_angle_gap(angle_deg: np.ndarray) -> List[int]:
         angle_deg: angle array in degree
 
     Raises:
-        RasterscanHeuristicsFailure:
+        RasterScanHeuristicsFailure:
             scan pattern is not likely to be raster scan
 
     Returns:
@@ -460,7 +460,7 @@ def find_angle_gap(angle_deg: np.ndarray) -> List[int]:
     if not (is_one_way_raster or is_round_trip_raster):
         msg = 'Scan pattern is not likely to be raster scan.'
         LOG.warning(msg)
-        raise RasterscanHeuristicsFailure(msg)
+        raise RasterScanHeuristicsFailure(msg)
 
     # acceptable angle deviation from peak angle in degree
     acceptable_deviation = HeuristicsParameter.AngleThreshold
@@ -620,7 +620,7 @@ def find_raster_gap(ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64], d
                     Each index array is supposed to represent single raster row.
 
     Raises:
-        RasterscanHeuristicsFailure:
+        RasterScanHeuristicsFailure:
             irregular row input or unsupported raster mapping
 
     Returns:
@@ -629,7 +629,7 @@ def find_raster_gap(ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64], d
     msg = 'Failed to identify gap between raster map iteration.'
 
     if len(dtrow_list) == 0:
-        raise RasterscanHeuristicsFailure(msg)
+        raise RasterScanHeuristicsFailure(msg)
 
     distance_list = get_raster_distance(ra, dec, dtrow_list)
     delta_distance = distance_list[1:] - distance_list[:-1]
@@ -651,7 +651,7 @@ def find_raster_gap(ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64], d
     LOG.debug('ndelta1 = %s', ndelta1)
     if ndelta1 > HeuristicsParameter.RoundTripRasterScanThresholdFactor * len(raster_gap):
         # possibly round-trip raster mapping which is not supported
-        raise RasterscanHeuristicsFailure(msg)
+        raise RasterScanHeuristicsFailure(msg)
     return raster_gap
 
 
@@ -669,7 +669,7 @@ class RasterScanHeuristic(api.Heuristic):
             dec: vertical position list
 
         Raises:
-            RasterscanHeuristicsFailure (raised from find_raster_row() or find_raster_gap()):
+            RasterScanHeuristicsFailure (raised from find_raster_row() or find_raster_gap()):
                 scan pattern is not likely to be raster scan or
                 irregular row input, or unsupported raster mapping
 

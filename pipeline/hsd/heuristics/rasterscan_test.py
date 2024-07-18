@@ -217,8 +217,8 @@ def test_rasterscan_heuristic(oneway_row, oneway_map, scan_angle, interval_facto
     h = rasterscan.RasterScanHeuristic()
 
     if oneway_map is False or pointing_error > 0.1:
-        # should raise RasterscanHeuristicsFailure
-        with pytest.raises(rasterscan.RasterscanHeuristicsFailure):
+        # should raise RasterScanHeuristicsFailure
+        with pytest.raises(rasterscan.RasterScanHeuristicsFailure):
             gaptable, gaplist = h(ra, dec)
     else:
         gaptable, gaplist = h(ra, dec)
@@ -265,8 +265,8 @@ def test_rasterscan_heuristic_fail_psw():
     ra, dec = generate_position_data_psw()
     h = rasterscan.RasterScanHeuristic()
 
-    # should raise RasterscanHeuristicsFailure
-    with pytest.raises(rasterscan.RasterscanHeuristicsFailure):
+    # should raise RasterScanHeuristicsFailure
+    with pytest.raises(rasterscan.RasterScanHeuristicsFailure):
         gaptable, gaplist = h(ra, dec)
 
 
@@ -356,8 +356,8 @@ def test_find_histogram_peak():
     assert result == expected
 
     arr += 1
-    # should raise RasterscanHeuristicsFailure
-    with pytest.raises(rasterscan.RasterscanHeuristicsFailure):
+    # should raise RasterScanHeuristicsFailure
+    with pytest.raises(rasterscan.RasterScanHeuristicsFailure):
         result = rasterscan.find_histogram_peak(arr)
 
 
@@ -586,8 +586,8 @@ def test_find_raster_row(oneway_row, oneway_map, scan_angle, interval_factor, po
     )
 
     if pointing_error > 0.1:
-        # should raise RasterscanHeuristicsFailure
-        with pytest.raises(rasterscan.RasterscanHeuristicsFailure):
+        # should raise RasterScanHeuristicsFailure
+        with pytest.raises(rasterscan.RasterScanHeuristicsFailure):
             gaplist = rasterscan.find_raster_row(ra, dec)
     else:
         gaplist = rasterscan.find_raster_row(ra, dec)
@@ -713,8 +713,8 @@ def test_find_raster_gap(oneway_row, oneway_map, scan_angle, interval_factor, po
     expected = np.array([0, nrow // 2, nrow])
 
     if oneway_map is False:
-        # should raise RasterscanHeuristicsFailure
-        with pytest.raises(rasterscan.RasterscanHeuristicsFailure):
+        # should raise RasterScanHeuristicsFailure
+        with pytest.raises(rasterscan.RasterScanHeuristicsFailure):
             gaplist = rasterscan.find_raster_gap(ra, dec, rowlist)
     else:
         gaplist = rasterscan.find_raster_gap(ra, dec, rowlist)

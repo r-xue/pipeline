@@ -21,7 +21,7 @@ from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
-from pipeline.hsd.heuristics.rasterscan import RasterscanHeuristicsResult, RasterscanHeuristicsFailure
+from pipeline.hsd.heuristics.rasterscan import RasterscanHeuristicsResult, RasterScanHeuristicsFailure
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
 from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy, rasterutil, sdtyping
@@ -1889,7 +1889,7 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
     except Exception as e:
-        if isinstance(e, RasterscanHeuristicsFailure):
+        if isinstance(e, RasterScanHeuristicsFailure):
             _rsres.set_result_fail(antid, spwid, fieldid)
             LOG.debug('{} : EB:{}:{}'.format(e, msobj.execblock_id, msobj.antennas[antid].name))
         try:
