@@ -658,8 +658,8 @@ def find_raster_gap(ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64], d
 class RasterScanHeuristic(api.Heuristic):
     """Heuristic to analyze raster scan pattern."""
 
-    def calculate(self, ra: 'np.ndarray[np.float64]', dec: 'np.ndarray[np.float64]') \
-                      -> 'Tuple[List[np.ndarray[np.int64]], List[np.ndarray[np.int64]]]':
+    def calculate(self, ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64]) \
+                      -> Tuple[List[npt.NDArray[np.int64]], List[npt.NDArray[np.int64]]]:
         """Detect gaps that separate individual raster rows and raster maps.
 
         Detected gaps are transrated into TimeTable and TimeGap described below.
