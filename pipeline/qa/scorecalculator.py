@@ -3861,7 +3861,7 @@ def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDIm
 
 
 def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, RasterScanHeuristicsResult], msg: str) -> List[pqa.QAScore]:
-    """Generate score of Rasterscan correctness of importdata or imaging.
+    """Generate score of raster scan correctness of importdata or imaging.
 
     Args:
         rasterscan_heuristics_results (Dict[str, RasterScanHeuristicsResult]): Dictionary of raster heuristics result objects
