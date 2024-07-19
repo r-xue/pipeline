@@ -303,6 +303,12 @@ class MeasurementSet(object):
         qa = casa_tools.quanta
         cme = casa_tools.measures
 
+        # PIPE-1504: only issue certain message at the WARNING level if it's executed by hifa_imageprecheck
+        if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
+            log_level = logging.WARNING
+        else:
+            log_level = logging.INFO
+
         if source_name:
             # Use the first target source that matches the user defined name
             target_sources = [source for source in self.sources
@@ -383,11 +389,6 @@ class MeasurementSet(object):
             try:
                 target_spwid = [s.id for s in self.get_spectral_windows() if s.name == self.representative_window][0]
             except:
-                # PIPE-1504: only issue this message at the WARNING level if it's executed by hifa_imageprecheck
-                if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
-                    log_level = logging.WARNING
-                else:
-                    log_level = logging.INFO
                 LOG.log(log_level, 'Could not translate spw name %s to ID. Trying frequency matching heuristics.' %
                         self.representative_window)
 
@@ -483,8 +484,9 @@ class MeasurementSet(object):
         target_spws_freq = [spw for spw in target_spws_bw
                             if spw.min_frequency.value <= target_frequency_topo['m0']['value'] <= spw.max_frequency.value]
         if len(target_spws_freq) <= 0:
-            LOG.warning('No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s' %
-                        self.basename)
+            LOG.log(log_level,
+                    'No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s' %
+                    self.basename)
             max_chanwidth = None
             for spw in target_spws_bw:
                 chanwidth = spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ)
