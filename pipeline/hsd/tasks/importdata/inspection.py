@@ -145,10 +145,11 @@ class SDInspection(object):
         # TODO: heuristics to detect raster scan
         # apply pointing flag only for OTF raster
         is_raster = True
+        timedomain_rsh_result = RasterScanHeuristicsResult(self.ms)
         if is_alma and is_raster:
-            worker.generate_flagcmd()
+            worker.generate_flagcmd(timedomain_rsh_result)
 
-        return reduction_group, org_directions, msglist, grouping_result['RASTERHEURISTICSRESULT']
+        return reduction_group, org_directions, msglist, grouping_result['RASTERHEURISTICSRESULT'], timedomain_rsh_result
 
 #     def _inspect_reduction_group(self):
 #         reduction_group = {}

@@ -3861,7 +3861,21 @@ def score_rasterscan_correctness_directional_rasterscan_fail(result: SDImportDat
         List[pqa.QAScore]: list of QAScores
     """
     msg = 'Directional raster scan analysis failed, fallback to time-domain analysis'
-    return _score_rasterscan_correctness(result.rasterscan_heuristics_results, msg)
+    return _score_rasterscan_correctness(result.rasterscan_heuristics_results_direction, msg)
+
+
+@log_qa
+def score_rasterscan_correctness_time_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+    """Calculate QAScore of time-domain raster scan heuristics analysis failure in importdata.
+
+    Args:
+        result (SDImportDataResults): instance of SDImportDataResults
+
+    Returns:
+        List[pqa.QAScore]: list of QAScores
+    """
+    msg = 'Time-domain raster scan analysis issue detected'
+    return _score_rasterscan_correctness(result.rasterscan_heuristics_results_time, msg)
 
 
 @log_qa

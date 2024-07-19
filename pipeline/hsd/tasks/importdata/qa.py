@@ -53,6 +53,8 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
         super().handle(context, result)
         score = qacalc.score_rasterscan_correctness_directional_rasterscan_fail(result)
         result.qa.pool.extend(score)
+        score = qacalc.score_rasterscan_correctness_time_rasterscan_fail(result)
+        result.qa.pool.extend(score)
 
 
 class SDImportDataListQAHandler(importdataqa.ImportDataListQAHandler, QAPlugin):
