@@ -46,11 +46,10 @@ class TsysflagContaminationQAHandler(pqa.QAPlugin):
         # actually ran
         if not result.task_incomplete_reason:
             vis = os.path.basename(result.inputs["vis"])
-            caltable = os.path.basename(result.inputs["caltable"])
             summaries = getattr(result, "summaries", {})
             result.qa.pool.append(
                 score_tsysflagcontamination_contamination_flagged(
-                    vis, caltable, summaries
+                    vis, summaries
                 )
             )
 

@@ -1630,15 +1630,15 @@ def get_tsys_contaminated_intervals(
         ):  # v3.4
             large_baseline_residual = True
             large_residual.append(key)  # v3.4
-            warning = f"Large residual"
+            warning = f"Large residuals"
             msg_spw, msg_field = key.split("_")
-            message = f"Large residual detected in {vis}, spw {msg_spw}, field {msg_field}."
+            message = f"Large residuals detected in {vis}, spw {msg_spw}, field {msg_field}."
             warnings_list.append([warning, message])
             qascores.append(
                 pipelineqa.QAScore(
                     score=WARNINGS_QA_SCORE,
                     shortmsg=warning,
-                    longmsg=f'{message} Check Tsys plots.',
+                    longmsg=f'{message}',
                     applies_to=pipelineqa.TargetDataSelection(vis={vis}, spw={msg_spw}, field={msg_field})
                 )
             )
@@ -1716,14 +1716,14 @@ def get_tsys_contaminated_intervals(
             ):  # v3.1
                 if np.any(np.abs(freqs_b[int(pclp)] - LINES_12C16O) < 2 * chansize_mhz):
                     if interval_comparison < 0.7:
-                        warning = "Large difference between the bandpass telluric line and other fields"
+                        warning = "Telluric residuals"
                         message = f"Large difference between CO Line {LINES_12C16O[np.abs(freqs_b[int(pclp)] - LINES_12C16O) < chansize_mhz]} MHz in {vis} spw {spw}, comparing field {field} and bandpass."
                         warnings_list.append([warning, message])
                         qascores.append(
                             pipelineqa.QAScore(
                                     score=WARNINGS_QA_SCORE,
                                     shortmsg=warning,
-                                    longmsg=f'{message} Check Tsys plots.',
+                                    longmsg=f'Large difference between the bandpass telluric line and field {field} in {vis} spw {spw}',
                                     applies_to=pipelineqa.TargetDataSelection(vis={vis}, spw={spw}, field={field})
                             )
                         )
@@ -1877,7 +1877,7 @@ def get_tsys_contaminated_intervals(
                 else:
                     possible_line_intervals = np.append(possible_line_intervals, i)
                 wide = True
-                warning = f"Astronomical contamination covering a wide frequency range"
+                warning = f"Wide line contamination"
                 message = " ".join(
                     [
                         f"Channel range {int(i[0])}~{int(i[1])} equivalent to",
@@ -1895,7 +1895,7 @@ def get_tsys_contaminated_intervals(
                     pipelineqa.QAScore(
                         score=WARNINGS_QA_SCORE,
                         shortmsg=warning,
-                        longmsg=f'{message} Check Tsys plots.',
+                        longmsg=f'Astrophysical line contamination covering a wide frequency range in {vis}, spw {spw}, field {field}.',
                         applies_to=pipelineqa.TargetDataSelection(vis={vis}, spw={spw}, field={field})
                     )
                 )
