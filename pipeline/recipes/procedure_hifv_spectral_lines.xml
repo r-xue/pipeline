@@ -205,6 +205,24 @@
 
     <!-- line imaging -->
     <ProcessingCommand>
+        <Command xmlns="">hif_checkproductsize</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maxproductsize</Keyword>
+                <Value xmlns="">400.0</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">maxcubesize</Keyword>
+                <Value xmlns="">20.0</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">maxcubelimit</Keyword>
+                <Value xmlns="">40.0</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
             <Parameter>
