@@ -109,12 +109,6 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifa_targetflag</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
         <Command xmlns="">hifa_renorm</Command>
         <ParameterSet>
             <Parameter>
@@ -125,6 +119,12 @@
                 <Keyword xmlns="">atm_auto_exclude</Keyword>
                 <Value xmlns="">True</Value>
             </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_targetflag</Command>
+        <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
 

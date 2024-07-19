@@ -84,11 +84,11 @@ def hifacal(vislist, importonly=True, dbservice=True, interactive=True):
         # Compute the time dependent gain calibration
         hifa_timegaincal()
 
-        # Flag ultrahigh calibrated target data
-        hifa_targetflag()
-
         # Run renormalization
         hifa_renorm(createcaltable=True, atm_auto_exclude=True)
+
+        # Flag ultrahigh calibrated target data
+        hifa_targetflag()
 
         # Apply the calibrations
         hif_applycal()
