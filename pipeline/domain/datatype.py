@@ -65,11 +65,11 @@ class DataType(Enum):
         Return a short summary string for weblog purposes.
         """
         if datatype_str == 'RAW':
-            return 'RAW'
+            return '<span style="background-color:lightgray;">RAW</span>'
         elif 'REGCAL' in datatype_str:
-            return 'REGCAL'
+            return '<span style="background-color:lightblue;">REGCAL</span>'
         elif 'SELFCAL' in datatype_str:
-            return 'SELFCAL'
+            return '<span style="background-color:palegreen;">SELFCAL</span>'
         else:
             return 'UNKNOWN'
 
