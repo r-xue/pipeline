@@ -303,7 +303,7 @@ class MeasurementSet(object):
         qa = casa_tools.quanta
         cme = casa_tools.measures
 
-        # PIPE-1504: only issue certain message at the WARNING level if it's executed by hifa_imageprecheck
+        # PIPE-1504: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
         if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
             log_level = logging.WARNING
         else:
