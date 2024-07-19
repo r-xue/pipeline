@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None, excludechan=None,
+def hifa_renorm(vis=None, createcaltable=None, threshold=None, correctATM=None, spw=None, excludechan=None,
                 atm_auto_exclude=None, bwthreshspw=None, parallel=None):
     """
     hifa_renorm ---- ALMA renormalization task
@@ -27,10 +27,10 @@ def hifa_renorm(vis=None, apply=None, threshold=None, correctATM=None, spw=None,
                      MeasurementSets specified in the pipeline context.
 
                      Example: vis=['ngc5921.ms']
-    apply
-                     Boolean to select whether to apply the renormalization
-                     correction (True), or only run the assessment (False,
-                     default).
+    createcaltable
+                     Boolean to select whether to create the renormalization
+                     correction cal table (True), or only run the assessment
+                     (False, default).
 
                      Example: apply=True
     threshold
