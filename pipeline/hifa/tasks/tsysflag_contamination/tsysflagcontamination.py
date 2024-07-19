@@ -28,6 +28,9 @@ LOG = infrastructure.get_logger(__name__)
 # flagging of line contamination
 UNPROCESSABLE_DATA_QA_SCORE = 0.6
 
+# short summary message when heuristic sees data is it not validated for
+UNPROCESSABLE_DATA_QA_SHORTMSG = 'Heuristics not applied'
+
 
 class TsysFlagContaminationInputs(vdp.StandardInputs):
     """
@@ -206,13 +209,13 @@ class TsysFlagContamination(StandardTaskTemplate):
         try:
             plot_wrappers, qascores = self._call_extern_heuristic(extern_fn_args)
         except Exception as e:
-            reason = f"Line contamination heuristic failed while processing {self.inputs.vis}"
+            reason = f"Heuristic failed while processing {self.inputs.vis}"
 
             if self.inputs.continue_on_failure:
                 # soft failure: QA score of -0.1 but do not halt the pipeline
                 s = QAScore(
                     score=-0.1,
-                    shortmsg="Line contamination heuristic failed",
+                    shortmsg="Heuristic failed",
                     longmsg=reason,
                     applies_to=TargetDataSelection(vis={self.inputs.vis}),
                 )
@@ -444,8 +447,8 @@ class TsysFlagContamination(StandardTaskTemplate):
         if is_multi_tuning_eb and is_multi_source_eb:
             s = QAScore(
                 score=UNPROCESSABLE_DATA_QA_SCORE,
-                shortmsg="Multi-source multi-tuning EB",
-                longmsg=f"Line contamination heuristic not validated for multi-source multi-tunings present in {ms.basename}.",
+                shortmsg=UNPROCESSABLE_DATA_QA_SHORTMSG,
+                longmsg=f"Heuristic not applied: multi-source multi-tuning data present in {ms.basename}.",
                 applies_to=TargetDataSelection(vis={ms.basename}),
             )
             qa_scores.append(s)
@@ -469,8 +472,8 @@ class TsysFlagContamination(StandardTaskTemplate):
         if any(n > 2 for n in polarizations):
             s = QAScore(
                 score=UNPROCESSABLE_DATA_QA_SCORE,
-                shortmsg="Full polarization data",
-                longmsg=f"Line contamination heuristic not validated for full polarization data in {ms.basename}.",
+                shortmsg=UNPROCESSABLE_DATA_QA_SHORTMSG,
+                longmsg=f"Heuristic not applied: full-polarization data present in {ms.basename}.",
                 applies_to=TargetDataSelection(vis={ms.basename}),
             )
             qa_scores.append(s)
@@ -490,8 +493,8 @@ class TsysFlagContamination(StandardTaskTemplate):
         if "BANDPASS" not in ms.intents:
             s = QAScore(
                 score=UNPROCESSABLE_DATA_QA_SCORE,
-                shortmsg="No BANDPASS data",
-                longmsg=f"No bandpass scans in {ms.basename} for the line contamination heuristic to process.",
+                shortmsg=UNPROCESSABLE_DATA_QA_SHORTMSG,
+                longmsg=f"Heuristic not applied: no bandpass data in {ms.basename}.",
                 applies_to=TargetDataSelection(vis={ms.basename}),
             )
             qa_scores.append(s)

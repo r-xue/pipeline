@@ -4259,7 +4259,7 @@ def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str
 
 
 @log_qa
-def score_tsysflagcontamination_contamination_flagged(vis, caltable, summaries) -> pqa.QAScore:
+def score_tsysflagcontamination_contamination_flagged(vis, summaries) -> pqa.QAScore:
     """
     Calculate a score for the hifa_tsysflagcontamination task based on whether
     any line contamination was flagged.
@@ -4267,22 +4267,28 @@ def score_tsysflagcontamination_contamination_flagged(vis, caltable, summaries) 
     0% flagged  -> 1
     >0% flagged -> 0.9
     """
-    # Calculate fraction of flagged data.
     frac_flagged = calc_frac_newly_flagged(summaries)
 
     if frac_flagged:
         score = 0.9
-        longmsg = f'Line contamination detected and flagged in {caltable}'
-        shortmsg = 'Line contamination flagged'
+        longmsg = f'Tsys line contamination detected in {vis}.'
+        shortmsg = 'Tsys contamination flagged'
     else:
         score = 1.0
-        longmsg = f'No line contamination detected in {caltable}'
-        shortmsg = 'No line contamination flagged'
+        longmsg = f'No Tsys line contamination detected in {vis}.'
+        shortmsg = 'No Tsys line contamination'
 
     origin = pqa.QAOrigin(metric_name='score_tsys_line_contamination_flagged',
                           metric_score=frac_flagged,
                           metric_units='Fraction of Tsys data that was identified as line contamination and flagged')
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(vis), origin=origin)
+    return pqa.QAScore(
+        score,
+        longmsg=longmsg,
+        shortmsg=shortmsg,
+        vis=os.path.basename(vis),
+        origin=origin,
+        applies_to=pqa.TargetDataSelection(vis={vis})
+    )
 
 
 @log_qa

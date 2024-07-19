@@ -52,17 +52,17 @@ detects issues that deserve special attention, such as:<p>
 
 <ol style="list-style-type: lower-roman;">
 
-    <li>if the QA score message says "Large difference between the bandpass telluric
-    line and other fields" it means that there is a possible atmospheric line
+    <li>If the QA score message says "Large difference between the bandpass telluric
+    line and..." it means that there is a possible atmospheric line
     contamination affecting the autocorrelation renormalization corrections which needs
-    to be excluded manually;</li>
+    to be excluded manually.</li>
 
-    <li>if the QA score message says "Astronomical
-    contamination covering a wide frequency range" it means that the contaminated
-    line range detected by the algorithm is too wide and needs to be examined. In
-    that case, the flagging associated with the wide range is not applied;</li>
+    <li>If the QA score message says "Astronomical contamination covering a wide frequency
+    range..." it means that the contaminated line range detected by the algorithm is too wide
+    and needs to be examined. In that case, the flagging associated with the wide range is
+    not applied.</li>
 
-    <li>finally, if the message says "Large residuals" it means that the general T<sub>sys</sub>
+    <li>Finally, if the message says "Large residuals..." it means that the general T<sub>sys</sub>
     solution needs to be examined due to instrumental instabilities or very
     widespread T<sub>sys</sub> contamination.</li>
 
