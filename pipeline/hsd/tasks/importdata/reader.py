@@ -344,7 +344,12 @@ class MetaDataReader(object):
         self.invalid_pointing_data[antenna_id].append(row)
 
     def generate_flagcmd(self, rasterscan_heuristics_result: RasterScanHeuristicsResult):
-        """Generate flag commands based on pointings of observation and save them in the flag template file."""
+        """
+        Generate flag commands based on pointings of observation and save them in the flag template file.
+
+        Args:
+            rasterscan_heuristics_result (RasterScanHeuristicsResult): Result object of RasterScanHeuristics
+        """
         # PIPE-646
         # per-antenna row list for the data without pointing data
         # key: antenna id
@@ -400,6 +405,9 @@ class MetaDataReader(object):
 
     def generate_flagdict_for_uniform_rms(self, rasterscan_heuristics_result: RasterScanHeuristicsResult) -> Dict[Tuple[int, int], numpy.ndarray]:
         """Return row IDs of DataTable to flag.
+
+        Args:
+            rasterscan_heuristics_result (RasterScanHeuristicsResult): Result object of RasterScanHeuristics
 
         Returns:
             Dict: contains list of row IDs of datatable
