@@ -221,7 +221,7 @@ except:
                 <tr>
                     <td rowspan="2" style="width:150px;">
                         ${image_info[j].field}
-                        (${DataType.get_short_datatype_desc(image_info[i].datatype)})
+                        (${DataType.get_short_datatype_desc(image_info[j].datatype)})
                     </td>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
                         <td style="width:250px;height:50px;">
