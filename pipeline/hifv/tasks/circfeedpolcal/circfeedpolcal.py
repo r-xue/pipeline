@@ -165,7 +165,15 @@ class Circfeedpolcal(polarization.Polarization):
             spwsobj = m.get_spectral_windows(science_windows_only=True)
             spwslist = [str(spw.id) for spw in spwsobj]
             spws = ','.join(spwslist)
-            self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws, addcallib=True)
+            addcallib = True
+            self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws, addcallib=addcallib)
+
+        if addcallib:
+            LOG.info("Adding " + str(tablesToAdd[0][0]) + " to callibrary.")
+            calfrom = callibrary.CalFrom(gaintable=tablesToAdd[0][0], interp='', calwt=False, caltype='kcross')
+            calto = callibrary.CalTo(self.inputs.vis)
+            calapp = callibrary.CalApplication(calto, calfrom)
+            self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
         # Determine number of scans with POLLEAKGE intent and use the first POLLEAKAGE FIELD
         polleakagefield = ''
@@ -343,12 +351,6 @@ class Circfeedpolcal(polarization.Polarization):
 
         self._executor.execute(job)
 
-        if addcallib:
-            LOG.info("Adding " + str(caltable) + " to callibrary.")
-            calfrom = callibrary.CalFrom(gaintable=caltable, interp='', calwt=False, caltype='kcross')
-            calto = callibrary.CalTo(self.inputs.vis)
-            calapp = callibrary.CalApplication(calto, calfrom)
-            self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
         # return result
         return True
