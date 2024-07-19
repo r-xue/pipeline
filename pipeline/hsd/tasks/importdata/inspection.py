@@ -149,7 +149,8 @@ class SDInspection(object):
         if is_alma and is_raster:
             worker.generate_flagcmd(timedomain_rsh_result)
 
-        return reduction_group, org_directions, msglist, grouping_result['RASTERHEURISTICSRESULT'], timedomain_rsh_result
+        directional_rsh_result = grouping_result['RASTERHEURISTICSRESULT']
+        return reduction_group, org_directions, msglist, directional_rsh_result, timedomain_rsh_result
 
 #     def _inspect_reduction_group(self):
 #         reduction_group = {}
