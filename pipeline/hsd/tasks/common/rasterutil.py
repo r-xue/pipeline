@@ -342,8 +342,9 @@ def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet', rasterscan_h
     Return list of index to be flagged by flagging heuristics for raster scan.
 
     Args:
-        datatable: input datatable to analyze
-        ms: MeasurementSet domain object
+        datatable (DataTableImpl): input datatable to analyze
+        ms (MeasurementSet): MeasurementSet domain object
+        rasterscan_heuristics_result (RasterScanHeuristicsResult): Result object of RasterScanHeuristics
 
     Returns:
         per-antenna list of indice to be flagged
