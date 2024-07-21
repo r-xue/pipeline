@@ -3860,7 +3860,7 @@ def score_rasterscan_correctness_directional_rasterscan_fail(result: SDImportDat
     Returns:
         List[pqa.QAScore]: list of QAScores
     """
-    msg = 'Directional raster scan analysis failed, fallback to time-domain analysis'
+    msg = 'Direction-domain raster scan analysis failed, fallback to time-domain analysis'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_direction, msg)
 
 
@@ -3874,7 +3874,7 @@ def score_rasterscan_correctness_time_rasterscan_fail(result: SDImportDataResult
     Returns:
         List[pqa.QAScore]: list of QAScores
     """
-    msg = 'Time-domain raster scan analysis issue detected'
+    msg = 'Time-domain raster scan analysis issue detected. Failed to identify gap between raster map iteration'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_time, msg)
 
 
