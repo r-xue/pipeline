@@ -1,13 +1,13 @@
 """
 Heuristic for identifying and/or defining the SPW designation, either as a continuum window or for spectral line analysis
 """
-from itertools import chain
 from typing import Type
 
 import pipeline.infrastructure.logging as logging
 from pipeline.domain.spectralwindow import SpectralWindow
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure.utils.conversion import range_to_list
+from pipeline.infrastructure.utils.conversion import range_to_list, commafy
+from pipeline.infrastructure.utils import find_ranges
 
 LOG = logging.get_logger(__name__)
 
@@ -21,27 +21,36 @@ def detect_spectral_lines(mset: Type[MeasurementSet], specline_spws: str='auto')
             user-defined spectral line spws in CASA format (e.g. '2,3,4~9,23')
     """
 
-    spws = mset.get_all_spectral_windows()
+    spws = mset.get_spectral_windows(science_windows_only=True)
+    spec_windows = list()
     if specline_spws == 'auto':
-        LOG.info("Spectral line detection set to {}.".format(specline_spws))
+        LOG.info("Spectral line detection set to auto. The pipeline will determine which science spws will be used for spectral line analysis.")
         for spw in spws:
             _auto_detector(spw)
     elif specline_spws == 'none':
-        LOG.info("Spectral line assignment is turned off. All spws will be regarded as continuum.")
+        LOG.info("Spectral line assignment is turned off. All science spws will be regarded as continuum.")
+    elif specline_spws == 'all':
+        LOG.info("Spectral line assignment is set to all.")
+        spec_windows = [spw.id for spw in spws]
     else:
         spec_windows = range_to_list(specline_spws)
-        LOG.debug('User-defined spectral windows for spectral lines: {}'.format(spec_windows))
-        if not all([type(x) == int for x in spec_windows]):
+        LOG.debug('User-defined spectral windows for spectral line analysis: {}'.format(spec_windows))
+        if not all([isinstance(x, int) for x in spec_windows]):
             msg = "Invalid input for user-defined spws: {}".format(spec_windows)
             LOG.error(msg)
             raise Exception(msg)
-        LOG.info("Spectral line detection defined by user.")
-        LOG.info('The user identified the following spws for spectral line analysis: {}. '
+        LOG.info("Spectral line assignment defined by user.")
+        non_sci = list(set(spec_windows).difference([x.id for x in spws]))
+        if non_sci:
+            message = commafy([str(x) for x in non_sci], quotes=False)
+            LOG.info(f"Non-science windows {message} defined by the user will be skipped.")
+            spec_windows = list(set(spec_windows).intersection([x.id for x in spws]))
+            specline_spws = find_ranges(spec_windows)
+        LOG.info('The user defined the following spws for spectral line analysis: {}. '
                     'All other spws will be regarded as continuum.'.format(specline_spws))
-        for spw in spws:
-            if int(spw.id) in spec_windows:
-                spw.specline_window = True
-            
+    for spw in spws:
+        if int(spw.id) in spec_windows:
+            spw.specline_window = True
 
 def _auto_detector(spw: Type[SpectralWindow]) -> None:
     """Determines if a spectral window should be designated as a spectral line window using the following criteria:
