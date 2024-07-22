@@ -3851,8 +3851,8 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
 
 
 @log_qa
-def score_rasterscan_correctness_directional_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
-    """Calculate QAScore of directional raster scan heuristics analysis failure in importdata.
+def score_rasterscan_correctness_direction_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+    """Calculate QAScore of direction-domain raster scan heuristics analysis failure in importdata.
 
     Args:
         result (SDImportDataResults): instance of SDImportDataResults
@@ -3865,7 +3865,7 @@ def score_rasterscan_correctness_directional_rasterscan_fail(result: SDImportDat
 
 
 @log_qa
-def score_rasterscan_correctness_time_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+def score_rasterscan_correctness_time_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
     """Calculate QAScore of time-domain raster scan heuristics analysis failure in importdata.
 
     Args:

@@ -51,9 +51,9 @@ class SDImportDataQAHandler(importdataqa.ImportDataQAHandler, QAPlugin):
             result (importdata.SDImportDataResults): The result object of SDImportData executing.
         """
         super().handle(context, result)
-        score = qacalc.score_rasterscan_correctness_directional_rasterscan_fail(result)
+        score = qacalc.score_rasterscan_correctness_direction_domain_rasterscan_fail(result)
         result.qa.pool.extend(score)
-        score = qacalc.score_rasterscan_correctness_time_rasterscan_fail(result)
+        score = qacalc.score_rasterscan_correctness_time_domain_rasterscan_fail(result)
         result.qa.pool.extend(score)
 
 
