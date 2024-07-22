@@ -258,6 +258,15 @@ class MakeImList(basetask.StandardTaskTemplate):
         sidebar_suffixes = {_SIDEBAR_SUFFIX.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')}
         result.metadata['sidebar suffix'] = '/'.join(sidebar_suffixes)
 
+        # Check if this stage has been disabled for vla (never set for ALMA)
+        if inputs.context.vla_skip_mfs_and_cube_imaging and inputs.specmode in ('mfs', 'cube'):
+            result.set_info({'msg': 'Line imaging stages have been disabled for VLA due to no MS being produced for line imaging.',
+                                 'intent': inputs.intent,
+                                 'specmode': inputs.specmode})
+            result.contfile = None
+            result.linesfile = None
+            return result
+
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters:
             if inputs.context.size_mitigation_parameters['status'] == 'ERROR':
@@ -670,7 +679,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     spwlist = band_spws[band]
                 for vislist in vislists:
                     if inputs.per_eb:
-                        imagename_prefix = os.path.basename(vislist[0]).strip('.ms')
+                        imagename_prefix = utils.remove_trailing_string(os.path.basename(vislist[0]), '.ms')
                     elif inputs.per_session:
                         imagename_prefix = inputs.context.observing_run.get_ms(vislist[0]).session
                     else:

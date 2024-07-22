@@ -10,7 +10,7 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2024 (as of July 1, 2024)
+Code changes for Pipeline2024 (as of July 17, 2024)
 0) No longer disable onlyExtraMask when returnBluePoints==True
 1) No longer search for vis in cube dir if not specified, only if vis=='auto'
 2) Remove two print statements at import
@@ -302,7 +302,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle11.py,v 7.19 2024/07/08 16:56:47 we Exp $" 
+    myversion = "$Id: findContinuumCycle11.py,v 7.20 2024/07/17 15:58:11 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -7904,7 +7904,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         # Build joint mask
         ####################
         os.system('rm -rf %s' % (jointMask))
-        print("Running makemask(inpimage='%s', mode='copy', inpmask=['%s','%s'], output='%s')" % (mom0, mom0mask, mom8mask, jointMask))
+        casalogPost("Running makemask(inpimage='%s', mode='copy', inpmask=['%s','%s'], output='%s')" % (mom0, mom0mask, mom8mask, jointMask))
         jointMaskTemp = jointMask + '.tmp'
         removeIfNecessary(jointMaskTemp)
         makemask(inpimage=mom0, mode='copy', inpmask=[mom0mask, mom8mask], 
@@ -7913,9 +7913,9 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
             regionsPruned = pruneMask(jointMaskTemp, psfcube, minbeamfrac)
 
         # try to get pb mask onto the joint.mask = PIPE-1629
-        print("Running imsubimage('%s', mask='%s', outfile='%s')" % (jointMaskTemp,pbmom,jointMask))
+        casalogPost("Running imsubimage('%s', mask='%s'>0, outfile='%s')" % (jointMaskTemp,pbmom,jointMask))
         # looks like you need to protect mask with quotes if name includes a '/' character
-        imsubimage(jointMaskTemp, mask="'%s'"%pbmom, outfile=jointMask)
+        imsubimage(jointMaskTemp, mask="'%s'>0"%pbmom, outfile=jointMask)  # try adding > 0, yes we need it!
         removeIfNecessary(jointMaskTemp)
             
         pixelsInMask = imstat(jointMask, listit=imstatListit, verbose=imstatVerbose)['max'][0] > 0.5
@@ -8028,9 +8028,9 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                     regionsPruned = pruneMask(jointMask2temp, psfcube, minbeamfrac)
 
                 # try to get pb mask onto the joint.mask2 = PIPE-1629
-                print("Running imsubimage('%s', mask='%s', outfile='%s')" % (jointMask2temp,pbmom,jointMask2))
+                casalogPost("Running imsubimage('%s', mask='%s>0', outfile='%s')" % (jointMask2temp,pbmom,jointMask2))
                 # looks like you need to protect mask with quotes if name includes a '/' character
-                imsubimage(jointMask2temp, mask="'%s'"%pbmom, outfile=jointMask2)
+                imsubimage(jointMask2temp, mask="'%s'>0"%pbmom, outfile=jointMask2)
                 removeIfNecessary(jointMask2temp)
 
                 jointMask = jointMask2
@@ -11318,7 +11318,11 @@ def sanitizeNames(names, newchar='_'):
 def transitions(vis, spw, source='', intent='OBSERVE_TARGET', 
                 verbose=True, mymsmd=None):
     """
-    +++++++ This function is not used by pipeline, because it is only used by isSingleContinuum.
+    +++++++ This function is not used by pipeline, because it is only used by 
+    isSingleContinuum() and the pipeline passes the Boolean singleContinuum.
+    However, it is used by my regression, so it is important to pass the vis
+    which has the virtual spw == real spw, which is normally the first spw
+    observed.
     Returns the list of transitions for specified spw (and source).
     vis: measurement set
     spw: can be integer ID or string integer ID
@@ -11354,6 +11358,7 @@ def transitions(vis, spw, source='', intent='OBSERVE_TARGET',
             fields1 = mymsmd.fieldsforintent(intent+'*')
             fields2 = mymsmd.fieldsforspw(spw)
             fields = np.intersect1d(fields1,fields2)
+            print("spw=%d, intent=%s, fields1=%s, fields2=%s, Fields=%s" % (spw,intent,fields1,fields2,fields))
             source = mymsmd.namesforfields(fields[0])[0]
             if verbose:
                 print("For spw %d, picked source: " % (spw), source)

@@ -80,7 +80,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if 'image' not in r.iterations[maxiter]:
                 continue   # PIPE-1790: skip the rest if an image was not produced due to some error
 
-            vis = ','.join([os.path.basename(v).strip('.ms') for v in r.vis])
+            vis = ','.join(utils.remove_trailing_string(os.path.basename(v), '.ms') for v in r.vis)
             datatype = r.datatype
             datatype_info = r.datatype_info
 
@@ -1012,7 +1012,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
             maxiter = max(r.iterations.keys())
             field = fieldname = intent = None
 
-            vis = ','.join([os.path.basename(v).strip('.ms') for v in r.vis])
+            vis = ','.join(utils.remove_trailing_string(os.path.basename(v), '.ms') for v in r.vis)
             datatype = r.datatype
             datatype_info = r.datatype_info
             image_path = r.iterations[maxiter]['image'].replace('.image', f'.image{extension}')

@@ -24,7 +24,7 @@ class RenormQAHandler(pqa.QAPlugin):
         # the automatic defaults in almarenorm. In that case the threshold
         # per spw needs to be fetched from the stats dictionary in the spw
         # loop below (result.stats[source][spw]['threshold']).
-        threshold = result.threshold 
+        threshold = result.threshold
         if result.exception is not None:
             score = 0.0
             shortmsg = 'Failure in renormalization'
@@ -32,21 +32,14 @@ class RenormQAHandler(pqa.QAPlugin):
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
             return
 
-        if result.apply and result.corrApplied:
-            # Request for correcting data that has already been corrected
+        if result.createcaltable and result.caltable is not None and not result.alltdm and not result.calTableCreated:
+            # Cal table not created
             score = 0.0
-            shortmsg = 'Corrections already applied'
-            longmsg = 'EB {}: Corrections already applied to data'.format(os.path.basename(result.vis))
+            shortmsg = 'No cal table created'
+            longmsg = 'EB {}: No cal table was created.'.format(os.path.basename(result.vis))
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
-        if not result.corrColExists and result.apply:
-            # Request for correcting data when there is no CORRECTED_DATA column
-            score = 0.0
-            shortmsg = 'No corrected data column'
-            longmsg = 'EB {}: Corrected data column does not exist'.format(os.path.basename(result.vis))
-            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
-
-        for source in result.stats: 
+        for source in result.stats:
             for spw in result.stats[source]:
                 try:
                     max_factor = result.stats[source][spw]['max_rn']
@@ -60,7 +53,7 @@ class RenormQAHandler(pqa.QAPlugin):
                         shortmsg = 'Unexpected values.'
                         longmsg = 'EB {} source {} spw {}: Error calculating corrections. Maximum factor is {}.'.format( \
                                   os.path.basename(result.vis), source, spw, max_factor)
-                    elif np.isnan(result.rnstats['N'][source][spw]).any():
+                    elif result.rnstats['invalid'][source][spw]:
                         # Any NaNs apart from max_factor?
                         score = 0.0
                         shortmsg = 'Unexpected values.'
@@ -73,17 +66,17 @@ class RenormQAHandler(pqa.QAPlugin):
                                   'is within threshold of {:.1%}'.format( \
                                   os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                     elif max_factor > threshold:
-                        if result.apply:
+                        if result.createcaltable:
                             score = 0.9
-                            shortmsg = 'Renormalization applied'
+                            shortmsg = 'Renormalization computed'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                      'is outside threshold of {:.1%} so corrections were applied to data'.format( \
+                                      'is outside threshold of {:.1%} so corrections were computed.'.format( \
                                       os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                         else:
                             score = max(0.66+threshold-max_factor, 0.34)
                             shortmsg = 'Renormalization factor outside threshold'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                      'is outside threshold of {:.1%} but corrections were not applied to the data.'.format( \
+                                      'is outside threshold of {:.1%} but no corrections were computed.'.format( \
                                       os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
 
                     result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
@@ -92,18 +85,18 @@ class RenormQAHandler(pqa.QAPlugin):
                     pass
 
         # Make a copy of this dict to keep track of whether a QA message was issued for
-        # each excludechan SPW yet. 
+        # each excludechan SPW yet.
         excludechan = copy.deepcopy(result.excludechan)
 
         # Only warn about spws in excludechan not matching the spws for the automated suggestions if there are whole suggested spws
-        # not covered by the input excludechan dict. (Without this, there is a QA warning when the input excludechan values are 
-        # so close to the ones that would be recommeded by renorm, that no additional automated suggestions are made.) 
+        # not covered by the input excludechan dict. (Without this, there is a QA warning when the input excludechan values are
+        # so close to the ones that would be recommeded by renorm, that no additional automated suggestions are made.)
         warn_excludechan_spw = False
 
-        for target in result.atmWarning: 
+        for target in result.atmWarning:
             for spw in result.atmWarning[target]:
                 if result.atmWarning[target][spw]:
-                    if not result.apply:
+                    if not result.createcaltable:
                         atm_score = 0.9
                         shortmsg = "Renormalization correction may be incorrect due to an atmospheric feature"
                         longmsg = "Renormalization correction may be incorrect in SPW {} due to an atmospheric feature. Suggested "\
@@ -111,14 +104,14 @@ class RenormQAHandler(pqa.QAPlugin):
                     else:
                         if excludechan:
                             excluded_spws = excludechan.keys()
-                            if spw in excluded_spws: 
+                            if spw in excluded_spws:
                                 longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
                                       "exclusion: {}".format(excludechan[spw], spw, result.atmExcludeCmd[target][spw])
                                 # Since we printed a message about the excluded channels for this SPW, remove it from the list that haven't yet been covered.
                                 del excludechan[spw]
-                            else: 
+                            else:
                                 longmsg = "No channels are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
-                                      "exclusion: {}".format(spw, result.atmExcludeCmd[target][spw]) 
+                                      "exclusion: {}".format(spw, result.atmExcludeCmd[target][spw])
                                 warn_excludechan_spw = True
                             atm_score = 0.85
                             shortmsg = "Channels are being excluded from renormalization correction"
@@ -127,7 +120,7 @@ class RenormQAHandler(pqa.QAPlugin):
                             shortmsg = "Channels are being excluded from renormalization correction due to an atmospheric feature"
                             longmsg = "Channels {} are being excluded from renormalization correction to SPW {} due to an atmospheric " \
                                       "feature.".format(result.atmExcludeCmd[target][spw], spw)
-                        else: 
+                        else:
                             atm_score = 0.66
                             shortmsg = "Renormalization correction may be incorrectly applied"
                             longmsg = "A renormalization correction may be incorrectly applied to SPW {} due to an atmospheric feature. " \
@@ -135,8 +128,8 @@ class RenormQAHandler(pqa.QAPlugin):
                     result.qa.pool.append(pqa.QAScore(atm_score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
         # If there were any entries in excludechan for spws that weren't identified as having an atmospheric feature by renorm,
-        # when apply=True, and there are also provide a QA message.
-        if result.apply and warn_excludechan_spw:
+        # when createcaltable=True, and there are also provide a QA message.
+        if result.createcaltable and warn_excludechan_spw:
             for exclude_spw in excludechan:
                 longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. " \
                           "Auto-calculated channel exclusion indicated that no channels need to be excluded for SPW {}." \
