@@ -85,11 +85,6 @@ class StatsExtractorRegistry(object):
     def handle(self, result: Union[Results, ResultsList], context=None):
         """
         Extract values from corresponding Extractor object of Result object.
-
-        Args:
-            result: Results or ResultsList[Results]
-        Return:
-            Dict of extracted values
         """
         if not self.__plugins_loaded:
             for plugin_class in get_all_subclasses(StatsExtractor):
@@ -103,7 +98,7 @@ class StatsExtractorRegistry(object):
         if isinstance(result, collections.abc.Iterable):
             for r in result:
                 d = self.handle(r, context)
-                extracted.append(d)
+                union(extracted, d)
 
         # process the group-level results.
         for handler in self.__handlers:
@@ -111,9 +106,8 @@ class StatsExtractorRegistry(object):
                 LOG.debug('{} extracting stats results for {}'.format(handler.__class__.__name__,
                                                                            result.__class__.__name__))
                 d = handler.handle(result, context)
-                extracted.append(d)
+                union(extracted, d)
 
-        LOG.info(extracted)
         return extracted
 
 
@@ -131,36 +125,29 @@ class FlagDeterALMAResultsExtractor(StatsExtractor):
         flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
         flag_table_intents.extend(intents_to_summarise)
 
-        ps = pipeline_statistics.PipelineStatistics(name="flagdata_percentage",
-                                                    value=flag_table_intents,
-                                                    longdesc="temorory value for testing",
-                                                    level="EB")
         flag_totals = {}
         flag_totals = utils.dict_merge(flag_totals,
             flagutils.flags_for_result(result, context, intents_to_summarise=intents_to_summarise))
-
-        print(flag_totals)
 
         reasons_to_export = ['online', 'shadow', 'qa0', 'qa2', 'before', 'template']
 
         output_dict = {}
         for ms in flag_totals:
             output_dict[ms] = {}
-            print("MS: {}".format(ms))
             for reason in flag_totals[ms]:
-                print("reason: {}".format(reason))
                 for intent in flag_totals[ms][reason]:
-                    print("intent: {}".format(intent))
-                    if intent in reasons_to_export:
+                    if reason in reasons_to_export:
                         if "TOTAL" in intent:
                             new = float(flag_totals[ms][reason][intent][0])
                             total = float(flag_totals[ms][reason][intent][1])
                             percentage = new/total * 100
                             output_dict[ms][reason] = percentage
-
+        mous = context.get_oussid()
         ps = pipeline_statistics.PipelineStatistics(name="flagdata_percentage",
                                                     value=output_dict,
                                                     longdesc="temporory value for testing",
+                                                    eb=ms,
+                                                    mous=mous,
                                                     level="EB")
         return ps
 
@@ -169,13 +156,10 @@ class FluxcalflagStatsExtractor(StatsExtractor):
     result_cls = GfluxscaleflagResults
     child_cls = None
 
-    def handle(self, result:GfluxscaleflagResults, context) -> OrderedDict:
+    def handle(self, result:GfluxscaleflagResults, context):
         """
         Args:
             result: GfluxscaleflagResults object
-
-        Returns:
-            OrderedDict[str, float]
         """
         summaries_by_name = {s['name']: s for s in result.cafresult.summaries}
 
@@ -189,56 +173,21 @@ class FluxcalflagStatsExtractor(StatsExtractor):
         ps = pipeline_statistics.PipelineStatistics(name="fluxscaleflags",
                                                     value=int(num_flags_after),
                                                     longdesc="rows after",
+                                                    mous=context.get_oussid(),
                                                     level="MOUS")
-
-        # TODO: populate this value
-        calibrated_flux = {}
-
-        # ps = pipeline_statistics.PipelineStatistics(name="gfluxscale_calibrated_flux",
-        #                                             value=calibrated_flux,
-        #                                             longdesc="calibrated flux of the calibrator per intent per spw",
-        #                                             level="EB/INTENT/SPW",
-        #                                             units="Jy")
         return ps
-
-
-# class GcorFluxscaleStatsExtractor(StatsExtractor):
-#     result_cls = GcorFluxscaleResults
-#     child_cls = None
-
-#     def handle(self, result:GcorFluxscaleResults) -> OrderedDict:
-#         """
-#         Args:
-#             result: GfluxscaleflagResults object
-
-#         Returns:
-#             OrderedDict[str, float]
-#         """
-#         # _, fluxes = fluxscale_renderer.make_flux_table(context, result)
-
-#         ps = pipeline_statistics.PipelineStatistics(name="gfluxscale_calibrated_flux",
-#                                                     value=calibrated_flux,
-#                                                     longdesc="calibrated flux of the calibrator per intent per spw",
-#                                                     level="EB/INTENT/SPW",
-#                                                     units="Jy")
-#         return ps
 
 
 class ApplycalRegressionExtractor(StatsExtractor):
     """
-    Regression test result extractor for applycal tasks.
-
-    The extracted values are:
-       - the number of flagged and scanned rows before this task
-       - the number of flagged and scanned rows after this task
-       - QA score
+    Stats test result extractor for applycal tasks.
     """
 
     result_cls = ApplycalResults
     child_cls = None
     generating_task = IFApplycal
 
-    def handle(self, result: ApplycalResults, context) -> OrderedDict:
+    def handle(self, result: ApplycalResults, context):
         """
         Args:
             result: ApplycalResults object
@@ -251,35 +200,9 @@ class ApplycalRegressionExtractor(StatsExtractor):
         ps = pipeline_statistics.PipelineStatistics(name="applycal_flags",
                                                     value=int(num_flags_after),
                                                     longdesc="rows after",
+                                                    mous=context.get_oussid(),
                                                     level="MOUS")
         return ps
-
-
-def extract_qa_score_regression(prefix:str, result:Results) -> OrderedDict:
-    """
-    Create QA strings are properties of result, and insert them to OrderedDict.
-
-    Args:
-        prefix: Prefix string
-        result: Result object
-
-    Returns:
-        OrderedDict
-    """
-    d = OrderedDict()
-    for qa_score in result.qa.pool:
-        metric_name = qa_score.origin.metric_name
-        # Remove all non-word characters (everything except numbers and letters)
-        metric_name = re.sub(r"[^\w\s]", '', metric_name)
-        # Replace all runs of whitespace with a single dash
-        metric_name = re.sub(r"\s+", '-', metric_name)
-
-        metric_score = qa_score.origin.metric_score
-        score_value = qa_score.score
-
-        d['{}.qa.metric.{}'.format(prefix, metric_name)] = metric_score
-        d['{}.qa.score.{}'.format(prefix, metric_name)] = score_value
-    return d
 
 
 def get_stats_from_results(context: Context) -> List[str]:
@@ -289,9 +212,25 @@ def get_stats_from_results(context: Context) -> List[str]:
     unified = []
     for results_proxy in context.results:
         results = results_proxy.read()
-        unified.append(registry.handle(results, context))
+        union(unified, registry.handle(results, context))
 
     return unified
+
+
+def union(l1: List, new) -> List:
+    """
+    Combines l1 which is always a list, with
+    new, which could be a list or a PipelineStatistics object
+    """
+    union = l1
+
+    if isinstance(new, list):
+        for elt in new:
+            union.append(elt)
+    else:
+        union.append(elt)
+
+    return union
 
 
 def get_all_subclasses(cls: StatsExtractor) -> List[StatsExtractor]:

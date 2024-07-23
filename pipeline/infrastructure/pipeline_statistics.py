@@ -2,8 +2,7 @@ from pipeline import environment
 from pipeline.infrastructure.renderer import stats_extractor
 from pipeline.domain import measures
 from . import logging
-from collections import namedtuple
-from typing import Dict, Tuple
+from typing import Dict
 
 import enum
 
@@ -31,8 +30,6 @@ class PipelineStatistics(object):
         self.mous = mous
         self.eb = eb
 
-        # TODO: if the structure is be not nested, some information about the mous, spw, etc needs to be added
-
         # Convert results to values that can be serialized by JSON
         # this could be done as part of the output instead
         if type(value) is set:
@@ -42,15 +39,17 @@ class PipelineStatistics(object):
         elif type(value) is np.ndarray:
             self.value = list(self.value)
 
-    def to_dict(self):
-        """ Individual statistics item to dict"""
+    def to_dict(self, level_info: bool = False) -> Dict:
+        """
+        Convert an individual statistics item to dict
+        
+        level_info = True will include information about what
+        MOUS/EB/SPW the value is from.
+        """
         stats_dict = {}
 
         stats_dict['name'] = self.name
-
         stats_dict['longdescription'] = self.longdesc
-
-        stats_dict['level'] = self.level
 
         if self.origin not in ["", None]:
             stats_dict['origin'] = self.origin
@@ -61,33 +60,40 @@ class PipelineStatistics(object):
         if self.value not in ["", None]:
             stats_dict['value'] = self.value
 
-        if self.spw not in ["", None]:
-            stats_dict['spw'] = self.spw
+        if level_info:
+            stats_dict['level'] = self.level
 
-        if self.mous not in ["", None]:
-            stats_dict['mous'] = self.mous
+            if self.spw not in ["", None]:
+                stats_dict['spw'] = self.spw
 
-        if self.eb not in ["", None]:
-            stats_dict['eb'] = self.eb
+            if self.mous not in ["", None]:
+                stats_dict['mous'] = self.mous
+
+            if self.eb not in ["", None]:
+                stats_dict['eb'] = self.eb
 
         return stats_dict
 
 
-def generate_stats(context, output_format="flat"):
+def generate_stats(context, output_format: str = "nested") -> Dict:
+    """
+    Gathers statistics from the context and returns a representation
+    of them as a dict.
+
+    output_format can be "nested" for a dict which contains information
+    about whether values are per-MOUS, EB, SPW based on the structure
+    of the output or "flat" for a flat structure with tags that
+    indiciate the MOUS, EB, SPW a value is associated with.
+    """
     stats_collection = []
     # First, gather statistics about the project and pipeline run info
     product_run_info = _generate_product_pl_run_info(context)
-    stats_collection.append(product_run_info)
+    stats_collection.extend(product_run_info)
 
-    # Set 2: results objects needed
+    # Next, gather statistics that require the results objects
     stats_from_results = stats_extractor.get_stats_from_results(context)
     for elt in stats_from_results:
-        # TODO: clean up this results merge
-        if elt not in [[], [[]]]:
-            result = elt[0][0]
-            stats_collection.append(result)
-
-    LOG.info(stats_collection)
+        stats_collection.append(elt)
 
     # Construct dictionary representation of all pipeline stats
     if output_format == "flat":
@@ -98,24 +104,82 @@ def generate_stats(context, output_format="flat"):
     return final_dict
 
 
-def to_nested_dict():
+def to_nested_dict(stats_collection) -> Dict:
     """
-    Generates a "nested" output dict with EBs, SPWs, MOUSs just 'tagged' and labeled
-    not as part of the structure
+    Generates a "nested" output dict with EBs, SPWs, MOUSs
+    Each level is represented in the structure of the output.
     """
-    pass
+    final_dict = {}
+    eb_dict = {}
+    spw_dict = {}
+    for stat in stats_collection:
+        if stat.level == "EB":
+            if stat.mous not in eb_dict:
+                eb_dict[stat.mous] = {}
+            if stat.eb not in eb_dict[stat.mous]:
+                eb_dict[stat.mous][stat.eb] = []
+            eb_dict[stat.mous][stat.eb].append(stat.to_dict())
+        elif stat.level == "MOUS":
+            if stat.mous not in final_dict:
+                final_dict[stat.mous] = []
+            final_dict[stat.mous].append(stat.to_dict())
+        elif stat.level == "SPW":
+            if stat.mous not in spw_dict:
+                spw_dict[stat.mous] = {}
+            if stat.eb not in spw_dict[stat.mous]:
+                spw_dict[stat.mous][stat.eb] = {}
+            if stat.spw not in spw_dict[stat.mous][stat.eb]:
+                spw_dict[stat.mous][stat.eb][stat.spw] = []
+            spw_dict[stat.mous][stat.eb][stat.spw].append(stat.to_dict())
+        #     if stat.mous not in final_dict:
+        #         final_dict[stat.mous] = {}
+        #     if stat.eb not in final_dict[stat.mous]:
+        #         final_dict[stat.mous][stat.eb] = {}
+        #     if stat.spw not in final_dict[stat.mous][stat.eb]:
+        #         final_dict[stat.mous][stat.eb][stat.spw] = {}
+        #     final_dict[stat.mous][stat.eb][stat.spw] = stat.to_dict()
+        else:
+            pass  # Shouldn't be possible to get here
+
+    # Merge dicts together:
+    for mous_key in spw_dict:
+        for eb_key in spw_dict[mous_key]:
+            eb_dict[mous_key][eb_key].append(spw_dict[mous_key][eb_key])
+
+    for mous_key in eb_dict:
+        final_dict[mous_key].append(eb_dict[mous_key])
+
+    # Add a header:
+    version_dict = _generate_header()
+    final_dict.append(version_dict)
+
+    return final_dict
 
 
-def to_flat_dict(stats_collection):
+def to_flat_dict(stats_collection) -> Dict:
     """
     Generates a "flat" output dict with EBs, SPWs, MOUSs just 'tagged' and labeled
     not as part of the structure
     """
-    final_dict = {}
+    final_dict = []
     for stat in stats_collection:
-        final_dict[stat.name] = stat.to_dict()
-    final_dict["version"] = 0.1
+        final_dict.append(stat.to_dict(level_info=True))
+    version_dict = _generate_header()
+    final_dict.append(version_dict)
     return final_dict
+
+
+def _generate_header() -> Dict:
+    """
+    Creates a header with information about the stats file
+    """
+    version_dict = {}
+    version_dict["version"] = 0.1
+    version_dict["name"] = "header"
+#    version_dict["EB"] = []
+#    version_dict["MOUS"] = []
+#    version_dict["SPW"] = []
+    return version_dict
 
 
 def _generate_product_pl_run_info(context):
@@ -248,21 +312,21 @@ def _generate_product_pl_run_info(context):
                 longdesc="online nbin factors ",
                 origin="hifa_importdata",
                 spw=spw.id,
+                eb=eb,
                 mous=mous,
-                spw=spw.id,                
                 level="SPW")
             stats_collection.append(sps4)
 
             chan_width_MHz = [chan * 1e-6 for chan in spw.channels.chan_widths]
             sps5 = PipelineStatistics(
                 name='chan_width',
-                value=chan_width_MHz,
+                value=chan_width_MHz[0],
                 longdesc="frequency width of channels in spectral windows",
                 origin="hifa_importdata",
                 units="MHz",
                 spw=spw.id,
+                eb=eb,
                 mous=mous,
-                spw=spw.id,
                 level="SPW")
             stats_collection.append(sps5)
     return stats_collection
