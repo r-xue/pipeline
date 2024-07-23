@@ -41,7 +41,7 @@ class HanningResults(basetask.Results):
     The class inherits from basetask.Results
 
     """
-    def __init__(self, final=None, pool=None, preceding=None):
+    def __init__(self, final=None, pool=None, preceding=None, smoothed_spws=None):
         """
         Args:
             final(list): final list of tables (not used in this task)
@@ -49,13 +49,14 @@ class HanningResults(basetask.Results):
             preceding(list): preceding list (not used in this task)
 
         """
-
         if final is None:
             final = []
         if pool is None:
             pool = []
         if preceding is None:
             preceding = []
+        if smoothed_spws is None:
+            smoothed_spws = {}
 
         super(HanningResults, self).__init__()
 
@@ -64,6 +65,7 @@ class HanningResults(basetask.Results):
         self.final = final[:]
         self.preceding = preceding[:]
         self.error = set()
+        self.smoothed_spws = smoothed_spws
 
     def merge_with_context(self, context):
         """
@@ -142,7 +144,7 @@ class Hanning(basetask.StandardTaskTemplate):
         # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
         self._track_hsmooth(hs_dict)
 
-        return HanningResults()
+        return HanningResults(smoothed_spws=hs_dict)
 
     def analyse(self, results):
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.

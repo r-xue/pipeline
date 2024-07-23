@@ -9,3 +9,25 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 <p>Hanning Smoothing</p>
 
+<table class="table table-bordered table-striped table-condensed" summary="Hanning Smoothing Spectral Window Information">
+    <caption>Hanning Smoothing Spectral Window informative caption</caption>
+        <thead>
+            <tr>
+                <th scope="col" rowspan="2">MS Name</th>
+                <th scope="col" rowspan="2">SPW ID</th>
+                <th scope="col" rowspan="2">SPW Name</th>
+                <th scope="col" rowspan="2">Central Frequency</th>
+			    <th scope="col" rowspan="2">Smoothed</th>
+                <th scope="col" rowspan="2">Reason</th>
+			</tr>
+        </thead>
+        <body>
+        % for tr in table_rows:
+        <tr>
+            % for td in tr:
+                ${td}
+            % endfor
+        </tr>
+        % endfor
+        </body>
+</table>
