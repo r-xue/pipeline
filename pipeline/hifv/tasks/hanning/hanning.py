@@ -107,15 +107,27 @@ class Hanning(basetask.StandardTaskTemplate):
         if not self.inputs.maser_detection:
             LOG.info("Maser detection turned off.")
         spws = self.inputs.context.observing_run.get_ms(self.inputs.vis).get_spectral_windows(science_windows_only=True)
-        hs_dict = dict()
+
+        smoothing_dict = {}
+
         for spw in spws:
-            hs_dict[spw.id] = False
-            if spw.sdm_num_bin > 1 or spw.specline_window:
-                if self.inputs.maser_detection:
-                    if self._checkmaserline(str(spw.id)):
-                        hs_dict[spw.id] = True
+            smoothing_dict[spw.id] = (False, "")
+            if spw.specline_window:
+                if self._checkmaserline(str(spw.id)):
+                    smoothing_dict[spw.id] = (True, "spectral line, maser line")
+                else:
+                    smoothing_dict[spw.id] = (False, "spectral line")
+            elif spw.sdm_num_bin > 1:
+                if self._checkmaserline(str(spw.id)):
+                    smoothing_dict[spw.id] = (True, "online smoothing applied, maser line")
+                else:
+                    smoothing_dict[spw.id] = (False, "online smoothing applied")
             else:
-                hs_dict[spw.id] = True
+                smoothing_dict[spw.id] = (True, "continuum")
+
+            hs_dict = {}
+            for key, val in smoothing_dict.items():
+                hs_dict[key] = val[0]
 
         if not any(hs_dict.values()):
             LOG.info("None of the science spectral windows were selected for smoothing.")
@@ -144,7 +156,7 @@ class Hanning(basetask.StandardTaskTemplate):
         # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
         self._track_hsmooth(hs_dict)
 
-        return HanningResults(smoothed_spws=hs_dict)
+        return HanningResults(smoothed_spws=smoothing_dict)
 
     def analyse(self, results):
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
