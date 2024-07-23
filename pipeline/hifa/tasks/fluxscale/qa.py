@@ -721,9 +721,7 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
                    ''.format(spw.id, spw.bandwidth, min_snr))
             mydict[calspw.id]['status'] = 'starved'
         LOG.info(msg)
-        if spw != calspw:
-            # diffgain mode (B2B/BWSW) dataset, so remove the snr_widest_spw key
-            mydict[calspw.id].pop('snr_widest_spw', None)
+
     return mydict
 
 

@@ -1,26 +1,29 @@
 """Provide a class to store logical representation of MeasurementSet."""
 import collections
 import contextlib
+import inspect
 import itertools
 import operator
 import os
+import re
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
-import re
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import conversion
+
 if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
-from . import measures
-from . import spectralwindow
+from pipeline.infrastructure import logging
+from pipeline.infrastructure.utils import range_to_list
+
+from . import measures, spectralwindow
 from .antennaarray import AntennaArray
 from .datatype import DataType
-from pipeline.infrastructure.utils import range_to_list
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -300,6 +303,12 @@ class MeasurementSet(object):
         qa = casa_tools.quanta
         cme = casa_tools.measures
 
+        # PIPE-1504: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
+        if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
+            log_level = logging.WARNING
+        else:
+            log_level = logging.INFO
+
         if source_name:
             # Use the first target source that matches the user defined name
             target_sources = [source for source in self.sources
@@ -380,8 +389,8 @@ class MeasurementSet(object):
             try:
                 target_spwid = [s.id for s in self.get_spectral_windows() if s.name == self.representative_window][0]
             except:
-                LOG.warning('Could not translate spw name %s to ID. Trying frequency matching heuristics.' %
-                            self.representative_window)
+                LOG.log(log_level, 'Could not translate spw name %s to ID. Trying frequency matching heuristics.' %
+                        self.representative_window)
 
         if target_spwid is not None:
             return (target_source_name, target_spwid)
@@ -475,8 +484,9 @@ class MeasurementSet(object):
         target_spws_freq = [spw for spw in target_spws_bw
                             if spw.min_frequency.value <= target_frequency_topo['m0']['value'] <= spw.max_frequency.value]
         if len(target_spws_freq) <= 0:
-            LOG.warning('No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s' %
-                        self.basename)
+            LOG.log(log_level,
+                    'No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s' %
+                    self.basename)
             max_chanwidth = None
             for spw in target_spws_bw:
                 chanwidth = spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ)

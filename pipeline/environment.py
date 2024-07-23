@@ -11,12 +11,10 @@ import os
 import platform
 import re
 import resource
-import subprocess
 import sys
 import typing
 from importlib.metadata import version, PackageNotFoundError
 from importlib.util import find_spec
-from io import StringIO
 from pathlib import Path
 
 import casatasks
@@ -27,6 +25,7 @@ from .infrastructure import logging
 from .infrastructure import mpihelpers
 from .infrastructure import utils
 from .infrastructure.mpihelpers import MPIEnvironment
+from .infrastructure.utils.subprocess import safe_run
 from .infrastructure.version import get_version
 
 LOG = logging.get_logger(__name__)
@@ -44,58 +43,6 @@ def _load(path: str, encoding: str = 'UTF-8') -> typing.AnyStr:
     """
     with open(path, 'r', encoding=encoding, newline="") as file:
         return file.read()
-
-
-def _run(command: str, stdout=None, stderr=None, cwd=None, shell=True) -> int:
-    """
-    Run a command in a subprocess.
-
-    This helper function is intended to hide the boilerplate required to
-    create and handle a subprocess while capturing its output. Rather than
-    having functions call subprocess directly, they should consider calling
-    this routine so that we have uniform handling.
-
-    @param command: the command to execute
-    @param stdout: optional stream to direct stdout to
-    @param stderr: optional stream to direct stderr to
-    @param shell:
-    @param cwd: working directory for command
-    @return: exit code of the process in which the command executed
-    """
-    stdout = stdout or sys.stderr
-    stderr = stderr or sys.stderr
-
-    out = subprocess.PIPE if isinstance(stdout, StringIO) else stdout
-    err = subprocess.PIPE if isinstance(stderr, StringIO) else stderr
-
-    proc = subprocess.Popen(command, shell=shell, stdout=out, stderr=err, cwd=cwd)
-
-    proc_stdout, proc_stderr = proc.communicate()
-    if proc_stdout:
-        stdout.write(proc_stdout.decode("utf-8", errors="ignore"))
-    if proc_stderr:
-        stderr.write(proc_stderr.decode("utf-8", errors="ignore"))
-    return proc.returncode
-
-
-def _safe_run(command: str, on_error: str = 'N/A') -> str:
-    """
-    Safely run a command in a subprocess, returning the given string if an
-    error occurs.
-
-    @param command: the command to execute
-    @param on_error: message to return if an exception occurs
-    """
-    stdout = StringIO()
-    try:
-        exit_code = _run(command, stdout=stdout, stderr=subprocess.DEVNULL)
-    except subprocess.CalledProcessError as e:
-        LOG.exception(f'Error running {command}', exc_info=e)
-    else:
-        if exit_code == 0:
-            return stdout.getvalue().strip()
-
-    return on_error
 
 
 class Environment(typing.Protocol):
@@ -243,13 +190,13 @@ class LinuxEnvironment(CommonEnvironment):
     def __init__(self):
         super(LinuxEnvironment, self).__init__()
 
-        lscpu_json = json.loads(_safe_run('lscpu -J', on_error='{"lscpu": {}}'))
+        lscpu_json = json.loads(safe_run('lscpu -J', on_error='{"lscpu": {}}'))
         self.cpu_type = self._from_lscpu(lscpu_json, 'Model name:')
         self.logical_cpu_cores = self._from_lscpu(lscpu_json, 'CPU(s):')
         self.physical_cpu_cores = self._from_lscpu(lscpu_json, "Core(s) per socket:")
 
         self.ram = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')
-        self.swap = _safe_run('swapon --show=SIZE --bytes --noheadings')
+        self.swap = safe_run('swapon --show=SIZE --bytes --noheadings')
 
         cgroup_controllers = CGroupControllerParser.get_controllers()
         self.cgroup_num_cpus = str(CGroupLimit.CPUAllocation.get_limit(cgroup_controllers))
@@ -409,7 +356,7 @@ class CGroupControllerParser:
             )
             results[name] = controller
 
-        is_cgroups_v2 = _safe_run('stat -fc %T /sys/fs/cgroup/') == 'cgroup2fs'
+        is_cgroups_v2 = safe_run('stat -fc %T /sys/fs/cgroup/') == 'cgroup2fs'
 
         # stage 2: read /proc/self/cgroup and determine:
         #   - the cgroup path for cgroups v2 or
@@ -651,7 +598,7 @@ class MacOSEnvironment(CommonEnvironment):
 
     @staticmethod
     def _from_sysctl(prop: str) -> str:
-        return _safe_run(f'sysctl -n {prop}')
+        return safe_run(f'sysctl -n {prop}')
 
     @staticmethod
     def _get_swap():
@@ -676,77 +623,7 @@ def _pipeline_revision() -> str:
     :return: string describing pipeline version.
     """
     pl_path = pkg_resources.resource_filename(__name__, '')
-
-    # Retrieve info about current commit.
-    stdout = StringIO()
-    try:
-        # Silently test if this is a Git repo.
-        _run('git rev-parse', stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, cwd=pl_path)
-        # Continue with fetching commit and branch info.
-        _run('git describe --always --tags --long --dirty', stdout=stdout, stderr=subprocess.DEVNULL, cwd=pl_path)
-        commit_hash = stdout.getvalue()
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        # FileNotFoundError: expected if git is not present in PATH.
-        # subprocess.CalledProcessError: expected if one of the git commands
-        # throws an error.
-        commit_hash = None
-
-    # Retrieve info about current branch.
-    git_branch = None
-    try:
-        git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'], cwd=pl_path,
-                                             stderr=subprocess.DEVNULL).decode().strip()
-
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        pass
-
-    # Try to get the version
-    ver = None
-    try:
-        ver = get_version(pl_path)
-    except (FileNotFoundError, subprocess.CalledProcessError):
-        pass
-
-    if git_branch is not None and ver is not None and (git_branch == "main" or git_branch.startswith("release/")):
-        # Output of the version.py script is a string with two or three space-separated elements:
-        # last branch tag (possibly empty), last release tag, and possibly a "dirty" suffix.
-        releasetag = ver[1]
-        if len(ver) >= 3:
-            dirty = ver[2]
-            return releasetag + '+' + dirty  # "+" denotes local version identifier as described in PEP440
-        else:
-            return releasetag
-    else:
-        # Consolidate into single version string.
-        if commit_hash is None:
-            commit_hash = "unknown_hash"
-            # If no Git commit info could be found, then attempt to load version
-            # from the _version module that is created when pipeline package is
-            # built.
-            try:
-                from pipeline._version import version
-                return version
-            except ModuleNotFoundError:
-                ver = "0.0.dev0"
-
-        if git_branch is None:
-            git_branch = "unknown_branch"
-
-        # this isn't available here
-        if ver is None or len(ver) < 2:
-            # Invalid version number:
-            ver = "0.0.dev0"
-        else:
-            ver = ver[1]
-
-        # Only ASCII numbers, letters, '.', '-', and '_' are allowed in the local version label (anything after the +)
-        commit_hash = re.sub(r'[^\w_\-\.]+', '.', commit_hash)
-        git_branch = re.sub(r'[^\w_\-\.]+', '.', git_branch)
-
-        # Consolidate into single version string.
-        version_str = "{}+{}-{}".format(ver, commit_hash, git_branch)
-
-        return version_str
+    return get_version(pl_path)
 
 
 casa_version = casatasks.version()

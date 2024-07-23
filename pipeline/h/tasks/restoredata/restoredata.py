@@ -42,7 +42,7 @@ from .. import applycal
 from .. import importdata
 from ..common import manifest
 
-from pipeline.extern.almarenorm import alma_renorm
+from pipeline.extern.almarenorm_pl2023 import alma_renorm
 
 LOG = infrastructure.get_logger(__name__)
 

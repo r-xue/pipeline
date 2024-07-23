@@ -84,6 +84,9 @@ def hifacal(vislist, importonly=True, dbservice=True, interactive=True):
         # Compute the time dependent gain calibration
         hifa_timegaincal()
 
+        # Run renormalization
+        hifa_renorm(createcaltable=True, atm_auto_exclude=True)
+
         # Flag ultrahigh calibrated target data
         hifa_targetflag()
 
@@ -107,9 +110,6 @@ def hifacal(vislist, importonly=True, dbservice=True, interactive=True):
 
         # Check product size limits and mitigate imaging parameters
         hif_checkproductsize(maxcubesize=40.0, maxcubelimit=60.0, maxproductsize=500.0)
-
-        # Run renormalization and apply correction
-        hifa_renorm(apply=True, atm_auto_exclude=True)
 
         # Export the data
         hifa_exportdata()
