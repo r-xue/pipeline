@@ -25,13 +25,7 @@ from pipeline.infrastructure import utils
 			            <th scope="col" rowspan="2">Real ID</th>
 			            <th scope="col" rowspan="2">Virtual ID</th>
 			            <th scope="col" rowspan="2">Name</th>
-			            <%
-						spwtypelabel='<th scope="col" rowspan="2">Type</th>'
-						if 'VLA' in pcontext.project_summary.telescope:
-					                spwtypelabel=''
-						endif
-						%>
-						${spwtypelabel}
+						<th scope="col" rowspan="2">Type</th> <!-- note: Type is used for different things for VLA vs ALMA -->
 			            <th scope="col" colspan="3">Frequency ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Bandwidth ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Transitions</th>
@@ -79,7 +73,12 @@ from pipeline.infrastructure import utils
 			            <%
 						spwtypeentry='<td>'+str(spw.type)+'</td>'
 						if 'VLA' in pcontext.project_summary.telescope:
-					                spwtypeentry=''
+							if spw.specline_window:
+								window_type = "Line"
+							else: 
+								window_type = "Continuum"
+							endif
+							spwtypeentry='<td>'+window_type+'</td>'
 						endif
 						%>
 						${spwtypeentry}
