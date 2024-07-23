@@ -19,6 +19,7 @@ class VLARestoreDataInputs(restoredata.RestoreDataInputs):
     ocorr_mode = vdp.VisDependentProperty(default='co')
     asis = vdp.VisDependentProperty(default='Receiver CalAtmosphere')
     gainmap = vdp.VisDependentProperty(default=False)
+    specline_spws = vdp.VisDependentProperty(default='auto')
 
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None,
                  output_dir=None, session=None, vis=None, bdfflags=None, lazy=None, asis=None,
