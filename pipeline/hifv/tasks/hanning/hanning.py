@@ -112,16 +112,13 @@ class Hanning(basetask.StandardTaskTemplate):
 
         for spw in spws:
             smoothing_dict[spw.id] = (False, "")
-            if spw.specline_window:
+            if spw.sdm_num_bin > 1:
+                smoothing_dict[spw.id] = (False, "online smoothing applied")
+            elif spw.specline_window:
                 if self._checkmaserline(str(spw.id)):
                     smoothing_dict[spw.id] = (True, "spectral line, maser line")
                 else:
                     smoothing_dict[spw.id] = (False, "spectral line")
-            elif spw.sdm_num_bin > 1:
-                if self._checkmaserline(str(spw.id)):
-                    smoothing_dict[spw.id] = (True, "online smoothing applied, maser line")
-                else:
-                    smoothing_dict[spw.id] = (False, "online smoothing applied")
             else:
                 smoothing_dict[spw.id] = (True, "continuum")
 
