@@ -43,10 +43,20 @@ class RenormQAHandler(pqa.QAPlugin):
         for source in result.stats:
             for spw in result.stats[source]:
                 try:
+                    # Max factor score
                     max_factor = result.stats[source][spw]['max_rn']
+
                     origin = pqa.QAOrigin(metric_name='MaxRenormFactor',
                                           metric_score=max_factor,
                                           metric_units='')
+
+                    if result.rnstats['invalid'][source][spw]:
+                        # Any NaNs apart from max_factor?
+                        score = 0.0
+                        shortmsg = 'Unexpected values.'
+                        longmsg = 'EB {} source {} spw {}: Error calculating corrections. NaNs encountered.'.format( \
+                                  os.path.basename(result.vis), source, spw)
+                        result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
 
                     if (max_factor < 1.0) or (max_factor > 2.5) or np.isnan(max_factor):
                         # These values should never occur
@@ -54,19 +64,16 @@ class RenormQAHandler(pqa.QAPlugin):
                         shortmsg = 'Unexpected values.'
                         longmsg = 'EB {} source {} spw {}: Erroneous or unrealistic scaling values were found. Error calculating corrections. Maximum factor is {}.'.format( \
                                   os.path.basename(result.vis), source, spw, max_factor)
-                    elif result.rnstats['invalid'][source][spw]:
-                        # Any NaNs apart from max_factor?
-                        score = 0.0
-                        shortmsg = 'Unexpected values.'
-                        longmsg = 'EB {} source {} spw {}: Error calculating corrections. NaNs encountered.'.format( \
-                                  os.path.basename(result.vis), source, spw)
-                    elif 1.0 <= max_factor <= threshold:
+                        result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
+
+                    if 1.0 <= max_factor <= threshold:
                         scorer = scorers.linScorer(threshold, 2.5, 1.0, 0.91) # score stays between 1.0 and 0.91 - green
                         score = scorer(max_factor)
                         shortmsg = 'Renormalization factor within threshold'
                         longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
                                   'is within threshold of {:.1%} and so was not applied'.format( \
                                   os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
+                        result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
                     elif max_factor > threshold:
                         if result.createcaltable:
                             if max_factor < 2.5:
@@ -89,7 +96,22 @@ class RenormQAHandler(pqa.QAPlugin):
                                       'is outside threshold of {:.1%} but no corrections were applied.'.format( \
                                       os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
 
-                    result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
+                        result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
+
+                    # Segment change score
+                    if result.stats[source][spw]['seg_change'] and (max_factor > threshold) and result.createcaltable:
+                        origin = pqa.QAOrigin(metric_name='SegChange',
+                                              metric_score=True,
+                                              metric_units='')
+
+                        score = 0.9
+                        shortmsg = 'Number of segments changed.'
+                        longmsg = 'EB {} source {} spw {}: The number of segments was changed throughout renormalization analysis.' \
+                                  ' Summary plot may show discontinuities due to averaging over fields with different segment boundaries.'.format( \
+                                  os.path.basename(result.vis), source, spw)
+
+                        result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
+
                 except:
                     # No factors for this spw. Just skip it.
                     pass
@@ -107,7 +129,7 @@ class RenormQAHandler(pqa.QAPlugin):
             for spw in result.atmWarning[target]:
                 if result.atmWarning[target][spw] and result.stats[target][spw]['max_rn'] > threshold:
                     if not result.createcaltable:
-                        atm_score = 0.9
+                        atm_score = 0.89
                         shortmsg = "Renormalization correction may be incorrect due to an atmospheric feature"
                         longmsg = "Renormalization correction may be incorrect in SPW {} due to an atmospheric feature. Suggested "\
                                   "channel exclusion: {}".format(spw, result.atmExcludeCmd[target][spw])
@@ -126,7 +148,7 @@ class RenormQAHandler(pqa.QAPlugin):
                             atm_score = 0.85
                             shortmsg = "Channels are being excluded from renormalization correction"
                         elif result.atmAutoExclude:
-                            atm_score = 0.9
+                            atm_score = 0.89
                             shortmsg = "Channels are being excluded from renormalization correction due to an atmospheric feature"
                             longmsg = "Channels {} are being excluded from renormalization correction to SPW {} due to an atmospheric " \
                                       "feature.".format(result.atmExcludeCmd[target][spw], spw)
