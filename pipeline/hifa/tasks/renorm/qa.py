@@ -6,6 +6,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
+from pipeline.qa.utility import scorers
 
 from . import renorm
 
@@ -47,11 +48,11 @@ class RenormQAHandler(pqa.QAPlugin):
                                           metric_score=max_factor,
                                           metric_units='')
 
-                    if (max_factor < 1.0) or np.isnan(max_factor):
+                    if (max_factor < 1.0) or (max_factor > 2.5) or np.isnan(max_factor):
                         # These values should never occur
                         score = 0.0
                         shortmsg = 'Unexpected values.'
-                        longmsg = 'EB {} source {} spw {}: Error calculating corrections. Maximum factor is {}.'.format( \
+                        longmsg = 'EB {} source {} spw {}: Erroneous or unrealistic scaling values were found. Error calculating corrections. Maximum factor is {}.'.format( \
                                   os.path.basename(result.vis), source, spw, max_factor)
                     elif result.rnstats['invalid'][source][spw]:
                         # Any NaNs apart from max_factor?
@@ -60,23 +61,32 @@ class RenormQAHandler(pqa.QAPlugin):
                         longmsg = 'EB {} source {} spw {}: Error calculating corrections. NaNs encountered.'.format( \
                                   os.path.basename(result.vis), source, spw)
                     elif 1.0 <= max_factor <= threshold:
-                        score = 1.0
+                        scorer = scorers.linScorer(threshold, 2.5, 1.0, 0.91) # score stays between 1.0 and 0.91 - green
+                        score = scorer(max_factor)
                         shortmsg = 'Renormalization factor within threshold'
                         longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                  'is within threshold of {:.1%}'.format( \
+                                  'is within threshold of {:.1%} and so was not applied'.format( \
                                   os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                     elif max_factor > threshold:
                         if result.createcaltable:
-                            score = 0.9
+                            if max_factor < 2.5:
+                                scorer = scorers.linScorer(threshold, 2.5, 0.9, 0.67) # score stays between 0.9 and 0.67 - blue
+                                score = scorer(max_factor)
+                            else:
+                                score = 0.66 # yellow score
                             shortmsg = 'Renormalization computed'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                      'is outside threshold of {:.1%} so corrections were computed.'.format( \
+                                      'is outside threshold of {:.1%} so corrections were applied.'.format( \
                                       os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                         else:
-                            score = max(0.66+threshold-max_factor, 0.34)
+                            if max_factor < 2.5:
+                                scorer = scorers.linScorer(threshold, 2.5, 0.66, 0.34) # score stays between 0.66 and 0.34 - yellow
+                                score = scorer(max_factor)
+                            else:
+                                score = 0.33 # red score
                             shortmsg = 'Renormalization factor outside threshold'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                      'is outside threshold of {:.1%} but no corrections were computed.'.format( \
+                                      'is outside threshold of {:.1%} but no corrections were applied.'.format( \
                                       os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
 
                     result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
@@ -95,7 +105,7 @@ class RenormQAHandler(pqa.QAPlugin):
 
         for target in result.atmWarning:
             for spw in result.atmWarning[target]:
-                if result.atmWarning[target][spw]:
+                if result.atmWarning[target][spw] and result.stats[target][spw]['max_rn'] > threshold:
                     if not result.createcaltable:
                         atm_score = 0.9
                         shortmsg = "Renormalization correction may be incorrect due to an atmospheric feature"

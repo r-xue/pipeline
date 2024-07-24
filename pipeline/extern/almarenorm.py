@@ -1154,6 +1154,10 @@ class ACreNorm(object):
             self.corrATM = True
             casalog.post('Will account for any ATM lines within the SPWs')
 
+        # Need to keep track of the number of times we write to the renorm table. 
+        rntb_iter = 0
+        rntb = None
+
         # Handle correction request
         if docorr or createCalTable:
             createCalTable = True
@@ -1185,9 +1189,6 @@ class ACreNorm(object):
             # Define a new table tool instance for this table
             self.rntb = tbtool()
             self.rntb.open(self.rntable, nomodify=False)
-
-            # Need to keep track of the number of times we write to the renorm table. 
-            rntb_iter = 0
 
             if fillTable:
                 casalog.post('All targets, scans, spws will be filled in resulting calibration table. This may greatly enlarge the size of the final table!')
@@ -2192,7 +2193,8 @@ class ACreNorm(object):
                                 continue
                             casalog.post(f' Writing filler solutions for spw {ispw}, scan {iscan}, field {ifld}')
                             N_fill = np.ones((self.num_corrs, self.msmeta.nchan(ispw), self.nAnt))
-                            self.writeCalTable(ispw, ifld, iscan, N_fill, rntb_iter)
+                            if createCalTable:
+                                self.writeCalTable(ispw, ifld, iscan, N_fill, rntb_iter)
                             rntb_iter += 1
 
 

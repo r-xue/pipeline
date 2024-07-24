@@ -114,12 +114,6 @@ class SerialRenorm(basetask.StandardTaskTemplate):
     def prepare(self):
         inp = self.inputs
 
-        # Issue warning if current MS contains Band 9 and/or 10 data.
-        bands_in_ms = {spw.band for spw in inp.ms.get_spectral_windows()}
-        for band in ('ALMA Band 9', 'ALMA Band 10'):
-            if band in bands_in_ms:
-                LOG.warning(f"{inp.ms.basename}: running hifa_renorm on {band} (DSB) data.")
-
         # PIPE-2150: safely create the "RN_plots" directory before calling the renormalization external code to prevent
         # potential race condition when checking/examining the directory existence in the tier0 setup.
         # This workaround might be removed after the changes from PIPE-2151
@@ -147,11 +141,19 @@ class SerialRenorm(basetask.StandardTaskTemplate):
 
             rnstats_light = self._get_rnstats_light(stats, rnstats)
 
+            if not alltdm:
+                # Issue warning if current MS contains Band 9 and/or 10 data.
+                bands_in_ms = {spw.band for spw in inp.ms.get_spectral_windows()}
+                for band in ('ALMA Band 9', 'ALMA Band 10'):
+                    if band in bands_in_ms:
+                        LOG.attention(f"{inp.ms.basename}: running hifa_renorm on {band} (DSB) data.")
+
             calapps = self._get_calapps(calTableCreated)
 
             result = RenormResults(inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
                                    inp.excludechan, calTableCreated, stats, rnstats_light, alltdm,
                                    inp.atm_auto_exclude, atmWarning, atmExcludeCmd, inp.bwthreshspw, inp.caltable, calapps)
+
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
             LOG.error(traceback.format_exc())
