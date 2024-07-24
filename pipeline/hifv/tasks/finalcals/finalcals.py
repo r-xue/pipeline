@@ -829,7 +829,7 @@ class Finalcals(basetask.StandardTaskTemplate):
         """
 
         # PIPE-1729, setting fluxdensity to 1 for calibrators failed in hifv_fluxboot.
-        fluxdensity = -1 if os.path.isdir('fluxgaincalFcal_{!s}.g'.format(field)) else 1
+        fluxdensity, standard = [-1, standard.Standard()(field)] if os.path.isdir('fluxgaincalFcal_{!s}.g'.format(field)) else [1, 'manual']
         try:
             task_args = {'vis': calMs,
                          'field': field,
@@ -839,7 +839,7 @@ class Finalcals(basetask.StandardTaskTemplate):
                          'listmodels': False,
                          'scalebychan': True,
                          'fluxdensity': fluxdensity,
-                         'standard': standard.Standard()(field),
+                         'standard': standard,
                          'usescratch': True}
 
             job = casa_tasks.setjy(**task_args)
