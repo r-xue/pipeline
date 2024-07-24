@@ -122,7 +122,6 @@ class SerialRenorm(basetask.StandardTaskTemplate):
             'create_cal_table': inp.createcaltable,
             'threshold': inp.threshold,
             'excludechan': copy.deepcopy(inp.excludechan),  # create copy, PIPE-1612.
-            'correct_atm': False,
             'atm_auto_exclude': inp.atm_auto_exclude,
             'bwthreshspw': inp.bwthreshspw,
             'caltable': inp.caltable

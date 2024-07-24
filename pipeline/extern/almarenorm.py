@@ -102,7 +102,7 @@ mycb=cbtool()
 
 # Interface function for use by ALMA Pipeline renormalization task (PIPE-1687).
 def alma_renorm(vis: str, spw: List[int], create_cal_table: bool, threshold: Union[None, float], excludechan: Dict,
-        correct_atm: bool, atm_auto_exclude: bool, bwthreshspw: Dict, caltable: str) -> tuple:   ## PIPE-1469 for bwthreshspw
+        atm_auto_exclude: bool, bwthreshspw: Dict, caltable: str) -> tuple:   ## PIPE-1469 for bwthreshspw
     """
     Interface function for ALMA Pipeline: this runs the ALMA renormalization
     heuristic for input vis, and returns statistics and metadata required by
@@ -162,8 +162,8 @@ def alma_renorm(vis: str, spw: List[int], create_cal_table: bool, threshold: Uni
     # Only attempt the correction if the data are not all TDM.
     if not alltdm:
         # Run the renormalisation.
-        rn.renormalize(createCalTable=create_cal_table, fillTable=True, docorrThresh=threshold, correctATM=correct_atm, spws=spw, excludechan=excludechan,
-                       atmAutoExclude=atm_auto_exclude, bwthreshspw=bwthreshspw, datacolumn='DATA') # add bwthreshspw
+        rn.renormalize(createCalTable=create_cal_table, fillTable=create_cal_table, docorrThresh=threshold, spws=spw, excludechan=excludechan,
+                       atmAutoExclude=atm_auto_exclude, bwthreshspw=bwthreshspw, datacolumn='DATA') 
 
         # Create spectra plots.
         rn.plotSpectra(includeSummary=False)
@@ -1154,10 +1154,6 @@ class ACreNorm(object):
             self.corrATM = True
             casalog.post('Will account for any ATM lines within the SPWs')
 
-        # Need to keep track of the number of times we write to the renorm table. 
-        rntb_iter = 0
-        rntb = None
-
         # Handle correction request
         if docorr or createCalTable:
             createCalTable = True
@@ -1190,12 +1186,16 @@ class ACreNorm(object):
             self.rntb = tbtool()
             self.rntb.open(self.rntable, nomodify=False)
 
+            # Need to keep track of the number of times we write to the renorm table. 
+            rntb_iter = 0
+
             if fillTable:
                 casalog.post('All targets, scans, spws will be filled in resulting calibration table. This may greatly enlarge the size of the final table!')
                 casalog.post(f'TDM windows {self.tdmspws} will also be included in {self.rntable}.')
 
         else:
             casalog.post('No corrections will be saved (createCalTable=False)!')
+            fillTable=False 
 
         # Check if docorrThresh is set correctly
         if docorrThresh is not None:
@@ -2161,41 +2161,41 @@ class ACreNorm(object):
                         elif exclude_cmd != "No flagging suggested.":
                             casalog.post('Atmospheric features mitigated.')
                             casalog.post('Equivalent manual call: '+exclude_cmd)
-    
-            # If fillTable is selected as an option, then we need to also fill in 
-            # all the science TDM windows as well (if any) for this target. 
-            if len(self.tdmspws) > 0 and fillTable:
-                casalog.post(f'\nFilling in TDM spws in calibration table {self.rntable} with value of 1.0')
-                for ispw in self.tdmspws:
-                    #casalog.post(f' Writing filler solutions for spw {ispw}')
-                    # Not all targets are in all scans, we need to iterate over only those scans containing the target
-                    target_scans = np.intersect1d(self.msmeta.scansforintent('*TARGET*'), self.msmeta.scansforfield(target))
 
-                    # Make an additional cut to catch only those scans which contain the current spw (usually only relevant
-                    # for spectral scan datasets)
-                    target_scans = np.intersect1d(target_scans, self.msmeta.scansforspw(ispw))
+            if createCalTable:
+                # If fillTable is selected as an option, then we need to also fill in 
+                # all the science TDM windows as well (if any) for this target. 
+                if len(self.tdmspws) > 0 and fillTable:
+                    casalog.post(f'\nFilling in TDM spws in calibration table {self.rntable} with value of 1.0')
+                    for ispw in self.tdmspws:
+                        #casalog.post(f' Writing filler solutions for spw {ispw}')
+                        # Not all targets are in all scans, we need to iterate over only those scans containing the target
+                        target_scans = np.intersect1d(self.msmeta.scansforintent('*TARGET*'), self.msmeta.scansforfield(target))
 
-                    # If user input list of scans to use, cross check those with the list of all scans on targets to make
-                    # sure it's necessary to perform this loop. 
-                    target_scans = np.intersect1d(target_scans, targscans)
+                        # Make an additional cut to catch only those scans which contain the current spw (usually only relevant
+                        # for spectral scan datasets)
+                        target_scans = np.intersect1d(target_scans, self.msmeta.scansforspw(ispw))
 
-                    # global list of scans with the current spw
-                    spwscans=list(self.msmeta.scansforspw(ispw))
+                        # If user input list of scans to use, cross check those with the list of all scans on targets to make
+                        # sure it's necessary to perform this loop. 
+                        target_scans = np.intersect1d(target_scans, targscans)
 
-                    for iscan in target_scans:
-                        #casalog.post(f'  Scan {iscan}')
-                        # get the fields to process in this scan - i.e. mosaics have many fields per scan
-                        Tarfld = list(self.msmeta.fieldsforscan(iscan))
+                        # global list of scans with the current spw
+                        spwscans=list(self.msmeta.scansforspw(ispw))
 
-                        for ifld in Tarfld:
-                            # Skip over target scans that don't have the current spw - can happen for spectral scans?
-                            if spwscans.count(iscan) == 0:
-                                continue
-                            casalog.post(f' Writing filler solutions for spw {ispw}, scan {iscan}, field {ifld}')
-                            N_fill = np.ones((self.num_corrs, self.msmeta.nchan(ispw), self.nAnt))
-                            if createCalTable:
+                        for iscan in target_scans:
+                            #casalog.post(f'  Scan {iscan}')
+                            # get the fields to process in this scan - i.e. mosaics have many fields per scan
+                            Tarfld = list(self.msmeta.fieldsforscan(iscan))
+
+                            for ifld in Tarfld:
+                                # Skip over target scans that don't have the current spw - can happen for spectral scans?
+                                if spwscans.count(iscan) == 0:
+                                    continue
+                                casalog.post(f' Writing filler solutions for spw {ispw}, scan {iscan}, field {ifld}')
+                                N_fill = np.ones((self.num_corrs, self.msmeta.nchan(ispw), self.nAnt))
                                 self.writeCalTable(ispw, ifld, iscan, N_fill, rntb_iter)
-                            rntb_iter += 1
+                                rntb_iter += 1
 
 
 
@@ -2292,6 +2292,12 @@ class ACreNorm(object):
         # We need the number of antennas from the array shape as this will be
         # the number of rows we'll be adding to the table currently.
         nPol, nChan, nAnt = N.shape
+
+        # For the single pol case, fill the other pol with ones so that the 
+        # Pipeline can handle it. 
+        if nPol == 1:
+            N_fill = np.ones(N.shape)
+            N = np.concatenate((N,N_fill))
         
         # Antenna based corrections so we need 1 row for each antenna
         self.rntb.addrows(nrow = nAnt)
