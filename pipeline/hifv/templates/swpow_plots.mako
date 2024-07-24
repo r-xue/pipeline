@@ -21,11 +21,21 @@ from pipeline.infrastructure.renderer import rendererutils
 <br>
 
 <h4>
- %for band in swpowspgain_subpages.keys():
+%if plots[0].parameters['type'] == 'spgain':
+    %for band in swpowspgain_subpages.keys():
         %for ms in swpowspgain_subpages[band].keys():
             <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, swpowspgain_subpages[band][ms])}">${band}-band</a> &nbsp;|&nbsp;
         %endfor
     %endfor
+%elif plots[0].parameters['type'] == 'tsys':
+    %for band in swpowtsys_subpages.keys():
+        %for ms in swpowtsys_subpages[band].keys():
+            <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, swpowtsys_subpages[band][ms])}">${band}-band</a> &nbsp;|&nbsp;
+        %endfor
+    %endfor
+%else:
+ &nbsp;
+%endif
 (Click to Jump)
 </h4>
 
