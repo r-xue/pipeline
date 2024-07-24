@@ -10,12 +10,13 @@ import shutil
 import collections
 import datetime
 import functools
+import itertools
 import math
 import operator
 import os
 import re
 import traceback
-from typing import List, Tuple, TYPE_CHECKING
+from typing import List, Optional, Tuple, TYPE_CHECKING, Union
 
 import numpy as np
 from scipy import interpolate
@@ -34,8 +35,10 @@ from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.infrastructure import casa_tools
 
 if TYPE_CHECKING:
+    from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
+    from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
     from pipeline.infrastructure.launcher import Context
 
@@ -1389,8 +1392,8 @@ def score_wvrgcal(ms_name, dataresult):
         if WVRinfo.flag:
             flagant_list.append(WVRinfo.antenna)
 
-    # limits for disc and rms triggers - 
-    # same as hard coded in wvrg_qa to make the remcloud 
+    # limits for disc and rms triggers -
+    # same as hard coded in wvrg_qa to make the remcloud
     # trigger result object boolean
     disc_max = 500 # in um
     rms_max = 500 # in um
@@ -1408,7 +1411,7 @@ def score_wvrgcal(ms_name, dataresult):
 
     if score > 1.0:
         # if nothing else score passes will be >1.0
-        # truncate to 1.0 - ratio_score now holding improvement 
+        # truncate to 1.0 - ratio_score now holding improvement
         score = 1.0
         if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 or dataresult.PHnoisy is True:
             score = 0.9  # i.e. to blue as a maximum value
@@ -1437,7 +1440,7 @@ def score_wvrgcal(ms_name, dataresult):
                 score = linear_score(score, 0.0, 0.9, 0.67, 0.9)
                 # i.e. inputs will be truncated to between 0.0 and 0.9, linfited to be then between 0.67 and 0.9 - blue
 
-    # now for scores < 1.0 
+    # now for scores < 1.0
     elif score < 1.0:
         qa_messages.append('No WVR improvement')  # PIPE-1837 message changed, now below
 
@@ -1454,7 +1457,7 @@ def score_wvrgcal(ms_name, dataresult):
 
         else:
             score = 0.66
-            reduceBy = 0.0  # initiate due to PIPE-1837 if/else loops 
+            reduceBy = 0.0  # initiate due to PIPE-1837 if/else loops
             if len(flagant_list) > 0 or len(disc_limit) > 0 or len(rms_limit) > 0 :
                 # now adjust 0.1 per bad entry
                 reduceBy += len(flagant_list)*0.1
@@ -1469,14 +1472,14 @@ def score_wvrgcal(ms_name, dataresult):
                 if len(rms_limit) > 0:
                     qa_messages.append('Elevated rms value(s)')
 
-            # PIPE-1837 before final yellow scoring we assess if the 
+            # PIPE-1837 before final yellow scoring we assess if the
             # phase rms from wvrg_qa was 'good' i.e. <1 radian
-            # but only when there are no other WVR soln issues, i.e. 
+            # but only when there are no other WVR soln issues, i.e.
             # disc or rms are below the fixed limits - note
             # message changes explicitly if only BP is 'good' or both BP and Phase
             # technically the phase can be noisy due to SNR, not atmospheric variations
             if len(disc_limit) == 0 and len(rms_limit) == 0:
-                # here we would check if initscore > 0.X: "limit' 
+                # here we would check if initscore > 0.X: "limit'
                 if dataresult.BPgood:
                     qa_messages.append('Bandpass ' + ('and Phase ' if dataresult.PHgood else '') +
                                        'calibrator atmospheric phase stability appears to be good')
@@ -1488,14 +1491,14 @@ def score_wvrgcal(ms_name, dataresult):
                     qa_messages.append('Check atmospheric phase stability')
                     # if disc and rms didn't trigger but phase stability not reported as good - still yellow
                     score = linear_score(score, 0.0, 0.66, 0.34, 0.66)
-  
+
             # Otherwise now we are back to yellow when disc or rms also triggered on any ant and append message now
             else:
                 qa_messages.append('Check atmospheric phase stability')
                 score = linear_score(score, 0.0, 0.66, 0.34, 0.66)
                 # i.e. inputs will be truncated to between 0.0 and 0.66, linfited to be then between 0.34 and 0.66
 
-    # join the short messages for the QA score (are these stored?? ) 
+    # join the short messages for the QA score (are these stored?? )
     qa_mesg = ' - '.join(qa_messages)
 
     if qa_mesg:
@@ -1503,7 +1506,7 @@ def score_wvrgcal(ms_name, dataresult):
     else:
         longmsg = 'phase RMS improvement was %0.2f for %s' % (wvr_score, ms_name)
 
-    # should be made always 
+    # should be made always
     shortmsg = '%0.2fx improvement' % wvr_score
 
     origin = pqa.QAOrigin(metric_name='score_wvrgcal',
@@ -1988,8 +1991,8 @@ def score_decoherence_assessment(ms: MeasurementSet, phaserms_results, outlier_a
     phase_stability_origin = pqa.QAOrigin(metric_name='Phase stability',
                                           metric_score=phasermscycle_p80,
                                           metric_units='Degrees')
-       
-    return pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin, 
+
+    return pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin,
                        weblog_location=pqa.WebLogLocation.ACCORDION)
 
 
@@ -2600,38 +2603,343 @@ def score_images_exist(filesdir, imaging_products_only, calimages, targetimages)
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
+def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, int]]:
+    """Get valid line ranges from list of line properties.
+
+    Args:
+        lines: List of lines. Each line is expressed as at least three
+               values, [center, width, validity_flag], where the line
+               is regarded as valid if validity_flag is True.
+
+    Returns:
+        List of (start, end) channels for valid lines
+    """
+    line_ranges = []
+    for line in lines:
+        center, width, is_valid = line[:3]
+        if is_valid:
+            chan_left = int(np.floor(center - width / 2 + 0.5))
+            chan_right = int(np.floor(center + width / 2 + 0.5))
+            line_ranges.append((chan_left, chan_right))
+
+    return line_ranges
+
+
 @log_qa
-def score_sd_line_detection(group_id_list, spw_id_list, lines_list):
-    detected_spw = []
-    detected_group = []
+def examine_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
+    """Examine the existence of lines at edge channels.
 
-    for group_id, spw_id, lines in zip(group_id_list, spw_id_list, lines_list):
-        if any([l[2] for l in lines]):
-            LOG.trace('detected lines exist at group_id %s spw_id %s' % (group_id, spw_id))
-            unique_spw_id = set(spw_id)
-            if len(unique_spw_id) == 1:
-                detected_spw.append(unique_spw_id.pop())
-            else:
-                detected_spw.append(-1)
-            detected_group.append(group_id)
+    This function checks if there are lines that spans edge channels.
+    Excluded channels via edge parameter are taken into account.
 
-    if len(detected_spw) == 0:
-        score = 0.0
-        longmsg = 'No spectral lines were detected'
-        shortmsg = 'No spectral lines were detected'
+    Args:
+        line_ranges: List of line ranges
+        nchan: Number of channels
+        edge: Number of edge channels excluded from both sides
+
+    Returns:
+        True if there are lines that satisfy the condition above.
+        Otherwise, False.
+    """
+    chan_leftmost = min(line[0] for line in line_ranges)
+    chan_rightmost = max(line[1] for line in line_ranges)
+    LOG.debug(
+        'leftmost %s, rightmost %s, nchan %s, edge (%s, %s)',
+        chan_leftmost, chan_rightmost, nchan, edge[0], edge[1]
+    )
+    return chan_leftmost <= edge[0] or nchan - 1 - edge[1] <= chan_rightmost
+
+
+@log_qa
+def examine_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
+    """Examine the existence of wide lines.
+
+    This function returns True if there is a line with the width
+    exceeding 1/3 of spw bandwidth. If there are multiple lines
+    and their coverage exceeds the criterion *in total*, the
+    function also returns True. Otherwise, it returns False.
+    Excluded channels via edge parameter are taken into account.
+
+    Args:
+        line_ranges: List of line ranges
+        nchan: Number of channels
+        edge: Number of edge channels excluded from both sides
+
+    Returns:
+        True if wide line exists. Otherwise, Flase. Please see
+        the above description on more detailed explanation of
+        return value.
+    """
+    # see PIPEREQ-304 for the origin of the value
+    fraction = 1 / 3
+
+    mask = np.zeros(nchan, dtype=np.uint8)
+    for line in line_ranges:
+        ch_start = max(line[0], 0)
+        ch_end = min(line[1], nchan - 1) + 1
+        mask[ch_start:ch_end] = 1
+
+    start = edge[0]
+    end = nchan - edge[1]
+    effective_nchan = nchan - sum(edge)
+    line_coverage = sum(mask[start:end])
+
+    return line_coverage > effective_nchan * fraction
+
+
+def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSReductionGroupMember') -> List[Tuple[int, int]]:
+    """Select deviation masks that belongs to given reduction group member.
+
+    Args:
+        deviation_masks: List of all deviation masks
+        reduction_group_member: Reduction group member instance
+
+    Returns:
+        List of (start, end) channels for selected deviation masks
+    """
+    ms_name = reduction_group_member.ms.basename
+    field_id = reduction_group_member.field_id
+    spw_id = reduction_group_member.spw_id
+    antenna_id = reduction_group_member.antenna_id
+    return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
+
+
+def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, ranges: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+    """Convert channel ranges in MS coordinate to those in image coordinate.
+
+    Frequency coordinates are different between MS and image product.
+    This method converts channel ranges in MS coordinate into the ranges
+    in image coordinate. The conversion includes the following operations.
+
+        - to reverse channels if spw is LSB
+        - to shift channels by the amount specified by edge parameter
+
+    Args:
+        edge: Number of edge channels excluded
+        nchan: Number of channels
+        sideband: 1 for USB, -1 for LSB
+        ranges: List of two tuples representing channel ranges
+
+    Returns:
+        Converted channel ranges
+    """
+    edge_left, edge_right = edge
+
+    if sideband == -1:
+        # LSB
+        chan_offset = edge_right
+
+        def _reverse_range(x):
+            return nchan - 1 - x
+
+        _ranges_image = (map(_reverse_range, x[::-1]) for x in ranges)
+
     else:
-        score = 1.0
-        if detected_spw.count(-1) == 0:
-            longmsg = 'Spectral lines were detected in spws %s' % (', '.join(map(str, detected_spw)))
-        else:
-            longmsg = 'Spectral lines were detected in ReductionGroups %s' % (','.join(map(str, detected_group)))
-        shortmsg = 'Spectral lines were detected'
+        # USB
+        chan_offset = edge_left
 
-    origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                          metric_score=len(detected_spw),
-                          metric_units='Number of spectral lines detected')
+        _ranges_image = ranges
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    # offset channel ranges
+    def _offset_range(x):
+        return x - chan_offset
+
+    _ranges_image = (map(_offset_range, x) for x in _ranges_image)
+
+    return sorted(tuple(x) for x in _ranges_image)
+
+
+@log_qa
+def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> List[pqa.QAScore]:
+    """Compute QA score based on the line detection result.
+
+    QA scores are evaluated based on the line detection result for
+    each combination of spw and field individually. Scoring scheme of
+    individual results are as follows:
+
+        - skip scoring if no lines were detected (no QAScore object)
+        - 0.55 if there are lines extends to edge channels
+        - 0.6 if there are lines that covers more than 1/3 of spw
+          bandwidth in total
+        - 1.0 otherwise
+
+    If no lines were detected in any spws/fields so that no QAScore
+    objects were created, this function creates QAScore object with
+    the score of 0.8 and the message indicating that no lines were
+    detected. Therefore, returned list should contain at least one
+    QAScore object.
+
+    In addition to the detected lines, deviation masks are also
+    examined. Score will be 0.65 if deviation masks with any widths
+    exist. Returned QAScore objects are the collection of scores from
+    both spectral lines and deviation masks but they can be
+    differentiated by the associated messages and/or metric units.
+
+    Relevant JIRA tickets:
+        PIPE-2136
+        PIPEREQ-304
+
+    Args:
+        reduction_group: Reduction group
+        result: Result object generated by hsd_baseline stage
+
+    Returns:
+        List of QAScore objects derived from line detection results
+        and/or deviation masks
+    """
+    line_detection_scores = []
+    # deviation_mask_qa_data collects set of (spw_id, antenna_id, masked_ranges)
+    # data per field per EB
+    deviation_mask_qa_data = {}
+    deviation_mask_all = result.outcome['deviation_mask']
+
+    # edge parameter
+    # channels specified by edge will be excluded from resulting images
+    _edge = result.outcome['edge']
+    edge = (_edge, _edge) if isinstance(_edge, int) else tuple(_edge[:2])
+
+    for bl in result.outcome['baselined']:
+        reduction_group_id = bl['group_id']
+        reduction_group_desc = reduction_group[reduction_group_id]
+        member_list = bl['members']
+        field_name = reduction_group_desc.field_name
+        spw = reduction_group_desc[member_list[0]].spw
+        # sideband is 1 for USB, -1 for LSB
+        sideband = int(spw.sideband)
+        nchan = reduction_group_desc.nchan
+
+        # deviation mask
+        for member_id in member_list:
+            reduction_group_member = reduction_group_desc[member_id]
+            deviation_masks = select_deviation_masks(
+                deviation_mask_all, reduction_group_member
+            )
+
+            if deviation_masks:
+                data_per_field = deviation_mask_qa_data.setdefault(field_name, collections.defaultdict(list))
+                spw_id = reduction_group_member.spw_id
+                ms_name = reduction_group_member.ms.origin_ms
+                antenna_name = reduction_group_member.antenna_name
+                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks))
+
+        # spectral lines
+        lines = get_line_ranges(bl['lines'])
+        if len(lines) > 0:
+            # sort lines by left channel
+            lines.sort(key=operator.itemgetter(0))
+
+            is_edge_line = examine_sd_edge_lines(lines, nchan, edge)
+            is_wide_line = examine_sd_wide_lines(lines, nchan, edge)
+
+            if is_edge_line and is_wide_line:
+                score = 0.55  # min(0.55, 0.6)
+                msg = 'Edge and wide lines were detected'
+            elif is_edge_line:
+                score = 0.55
+                msg = 'Edge line was detected'
+            elif is_wide_line:
+                score = 0.6
+                msg = 'Wide line was detected'
+            else:
+                # detected lines do not harm baseline subtraction
+                score = 1.0
+                msg = 'Line ranges were detected'
+
+            spw_ids = set(reduction_group_desc[m].spw_id for m in member_list)
+            spw_desc = ', '.join(map(str, spw_ids))
+            shortmsg = f'{msg}.'
+            longmsg = f'{msg} in Field {field_name}, Spw {spw_desc}.'
+            lines_image = channel_ranges_for_image(edge, nchan, sideband, lines)
+            metric_value = ';'.join([f'{left}~{right}' for left, right in lines_image])
+            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                                  metric_score=metric_value,
+                                  metric_units='Channel range(s) of detected lines')
+            selection = pqa.TargetDataSelection(spw=set(spw_desc.split(', ')),
+                                                field=set([field_name]),
+                                                intent={'TARGET'})
+            line_detection_scores.append(
+                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+            )
+
+    if len(line_detection_scores) == 0:
+        # add new entry with score of 0.8 if no spectral lines
+        # were detected in any spws/fields
+        score = 0.8
+        longmsg = 'No line ranges were detected in all SPWs.'
+        shortmsg = 'No line ranges were detected in all SPWs.'
+
+        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                              metric_score='N/A',
+                              metric_units='Channel range(s) of detected lines')
+        selection = pqa.TargetDataSelection(intent={'TARGET'})
+        line_detection_scores.append(
+            pqa.QAScore(
+                score, longmsg=longmsg, shortmsg=shortmsg,
+                origin=origin, applies_to=selection
+            )
+        )
+
+    # dictionary for spw setup
+    spw_config_dict = {}
+    for reduction_group_desc in reduction_group.values():
+        for reduction_group_member in reduction_group_desc:
+            ms_name = reduction_group_member.ms.origin_ms
+            spw = reduction_group_member.spw
+            spw_id = spw.id
+            nchan = spw.num_channels
+            sideband = int(spw.sideband)
+            dict_for_ms = spw_config_dict.setdefault(ms_name, {})
+            dict_for_spw = dict_for_ms.setdefault(spw_id, {})
+            dict_for_spw['nchan'] = nchan
+            dict_for_spw['sideband'] = sideband
+
+    # generate deviation mask QA scores with merged spws and antennas
+    deviation_mask_scores = []
+    for field_name, data_per_ms in deviation_mask_qa_data.items():
+        for ms_name, data in data_per_ms.items():
+            spw_ids = {x[0] for x in data}
+            antenna_names = {x[1] for x in data}
+
+            # score is fixed to 0.65. See PIPE-2136 and PIPEREQ-304.
+            score = 0.65
+            msg = 'Deviation mask was triggered'
+            shortmsg = f'{msg}.'
+            spw_string = ', '.join(map(str, sorted(spw_ids)))
+            antenna_string = ', '.join(sorted(antenna_names))
+            longmsg = f'{msg} in EB {ms_name}, Field {field_name}, Spw {spw_string}, Antenna {antenna_string}.'
+
+            # get list of unique mask ranges per spw
+            deviation_masks_per_spw = collections.defaultdict(set)
+            for spw_id, _, deviation_mask in data:
+                deviation_masks_per_spw[spw_id].update(map(tuple, deviation_mask))
+
+            # metric value format: spw0:c0~c1:c2~c3,spw1:c4~c5
+            deviation_masks_for_image = []
+            for spw_id, deviation_masks in deviation_masks_per_spw.items():
+                spw_config = spw_config_dict[ms_name][spw_id]
+                nchan = spw_config['nchan']
+                sideband = spw_config['sideband']
+                devmasks_image = channel_ranges_for_image(edge, nchan, sideband, sorted(deviation_masks))
+                deviation_masks_for_image.append((spw_id, devmasks_image))
+
+            metric_value = ','.join([
+                f'{spw_id}:' + ';'.join([f'{left}~{right}' for left, right in sorted(deviation_masks)])
+                for spw_id, deviation_masks in deviation_masks_for_image
+            ])
+            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                                  metric_score=metric_value,
+                                  metric_units='Channel range(s) possibly affected by instrumental instabilities')
+            selection = pqa.TargetDataSelection(vis=set([ms_name]),
+                                                spw=spw_ids,
+                                                field=set([field_name]),
+                                                ant=antenna_names,
+                                                intent={'TARGET'})
+            deviation_mask_scores.append(
+                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+            )
+
+    return line_detection_scores + deviation_mask_scores
+
 
 
 @log_qa
