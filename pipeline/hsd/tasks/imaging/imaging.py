@@ -357,37 +357,38 @@ class SDImaging(basetask.StandardTaskTemplate):
                                      is_per_eb=False,
                                      context=context)
 
-        # update miscinfo
-        # TODO: Eventually, the following code together with
-        #       Tclean.update_miscinfo should be merged into
-        #       imageheader.set_miscinfo.
-        with casa_tools.ImageReader(imagename) as image:
-            info = image.miscinfo()
+            # update miscinfo
+            # TODO: Eventually, the following code together with
+            #       Tclean.update_miscinfo should be merged into
+            #       imageheader.set_miscinfo.
+            with casa_tools.ImageReader(name) as image:
+                info = image.miscinfo()
 
-            if datamin:
-                info['datamin'] = datamin
+                if '.weight' not in name:
+                    if datamin:
+                        info['datamin'] = datamin
 
-            if datamax:
-                info['datamax'] = datamax
+                    if datamax:
+                        info['datamax'] = datamax
 
-            if datarms:
-                info['datarms'] = datarms
+                    if datarms:
+                        info['datarms'] = datarms
 
-            info['stokes'] = stokes
+                info['stokes'] = stokes
 
-            if effbw:
-                info['effbw'] = effbw
+                if effbw:
+                    info['effbw'] = effbw
 
-            info['level'] = 'member'
-            info['obspatt'] = 'sd'
-            info['arrays'] = 'TP'
-            info['modifier'] = ''
+                info['level'] = 'member'
+                info['obspatt'] = 'sd'
+                info['arrays'] = 'TP'
+                info['modifier'] = ''
 
-            # PIPE-2148, limiting 'sessionX' keyword length to 68 characters
-            # due to FITS header keyword string length limit.
-            info = imageheader.wrap_key(info, 'sessio', session)
+                # PIPE-2148, limiting 'sessionX' keyword length to 68 characters
+                # due to FITS header keyword string length limit.
+                info = imageheader.wrap_key(info, 'sessio', session)
 
-            image.setmiscinfo(info)
+                image.setmiscinfo(info)
 
         # finally replace task attribute with the top-level one
         result.task = cls
@@ -1218,9 +1219,13 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp : Reduction group parameter object of prepare()
         """
         # PIPE-251: detect contamination
-        if not basetask.DISABLE_WEBLOG:
-            detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'],
-                                                     _rgp.imager_result.frequency_channel_reversed)
+        do_plot = not basetask.DISABLE_WEBLOG
+        contaminated = detectcontamination.detect_contamination(
+            self.inputs.context, _rgp.imager_result.outcome['image'],
+            _rgp.imager_result.frequency_channel_reversed,
+            do_plot
+        )
+        _rgp.imager_result.outcome['contaminated'] = contaminated
 
     def __append_result(self, _cp: imaging_params.CommonParameters, _rgp: imaging_params.ReductionGroupParameters):
         """Append result to RGP.

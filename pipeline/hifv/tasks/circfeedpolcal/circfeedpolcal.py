@@ -68,13 +68,14 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
     leakage_poltype = vdp.VisDependentProperty(default='')
     mbdkcross = vdp.VisDependentProperty(default=True)
     refant = vdp.VisDependentProperty(default=[])
+    run_setjy = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
     def clipminmax(self):
         return [0.0, 0.25]
 
     def __init__(self, context, vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None,
-                 mbdkcross=None, clipminmax=None, refant=None):
+                 mbdkcross=None, clipminmax=None, refant=None, run_setjy=None):
         super(CircfeedpolcalInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -84,7 +85,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
         self.mbdkcross = mbdkcross
         self.clipminmax = clipminmax
         self.refant = refant
-
+        self.run_setjy = run_setjy
 
 @task_registry.set_equivalent_casa_task('hifv_circfeedpolcal')
 class Circfeedpolcal(polarization.Polarization):
@@ -119,8 +120,8 @@ class Circfeedpolcal(polarization.Polarization):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
-        refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
-
+        # PIPE-1637: adding ',' in the manual and auto refantignore parameter
+        refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
         if len(self.inputs.refant) == 0:
@@ -524,9 +525,14 @@ class Circfeedpolcal(polarization.Polarization):
             else:
                 LOG.error("No known flux calibrator found - please check the data.")
 
-            job = casa_tasks.setjy(**task_args)
-
-            self._executor.execute(job)
+            # PIPE-1750, added an option to disable setjy call
+            if self.inputs.run_setjy:
+                job = casa_tasks.setjy(**task_args)
+                self._executor.execute(job)
+            else:
+                LOG.warning("Setting the polarized flux densities for the polarization angle calibrator within the task was disabled."
+                            "Polarization angle will not be properly calibrated unless the polarized flux densities were set prior to invoking this task."
+                            "Check the RL phase offset vs. Freq and RL delay vs. freq plots to ensure behavior is as expected.")
         except Exception as ex:
             LOG.warning("Exception: Problem with circfeedpolcal setjy. {!s}".format(str(ex)))
             return None

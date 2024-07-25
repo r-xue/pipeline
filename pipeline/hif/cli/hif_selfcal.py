@@ -9,7 +9,8 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                 n_solints=None, amplitude_selfcal=None, gaincal_minsnr=None,
                 minsnr_to_proceed=None, delta_beam_thresh=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
-                dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None):
+                dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
+                parallel=None):
     """
     hif_selfcal  ---- Determine and apply self-calibration with the science target data
 
@@ -79,6 +80,9 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                             if True, the gaincal combine parameter will be set to 'scan,spw'; if False,
                             the gaincal combine parameter will be set to 'scan'.
                             default=False
+    parallel                Use MPI cluster where possible, default='automatic'.
+                            options: 'automatic', 'true', 'false', True, False
+
     --------- examples -----------------------------------------------------------
 
     1. Run self-calibration and apply solutions to all science targets and spws

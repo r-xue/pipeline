@@ -469,7 +469,8 @@ class Editimlist(basetask.StandardTaskTemplate):
 
         # Fail if there is no field to image. This could occur if a field is requested that is not in the MS.
         # th.field will return [''] if no fields were found in the MS that match any input fields and intents
-        if len(fieldids) == 1 and fieldids[0] == '':
+        # PIPE-2189: fieldnames is an empty list in the case of VLASS imaging.
+        if fieldnames and len(fieldids) == 1 and fieldids[0] == '':
             msg = "Field(s): {} not present in MS: {}".format(','.join(fieldnames), ms.name)
             LOG.error(msg)
 
@@ -479,18 +480,20 @@ class Editimlist(basetask.StandardTaskTemplate):
         else:
             sfpblimit = 0.2
 
-        if not (len(fieldids) == 1 and fieldids[0] == ''):
-            imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
-                                            primary_beam=largest_primary_beam,
-                                            sfpblimit=sfpblimit, intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
+        if inpdict['imsize']:
+            # PIPE-2189: take the manually specfied imsize; commonly used by VLASS.
+            imlist_entry['imsize'] = inpdict['imsize']
         else:
-            imlist_entry['imsize'] = None
-        # ---------------------------------------------------------------------------------- set imsize (VLA)
-        if img_mode == 'VLA' and imlist_entry['specmode'] == 'cont':
-            imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
-                                               primary_beam=largest_primary_beam, spwspec=imlist_entry['spw'],
-                                               intent=imlist_entry['intent']) if not inpdict['imsize'] else inpdict['imsize']
-        # ------------------------------
+            if img_mode == 'VLA' and imlist_entry['specmode'] == 'cont':
+                # PIPE-675: VLA imsize heuristic update; band dependent FOV in 'cont' specmode.
+                imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
+                                                   primary_beam=largest_primary_beam, spwspec=imlist_entry['spw'],
+                                                   intent=imlist_entry['intent'])
+            else:
+                imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
+                                                   primary_beam=largest_primary_beam,
+                                                   sfpblimit=sfpblimit, intent=imlist_entry['intent'])
+
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']
         imlist_entry['start'] = inpdict['start']

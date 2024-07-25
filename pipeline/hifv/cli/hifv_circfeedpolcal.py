@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None, mbdkcross=None,
-                        clipminmax=None, refant=None):
+                        clipminmax=None, refant=None, run_setjy=None):
 
     """
     hifv_circfeedpolcal ---- Perform polarization calibration for VLA circular feeds.
@@ -30,7 +30,7 @@ def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_
     clipminmax      Acceptable range for leakage amplitudes, values outside will be flagged.
     refant          A list of reference antenna(s)
                     Example: refant = ['eq01', 'eq02']
-
+    run_setjy       Run setjy for amplitude/flux calibrator, default set to True.
     --------- examples -----------------------------------------------------------
 
 
