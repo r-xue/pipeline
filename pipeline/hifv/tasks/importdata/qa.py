@@ -45,7 +45,7 @@ class VLAImportDataQAHandler(hqa.ImportDataQAHandler, pqa.QAPlugin):
         return qacalc.score_missing_intents(mses, array_type='VLA')
 
 
-class VLAImportDataListQAHandler(hqa.ImportDataListQAHandler, pqa.QAPlugin):
+class VLAImportDataListQAHandler(pqa.QAPlugin):
     result_cls = collections.abc.Iterable
     child_cls = importdata.VLAImportDataResults
 
