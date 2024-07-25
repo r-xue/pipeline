@@ -531,7 +531,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
             LOG.warning('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
 
         # PIPE-1603, add fluxboot heuristics to use fitorder=0
-        mhz_deltaf = (deltaf.to_units(FrequencyUnits.MEGAHERTZ))
+        mhz_deltaf = deltaf.to_units(FrequencyUnits.MEGAHERTZ)
         if  mhz_deltaf < 128:
             fitorder = 0
 
