@@ -183,10 +183,12 @@ def get_tracebacks(result):
 
 
 def get_qascores(result, lo=None, hi=None):
+
+    # PIPE-2178: aggregate all QA scores from task/subtask results.
+    scores = set()
+    scores.update({s for s in result.qa.pool if s.score not in ('', 'N/A', None)})
     if isinstance(result, collections.abc.Iterable):
-        scores = flatten([get_qascores(r, lo, hi) for r in result])
-    else:
-        scores = [s for s in result.qa.pool if s.score not in ('', 'N/A', None)]
+        scores.update(set(flatten([get_qascores(r, lo, hi) for r in result])))
 
     if lo is None and hi is None:
         matches = lambda score: True
