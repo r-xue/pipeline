@@ -1167,8 +1167,8 @@ class SpwIdVsFreqChart(object):
         max_spws_to_annotate_VLA = 16  # request for VLA, PIPE-1415.
         max_spws_to_annotate_ALMA_NRO = np.inf  # annotate all spws for ALMA/NRO
         colorcycle = matplotlib.rcParams['axes.prop_cycle']()
+        atm_color = [0.17, 0.17, 0.17]  # very dark gray
         ax_atm = ax_spw.twinx()
-        atm_color = 'm'
 
         # plot spws
         if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
@@ -1182,22 +1182,42 @@ class SpwIdVsFreqChart(object):
         xmin, xmax = np.inf, -np.inf
         totalnum_spws = len(scan_spws)
         idx = 0
+        rmin = np.inf
         for spwid_list in spw_list_generator:
             color = next(colorcycle)['color']
             for spwid in spwid_list:
+
                 # 1. draw bars
                 spwdata = [spw for spw in scan_spws if spw.id == spwid][0]
                 bw = float(spwdata.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
                 fmin = float(spwdata.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
                 xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
                 ax_spw.barh(idx, bw, height=bar_height, left=fmin, color=color)
+
                 # 2. annotate each bars
                 if totalnum_spws <= max_spws_to_annotate or spwid in [spwid_list[0], spwid_list[-1]]:
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
-                # 3. Frequency vs. ATM transmission
-                atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
-                ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=2, linestyle='-')
                 idx += 1
+                rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
+
+        # 3. Frequency vs. ATM transmission
+        center_freq = (xmin + xmax) / 2.0
+        # Determining the resolution value so that generates fine ATM transmission curve: it is set
+        # to smaller than 500 kHz but is set to larger than that corresponding to 48001 data points.
+        default_resolution = 5e-4  # To have 5 data points within the ozone feature of 2 MHz FWHM:
+                                   # 2 MHz/(5-1) = 500 kHz.
+        max_nchan = 48001  # 24 GHz/500 kHz, where 24 GHz covers both sidebands of a 4-12 GHz IF
+                           # for a single LO tuning.
+        fspan = xmax - xmin
+        resolution = min(default_resolution, rmin)
+        nchan = min(max_nchan, round(fspan / resolution) + 1)
+        resolution = fspan / (nchan - 1)
+        LOG.info("'Spectral Window ID vs. Frequency' plots the atmospheric transmission with %d data points at %.3f kHz intervals." % (nchan, resolution*1e6))
+        atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
+
+        ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
+
+        # set axes limits, title, label, grid, tick, and save the plot to file
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
         ax_spw.invert_yaxis()
         ax_spw.set_ylim(totalnum_spws + totalnum_spws/20.0, -1.0 - totalnum_spws/20.0)  # The spw indices are from 0 to totalnum_spws. y-axis is inverted. totalnum_spws/20.0 is a mergin. -1.0 is upper edge.
