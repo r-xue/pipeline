@@ -108,7 +108,7 @@ class SkyDisplay(object):
             context: The Pipeline context object.
 
         Returns:
-            float or None: The default DPI value. 300.0 for VLA imaging plots,
+            float or None: The default DPI value. 400.0 for VLA imaging plots,
             self._dpi if set, or None otherwise.
 
         Description:
@@ -117,7 +117,7 @@ class SkyDisplay(object):
             _dpi attribute if set, otherwise uses context-based logic.
 
         Note:
-            For VLA hif_makeimages sky plots, the default is 300 DPI (PIPE-1083).
+            For VLA hif_makeimages sky plots, the default is 400 DPI (PIPE-1083).
         """
 
         # class instance default takes precedence over the context-based default
