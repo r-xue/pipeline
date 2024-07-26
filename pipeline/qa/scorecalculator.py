@@ -3166,9 +3166,6 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
 
         if warnings != []:
             longmsg = 'EB %s field %s spwid %d: has a %s%s' % (msnames, fieldname, spwid, ' and a '.join(warnings), snr_msg)
-            # Log warnings only if they would not be logged by the QA system (score <= 0.66)
-            if score > 0.66:
-                LOG.warning(longmsg)
         else:
             if score <= 0.9:
                 longmsg = 'EB %s field %s spwid %d: Check source fit not optimal' % (msnames, fieldname, spwid)
