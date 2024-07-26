@@ -32,7 +32,7 @@ def hifa_renorm(vis=None, createcaltable=None, threshold=None, spw=None, exclude
                      correction cal table (True), or only run the assessment
                      (False, default).
 
-                     Example: apply=True
+                     Example: createcaltable=True
     threshold
                      Apply correction if max correction is above this threshold
                      value and ``apply`` = True. Default is 1.02 (i.e. 2%).
