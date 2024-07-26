@@ -94,7 +94,7 @@ def hifa_renorm(vis=None, createcaltable=None, threshold=None, spw=None, exclude
     2. Run to assess the necessary ALMA amplitude renormalization correction,
     and apply this correction if it exceeds a threshold of 3% (1.03).
 
-    >>> hifa_renorm(apply=True, threshold=1.03)
+    >>> hifa_renorm(createcaltable=True, threshold=1.03)
 
     """
     ##########################################################################
