@@ -228,7 +228,7 @@ def union(l1: List, new) -> List:
         for elt in new:
             union.append(elt)
     else:
-        union.append(elt)
+        union.append(new)
 
     return union
 

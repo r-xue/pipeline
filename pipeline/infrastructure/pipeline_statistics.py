@@ -46,9 +46,8 @@ class PipelineStatistics(object):
         level_info = True will include information about what
         MOUS/EB/SPW the value is from.
         """
-        stats_dict = {}
+        stats_dict = {} 
 
-        stats_dict['name'] = self.name
         stats_dict['longdescription'] = self.longdesc
 
         if self.origin not in ["", None]:
@@ -61,6 +60,8 @@ class PipelineStatistics(object):
             stats_dict['value'] = self.value
 
         if level_info:
+            stats_dict['name'] = self.name
+
             stats_dict['level'] = self.level
 
             if self.spw not in ["", None]:
@@ -110,48 +111,29 @@ def to_nested_dict(stats_collection) -> Dict:
     Each level is represented in the structure of the output.
     """
     final_dict = {}
-    eb_dict = {}
-    spw_dict = {}
     for stat in stats_collection:
         if stat.level == "EB":
-            if stat.mous not in eb_dict:
-                eb_dict[stat.mous] = {}
-            if stat.eb not in eb_dict[stat.mous]:
-                eb_dict[stat.mous][stat.eb] = []
-            eb_dict[stat.mous][stat.eb].append(stat.to_dict())
+            if stat.mous not in final_dict:
+                final_dict[stat.mous] = {}
+            if stat.eb not in final_dict[stat.mous]:
+                final_dict[stat.mous][stat.eb] = {}
+            final_dict[stat.mous][stat.eb][stat.name] = stat.to_dict()
         elif stat.level == "MOUS":
             if stat.mous not in final_dict:
-                final_dict[stat.mous] = []
-            final_dict[stat.mous].append(stat.to_dict())
+                final_dict[stat.mous] = {}
+            final_dict[stat.mous][stat.name] = stat.to_dict()
         elif stat.level == "SPW":
-            if stat.mous not in spw_dict:
-                spw_dict[stat.mous] = {}
-            if stat.eb not in spw_dict[stat.mous]:
-                spw_dict[stat.mous][stat.eb] = {}
-            if stat.spw not in spw_dict[stat.mous][stat.eb]:
-                spw_dict[stat.mous][stat.eb][stat.spw] = []
-            spw_dict[stat.mous][stat.eb][stat.spw].append(stat.to_dict())
-        #     if stat.mous not in final_dict:
-        #         final_dict[stat.mous] = {}
-        #     if stat.eb not in final_dict[stat.mous]:
-        #         final_dict[stat.mous][stat.eb] = {}
-        #     if stat.spw not in final_dict[stat.mous][stat.eb]:
-        #         final_dict[stat.mous][stat.eb][stat.spw] = {}
-        #     final_dict[stat.mous][stat.eb][stat.spw] = stat.to_dict()
+            if stat.mous not in final_dict:
+                final_dict[stat.mous] = {}
+            if stat.eb not in final_dict[stat.mous]:
+                final_dict[stat.mous][stat.eb] = {}
+            if stat.spw not in final_dict[stat.mous][stat.eb]:
+                final_dict[stat.mous][stat.eb][stat.spw] = {}
+            final_dict[stat.mous][stat.eb][stat.spw][stat.name] = stat.to_dict()
         else:
             pass  # Shouldn't be possible to get here
-
-    # Merge dicts together:
-    for mous_key in spw_dict:
-        for eb_key in spw_dict[mous_key]:
-            eb_dict[mous_key][eb_key].append(spw_dict[mous_key][eb_key])
-
-    for mous_key in eb_dict:
-        final_dict[mous_key].append(eb_dict[mous_key])
-
-    # Add a header:
     version_dict = _generate_header()
-    final_dict.append(version_dict)
+    final_dict['header'] = version_dict
 
     return final_dict
 
