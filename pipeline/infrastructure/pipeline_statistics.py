@@ -140,17 +140,12 @@ def to_nested_dict(stats_collection) -> Dict:
         elif stat.level == PipelineStatisticsLevel.SPW:
             if stat.mous not in final_dict:
                 final_dict[stat.mous] = {}
-                final_dict[stat.mous]["EB"] = {}
-            if "EB" not in final_dict[stat.mous]:
-                final_dict[stat.mous]["EB"] = {}
-            if stat.eb not in final_dict[stat.mous]["EB"]:
-                final_dict[stat.mous]["EB"][stat.eb] = {}
-                final_dict[stat.mous]["EB"][stat.eb]["SPW"] = {}
-            if "SPW" not in final_dict[stat.mous]["EB"][stat.eb]:
-                final_dict[stat.mous]["EB"][stat.eb]["SPW"] = {}
-            if stat.spw not in final_dict[stat.mous]["EB"][stat.eb]["SPW"]:
-                final_dict[stat.mous]["EB"][stat.eb]["SPW"][stat.spw] = {}
-            final_dict[stat.mous]["EB"][stat.eb]["SPW"][stat.spw][stat.name] = stat.to_dict()
+                final_dict[stat.mous]["SPW"] = {}
+            if "SPW" not in final_dict[stat.mous]:
+                final_dict[stat.mous]["SPW"] = {}
+            if stat.spw not in final_dict[stat.mous]["SPW"]:
+                final_dict[stat.mous]["SPW"][stat.spw] = {}
+            final_dict[stat.mous]["SPW"][stat.spw][stat.name] = stat.to_dict()
         else:
             LOG.debug("In pipleine statics file creation, invalid level: {} specified.".format(stat.level))
 
@@ -236,7 +231,7 @@ def _generate_product_pl_run_info(context):
         level=PipelineStatisticsLevel.MOUS)
     stats_collection.append(ps5)
 
-    # Add per-EB information: 
+    # Add per-EB information:
 
     # List of datatypes to use (in order) for fetching EB-level information.
     # The following function call will fetch all the MSes for ONLY the first 
@@ -278,69 +273,69 @@ def _generate_product_pl_run_info(context):
             level=PipelineStatisticsLevel.EB)
         stats_collection.append(psm3)
 
-        # per-SPW
-        # first pick an arbitrary ms or just get the first one
-        # virtual_spw = real2virtual_spw_id(spw.id, ms)
-        # TODO: Update to use per-vitual SPW.
-        spw_list = ms.get_all_spectral_windows()
-        for spw in spw_list:
-            sps1 = PipelineStatistics(
-                name='spw_width',
-                value=float(spw.bandwidth.to_units(measures.FrequencyUnits.MEGAHERTZ)),
-                longdesc="width of science spectral windows",
-                origin="hifa_importdata",
-                units="MHz",
-                spw=spw.id,
-                eb=eb,
-                mous=mous,
-                level=PipelineStatisticsLevel.SPW)
-            stats_collection.append(sps1)
+    # Per-SPW stats information
+    # Use virtual spws so information can just be included once per MOUS
+    ms = ms_list[0]
+    virtual_spw_id = context.observing_run.real2virtual_spw_id(spw.id, ms)
+    spw_list = ms.get_all_spectral_windows()
+    for spw in spw_list:
+        sps1 = PipelineStatistics(
+            name='spw_width',
+            value=float(spw.bandwidth.to_units(measures.FrequencyUnits.MEGAHERTZ)),
+            longdesc="width of science spectral windows",
+            origin="hifa_importdata",
+            units="MHz",
+            spw=virtual_spw_id,
+            eb=eb,
+            mous=mous,
+            level=PipelineStatisticsLevel.SPW)
+        stats_collection.append(sps1)
 
-            sps2 = PipelineStatistics(
-                name='spw_freq',
-                value=float(spw.centre_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ)),
-                longdesc="central frequency for each science spectral window in TOPO",
-                origin="hifa_importdata",
-                units="GHz",
-                spw=spw.id,
-                eb=eb,
-                mous=mous,
-                level=PipelineStatisticsLevel.SPW)
-            stats_collection.append(sps2)
+        sps2 = PipelineStatistics(
+            name='spw_freq',
+            value=float(spw.centre_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ)),
+            longdesc="central frequency for each science spectral window in TOPO",
+            origin="hifa_importdata",
+            units="GHz",
+            spw=virtual_spw_id,
+            eb=eb,
+            mous=mous,
+            level=PipelineStatisticsLevel.SPW)
+        stats_collection.append(sps2)
 
-            sps3 = PipelineStatistics(
-                name='spw_nchan',
-                value=spw.num_channels,
-                longdesc="number of channels in spectral windows",
-                origin="hifa_importdata",
-                eb=eb,
-                mous=mous,
-                spw=spw.id,
-                level=PipelineStatisticsLevel.SPW)
-            stats_collection.append(sps3)
+        sps3 = PipelineStatistics(
+            name='spw_nchan',
+            value=spw.num_channels,
+            longdesc="number of channels in spectral windows",
+            origin="hifa_importdata",
+            eb=eb,
+            mous=mous,
+            spw=virtual_spw_id,
+            level=PipelineStatisticsLevel.SPW)
+        stats_collection.append(sps3)
 
-            sps4 = PipelineStatistics(
-                name='nbin_online',
-                value=spw.sdm_num_bin,
-                longdesc="online nbin factors ",
-                origin="hifa_importdata",
-                spw=spw.id,
-                eb=eb,
-                mous=mous,
-                level=PipelineStatisticsLevel.SPW)
-            stats_collection.append(sps4)
+        sps4 = PipelineStatistics(
+            name='nbin_online',
+            value=spw.sdm_num_bin,
+            longdesc="online nbin factors ",
+            origin="hifa_importdata",
+            spw=virtual_spw_id,
+            eb=eb,
+            mous=mous,
+            level=PipelineStatisticsLevel.SPW)
+        stats_collection.append(sps4)
 
-            chan_width_MHz = [chan * 1e-6 for chan in spw.channels.chan_widths]
-            sps5 = PipelineStatistics(
-                name='chan_width',
-                value=chan_width_MHz[0],
-                longdesc="frequency width of channels in spectral windows",
-                origin="hifa_importdata",
-                units="MHz",
-                spw=spw.id,
-                eb=eb,
-                mous=mous,
-                level=PipelineStatisticsLevel.SPW)
-            stats_collection.append(sps5)
+        chan_width_MHz = [chan * 1e-6 for chan in spw.channels.chan_widths]
+        sps5 = PipelineStatistics(
+            name='chan_width',
+            value=chan_width_MHz[0],
+            longdesc="frequency width of channels in spectral windows",
+            origin="hifa_importdata",
+            units="MHz",
+            spw=virtual_spw_id,
+            eb=eb,
+            mous=mous,
+            level=PipelineStatisticsLevel.SPW)
+        stats_collection.append(sps5)
 
     return stats_collection
