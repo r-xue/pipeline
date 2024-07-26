@@ -1,6 +1,9 @@
+import datetime
+
 from pipeline import environment
 from pipeline.infrastructure.renderer import stats_extractor
 from pipeline.domain import measures
+from pipeline.domain.datatype import DataType
 from . import logging
 from typing import Dict
 
@@ -11,27 +14,36 @@ import numpy as np
 LOG = logging.get_logger(__name__)
 
 
+class PipelineStatisticsLevel(enum.Enum):
+    """
+    An enum to specify which "level" of infomration the pipeline statistics applies to: 
+    SPW, EB, or MOUS.
+    """
+    MOUS = enum.auto()
+    EB = enum.auto()
+    SPW = enum.auto()
+
+
 class PipelineStatistics(object):
-    class Level(enum.Enum):
-        MOUS = 1
-        EB = 2
-        SPW = 3
 
     """A unit of pipeline statistics information"""
-    def __init__(self, name, value, longdesc, origin='', units='',
-                    level='', spw=None, mous=None, eb=None):
+    def __init__(self, name: str, value, longdesc: str, origin: str='', units: str='',
+                    level: PipelineStatisticsLevel=None, spw: str=None, mous: str=None, eb: str=None):
+        
         self.name = name
         self.value = value
         self.longdesc = longdesc
+        # The origin is the name of the pipeline stage associateted with this statistics value
         self.origin = origin
         self.units = units
+        # The level indicates whether a given quantity applies to the whole MOUS, EB, or SPW
         self.level = level
+        # The spw, mous, and eb are set, if applicable.
         self.spw = spw
         self.mous = mous
         self.eb = eb
 
-        # Convert results to values that can be serialized by JSON
-        # this could be done as part of the output instead
+        # Convert initial value from the pipeline to a value that can be serialized by JSON
         if type(value) is set:
             self.value = list(self.value)
         elif type(value) is np.int64:
@@ -42,11 +54,11 @@ class PipelineStatistics(object):
     def to_dict(self, level_info: bool = False) -> Dict:
         """
         Convert an individual statistics item to dict
-        
+
         level_info = True will include information about what
         MOUS/EB/SPW the value is from.
         """
-        stats_dict = {} 
+        stats_dict = {}
 
         stats_dict['longdescription'] = self.longdesc
 
@@ -112,26 +124,36 @@ def to_nested_dict(stats_collection) -> Dict:
     """
     final_dict = {}
     for stat in stats_collection:
-        if stat.level == "EB":
+        if stat.level == PipelineStatisticsLevel.EB:
             if stat.mous not in final_dict:
                 final_dict[stat.mous] = {}
-            if stat.eb not in final_dict[stat.mous]:
-                final_dict[stat.mous][stat.eb] = {}
-            final_dict[stat.mous][stat.eb][stat.name] = stat.to_dict()
-        elif stat.level == "MOUS":
+                final_dict[stat.mous]["EB"] = {}
+            if "EB" not in final_dict[stat.mous]:
+                final_dict[stat.mous]["EB"] = {}
+            if stat.eb not in final_dict[stat.mous]["EB"]:
+                final_dict[stat.mous]["EB"][stat.eb] = {}
+            final_dict[stat.mous]["EB"][stat.eb][stat.name] = stat.to_dict()
+        elif stat.level == PipelineStatisticsLevel.MOUS:
             if stat.mous not in final_dict:
                 final_dict[stat.mous] = {}
             final_dict[stat.mous][stat.name] = stat.to_dict()
-        elif stat.level == "SPW":
+        elif stat.level == PipelineStatisticsLevel.SPW:
             if stat.mous not in final_dict:
                 final_dict[stat.mous] = {}
-            if stat.eb not in final_dict[stat.mous]:
-                final_dict[stat.mous][stat.eb] = {}
-            if stat.spw not in final_dict[stat.mous][stat.eb]:
-                final_dict[stat.mous][stat.eb][stat.spw] = {}
-            final_dict[stat.mous][stat.eb][stat.spw][stat.name] = stat.to_dict()
+                final_dict[stat.mous]["EB"] = {}
+            if "EB" not in final_dict[stat.mous]:
+                final_dict[stat.mous]["EB"] = {}
+            if stat.eb not in final_dict[stat.mous]["EB"]:
+                final_dict[stat.mous]["EB"][stat.eb] = {}
+                final_dict[stat.mous]["EB"][stat.eb]["SPW"] = {}
+            if "SPW" not in final_dict[stat.mous]["EB"][stat.eb]:
+                final_dict[stat.mous]["EB"][stat.eb]["SPW"] = {}
+            if stat.spw not in final_dict[stat.mous]["EB"][stat.eb]["SPW"]:
+                final_dict[stat.mous]["EB"][stat.eb]["SPW"][stat.spw] = {}
+            final_dict[stat.mous]["EB"][stat.eb]["SPW"][stat.spw][stat.name] = stat.to_dict()
         else:
-            pass  # Shouldn't be possible to get here
+            LOG.debug("In pipleine statics file creation, invalid level: {} specified.".format(stat.level))
+
     version_dict = _generate_header()
     final_dict['header'] = version_dict
 
@@ -157,10 +179,9 @@ def _generate_header() -> Dict:
     """
     version_dict = {}
     version_dict["version"] = 0.1
-    version_dict["name"] = "header"
-#    version_dict["EB"] = []
-#    version_dict["MOUS"] = []
-#    version_dict["SPW"] = []
+    now = datetime.datetime.now(datetime.timezone.utc)
+    dt_string = now.strftime("%Y/%m/%d %H:%M:%S %Z")
+    version_dict["stats_file_creation_date"] = dt_string
     return version_dict
 
 
@@ -172,11 +193,12 @@ def _generate_product_pl_run_info(context):
     # MOUS-level
     ps1 = PipelineStatistics(
         name='project_id',
-        value=context.observing_run.project_ids,
+        value=context.observing_run.project_ids.pop(),
         longdesc='Proposal id number',
         origin="hifa_importdata",
         mous=mous,
-        level='MOUS')
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps1)
 
     ps2 = PipelineStatistics(
         name='pipeline_version',
@@ -184,7 +206,8 @@ def _generate_product_pl_run_info(context):
         longdesc="pipeline version string",
         origin="hifa_importdata",
         mous=mous,
-        level='MOUS')
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps2)
 
     ps3 = PipelineStatistics(
         name='pipeline_recipe',
@@ -192,7 +215,8 @@ def _generate_product_pl_run_info(context):
         longdesc="recipe name",
         origin="hifa_importdata",
         mous=mous,
-        level='MOUS')
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps3)
 
     ps4 = PipelineStatistics(
         name='casa_version',
@@ -200,7 +224,8 @@ def _generate_product_pl_run_info(context):
         longdesc="casa version string",
         origin="hifa_importdata",
         mous=mous,
-        level='MOUS')
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps4)
 
     ps5 = PipelineStatistics(
         name='mous_uid',
@@ -208,16 +233,19 @@ def _generate_product_pl_run_info(context):
         longdesc="Member Obs Unit Set ID",
         origin="hifa_importdata",
         mous=mous,
-        level="MOUS")
-
-    stats_collection.append(ps1)
-    stats_collection.append(ps2)
-    stats_collection.append(ps3)
-    stats_collection.append(ps4)
+        level=PipelineStatisticsLevel.MOUS)
     stats_collection.append(ps5)
 
-    # per-EB
-    ms_list = context.observing_run.get_measurement_sets()
+    # Add per-EB information: 
+
+    # List of datatypes to use (in order) for fetching EB-level information.
+    # The following function call will fetch all the MSes for ONLY the first 
+    # datatype it finds in the list. This is needed so that information is 
+    # not repeated for the ms and _targets.ms
+    datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE, 
+        DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.RAW]
+    ms_list = context.observing_run.get_measurement_sets_of_type(datatypes)
+
     for ms in ms_list:
         eb = ms.name
         psm1 = PipelineStatistics(
@@ -227,7 +255,7 @@ def _generate_product_pl_run_info(context):
             origin="hifa_importdata",
             eb=eb,
             mous=mous,
-            level="EB")
+            level=PipelineStatisticsLevel.EB)
         stats_collection.append(psm1)
 
         psm2 = PipelineStatistics(
@@ -237,7 +265,7 @@ def _generate_product_pl_run_info(context):
             origin="hifa_importdata",
             eb=eb,
             mous=mous,
-            level="EB")
+            level=PipelineStatisticsLevel.EB)
         stats_collection.append(psm2)
 
         psm3 = PipelineStatistics(
@@ -247,10 +275,13 @@ def _generate_product_pl_run_info(context):
             origin="hifa_importdata",
             eb=eb,
             mous=mous,
-            level="EB")
+            level=PipelineStatisticsLevel.EB)
         stats_collection.append(psm3)
 
         # per-SPW
+        # first pick an arbitrary ms or just get the first one
+        # virtual_spw = real2virtual_spw_id(spw.id, ms)
+        # TODO: Update to use per-vitual SPW.
         spw_list = ms.get_all_spectral_windows()
         for spw in spw_list:
             sps1 = PipelineStatistics(
@@ -262,7 +293,7 @@ def _generate_product_pl_run_info(context):
                 spw=spw.id,
                 eb=eb,
                 mous=mous,
-                level="SPW")
+                level=PipelineStatisticsLevel.SPW)
             stats_collection.append(sps1)
 
             sps2 = PipelineStatistics(
@@ -274,7 +305,7 @@ def _generate_product_pl_run_info(context):
                 spw=spw.id,
                 eb=eb,
                 mous=mous,
-                level="SPW")
+                level=PipelineStatisticsLevel.SPW)
             stats_collection.append(sps2)
 
             sps3 = PipelineStatistics(
@@ -285,7 +316,7 @@ def _generate_product_pl_run_info(context):
                 eb=eb,
                 mous=mous,
                 spw=spw.id,
-                level="SPW")
+                level=PipelineStatisticsLevel.SPW)
             stats_collection.append(sps3)
 
             sps4 = PipelineStatistics(
@@ -296,7 +327,7 @@ def _generate_product_pl_run_info(context):
                 spw=spw.id,
                 eb=eb,
                 mous=mous,
-                level="SPW")
+                level=PipelineStatisticsLevel.SPW)
             stats_collection.append(sps4)
 
             chan_width_MHz = [chan * 1e-6 for chan in spw.channels.chan_widths]
@@ -309,6 +340,7 @@ def _generate_product_pl_run_info(context):
                 spw=spw.id,
                 eb=eb,
                 mous=mous,
-                level="SPW")
+                level=PipelineStatisticsLevel.SPW)
             stats_collection.append(sps5)
+
     return stats_collection

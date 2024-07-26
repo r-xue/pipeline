@@ -3,15 +3,13 @@ Adaped from regression extractor classes
 """
 import abc
 import collections
-import re
 from collections import OrderedDict
 from typing import List, Union
 from pipeline.infrastructure.renderer import regression
-from pipeline.infrastructure import pipeline_statistics
+from pipeline.infrastructure import pipeline_statistics as pstats
 
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
 from pipeline.hif.tasks.applycal.ifapplycal import IFApplycal
-from pipeline.hifa.tasks.fluxscale.gcorfluxscale import GcorFluxscaleResults
 from pipeline.hifa.tasks.gfluxscaleflag.resultobjects import GfluxscaleflagResults
 
 from pipeline.hifa.tasks.flagging.flagdeteralma import FlagDeterALMAResults
@@ -143,12 +141,12 @@ class FlagDeterALMAResultsExtractor(StatsExtractor):
                             percentage = new/total * 100
                             output_dict[ms][reason] = percentage
         mous = context.get_oussid()
-        ps = pipeline_statistics.PipelineStatistics(name="flagdata_percentage",
-                                                    value=output_dict,
-                                                    longdesc="temporory value for testing",
-                                                    eb=ms,
-                                                    mous=mous,
-                                                    level="EB")
+        ps = pstats.PipelineStatistics(name="flagdata_percentage",
+                                       value=output_dict,
+                                       longdesc="temporory value for testing",
+                                       eb=ms,
+                                       mous=mous,
+                                       level=pstats.PipelineStatisticsLevel.EB)
         return ps
 
 
@@ -170,11 +168,11 @@ class FluxcalflagStatsExtractor(StatsExtractor):
         else:
             num_flags_after = num_flags_before
 
-        ps = pipeline_statistics.PipelineStatistics(name="fluxscaleflags",
+        ps = pstats.PipelineStatistics(name="fluxscaleflags",
                                                     value=int(num_flags_after),
                                                     longdesc="rows after",
                                                     mous=context.get_oussid(),
-                                                    level="MOUS")
+                                                    level=pstats.PipelineStatisticsLevel.MOUS)
         return ps
 
 
@@ -197,11 +195,11 @@ class ApplycalRegressionExtractor(StatsExtractor):
         """
         summaries_by_name = {s['name']: s for s in result.summaries}
         num_flags_after = summaries_by_name['applycal']['flagged']
-        ps = pipeline_statistics.PipelineStatistics(name="applycal_flags",
+        ps = pstats.PipelineStatistics(name="applycal_flags",
                                                     value=int(num_flags_after),
                                                     longdesc="rows after",
                                                     mous=context.get_oussid(),
-                                                    level="MOUS")
+                                                    level=pstats.PipelineStatisticsLevel.MOUS)
         return ps
 
 
