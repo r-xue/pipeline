@@ -16,7 +16,7 @@ import operator
 import os
 import re
 import traceback
-from typing import List, Optional, Tuple, TYPE_CHECKING, Union
+from typing import Dict, List, Optional, Tuple, TYPE_CHECKING, Union
 
 import numpy as np
 from scipy import interpolate
@@ -25,6 +25,9 @@ from scipy.special import erf
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
+from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
+from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 import pipeline.infrastructure.basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -4152,3 +4155,103 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
                           metric_units='Peak SNR / Histogram asymmetry, Max. segment size in beams, Max. segment fraction')
 
     return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+
+
+
+@log_qa
+def score_rasterscan_correctness_direction_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+    """Calculate QAScore of direction-domain raster scan heuristics analysis failure in importdata.
+
+    Args:
+        result (SDImportDataResults): instance of SDImportDataResults
+
+    Returns:
+        List[pqa.QAScore]: list of QAScores
+    """
+    msg = 'Direction-domain raster scan analysis failed, fallback to time-domain analysis'
+    return _score_rasterscan_correctness(result.rasterscan_heuristics_results_direction, msg)
+
+
+@log_qa
+def score_rasterscan_correctness_time_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+    """Calculate QAScore of time-domain raster scan heuristics analysis failure in importdata.
+
+    Args:
+        result (SDImportDataResults): instance of SDImportDataResults
+
+    Returns:
+        List[pqa.QAScore]: list of QAScores
+    """
+    msg = 'Time-domain raster scan analysis issue detected. Failed to identify gap between raster map iteration'
+    return _score_rasterscan_correctness(result.rasterscan_heuristics_results_time, msg)
+
+
+@log_qa
+def score_rasterscan_correctness_imaging_raster_gap(result: SDImagingResultItem) -> List[pqa.QAScore]:
+    """Calculate QAScore of gap existence in raster pattern of imaging.
+
+    Args:
+        result (SDImagingResultItem): instance of SDImagingResultItem
+
+    Returns:
+        List[pqa.QAScore]: list of QAScores
+    """
+    msg = 'Unable to identify gap between raster map iteration'
+    return _score_rasterscan_correctness(result.rasterscan_heuristics_results_rgap, msg)
+
+
+@log_qa
+def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDImagingResultItem) -> List[pqa.QAScore]:
+    """Calculate QAScore when raster scan analysis was incomplete in imaging.
+
+    Args:
+        result (SDImagingResultItem): instance of SDImagingResultItem
+
+    Returns:
+        List[pqa.QAScore]: list of QAScores
+    """
+    msg = 'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS'
+    return _score_rasterscan_correctness(result.rasterscan_heuristics_results_incomp, msg)
+
+
+def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, RasterScanHeuristicsResult], msg: str) -> List[pqa.QAScore]:
+    """Generate score of raster scan correctness of importdata or imaging.
+
+    Args:
+        rasterscan_heuristics_results (Dict[str, RasterScanHeuristicsResult]): Dictionary of raster heuristics result objects
+            treats QAScore of raster scan analysis.
+        msg (str): short message for QA
+
+    Returns:
+        List[pqa.QAScore]: lists contains QAScore objects.
+    """
+
+    qa_scores = []  # [pqa.QAScore]
+    
+    # converting rasterscan_heuristics_results to QA score
+    for _execblock_id, _rasterscan_heuristics_results_list in rasterscan_heuristics_results.items():
+        for _results_list in _rasterscan_heuristics_results_list:
+            _failed_ants = np.unique(_results_list.get_antennas_rasterscan_failed())
+            if len(_failed_ants) > 0:
+                qa_scores.append(_rasterscan_failed_per_eb(_execblock_id, _failed_ants, msg))
+
+    return qa_scores
+
+
+def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str) -> 'pqa.QAScore':
+    """Return an object which has FAILED information in raster scan analysis.
+
+    Args:
+        execblock_id (str): Execute Block ID
+        failed_ants (list[str]): List of antenna names
+        msg: short message for QA
+
+    Returns:
+        pqa.QAScore: QA score object
+    """
+    SCORE_FAIL = 0.8
+    longmsg = msg + f' : EB:{execblock_id}:{",".join(failed_ants)}'
+    origin = pqa.QAOrigin(metric_name='score_rasterscan_correctness',
+                        metric_score=SCORE_FAIL,
+                        metric_units='raster scan correctness')
+    return pqa.QAScore(SCORE_FAIL, longmsg=longmsg, shortmsg=msg, origin=origin)
