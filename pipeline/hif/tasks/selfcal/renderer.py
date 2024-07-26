@@ -7,7 +7,6 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure.utils.weblog import plots_to_html
 
 from . import display
 
@@ -58,8 +57,8 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
             if row_name == 'Data Type':
                 row_values = ['Prior', 'Post']
             if row_name == 'Image':
-                row_values = plots_to_html(image_plots, report_dir=context.report_dir,
-                                           title='Prior/Post Image Comparison')
+                row_values = utils.plots_to_html(image_plots, report_dir=context.report_dir,
+                                                 title='Prior/Post Image Comparison')
             if row_name == 'SNR':
                 row_values = ['{:0.3f}'.format(slib_solint['SNR_pre']),
                               '{:0.3f}'.format(slib_solint['SNR_post'])]
@@ -85,7 +84,7 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         for vis in vislist:
             nsol_stats = antpos_plots[vis].parameters
 
-            antpos_html = plots_to_html([antpos_plots[vis]], report_dir=context.report_dir)[0]
+            antpos_html = utils.plots_to_html([antpos_plots[vis]], report_dir=context.report_dir)[0]
 
             vis_desc = ('<a class="anchor" id="{0}_summary"></a>'
                         '<a href="#{0}_byant">'
@@ -187,7 +186,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             id_name = filenamer.sanitize(target['field_name']+'_'+target['sc_band'], valid_chars)
             row.append(f' <a href="#{id_name}">{fm_target(target)}</a> ')
             row.append(target['sc_band'].replace('_', ' '))
-            row.append(target['spw'])
+            row.append(utils.find_ranges(target['spw']))
             row.append(target['phasecenter'])
             row.append(target['cell'])
             row.append(target['imsize'])
@@ -379,7 +378,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         if row_name == 'Flagged Frac.':
                             row.append('{:0.3f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.))
                         if row_name == 'Flagged Frac.<br>by antenna':
-                            antpos_html = plots_to_html(
+                            antpos_html = utils.plots_to_html(
                                 [qa_extra_data[solint]['antpos_plots'][vis]],
                                 report_dir=context.report_dir, title='Frac. Flagged Sol. Per Antenna')[0]
                             row.append(antpos_html)
@@ -486,11 +485,11 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     row_values = ['Initial/Final', 'Initial/Final', 'Brightness Dist.']
             if row_name == 'Image':
                 summary_plots, noisehist_plot = display.SelfcalSummary(context, r, cleantarget).plot()
-                row_values = plots_to_html(
+                row_values = utils.plots_to_html(
                     summary_plots[0:2] + [noisehist_plot],
                     report_dir=context.report_dir, title='Initial/Final Image Comparison')
                 if not slib['SC_success']:
-                    row_values = plots_to_html(
+                    row_values = utils.plots_to_html(
                         [summary_plots[0]]*2 + [noisehist_plot],
                         report_dir=context.report_dir, title='Initial/Final Image Comparison')
             if row_name == 'Integrated Flux':
