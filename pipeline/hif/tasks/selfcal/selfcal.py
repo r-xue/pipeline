@@ -357,7 +357,8 @@ class Selfcal(basetask.StandardTaskTemplate):
         if not scal_targets:
 
             if self.inputs.recal:
-                LOG.info('recal=True, override any existing selfcal solution in context or json, and alway execute the selfcal solver.')
+                LOG.info('recal=True, override any existing selfcal solution in context or json, '
+                         'and alway execute the selfcal solver.')
             LOG.info('Execute the selfcal solver.')
             scal_targets = self._solve_selfcal()
             is_restore = False
@@ -368,7 +369,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             LOG.debug('selfcal resources list: %r', selfcal_resources)
 
             if not scal_targets:
-                LOG.info('No single-pointing science target found. Skip selfcal.')
+                LOG.info('No valid selfcal field returned by the selfcal solver; skip the selfcal apply step.')
                 return SelfcalResults(
                     scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
 
@@ -470,6 +471,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                     target['spw'],
                     target['sc_workdir'])
             target['sc_exception'] = sc_exception
+
         return scal_targets
 
     @staticmethod
