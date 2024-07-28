@@ -120,7 +120,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         return False
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
-        return 0.0, None, None
+        return 0.0, None, None, None
 
     def savemodel(self, iteration: int) -> str:
         """Tclean savemodel parameter heuristics."""

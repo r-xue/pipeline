@@ -9,6 +9,7 @@ import string
 from typing import Any, Dict, List, Tuple, Union
 
 import numpy
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
@@ -342,8 +343,13 @@ class MetaDataReader(object):
         """
         self.invalid_pointing_data[antenna_id].append(row)
 
-    def generate_flagcmd(self):
-        """Generate flag commands based on pointings of observation and save them in the flag template file."""
+    def generate_flagcmd(self, rasterscan_heuristics_result: RasterScanHeuristicsResult):
+        """
+        Generate flag commands based on pointings of observation and save them in the flag template file.
+
+        Args:
+            rasterscan_heuristics_result (RasterScanHeuristicsResult): Result object of RasterScanHeuristics
+        """
         # PIPE-646
         # per-antenna row list for the data without pointing data
         # key: antenna id
@@ -358,7 +364,7 @@ class MetaDataReader(object):
         # key: (spw id, antenna id) tuple
         # value: list of rows to be flagged
         try:
-            flagdict2 = self.generate_flagdict_for_uniform_rms()
+            flagdict2 = self.generate_flagdict_for_uniform_rms(rasterscan_heuristics_result)
         except Exception:
             flagdict2 = {}
 
@@ -397,14 +403,17 @@ class MetaDataReader(object):
             msglist.append(msg)
         return self.invalid_pointing_data, msglist
 
-    def generate_flagdict_for_uniform_rms(self) -> Dict[Tuple[int, int], numpy.ndarray]:
+    def generate_flagdict_for_uniform_rms(self, rasterscan_heuristics_result: RasterScanHeuristicsResult) -> Dict[Tuple[int, int], numpy.ndarray]:
         """Return row IDs of DataTable to flag.
+
+        Args:
+            rasterscan_heuristics_result (RasterScanHeuristicsResult): Result object of RasterScanHeuristics
 
         Returns:
             Dict: contains list of row IDs of datatable
         """
         # keys for dictionary are (spw_id, antenna_id) tuples
-        flagdict = rasterutil.flag_raster_map(self.datatable, self.ms)
+        flagdict = rasterutil.flag_raster_map(self.datatable, self.ms, rasterscan_heuristics_result)
 
         return flagdict
 

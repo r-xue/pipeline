@@ -8,7 +8,6 @@ import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 from pipeline.domain.field import Field
 from pipeline.domain.measurementset import MeasurementSet
-import pipeline.h.tasks.importdata.qa as importdataqa
 from pipeline.h.tasks.exportdata import aqua
 from pipeline.infrastructure import casa_tools
 from .almaimportdata import ALMAImportDataResults
@@ -39,7 +38,7 @@ class ALMAImportDataListQAHandler(pqa.QAPlugin):
         result.parang_ranges = parang_ranges
 
 
-class ALMAImportDataQAHandler(importdataqa.ImportDataQAHandler, pqa.QAPlugin):
+class ALMAImportDataQAHandler(pqa.QAPlugin):
     result_cls = ALMAImportDataResults
     child_cls = None
 
