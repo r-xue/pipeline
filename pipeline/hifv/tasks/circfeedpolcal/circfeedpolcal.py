@@ -329,7 +329,7 @@ class Circfeedpolcal(polarization.Polarization):
         casa_task_args = {'vis': self.inputs.vis,
                           'caltable': caltable,
                           'field': field,
-                          'intent': 'CALIBRATE_FLUX#UNSPECIFIED,CALIBRATE_AMPLI#UNSPECIFIED,CALIBRATE_PHASE#UNSPECIFIED,CALIBRATE_BANDPASS#UNSPECIFIED',
+                          'intent': 'CALIBRATE_FLUX#UNSPECIFIED,CALIBRATE_AMPLI#UNSPECIFIED,CALIBRATE_PHASE#UNSPECIFIED,CALIBRATE_BANDPASS#UNSPECIFIED,CALIBRATE_POL_ANGLE#UNSPECIFIED',
                           'scan': '',
                           'spw': spw,
                           'solint': 'inf',
