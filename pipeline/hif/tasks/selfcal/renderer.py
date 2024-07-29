@@ -145,6 +145,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     - 'sc_lib' (dict): A dictionary representing the solution library.
                         - 'vislist' (list): A list of visibility keys.
                         - 'final_solint' (str, optional): The final solution interval, if successful.
+                        - 'final_phase_solint' (str, optional): The final phase solution interval, if successful.
                         - 'SC_success' (bool): Indicates if the solution was successful.
                     - 'sc_solints' (list): A list of solution intervals to be formatted.
 
@@ -164,6 +165,8 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     final_solints.append('inf_EB')
                 if slib.get('final_solint', None) not in (None, 'None'):
                     final_solints.append(slib.get('final_solint'))
+                if slib.get('final_phase_solint', None) not in (None, 'None'):
+                    final_solints.append(slib.get('final_phase_solint'))
             final_solints = set(final_solints)
 
             # Aggregate the actually attempted solints
