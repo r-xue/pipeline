@@ -1,5 +1,5 @@
 import re
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 import numpy
 
@@ -51,23 +51,31 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         """Tclean imsize parameter heuristics."""
         return [7290, 7290]
 
-    def reffreq(self) -> str:
+    def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         """Tclean reffreq parameter heuristics."""
         return '3.0GHz'
 
-    def cyclefactor(self, iteration: int) -> float:
+    def cyclefactor(self, iteration: int, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None) -> float:
         """Tclean cyclefactor parameter heuristics."""
         if iteration == 0:
             return 1.
         else:
             return 2.
 
-    def cycleniter(self, iteration: int ) -> int:
+    def cycleniter(self, iteration: int) -> int:
         """Tclean cycleniter parameter heuristics."""
         if iteration == 0:
             return -1
         else:
             return 500
+
+    def nmajor(self, iteration: int) -> Union[None, int]:
+        """Tclean nmajor parameter heuristics."""
+        if iteration == 0:
+            return None
+        else:
+            # PIPE-1745: default value of nmajor=220 for all editimlist stages of the VLASS QL/SE imaging workflow
+            return 220
 
     def scales(self, iteration: Union[int, None] = None) -> list:
         """Tclean scales parameter heuristics."""
@@ -112,7 +120,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         return False
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
-        return 0.0, None, None
+        return 0.0, None, None, None
 
     def savemodel(self, iteration: int) -> str:
         """Tclean savemodel parameter heuristics."""

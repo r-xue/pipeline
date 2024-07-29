@@ -662,13 +662,13 @@ class ExportData(basetask.StandardTaskTemplate):
         pipemanifest.add_environment_info(ouss)
 
         if stdfproducts.ppr_file:
-            pipemanifest.add_pprfile(ouss, os.path.basename(stdfproducts.ppr_file), oussid)
+            pipemanifest.add_pprfile(ouss, os.path.basename(stdfproducts.ppr_file), oussid, level='member', package=context.project_structure.recipe_name)
 
         # Add the flagging and calibration products
         for session_name in sessiondict:
             session = pipemanifest.set_session(ouss, session_name)
             if exportcalprods:
-                pipemanifest.add_caltables(session, sessiondict[session_name][1], session_name)
+                pipemanifest.add_caltables(session, sessiondict[session_name][1], session_name, level='member', package=context.project_structure.recipe_name)
             for vis_name in sessiondict[session_name][0]:
                 immatchlist = [imname for imname in per_ms_calimages if imname.startswith(vis_name)]
                 (ms_file, flags_file, calapply_file) = (None, None, None)
@@ -680,17 +680,17 @@ class ExportData(basetask.StandardTaskTemplate):
                                              'calibrator')
 
         # Add a tar file of the web log
-        pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file), oussid)
+        pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file), oussid, level='member', package=context.project_structure.recipe_name)
 
         # Add the processing log independently of the web log
-        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file), oussid)
+        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file), oussid, level='member', package=context.project_structure.recipe_name)
 
         # Add the processing script independently of the web log
-        pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript), oussid)
+        pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript), oussid, level='member', package=context.project_structure.recipe_name)
 
         # Add the restore script independently of the web log
         if stdfproducts.casa_restore_script != 'Undefined':
-            pipemanifest.add_restorescript(ouss, os.path.basename(stdfproducts.casa_restore_script), oussid)
+            pipemanifest.add_restorescript(ouss, os.path.basename(stdfproducts.casa_restore_script), oussid, level='member', package=context.project_structure.recipe_name)
 
         # Add the calibrator images
         pipemanifest.add_images(ouss, per_ous_calimages, 'calibrator', per_ous_calimages_keywords)
@@ -1011,6 +1011,9 @@ finally:
                                                       ousstatus_entity_id=oussid,
                                                       output_dir=products_dir)
         LOG.info('Creating manifest file %s', out_manifest_file)
+        # We can add the manifest element only now after the manifest name is known
+        ouss = pipemanifest.get_ous()
+        pipemanifest.add_manifest(ouss, os.path.basename(out_manifest_file), ous_name=oussid, level='member', package=self.inputs.context.project_structure.recipe_name)
         pipemanifest.write(out_manifest_file)
 
         return out_manifest_file
@@ -1192,7 +1195,7 @@ finally:
                             'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
                             'naxis4', 'ctype4', 'cunit4', 'crpix4', 'crval4', 'cdelt4',
                             'bmaj', 'bmin', 'bpa', 'robust', 'weight',
-                            'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays', 'modifier']:
+                            'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays', 'modifier', 'session']:
                     fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
 
                 if 'nspwnam' in ff[0].header:
@@ -1201,6 +1204,14 @@ finally:
                     for i in range(1, nspwnam+1):
                         key = 'spwnam{:02d}'.format(i)
                         fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
+
+                if 'nsessio' in ff[0].header:
+                    nsession = ff[0].header['nsessio']
+                    session = ''
+                    for i in range(1, nsession+1):
+                        key = 'sessio{:02d}'.format(i)
+                        session += str(ff[0].header.get(key, 'N/A'))
+                    fits_keywords['session'] = session
 
                 # Some names and/or values need to be mapped
                 fits_keywords['imagemin'] = str(ff[0].header.get('datamin', 'N/A'))
@@ -1235,18 +1246,18 @@ finally:
         return new_cleanlist, fits_list, fits_keywords_list
 
     @staticmethod
-    def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report, ous_name):
+    def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report, ous_name, package="N/A"):
 
         pipemanifest = manifest.PipelineManifest('')
         pipemanifest.import_xml(manifest_file)
         ouss = pipemanifest.get_ous()
 
         if aqua_report:
-            pipemanifest.add_aqua_report(ouss, os.path.basename(aqua_report), ous_name)
+            pipemanifest.add_aqua_report(ouss, os.path.basename(aqua_report), ous_name, level='member', package=package)
 
         if aux_fproducts:
             # Add auxiliary data products file
-            pipemanifest.add_aux_products_file(ouss, os.path.basename(aux_fproducts), ous_name)
+            pipemanifest.add_aux_products_file(ouss, os.path.basename(aux_fproducts), ous_name, level='member', package=package)
 
         # Add the auxiliary caltables
         if aux_caltablesdict:
