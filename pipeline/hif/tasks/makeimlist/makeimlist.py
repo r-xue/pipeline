@@ -885,22 +885,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                     else:
                         uvtaper = self.heuristics.uvtaper()
 
-                    # Get field specific uvrange value
-                    uvrange = {}
-                    bl_ratio = {}
-                    for field_intent in field_intent_list:
-                        for spwspec in filtered_spwlist_local:
-                            if inputs.uvrange not in (None, [], ''):
-                                uvrange[(field_intent[0], spwspec)] = inputs.uvrange
-                            else:
-                                try:
-                                    (uvrange[(field_intent[0], spwspec)], bl_ratio[(field_intent[0], spwspec)]) = \
-                                        self.heuristics.uvrange(field=field_intent[0], spwspec=spwspec)
-                                except Exception as e:
-                                    # problem defining uvrange
-                                    LOG.warning(e)
-                                    pass
-
                     # cell is a list of form [cellx, celly]. If the list has form [cell]
                     # then that means the cell is the same size in x and y. If cell is
                     # empty then fill it with a heuristic result
@@ -1314,8 +1298,20 @@ class MakeImList(basetask.StandardTaskTemplate):
                                                                                    local_selected_datatype_str, target_heuristics)
 
                                 reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
-                                gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec)
+                                gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=actual_spwspec)
 
+                                # Get field-specific uvrange value
+                                uvrange = inputs.uvrange if inputs.uvrange not in (None, [], '') else None
+                                bl_ratio = None
+                                if uvrange is None:
+                                    try:
+                                        uvrange, bl_ratio = self.heuristics.uvrange(field=field_intent[0], spwspec=actual_spwspec)
+                                    except Exception as ex:
+                                        # After PIPE-2266, an exception is unlikely to occur because a null-selection condition has been excluded.
+                                        # Nevertheless, we retain this exception handler as an extra precaution.
+                                        LOG.warning("Error calculating the heuristics uvrange value for field %s spw %s : %s",
+                                                    field_intent[0], actual_spwspec, ex)
+                                              
                                 target = CleanTarget(
                                     antenna=antenna,
                                     field=field_intent[0],
@@ -1339,8 +1335,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     nbin=nbin,
                                     nchan=nchans[(field_intent[0], spwspec)],
                                     robust=robust,
-                                    uvrange=uvrange[(field_intent[0], spwspec)],
-                                    bl_ratio=bl_ratio[(field_intent[0], spwspec)],
+                                    uvrange=uvrange,
+                                    bl_ratio=bl_ratio,
                                     uvtaper=uvtaper,
                                     stokes=stokes,
                                     heuristics=target_heuristics,
