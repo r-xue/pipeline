@@ -282,9 +282,9 @@ def _generate_product_pl_run_info(context) -> List[PipelineStatistics]:
     # Add per-SPW stats information
     # Virtual spws are used so information can just be included once per MOUS.
     ms = ms_list[0]
-    virtual_spw_id = context.observing_run.real2virtual_spw_id(spw.id, ms)
     spw_list = ms.get_all_spectral_windows()
     for spw in spw_list:
+        virtual_spw_id = context.observing_run.real2virtual_spw_id(spw.id, ms)
         sps1 = PipelineStatistics(
             name='spw_width',
             value=float(spw.bandwidth.to_units(measures.FrequencyUnits.MEGAHERTZ)),
