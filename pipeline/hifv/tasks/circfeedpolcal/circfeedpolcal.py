@@ -130,7 +130,7 @@ class Circfeedpolcal(polarization.Polarization):
                                                     refantignore=refantignore)
             self.RefAntOutput = refantobj.calculate()
         else:
-            self.RefAntOutput = self.inputs.refant
+            self.RefAntOutput = self.inputs.refant.split(",")
 
         # setjy for amplitude/flux calibrator (VLASS 3C286 or 3C48)
         fluxcalfieldname, fluxcalfieldid, fluxcal = self._do_setjy()

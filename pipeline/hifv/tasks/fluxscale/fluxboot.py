@@ -44,6 +44,7 @@ class FluxbootInputs(vdp.StandardInputs):
                 and we proceed directly to the flux density bootstrapping.
             refantignore(str):  csv string of referance antennas to ignore   'ea24, ea18, ea12'
             fitorder(int):  User input value of the fit order.  Default is -1 (heuristics will determine)
+            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
         """
 
         if fitorder is None:
@@ -258,7 +259,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
                 RefAntOutput = refantobj.calculate()
             else:
-                RefAntOutput = self.inputs.refant
+                RefAntOutput = self.inputs.refant.split(",")
 
             refAnt = ','.join(RefAntOutput)
 

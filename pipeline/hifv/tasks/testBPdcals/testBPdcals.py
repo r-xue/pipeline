@@ -39,7 +39,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
             refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
             doflagunderspwlimit(Boolean): Will identify individual spw when less than nspwlimit bad spw
                                           Used in the flagging of bad deformatters heuristics
-            refant(List): A list of reference antenna(s)
+            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
         """
         super(testBPdcalsInputs, self).__init__()
         self.context = context
@@ -312,6 +312,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         # PIPE-1637: adding ',' in the manual and auto refantignore parameter
         refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
+
         # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
         if len(self.inputs.refant) == 0:
             refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
@@ -320,7 +321,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
             RefAntOutput = refantobj.calculate()
         else:
-            RefAntOutput = self.inputs.refant
+            RefAntOutput = self.inputs.refant.split(",")
 
         LOG.info("RefAntOutput: {}".format(RefAntOutput))
 

@@ -42,7 +42,7 @@ class SolintInputs(vdp.StandardInputs):
             vis(str, optional): String name of the measurement set
             limit_short_solint(str):  Limit to the short solution interval
             refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
-
+            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
         """
         super(SolintInputs, self).__init__()
         self.context = context
@@ -241,7 +241,8 @@ class Solint(basetask.StandardTaskTemplate):
 
             RefAntOutput = refantobj.calculate()
         else:
-            RefAntOutput = self.inputs.refant
+            RefAntOutput = self.inputs.refant.split(",")
+
         refAnt = ','.join(RefAntOutput)
 
         bpdgain_touse = tablebase + table_suffix[0]

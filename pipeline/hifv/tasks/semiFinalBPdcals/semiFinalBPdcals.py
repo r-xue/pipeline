@@ -33,7 +33,7 @@ class semiFinalBPdcalsInputs(vdp.StandardInputs):
             vis(str, optional): String name of the measurement set
             weakbp(Boolean):  weak bandpass heuristics on/off - currently not used - see PIPE-104
             refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
-            refant(List): A list of reference antenna(s)
+            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
 
         """
         super(semiFinalBPdcalsInputs, self).__init__()
@@ -204,7 +204,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
 
             RefAntOutput = refantobj.calculate()
         else:
-            RefAntOutput = self.inputs.refant
+            RefAntOutput = self.inputs.refant.split(",")
 
         self._do_gtype_delaycal(caltable=gtypecaltable, RefAntOutput=RefAntOutput, spwlist=spwlist)
 

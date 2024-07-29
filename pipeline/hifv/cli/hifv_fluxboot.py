@@ -28,8 +28,8 @@ def hifv_fluxboot(vis=None, caltable=None, fitorder=None, refantignore=None, ref
                   If no determination can be made by the heuristics, a fitorder of 1 will be used.
     refantignore  String list of antennas to ignore
                   Example:  refantignore='ea02,ea03'
-    refant        A list of reference antenna(s)
-                  Example: refant = ['eq01', 'eq02']
+    refant        A csv string of reference antenna(s). When used, disables refantignore.
+                  Example: refant = 'ea01, ea02'
 
     --------- examples -----------------------------------------------------------
 

@@ -28,8 +28,8 @@ def hifv_solint(vis=None, limit_short_solint=None, refantignore=None, refant=Non
                        Can be set to a string value of 'int'.
     refantignore       String list of antennas to ignore
                        Example:  refantignore='ea02,ea03'
-    refant               A list of reference antenna(s)
-                         Example: refant = ['eq01', 'eq02']
+    refant             A csv string of reference antenna(s). When used, disables refantignore.
+                       Example: refant = 'ea01, ea02'
 
     --------- examples -----------------------------------------------------------
 
