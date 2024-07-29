@@ -1,26 +1,29 @@
 """Provide a class to store logical representation of MeasurementSet."""
 import collections
 import contextlib
+import inspect
 import itertools
 import operator
 import os
+import re
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import numpy as np
-import re
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import conversion
+
 if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
-from . import measures
-from . import spectralwindow
+from pipeline.infrastructure import logging
+from pipeline.infrastructure.utils import range_to_list
+
+from . import measures, spectralwindow
 from .antennaarray import AntennaArray
 from .datatype import DataType
-from pipeline.infrastructure.utils import range_to_list
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -50,6 +53,8 @@ class MeasurementSet(object):
         spectralspec_spwmap: A dictionary mapping SpectralSpec to corresponding
             spectral window IDs.
         fields: A list of Field objects associated with MS
+        scans: A list of Scan objects associated with MS
+        sources: A list of Source objects associated with MS
         states: A list of State objects associated with MS
         spwmaps: Spectral window mapping to use for combining/mapping, split by
             (intent, field), used in ALMA interferometry calibration tasks.
@@ -59,6 +64,8 @@ class MeasurementSet(object):
         data_types_per_source_and_spw: A dictionary to store a list of
             available data types (values) in this MS per (source,spw) tuples
             (keys)
+        observing_modes: The name(s) of the Observing Mode(s) used for this MS
+            (empty list if not ALMA).
         reference_antenna_locked: If True, reference antenna is locked to
             prevent modification
         origin_ms: A path to the first generation MeasurementSet from which
@@ -95,6 +102,8 @@ class MeasurementSet(object):
         self.data_descriptions: Union[RetrieveByIndexContainer, list] = []
         self.spectral_windows: Union[RetrieveByIndexContainer, list] = []
         self.fields: Union[RetrieveByIndexContainer, list] = []
+        self.scans: list = []
+        self.sources: Union[RetrieveByIndexContainer, list] = []
         self.states: Union[RetrieveByIndexContainer, list] = []
         self.reference_spwmap: Optional[List[int]] = None
         self.origin_ms: str = name
@@ -110,6 +119,10 @@ class MeasurementSet(object):
         self.acs_software_build_version = None
 
         self.data_types_per_source_and_spw: dict = {}
+
+        # ALMA only: the name(s) of the Observing Mode(s) selected for this MS,
+        # populated from the ASDM_SBSUMMARY table (PIPE-2084).
+        self.observing_modes: List[str] = []
 
         # Dictionary mapping phase calibrator fields to corresponding fields
         # with TARGET / CHECK intents (PIPE-1154).
@@ -193,6 +206,15 @@ class MeasurementSet(object):
     @property
     def basename(self):
         return os.path.basename(self.name)
+
+    @property
+    def is_band_to_band(self) -> bool:
+        # PIPE-2084: declares whether this MS is for band-to-band
+        # interferometry. This is deemed True if either the observing mode
+        # declares it as band-to-band, or if the diffgain intent + SpW setup are
+        # consistent with band-to-band (latter covers datasets that don't have
+        # correct observing mode set in their metadata).
+        return "BandToBand Interferometry" in self.observing_modes or self.get_diffgain_mode() == "B2B"
 
     def get_antenna(self, search_term=''):
         if search_term == '':
@@ -281,6 +303,12 @@ class MeasurementSet(object):
         qa = casa_tools.quanta
         cme = casa_tools.measures
 
+        # PIPE-1504: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
+        if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
+            log_level = logging.WARNING
+        else:
+            log_level = logging.INFO
+
         if source_name:
             # Use the first target source that matches the user defined name
             target_sources = [source for source in self.sources
@@ -361,8 +389,8 @@ class MeasurementSet(object):
             try:
                 target_spwid = [s.id for s in self.get_spectral_windows() if s.name == self.representative_window][0]
             except:
-                LOG.warning('Could not translate spw name %s to ID. Trying frequency matching heuristics.' %
-                            self.representative_window)
+                LOG.log(log_level, 'Could not translate spw name %s to ID. Trying frequency matching heuristics.' %
+                        self.representative_window)
 
         if target_spwid is not None:
             return (target_source_name, target_spwid)
@@ -456,8 +484,9 @@ class MeasurementSet(object):
         target_spws_freq = [spw for spw in target_spws_bw
                             if spw.min_frequency.value <= target_frequency_topo['m0']['value'] <= spw.max_frequency.value]
         if len(target_spws_freq) <= 0:
-            LOG.warning('No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s' %
-                        self.basename)
+            LOG.log(log_level,
+                    'No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s' %
+                    self.basename)
             max_chanwidth = None
             for spw in target_spws_bw:
                 chanwidth = spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ)
@@ -539,7 +568,7 @@ class MeasurementSet(object):
                                '{1}'.format(spw_id, self.basename))
 
     def get_spectral_windows(self, task_arg='', with_channels=False, num_channels=(), science_windows_only=True,
-                             spectralspecs=None):
+                             spectralspecs=None, intent=None):
         """
         Return the spectral windows corresponding to the given CASA-style spw
         argument, filtering out windows that may not be science spectral 
@@ -555,13 +584,17 @@ class MeasurementSet(object):
         if spectralspecs is not None:
             spws = [w for w in spws if w.spectralspec in spectralspecs]
 
+        # If requested, filter spws by intent.
+        if intent is not None:
+            spws = [w for w in spws if not set(intent.split(',')).isdisjoint(w.intents)]
+
         if not science_windows_only:
             return spws
 
         if self.antenna_array.name == 'ALMA':
             science_intents = {'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE',
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
-                               'CHECK', 'DIFFGAIN'}
+                               'CHECK', 'DIFFGAINREF', 'DIFFGAINSRC'}
             return [w for w in spws if w.num_channels not in self.exclude_num_chans
                     and not science_intents.isdisjoint(w.intents)]
 
@@ -582,7 +615,8 @@ class MeasurementSet(object):
         """Return list of all spectral specs used in the MS."""
         return list(self.spectralspec_spwmap.keys())
 
-    def get_all_spectral_windows(self, task_arg='', with_channels=False):
+    def get_all_spectral_windows(self, task_arg: str = '', with_channels: bool = False) \
+            -> List[Union[spectralwindow.SpectralWindow, spectralwindow.SpectralWindowWithChannelSelection]]:
         """Return the spectral windows corresponding to the given CASA-style
         spw argument.
         """
@@ -606,57 +640,47 @@ class MeasurementSet(object):
             spws.append(proxy)
         return spws
 
-    def get_diffgain_spectral_windows(self):
+    def get_diffgain_mode(self) -> Optional[str]:
         """
-        Determine the correspondence between spws used for phase calibration and for science target
-        in the DIFFGAIN observing mode (only for ALMA).
-        Returns:
-            a dict with two lists (not necessarily of the same length):
-            REFERENCE contains the spws used for phase calibration in the DIFFGAIN mode;
-            SCIENCE contains the spws used for science target observing in the DIFFGAIN mode.
-            If DIFFGAIN is not used or the observatory is not ALMA, both lists are empty.
-        """
-        spws = self.get_all_spectral_windows()
-        if self.antenna_array.name == 'ALMA':
-            phasecalspws = []
-            sciencespws = []
-            for w in spws:
-                if w.num_channels not in self.exclude_num_chans and 'DIFFGAIN' in w.intents:
-                    if 'PHASE' in w.intents:
-                        phasecalspws.append(w)
-                    elif 'TARGET' in w.intents:
-                        sciencespws.append(w)
-            return dict(REFERENCE=phasecalspws, SCIENCE=sciencespws)
-        else:
-            return dict(REFERENCE=[], SCIENCE=[])
+        Determine if the intents and SpW setup in this measurement set are
+        consistent with an observing mode that uses a differential gain
+        calibrator: BandToBand (B2B) or BandwidthSwitching (BWSW).
 
-    def get_diffgain_mode(self):
-        """
-        Determine if the dataset has bandwidth switching for any spws
         Returns:
-            'B2B' if the ratio of frequencies between science target and reference spws is above 1.661;
-            'BWSW' if the ratio of bandwidths between reference and science target is above 1.5;
-            None  otherwise (including the normal case with no DIFFGAIN intent)
+            'B2B' if the ratio of frequencies between on-source and reference spws is above 1.661;
+            'BWSW' if the ratio of bandwidths between reference and on-source is above 1.5;
+            None if there are no DIFFGAIN* intents in this MS.
+
         Raises:
-            ValueError if the DIFFGAIN intent is present but neither of the above conditions are satisfied
+            ValueError if the DIFFGAIN* intents are present in the MS, but either
+            a. the MS is missing diffgain reference or on-source SpWs
+            b. the SpW setup does not match either BandToBand or BandwidthSwitching.
         """
-        if 'DIFFGAIN' in self.intents:
-            # examine only the first spw, the setup is expected to be the same for all spws
-            diffspw = self.get_diffgain_spectral_windows()
-            if not diffspw['REFERENCE']:
-                raise ValueError(f'DIFFGAIN intent missing in calibration sources for dataset {self.basename}')
-            if not diffspw['SCIENCE']:
-                raise ValueError(f'DIFFGAIN intent missing in science sources for dataset {self.basename}')
-            refcent = diffspw['REFERENCE'][0].centre_frequency.value
-            scicent = diffspw['SCIENCE'][0].centre_frequency.value
-            refwidth = diffspw['REFERENCE'][0].bandwidth.value
-            sciwidth = diffspw['SCIENCE'][0].bandwidth.value
+        if 'DIFFGAINREF' in self.intents or 'DIFFGAINSRC' in self.intents:
+            # Retrieve diffgain reference and diffgain on-source SpWs.
+            dg_refspws = self.get_spectral_windows(intent='DIFFGAINREF')
+            if not dg_refspws:
+                raise ValueError(f'DIFFGAINREF intent missing in calibration sources for dataset {self.basename}')
+            dg_srcspws = self.get_spectral_windows(intent='DIFFGAINSRC')
+            if not dg_srcspws:
+                raise ValueError(f'DIFFGAINSRC intent missing in science sources for dataset {self.basename}')
+
+            # Retrieve the center frequency and bandwidth from the first
+            # diffgain on-source SpW and first diffgain reference SpW. The setup
+            # is expected to be the same for all SpWs.
+            refcent = dg_refspws[0].centre_frequency.value
+            scicent = dg_srcspws[0].centre_frequency.value
+            refwidth = dg_refspws[0].bandwidth.value
+            sciwidth = dg_srcspws[0].bandwidth.value
+
             # [at least] one of the above conditions has to be satisfied
-            if scicent/refcent > 1.661 :  # simple ratio to be out of band Cycle 10
+            if scicent/refcent > 1.661:  # simple ratio to be out of band Cycle 10
                 return 'B2B'
             elif refwidth/sciwidth > 1.5:
                 return 'BWSW'
+
             raise ValueError(f'DIFFGAIN intent with an unsupported spectral setup for dataset {self.basename}')
+
         return None
 
     def get_original_intent(self, intent=None):
@@ -681,7 +705,6 @@ class MeasurementSet(object):
             return cycle_number
         else:
             return None
-
 
     @property
     def start_time(self):
@@ -1414,8 +1437,8 @@ class MeasurementSet(object):
         # Check for existing column registration and remove it
         column_keys = [k for k,v in self.data_column.items() if v == column]
         if column_keys!= []:
-           for k in column_keys:
-               del(self.data_column[k])
+            for k in column_keys:
+                del(self.data_column[k])
 
         # Update MS domain object
         if dtype not in self.data_column:

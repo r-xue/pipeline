@@ -44,7 +44,7 @@ def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None,
                   Examples: 'PHASE,BANDPASS'
     spw           Select spectral window/channels to image. By default all
                   science spws for which the specified intent is valid are
-                  selected .
+                  selected.
     chanbin       Width (bin) of input channels to average to form an output
                   channel. If chanbin > 1 then chanaverage is automatically
                   switched to True.

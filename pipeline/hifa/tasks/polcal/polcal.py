@@ -59,6 +59,12 @@ class PolcalSessionResults(basetask.Results):
             final = []
         if pool is None:
             pool = []
+        if vislist is None:
+            vislist = []
+        if uncal_pfg_result is None:
+            uncal_pfg_result = {}
+        if cal_pfg_result is None:
+            cal_pfg_result = {}
 
         self.session = session
         self.vis = vis
@@ -101,14 +107,16 @@ class PolcalSessionResults(basetask.Results):
 class PolcalInputs(vdp.StandardInputs):
 
     intent = vdp.VisDependentProperty(default='POLARIZATION,POLANGLE,POLLEAKAGE')
+    minpacov = vdp.VisDependentProperty(default=30.0)
     solint_chavg = vdp.VisDependentProperty(default='5MHz')
     vs_stats = vdp.VisDependentProperty(default='min,max,mean')
     vs_thresh = vdp.VisDependentProperty(default=1e-3)
 
-    def __init__(self, context, vis=None, intent=None, solint_chavg=None, vs_stats=None, vs_thresh=None):
+    def __init__(self, context, vis=None, intent=None, minpacov=None, solint_chavg=None, vs_stats=None, vs_thresh=None):
         self.context = context
         self.vis = vis
         self.intent = intent
+        self.minpacov = minpacov
         self.solint_chavg = solint_chavg
         self.vs_stats = vs_stats
         self.vs_thresh = vs_thresh
@@ -213,7 +221,13 @@ class Polcal(basetask.StandardTaskTemplate):
         # Compute (uncalibrated) estimate of polarization of the polarization
         # calibrator.
         LOG.info(f"{session_msname}: compute estimate of polarization.")
-        uncal_pfg_result = self._compute_polfromgain(session_msname, init_gcal_result)
+        uncal_pfg_result = self._compute_polfromgain(session_msname, init_gcal_result, self.inputs.minpacov)
+        # If polfromgain did not find any solutions, then log a warning and
+        # return early (PIPE-2159).
+        if not uncal_pfg_result or not list(uncal_pfg_result.values())[0]:
+            LOG.warning(f"Unable to derive polarization calibration for session '{session_name}', no solutions returned"
+                        f" by polfromgain.")
+            return PolcalSessionResults(session=session_name)
 
         # Retrieve fractional Stokes results for averaged SpW for the
         # polarization calibrator field.
@@ -251,7 +265,11 @@ class Polcal(basetask.StandardTaskTemplate):
         # Recompute polarization of the polarization calibrator after
         # calibration.
         LOG.info(f"{session_msname}: recompute polarization of polarization calibrator after calibration.")
-        cal_pfg_result = self._compute_polfromgain(session_msname, final_gcal_result)
+        cal_pfg_result = self._compute_polfromgain(session_msname, final_gcal_result, self.inputs.minpacov)
+        if not cal_pfg_result:
+            LOG.warning(f"Unable to derive polarization calibration for session '{session_name}', no solutions returned"
+                        f" by polfromgain when recomputing polarization after calibration.")
+            return PolcalSessionResults(session=session_name)
 
         # (Re-)register the final gain, XY delay, and XY phase caltables.
         self._register_calapps_from_results([final_gcal_result, kcross_result, polcal_phase_result])
@@ -521,13 +539,13 @@ class Polcal(basetask.StandardTaskTemplate):
 
         return uniq_scans, list(ratio_rms)
 
-    def _compute_polfromgain(self, vis: str, gcal_result: gaincal.common.GaincalResults) -> dict:
+    def _compute_polfromgain(self, vis: str, gcal_result: gaincal.common.GaincalResults, minpacov: float) -> dict:
         # Get caltable to analyse, and set name of output caltable.
         intable = gcal_result.final[0].gaintable
         caltable = os.path.splitext(intable)[0] + '_polfromgain.tbl'
 
         # Create and run polfromgain CASA task.
-        pfg_job = casa_tasks.polfromgain(vis=vis, tablein=intable, caltable=caltable)
+        pfg_job = casa_tasks.polfromgain(vis=vis, tablein=intable, caltable=caltable, minpacov=minpacov)
         pfg_result = self._executor.execute(pfg_job)
 
         return pfg_result

@@ -57,8 +57,13 @@ class Pbcor(basetask.StandardTaskTemplate):
 
             imgname = sci_im['imagename']
             basename = imgname[:imgname.rfind('.image')]
+            keep = sci_im['metadata'].get('keep', True)
             pbname = basename + '.pb'
 
+            # PIPE-2205: do not run impbcor on VLA cube images
+            if '.cube.' in basename:
+                continue
+            
             pbcor_images = []
             term_ext_list = multiterm_ext_list if sci_im['multiterm'] else ['']
 
@@ -78,7 +83,7 @@ class Pbcor(basetask.StandardTaskTemplate):
             pbcor_images.append(pbname+pb_term_ext)
 
             LOG.info("PBCOR image names: " + ','.join(pbcor_images))
-            pbcor_dict[basename] = pbcor_images
+            pbcor_dict[(basename, keep)] = pbcor_images
 
         return PbcorResults(pbcorimagenames=pbcor_dict, multitermlist=term_ext_list)
 

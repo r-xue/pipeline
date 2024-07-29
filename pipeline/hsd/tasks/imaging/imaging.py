@@ -21,7 +21,7 @@ from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsFailure
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult, RasterScanHeuristicsFailure
 from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
 from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy, rasterutil, sdtyping
@@ -357,34 +357,38 @@ class SDImaging(basetask.StandardTaskTemplate):
                                      is_per_eb=False,
                                      context=context)
 
-        # update miscinfo
-        # TODO: Eventually, the following code together with
-        #       Tclean.update_miscinfo should be merged into
-        #       imageheader.set_miscinfo.
-        with casa_tools.ImageReader(imagename) as image:
-            info = image.miscinfo()
+            # update miscinfo
+            # TODO: Eventually, the following code together with
+            #       Tclean.update_miscinfo should be merged into
+            #       imageheader.set_miscinfo.
+            with casa_tools.ImageReader(name) as image:
+                info = image.miscinfo()
 
-            if datamin:
-                info['datamin'] = datamin
+                if '.weight' not in name:
+                    if datamin:
+                        info['datamin'] = datamin
 
-            if datamax:
-                info['datamax'] = datamax
+                    if datamax:
+                        info['datamax'] = datamax
 
-            if datarms:
-                info['datarms'] = datarms
+                    if datarms:
+                        info['datarms'] = datarms
 
-            info['stokes'] = stokes
+                info['stokes'] = stokes
 
-            if effbw:
-                info['effbw'] = effbw
+                if effbw:
+                    info['effbw'] = effbw
 
-            info['level'] = 'member'
-            info['obspatt'] = 'sd'
-            info['arrays'] = 'TP'
-            info['modifier'] = ''
-            info['session'] = session
+                info['level'] = 'member'
+                info['obspatt'] = 'sd'
+                info['arrays'] = 'TP'
+                info['modifier'] = ''
 
-            image.setmiscinfo(info)
+                # PIPE-2148, limiting 'sessionX' keyword length to 68 characters
+                # due to FITS header keyword string length limit.
+                info = imageheader.wrap_key(info, 'sessio', session)
+
+                image.setmiscinfo(info)
 
         # finally replace task attribute with the top-level one
         result.task = cls
@@ -1215,9 +1219,13 @@ class SDImaging(basetask.StandardTaskTemplate):
             _rgp : Reduction group parameter object of prepare()
         """
         # PIPE-251: detect contamination
-        if not basetask.DISABLE_WEBLOG:
-            detectcontamination.detect_contamination(self.inputs.context, _rgp.imager_result.outcome['image'],
-                                                     _rgp.imager_result.frequency_channel_reversed)
+        do_plot = not basetask.DISABLE_WEBLOG
+        contaminated = detectcontamination.detect_contamination(
+            self.inputs.context, _rgp.imager_result.outcome['image'],
+            _rgp.imager_result.frequency_channel_reversed,
+            do_plot
+        )
+        _rgp.imager_result.outcome['contaminated'] = contaminated
 
     def __append_result(self, _cp: imaging_params.CommonParameters, _rgp: imaging_params.ReductionGroupParameters):
         """Append result to RGP.
@@ -1526,7 +1534,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 raster_info_list.append(None)
             dt = _cp.dt_dict[msobj.basename]
             try:
-                raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid))
+                raster_info_list.append(_analyze_raster_pattern(dt, msobj, fieldid, spwid, antid, _rgp))
             except Exception:
                 f = msobj.get_fields(field_id=fieldid)[0]
                 a = msobj.get_antenna(antid)[0]
@@ -1830,7 +1838,12 @@ class SDImaging(basetask.StandardTaskTemplate):
             format(_tirp.msobj.basename, __field_name, _tirp.spwid,
                    _tirp.msobj.get_antenna(_tirp.antid)[0].name, str(_tirp.pol_names)))
         if _tirp.raster_info is None:
-            LOG.warning('Raster scan analysis failed. Skipping further calculation.')
+            __rsres = RasterScanHeuristicsResult(_tirp.msobj)
+            _rgp.imager_result.rasterscan_heuristics_results_incomp \
+                              .setdefault(_tirp.msobj.origin_ms, []) \
+                              .append(__rsres)
+            __rsres.set_result_fail(_tirp.antid, _tirp.spwid, _tirp.fieldid)
+            LOG.debug(f'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS : EB:{_tirp.msobj.execblock_id}:{_tirp.msobj.antennas[_tirp.antid].name}')
             return __SKIP
         _tirp.dt = _cp.dt_dict[_tirp.msobj.basename]
         _tirp.index_list = common.get_index_list_for_ms(_tirp.dt, [_tirp.msobj.origin_ms],
@@ -1842,7 +1855,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
 
 def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
-                            fieldid: int, spwid: int, antid: int) -> RasterInfo:
+                            fieldid: int, spwid: int, antid: int, rgp: 'imaging_params.ReductionGroupParameters') -> RasterInfo:
     """Analyze raster scan pattern from pointing in DataTable.
 
     Args:
@@ -1851,6 +1864,7 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
         fieldid : A field ID to process
         spwid : An SpW ID to process
         antid : An antenna ID to process
+        rgp : Reduction group parameter object of prepare()
 
     Returns:
         A named Tuple of RasterInfo
@@ -1869,11 +1883,16 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     radec_unit = datatable.getcolkeyword('OFS_RA', 'UNIT')
     assert radec_unit == datatable.getcolkeyword('OFS_DEC', 'UNIT')
     exp_unit = datatable.getcolkeyword('EXPOSURE', 'UNIT')
+    _rsres = RasterScanHeuristicsResult(msobj)
+    rgp.imager_result.rasterscan_heuristics_results_rgap \
+                     .setdefault(msobj.origin_ms, []) \
+                     .append(_rsres)
     try:
         gap_r = rasterscan.find_raster_gap(ra, dec, dtrow_list)
     except Exception as e:
         if isinstance(e, RasterScanHeuristicsFailure):
-            LOG.warning('{}'.format(e))
+            _rsres.set_result_fail(antid, spwid, fieldid)
+            LOG.debug('{} : EB:{}:{}'.format(e, msobj.execblock_id, msobj.antennas[antid].name))
         try:
             dtrow_list_large = rasterutil.extract_dtrow_list(timetable, for_small_gap=False)
             se_small = [(v[0], v[-1]) for v in dtrow_list]
