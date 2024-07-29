@@ -91,7 +91,7 @@ img {
 import numpy as np
 
 def fm_band(band):
-    return band.replace('_',' ')
+    return '('+band.strip().replace('EVLA_', '').replace('_', ' ').capitalize()+')'
 
 def fm_target(target):
     target_str=target['field'].replace('_',' ')

@@ -39,7 +39,7 @@ class SelfcalQAHandler(pqa.QAPlugin):
                 continue
 
             # if not exception, we will use the "sc_*"" keys.
-            band = target['sc_band'].replace('_', ' ')
+            band = target['sc_band'].strip().replace('EVLA_', '').replace('_', ' ').capitalize()
             targets.append((target['field_name'], band))
             if target.get('is_mosaic', None):
                 targets_mosaic.append((target['field_name'], band))
@@ -75,7 +75,7 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         if targets_mosaic:
             score = 0.90
-            targets_desc = utils.commafy([name+' / '+band for name, band in targets_mosaic], quotes=False)
+            targets_desc = utils.commafy([name+f' ({band})' for name, band in targets_mosaic], quotes=False)
             longmsg = f'A new mode is used during self-calibration for {targets_desc}.'
             n_field = len(targets_mosaic)
             s_field = 'target field' if n_field == 1 else 'target fields'
@@ -90,7 +90,7 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         if targets_exception:
             score = 0.8
-            targets_desc = utils.commafy([name+' / '+band for name, band in targets_exception], quotes=False)
+            targets_desc = utils.commafy([name+f' ({band})' for name, band in targets_exception], quotes=False)
             n_field = len(targets_exception)
             s_field = 'target field' if n_field == 1 else 'target fields'
             it_them = 'it' if n_field == 1 else 'them'
@@ -107,7 +107,7 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         if targets_success and not targets_unimproved:
             score = 0.98
-            targets_desc = utils.commafy([name+' / '+band for name, band in targets_improved], quotes=False)
+            targets_desc = utils.commafy([name+f' ({band})' for name, band in targets_improved], quotes=False)
             longmsg = f'Self-calibrations applied for {targets_desc}.'
             n_field = len(targets_improved)
             s_field = 'target field' if n_field == 1 else 'target fields'
@@ -116,9 +116,9 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         if targets_success and targets_unimproved:
             score = 0.85
-            targets_desc1 = utils.commafy([name+' / '+band for name, band in targets_success], quotes=False)
-            targets_desc2 = utils.commafy([name+' / '+band for name, band in targets_improved], quotes=False)
-            targets_desc3 = utils.commafy([name+' / '+band for name, band in targets_unimproved], quotes=False)
+            targets_desc1 = utils.commafy([name+f' ({band})' for name, band in targets_success], quotes=False)
+            targets_desc2 = utils.commafy([name+f' ({band})' for name, band in targets_improved], quotes=False)
+            targets_desc3 = utils.commafy([name+f' ({band})' for name, band in targets_unimproved], quotes=False)
             n_field1 = len(targets_success)
             s_field1 = 'target field' if n_field1 == 1 else 'target fields'
             n_field2 = len(targets_improved)

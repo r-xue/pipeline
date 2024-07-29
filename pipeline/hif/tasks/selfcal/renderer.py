@@ -180,12 +180,34 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             return formated_solints
 
+        def format_band(band_str):
+            """
+            Format the band string from selfcal libraries.
+
+            The band strings from selfcal libraries are in the following formats:
+                * VLA: EVLA_KU, etc.
+                * ALMA: Band_6, etc.
+            
+            This function converts the band string into a more readable form by:
+                1. Stripping any leading/trailing whitespace.
+                2. Removing the 'EVLA_' prefix.
+                3. Replacing underscores with spaces.
+                4. Capitalizing the resulting string.
+
+            Args:
+                band_str (str): The band string to format.
+
+            Returns:
+                str: The formatted band string.
+            """
+            return band_str.strip().replace('EVLA_', '').replace('_', ' ').capitalize()
+
         for target in targets:
             row = []
             valid_chars = "%s%s" % (string.ascii_letters, string.digits)
             id_name = filenamer.sanitize(target['field_name']+'_'+target['sc_band'], valid_chars)
             row.append(f' <a href="#{id_name}">{fm_target(target)}</a> ')
-            row.append(target['sc_band'].replace('_', ' '))
+            row.append(format_band(target['sc_band']))
             row.append(utils.find_ranges(target['spw']))
             row.append(target['phasecenter'])
             row.append(target['cell'])
