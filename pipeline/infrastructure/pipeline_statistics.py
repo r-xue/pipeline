@@ -89,28 +89,6 @@ class PipelineStatistics(object):
         return stats_dict
 
 
-def generate_stats(context) -> Dict:
-    """
-    Gathers statistics from the context and results and returns a representation
-    of them as a dict.
-    """
-    stats_collection = []
-
-    # First, gather statistics about the project and pipeline run info
-    # directly from the context
-    product_run_info = _generate_product_pl_run_info(context)
-    stats_collection.extend(product_run_info)
-
-    # Next, gather statistics from the results objects
-    stats_from_results = stats_extractor.get_stats_from_results(context)
-    stats_collection.extend(stats_from_results)
-
-    # Construct dictionary representation of all pipeline stats
-    final_dict = to_nested_dict(stats_collection)
-
-    return final_dict
-
-
 def to_nested_dict(stats_collection) -> Dict:
     """
     Generates a "nested" output dict with EBs, SPWs, MOUSs
@@ -183,7 +161,7 @@ def _generate_header() -> Dict:
     return version_dict
 
 
-def _generate_product_pl_run_info(context) -> List[PipelineStatistics]:
+def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
     """
     Gather statistics results for the pipleline run information and pipeline product information
     These can be directly obtained from the context.

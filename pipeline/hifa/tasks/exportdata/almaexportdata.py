@@ -8,7 +8,7 @@ from pipeline.h.tasks.common import manifest
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure.utils import utils
-from pipeline.infrastructure import pipeline_statistics
+from pipeline.infrastructure.renderer import stats_extractor
 from pipeline.infrastructure import task_registry
 from . import almaifaqua
 
@@ -144,7 +144,7 @@ class ALMAExportData(exportdata.ExportData):
         stats_file = os.path.join(context.output_dir, statsfile_name)
         LOG.info('Generating pipeline statistics file')
 
-        stats_dict = pipeline_statistics.generate_stats(context)
+        stats_dict = stats_extractor.generate_stats(context)
 
         # Write the stats file to disk
         with open(stats_file, 'w', encoding='utf-8') as f:
