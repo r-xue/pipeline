@@ -12,7 +12,7 @@ from pipeline.extern.adopted import getMedianPWV
 from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.common.arrayflaggerbase import channel_ranges
 from pipeline.h.tasks.flagging import flagdeterbase
-from pipeline.infrastructure import casa_tools, task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 from pipeline.infrastructure.utils import utils
 
 __all__ = [
@@ -114,6 +114,13 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
 
         # PIPE-1759: store the list of spws with missing basebands for a subsequent QA score
         results.missing_baseband_spws = self.missing_baseband_spws
+
+        # PIPE-933
+        # save deterministic flag state
+        task = casa_tasks.flagmanager(vis=self.inputs.vis, mode='save', versionname="after_deterministic_flagging",
+                                      comment="save deterministic flag state")
+        self._executor.execute(task)
+
         return results
 
     def get_fracspw(self, spw):
