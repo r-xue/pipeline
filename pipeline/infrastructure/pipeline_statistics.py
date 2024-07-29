@@ -88,7 +88,7 @@ class PipelineStatistics(object):
         return stats_dict
 
 
-def generate_stats(context, output_format: str = "nested") -> Dict:
+def generate_stats(context) -> Dict:
     """
     Gathers statistics from the context and returns a representation
     of them as a dict.
@@ -109,10 +109,7 @@ def generate_stats(context, output_format: str = "nested") -> Dict:
         stats_collection.append(elt)
 
     # Construct dictionary representation of all pipeline stats
-    if output_format == "flat":
-        final_dict = to_flat_dict(stats_collection)
-    else:
-        final_dict = to_nested_dict(stats_collection)
+    final_dict = to_nested_dict(stats_collection)
 
     return final_dict
 
@@ -155,22 +152,9 @@ def to_nested_dict(stats_collection) -> Dict:
     return final_dict
 
 
-def to_flat_dict(stats_collection) -> Dict:
-    """
-    Generates a "flat" output dict with EBs, SPWs, MOUSs just 'tagged' and labeled
-    not as part of the structure
-    """
-    final_dict = []
-    for stat in stats_collection:
-        final_dict.append(stat.to_dict(level_info=True))
-    version_dict = _generate_header()
-    final_dict.append(version_dict)
-    return final_dict
-
-
 def _generate_header() -> Dict:
     """
-    Creates a header with information about the stats file
+    Creates a header with information about the pipeline stats file
     """
     version_dict = {}
     version_dict["version"] = 0.1
