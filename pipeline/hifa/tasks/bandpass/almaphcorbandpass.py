@@ -1,4 +1,5 @@
 import itertools
+import math
 import os
 
 import pipeline.domain.measures as measures
@@ -15,6 +16,7 @@ from pipeline.infrastructure import callibrary
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.utils.math import round_up
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -32,6 +34,10 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
     bpsnr = vdp.VisDependentProperty(default=50.0)
     minbpsnr = vdp.VisDependentProperty(default=20.0)
     evenbpints = vdp.VisDependentProperty(default=True)
+
+    # Boolean declaring how to populate the bandpass solution parameter
+    # "fillgaps" (PIPE-2116, also depends on hm_bandpass modes).
+    hm_auto_fillgaps = vdp.VisDependentProperty(default=True)
 
     # Bandpass heuristics, options are 'fixed', 'smoothed', and 'snr'
     hm_bandpass = vdp.VisDependentProperty(default='snr')
@@ -63,18 +69,17 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
     solint = vdp.VisDependentProperty(default='inf')
     # PIPE-628: new parameter to unregister existing bcals before appending to callibrary 
     unregister_existing = vdp.VisDependentProperty(default=False)
-    # PIPE-712: Expose fillgaps parameter 
-    fillgaps = vdp.VisDependentProperty(default=0)
 
     def __init__(self, context, output_dir=None, vis=None, mode='channel', hm_phaseup=None, phaseupbw=None,
                  phaseupsolint=None, phaseupsnr=None, phaseupnsols=None, hm_bandpass=None, solint=None,
                  maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None, unregister_existing=None, 
-                 fillgaps=None, **parameters):
+                 hm_auto_fillgaps=None, **parameters):
         super(ALMAPhcorBandpassInputs, self).__init__(context, output_dir=output_dir, vis=vis, mode=mode, **parameters)
         self.bpnsols = bpnsols
         self.bpsnr = bpsnr
         self.minbpsnr = minbpsnr
         self.evenbpints = evenbpints
+        self.hm_auto_fillgaps = hm_auto_fillgaps
         self.hm_bandpass = hm_bandpass
         self.hm_phaseup = hm_phaseup
         self.maxchannels = maxchannels
@@ -84,7 +89,6 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
         self.phaseupsolint = phaseupsolint
         self.solint = solint
         self.unregister_existing = unregister_existing
-        self.fillgaps = fillgaps
 
 
 @task_registry.set_equivalent_casa_task('hifa_bandpass')
@@ -369,14 +373,48 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 # Smooth if FDM and if it makes sense
                 if ncorr * spw.num_channels > 256:
                     if (spw.num_channels // inputs.maxchannels) < 1:
+                        LOG.info(f"{inputs.ms.basename}: Too few channels ({spw.num_channels}) in SpW {spw.id} to use"
+                                 f" smoothing (maxchannels={inputs.maxchannels}), reverting to default bandpass solint"
+                                 f" {orig_solint}.")
                         inputs.solint = orig_solint
                     else:
-                        bandwidth = spw.bandwidth.to_units(
-                            otherUnits=measures.FrequencyUnits.MEGAHERTZ)
-                        inputs.solint = orig_solint + ',' + \
-                            str(bandwidth / inputs.maxchannels) + 'MHz'
+                        # PIPE-2036: work-around for potential issue caused by:
+                        #   * PL defined solint as a frequency interval, and
+                        #     this may correspond to an exact nr. of channels.
+                        #   * the frequency interval is passed with limited
+                        #     precision (typically in MHz with 6 decimals, i.e.
+                        #     a precision of Hz)
+                        #   * CASA's bandpass converts the frequency interval
+                        #     back to nr. of channels and then take the floor
+                        #
+                        # This can result in e.g. a required nr. of channels of
+                        # 5 corresponding to 4.8828125 MHz but getting passed as
+                        # 4.882812 MHz, then converted back to 4.999999
+                        # channels, and floored to 4.
+                        #
+                        # As a work-around, check whether the frequency interval
+                        # would trigger this, and if so, then round *up* the
+                        # frequency interval to nearest Hz.
+                        bandwidth = spw.bandwidth.to_units(otherUnits=measures.FrequencyUnits.HERTZ)
+                        newsolint = bandwidth / inputs.maxchannels
+                        chanwidth = bandwidth / spw.num_channels
+                        if round(newsolint) / chanwidth < math.floor(newsolint / chanwidth):
+                            inputs.solint = f"{orig_solint},{round_up(newsolint) * 1.e-6:f}MHz"
+                        else:
+                            inputs.solint = f"{orig_solint},{float(newsolint) * 1.e-6:f}MHz"
+                        LOG.info(f"{inputs.ms.basename}: using smoothed bandpass solint {inputs.solint} for SpW"
+                                 f" {spw.id}.")
                 else:
                     inputs.solint = orig_solint
+                    LOG.warning(f"Reverting to default bandpass solint {inputs.solint} for spw {spw.id} in MS"
+                                f" {inputs.ms.basename}")
+
+                # PIPE-2116: if requested, set fillgaps to a quarter of the
+                # number of channels of current SpW.
+                if inputs.hm_auto_fillgaps:
+                    inputs.fillgaps = int(spw.num_channels / 4)
+                else:
+                    inputs.fillgaps = 0
 
                 # Compute and append bandpass solution
                 inputs.spw = spw.id
@@ -436,9 +474,6 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 # Find the best solint for that window
                 try:
                     solindex = snr_result.spwids.index(spw.id)
-                    # Default to original 1 / 240 smoothing algorithm
-                    #if snr_result.nbpsolutions[solindex] < inputs.bpnsols:
-                        #solindex = -1
                 except:
                     solindex = -1
 
@@ -460,18 +495,51 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                     LOG.info('Setting bandpass solint to %s for spw %s' % (inputs.solint, spw.id))
 
                 elif ncorr * spw.num_channels > 256:
-
+                    LOG.warning(f"{inputs.ms.basename}: no SNR based bandpass solint was found for spw {spw.id},"
+                                f" reverting to smoothing algorithm.")
                     if (spw.num_channels // inputs.maxchannels) < 1:
+                        LOG.info(f"{inputs.ms.basename}: Too few channels ({spw.num_channels}) in SpW {spw.id} to use"
+                                 f" smoothing (maxchannels={inputs.maxchannels}), reverting to default bandpass solint"
+                                 f" {orig_solint}.")
                         inputs.solint = orig_solint
                     else:
-                        bandwidth = spw.bandwidth.to_units(
-                            otherUnits=measures.FrequencyUnits.MEGAHERTZ)
-                        inputs.solint=orig_solint + ',' + \
-                            str(bandwidth / inputs.maxchannels) + 'MHz'
+                        # PIPE-2036: work-around for potential issue caused by:
+                        #   * PL defined solint as a frequency interval, and
+                        #     this may correspond to an exact nr. of channels.
+                        #   * the frequency interval is passed with limited
+                        #     precision (typically in MHz with 6 decimals, i.e.
+                        #     a precision of Hz)
+                        #   * CASA's bandpass converts the frequency interval
+                        #     back to nr. of channels and then take the floor
+                        #
+                        # This can result in e.g. a required nr. of channels of
+                        # 5 corresponding to 4.8828125 MHz but getting passed as
+                        # 4.882812 MHz, then converted back to 4.999999
+                        # channels, and floored to 4.
+                        #
+                        # As a work-around, check whether the frequency interval
+                        # would trigger this, and if so, then round *up* the
+                        # frequency interval to nearest Hz.
+                        bandwidth = spw.bandwidth.to_units(otherUnits=measures.FrequencyUnits.HERTZ)
+                        newsolint = bandwidth / inputs.maxchannels
+                        chanwidth = bandwidth / spw.num_channels
+                        if round(newsolint) / chanwidth < math.floor(newsolint / chanwidth):
+                            inputs.solint = f"{orig_solint},{round_up(newsolint) * 1.e-6:f}MHz"
+                        else:
+                            inputs.solint = f"{orig_solint},{float(newsolint) * 1.e-6:f}MHz"
+                        LOG.info(f"{inputs.ms.basename}: using smoothed bandpass solint {inputs.solint} for SpW"
+                                 f" {spw.id}.")
                 else:
                     inputs.solint = orig_solint
                     LOG.warning("Reverting to default bandpass solint %s for spw %s in MS %s" %
                                 (inputs.solint, spw.id, inputs.ms.basename))
+
+                # PIPE-2116: if requested, set fillgaps to a quarter of the
+                # number of channels of current SpW.
+                if inputs.hm_auto_fillgaps:
+                    inputs.fillgaps = int(spw.num_channels / 4)
+                else:
+                    inputs.fillgaps = 0
 
                 # Compute and append bandpass solution
                 inputs.spw = spw.id

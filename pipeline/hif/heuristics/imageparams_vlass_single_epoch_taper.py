@@ -53,7 +53,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         """Tclean reffreq parameter heuristics."""
         return '3.0GHz'
 
-    def cyclefactor(self, iteration: int) -> float:
+    def cyclefactor(self, iteration: int, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None) -> float:
         """Tclean cyclefactor parameter heuristics."""
         return 3.0
 
@@ -65,7 +65,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         """Tclean scales parameter heuristics."""
         return [0]
 
-    def uvtaper(self, beam_natural=None, protect_long=None) -> Union[str, list]:
+    def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None) -> Union[str, list]:
         """Tclean uvtaper parameter heuristics."""
         return ['7.0arcsec']
 
@@ -104,7 +104,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         return False
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
-        return 0.0, None, None
+        return 0.0, None, None, None
 
     def find_fields(self, distance='0deg', phase_center=None, matchregex=''):
 

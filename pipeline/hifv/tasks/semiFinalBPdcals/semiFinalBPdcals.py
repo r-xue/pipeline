@@ -190,8 +190,8 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band), '10_{!s}.tbl'.format(band)]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
-
-        refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+        # PIPE-1637: adding ',' in the manual and auto refantignore parameter
+        refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
                                                 geometry=True, flagging=True, intent='',

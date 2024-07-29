@@ -11,6 +11,7 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics.vlascanheuristics import VLAScanHeuristics
+from pipeline.hifv.heuristics.specline_detect import detect_spectral_lines
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
@@ -23,16 +24,18 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
     bdfflags = vdp.VisDependentProperty(default=False)
     process_caldevice = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
+    specline_spws = vdp.VisDependentProperty(default='auto')
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, createmms=None,
-                 ocorr_mode=None, datacolumns=None, parallel=None):
+                 ocorr_mode=None, datacolumns=None, specline_spws=None, parallel=None):
         super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                          process_caldevice=process_caldevice, session=session,
                          overwrite=overwrite, nocopy=nocopy, bdfflags=bdfflags, lazy=lazy,
                          save_flagonline=save_flagonline, createmms=createmms,
                          ocorr_mode=ocorr_mode, datacolumns=datacolumns)
+        self.specline_spws = specline_spws
         self.parallel = parallel
 
 
@@ -144,6 +147,13 @@ class SerialVLAImportData(importdata.ImportData):
 
         if PbandWarning:
             LOG.warning(PbandWarning)
+
+        # Spectral line detection tool
+        for mset in myresults.mses:
+            detect_spectral_lines(mset=mset, specline_spws=self.inputs.specline_spws)
+            LOG.debug("Whether spectral window is designated as spectral line or continuum.")
+            for spw in mset.get_all_spectral_windows():
+                LOG.debug("SPW ID {}: {}".format(spw.id, spw.specline_window))
 
         return myresults
 

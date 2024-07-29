@@ -8,13 +8,18 @@ from . import resultobjects
 LOG = logging.get_logger(__name__)
 
 
-class FindContQAHandler(pqa.QAPlugin):    
+class FindContQAHandler(pqa.QAPlugin):
     result_cls = resultobjects.FindContResult
     child_cls = None
 
     def handle(self, context, result):
 
         scores = []
+
+        if context.vla_skip_mfs_and_cube_imaging:
+            scores.append(pqa.QAScore(None, longmsg='Stage skipped.', shortmsg='Stage skipped.'))
+            result.qa.pool.extend(scores)
+            return
 
         score1 = self._found_ranges(result)
         scores.append(score1)
