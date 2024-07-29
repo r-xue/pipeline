@@ -1,22 +1,22 @@
 import datetime
+import enum
+from typing import Dict, List, Set, Union
+
+import numpy as np
 
 from pipeline import environment
 from pipeline.infrastructure.renderer import stats_extractor
 from pipeline.domain import measures
 from pipeline.domain.datatype import DataType
+
 from . import logging
-from typing import Dict
-
-import enum
-
-import numpy as np
 
 LOG = logging.get_logger(__name__)
 
 
 class PipelineStatisticsLevel(enum.Enum):
     """
-    An enum to specify which "level" of infomration the pipeline statistics applies to: 
+    An enum to specify which "level" of information an individual pipeline statistic applies to:
     SPW, EB, or MOUS.
     """
     MOUS = enum.auto()
@@ -25,11 +25,23 @@ class PipelineStatisticsLevel(enum.Enum):
 
 
 class PipelineStatistics(object):
+    """A single unit of pipeline statistics information.
 
-    """A unit of pipeline statistics information"""
-    def __init__(self, name: str, value, longdesc: str, origin: str='', units: str='',
-                    level: PipelineStatisticsLevel=None, spw: str=None, mous: str=None, eb: str=None):
-        
+    Attributes:
+        name: The name of this pipeline statistic
+        value: The value for this pipeline statistic
+        longdesc: A long description of the value
+        origin: The stage that this value was calculated or populated in (Optional)
+        units: The units associated with the value (Optional)
+        level: A PipelineStatisticsLevel that specifies whether this value applies to a MOUS, EB, or SPW
+        spw: The SPW this value applies to (if applicable) (Optional)
+        eb: The EB or MS this value applies to (if applicable) (Optional)
+        mous: The MOUS this value applies to
+    """
+    def __init__(self, name: str, value: Union[str, int, float, List, Dict, Set, np.int64, np.ndarray],
+                 longdesc: str, origin: str='', units: str='',
+                 level: PipelineStatisticsLevel=None, spw: str=None, mous: str=None, eb: str=None):
+
         self.name = name
         self.value = value
         self.longdesc = longdesc
@@ -39,11 +51,12 @@ class PipelineStatistics(object):
         # The level indicates whether a given quantity applies to the whole MOUS, EB, or SPW
         self.level = level
         # The spw, mous, and eb are set, if applicable.
-        self.spw = spw
         self.mous = mous
         self.eb = eb
+        self.spw = spw
 
         # Convert initial value from the pipeline to a value that can be serialized by JSON
+        # In the future, it may make sense to move this conversion to when the data is written out.
         if type(value) is set:
             self.value = list(self.value)
         elif type(value) is np.int64:
@@ -51,62 +64,46 @@ class PipelineStatistics(object):
         elif type(value) is np.ndarray:
             self.value = list(self.value)
 
-    def to_dict(self, level_info: bool = False) -> Dict:
-        """
-        Convert an individual statistics item to dict
+    def __str__(self) -> str:
+        return 'PipelineStatistics({!s}, {!r}, {!r}, {!s})'.format(self.name, self.value, self.origin, self.units)
 
-        level_info = True will include information about what
-        MOUS/EB/SPW the value is from.
+    def to_dict(self) -> Dict:
+        """
+        Convert an individual pipeline statistics item to a dictionary
+        representation
         """
         stats_dict = {}
-
-        stats_dict['longdescription'] = self.longdesc
-
-        if self.origin not in ["", None]:
-            stats_dict['origin'] = self.origin
-
-        if self.units not in ["", None]:
-            stats_dict['units'] = self.units
 
         if self.value not in ["", None]:
             stats_dict['value'] = self.value
 
-        if level_info:
-            stats_dict['name'] = self.name
+        if self.units not in ["", None]:
+            stats_dict['units'] = self.units
 
-            stats_dict['level'] = self.level
+        if self.longdesc not in ["", None]: 
+            stats_dict['longdescription'] = self.longdesc
 
-            if self.spw not in ["", None]:
-                stats_dict['spw'] = self.spw
-
-            if self.mous not in ["", None]:
-                stats_dict['mous'] = self.mous
-
-            if self.eb not in ["", None]:
-                stats_dict['eb'] = self.eb
+        if self.origin not in ["", None]:
+            stats_dict['origin'] = self.origin
 
         return stats_dict
 
 
 def generate_stats(context) -> Dict:
     """
-    Gathers statistics from the context and returns a representation
+    Gathers statistics from the context and results and returns a representation
     of them as a dict.
-
-    output_format can be "nested" for a dict which contains information
-    about whether values are per-MOUS, EB, SPW based on the structure
-    of the output or "flat" for a flat structure with tags that
-    indiciate the MOUS, EB, SPW a value is associated with.
     """
     stats_collection = []
+
     # First, gather statistics about the project and pipeline run info
+    # directly from the context
     product_run_info = _generate_product_pl_run_info(context)
     stats_collection.extend(product_run_info)
 
-    # Next, gather statistics that require the results objects
+    # Next, gather statistics from the results objects
     stats_from_results = stats_extractor.get_stats_from_results(context)
-    for elt in stats_from_results:
-        stats_collection.append(elt)
+    stats_collection.extend(stats_from_results)
 
     # Construct dictionary representation of all pipeline stats
     final_dict = to_nested_dict(stats_collection)
@@ -120,8 +117,33 @@ def to_nested_dict(stats_collection) -> Dict:
     Each level is represented in the structure of the output.
     """
     final_dict = {}
+
+    # Step through the collect statistics values and construct
+    # a dictionary representation. The output format is as follows:
+    # { mous_name: {
+    #    mous_property: { ...
+    #    }
+    #    "EB": {
+    #       eb_name: {
+    #           eb_property: {...
+    #           }
+    #       }
+    #    }
+    #    "SPW": {
+    #       virtual_spw_id: {
+    #           spw_property: {...
+    #           }
+    #       }
+    #    }
+    #  }
+    #  header: {version: 0.1, creation_date: YYMMDD-HH:MM:SS Z}
+    # }
     for stat in stats_collection:
-        if stat.level == PipelineStatisticsLevel.EB:
+        if stat.level == PipelineStatisticsLevel.MOUS:
+            if stat.mous not in final_dict:
+                final_dict[stat.mous] = {}
+            final_dict[stat.mous][stat.name] = stat.to_dict()
+        elif stat.level == PipelineStatisticsLevel.EB:
             if stat.mous not in final_dict:
                 final_dict[stat.mous] = {}
                 final_dict[stat.mous]["EB"] = {}
@@ -130,10 +152,6 @@ def to_nested_dict(stats_collection) -> Dict:
             if stat.eb not in final_dict[stat.mous]["EB"]:
                 final_dict[stat.mous]["EB"][stat.eb] = {}
             final_dict[stat.mous]["EB"][stat.eb][stat.name] = stat.to_dict()
-        elif stat.level == PipelineStatisticsLevel.MOUS:
-            if stat.mous not in final_dict:
-                final_dict[stat.mous] = {}
-            final_dict[stat.mous][stat.name] = stat.to_dict()
         elif stat.level == PipelineStatisticsLevel.SPW:
             if stat.mous not in final_dict:
                 final_dict[stat.mous] = {}
@@ -146,6 +164,7 @@ def to_nested_dict(stats_collection) -> Dict:
         else:
             LOG.debug("In pipleine statics file creation, invalid level: {} specified.".format(stat.level))
 
+    # Generate and append a header with information about statistics file version and date created
     version_dict = _generate_header()
     final_dict['header'] = version_dict
 
@@ -157,19 +176,22 @@ def _generate_header() -> Dict:
     Creates a header with information about the pipeline stats file
     """
     version_dict = {}
-    version_dict["version"] = 0.1
+    version_dict["version"] = 1.0
     now = datetime.datetime.now(datetime.timezone.utc)
     dt_string = now.strftime("%Y/%m/%d %H:%M:%S %Z")
     version_dict["stats_file_creation_date"] = dt_string
     return version_dict
 
 
-def _generate_product_pl_run_info(context):
-    #  Set 1: values that can be gathered directly from the context
+def _generate_product_pl_run_info(context) -> List[PipelineStatistics]:
+    """
+    Gather statistics results for the pipleline run information and pipeline product information
+    These can be directly obtained from the context.
+    """
     stats_collection = []
     mous = context.get_oussid()
 
-    # MOUS-level
+    # Add MOUS-level information
     ps1 = PipelineStatistics(
         name='project_id',
         value=context.observing_run.project_ids.pop(),
@@ -218,9 +240,9 @@ def _generate_product_pl_run_info(context):
     # Add per-EB information:
 
     # List of datatypes to use (in order) for fetching EB-level information.
-    # The following function call will fetch all the MSes for ONLY the first 
-    # datatype it finds in the list. This is needed so that information is 
-    # not repeated for the ms and _targets.ms
+    # The following function call will fetch all the MSes for ONLY the first
+    # datatype it finds in the list. This is needed so that information is
+    # not repeated for the ms and _targets.ms when both are present.
     datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE, 
         DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.RAW]
     ms_list = context.observing_run.get_measurement_sets_of_type(datatypes)
@@ -257,8 +279,8 @@ def _generate_product_pl_run_info(context):
             level=PipelineStatisticsLevel.EB)
         stats_collection.append(psm3)
 
-    # Per-SPW stats information
-    # Use virtual spws so information can just be included once per MOUS
+    # Add per-SPW stats information
+    # Virtual spws are used so information can just be included once per MOUS.
     ms = ms_list[0]
     virtual_spw_id = context.observing_run.real2virtual_spw_id(spw.id, ms)
     spw_list = ms.get_all_spectral_windows()

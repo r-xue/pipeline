@@ -130,8 +130,16 @@ class ALMAExportData(exportdata.ExportData):
 
         return visdict
 
-    def _export_stats_file(self, context, oussid=''):
-        """Save the stats file"""
+    def _export_stats_file(self, context, oussid='') -> str:
+        """Generate and output the stats file.
+
+        Args: 
+          context: the pipieline context
+          oussid: the ous id
+
+        Returns:
+          The filename of the outputfile.
+        """
         statsfile_name = "pipeline_stats_{}.json".format(oussid)
         stats_file = os.path.join(context.output_dir, statsfile_name)
         LOG.info('Generating pipeline statistics file')
