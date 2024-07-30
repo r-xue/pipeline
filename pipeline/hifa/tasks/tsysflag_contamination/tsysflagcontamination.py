@@ -478,11 +478,11 @@ class TsysFlagContamination(StandardTaskTemplate):
         ms = self.inputs.ms
         science_spws = ms.get_spectral_windows(science_windows_only=True)
 
-        polarizations = {
-            ms.get_data_description(spw=spw.id).num_polarizations
+        num_corr_axes = {
+            len(ms.get_data_description(spw=spw.id).corr_axis)
             for spw in science_spws
         }
-        if any(n > 2 for n in polarizations):
+        if any(n > 2 for n in num_corr_axes):
             s = QAScore(
                 score=UNPROCESSABLE_DATA_QA_SCORE,
                 shortmsg=UNPROCESSABLE_DATA_QA_SHORTMSG,
