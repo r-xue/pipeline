@@ -435,11 +435,15 @@ class Editimlist(basetask.StandardTaskTemplate):
         # imlist_entry['datacolumn'] is either None or an non-empty string here based on the current heuristics implementation.
         imlist_entry['datacolumn'] = th.datacolumn() if not inpdict['datacolumn'] else inpdict['datacolumn']
         imlist_entry['nterms'] = th.nterms(imlist_entry['spw']) if not inpdict['nterms'] else inpdict['nterms']
-        if 'ALMA' not in img_mode:
-            imlist_entry['sensitivity'] = th.get_sensitivity(ms_do=None, field=None, intent=None, spw=None,
-                                                             chansel=None, specmode=None, cell=None, imsize=None,
-                                                             weighting=None, robust=None,
-                                                             uvtaper=None)[0] if not inpdict['sensitivity'] else inpdict['sensitivity']
+
+        # Specify the sensitivity value to be used in TcleanInputs
+        if 'VLASS' in img_mode:
+            # Force sensitivity = 0.0 to disable sensitivity calculation inside hif_tclean()
+            imlist_entry['sensitivity'] = 0.0
+        else:
+            # Assign user input if not None or 0.0; otherwise, set to None for in-flight calculation by hif_tclean()
+            imlist_entry['sensitivity'] = inpdict['sensitivity'] if inpdict['sensitivity'] else None
+
         # ---------------------------------------------------------------------------------- set cell (SRDP ALMA)
         ppb = 5.0  # pixels per beam
         if fieldnames:
