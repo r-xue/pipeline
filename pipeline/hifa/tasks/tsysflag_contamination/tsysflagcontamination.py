@@ -234,7 +234,18 @@ class TsysFlagContamination(StandardTaskTemplate):
 
         # Step 3: do not flag data for DSB data
         # Set manual flagging template to that written by the heuristic unless it's a DSB EB.
-        filetemplate = None if self._contains_dsb() else self.inputs.filetemplate
+        if self._contains_dsb():
+            filetemplate = None
+
+            s = QAScore(
+                score=UNPROCESSABLE_DATA_QA_SCORE,
+                shortmsg=UNPROCESSABLE_DATA_QA_SHORTMSG,
+                longmsg=f"Heuristic not applied: DSB data in {self.inputs.vis}.",
+                applies_to=TargetDataSelection(vis={self.inputs.vis}),
+            )
+            result.qascores_from_task.append(s)
+        else:
+            filetemplate = self.inputs.filetemplate
 
         # Always run the child task - even for DSB - as the results are required by the Tsyscalflag renderer
         child_inputs = tsysflag.Tsysflag.Inputs(
