@@ -33,7 +33,7 @@ class FluxbootInputs(vdp.StandardInputs):
     caltable = vdp.VisDependentProperty(default=None)
     refantignore = vdp.VisDependentProperty(default='')
     fitorder = vdp.VisDependentProperty(default=-1)
-    refant = vdp.VisDependentProperty(default=[])
+    refant = vdp.VisDependentProperty(default='')
 
     def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None, refant=None):
         """

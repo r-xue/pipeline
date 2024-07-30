@@ -28,7 +28,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
     weakbp = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
     doflagundernspwlimit = vdp.VisDependentProperty(default=False)
-    refant = vdp.VisDependentProperty(default=[])
+    refant = vdp.VisDependentProperty(default='')
 
     def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, refant=None):
         """
