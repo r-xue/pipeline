@@ -1718,6 +1718,7 @@ def get_tsys_contaminated_intervals(
                     if interval_comparison < 0.7:
                         warning = "Telluric residuals"
                         message = f"Large difference between CO Line {LINES_12C16O[np.abs(freqs_b[int(pclp)] - LINES_12C16O) < chansize_mhz]} MHz in {vis} spw {spw}, comparing field {field} and bandpass."
+                        LOG.info(message)
                         warnings_list.append([warning, message])
                         qascores.append(
                             pipelineqa.QAScore(
@@ -1726,14 +1727,6 @@ def get_tsys_contaminated_intervals(
                                     longmsg=f'Large difference between the bandpass telluric line and field {field} in {vis} spw {spw}',
                                     applies_to=pipelineqa.TargetDataSelection(vis={vis}, spw={spw}, field={field})
                             )
-                        )
-                        LOG.info(
-                            "Large difference between the bandpass telluric line and other fields"
-                            "CO Line %s MHz in %s spw %s, comparing field=%s and bandpass.",
-                            {LINES_12C16O[np.abs(freqs_b[int(pclp)] - LINES_12C16O) < chansize_mhz]},
-                            vis,
-                            spw,
-                            field
                         )
                     telluric_intervals.append(pcli)
                 elif np.any(
