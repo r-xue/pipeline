@@ -396,8 +396,10 @@ class MeasurementSet(object):
         # Get the representative bandwidth
         #     Return if there isn't one
         if not self.representative_target[2]:
-            LOG.warning('Undefined representative bandwidth for data set %s' % self.basename)
+            if self.antenna_array.name not in ('VLA', 'EVLA'):
+                LOG.warning('Undefined representative bandwidth for data set %s' % self.basename)
             return (target_source_name, None)
+        
         target_bw = cme.frequency('TOPO',
             qa.quantity(qa.getvalue(self.representative_target[2]),
             qa.getunit(self.representative_target[2])))
@@ -596,7 +598,7 @@ class MeasurementSet(object):
             return [w for w in spws if w.num_channels not in self.exclude_num_chans
                     and not science_intents.isdisjoint(w.intents)]
 
-        if self.antenna_array.name == 'VLA' or self.antenna_array.name == 'EVLA':
+        if self.antenna_array.name in ('VLA', 'EVLA'):
             science_intents = {'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE',
                                'POLARIZATION', 'POLANGLE', 'POLLEAKAGE',
                                'CHECK'}
