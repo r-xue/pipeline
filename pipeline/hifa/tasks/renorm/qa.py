@@ -1,6 +1,8 @@
-import os
-import numpy as np
 import copy
+import os
+import traceback
+
+import numpy as np
 
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
@@ -54,7 +56,7 @@ class RenormQAHandler(pqa.QAPlugin):
                         # Any NaNs apart from max_factor?
                         score = 0.0
                         shortmsg = 'Unexpected values.'
-                        longmsg = 'EB {} source {} spw {}: Error calculating corrections. NaNs encountered.'.format( \
+                        longmsg = 'EB {} source {} spw {}: Error calculating corrections. NaNs encountered.'.format(
                                   os.path.basename(result.vis), source, spw)
                         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
 
@@ -62,39 +64,39 @@ class RenormQAHandler(pqa.QAPlugin):
                         # These values should never occur
                         score = 0.0
                         shortmsg = 'Unexpected values.'
-                        longmsg = 'EB {} source {} spw {}: Erroneous or unrealistic scaling values were found. Error calculating corrections. Maximum factor is {}.'.format( \
+                        longmsg = 'EB {} source {} spw {}: Erroneous or unrealistic scaling values were found. Error calculating corrections. Maximum factor is {}.'.format(
                                   os.path.basename(result.vis), source, spw, max_factor)
                         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
 
                     if 1.0 <= max_factor <= threshold:
-                        scorer = scorers.linScorer(threshold, 2.5, 1.0, 0.91) # score stays between 1.0 and 0.91 - green
+                        scorer = scorers.linScorer(1.0, threshold, 1.0, 0.91)  # score stays between 1.0 and 0.91 - green
                         score = scorer(max_factor)
                         shortmsg = 'Renormalization factor within threshold'
                         longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                  'is within threshold of {:.1%} and so was not applied'.format( \
-                                  os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
+                                  'is within threshold of {:.1%} and so was not applied'.format(
+                                      os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
                     elif max_factor > threshold:
                         if result.createcaltable:
                             if max_factor < 2.5:
-                                scorer = scorers.linScorer(threshold, 2.5, 0.9, 0.67) # score stays between 0.9 and 0.67 - blue
+                                scorer = scorers.linScorer(threshold, 2.5, 0.9, 0.67)  # score stays between 0.9 and 0.67 - blue
                                 score = scorer(max_factor)
                             else:
-                                score = 0.66 # yellow score
+                                score = 0.66  # yellow score
                             shortmsg = 'Renormalization computed'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                      'is outside threshold of {:.1%} so corrections were applied.'.format( \
-                                      os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
+                                      'is outside threshold of {:.1%} so corrections were applied.'.format(
+                                          os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                         else:
                             if max_factor < 2.5:
-                                scorer = scorers.linScorer(threshold, 2.5, 0.66, 0.34) # score stays between 0.66 and 0.34 - yellow
+                                scorer = scorers.linScorer(threshold, 2.5, 0.66, 0.34)  # score stays between 0.66 and 0.34 - yellow
                                 score = scorer(max_factor)
                             else:
-                                score = 0.33 # red score
+                                score = 0.33  # red score
                             shortmsg = 'Renormalization factor outside threshold'
                             longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                      'is outside threshold of {:.1%} but no corrections were applied.'.format( \
-                                      os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
+                                      'is outside threshold of {:.1%} but no corrections were applied.'.format(
+                                          os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
 
                         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
 
@@ -107,14 +109,15 @@ class RenormQAHandler(pqa.QAPlugin):
                         score = 0.9
                         shortmsg = 'Number of segments changed.'
                         longmsg = 'EB {} source {} spw {}: The number of segments was changed throughout renormalization analysis.' \
-                                  ' Summary plot may show discontinuities due to averaging over fields with different segment boundaries.'.format( \
-                                  os.path.basename(result.vis), source, spw)
+                                  ' Summary plot may show discontinuities due to averaging over fields with different segment boundaries.'.format(
+                                      os.path.basename(result.vis), source, spw)
 
                         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
 
-                except:
+                except Exception as ex:
                     # No factors for this spw. Just skip it.
-                    pass
+                    LOG.warning("Renorm QA Handler Exception: {!s}".format(str(ex)))
+                    LOG.debug(traceback.format_exc())
 
         # Make a copy of this dict to keep track of whether a QA message was issued for
         # each excludechan SPW yet.
@@ -138,12 +141,12 @@ class RenormQAHandler(pqa.QAPlugin):
                             excluded_spws = excludechan.keys()
                             if spw in excluded_spws:
                                 longmsg = "Channels {} are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
-                                      "exclusion: {}".format(excludechan[spw], spw, result.atmExcludeCmd[target][spw])
+                                    "exclusion: {}".format(excludechan[spw], spw, result.atmExcludeCmd[target][spw])
                                 # Since we printed a message about the excluded channels for this SPW, remove it from the list that haven't yet been covered.
                                 del excludechan[spw]
                             else:
                                 longmsg = "No channels are being excluded from renormalization correction to SPW {}. Auto-calculated channel " \
-                                      "exclusion: {}".format(spw, result.atmExcludeCmd[target][spw])
+                                    "exclusion: {}".format(spw, result.atmExcludeCmd[target][spw])
                                 warn_excludechan_spw = True
                             atm_score = 0.85
                             shortmsg = "Channels are being excluded from renormalization correction"
@@ -169,6 +172,7 @@ class RenormQAHandler(pqa.QAPlugin):
                 shortmsg = "Channels are being excluded from renormalization correction"
                 atm_score = 0.85
                 result.qa.pool.append(pqa.QAScore(atm_score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
+
 
 class RenormListQAHandler(pqa.QAPlugin):
     """
