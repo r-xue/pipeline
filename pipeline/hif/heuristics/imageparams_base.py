@@ -2021,6 +2021,8 @@ class ImageParamsHeuristics(object):
         in case of online smoothing.
 
         This heuristic is currently optimized for ALMA data only.
+
+        Note: the input 'field' is a field id as an integer.
         """
 
         real_spwid = self.observing_run.virtual2real_spw_id(spw, ms_do)
@@ -2034,7 +2036,7 @@ class ImageParamsHeuristics(object):
 
             scanids = [str(scan.id) for scan in ms_do.scans
                        if intent in scan.intents
-                       and field in [fld.name for fld in scan.fields]]
+                       and field in [fld.id for fld in scan.fields]]
             scanids = ','.join(scanids)
             antenna_ids = self.antenna_ids(intent, [os.path.basename(ms_do.name)])
             taql = f"{'||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(ms_do.name)]])}&&" \
