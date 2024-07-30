@@ -9,6 +9,7 @@ import pipeline.infrastructure.launcher as launcher
 import pipeline.h.tasks.exportdata.aqua as aqua
 from pipeline.h.tasks.exportdata.aqua import UNDEFINED, export_to_disk
 from pipeline import environment
+from pipeline.infrastructure import utils
 
 LOG = logging.get_logger(__name__)
 
@@ -170,6 +171,17 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             nx = ElementTree.Element("FlaggedFraction")
             nx.text = str(context.evla['msinfo'][ms.name].flagged_fraction)
             root.append(nx)
+
+            time_on_source = utils.total_time_on_source(ms.scans)
+            nx = ElementTree.Element("TimeOnSource")
+            nx.text = str(time_on_source)
+            root.append(nx)
+
+            science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
+            time_on_science = utils.total_time_on_source(science_scans)
+            nx = ElementTree.Element("TimeOnScienceTarget")
+            nx.text = str(time_on_science)
+            root.append(nx)
         return root
 
     def get_project_structure(self, context):
@@ -208,6 +220,25 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             xml_root.extend(flux_xml)
 
         sensitivity_xml = aqua.sensitivity_xml_for_stages(context, topic_results)
+        # omit containing element if no measurements were found
+        if len(list(sensitivity_xml)) > 0:
+            xml_root.extend(sensitivity_xml)
+
+        return xml_root
+
+    def get_imaging_topic(self, context, topic_results):
+        """
+        Get the XML for the imaging topic.
+
+        :param context: pipeline context
+        :param topic_results: list of Results for this topic
+        :return: XML for imaging topic
+        :rtype: xml.etree.cElementTree.Element
+        """
+        # get base XML from base class
+        xml_root = super(VLAAquaXmlGenerator, self).get_imaging_topic(context, topic_results)
+
+        sensitivity_xml = aqua.sensitivity_xml_for_stages(context, topic_results, name='ImageSensitivities')
         # omit containing element if no measurements were found
         if len(list(sensitivity_xml)) > 0:
             xml_root.extend(sensitivity_xml)
