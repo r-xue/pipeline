@@ -277,8 +277,7 @@ class Tclean(cleanbase.CleanBase):
         context = self.inputs.context
         self.known_synthesized_beams = self.inputs.context.synthesized_beams
 
-        LOG.info('\nCleaning for intent "%s", field %s, spw %s\n',
-                 inputs.intent, inputs.field, inputs.spw)
+        LOG.info('Start imaging for intent %s, field %s, spw %s', inputs.intent, inputs.field, inputs.spw)
 
         per_spw_cont_sensitivities_all_chan = context.per_spw_cont_sensitivities_all_chan
         qaTool = casa_tools.quanta

@@ -108,6 +108,33 @@ class CheckProductSize(basetask.StandardTaskTemplate):
             LOG.info(str(result))
             return result
 
+        # Skip the VLA cube production size mitigation check-up if no CONTLINE_SCIENCE or LINE_SCIENCE datatype
+        # is registered in the Pipeline context.
+        if (self.inputs.maxcubelimit != -1) and \
+           (self.inputs.maxproductsize != -1) and \
+                self.inputs.context.vla_skip_mfs_and_cube_imaging:
+            long_short_msg = {
+                'longmsg': 'Skip the VLA cube product size mitigation due to absence of required datatypes: CONTLINE_SCIECNE or LINE_SCIENCE',
+                'shortmsg': 'Stage skipped'}
+            result = CheckProductSizeResult(self.inputs.maxcubesize,
+                                            self.inputs.maxcubelimit,
+                                            self.inputs.maxproductsize,
+                                            -1,
+                                            -1,
+                                            -1,
+                                            -1,
+                                            -1,
+                                            -1,
+                                            self.inputs.maximsize,
+                                            -1,
+                                            {},
+                                            'OK',
+                                            long_short_msg,
+                                            None)
+            # Log summary information
+            LOG.info('%s', result)
+            return result
+
         if (self.inputs.maxcubesize != -1) and \
            (self.inputs.maxcubelimit != -1) and \
            (self.inputs.maxcubesize > self.inputs.maxcubelimit):
@@ -179,8 +206,9 @@ class CheckProductSize(basetask.StandardTaskTemplate):
         # Clear any previous size mitigation parameters
         self.inputs.context.size_mitigation_parameters = {}
 
-        # Mitigate image pixel count (currently used for VLA, see PIPE-676)
+        
         if self.inputs.maximsize != -1:
+            # Mitigate image pixel count (used for VLA, see PIPE-676)
             size_mitigation_parameters, \
             original_maxcubesize, original_productsize, \
             cube_mitigated_productsize, \
@@ -189,8 +217,8 @@ class CheckProductSize(basetask.StandardTaskTemplate):
             error, reason, \
             known_synthesized_beams = \
                 checkproductsize_heuristics.mitigate_imsize()
-        # Mitigate data product byte size (currently used for ALMA)
         else:
+            # Mitigate data product byte size (used for ALMA and VLA, see PIPE-2231)
             size_mitigation_parameters, \
             original_maxcubesize, original_productsize, \
             cube_mitigated_productsize, \
@@ -217,9 +245,9 @@ class CheckProductSize(basetask.StandardTaskTemplate):
                                         cube_mitigated_productsize,
                                         maxcubesize,
                                         productsize,
-                                        self.inputs.maximsize, \
-                                        original_imsize, \
-                                        mitigated_imsize, \
+                                        self.inputs.maximsize,
+                                        original_imsize,
+                                        mitigated_imsize,
                                         size_mitigation_parameters,
                                         status,
                                         reason,
