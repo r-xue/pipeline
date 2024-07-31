@@ -524,3 +524,28 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                     ms_do.name, real_spwid)
 
         return tuple(ret)
+
+    def restfreq(self, specmode: Optional[str] = None, spwspec: Optional[str] = None):
+        """Tclean restfreq parameter heuristics.
+        
+        See PIPE-2260:
+        
+        VLA likely doesn't seem to have valid rest frequencies in the SOURCE subtable, therefore we
+        use the spw center frequency as the rest frequency here.
+        """
+        
+        rest_freq = None
+        vis = self.vislist[0]
+        ms = self.observing_run.get_ms(vis)
+
+        if specmode in ('cube', 'repBW') and spwspec:
+            spwids = sorted(set(spwspec.split(',')), key=int)  # list
+            mean_freq_hz = []
+            for spwid in spwids:
+                real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
+                spw = ms.get_spectral_window(real_spwid)
+                mean_freq_hz.append(float(spw.mean_frequency.to_units(measures.FrequencyUnits.HERTZ)))
+            mean_freq_hz = np.mean(mean_freq_hz)
+            rest_freq = '{:.10f}GHz'.format(mean_freq_hz/1e9)
+
+        return rest_freq

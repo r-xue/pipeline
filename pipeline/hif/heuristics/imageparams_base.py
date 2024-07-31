@@ -2228,7 +2228,7 @@ class ImageParamsHeuristics(object):
     def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         return None
 
-    def restfreq(self):
+    def restfreq(self, specmode: Optional[str]=None, spwspec: Optional[str]=None):
         return None
 
     def conjbeams(self):

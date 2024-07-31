@@ -543,7 +543,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         if inputs.restfreq:
             tclean_job_parameters['restfreq'] = inputs.restfreq
         else:
-            restfreq = inputs.heuristics.restfreq()
+            restfreq = inputs.heuristics.restfreq(specmode=inputs.specmode, spwspec=inputs.spw)
             if restfreq:
                 tclean_job_parameters['restfreq'] = restfreq
 
