@@ -532,7 +532,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
         # PIPE-1603, add fluxboot heuristics to use fitorder=0
         mhz_deltaf = deltaf.to_units(FrequencyUnits.MEGAHERTZ)
-        if  mhz_deltaf < 128:
+        if  mhz_deltaf < 257:
             fitorder = 0
 
         LOG.info('Displaying fit order heuristics...')
