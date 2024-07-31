@@ -4272,7 +4272,7 @@ def score_iersstate(mses) -> List[pqa.QAScore]:
     # create an interval for each one, including our tolerance
     scores = []
     for ms in by_start:
-        msg = ""
+        msg = "MS dates fully covered by IERSeop2000."
         time_end = utils.get_epoch_as_datetime(ms.end_time)
 
         if iers_info.validate_date(time_end):
