@@ -4241,7 +4241,6 @@ def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, Raste
 def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str) -> 'pqa.QAScore':
     """Return an object which has FAILED information in raster scan analysis.
 
-
     Args:
         execblock_id (str): Execute Block ID
         failed_ants (list[str]): List of antenna names
