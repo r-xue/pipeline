@@ -35,7 +35,6 @@ class VLASubPlotRenderer(object):
         self.swpowspgain_subpages = {}
         self.swpowtsys_subpages = {}
 
-
         # PIPE-1755: Links for the subpages at the top of each sub-rendering page
         for bandname in allbands:
             subpage = dict()
