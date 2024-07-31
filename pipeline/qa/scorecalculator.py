@@ -4259,7 +4259,7 @@ def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str
 
 
 @log_qa
-def score_iersstate(mses) -> pqa.QAScore:
+def score_iersstate(mses) -> List[pqa.QAScore]:
     """
     Check state of IERS tables relative to observation date
     """
