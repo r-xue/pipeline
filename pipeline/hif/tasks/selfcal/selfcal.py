@@ -313,9 +313,12 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         inputs = self.inputs
         if inputs.vis in (None, [], ''):
-            raise ValueError(
-                f'No input visibilities specified matching any of the required DataType {inputs.processing_data_type}, '
-                f'please review in the DataType information in Imported MS(es).')
+            # If no suitable datatype, by-pass the hif_selfcal stage.
+            required_data_type_desc = ', '.join(dt.name for dt in SelfcalInputs.processing_data_type)
+            LOG.warning(
+                f'No data matching any of the required datatypes: {required_data_type_desc}; '
+                f'please review the registered MS datatype information.')
+            return SelfcalResults([], None, None, None, False)
 
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]

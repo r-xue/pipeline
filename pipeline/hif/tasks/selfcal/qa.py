@@ -69,8 +69,8 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         if not targets:
             score = None
-            longmsg = 'No self-calibration attempted, modes not supported (e.g. ephemeris targets).'
-            shortmsg = longmsg
+            longmsg = 'No self-calibration attempted: unsupported modes (e.g., ephemeris targets), or no suitable datatype found.'
+            shortmsg = 'No self-calibration attempted'
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         if targets_mosaic:
