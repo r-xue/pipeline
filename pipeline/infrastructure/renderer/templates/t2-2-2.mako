@@ -77,9 +77,7 @@ from pipeline.infrastructure import utils
 								window_type = "Line"
 							else: 
 								window_type = "Continuum"
-							endif
 							spwtypeentry='<td>'+window_type+'</td>'
-						endif
 						%>
 						${spwtypeentry}
 					  <td>${str(spw.min_frequency)}</td>
