@@ -422,8 +422,6 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['uvrange'], _ = th.uvrange(field=fieldnames[0] if fieldnames else None,
                                                 spwspec=imlist_entry['spw'],
                                                 specmode=imlist_entry['specmode']) if not inpdict['uvrange'] else inpdict['uvrange']
-        imlist_entry['restfreq'] = th.restfreq(specmode=imlist_entry['specmode'],
-                                               spwspec=imlist_entry['spw']) if not inpdict['restfreq'] else inpdict['restfreq']
 
         LOG.info('RADIUS')
         LOG.info(repr(inpdict['search_radius_arcsec']))
@@ -509,6 +507,12 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['nbin'] = inpdict['nbin']
         imlist_entry['start'] = inpdict['start']
         imlist_entry['width'] = inpdict['width']
+
+        imlist_entry['restfreq'] = th.restfreq(
+            specmode=imlist_entry['specmode'],
+            nchan=imlist_entry['nchan'],
+            start=imlist_entry['start'],
+            width=imlist_entry['width']) if not inpdict['restfreq'] else inpdict['restfreq']
 
         # for VLASS phasecenter is required user input (not determined by heuristics)
         if inpdict['phasecenter']:

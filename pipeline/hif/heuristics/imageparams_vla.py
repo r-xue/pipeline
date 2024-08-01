@@ -538,27 +538,37 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         return tuple(ret)
 
-    def restfreq(self, specmode: Optional[str] = None, spwspec: Optional[str] = None):
-        """Tclean restfreq parameter heuristics.
-        
-        See PIPE-2260:
-        
-        VLA likely doesn't seem to have valid rest frequencies in the SOURCE subtable, therefore we
-        use the spw center frequency as the rest frequency here.
-        """
-        
-        rest_freq = None
-        vis = self.vislist[0]
-        ms = self.observing_run.get_ms(vis)
+    def restfreq(
+            self, specmode: Optional[str] = None, nchan: Optional[int] = None, start: Optional[Union[str, float]] = None,
+            width: Optional[Union[str, float]] = None) -> Optional[str]:
+        """Determine the rest frequency for CASA/tclean.
 
-        if specmode in ('cube', 'repBW') and spwspec:
-            spwids = sorted(set(spwspec.split(',')), key=int)  # list
-            mean_freq_hz = []
-            for spwid in spwids:
-                real_spwid = self.observing_run.virtual2real_spw_id(spwid, ms)
-                spw = ms.get_spectral_window(real_spwid)
-                mean_freq_hz.append(float(spw.mean_frequency.to_units(measures.FrequencyUnits.HERTZ)))
-            mean_freq_hz = np.mean(mean_freq_hz)
-            rest_freq = '{:.10f}GHz'.format(mean_freq_hz/1e9)
+        VLA often lacks valid rest frequencies in the SOURCE subtable. Therefore, the SPW center frequency
+        is used as the rest frequency when certain conditions are met.
+
+        Args:
+            specmode (Optional[str]): The spectral mode, typically 'cube' or 'repBW'.
+            nchan (Optional[int]): Number of channels.
+            start (Optional[Union[str, float]]): Start frequency, expected to be a string with units (e.g., 'Hz').
+            width (Optional[Union[str, float]]): Width frequency, expected to be a string with units (e.g., 'Hz').
+
+        Returns:
+            Optional[str]: The calculated rest frequency in GHz if conditions are met; otherwise, None.
+        """
+        rest_freq = None
+
+        if specmode in (
+                'cube', 'repBW') and isinstance(
+                start, str) and 'Hz' in start and isinstance(
+                width, str) and 'Hz' in width and nchan not in (
+                None, -1):
+            qa = casa_tools.quanta
+            start_hz = qa.convert(start, 'Hz')['value']
+            width_hz = qa.convert(width, 'Hz')['value']
+            center_freq_hz = start_hz + int(nchan/2) * width_hz
+            rest_freq = f'{center_freq_hz / 1e9:.10f}GHz'
+            LOG.info('Use the cube center frequency as the rest frequency for VLA: %s', rest_freq)
+        else:
+            LOG.warning('failed to derive the heuristics-based rest frequency for VLA cube imaging.')
 
         return rest_freq
