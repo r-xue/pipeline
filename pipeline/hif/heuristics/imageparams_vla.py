@@ -34,7 +34,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """Tclean uvtaper parameter heuristics."""
         return []
 
-    def uvrange(self, field=None, spwspec=None) -> tuple:
+    def uvrange(self, field=None, spwspec=None, specmode=None) -> tuple:
         """Tclean uvrange parameter heuristics.
 
         Restrict uvrange in case of very extended emission.
@@ -50,6 +50,10 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         :return: (None or string in the form of '> {x}klambda', where
             {x}=0.05*max(baseline), baseline ratio)
         """
+        if specmode in ('cube', 'repBW'):
+            # PIPE-1346: do not restrict uvrange for VLA cube imaging.
+            return None, None
+
         def get_mean_amplitude(vis, uvrange=None, axis='amplitude', field='', spw=None):
             stat_arg = {'vis': vis, 'uvrange': uvrange, 'axis': axis,
                         'useflags': True, 'field': field, 'spw': spw,

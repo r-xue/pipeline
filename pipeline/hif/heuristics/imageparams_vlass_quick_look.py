@@ -85,7 +85,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         """Tclean uvtaper parameter heuristics."""
         return []
 
-    def uvrange(self, field=None, spwspec=None) -> tuple:
+    def uvrange(self, field=None, spwspec=None, specmode=None) -> tuple:
         """Tclean uvrange parameter heuristics."""
         return None, None
 

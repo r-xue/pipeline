@@ -121,7 +121,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             # since CASA ver>=6.5.3 to maintain the beam size consistency due to the math correction from CAS-13260.
             return ['2.6476arcsec']
 
-    def uvrange(self, field=None, spwspec=None) -> tuple:
+    def uvrange(self, field=None, spwspec=None, specmode=None) -> tuple:
         """Tclean uvrange parameter heuristics."""
         return '<12km', None
 

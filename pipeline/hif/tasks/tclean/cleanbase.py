@@ -522,7 +522,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         if inputs.uvrange:
             tclean_job_parameters['uvrange'] = inputs.uvrange
         else:
-            uvrange, _ = inputs.heuristics.uvrange(field=inputs.field, spwspec=inputs.spw)
+            uvrange, _ = inputs.heuristics.uvrange(field=inputs.field, spwspec=inputs.spw, specmode=inputs.specmode)
             if uvrange:
                 tclean_job_parameters['uvrange'] = uvrange
 
