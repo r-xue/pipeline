@@ -67,6 +67,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
     refantignore = vdp.VisDependentProperty(default='')
     leakage_poltype = vdp.VisDependentProperty(default='')
     mbdkcross = vdp.VisDependentProperty(default=True)
+    refant = vdp.VisDependentProperty(default='')
     run_setjy = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
@@ -74,7 +75,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
         return [0.0, 0.25]
 
     def __init__(self, context, vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None,
-                 mbdkcross=None, clipminmax=None, run_setjy=None):
+                 mbdkcross=None, clipminmax=None, refant=None, run_setjy=None):
         super(CircfeedpolcalInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -83,6 +84,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
         self.leakage_poltype = leakage_poltype
         self.mbdkcross = mbdkcross
         self.clipminmax = clipminmax
+        self.refant = refant
         self.run_setjy = run_setjy
 
 @task_registry.set_equivalent_casa_task('hifv_circfeedpolcal')
@@ -121,10 +123,14 @@ class Circfeedpolcal(polarization.Polarization):
         # PIPE-1637: adding ',' in the manual and auto refantignore parameter
         refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-        refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
-                                                geometry=True, flagging=True, intent='', spw='',
-                                                refantignore=refantignore)
-        self.RefAntOutput = refantobj.calculate()
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
+                                                    geometry=True, flagging=True, intent='', spw='',
+                                                    refantignore=refantignore)
+            self.RefAntOutput = refantobj.calculate()
+        else:
+            self.RefAntOutput = self.inputs.refant.split(",")
 
         # setjy for amplitude/flux calibrator (VLASS 3C286 or 3C48)
         fluxcalfieldname, fluxcalfieldid, fluxcal = self._do_setjy()
