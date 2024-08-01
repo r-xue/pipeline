@@ -131,7 +131,7 @@ def fm_reason(slib):
             <th>Imsize</th>
             <th>Solints to attempt</th>
             <th>Success</th>
-            <th>Contline<br>applied</th>
+            <th>Cont.<br>applied</th>
             <th>Line<br>applied</th>
         <tr>
   </thead>
