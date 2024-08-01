@@ -557,18 +557,18 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """
         rest_freq = None
 
-        if specmode in (
-                'cube', 'repBW') and isinstance(
-                start, str) and 'Hz' in start and isinstance(
-                width, str) and 'Hz' in width and nchan not in (
-                None, -1):
-            qa = casa_tools.quanta
-            start_hz = qa.convert(start, 'Hz')['value']
-            width_hz = qa.convert(width, 'Hz')['value']
-            center_freq_hz = start_hz + int(nchan/2) * width_hz
-            rest_freq = f'{center_freq_hz / 1e9:.10f}GHz'
-            LOG.info('Use the cube center frequency as the rest frequency for VLA: %s', rest_freq)
-        else:
-            LOG.warning('failed to derive the heuristics-based rest frequency for VLA cube imaging.')
+        if specmode in ('cube', 'repBW'):
+            if all(isinstance(param, str) and 'Hz' in param for param in (start, width)) and nchan not in (None, -1):
+                try:
+                    qa = casa_tools.quanta
+                    start_hz = qa.convert(start, 'Hz')['value']
+                    width_hz = qa.convert(width, 'Hz')['value']
+                    center_freq_hz = start_hz + (nchan // 2) * width_hz
+                    rest_freq = f'{center_freq_hz / 1e9:.10f}GHz'
+                    LOG.info('Use the cube center frequency as the rest frequency for VLA cube imaging: %s', rest_freq)
+                except Exception as ex:
+                    LOG.info('Failed to derive the heuristics-based rest frequency for VLA cube imaging: %s', ex)
+            else:
+                LOG.warning('Cannot derive the heuristics-based rest frequency for VLA cube imaging.')
 
         return rest_freq
