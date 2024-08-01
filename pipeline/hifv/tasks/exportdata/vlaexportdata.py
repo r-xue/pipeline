@@ -236,7 +236,7 @@ finally:
 
             return visname
 
-    def _export_final_flagversion(self, vis, flag_version_name, products_dir):
+    def _export_final_flagversion(self, context, vis, flag_version_name, products_dir):
         """
         PIPE-1553: include additional flag versions in tarfile
         """

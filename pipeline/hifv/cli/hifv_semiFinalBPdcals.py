@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_semiFinalBPdcals(vis=None, weakbp=None, refantignore=None):
+def hifv_semiFinalBPdcals(vis=None, weakbp=None, refantignore=None, refant=None):
 
     """
     hifv_semiFinalBPdcals ---- Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging
@@ -21,6 +21,8 @@ def hifv_semiFinalBPdcals(vis=None, weakbp=None, refantignore=None):
                   specified in the h_init or hifv_importdata task.
     weakbp        Activate weak bandpass heuristics
     refantignore  String list of antennas to ignore
+    refant        A csv string of reference antenna(s). When used, disables refantignore.
+                  Example: refant = 'ea01, ea02'
 
     --------- examples -----------------------------------------------------------
 

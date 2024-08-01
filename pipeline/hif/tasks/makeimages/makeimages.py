@@ -311,7 +311,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         for name in imlist:
             with casa_tools.ImageReader(name) as image:
                 info = image.miscinfo()
-                info['reject'] = reject
+                info['VLASSRJ'] = reject
                 LOG.info('mark the image %s as reject=%r', name, reject)
                 image.setmiscinfo(info)
 

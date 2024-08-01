@@ -428,7 +428,7 @@ class medianSummary(object):
 
 
 class syspowerPerAntennaChart(object):
-    def __init__(self, context, result, yaxis, caltable, fileprefix, tabletype, band, spw, selectbasebands):
+    def __init__(self, context, result, yaxis, caltable, fileprefix, tabletype, band, spw, selectbasebands, science_scan_ids):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
@@ -439,6 +439,7 @@ class syspowerPerAntennaChart(object):
         self.band = band
         self.spw = spw
         self.selectbasebands = selectbasebands
+        self.science_scan_ids = science_scan_ids
 
         self.json = {}
         self.json_filename = os.path.join(context.report_dir, 'stage%s' % result.stage_number,
@@ -521,7 +522,7 @@ class syspowerPerAntennaChart(object):
                                                                                                          baseband,
                                                                                                          spwtouse,
                                                                                                          mean_freq),
-                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile)
+                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile, scan=self.science_scan_ids)
 
                         job.execute()
 
