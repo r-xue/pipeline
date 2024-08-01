@@ -496,11 +496,12 @@ class Editimlist(basetask.StandardTaskTemplate):
                 # PIPE-675: VLA imsize heuristic update; band dependent FOV in 'cont' specmode.
                 imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                                    primary_beam=largest_primary_beam, spwspec=imlist_entry['spw'],
-                                                   intent=imlist_entry['intent'])
+                                                   intent=imlist_entry['intent'], specmode=imlist_entry['specmode'])
             else:
                 imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                                    primary_beam=largest_primary_beam,
-                                                   sfpblimit=sfpblimit, intent=imlist_entry['intent'])
+                                                   sfpblimit=sfpblimit, intent=imlist_entry['intent'],
+                                                   specmode=imlist_entry['specmode'])
 
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']

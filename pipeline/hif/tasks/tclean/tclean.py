@@ -384,7 +384,7 @@ class Tclean(cleanbase.CleanBase):
                                                   cell=inputs.cell,
                                                   primary_beam=largest_primary_beam,
                                                   spwspec=imsize_spwlist,
-                                                  intent=inputs.intent)
+                                                  intent=inputs.intent,specmode=inputs.specmode)
 
             if inputs.imsize in (None, [], ''):
                 inputs.imsize = imsize

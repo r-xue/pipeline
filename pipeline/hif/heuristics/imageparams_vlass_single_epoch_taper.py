@@ -45,7 +45,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         return ['1.8arcsec']
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '') -> Union[list, int]:
+               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '', specmode=None) -> Union[list, int]:
         """Tclean imsize parameter heuristics."""
         return [4050, 4050]
 

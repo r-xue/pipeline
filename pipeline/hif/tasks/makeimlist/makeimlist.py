@@ -980,9 +980,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     # to imsize heuristics (used only for VLA), otherwise pass None to disable the feature.
                                     imsize_spwlist = filtered_spwlist_local if inputs.specmode == 'cont' else None
                                     h_imsize = self.heuristics.imsize(
-                                        fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
-                                        sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_intent_spw_combinations[field_intent]['vislist'],
-                                        spwspec=imsize_spwlist, intent=field_intent[1], joint_intents=inputs.intent)
+                                        fields=field_ids, cell=cells[spwspec],
+                                        primary_beam=largest_primary_beams[spwspec],
+                                        sfpblimit=sfpblimit, centreonly=False,
+                                        vislist=vislist_field_intent_spw_combinations[field_intent]['vislist'],
+                                        spwspec=imsize_spwlist, intent=field_intent[1],
+                                        joint_intents=inputs.intent, specmode=inputs.specmode)
                                     if field_intent[1] in [
                                             'PHASE',
                                             'BANDPASS',

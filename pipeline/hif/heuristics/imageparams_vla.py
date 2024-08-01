@@ -398,7 +398,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             return threshold
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
-               centreonly=False, vislist=None, spwspec=None, intent: str = '', joint_intents: str = '') -> Union[list, int]:
+               centreonly=False, vislist=None, spwspec=None, intent: str = '', joint_intents: str = '',
+               specmode=None) -> Union[list, int]:
         """
         Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
         is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
@@ -425,20 +426,24 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         :param joint_intents: stage intents
         :return: two element list of pixel count along x and y image axes.
         """
-        if spwspec is not None:
-            if type(spwspec) is not str:
-                spwspec = ",".join(spwspec)
-            freq_limits = self.get_min_max_freq(spwspec)
-            # 18 GHz and above (K, Ka, Q VLA bands)
-            if freq_limits['abs_min_freq'] >= 1.79e10:
-                # equivalent to first minimum of the Airy diffraction pattern; m = 1.22.
-                sfpblimit = 0.294
-            else:
-                # equivalent to second minimum of the Airy diffraction pattern; m = 2.233 in theta = m*lambda/D
-                sfpblimit = 0.016
+        if specmode in ('cube', 'repBW'):
+            return super().imsize(fields, cell, primary_beam, sfpblimit=sfpblimit, max_pixels=max_pixels,
+                                  centreonly=centreonly, vislist=vislist, intent=intent, specmode=specmode)
+        else:
+            if spwspec is not None:
+                if type(spwspec) is not str:
+                    spwspec = ",".join(spwspec)
+                freq_limits = self.get_min_max_freq(spwspec)
+                # 18 GHz and above (K, Ka, Q VLA bands)
+                if freq_limits['abs_min_freq'] >= 1.79e10:
+                    # equivalent to first minimum of the Airy diffraction pattern; m = 1.22.
+                    sfpblimit = 0.294
+                else:
+                    # equivalent to second minimum of the Airy diffraction pattern; m = 2.233 in theta = m*lambda/D
+                    sfpblimit = 0.016
 
-        return super().imsize(fields, cell, primary_beam, sfpblimit=sfpblimit, max_pixels=max_pixels,
-                              centreonly=centreonly, vislist=vislist, intent=intent)
+            return super().imsize(fields, cell, primary_beam, sfpblimit=sfpblimit, max_pixels=max_pixels,
+                                  centreonly=centreonly, vislist=vislist, intent=intent, specmode=specmode)
 
     def imagename(self, output_dir=None, intent=None, field=None, spwspec=None, specmode=None, band=None, datatype: str = None) -> str:
         try:
