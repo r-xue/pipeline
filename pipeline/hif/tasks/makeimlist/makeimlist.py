@@ -876,7 +876,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     elif 'robust' in inputs.context.imaging_parameters:
                         robust = inputs.context.imaging_parameters['robust']
                     else:
-                        robust = self.heuristics.robust()
+                        robust = self.heuristics.robust(specmode=inputs.specmode)
 
                     if inputs.uvtaper not in (None, []):
                         uvtaper = inputs.uvtaper

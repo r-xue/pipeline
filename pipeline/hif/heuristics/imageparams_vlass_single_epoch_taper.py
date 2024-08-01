@@ -32,7 +32,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         """Tclean deconvolver parameter heuristics."""
         return 'mtmfs'
 
-    def robust(self) -> float:
+    def robust(self, specmode=None) -> float:
         """Tclean robust parameter heuristics."""
         return 1.0
 

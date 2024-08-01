@@ -415,10 +415,10 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['uvrange'], _ = th.uvrange(field=fieldnames[0] if fieldnames else None,
                                                 spwspec=imlist_entry['spw']) if not inpdict['uvrange'] else inpdict['uvrange']
         imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
-        imlist_entry['robust'] = th.robust() if inpdict['robust'] in (None, -999.0) else inpdict['robust']
         imlist_entry['mask'] = th.mask() if not inpdict['mask'] else inpdict['mask']
         imlist_entry['pbmask'] = None if not inpdict['pbmask'] else inpdict['pbmask']
         imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
+        imlist_entry['robust'] = th.robust(specmode=imlist_entry['specmode']) if inpdict['robust'] in (None, -999.0) else inpdict['robust']
 
         imlist_entry['restfreq'] = th.restfreq(specmode=imlist_entry['specmode'],
                                                spwspec=imlist_entry['spw']) if not inpdict['restfreq'] else inpdict['restfreq']

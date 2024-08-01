@@ -21,10 +21,14 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                                        linesfile, imaging_params)
         self.imaging_mode = 'VLA'
 
-    def robust(self) -> float:
+    def robust(self, specmode=None) -> float:
         """Tclean robust parameter heuristics.
         See PIPE-680 and CASR-543"""
-        return 0.5
+        if specmode in ('cube', 'repBW'):
+            # PIPE-1346: use robust=2.0 for VLA cube imaging.
+            return 2.0
+        else:
+            return 0.5
 
     def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None) -> Union[str, list]:
         """Tclean uvtaper parameter heuristics."""

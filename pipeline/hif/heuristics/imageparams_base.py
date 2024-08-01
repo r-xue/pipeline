@@ -1414,8 +1414,7 @@ class ImageParamsHeuristics(object):
         return 2.0 * (freq_limits['abs_max_freq'] - freq_limits['abs_min_freq']) / \
                (freq_limits['abs_min_freq'] + freq_limits['abs_max_freq'])
 
-    def robust(self):
-
+    def robust(self, specmode=None):
         """Default robust value."""
 
         return 0.5
