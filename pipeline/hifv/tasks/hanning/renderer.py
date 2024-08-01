@@ -33,7 +33,10 @@ def make_hanning_table(context, results):
         vis = os.path.basename(single_result.inputs['vis'])
         ms = context.observing_run.get_ms(name=vis)
         for spw in ms.get_spectral_windows(science_windows_only=True):
-            spw_name = context.observing_run.virtual_science_spw_shortnames.get(context.observing_run.virtual_science_spw_ids.get(context.observing_run.real2virtual_spw_id(int(spw.id), ms), 'N/A'), 'N/A')
+            spw_name = context.observing_run.virtual_science_spw_shortnames.get(
+                context.observing_run.virtual_science_spw_ids.get(
+                    context.observing_run.real2virtual_spw_id(
+                        int(spw.id), ms), 'N/A'), 'N/A')
             smoothed, reason = single_result.smoothed_spws[spw.id]
             if smoothed:
                 smoothed_str = "Yes"
