@@ -23,6 +23,7 @@ class PipelineStatisticsLevel(enum.Enum):
     MOUS = enum.auto()
     EB = enum.auto()
     SPW = enum.auto()
+    SOURCE = enum.auto()
 
 
 class PipelineStatistics(object):
@@ -41,7 +42,8 @@ class PipelineStatistics(object):
     """
     def __init__(self, name: str, value: Union[str, int, float, List, Dict, Set, np.int64, np.ndarray],
                  longdesc: str, origin: str='', units: str='',
-                 level: PipelineStatisticsLevel=None, spw: str=None, mous: str=None, eb: str=None):
+                 level: PipelineStatisticsLevel=None, spw: str=None, mous: str=None, eb: str=None, 
+                 source: str=None):
 
         self.name = name
         self.value = value
@@ -55,6 +57,7 @@ class PipelineStatistics(object):
         self.mous = mous
         self.eb = eb
         self.spw = spw
+        self.source = source
 
         # Convert initial value from the pipeline to a value that can be serialized by JSON
         # In the future, it may make sense to move this conversion to when the data is written out.
@@ -97,6 +100,10 @@ def to_nested_dict(stats_collection) -> Dict:
     """
     final_dict = {}
 
+    eb_section_key = "EB"
+    spw_section_key = "SPW"
+    source_section_key = "SOURCE"
+
     # Step through the collect statistics values and construct
     # a dictionary representation. The output format is as follows:
     # { mous_name: {
@@ -125,21 +132,30 @@ def to_nested_dict(stats_collection) -> Dict:
         elif stat.level == PipelineStatisticsLevel.EB:
             if stat.mous not in final_dict:
                 final_dict[stat.mous] = {}
-                final_dict[stat.mous]["EB"] = {}
-            if "EB" not in final_dict[stat.mous]:
-                final_dict[stat.mous]["EB"] = {}
-            if stat.eb not in final_dict[stat.mous]["EB"]:
-                final_dict[stat.mous]["EB"][stat.eb] = {}
-            final_dict[stat.mous]["EB"][stat.eb][stat.name] = stat.to_dict()
+                final_dict[stat.mous][eb_section_key] = {}
+            if eb_section_key not in final_dict[stat.mous]:
+                final_dict[stat.mous][eb_section_key] = {}
+            if stat.eb not in final_dict[stat.mous][eb_section_key]:
+                final_dict[stat.mous][eb_section_key][stat.eb] = {}
+            final_dict[stat.mous][eb_section_key][stat.eb][stat.name] = stat.to_dict()
         elif stat.level == PipelineStatisticsLevel.SPW:
             if stat.mous not in final_dict:
                 final_dict[stat.mous] = {}
-                final_dict[stat.mous]["SPW"] = {}
-            if "SPW" not in final_dict[stat.mous]:
-                final_dict[stat.mous]["SPW"] = {}
-            if stat.spw not in final_dict[stat.mous]["SPW"]:
-                final_dict[stat.mous]["SPW"][stat.spw] = {}
-            final_dict[stat.mous]["SPW"][stat.spw][stat.name] = stat.to_dict()
+                final_dict[stat.mous][spw_section_key] = {}
+            if spw_section_key not in final_dict[stat.mous]:
+                final_dict[stat.mous][spw_section_key] = {}
+            if stat.spw not in final_dict[stat.mous][spw_section_key]:
+                final_dict[stat.mous][spw_section_key][stat.spw] = {}
+            final_dict[stat.mous][spw_section_key][stat.spw][stat.name] = stat.to_dict()
+        elif stat.level == PipelineStatisticsLevel.SOURCE:
+            if stat.mous not in final_dict:
+                final_dict[stat.mous] = {}
+                final_dict[stat.mous][source_section_key] = {}
+            if source_section_key not in final_dict[stat.mous]:
+                final_dict[stat.mous][source_section_key] = {}
+            if stat.spw not in final_dict[stat.mous][source_section_key]:
+                final_dict[stat.mous][source_section_key][stat.spw] = {}
+            final_dict[stat.mous][source_section_key][stat.spw][stat.name] = stat.to_dict()
         else:
             LOG.debug("In pipleine statics file creation, invalid level: {} specified.".format(stat.level))
 
@@ -227,7 +243,7 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[
     p7 = PipelineStatistics(
         name='bands',
         value=len(all_bands),
-        longdesc="Band(s) used in observations. Usually 1, but maybe more than 1 for B2B observations",
+        longdesc="Band(s) used in observations.",
         origin="hifa_importdata",
         mous=mous,
         level=level)
@@ -258,10 +274,12 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[
     for source in science_sources:
         pointings[source.name] = len([f for f in first_ms.fields
                                         if f.source_id == source.id])
+
+    # TODO: move to source level
     p10 = PipelineStatistics(
         name='n_pointings',
         value=pointings,
-        longdesc="number of mosaic pointings for each science target",
+        longdesc="number of mosaic pointings for the science target",
         origin="hifa_importdata",
         mous=mous,
         level=PipelineStatisticsLevel.MOUS)
@@ -311,7 +329,7 @@ def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[Pi
         p2 = PipelineStatistics(
             name='n_scan',
             value=len(ms.get_scans()),
-            longdesc="number of scans per science target",
+            longdesc="number of scans per EB",
             origin="hifa_importdata",
             eb=eb,
             mous=mous,
@@ -322,7 +340,7 @@ def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[Pi
         p3 = PipelineStatistics(
             name='L80',
             value=l80,
-            longdesc="80% percentile baseline",
+            longdesc="80th percentile baseline",
             origin="hifa_importdata",
             units="m",
             mous=mous,
@@ -346,7 +364,7 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[P
         p1 = PipelineStatistics(
             name='spw_width',
             value=float(spw.bandwidth.to_units(measures.FrequencyUnits.MEGAHERTZ)),
-            longdesc="width of science spectral windows",
+            longdesc="width of the spectral window",
             origin="hifa_importdata",
             units="MHz",
             spw=spw.id,
@@ -357,7 +375,7 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[P
         p2 = PipelineStatistics(
             name='spw_freq',
             value=float(spw.centre_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ)),
-            longdesc="central frequency for each science spectral window in TOPO",
+            longdesc="central frequency of the spectral window in TOPO",
             origin="hifa_importdata",
             units="GHz",
             spw=spw.id,
@@ -366,9 +384,9 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[P
         stats_collection.append(p2)
 
         p3 = PipelineStatistics(
-            name='spw_nchan',
+            name='n_chan',
             value=spw.num_channels,
-            longdesc="number of channels in spectral windows",
+            longdesc="number of channels in the spectral window",
             origin="hifa_importdata",
             mous=mous,
             spw=spw.id,
@@ -378,7 +396,7 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[P
         p4 = PipelineStatistics(
             name='nbin_online',
             value=spw.sdm_num_bin,
-            longdesc="online nbin factors ",
+            longdesc="online nbin factor",
             origin="hifa_importdata",
             spw=spw.id,
             mous=mous,
@@ -389,7 +407,7 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[P
         p5 = PipelineStatistics(
             name='chan_width',
             value=chan_width_MHz[0],
-            longdesc="frequency width of channels in spectral windows",
+            longdesc="frequency width of the channels in the spectral window",
             origin="hifa_importdata",
             units="MHz",
             spw=spw.id,
@@ -401,9 +419,9 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[P
         numpols = dd.num_polarizations
 
         p6 = PipelineStatistics(
-            name='spw_npol',
+            name='n_pol',
             value=numpols,
-            longdesc="number of polarizations in the data set",
+            longdesc="number of polarizations in the spectral window",
             origin="hifa_importdata",
             mous=mous,
             spw=spw.id,
