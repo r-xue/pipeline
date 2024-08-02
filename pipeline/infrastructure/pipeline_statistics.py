@@ -5,9 +5,9 @@ from typing import Dict, List, Set, Union
 import numpy as np
 
 from pipeline import environment
-from pipeline.infrastructure.renderer import stats_extractor
 from pipeline.domain import measures
 from pipeline.domain.datatype import DataType
+from pipeline.infrastructure import utils
 
 from . import logging
 
@@ -169,6 +169,14 @@ def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
     stats_collection = []
     mous = context.get_oussid()
 
+    # List of datatypes to use (in order) for fetching EB-level information.
+    # The following function call will fetch all the MSes for ONLY the first
+    # datatype it finds in the list. This is needed so that information is
+    # not repeated for the ms and _targets.ms when both are present.
+    datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE,
+        DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.RAW]
+    ms_list = context.observing_run.get_measurement_sets_of_type(datatypes)
+
     # Add MOUS-level information
     ps1 = PipelineStatistics(
         name='project_id',
@@ -215,16 +223,79 @@ def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
         level=PipelineStatisticsLevel.MOUS)
     stats_collection.append(ps5)
 
+    ps6 = PipelineStatistics(
+        name='n_EB',
+        value=len(context.observing_run.execblock_ids),
+        longdesc="number of execution blocks",
+        origin="hifa_importdata",
+        mous=mous,
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps6)
+
+    all_bands = sorted({spw.band for spw in ms_list[0].get_all_spectral_windows()})
+    # TODO: or science spws, or for all MSes?
+    ps7 = PipelineStatistics(
+        name='bands',
+        value=len(all_bands),
+        longdesc="Band(s) used in observations. Usually 1, but maybe more than 1 for B2B observations",
+        origin="hifa_importdata",
+        mous=mous,
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps7)
+
+    first_ms = ms_list[0]
+    science_source_names = sorted({source.name for source in first_ms.sources if 'TARGET' in source.intents})
+    ps8 = PipelineStatistics(
+        name='n_targets',
+        value=len(science_source_names),
+        longdesc="total number of science targets in the MOUS",
+        origin="hifa_importdata",
+        mous=mous,
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps8)
+
+    ps9 = PipelineStatistics(
+        name='target_list',
+        value=science_source_names,
+        longdesc="list of science target names",
+        origin="hifa_importdata",
+        mous=mous,
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps9)
+
+    pointings = {}
+    science_sources = sorted({source for source in first_ms.sources if 'TARGET' in source.intents})
+    for source in science_sources:
+        pointings[source.name] = len([f for f in first_ms.fields
+                                        if f.source_id == source.id])
+    ps10 = PipelineStatistics(
+        name='n_pointings',
+        value=pointings,
+        longdesc="number of mosaic pointings for each science target",
+        origin="hifa_importdata",
+        mous=mous,
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps10)
+
+    ps11 = PipelineStatistics(
+        name='rep_target',
+        value=first_ms.representative_target[0],
+        longdesc="representative target name",
+        origin="hifa_importdata",
+        mous=mous,
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps11)
+
+    ps12 = PipelineStatistics(
+        name='n_spw',
+        value=len(first_ms.get_all_spectral_windows()),
+        longdesc="number of spectral windows",
+        origin="hifa_importdata",
+        mous=mous,
+        level=PipelineStatisticsLevel.MOUS)
+    stats_collection.append(ps12)
+
     # Add per-EB information:
-
-    # List of datatypes to use (in order) for fetching EB-level information.
-    # The following function call will fetch all the MSes for ONLY the first
-    # datatype it finds in the list. This is needed so that information is
-    # not repeated for the ms and _targets.ms when both are present.
-    datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE, 
-        DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.RAW]
-    ms_list = context.observing_run.get_measurement_sets_of_type(datatypes)
-
     for ms in ms_list:
         eb = ms.name
         psm1 = PipelineStatistics(
@@ -237,18 +308,8 @@ def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
             level=PipelineStatisticsLevel.EB)
         stats_collection.append(psm1)
 
-        psm2 = PipelineStatistics(
-            name='n_spw',
-            value=len(ms.get_all_spectral_windows()),
-            longdesc="number of spectral windows",
-            origin="hifa_importdata",
-            eb=eb,
-            mous=mous,
-            level=PipelineStatisticsLevel.EB)
-        stats_collection.append(psm2)
-
         psm3 = PipelineStatistics(
-            name='n_scans',
+            name='n_scan',
             value=len(ms.get_scans()),
             longdesc="number of scans per science target",
             origin="hifa_importdata",
@@ -257,19 +318,30 @@ def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
             level=PipelineStatisticsLevel.EB)
         stats_collection.append(psm3)
 
+        l80 = np.percentile(ms.antenna_array.baselines_m, 80)
+        psm10 = PipelineStatistics(
+            name='L80',
+            value=l80,
+            longdesc="80% percentile baseline",
+            origin="hifa_importdata",
+            units="m",
+            mous=mous,
+            eb=eb,
+            level=PipelineStatisticsLevel.EB)
+        stats_collection.append(psm10)
+
     # Add per-SPW stats information
     # Virtual spws are used so information can just be included once per MOUS.
     ms = ms_list[0]
     spw_list = ms.get_all_spectral_windows()
     for spw in spw_list:
-        virtual_spw_id = context.observing_run.real2virtual_spw_id(spw.id, ms)
         sps1 = PipelineStatistics(
             name='spw_width',
             value=float(spw.bandwidth.to_units(measures.FrequencyUnits.MEGAHERTZ)),
             longdesc="width of science spectral windows",
             origin="hifa_importdata",
             units="MHz",
-            spw=virtual_spw_id,
+            spw=spw.id,
             eb=eb,
             mous=mous,
             level=PipelineStatisticsLevel.SPW)
@@ -281,7 +353,7 @@ def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
             longdesc="central frequency for each science spectral window in TOPO",
             origin="hifa_importdata",
             units="GHz",
-            spw=virtual_spw_id,
+            spw=spw.id,
             eb=eb,
             mous=mous,
             level=PipelineStatisticsLevel.SPW)
@@ -294,7 +366,7 @@ def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
             origin="hifa_importdata",
             eb=eb,
             mous=mous,
-            spw=virtual_spw_id,
+            spw=spw.id,
             level=PipelineStatisticsLevel.SPW)
         stats_collection.append(sps3)
 
@@ -303,7 +375,7 @@ def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
             value=spw.sdm_num_bin,
             longdesc="online nbin factors ",
             origin="hifa_importdata",
-            spw=virtual_spw_id,
+            spw=spw.id,
             eb=eb,
             mous=mous,
             level=PipelineStatisticsLevel.SPW)
@@ -316,10 +388,23 @@ def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
             longdesc="frequency width of channels in spectral windows",
             origin="hifa_importdata",
             units="MHz",
-            spw=virtual_spw_id,
+            spw=spw.id,
             eb=eb,
             mous=mous,
             level=PipelineStatisticsLevel.SPW)
         stats_collection.append(sps5)
 
+        dd = ms.get_data_description(spw=int(spw.id))
+        numpols = dd.num_polarizations
+
+        sps6 = PipelineStatistics(
+            name='spw_npol',
+            value=numpols,
+            longdesc="number of polarizations in the data set",
+            origin="hifa_importdata",
+            mous=mous,
+            eb=eb,
+            spw=spw.id,
+            level=PipelineStatisticsLevel.SPW)
+        stats_collection.append(sps6)
     return stats_collection

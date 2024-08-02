@@ -13,7 +13,7 @@ from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure import logging
 from pipeline.infrastructure.renderer import regression
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
-import pipeline.infrastructure.pipeline_statistics as pstats
+from pipeline.infrastructure import pipeline_statistics as pstats
 import pipeline.infrastructure.utils as utils
 
 LOG = logging.get_logger(__name__)
