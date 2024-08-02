@@ -105,7 +105,10 @@ class Circfeedpolcal(polarization.Polarization):
         self.caldictionary = {}
 
         if [intent for intent in intents if 'POL' in intent]:
-            self.do_prepare()
+            try:
+                self.do_prepare()
+            except Exception as ex:
+                LOG.warning(ex)
 
         return CircfeedpolcalResults(vis=self.inputs.vis, pool=self.callist, final=self.callist,
                                      refant=self.RefAntOutput[0].lower(), calstrategy=self.calstrategy,
@@ -340,9 +343,10 @@ class Circfeedpolcal(polarization.Polarization):
         casa_task_args['uvrange'] = uvrange(self.setjy_results, fieldid)
 
         job = casa_tasks.gaincal(**casa_task_args)
-
-        self._executor.execute(job)
-
+        try:
+            self._executor.execute(job)
+        except Exception as ex:
+            LOG.warning(ex)
         if addcallib:
             LOG.info("Adding " + str(caltable) + " to callibrary.")
             calfrom = callibrary.CalFrom(gaintable=caltable, interp='', calwt=False, caltype='kcross')

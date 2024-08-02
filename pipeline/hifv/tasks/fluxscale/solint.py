@@ -144,7 +144,7 @@ class Solint(basetask.StandardTaskTemplate):
         short_solint = {}
         new_gain_solint1 = {}
         bpdgain_touse = {}
-
+        vis = self.inputs.vis
         calMs = 'calibrators.ms'
         split_result = self._do_split(calMs)
 
