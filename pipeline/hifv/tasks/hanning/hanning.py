@@ -41,7 +41,7 @@ class HanningResults(basetask.Results):
     The class inherits from basetask.Results
 
     """
-    def __init__(self, final=None, pool=None, preceding=None):
+    def __init__(self, final=None, pool=None, preceding=None, smoothed_spws=None):
         """
         Args:
             final(list): final list of tables (not used in this task)
@@ -49,13 +49,14 @@ class HanningResults(basetask.Results):
             preceding(list): preceding list (not used in this task)
 
         """
-
         if final is None:
             final = []
         if pool is None:
             pool = []
         if preceding is None:
             preceding = []
+        if smoothed_spws is None:
+            smoothed_spws = {}
 
         super(HanningResults, self).__init__()
 
@@ -64,6 +65,7 @@ class HanningResults(basetask.Results):
         self.final = final[:]
         self.preceding = preceding[:]
         self.error = set()
+        self.smoothed_spws = smoothed_spws
 
     def merge_with_context(self, context):
         """
@@ -105,15 +107,24 @@ class Hanning(basetask.StandardTaskTemplate):
         if not self.inputs.maser_detection:
             LOG.info("Maser detection turned off.")
         spws = self.inputs.context.observing_run.get_ms(self.inputs.vis).get_spectral_windows(science_windows_only=True)
-        hs_dict = dict()
+
+        smoothing_dict = {}
+
         for spw in spws:
-            hs_dict[spw.id] = False
-            if spw.sdm_num_bin > 1 or spw.specline_window:
-                if self.inputs.maser_detection:
-                    if self._checkmaserline(str(spw.id)):
-                        hs_dict[spw.id] = True
+            smoothing_dict[spw.id] = (False, "")
+            if spw.sdm_num_bin > 1:
+                smoothing_dict[spw.id] = (False, "online smoothing applied")
+            elif spw.specline_window:
+                if self.inputs.maser_detection and self._checkmaserline(str(spw.id)):
+                    smoothing_dict[spw.id] = (True, "spectral line, maser line")
+                else:
+                    smoothing_dict[spw.id] = (False, "spectral line")
             else:
-                hs_dict[spw.id] = True
+                smoothing_dict[spw.id] = (True, "continuum")
+
+            hs_dict = {}
+            for key, val in smoothing_dict.items():
+                hs_dict[key] = val[0]
 
         if not any(hs_dict.values()):
             LOG.info("None of the science spectral windows were selected for smoothing.")
@@ -142,7 +153,7 @@ class Hanning(basetask.StandardTaskTemplate):
         # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
         self._track_hsmooth(hs_dict)
 
-        return HanningResults()
+        return HanningResults(smoothed_spws=smoothing_dict)
 
     def analyse(self, results):
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
