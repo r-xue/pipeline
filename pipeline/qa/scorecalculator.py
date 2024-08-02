@@ -4259,7 +4259,7 @@ def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str
 
 
 @log_qa
-def score_iersstate(mses) -> List[pqa.QAScore]:
+def score_iersstate(mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
     """
     Check state of IERS tables relative to observation date
     """
@@ -4272,25 +4272,29 @@ def score_iersstate(mses) -> List[pqa.QAScore]:
     # create an interval for each one, including our tolerance
     scores = []
     for ms in by_start:
-        msg = "MS dates fully covered by IERSeop2000."
+        longmsg = (f"Dates for {ms.basename} fully covered by IERSeop2000.")
+        shortmsg = "MS dates fully covered by IERSeop2000."
         time_end = utils.get_epoch_as_datetime(ms.end_time)
 
         if iers_info.validate_date(time_end):
             score = 1.0
         elif iers_info.date_message_type(time_end) == "INFO":
             score = 0.9
-            msg = "MS dates not fully covered by IERSeop2000. CASA will use IERSpredict."
+            longmsg = (f"Dates for {ms.basename} not fully covered by IERSeop2000. CASA will use IERSpredict.")
+            shortmsg = "MS dates not fully covered by IERSeop2000. CASA will use IERSpredict."
         elif iers_info.date_message_type(time_end) == "WARN":
             score = 0.5
-            msg = "MS dates not fully covered by IERSeop2000. CASA will use IERSpredict."
+            longmsg = (f"Dates for {ms.basename} not fully covered by IERSeop2000. CASA will use IERSpredict.")
+            shortmsg = "MS dates not fully covered by IERSeop2000. CASA will use IERSpredict."
         else:
             score = 0.3
-            msg = "MS dates not fully covered by IERSpredict. Please update your data repository."
+            longmsg = (f"Dates for {ms.basename} not fully covered by IERSeop2000. Please update your data repository.")
+            shortmsg = "MS dates not fully covered by IERSpredict. Please update your data repository."
 
         origin = pqa.QAOrigin(metric_name='score_iersstate',
-                            metric_score=score,
-                            metric_units='state of IERS tables relative to observation date')
+                              metric_score=score,
+                              metric_units='state of IERS tables relative to observation date')
 
-        scores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
 
     return scores
