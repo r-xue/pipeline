@@ -1,16 +1,16 @@
-# Pipeline QA score class design
+# Pipeline Quality Assurance (QA) Score Class Design
 
 Pipeline QA scores are represented by the
 `pipeline/infrastructure/pipelineqa.py::QAScore` class. The basic setup features
 a normalized numerical score ("score") between 0.0 and 1.0 with the following
 numerical ranges, meanings and colors:
 
-|score range | level | color|
-| :-------------------- | :--------- | :----- |
-| 0.00 <= score <= 0.33 | error      | red    |
-| 0.33 < score <= 0.66  | warning    | yellow |
-| 0.66 < score <= 0.90  | suboptimal | blue   |
-| 0.90 < score <= 1.00  | optimal    | green  |
+| score range           | color  | QA level   |
+|:----------------------|:-------|:-----------|
+| 0.00 <= score <= 0.33 | red    | error      |
+| 0.33 < score <= 0.66  | yellow | warning    |
+| 0.66 < score <= 0.90  | blue   | suboptimal |
+| 0.90 < score <= 1.00  | green  | optimal    |
 
 Optionally, `score` can be set to -0.1 if the score calculation encounters any unhandled errors. A score of -0.1 is considered an error score.
 
@@ -72,3 +72,9 @@ Out[3]:
  # ...
 ]
 ```
+
+## Reference on ALMA Quality Assurance
+
+* [QA2 Data Products](https://almascience.nrao.edu/processing/qa2-data-products)
+* [ALMA quality assurance: concepts, procedures, and tools](https://ui.adsabs.harvard.edu/abs/2016SPIE.9910E..1HC/abstract)
+* [Improving ALMA's data processing efficiency using a holistic approach](https://ui.adsabs.harvard.edu/abs/2020SPIE11449E..1TN/abstract)
