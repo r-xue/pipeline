@@ -87,7 +87,7 @@ class CheckProductSize(basetask.StandardTaskTemplate):
            (self.inputs.maxproductsize != -1) and \
                 self.inputs.context.vla_skip_mfs_and_cube_imaging:
             skip_status_msgs = (
-                'OK', 'Skip the VLA cube product size mitigation due to absence of required datatypes: CONTLINE_SCIECNE or LINE_SCIENCE',
+                'OK', 'Skip the VLA cube product size mitigation due to absence of required datatypes: CONTLINE_SCIENCE or LINE_SCIENCE',
                 'Stage skipped')
 
         # Check for parameter errors: maxcubelimit must be >= maxcubesize.

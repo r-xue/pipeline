@@ -254,7 +254,7 @@ class Context(object):
             return ps.recipe_name
 
     @property
-    def vla_skip_mfs_and_cube_imaging(self):
+    def vla_skip_mfs_and_cube_imaging(self) -> bool:
         """Check the stage skipping condition for the VLA specmode=mfs/cube imaging workflow."""
 
         ms_list = self.observing_run.get_measurement_sets_of_type([domain.datatype.DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)

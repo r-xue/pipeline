@@ -67,8 +67,8 @@ class TcleanQAHandler(pqa.QAPlugin):
                 # VLA-PI imaging modes
                 if result.inputs['specmode'] in ('cube', 'repBW'):
                     # PIPE-1346: score=1.0 for a succesfully imaged spectral line target.
-                    longmsg = f'cube imaging succeed: field {result.sourcename}, spw {result.spw}'
-                    shortmsg = 'cube imaging succeed'
+                    longmsg = f'cube imaging succeeded: field {result.sourcename}, spw {result.spw}'
+                    shortmsg = 'cube imaging succeeded'
                     result.qa.pool[:] = [pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, applies_to=data_selection)]
                 else:
                     # for cont/mfs imaging

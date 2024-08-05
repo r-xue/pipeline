@@ -1,7 +1,9 @@
 import re
-from typing import Union, Optional
+import traceback
+from typing import Optional, Union
 
 import numpy as np
+
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer
@@ -566,8 +568,10 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                     center_freq_hz = start_hz + (nchan // 2) * width_hz
                     rest_freq = f'{center_freq_hz / 1e9:.10f}GHz'
                     LOG.info('Use the cube center frequency as the rest frequency for VLA cube imaging: %s', rest_freq)
-                except Exception as ex:
-                    LOG.info('Failed to derive the heuristics-based rest frequency for VLA cube imaging: %s', ex)
+                except Exception:
+                    LOG.warning('Failed to derive the heuristics-based rest frequency for VLA cube imaging.')
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
             else:
                 LOG.warning('Cannot derive the heuristics-based rest frequency for VLA cube imaging.')
 
