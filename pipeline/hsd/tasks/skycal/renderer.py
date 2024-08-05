@@ -289,6 +289,9 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         Returns:
             Reference, RA and Declination.
+
+        Raises:
+            RuntimeError: No OFF source data exist for given field in the ms.
         """
         LOG.debug('_get_reference_coord({ms}, {field})'.format(ms=ms.basename, field=field.name))
         spws = ms.get_spectral_windows(science_windows_only=True)
