@@ -796,7 +796,7 @@ class ExportData(basetask.StandardTaskTemplate):
         if not isinstance(flag_version_name, list):
             flag_version_name = [flag_version_name]
         # PIPE-933: Add flag version 'after_deterministic_flagging' to tarfile
-        if "hifa" in context.project_structure.recipe_name and "after_deterministic_flagging" not in flag_version_name:
+        if "after_deterministic_flagging" in flag_dict and "after_deterministic_flagging" not in flag_version_name:
             flag_version_name.append("after_deterministic_flagging")
 
         # Create the tar file and populate it
