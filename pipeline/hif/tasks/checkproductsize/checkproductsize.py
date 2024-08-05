@@ -61,61 +61,55 @@ class CheckProductSize(basetask.StandardTaskTemplate):
     is_multi_vis_task = True
 
     def prepare(self):
+
         # Check parameter settings
+
+        # Initialize skip_status_msgs to None. If the condition for triggering heuristics isn't met,
+        # assign a 3-element tuple: (status, longmsg, shortmsg).
+        skip_status_msgs = None
+
+        # Check if no size limits are given.
         if (self.inputs.maxcubesize == -1) and \
            (self.inputs.maxcubelimit == -1) and \
            (self.inputs.maxproductsize == -1) and (self.inputs.maximsize == -1):
             LOG.info('No size limits given.')
-            result = CheckProductSizeResult(self.inputs.maxcubesize, \
-                                            self.inputs.maxcubelimit, \
-                                            self.inputs.maxproductsize, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            self.inputs.maximsize, \
-                                            -1, \
-                                            -1, \
-                                            {}, \
-                                            'OK', \
-                                            {'longmsg': 'No size limits given', 'shortmsg': 'No size limits'}, \
-                                            None)
-            # Log summary information
-            LOG.info(str(result))
-            return result
+            skip_status_msgs = ('OK', 'No size limits given', 'No size limits')
 
-        # Mitigate either product byte size or image pixel count.
+        # Mitigate either product byte size or image pixel count, but not both.
         if ((self.inputs.maxcubesize != -1) or (self.inputs.maxcubelimit != -1) or (self.inputs.maxproductsize != -1)) \
                 and (self.inputs.maximsize != -1):
-            result = CheckProductSizeResult(self.inputs.maxcubesize, \
-                                            self.inputs.maxcubelimit, \
-                                            self.inputs.maxproductsize, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            self.inputs.maximsize, \
-                                            -1, \
-                                            -1, \
-                                            {}, \
-                                            'ERROR', \
-                                            {'longmsg': 'Parameter error: cannot mitigate product byte size and image pixel count at the same time.',\
-                                             'shortmsg': 'Parameter error'},\
-                                            None)
-            # Log summary information
-            LOG.info(str(result))
-            return result
+            skip_status_msgs = (
+                'ERROR', 'Parameter error: cannot mitigate product byte size and image pixel count at the same time.', 'Parameter error')
 
         # Skip the VLA cube production size mitigation check-up if no CONTLINE_SCIENCE or LINE_SCIENCE datatype
         # is registered in the Pipeline context.
         if (self.inputs.maxcubelimit != -1) and \
            (self.inputs.maxproductsize != -1) and \
                 self.inputs.context.vla_skip_mfs_and_cube_imaging:
-            long_short_msg = {
-                'longmsg': 'Skip the VLA cube product size mitigation due to absence of required datatypes: CONTLINE_SCIECNE or LINE_SCIENCE',
-                'shortmsg': 'Stage skipped'}
+            skip_status_msgs = (
+                'OK', 'Skip the VLA cube product size mitigation due to absence of required datatypes: CONTLINE_SCIECNE or LINE_SCIENCE',
+                'Stage skipped')
+
+        # Check for parameter errors: maxcubelimit must be >= maxcubesize.
+        if (self.inputs.maxcubesize != -1) and \
+           (self.inputs.maxcubelimit != -1) and \
+           (self.inputs.maxcubesize > self.inputs.maxcubelimit):
+           skip_status_msgs = ('ERROR', 'Parameter error: maxcubelimit must be >= maxcubesize', 'Parameter error')
+
+        # Check for parameter errors: maxproductsize must be > maxcubesize.
+        if (self.inputs.maxcubesize != -1) and \
+           (self.inputs.maxproductsize != -1) and \
+           (self.inputs.maxcubesize >= self.inputs.maxproductsize):
+            skip_status_msgs = ('ERROR', 'Parameter error: maxproductsize must be > maxcubesize', 'Parameter error')
+
+        # Check for parameter errors: maxproductsize must be > maxcubelimit.
+        if (self.inputs.maxcubelimit != -1) and \
+           (self.inputs.maxproductsize != -1) and \
+           (self.inputs.maxcubelimit >= self.inputs.maxproductsize):
+            skip_status_msgs = ('ERROR', 'Parameter error: maxproductsize must be > maxcubelimit', 'Parameter error')
+
+        # If skip_status_msgs is set, create a CheckProductSizeResult object and log the summary information.
+        if skip_status_msgs:
             result = CheckProductSizeResult(self.inputs.maxcubesize,
                                             self.inputs.maxcubelimit,
                                             self.inputs.maxproductsize,
@@ -124,81 +118,15 @@ class CheckProductSize(basetask.StandardTaskTemplate):
                                             -1,
                                             -1,
                                             -1,
-                                            -1,
                                             self.inputs.maximsize,
                                             -1,
+                                            -1,
                                             {},
-                                            'OK',
-                                            long_short_msg,
+                                            skip_status_msgs[0],
+                                            {'longmsg': skip_status_msgs[1], 'shortmsg': skip_status_msgs[2]},
                                             None)
             # Log summary information
             LOG.info('%s', result)
-            return result
-
-        if (self.inputs.maxcubesize != -1) and \
-           (self.inputs.maxcubelimit != -1) and \
-           (self.inputs.maxcubesize > self.inputs.maxcubelimit):
-            result = CheckProductSizeResult(self.inputs.maxcubesize, \
-                                            self.inputs.maxcubelimit, \
-                                            self.inputs.maxproductsize, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            self.inputs.maximsize, \
-                                            -1, \
-                                            -1, \
-                                            {}, \
-                                            'ERROR', \
-                                            {'longmsg': 'Parameter error: maxcubelimit must be >= maxcubesize', 'shortmsg': 'Parameter error'}, \
-                                            None)
-            # Log summary information
-            LOG.info(str(result))
-            return result
-
-        if (self.inputs.maxcubesize != -1) and \
-           (self.inputs.maxproductsize != -1) and \
-           (self.inputs.maxcubesize >= self.inputs.maxproductsize):
-            result = CheckProductSizeResult(self.inputs.maxcubesize, \
-                                            self.inputs.maxcubelimit, \
-                                            self.inputs.maxproductsize, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            self.inputs.maximsize, \
-                                            -1, \
-                                            -1, \
-                                            {}, \
-                                            'ERROR', \
-                                            {'longmsg': 'Parameter error: maxproductsize must be > maxcubesize', 'shortmsg': 'Parameter error'}, \
-                                            None)
-            # Log summary information
-            LOG.info(str(result))
-            return result
-
-        if (self.inputs.maxcubelimit != -1) and \
-           (self.inputs.maxproductsize != -1) and \
-           (self.inputs.maxcubelimit >= self.inputs.maxproductsize):
-            result = CheckProductSizeResult(self.inputs.maxcubesize, \
-                                            self.inputs.maxcubelimit, \
-                                            self.inputs.maxproductsize, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            -1, \
-                                            self.inputs.maximsize, \
-                                            -1, \
-                                            {}, \
-                                            'ERROR', \
-                                            {'longmsg': 'Parameter error: maxproductsize must be > maxcubelimit', 'shortmsg': 'Parameter error'}, \
-                                            None)
-            # Log summary information
-            LOG.info(str(result))
             return result
 
         checkproductsize_heuristics = checkproductsize.CheckProductSizeHeuristics(self.inputs)
