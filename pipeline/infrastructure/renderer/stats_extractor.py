@@ -19,18 +19,47 @@ import pipeline.infrastructure.utils as utils
 LOG = logging.get_logger(__name__)
 
 
-class StatsExtractor(regression.RegressionExtractor):
-    """Adapted from and interiting from the RegressisonExtractor,
+class StatsExtractor(object, metaclass=abc.ABCMeta):
+    """Adapted from the RegressisonExtractor,
     this class is the base class for a pipeline statistics extractor
     which uses a result to extract statistics information.
-
+    """
     # the Results class this handler is expected to handle
     result_cls = None
     # if result_cls is a list, the type of classes it is expected to contain
     child_cls = None
     # the task class that generated the results, or None if it should handle
     # all results of this type regardless of which task generated it
-    generating_task = None"""
+    generating_task = None
+
+    def is_handler_for(self, result:Union[Results, ResultsList]) -> bool:
+        """
+        Return True if this StatsExtractor can process the Result.
+
+        :param result: the task Result to inspect
+        :return: True if the Result can be processed
+        """
+        # if the result is not a list or the expected results class,
+        # return False
+        if not isinstance(result, self.result_cls):
+            return False
+
+        # this is the expected class and we weren't expecting any
+        # children, so we should be able to handle the result
+        if self.child_cls is None and (self.generating_task is None
+                                       or result.task is self.generating_task
+                                       or ( hasattr(self.generating_task, 'Task') and result.task is self.generating_task.Task) ):
+            return True
+
+        try:
+            if all([isinstance(r, self.child_cls) and
+                    (self.generating_task is None or r.task is self.generating_task)
+                    for r in result]):
+                return True
+            return False
+        except:
+            # catch case when result does not have a task attribute
+            return False
 
     @abc.abstractmethod
     def handle(self, result: Results, context=None) -> pstats.PipelineStatistics:
