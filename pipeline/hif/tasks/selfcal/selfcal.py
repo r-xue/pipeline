@@ -59,11 +59,11 @@ class SelfcalResults(basetask.Results):
             context.selfcal_resources = self.selfcal_resources
 
         if self.applycal_result_contline is not None:
-            self._register_datatype(context, self.applycal_result_contline, DataType.SELFCAL_CONTLINE_SCIENCE)
+            self._register_datatype(context, self.applycal_result_contline)
         if self.applycal_result_line is not None:
-            self._register_datatype(context, self.applycal_result_line, DataType.SELFCAL_LINE_SCIENCE)
+            self._register_datatype(context, self.applycal_result_line)
 
-    def _register_datatype(self, context, appycal_result, dtype):
+    def _register_datatype(self, context, appycal_result):
 
         calto_list = []
         for r in appycal_result:
@@ -77,15 +77,32 @@ class SelfcalResults(basetask.Results):
             field_sel = calto.field
             spw_sel = calto.spw
 
+            # Create a mapping of regcal data types to their applied selfcal types
+            data_type_mapping = {
+                DataType.REGCAL_CONTLINE_SCIENCE: DataType.SELFCAL_CONTLINE_SCIENCE,
+                DataType.REGCAL_LINE_SCIENCE: DataType.SELFCAL_LINE_SCIENCE,
+                DataType.REGCAL_CONT_SCIENCE: DataType.SELFCAL_CONT_SCIENCE
+            }
+
+            # Retrieve the data type
+            data_dtype = context.observing_run.get_ms(vis).get_data_type('DATA', field_sel, spw_sel)
+
+            # Find the corresponding selfcal type
+            dtype_applied = data_type_mapping.get(data_dtype, None)
+            if dtype_applied is None:
+                LOG.warning(f"No selfcal data type found corresponding to the data type: {data_dtype} "
+                            f"associated with field={field_sel}, spw={spw_sel} in vis={vis}. Skipping registration.")
+                continue
+
             with casa_tools.TableReader(vis) as tb:
                 # check for the existance of CORRECTED_DATA first
                 if 'CORRECTED_DATA' not in tb.colnames():
-                    LOG.warning(f'No CORRECTED_DATA column in {vis}, skip {dtype} registration')
+                    LOG.warning(f'No CORRECTED_DATA column in {vis}, skip {dtype_applied} registration')
                     continue
                 LOG.info(
-                    f'Register the CORRECTED_DATA column as {dtype} for {vis}: field={field_sel!r} spw={spw_sel!r}')
+                    f'Register the CORRECTED_DATA column as {dtype_applied} for {vis}: field={field_sel!r} spw={spw_sel!r}')
                 ms = context.observing_run.get_ms(vis)
-                ms.set_data_column(dtype, 'CORRECTED_DATA', source=field_sel, spw=spw_sel, overwrite=False)
+                ms.set_data_column(dtype_applied, 'CORRECTED_DATA', source=field_sel, spw=spw_sel, overwrite=False)
 
     def __repr__(self):
         return 'SelfcalResults:'
@@ -97,7 +114,7 @@ class SelfcalInputs(vdp.StandardInputs):
     # potentially we could allow REGCAL_CONTLINE_ALL here (e.g. tmp ms splitted from 'corrected' data column),
     # but there is no space for applying final selfcal solutions to the data.
 
-    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE]
+    processing_data_type = [DataType.REGCAL_CONT_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE]
 
     field = vdp.VisDependentProperty(default='')
 
@@ -203,7 +220,8 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         if mses is None:
             obs_run = self.inputs.context.observing_run
-            mses_regcal_contline = obs_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)
+            mses_regcal_contline = obs_run.get_measurement_sets_of_type(
+                [DataType.REGCAL_CONT_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)
             mses_regcal_line = obs_run.get_measurement_sets_of_type([DataType.REGCAL_LINE_SCIENCE], msonly=True)
             mses = mses_regcal_contline+mses_regcal_line
 
@@ -220,9 +238,12 @@ class Selfcal(basetask.StandardTaskTemplate):
                 continue
 
             for vis in sc_lib['vislist']:
+                vis_base = os.path.splitext(os.path.basename(vis))[0]
+                if vis_base.endswith('_cont'):
+                    vis_base = vis_base[:-5]
                 for idx, gaintable in enumerate(sc_lib[vis]['gaintable_final']):
                     for vis_calto in vislist_calto:
-                        if vis_calto.startswith(os.path.splitext(os.path.basename(vis))[0]):
+                        if vis_calto.startswith(vis_base):
                             gaintable = os.path.join(sc_workdir, sc_lib[vis]['gaintable_final'][idx])
                             if gaintable not in caltable_list:
                                 caltable_list.append(gaintable)
@@ -292,8 +313,12 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         inputs = self.inputs
         if inputs.vis in (None, [], ''):
-            raise ValueError(
-                f'No input visibilities specified matching required DataType {inputs.processing_data_type}, please review in the DataType information in Imported MS(es).')
+            # If no suitable datatype, by-pass the hif_selfcal stage.
+            required_data_type_desc = ', '.join(dt.name for dt in SelfcalInputs.processing_data_type)
+            LOG.warning(
+                f'No data matching any of the required datatypes: {required_data_type_desc}; '
+                f'please review the registered MS datatype information.')
+            return SelfcalResults([], None, None, None, False)
 
         if not isinstance(inputs.vis, list):
             inputs.vis = [inputs.vis]
@@ -307,8 +332,14 @@ class Selfcal(basetask.StandardTaskTemplate):
         scal_targets_json = self._check_restore_from_resources()
 
         obs_run = self.inputs.context.observing_run
-        mses_regcal_contline = obs_run.get_measurement_sets_of_type([DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)
-        mses_selfcal_contline = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_CONTLINE_SCIENCE], msonly=True)
+
+        mses_columns_regcal_contline, _ = obs_run.get_measurement_sets_of_type(
+            [DataType.REGCAL_CONT_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE], msonly=False)
+        mses_columns_selfcal_contline, _ = obs_run.get_measurement_sets_of_type(
+            [DataType.SELFCAL_CONT_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE], msonly=False)
+        mses_regcal_contline = list(mses_columns_regcal_contline)
+        mses_selfcal_contline = list(mses_columns_selfcal_contline)
+
         mses_regcal_line = obs_run.get_measurement_sets_of_type([DataType.REGCAL_LINE_SCIENCE], msonly=True)
         mses_selfcal_line = obs_run.get_measurement_sets_of_type([DataType.SELFCAL_LINE_SCIENCE], msonly=True)
 
@@ -329,7 +360,8 @@ class Selfcal(basetask.StandardTaskTemplate):
         if not scal_targets:
 
             if self.inputs.recal:
-                LOG.info('recal=True, override any existing selfcal solution in context or json, and alway execute the selfcal solver.')
+                LOG.info('recal=True, override any existing selfcal solution in context or json, '
+                         'and alway execute the selfcal solver.')
             LOG.info('Execute the selfcal solver.')
             scal_targets = self._solve_selfcal()
             is_restore = False
@@ -340,7 +372,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             LOG.debug('selfcal resources list: %r', selfcal_resources)
 
             if not scal_targets:
-                LOG.info('No single-pointing science target found. Skip selfcal.')
+                LOG.info('No valid selfcal field returned by the selfcal solver; skip the selfcal apply step.')
                 return SelfcalResults(
                     scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
 
@@ -348,16 +380,16 @@ class Selfcal(basetask.StandardTaskTemplate):
 
             if mses_regcal_contline:
                 if not mses_selfcal_contline:
-                    LOG.info('No DataType:SELFCAL_CONTLINE_SCIENCE found.')
-                    LOG.info('Attempt to apply any selfcal solutions to the REGCAL_CONTLINE_SCIENCE MS(es):')
+                    LOG.info('No DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE found.')
+                    LOG.info('Attempt to apply any selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es):')
                     for ms in mses_regcal_contline:
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
                     applycal_result_contline = self._apply_scal(scal_targets, mses_regcal_contline)
                 else:
-                    LOG.info('Found DataType:SELFCAL_CONTLINE_SCIENCE.')
+                    LOG.info('Found DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE.')
                     for ms in mses_selfcal_contline:
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                    LOG.info('Skip applying selfcal solutions to the REGCAL_CONTLINE_SCIENCE MS(es).')
+                    LOG.info('Skip applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es).')
 
             if mses_regcal_line:
                 if not mses_selfcal_line:
@@ -383,10 +415,8 @@ class Selfcal(basetask.StandardTaskTemplate):
         if not scal_targets:
             return scal_targets
 
-        # split percleantarget MSes with spectral line flagged
-        self._flag_lines()
+        # split per-cleantarget MSes with optional spectral line flagging
         self._split_scaltargets(scal_targets)
-        self._restore_flags()
 
         # start the selfcal sequence.
 
@@ -444,6 +474,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                     target['spw'],
                     target['sc_workdir'])
             target['sc_exception'] = sc_exception
+
         return scal_targets
 
     @staticmethod
@@ -496,14 +527,18 @@ class Selfcal(basetask.StandardTaskTemplate):
             sc_workdir = cleantarget['sc_workdir']
 
             for vis in sc_lib['vislist']:
+                vis_base = os.path.splitext(os.path.basename(vis))[0]
+                if vis_base.endswith('_cont'):
+                    vis_base = vis_base[:-5]
                 for idx, gaintable in enumerate(sc_lib[vis]['gaintable_final']):
                     for vis_calto in vislist_calto:
-                        if vis_calto.startswith(os.path.splitext(os.path.basename(vis))[0]):
+                        if vis_calto.startswith(vis_base):
+
                             # workaround a potential issue from heuristics.auto_selfcal when gaintable has only one element, when it's not a list of list.
                             spwmap_final = sc_lib[vis]['spwmap_final']
-
                             if any(not isinstance(spwmap, list) for spwmap in spwmap_final) or not spwmap_final:
                                 spwmap_final = [spwmap_final]
+
                             gaintable = os.path.join(sc_workdir, sc_lib[vis]['gaintable_final'][idx])
                             calfrom = callibrary.CalFrom(
                                 gaintable=gaintable, interp=sc_lib[vis]['applycal_interpolate_final'][idx],
@@ -618,13 +653,18 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         # mt_inputvis_list aggregates input vis argument values of expected mstransform calls
         # therefore len(mt_inputvis_list) represents the number of ms to be split out
-        mt_inputvis_list = [vis for target in scal_targets for vis in target['vis']]
+        mt_inputvis_list = [(vis, '_CONTLINE_' in target['datatype']) for target in scal_targets for vis in target['vis']]
 
         parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
         taskqueue_parallel_request = len(mt_inputvis_list) > 1 and parallel
 
+        inputvis_list = utils.deduplicate([m[0] for m in mt_inputvis_list])
+        inputvis_contline = utils.deduplicate([m[0] for m in mt_inputvis_list if m[1]])
         outputvis_list = []
-        with utils.ignore_pointing(utils.deduplicate(mt_inputvis_list)):
+
+        self._flag_lines(inputvis_contline)
+
+        with utils.ignore_pointing(inputvis_list):
             with TaskQueue(parallel=taskqueue_parallel_request) as tq:
 
                 for target in scal_targets:
@@ -675,6 +715,8 @@ class Selfcal(basetask.StandardTaskTemplate):
                     target['sc_workdir'] = sc_workdir
                     target['spw_real'] = spw_real
                     target['sc_vislist'] = vislist
+
+        self._restore_flags(inputvis_contline)
 
         for outputvis in outputvis_list:
             # Copy across requisite XML files.
@@ -740,19 +782,20 @@ class Selfcal(basetask.StandardTaskTemplate):
                 avgarray[idx] = 1
         return avgarray
 
-    def _restore_flags(self):
+    def _restore_flags(self, vislist):
         """Restore the before lineflagging flag state, after splitting per_cleantarget tmp MS."""
-        for vis in self.inputs.vis:
+
+        for vis in vislist:
             # restore to the starting flags
             # self._executable.initweights(vis=vis, wtmode='delwtsp')  # remove channelized weights
             if os.path.exists(vis+".flagversions/flags.before_hif_selfcal"):
                 self._executable.flagmanager(vis=vis, mode='restore', versionname='before_hif_selfcal',
                                              comment='Flag states before hif_selfcal')
 
-    def _flag_lines(self):
+    def _flag_lines(self, vislist):
         """Flag the lines when cont.dat is present, before splitting per_cleantarget tmp MS."""
 
-        for vis in self.inputs.vis:
+        for vis in vislist:
             # self._executable.initweights(vis=vis, wtmode='weight', dowtsp=True)  # initialize channelized weights
             # save starting flags or restore to the starting flags
             if os.path.exists(vis+".flagversions/flags.before_hif_selfcal"):

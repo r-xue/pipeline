@@ -402,7 +402,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['stokes'] = th.stokes() if not inpdict['stokes'] else inpdict['stokes']
         imlist_entry['conjbeams'] = th.conjbeams() if not inpdict['conjbeams'] else inpdict['conjbeams']
         imlist_entry['reffreq'] = th.reffreq() if not inpdict['reffreq'] else inpdict['reffreq']
-        imlist_entry['restfreq'] = th.restfreq() if not inpdict['restfreq'] else inpdict['restfreq']
+        
         # niter_correction is run again in tclean.py
         imlist_entry['niter'] = th.niter() if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = inpdict['cyclefactor']
@@ -412,13 +412,17 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
         imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters
                                    else inp.context.imaging_parameters['uvtaper']) if not inpdict['uvtaper'] else inpdict['uvtaper']
-        imlist_entry['uvrange'], _ = th.uvrange(field=fieldnames[0] if fieldnames else None,
-                                                spwspec=imlist_entry['spw']) if not inpdict['uvrange'] else inpdict['uvrange']
+
         imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
-        imlist_entry['robust'] = th.robust() if inpdict['robust'] in (None, -999.0) else inpdict['robust']
         imlist_entry['mask'] = th.mask() if not inpdict['mask'] else inpdict['mask']
         imlist_entry['pbmask'] = None if not inpdict['pbmask'] else inpdict['pbmask']
         imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
+        imlist_entry['robust'] = th.robust(specmode=imlist_entry['specmode']) if inpdict['robust'] in (None, -999.0) else inpdict['robust']
+
+        imlist_entry['uvrange'], _ = th.uvrange(field=fieldnames[0] if fieldnames else None,
+                                                spwspec=imlist_entry['spw'],
+                                                specmode=imlist_entry['specmode']) if not inpdict['uvrange'] else inpdict['uvrange']
+
         LOG.info('RADIUS')
         LOG.info(repr(inpdict['search_radius_arcsec']))
         LOG.info('default={d}'.format(d=not inpdict['search_radius_arcsec']
@@ -435,11 +439,15 @@ class Editimlist(basetask.StandardTaskTemplate):
         # imlist_entry['datacolumn'] is either None or an non-empty string here based on the current heuristics implementation.
         imlist_entry['datacolumn'] = th.datacolumn() if not inpdict['datacolumn'] else inpdict['datacolumn']
         imlist_entry['nterms'] = th.nterms(imlist_entry['spw']) if not inpdict['nterms'] else inpdict['nterms']
-        if 'ALMA' not in img_mode:
-            imlist_entry['sensitivity'] = th.get_sensitivity(ms_do=None, field=None, intent=None, spw=None,
-                                                             chansel=None, specmode=None, cell=None, imsize=None,
-                                                             weighting=None, robust=None,
-                                                             uvtaper=None)[0] if not inpdict['sensitivity'] else inpdict['sensitivity']
+
+        # Specify the sensitivity value to be used in TcleanInputs
+        if 'VLASS' in img_mode:
+            # Force sensitivity = 0.0 to disable sensitivity calculation inside hif_tclean()
+            imlist_entry['sensitivity'] = 0.0
+        else:
+            # Assign user input if not None or 0.0; otherwise, set to None for in-flight calculation by hif_tclean()
+            imlist_entry['sensitivity'] = inpdict['sensitivity'] if inpdict['sensitivity'] else None
+
         # ---------------------------------------------------------------------------------- set cell (SRDP ALMA)
         ppb = 5.0  # pixels per beam
         if fieldnames:
@@ -488,16 +496,23 @@ class Editimlist(basetask.StandardTaskTemplate):
                 # PIPE-675: VLA imsize heuristic update; band dependent FOV in 'cont' specmode.
                 imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                                    primary_beam=largest_primary_beam, spwspec=imlist_entry['spw'],
-                                                   intent=imlist_entry['intent'])
+                                                   intent=imlist_entry['intent'], specmode=imlist_entry['specmode'])
             else:
                 imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                                    primary_beam=largest_primary_beam,
-                                                   sfpblimit=sfpblimit, intent=imlist_entry['intent'])
+                                                   sfpblimit=sfpblimit, intent=imlist_entry['intent'],
+                                                   specmode=imlist_entry['specmode'])
 
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']
         imlist_entry['start'] = inpdict['start']
         imlist_entry['width'] = inpdict['width']
+
+        imlist_entry['restfreq'] = th.restfreq(
+            specmode=imlist_entry['specmode'],
+            nchan=imlist_entry['nchan'],
+            start=imlist_entry['start'],
+            width=imlist_entry['width']) if not inpdict['restfreq'] else inpdict['restfreq']
 
         # for VLASS phasecenter is required user input (not determined by heuristics)
         if inpdict['phasecenter']:
