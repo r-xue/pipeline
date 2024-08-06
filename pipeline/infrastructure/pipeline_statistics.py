@@ -8,7 +8,6 @@ from pipeline import environment
 from pipeline.domain import measures
 from pipeline.domain.datatype import DataType
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure import utils
 
 from . import logging
 
@@ -18,7 +17,7 @@ LOG = logging.get_logger(__name__)
 class PipelineStatisticsLevel(enum.Enum):
     """
     An enum to specify which "level" of information an individual pipeline statistic applies to:
-    SPW, EB, or MOUS.
+    SPW, EB, SOURCE, or MOUS.
     """
     MOUS = enum.auto()
     EB = enum.auto()
@@ -95,7 +94,7 @@ class PipelineStatistics(object):
 
 def to_nested_dict(stats_collection) -> Dict:
     """
-    Generates a "nested" output dict with EBs, SPWs, MOUSs
+    Generates a nested output dict with EBs, SPWs, SOURCEs, MOUSs
     Each level is represented in the structure of the output.
     """
     final_dict = {}
@@ -116,8 +115,14 @@ def to_nested_dict(stats_collection) -> Dict:
     #       }
     #    }
     #    "SPW": {
-    #       virtual_spw_id: {
+    #       spw_id: {
     #           spw_property: {...
+    #           }
+    #       }
+    #    }
+    #    "SOURCE": {
+    #       source_name: {
+    #           source_property: {...
     #           }
     #       }
     #    }
@@ -125,37 +130,28 @@ def to_nested_dict(stats_collection) -> Dict:
     #  header: {version: 0.1, creation_date: YYMMDD-HH:MM:SS Z}
     # }
     for stat in stats_collection:
+        if stat.mous not in final_dict:
+            final_dict[stat.mous] = {}
         if stat.level == PipelineStatisticsLevel.MOUS:
-            if stat.mous not in final_dict:
-                final_dict[stat.mous] = {}
             final_dict[stat.mous][stat.name] = stat.to_dict()
         elif stat.level == PipelineStatisticsLevel.EB:
-            if stat.mous not in final_dict:
-                final_dict[stat.mous] = {}
-                final_dict[stat.mous][eb_section_key] = {}
             if eb_section_key not in final_dict[stat.mous]:
                 final_dict[stat.mous][eb_section_key] = {}
             if stat.eb not in final_dict[stat.mous][eb_section_key]:
                 final_dict[stat.mous][eb_section_key][stat.eb] = {}
             final_dict[stat.mous][eb_section_key][stat.eb][stat.name] = stat.to_dict()
         elif stat.level == PipelineStatisticsLevel.SPW:
-            if stat.mous not in final_dict:
-                final_dict[stat.mous] = {}
-                final_dict[stat.mous][spw_section_key] = {}
             if spw_section_key not in final_dict[stat.mous]:
                 final_dict[stat.mous][spw_section_key] = {}
             if stat.spw not in final_dict[stat.mous][spw_section_key]:
                 final_dict[stat.mous][spw_section_key][stat.spw] = {}
             final_dict[stat.mous][spw_section_key][stat.spw][stat.name] = stat.to_dict()
         elif stat.level == PipelineStatisticsLevel.SOURCE:
-            if stat.mous not in final_dict:
-                final_dict[stat.mous] = {}
-                final_dict[stat.mous][source_section_key] = {}
             if source_section_key not in final_dict[stat.mous]:
                 final_dict[stat.mous][source_section_key] = {}
-            if stat.spw not in final_dict[stat.mous][source_section_key]:
-                final_dict[stat.mous][source_section_key][stat.spw] = {}
-            final_dict[stat.mous][source_section_key][stat.spw][stat.name] = stat.to_dict()
+            if stat.source not in final_dict[stat.mous][source_section_key]:
+                final_dict[stat.mous][source_section_key][stat.source] = {}
+            final_dict[stat.mous][source_section_key][stat.source][stat.name] = stat.to_dict()
         else:
             LOG.debug("In pipleine statics file creation, invalid level: {} specified.".format(stat.level))
 
@@ -242,7 +238,7 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[
     all_bands = sorted({spw.band for spw in ms_list[0].get_all_spectral_windows()})
     p7 = PipelineStatistics(
         name='bands',
-        value=len(all_bands),
+        value=all_bands,
         longdesc="Band(s) used in observations.",
         origin="hifa_importdata",
         mous=mous,
@@ -269,39 +265,23 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[
         level=PipelineStatisticsLevel.MOUS)
     stats_collection.append(p9)
 
-    pointings = {}
-    science_sources = sorted({source for source in first_ms.sources if 'TARGET' in source.intents})
-    for source in science_sources:
-        pointings[source.name] = len([f for f in first_ms.fields
-                                        if f.source_id == source.id])
-
-    # TODO: move to source level
     p10 = PipelineStatistics(
-        name='n_pointings',
-        value=pointings,
-        longdesc="number of mosaic pointings for the science target",
-        origin="hifa_importdata",
-        mous=mous,
-        level=PipelineStatisticsLevel.MOUS)
-    stats_collection.append(p10)
-
-    p11 = PipelineStatistics(
         name='rep_target',
         value=first_ms.representative_target[0],
         longdesc="representative target name",
         origin="hifa_importdata",
         mous=mous,
         level=PipelineStatisticsLevel.MOUS)
-    stats_collection.append(p11)
+    stats_collection.append(p10)
 
-    p12 = PipelineStatistics(
+    p11 = PipelineStatistics(
         name='n_spw',
         value=len(first_ms.get_all_spectral_windows()),
         longdesc="number of spectral windows",
         origin="hifa_importdata",
         mous=mous,
         level=PipelineStatisticsLevel.MOUS)
-    stats_collection.append(p12)
+    stats_collection.append(p11)
 
     return stats_collection
 
@@ -431,6 +411,33 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[P
     return stats_collection
 
 
+def _get_source_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[PipelineStatistics]:
+    """
+    Get the statistics values for a given source
+    """
+    level = PipelineStatisticsLevel.SOURCE
+    stats_collection = []
+    first_ms = ms_list[0]
+
+    science_sources = sorted({source for source in first_ms.sources
+                              if 'TARGET' in source.intents})
+
+    for source in science_sources:
+        pointings = len([f for f in first_ms.fields if f.source_id == source.id])
+
+        p1 = PipelineStatistics(
+            name='n_pointings',
+            value=pointings,
+            longdesc="number of mosaic pointings for the science target",
+            origin="hifa_importdata",
+            mous=mous,
+            source=source.name,
+            level=level)
+        stats_collection.append(p1)
+
+    return stats_collection
+
+
 def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
     """
     Gather statistics results for the pipleline run information and pipeline product information
@@ -440,7 +447,7 @@ def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
     mous = context.get_oussid()
 
     # List of datatypes to use (in order) for fetching EB-level information.
-    # The following function call will fetch all the MSes for ONLY the first
+    # The following function call will fetch all the MSes for only the first
     # datatype it finds in the list. This is needed so that information is
     # not repeated for the ms and _targets.ms when both are present.
     datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE,
@@ -456,8 +463,12 @@ def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
     stats_collection.extend(eb_values)
 
     # Add per-SPW stats information
-    # The spw ids from the first MS are used so information can just be included once per MOUS.
+    # The spw ids from the first MS are used so the information will be included once per MOUS.
     spw_values = _get_spw_values(context, mous, ms_list)
     stats_collection.extend(spw_values)
+
+    # Add per-SOURCE stats information
+    source_values = _get_source_values(context, mous, ms_list)
+    stats_collection.extend(source_values)
 
     return stats_collection
