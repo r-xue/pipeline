@@ -19,13 +19,12 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class RenormResults(basetask.Results):
-    def __init__(self, vis, createcaltable, threshold, correctATM, spw, excludechan, calTableCreated,
+    def __init__(self, vis, createcaltable, threshold, spw, excludechan, calTableCreated,
                  stats, rnstats, alltdm, atmAutoExclude, atmWarning, atmExcludeCmd, bwthreshspw, caltable, calapps, exception=None):
         super().__init__()
         self.vis = vis
         self.createcaltable = createcaltable
         self.threshold = threshold
-        self.correctATM = correctATM
         self.spw = spw
         self.excludechan = excludechan
         self.calTableCreated = calTableCreated
@@ -59,7 +58,6 @@ class RenormResults(basetask.Results):
                 f'\tvis={self.vis}\n'
                 f'\tcreatecaltable={self.createcaltable}\n'
                 f'\tthreshold={self.threshold}\n'
-                f'\tcorrectATM={self.correctATM}\n'
                 f'\tspw={self.spw}\n'
                 f'\texcludechan={self.excludechan}\n'
                 f'\talltdm={self.alltdm}\n'
@@ -72,7 +70,6 @@ class RenormResults(basetask.Results):
 class RenormInputs(vdp.StandardInputs):
     createcaltable = vdp.VisDependentProperty(default=False)
     threshold = vdp.VisDependentProperty(default=1.02)
-    correctATM = vdp.VisDependentProperty(default=False)
     spw = vdp.VisDependentProperty(default='')
     excludechan = vdp.VisDependentProperty(default={})
     atm_auto_exclude = vdp.VisDependentProperty(default=False)
@@ -80,14 +77,13 @@ class RenormInputs(vdp.StandardInputs):
 
     parallel = sessionutils.parallel_inputs_impl()
 
-    def __init__(self, context, vis=None, createcaltable=None, threshold=None, correctATM=None, spw=None,
+    def __init__(self, context, vis=None, createcaltable=None, threshold=None, spw=None,
                  excludechan=None, atm_auto_exclude=None, bwthreshspw=None, caltable=None, parallel=None):
         super().__init__()
         self.context = context
         self.vis = vis
         self.createcaltable = createcaltable
         self.threshold = threshold
-        self.correctATM = correctATM
         self.spw = spw
         self.excludechan = excludechan
         self.atm_auto_exclude = atm_auto_exclude
@@ -114,12 +110,6 @@ class SerialRenorm(basetask.StandardTaskTemplate):
     def prepare(self):
         inp = self.inputs
 
-        # Issue warning if current MS contains Band 9 and/or 10 data.
-        bands_in_ms = {spw.band for spw in inp.ms.get_spectral_windows()}
-        for band in ('ALMA Band 9', 'ALMA Band 10'):
-            if band in bands_in_ms:
-                LOG.warning(f"{inp.ms.basename}: running hifa_renorm on {band} (DSB) data.")
-
         # PIPE-2150: safely create the "RN_plots" directory before calling the renormalization external code to prevent
         # potential race condition when checking/examining the directory existence in the tier0 setup.
         # This workaround might be removed after the changes from PIPE-2151
@@ -132,7 +122,6 @@ class SerialRenorm(basetask.StandardTaskTemplate):
             'create_cal_table': inp.createcaltable,
             'threshold': inp.threshold,
             'excludechan': copy.deepcopy(inp.excludechan),  # create copy, PIPE-1612.
-            'correct_atm': inp.correctATM,
             'atm_auto_exclude': inp.atm_auto_exclude,
             'bwthreshspw': inp.bwthreshspw,
             'caltable': inp.caltable
@@ -147,15 +136,23 @@ class SerialRenorm(basetask.StandardTaskTemplate):
 
             rnstats_light = self._get_rnstats_light(stats, rnstats)
 
+            if not alltdm:
+                # Issue warning if current MS contains Band 9 and/or 10 data.
+                bands_in_ms = {spw.band for spw in inp.ms.get_spectral_windows()}
+                for band in ('ALMA Band 9', 'ALMA Band 10'):
+                    if band in bands_in_ms:
+                        LOG.attention(f"{inp.ms.basename}: running hifa_renorm on {band} (DSB) data.")
+
             calapps = self._get_calapps(calTableCreated)
 
-            result = RenormResults(inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
+            result = RenormResults(inp.vis, inp.createcaltable, inp.threshold, inp.spw,
                                    inp.excludechan, calTableCreated, stats, rnstats_light, alltdm,
                                    inp.atm_auto_exclude, atmWarning, atmExcludeCmd, inp.bwthreshspw, inp.caltable, calapps)
+
         except Exception as e:
             LOG.error('Failure in running renormalization heuristic: {}'.format(e))
             LOG.error(traceback.format_exc())
-            result = RenormResults(inp.vis, inp.createcaltable, inp.threshold, inp.correctATM, inp.spw,
+            result = RenormResults(inp.vis, inp.createcaltable, inp.threshold, inp.spw,
                                    inp.excludechan, False, {}, {}, False, inp.atm_auto_exclude, {}, {}, {}, inp.caltable, [], e)
 
         return result
