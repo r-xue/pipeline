@@ -33,8 +33,9 @@ class FluxbootInputs(vdp.StandardInputs):
     caltable = vdp.VisDependentProperty(default=None)
     refantignore = vdp.VisDependentProperty(default='')
     fitorder = vdp.VisDependentProperty(default=-1)
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None):
+    def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None, refant=None):
         """
         Args:
             vis(str or list):  measurement set
@@ -43,6 +44,7 @@ class FluxbootInputs(vdp.StandardInputs):
                 and we proceed directly to the flux density bootstrapping.
             refantignore(str):  csv string of referance antennas to ignore   'ea24, ea18, ea12'
             fitorder(int):  User input value of the fit order.  Default is -1 (heuristics will determine)
+            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
         """
 
         if fitorder is None:
@@ -55,6 +57,7 @@ class FluxbootInputs(vdp.StandardInputs):
         self.refantignore = refantignore
         self.fitorder = fitorder
         self.spix = 0.0
+        self.refant = refant
 
 
 class FluxbootResults(basetask.Results):
@@ -248,11 +251,16 @@ class Fluxboot(basetask.StandardTaskTemplate):
             refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
 
             refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-            refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
-                                                    geometry=True, flagging=True, intent='',
-                                                    spw='', refantignore=refantignore)
+            # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+            if len(self.inputs.refant) == 0:
+                refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
+                                                        geometry=True, flagging=True, intent='',
+                                                        spw='', refantignore=refantignore)
 
-            RefAntOutput = refantobj.calculate()
+                RefAntOutput = refantobj.calculate()
+            else:
+                RefAntOutput = self.inputs.refant.split(",")
+
             refAnt = ','.join(RefAntOutput)
 
             LOG.info("The pipeline will use antenna(s) " + refAnt + " as the reference")
@@ -531,15 +539,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
             LOG.warning('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
 
         # PIPE-1603, add fluxboot heuristics to use fitorder=0
-        if len(spws) == 1:
-            mhz_deltaf = deltaf.to_units(FrequencyUnits.MEGAHERTZ)
-            if ((spws[0].band == "L" and mhz_deltaf < 64) or (mhz_deltaf < 128)):
-                fitorder = 0
-        else:
-            for i, spw in enumerate(spws[:-1]):
-                mhz_deltaf = abs((spws[i + 1].centre_frequency - spw.centre_frequency).to_units(FrequencyUnits.MEGAHERTZ))
-                if (spws[i + 1].band == "L" and spw.band == "L" and mhz_deltaf < 64) or mhz_deltaf < 128:
-                    fitorder = 0
+        mhz_deltaf = deltaf.to_units(FrequencyUnits.MEGAHERTZ)
+        if  mhz_deltaf < 257:
+            fitorder = 0
 
         LOG.info('Displaying fit order heuristics...')
         LOG.info('  Number of spws: {!s}'.format(str(len(spws))))

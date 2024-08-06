@@ -6,17 +6,16 @@ Created on 9 Jan 2014
 # Do not evaluate type annotations at definition time.
 from __future__ import annotations
 
-import shutil
 import collections
 import datetime
 import functools
-import itertools
 import math
 import operator
 import os
 import re
+import shutil
 import traceback
-from typing import Dict, List, Optional, Tuple, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 import numpy as np
 from scipy import interpolate
@@ -24,10 +23,6 @@ from scipy.special import erf
 
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
-from pipeline.domain.measurementset import MeasurementSet
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
-from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
-from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 import pipeline.infrastructure.basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -35,6 +30,10 @@ import pipeline.infrastructure.renderer.rendererutils as rutils
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.checksource as checksource
 from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
+from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
+from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 from pipeline.infrastructure import casa_tools
 
 if TYPE_CHECKING:
@@ -97,6 +96,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_contiguous_session',
            'score_multiply',
            'score_mom8_fc_image',
+           'score_iersstate',
            'score_tsysflagcontamination_contamination_flagged',
            'score_tsysflagcontamination_external_heuristic']
 
@@ -4158,7 +4158,6 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
     return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
 
 
-
 @log_qa
 def score_rasterscan_correctness_direction_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
     """Calculate QAScore of direction-domain raster scan heuristics analysis failure in importdata.
@@ -4317,3 +4316,45 @@ def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pqa.QA
         )
         qascores.append(adopted_qascore)
     return qascores
+
+
+@log_qa
+def score_iersstate(mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
+    """
+    Check state of IERS tables relative to observation date
+    """
+
+    iers_info = utils.IERSInfo()
+    # reorder MSes by start time
+    by_start = sorted(mses,
+                      key=lambda m: utils.get_epoch_as_datetime(m.start_time))
+
+    # create an interval for each one, including our tolerance
+    scores = []
+    for ms in by_start:
+        longmsg = (f"Dates for {ms.basename} fully covered by IERSeop2000.")
+        shortmsg = "MS dates fully covered by IERSeop2000."
+        time_end = utils.get_epoch_as_datetime(ms.end_time)
+
+        if iers_info.validate_date(time_end):
+            score = 1.0
+        elif iers_info.date_message_type(time_end) == "INFO":
+            score = 0.9
+            longmsg = (f"Dates for {ms.basename} not fully covered by IERSeop2000. CASA will use IERSpredict.")
+            shortmsg = "MS dates not fully covered by IERSeop2000. CASA will use IERSpredict."
+        elif iers_info.date_message_type(time_end) == "WARN":
+            score = 0.5
+            longmsg = (f"Dates for {ms.basename} not fully covered by IERSeop2000. CASA will use IERSpredict.")
+            shortmsg = "MS dates not fully covered by IERSeop2000. CASA will use IERSpredict."
+        else:
+            score = 0.3
+            longmsg = (f"Dates for {ms.basename} not fully covered by IERSeop2000. Please update your data repository.")
+            shortmsg = "MS dates not fully covered by IERSpredict. Please update your data repository."
+
+        origin = pqa.QAOrigin(metric_name='score_iersstate',
+                              metric_score=score,
+                              metric_units='state of IERS tables relative to observation date')
+
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
+
+    return scores
