@@ -69,44 +69,33 @@ class CheckProductSize(basetask.StandardTaskTemplate):
         skip_status_msgs = None
 
         # Check if no size limits are given.
-        if (self.inputs.maxcubesize == -1) and \
-           (self.inputs.maxcubelimit == -1) and \
-           (self.inputs.maxproductsize == -1) and (self.inputs.maximsize == -1):
+        if self.inputs.maxcubesize == -1 and self.inputs.maxcubelimit == -1 and self.inputs.maxproductsize == -1 and self.inputs.maximsize == -1:
             LOG.info('No size limits given.')
             skip_status_msgs = ('OK', 'No size limits given', 'No size limits')
 
         # Mitigate either product byte size or image pixel count, but not both.
-        if ((self.inputs.maxcubesize != -1) or (self.inputs.maxcubelimit != -1) or (self.inputs.maxproductsize != -1)) \
-                and (self.inputs.maximsize != -1):
+        elif (self.inputs.maxcubesize != -1 or self.inputs.maxcubelimit != -1 or self.inputs.maxproductsize != -1) and self.inputs.maximsize != -1:
             skip_status_msgs = (
                 'ERROR', 'Parameter error: cannot mitigate product byte size and image pixel count at the same time.', 'Parameter error')
 
-        # Skip the VLA cube production size mitigation check-up if no CONTLINE_SCIENCE or LINE_SCIENCE datatype
-        # is registered in the Pipeline context.
-        if (self.inputs.maxcubelimit != -1) and \
-           (self.inputs.maxproductsize != -1) and \
-                self.inputs.context.vla_skip_mfs_and_cube_imaging:
-            skip_status_msgs = (
-                'OK', 'Skip the VLA cube product size mitigation due to absence of required datatypes: CONTLINE_SCIENCE or LINE_SCIENCE',
-                'Stage skipped')
-
         # Check for parameter errors: maxcubelimit must be >= maxcubesize.
-        if (self.inputs.maxcubesize != -1) and \
-           (self.inputs.maxcubelimit != -1) and \
-           (self.inputs.maxcubesize > self.inputs.maxcubelimit):
-           skip_status_msgs = ('ERROR', 'Parameter error: maxcubelimit must be >= maxcubesize', 'Parameter error')
+        elif self.inputs.maxcubesize != -1 and self.inputs.maxcubelimit != -1 and self.inputs.maxcubesize > self.inputs.maxcubelimit:
+            skip_status_msgs = ('ERROR', 'Parameter error: maxcubelimit must be >= maxcubesize', 'Parameter error')
 
         # Check for parameter errors: maxproductsize must be > maxcubesize.
-        if (self.inputs.maxcubesize != -1) and \
-           (self.inputs.maxproductsize != -1) and \
-           (self.inputs.maxcubesize >= self.inputs.maxproductsize):
+        elif self.inputs.maxcubesize != -1 and self.inputs.maxproductsize != -1 and self.inputs.maxcubesize >= self.inputs.maxproductsize:
             skip_status_msgs = ('ERROR', 'Parameter error: maxproductsize must be > maxcubesize', 'Parameter error')
 
         # Check for parameter errors: maxproductsize must be > maxcubelimit.
-        if (self.inputs.maxcubelimit != -1) and \
-           (self.inputs.maxproductsize != -1) and \
-           (self.inputs.maxcubelimit >= self.inputs.maxproductsize):
+        elif self.inputs.maxcubelimit != -1 and self.inputs.maxproductsize != -1 and self.inputs.maxcubelimit >= self.inputs.maxproductsize:
             skip_status_msgs = ('ERROR', 'Parameter error: maxproductsize must be > maxcubelimit', 'Parameter error')
+
+        # Skip the VLA cube production size mitigation check-up if no CONTLINE_SCIENCE or LINE_SCIENCE datatype
+        # is registered in the Pipeline context.
+        elif self.inputs.maximsize == -1 and self.inputs.context.vla_skip_mfs_and_cube_imaging:
+            skip_status_msgs = (
+                'OK', 'Skip the VLA cube product size mitigation due to absence of required datatypes: CONTLINE_SCIENCE or LINE_SCIENCE',
+                'Stage skipped')
 
         # If skip_status_msgs is set, create a CheckProductSizeResult object and log the summary information.
         if skip_status_msgs:

@@ -1556,6 +1556,6 @@ class MeasurementSet(object):
             # if None or empty or blank selection string, use all spws
             spw_list = [s.id for s in self.spectral_windows]
         else:
-            spw_list = [s for s in utils.range_to_list(spw_select)]
+            spw_list = utils.range_to_list(spw_select)
 
         return spw_list
