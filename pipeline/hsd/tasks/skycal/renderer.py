@@ -71,6 +71,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         elev_diff_subpages = {}
         reference_coords = collections.defaultdict(dict)
         for result in results:
+            LOG.info("results in renderer.py = {}".format(results))
+            LOG.info("result in renderer.py = {}".format(result))
             if not result.final:
                 continue
 
@@ -93,6 +95,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             details_elev = []
             summaries_interval = []
             details_interval = []
+            plotindex = 0
+            clearplots = True
             for calapp in final_original:
                 result.final = [calapp]
                 gainfield = calapp.calfrom[0].gainfield
@@ -104,14 +108,6 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                 # Amp vs. Freq: detail plots
                 detail_plotter = skycal_display.SingleDishSkyCalAmpVsFreqDetailChart(context, result, gainfield)
                 details_freq.extend(detail_plotter.plot())
-
-                # Amp vs. Time: summary plots
-                summary_plotter = skycal_display.SingleDishSkyCalAmpVsTimeSummaryChart(context, result, calapp)
-                summaries_time.extend(summary_plotter.plot())
-
-                # Amp vs. Time: detail plots
-                detail_plotter = skycal_display.SingleDishSkyCalAmpVsTimeDetailChart(context, result, calapp)
-                details_time.extend(detail_plotter.plot())
 
                 # Interval vs. Time: summary plots
                 summary_plotter = skycal_display.SingleDishSkyCalIntervalVsTimeDisplay(context, result, calapp, figtype='summary')
@@ -129,6 +125,14 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                 if calmode == 'ps':
                     reference_coord = self._get_reference_coord(context, ms, field_domain)
                     reference_coords[vis][field_domain.name] = reference_coord
+
+            # Amp vs. Time: summary plots
+            summary_plotter = skycal_display.SingleDishSkyCalAmpVsTimeSummaryChart(context, result, final_original)
+            summaries_time.extend(summary_plotter.plot())
+
+            # Amp vs. Time: detail plots
+            detail_plotter = skycal_display.SingleDishSkyCalAmpVsTimeDetailChart(context, result, final_original)
+            details_time.extend(detail_plotter.plot())
 
             result.final = final_original
 
@@ -172,9 +176,9 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
                 LOG.debug('sorting plot list for %s xaxis %s yaxis %s' %
                          (vis, _plot_list[0].x_axis, _plot_list[0].y_axis))
-                LOG.debug('before: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
+#                LOG.debug('before: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
                 _plot_list.sort(key=sort_by_field_spw)
-                LOG.debug(' after: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
+#                LOG.debug(' after: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
 
         # Sky Level vs Frequency
         flattened = [plot for inner in details_amp_vs_freq.values() for plot in inner]
