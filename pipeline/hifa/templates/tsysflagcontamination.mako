@@ -141,7 +141,7 @@ detects issues that deserve special attention, such as:<p>
 		<p>Plots of time-averaged T<sub>sys</sub> vs frequency, colored by antenna.</p>
 	</%def>
 
-	<%def name="mouseover(plot)">Click to show Tₛᵧₛ vs frequency for Tₛᵧₛ spw ${plot.parameters['tsys_spw']}</%def>
+	<%def name="mouseover(plot)">Click to show Tsys vs frequency for Tsys spw ${plot.parameters['tsys_spw']}</%def>
 
 	<%def name="fancybox_caption(plot)">
 		T<sub>sys</sub> spw: ${plot.parameters['tsys_spw']}<br/>
@@ -183,7 +183,7 @@ detects issues that deserve special attention, such as:<p>
            re-scaled by a noise estimation in order to display signal-to-noise ratio.</p>
 	</%def>
 
-	<%def name="mouseover(plot)">Click to show Tₛᵧₛ vs frequency for Tₛᵧₛ spw ${plot.parameters['tsys_spw']}</%def>
+	<%def name="mouseover(plot)">Click to show Tsys vs frequency for Tsys spw ${plot.parameters['tsys_spw']}</%def>
 
 	<%def name="fancybox_caption(plot)">
 		T<sub>sys</sub> spw: ${plot.parameters['tsys_spw']}<br/>
