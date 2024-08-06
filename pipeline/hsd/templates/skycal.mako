@@ -156,25 +156,23 @@ def get_original_field_name(field_name, vis):
                 img_path = os.path.relpath(plot.abspath, pcontext.report_dir)
                 thumbnail_path = os.path.relpath(plot.thumbnail, pcontext.report_dir)
                 spw = plot.parameters['spw']
-                clean_field_name = plot.parameters['field']
-                original_field_name = get_original_field_name(clean_field_name, vis)
             %>
  	        <div class="col-md-3">
 	            <div class="thumbnail">
 	                <a href="${img_path}" data-fancybox="thumbs">
 	                    <img class="lazyload"
                              data-src="${thumbnail_path}"
-	                         title="Sky level summary for Field ${original_field_name}, Spw ${spw}">
+	                         title="Sky level summary for Spw ${spw}">
 	                </a>
 	                <div class="caption">
 	                    <h4>
 	                        <a href="${subpage}" class="replace"
-	                           data-vis="${vis}" data-field="${clean_field_name}" data-spw="${spw}">
-	                           Field ${original_field_name} Spw ${spw}
+	                           data-vis="${vis}" data-spw="${spw}">
+	                           Spw ${spw}
 	                        </a>
 	                    </h4>
 
-	                    <p>Plot of sky level vs time for field ${original_field_name}, spw ${spw}.</p>
+	                    <p>Plot of sky level vs time for spw ${spw}.</p>
 	                </div>
 	            </div>
 	        </div>
