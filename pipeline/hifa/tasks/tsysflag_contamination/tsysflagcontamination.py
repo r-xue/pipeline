@@ -332,7 +332,7 @@ class TsysFlagContamination(StandardTaskTemplate):
 
                 field_contamination = {}
                 for k in line_contamination_intervals:
-                    m = re.match(r"(?P<spw>[0-9]+)_(?P<field>[0-9])", k)
+                    m = re.match(r"(?P<spw>[0-9]+)_(?P<field>[0-9]+)", k)
                     spw, field = m.group(1, 2)
                     field_contamination.setdefault(np.int64(field), []).append(
                         np.int64(spw)
