@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_renorm(vis=None, createcaltable=None, threshold=None, correctATM=None, spw=None, excludechan=None,
+def hifa_renorm(vis=None, createcaltable=None, threshold=None, spw=None, excludechan=None,
                 atm_auto_exclude=None, bwthreshspw=None, parallel=None):
     """
     hifa_renorm ---- ALMA renormalization task
@@ -32,17 +32,12 @@ def hifa_renorm(vis=None, createcaltable=None, threshold=None, correctATM=None, 
                      correction cal table (True), or only run the assessment
                      (False, default).
 
-                     Example: apply=True
+                     Example: createcaltable=True
     threshold
                      Apply correction if max correction is above this threshold
                      value and ``apply`` = True. Default is 1.02 (i.e. 2%).
 
                      Example: threshold=1.02
-    correctATM
-                     Use the ATM model transmission profiles to try and correct
-                     for any ATM residual features that get into the scaling
-                     spectra.
-
     spw
                      The list of real (not virtual - i.e. the actual spwIDs in
                      the MS) spectral windows to evaluate.
@@ -99,7 +94,7 @@ def hifa_renorm(vis=None, createcaltable=None, threshold=None, correctATM=None, 
     2. Run to assess the necessary ALMA amplitude renormalization correction,
     and apply this correction if it exceeds a threshold of 3% (1.03).
 
-    >>> hifa_renorm(apply=True, threshold=1.03)
+    >>> hifa_renorm(createcaltable=True, threshold=1.03)
 
     """
     ##########################################################################
