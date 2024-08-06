@@ -94,14 +94,14 @@ class PipelineStatistics(object):
 
 def to_nested_dict(stats_collection) -> Dict:
     """
-    Generates a nested output dict with EBs, SPWs, SOURCEs, MOUSs
+    Generates a nested output dict with EBs, SPWs, TARGETs, MOUSs
     Each level is represented in the structure of the output.
     """
     final_dict = {}
 
     eb_section_key = "EB"
     spw_section_key = "SPW"
-    source_section_key = "SOURCE"
+    source_section_key = "TARGET"
 
     # Step through the collect statistics values and construct
     # a dictionary representation. The output format is as follows:
@@ -120,7 +120,7 @@ def to_nested_dict(stats_collection) -> Dict:
     #           }
     #       }
     #    }
-    #    "SOURCE": {
+    #    "TARGET": {
     #       source_name: {
     #           source_property: {...
     #           }
@@ -248,7 +248,7 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[
     first_ms = ms_list[0]
     science_source_names = sorted({source.name for source in first_ms.sources if 'TARGET' in source.intents})
     p8 = PipelineStatistics(
-        name='n_targets',
+        name='n_target',
         value=len(science_source_names),
         longdesc="total number of science targets in the MOUS",
         origin="hifa_importdata",
