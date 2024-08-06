@@ -16,7 +16,7 @@ class T2_4MDetailsTsysflagContaminationRenderer(T2_4MDetailsTsysflagRenderer):
     def __init__(
         self,
         uri="tsysflagcontamination.mako",
-        description="Flag Tₛᵧₛ astrophysical line contamination",
+        description="Flag Tsys astrophysical line contamination",
         always_rerender=False,
     ):
         super().__init__(
