@@ -6,9 +6,9 @@ a normalized numerical score ("score") between 0.0 and 1.0 with the following
 numerical ranges, meanings and colors:
 
 0.00 <= score <= 0.33 -> error, red
-0.33 <  score <= 0.66 -> warning, yellow
-0.66 <  score <= 0.90 -> suboptimal, blue
-0.90 <  score <= 1.00 -> optimal, green
+0.33 < score <= 0.66 -> warning, yellow
+0.66 < score <= 0.90 -> suboptimal, blue
+0.90 < score <= 1.00 -> optimal, green
 
 Optionally, "score" can be set to -0.1 in case the score calculation encounters
 any errors that can not be handled. -0.1 is considered an error score.
@@ -21,7 +21,7 @@ name and should thus be short to render well.
 The scores are usually calculated from unnormalized metrics using the actual
 data. The metric is coded via the "QAOrigin" entity class defined in
 "pipelineqa.py". It has "metric_name", "metric_score" (which is really the
-metric value and *not* any normalized quantity) and "metric_units". In the
+metric value and _not_ any normalized quantity) and "metric_units". In the
 QA score objects the metrics are stored as the "origin" attribute.
 
 Furthermore there is a data selection object stored as "applies_to" attribute
@@ -45,3 +45,25 @@ all subscores. The task score is defined by the "representative_score"
 attribute. It is often the minimum of all subscores, but it could also be
 computed differently, e.g. as mean of subscores. In case "representative_score"
 is unset, the pipeline assumes the minimum of the pool scores.
+
+## Pipeline QA "Handler" Class Registration
+
+Pipeline QA "handler" classes rely on the class inheritance relationship from the `QAPlugin` base class to register and load correctly (see the `QARegistry.do_qa` method).
+
+Individual task QA modules need to be imported into the namespace early so their `*QAHandler` and `*ListQAHandler` classes can be defined and registered. For this reason, it is essential to have `import . qa` inside `h*/tasks/*/__init__.py` for any Pipeline task with a `qa.py` module.
+
+To check the currently registered `*QAHandler` classes, you can try:
+
+```python
+CASA <2>: from pipeline.infrastructure.pipelineqa import QAPlugin
+CASA <3>: QAPlugin.__subclasses__()
+Out[3]:
+[pipeline.h.tasks.exportdata.qa.ExportDataQAHandler,
+ pipeline.h.tasks.exportdata.qa.ExportDataListQAHandler,
+ pipeline.h.tasks.applycal.qa.ApplycalQAHandler,
+ pipeline.h.tasks.applycal.qa.ApplycalListQAHandler,
+ pipeline.h.tasks.importdata.qa.ImportDataQAHandler,
+ pipeline.h.tasks.importdata.qa.ImportDataListQAHandler,
+ # ...
+]
+```

@@ -28,7 +28,8 @@ class testBPdcalsInputs(vdp.StandardInputs):
     weakbp = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
     doflagundernspwlimit = vdp.VisDependentProperty(default=False)
-    flagbaddef = vdp.VisDependentProperty(default=True)
+    flagbaddef = vdp.VisDependentProperty(default=True)    refant = vdp.VisDependentProperty(default='')
+
     iglist = vdp.VisDependentProperty(default=True)
 
     @iglist.postprocess
@@ -38,7 +39,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
             iglist_dict.update(unprocessed)
         return iglist_dict
 
-    def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, flagbaddef=None, iglist=None):
+    def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, flagbaddef=None, iglist=None, refant=None):
         """
         Args:
             context (:obj:): Pipeline context
@@ -50,7 +51,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
             flagbaddef(Boolean, optional): Enable/disable bad deformatter flagging. Default is True.
             iglist(dict, optional): When flagbaddef is True, skip bad deformatter flagging for elements in the ignore list.
                           Format: {antName:{band:{spw}}}
-                          Example: {'ea02': {'L': {0, 1, '10~13'}}}
+                          Example: {'ea02': {'L': {0, 1, '10~13'}}}            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
         """
         super(testBPdcalsInputs, self).__init__()
         self.context = context
@@ -62,6 +63,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
         self.gain_solint2 = 'int'
         self.flagbaddef = flagbaddef
         self.iglist = iglist
+        self.refant = refant
 
 
 class testBPdcalsResults(basetask.Results):
@@ -333,11 +335,16 @@ class testBPdcals(basetask.StandardTaskTemplate):
         # PIPE-1637: adding ',' in the manual and auto refantignore parameter
         refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-        refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
-                                                geometry=True, flagging=True, intent='',
-                                                spw='', refantignore=refantignore)
 
-        RefAntOutput = refantobj.calculate()
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
+                                                    geometry=True, flagging=True, intent='',
+                                                    spw='', refantignore=refantignore)
+
+            RefAntOutput = refantobj.calculate()
+        else:
+            RefAntOutput = self.inputs.refant.split(",")
 
         LOG.info("RefAntOutput: {}".format(RefAntOutput))
 

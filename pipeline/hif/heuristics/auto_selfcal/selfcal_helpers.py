@@ -487,15 +487,18 @@ def estimate_SNR(imagename, maskname=None, verbose=True):
 
 
 def estimate_near_field_SNR(imagename, las=None, maskname=None, verbose=True):
+
     MADtoRMS = 1.4826
 
     temp_list = ['temp.mask', 'temp.residual', 'temp.border.mask', 'temp.smooth.ceiling.mask',
-                 'temp.smooth.mask', 'temp.nearfield.mask', 'temp.big.smooth.ceiling.mask',
-                 'temp.nearfield.prepb.mask', 'temp.big.smooth.mask', 'temp.beam.extent.image']
+                 'temp.smooth.mask', 'temp.nearfield.mask', 'temp.big.smooth.ceiling.mask', 'temp.radius',
+                 'temp.delta', 'temp.nearfield.prepb.mask', 'temp.big.smooth.mask', 'temp.beam.extent.image']
 
     with casa_tools.ImageReader(imagename) as image:
         bm = image.restoringbeam(polarization=0)
         image_stats = image.statistics(robust=False)
+        npix = image.shape()[0]
+
     beammajor = bm['major']['value']
     beamminor = bm['minor']['value']
     beampa = bm['positionangle']['value']
@@ -504,14 +507,18 @@ def estimate_near_field_SNR(imagename, las=None, maskname=None, verbose=True):
         maskImage = imagename.replace('image', 'mask').replace('.tt0', '')
     else:
         maskImage = maskname
+
     if not os.path.exists(maskImage):
         LOG.info('Does not exist')
         return np.float64(-99.0), np.float64(-99.0)
+
     goodMask = checkmask(maskImage)
     if not goodMask:
         LOG.info('The mask file %s is empty.', maskImage)
         return np.float64(-99.0), np.float64(-99.0)
-    residualImage = imagename.replace('image', 'residual')
+
+    # PIPE-2258: use restored image for SNR calculation (GH:419a80a)
+    residualImage = imagename
 
     for temp in temp_list:
         shutil.rmtree(temp, ignore_errors=True)
@@ -527,9 +534,16 @@ def estimate_near_field_SNR(imagename, las=None, maskname=None, verbose=True):
 
     # Check the extent of the beam as well.
     psfImage = maskImage.replace('mask', 'psf')+'.tt0'
-    pbImage = imagename.replace('image', 'pb')
 
-    cts.immath(imagename=[psfImage, pbImage], mode="evalexpr", expr="iif(IM0 > 0.1,1/IM1,0.0)",
+    cts.immath(psfImage, mode="evalexpr", expr="iif(IM0==1,IM0,0)", outfile="temp.delta")
+    cts.imsmooth("temp.delta", major=str(npix/2)+"pix", minor=str(npix/2)+"pix", pa="0deg",
+                 outfile="temp.radius", overwrite=True)
+
+    cts.imhead(imagename="temp.radius", mode="put", hdkey="BMIN", hdvalue=str(beamminor)+"arcsec")
+    cts.imhead(imagename="temp.radius", mode="put", hdkey="BMAJ", hdvalue=str(beammajor)+"arcsec")
+    cts.imhead(imagename="temp.radius", mode="put", hdkey="BPA", hdvalue=str(beampa)+"deg")
+
+    cts.immath(imagename=[psfImage, 'temp.radius'], mode="evalexpr", expr="iif(IM0 > 0.1,1/IM1,0.0)",
                outfile="temp.beam.extent.image")
 
     centerpos = cts.imhead(psfImage, mode="get", hdkey="maxpixpos")
@@ -550,8 +564,9 @@ def estimate_near_field_SNR(imagename, las=None, maskname=None, verbose=True):
                outfile='temp.big.smooth.ceiling.mask')
     cts.immath(imagename=['temp.big.smooth.ceiling.mask', 'temp.smooth.ceiling.mask'],
                expr='((IM0-IM1)-1.0)*-1.0', outfile='temp.nearfield.prepb.mask')
-    cts.immath(imagename=['temp.nearfield.prepb.mask', imagename.replace("image", "pb")],
-               expr='iif(VALUE(IM1) > 0.1,IM0,1.0)', outfile='temp.nearfield.mask')
+    cts.immath(imagename=[imagename, 'temp.nearfield.prepb.mask'], expr='iif(MASK(IM0),IM1,1.0)',
+               outfile='temp.nearfield.mask')
+
     maskImage = 'temp.nearfield.mask'
     mask_stats = cts.imstat(maskImage)
     if mask_stats['min'][0] == 1:
@@ -571,7 +586,9 @@ def estimate_near_field_SNR(imagename, las=None, maskname=None, verbose=True):
             LOG.info("#Peak intensity of source: %.2f mJy/beam" % (peak_intensity*1000,))
             LOG.info("#Near Field rms: %.2e mJy/beam" % (rms*1000,))
             LOG.info("#Peak Near Field SNR: %.2f" % (SNR,))
+
     os.system('cp -r '+maskImage+' '+imagename.replace('image', 'nearfield.mask').replace('.tt0', ''))
+
     for temp in temp_list:
         shutil.rmtree(temp, ignore_errors=True)
 

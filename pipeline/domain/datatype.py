@@ -71,5 +71,18 @@ class DataType(Enum):
             specmode_datatypes = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
         return specmode_datatypes
 
+    @staticmethod
+    def get_short_datatype_desc(datatype_str):
+        """
+        Return a short summary string for weblog purposes.
+        """
+        if datatype_str == 'RAW':
+            return '<span style="background-color:lightgray;">RAW</span>'
+        elif 'REGCAL' in datatype_str:
+            return '<span style="background-color:lightblue;">REGCAL</span>'
+        elif 'SELFCAL' in datatype_str:
+            return '<span style="background-color:palegreen;">SELFCAL</span>'
+        else:
+            return 'UNKNOWN'
 
 TYPE_PRIORITY_ORDER = sorted(DataType.__members__.values(), key=attrgetter('value'))

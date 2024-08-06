@@ -10,7 +10,10 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2024 (as of July 17, 2024)
+Code changes for Pipeline2025 (as of July 24, 2024)
+0) Fix crash in recalcMomDiffSNR (not used by pipeline)
+
+Code changes for Pipeline2024 (as of July 30, 2024)
 0) No longer disable onlyExtraMask when returnBluePoints==True
 1) No longer search for vis in cube dir if not specified, only if vis=='auto'
 2) Remove two print statements at import
@@ -40,7 +43,7 @@ Code changes for Pipeline2024 (as of July 17, 2024)
 21) Fix for PIPE-2188 (try harder to avoid LowSpread)  2024-06-03
 22) Fix for PIPE-1992: if dynamic range of mom0 is high (>90), raise the mom0minsnr mask threshold to 8
 23) Add spectralDynamicRangeString to first line of legend
-
+24) Final fix for PIPE-1629 (pb mask is applied to jointMask when it is pb-based)
 
 Code changes for Pipeline2023 (as of June 12, 2023)
 0) Enable amendMaskIterations=4: .autoLower2 will run if LowBW not yet reached
@@ -302,7 +305,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle11.py,v 7.20 2024/07/17 15:58:11 we Exp $" 
+    myversion = "$Id: findContinuumCycle11.py,v 7.22 2024/07/30 15:22:26 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -8030,7 +8033,7 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                 # try to get pb mask onto the joint.mask2 = PIPE-1629
                 casalogPost("Running imsubimage('%s', mask='%s>0', outfile='%s')" % (jointMask2temp,pbmom,jointMask2))
                 # looks like you need to protect mask with quotes if name includes a '/' character
-                imsubimage(jointMask2temp, mask="'%s'>0"%pbmom, outfile=jointMask2)
+                imsubimage(jointMask2temp, mask="'%s'>0"%pbmom, outfile=jointMask2)  # try adding > 0, yes we need it!
                 removeIfNecessary(jointMask2temp)
 
                 jointMask = jointMask2
@@ -8071,10 +8074,12 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
                 casalogPost("Because less than %d pixels were in the joint mask, building pb-based mask from %s" % (minPixelsInJointMask,pbcube), debug=True)
                 lowerAnnulusLevel, higherAnnulusLevel = findOuterAnnulusForPBCube(pbcube, imstatListit, imstatVerbose, subimage, imageInfo)
                 
-                imsubimage(pbcube, chans='1', mask='"%s">%f' % (pbcube,higherAnnulusLevel), outfile=myMask1chan, overwrite=True)
-                print("Done imsubimage, made ", myMask1chan)
+#                imsubimage(pbcube, chans='1', mask='"%s">%f' % (pbcube,higherAnnulusLevel), outfile=myMask1chan, overwrite=True) 
+                imsubimage(pbcube, chans='1', mask='"%s">%f && "%s">0' % (pbcube,higherAnnulusLevel,pbmom), outfile=myMask1chan, overwrite=True)  # PIPE-1629 for the pb-based jointmask case
                 makemask(mode='copy', inpimage=myMask1chan, overwrite=True,
-                         inpmask=myMask1chan+':mask0', output=jointMask)
+                         inpmask=myMask1chan+':mask0', output=jointMaskTemp)
+                imsubimage(jointMaskTemp, mask='"%s">0' % (pbmom), outfile=jointMask, overwrite=True) # PIPE-1629 for the pb-based jointmask case
+                removeIfNecessary(jointMaskTemp)
     else:
         classicResult = imstat(mom0, listit=imstatListit, verbose=imstatVerbose)
         mom0peak = classicResult['max'][0]
@@ -8136,10 +8141,13 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
         casalogPost("Because less than %d pixels were in the joint mask, building pb-based mask from %s" % (minPixelsInJointMask,pbcube), debug=True)
         lowerAnnulusLevel, higherAnnulusLevel = findOuterAnnulusForPBCube(pbcube, imstatListit, imstatVerbose, subimage, imageInfo)
         
-        imsubimage(pbcube, chans='1', mask='"%s">%f' % (pbcube,higherAnnulusLevel), outfile=myMask1chan, overwrite=True)
-        print("Done imsubimage, made ", myMask1chan)
+#        imsubimage(pbcube, chans='1', mask='"%s">%f' % (pbcube,higherAnnulusLevel), outfile=myMask1chan, overwrite=True)  # PL2023
+        imsubimage(pbcube, chans='1', mask='"%s">%f && "%s">0' % (pbcube,higherAnnulusLevel,pbmom), outfile=myMask1chan, overwrite=True)  # PIPE-1629 for pb-based jointmask case
         makemask(mode='copy', inpimage=myMask1chan, overwrite=True,
-                 inpmask=myMask1chan+':mask0', output=jointMask)
+                 inpmask=myMask1chan+':mask0', output=jointMaskTemp)
+        imsubimage(jointMaskTemp, mask='"%s">0' % (pbmom), outfile=jointMask, overwrite=True) # PIPE-1629 for the pb-based jointmask case
+        removeIfNecessary(jointMaskTemp)
+
         channels, frequency, intensity, normalized = computeStatisticalSpectrumFromMask(cube, jointMask, pbcube, imageInfo, statistic, normalizeByMAD, projectCode, higherAnnulusLevel, lowerAnnulusLevel, outdir, jointMask, subimage)
         numberPixelsInMask = countPixelsAboveZero(jointMask, pbmom)
         initialQuadraticRemoved = False
@@ -10182,13 +10190,23 @@ def recalcMomDiffSNR(priorValuesFile, img='', intersectRanges='',
             cube = jointMask[:loc]+'.findcont.residual'
         else:
             cube = img
-    elif len(result) == 15:  # PL2022
+    elif len(result) == 15:  # PL2022+23
         [avgSpectrumNansReplaced, normalized, numberPixelsInJointMask, pbBasedMask, initialQuadraticRemoved, initialQuadraticImprovementRatio, mom0snrs, mom8snrs, regionsPruned, numberPixelsInMom8Mask, mom0peak, mom8peak, jointMask, nbin, initialPeakOverMad] = result
         if img == '':
             loc = jointMask.find('.findcont.residual')
             cube = jointMask[:loc]+'.findcont.residual'
         else:
             cube = img
+    elif len(result) == 17:  # PL2024
+        [avgSpectrumNansReplaced, normalized, numberPixelsInJointMask, pbBasedMask, initialQuadraticRemoved, initialQuadraticImprovementRatio, mom0snrs, mom8snrs, regionsPruned, numberPixelsInMom8Mask, mom0peak, mom8peak, jointMask, nbin, initialPeakOverMad, mom0peakOverMad, mom8peakOverMad] = result
+        if img == '':
+            loc = jointMask.find('.findcont.residual')
+            cube = jointMask[:loc]+'.findcont.residual'
+        else:
+            cube = img
+    else:
+        print("Unrecognized len(result) = %d" % (len(result)))
+        return
     if not os.path.exists(cube):
         print("Could not find the cube.")
         return

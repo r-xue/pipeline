@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, flagbaddef=None, iglist=None):
+def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, flagbaddef=None, iglist=None, refant=None):
 
     """
     hifv_testBPdcals ---- Runs initial delay and bandpass calibration to setup for RFI flagging
@@ -25,7 +25,9 @@ def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwli
     flagbaddef           Enable/disable bad deformatter flagging. Default is True.
     iglist               When flagbaddef is True, skip bad deformatter flagging for elements in the ignore list.
                          Format: {antName:{band:{spw}}}
-                         Example: {'ea02': {'L': {0, 1, '10~13'}}}
+                         Example: {'ea02': {'L': {0, 1, '10~13'}}}    refant               A csv string of reference antenna(s). When used, disables refantignore.
+                         Example: refant = 'ea01, ea02'
+
     --------- examples -----------------------------------------------------------
 
 
