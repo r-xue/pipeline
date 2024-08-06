@@ -215,7 +215,7 @@ class SerialRenorm(basetask.StandardTaskTemplate):
                 # The renorm results are applied like a Tsys calibration
                 calfrom_args = {'gaintable': inp.caltable,
                                 'caltype': 'tsys',
-                                'interp': 'nearest'}
+                                'interp': 'nearest,linear'}
                 calfrom = callibrary.CalFrom(**calfrom_args)
 
                 calapps.append(callibrary.CalApplication(calto, calfrom, origin))
