@@ -34,8 +34,55 @@ class TcleanQAHandler(pqa.QAPlugin):
         min_score = 0.34
         imageScorer = scorers.erfScorer(1.0, 5.0, min_score)
 
-        # Check for any cleaning errors and render a minimum score
+        # For any VLA/SS imaging modes; not triggered for any ALMA data processing
 
+        if 'VLA' in result.imaging_mode:
+
+            # Check for any cleaning error or no-image condition and render a minimum score
+            if result.error:
+                if hasattr(result.error, 'longmsg'):
+                    longmsg = result.error.longmsg
+                    shortmsg = result.error.shortmsg
+                else:
+                    longmsg = shortmsg = str(result.error)
+                # set the score to the lowest (but still yellow) value
+                # PIPE-677: consider htting niter-limit as false errors
+                if 'tclean reached niter limit' not in longmsg:
+                    result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
+                                                        weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
+            # PIPE-1790: if tclean failed to produce an image, skip any subsequent processing and report QAscore=0.34
+            if result.image is None:
+                longmsg = 'tclean failed to produce an image'
+                shortmsg = 'no image'
+                result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
+                                                    weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
+            if result.qa.pool:
+                return
+
+            # QAs based on the image quality
+            if 'VLASS' in result.imaging_mode:
+                # VLASS imaging modes: a canonical value of 1.0
+                result.qa.pool.append(pqa.QAScore(1.0))
+            else:
+                # VLA-PI imaging modes
+                if result.inputs['specmode'] in ('cube', 'repBW'):
+                    # PIPE-1346: score=1.0 for a succesfully imaged spectral line target.
+                    longmsg = f'cube imaging succeeded: field {result.sourcename}, spw {result.spw}'
+                    shortmsg = 'cube imaging succeeded'
+                    result.qa.pool.append(pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, applies_to=data_selection))
+                else:
+                    # for cont/mfs imaging
+                    snr = result.image_max / result.image_rms
+                    score = scorecalc.linear_score(x=snr, x1=5, x2=100, y1=0.0, y2=1.0)  # CAS-10925
+                    # Set score messages and origin.
+                    longmsg = ('{} pbcor image max / non-pbcor image RMS = {:0.2f}'.format(result.sourcename, snr))
+                    shortmsg = 'snr = {:0.2f}'.format(snr)
+                    result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, applies_to=data_selection))
+            return
+
+        # For all ALMA imaging modes
+
+        # Check for any cleaning error or no-image condition and render a minimum score
         if result.error:
             # this variable may be either a string or an instance of CleanBaseError,
             # which contains both long and short messages;
@@ -50,39 +97,6 @@ class TcleanQAHandler(pqa.QAPlugin):
                                               weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
             return
 
-        # For any VLA/SS imaging modes; not triggered for any ALMA data processing
-
-        if 'VLA' in result.imaging_mode:
-            # PIPE-1790: if tclean failed to produce an image, skip any subsequent processing and report QAscore=0.34
-            if result.image is None:
-                longmsg = 'tclean failed to produce an image'
-                shortmsg = 'no image'
-                result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
-                                                  weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
-                return
-            if 'VLASS' in result.imaging_mode:
-                # VLASS imaging modes
-                result.qa.pool[:] = [pqa.QAScore(1.0)]
-            else:
-                # VLA-PI imaging modes
-                if result.inputs['specmode'] in ('cube', 'repBW'):
-                    # PIPE-1346: score=1.0 for a succesfully imaged spectral line target.
-                    longmsg = f'cube imaging succeeded: field {result.sourcename}, spw {result.spw}'
-                    shortmsg = 'cube imaging succeeded'
-                    result.qa.pool[:] = [pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, applies_to=data_selection)]
-                else:
-                    # for cont/mfs imaging
-                    snr = result.image_max / result.image_rms
-                    score = scorecalc.linear_score(x=snr, x1=5, x2=100, y1=0.0, y2=1.0)  # CAS-10925
-                    # Set score messages and origin.
-                    longmsg = ('{} pbcor image max / non-pbcor image RMS = {:0.2f}'.format(result.sourcename, snr))
-                    shortmsg = 'snr = {:0.2f}'.format(snr)
-                    result.qa.pool[:] = [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, applies_to=data_selection)]
-            return
-
-        # For all ALMA imaging modes
-
-
         # PIPE-1790: if tclean failed to produce an image, skip any subsequent processing and report QAscore=0.34
         if result.image is None:
             longmsg = 'tclean failed to produce an image'
@@ -90,6 +104,7 @@ class TcleanQAHandler(pqa.QAPlugin):
             result.qa.pool.append(pqa.QAScore(min_score, longmsg=longmsg, shortmsg=shortmsg,
                                               weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
             return
+
         # Image RMS based score
         try:
             # For the score we compare the image RMS with the DR corrected
