@@ -179,59 +179,6 @@ class FlagDeterALMAResultsExtractor(StatsExtractor):
         return stats
 
 
-class FluxcalflagStatsExtractor(StatsExtractor):
-    result_cls = GfluxscaleflagResults
-    child_cls = None
-
-    def handle(self, result:GfluxscaleflagResults, context):
-        """
-        Args:
-            result: GfluxscaleflagResults object
-        """
-        summaries_by_name = {s['name']: s for s in result.cafresult.summaries}
-
-        num_flags_before = summaries_by_name['before']['flagged']
-
-        if 'after' in summaries_by_name:
-            num_flags_after = summaries_by_name['after']['flagged']
-        else:
-            num_flags_after = num_flags_before
-
-        ps = pstats.PipelineStatistics(name="fluxscaleflags",
-                                       value=int(num_flags_after),
-                                       longdesc="rows after",
-                                       mous=context.get_oussid(),
-                                       level=pstats.PipelineStatisticsLevel.EB)
-        return ps
-
-
-class ApplycalExtractor(StatsExtractor):
-    """
-    Stats test result extractor for applycal tasks.
-    """
-
-    result_cls = ApplycalResults
-    child_cls = None
-    generating_task = IFApplycal
-
-    def handle(self, result: ApplycalResults, context):
-        """
-        Args:
-            result: ApplycalResults object
-
-        Returns:
-            OrderedDict[str, float]
-        """
-        summaries_by_name = {s['name']: s for s in result.summaries}
-        num_flags_after = summaries_by_name['applycal']['flagged']
-        ps = pstats.PipelineStatistics(name="applycal_flags",
-                                       value=int(num_flags_after),
-                                       longdesc="rows after",
-                                       mous=context.get_oussid(),
-                                       level=pstats.PipelineStatisticsLevel.MOUS)
-        return ps
-
-
 def get_stats_from_results(context: Context) -> List[pstats.PipelineStatistics]:
     """
     Gathers all possible pipeline statistics from results.
