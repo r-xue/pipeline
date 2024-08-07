@@ -6,7 +6,12 @@
     {{#importonly}}
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
-        <ParameterSet/>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">datacolumns</Keyword>
+                <Value xmlns="">{'data':'raw','corrected':'regcal_contline_all'}</Value>
+            </Parameter>
+        </ParameterSet>
     </ProcessingCommand>
 
     <!-- If onlineflag=True, online flag shall be applied to the imported MSes. -->
@@ -26,6 +31,10 @@
                 <Value xmlns="">False</Value>
             </Parameter>
         </ParameterSet>
+    </ProcessingCommand>
+        <ProcessingCommand>
+        <Command xmlns="">hifv_statwt</Command>
+        <ParameterSet/>
     </ProcessingCommand>
     {{/importonly}}
 
