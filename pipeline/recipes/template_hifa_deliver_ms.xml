@@ -7,6 +7,11 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
         <ParameterSet/>
+            <Parameter>
+                <Keyword xmlns="">datacolumns</Keyword>
+                <Value xmlns="">{'data':'raw','corrected':'regcal_contline_all'}</Value>
+            </Parameter>
+        </ParameterSet>
     </ProcessingCommand>
 
     <!-- If onlineflag=True, online flag shall be applied to the imported MSes. -->
