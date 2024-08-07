@@ -105,8 +105,8 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         fieldselect, scanselect, intentselect, columnselect = self._select_data()
 
-        # abort if fieldselect is an empty string.
-        if not fieldselect:
+        # PIPE-1335: abort if both fieldselect and scanselect are empty strings.
+        if not (fieldselect or scanselect):
             LOG.warning("No scans with selected intent(s) from checkflagmode={!r}. RFI flagging not executed.".format(
                 self.inputs.checkflagmode))
             return CheckflagResults(summaries=summaries)
