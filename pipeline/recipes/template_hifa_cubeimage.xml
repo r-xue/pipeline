@@ -6,6 +6,11 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
         <ParameterSet/>
+            <Parameter>
+                <Keyword xmlns="">datacolumns</Keyword>
+                <Value xmlns="">{'data':'raw','corrected':'regcal_contline_all'}</Value>
+            </Parameter>
+        </ParameterSet>
     </ProcessingCommand>
     <!-- end of import MS-->
     {{/importonly}}
