@@ -159,14 +159,14 @@ class Circfeedpolcal(polarization.Polarization):
             for spws in baseband_spwstr:
                 LOG.info("Executing gaincal on baseband with spws={!s}".format(spws))
                 self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws,
-                                combine='scan,spw', addcallib=addcallib)
+                                combine='scan,spw')
                 tablesToAdd[0][2] = self.do_spwmap()
         else:
             spwsobj = m.get_spectral_windows(science_windows_only=True)
             spwslist = [str(spw.id) for spw in spwsobj]
             spws = ','.join(spwslist)
             addcallib = True
-            self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws, addcallib=addcallib)
+            self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws)
 
         if addcallib:
             LOG.info("Adding " + str(tablesToAdd[0][0]) + " to callibrary.")
@@ -280,7 +280,7 @@ class Circfeedpolcal(polarization.Polarization):
 
         return GainTables
 
-    def do_gaincal(self, caltable, field='', spw='', combine='scan', addcallib=False):
+    def do_gaincal(self, caltable, field='', spw='', combine='scan'):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         minBL_for_cal = m.vla_minbaselineforcal()
@@ -288,7 +288,6 @@ class Circfeedpolcal(polarization.Polarization):
         append = False
         if os.path.exists(caltable):
             append = True
-            addcallib = True
             LOG.info("{!s} exists.  Appending to caltable.".format(caltable))
 
         GainTables = []
