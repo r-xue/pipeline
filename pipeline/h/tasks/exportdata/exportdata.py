@@ -514,11 +514,10 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return sessiondict
 
-    def _do_if_auxiliary_products(self, oussid, output_dir, products_dir, vislist, imaging_products_only):
+    def _do_if_auxiliary_products(self, oussid, output_dir, products_dir, vislist, imaging_products_only, pipeline_stats_file=None):
         """
         Generate the auxiliary products
         """
-
         if imaging_products_only:
             contfile_name = 'cont.dat'
             fluxfile_name = 'Undefined'
@@ -570,6 +569,10 @@ class ExportData(basetask.StandardTaskTemplate):
         if hasattr(self.inputs.context, 'selfcal_resources') and isinstance(self.inputs.context.selfcal_resources, list):
             selfcal_resources_list = self.inputs.context.selfcal_resources
         if selfcal_resources_list:
+            empty = False
+
+        # PIPE-2094: check for the pipeline stats file
+        if pipeline_stats_file and os.path.exists(pipeline_stats_file):
             empty = False
 
         if empty:
@@ -625,6 +628,12 @@ class ExportData(basetask.StandardTaskTemplate):
                     tar.add(selfcal_resource, arcname=selfcal_resource)
                     LOG.info('Saving auxiliary data product %s in %s', selfcal_resource, tarfilename)
 
+            # PIPE-2094: Save pipeline statistics file
+            if pipeline_stats_file and os.path.exists(pipeline_stats_file):
+                tar.add(pipeline_stats_file, arcname=pipeline_stats_file)
+                LOG.info('Saving pipeline statistics file %s in %s', pipeline_stats_file, tarfilename)
+            else:
+                LOG.info("Pipeline statistics file does not exist.")
             tar.close()
 
         return tarfilename
