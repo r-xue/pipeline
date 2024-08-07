@@ -420,7 +420,7 @@ def _get_source_values(context, mous: str, ms_list: List[MeasurementSet]) -> Lis
     first_ms = ms_list[0]
 
     science_sources = sorted({source for source in first_ms.sources
-                              if 'TARGET' in source.intents})
+                              if 'TARGET' in source.intents}, key=lambda source: source.name)
 
     for source in science_sources:
         pointings = len([f for f in first_ms.fields if f.source_id == source.id])

@@ -633,7 +633,7 @@ class ExportData(basetask.StandardTaskTemplate):
                 tar.add(pipeline_stats_file, arcname=pipeline_stats_file)
                 LOG.info('Saving pipeline statistics file %s in %s', pipeline_stats_file, tarfilename)
             else:
-                LOG.info("Pipeline statistics file does not exist: {}".format(pipeline_stats_file))
+                LOG.info("Pipeline statistics file does not exist.")
             tar.close()
 
         return tarfilename
