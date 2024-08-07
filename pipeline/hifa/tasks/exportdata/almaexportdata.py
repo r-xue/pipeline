@@ -2,6 +2,7 @@ import collections
 import json
 import os
 import shutil
+import traceback
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 from pipeline.h.tasks.common import manifest
@@ -68,6 +69,7 @@ class ALMAExportData(exportdata.ExportData):
             pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid)
         except Exception as e:
             LOG.info("Unable to output pipeline statistics file: {}".format(e))
+            LOG.debug(traceback.format_exc())
             pass
 
         # Export the auxiliary file products into a single tar file
@@ -148,7 +150,7 @@ class ALMAExportData(exportdata.ExportData):
 
         # Write the stats file to disk
         with open(stats_file, 'w', encoding='utf-8') as f:
-            json.dump(stats_dict, f, ensure_ascii=False, indent=4)
+            json.dump(stats_dict, f, ensure_ascii=False, indent=4, sort_keys=True)
 
         return stats_file
 

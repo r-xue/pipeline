@@ -572,9 +572,8 @@ class ExportData(basetask.StandardTaskTemplate):
             empty = False
 
         # PIPE-2094: check for the pipeline stats file
-        if pipeline_stats_file:
-            if os.path.exists(pipeline_stats_file):
-                empty = False
+        if pipeline_stats_file and os.path.exists(pipeline_stats_file):
+            empty = False
 
         if empty:
             return None

@@ -4,9 +4,6 @@ import collections
 from collections import OrderedDict
 from typing import List, Union, Dict
 
-from pipeline.h.tasks.applycal.applycal import ApplycalResults
-from pipeline.hif.tasks.applycal.ifapplycal import IFApplycal
-from pipeline.hifa.tasks.gfluxscaleflag.resultobjects import GfluxscaleflagResults
 from pipeline.hifa.tasks.flagging.flagdeteralma import FlagDeterALMAResults
 from pipeline.infrastructure.basetask import Results, ResultsList
 from pipeline.infrastructure.launcher import Context
@@ -174,6 +171,7 @@ class FlagDeterALMAResultsExtractor(StatsExtractor):
                                            longdesc=longdescription,
                                            eb=ms,
                                            mous=mous,
+                                           units='%',
                                            level=pstats.PipelineStatisticsLevel.EB)
             stats.append(ps)
         return stats
