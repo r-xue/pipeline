@@ -32,7 +32,8 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-        <ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hifv_statwt</Command>
         <ParameterSet/>
     </ProcessingCommand>
