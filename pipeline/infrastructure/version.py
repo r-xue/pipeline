@@ -44,27 +44,27 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
         except ValueError:
             return 0
 
-    def get_last_tag(gitbranch, branchpattern, delim):
-        branchpattern = re.compile(branchpattern)
-        delim = re.compile(delim)
-        releaseid = gitbranch.split('/')[-1] if 'release/' in gitbranch else ''
-        versions = {}
-        for githash in hashes:
-            for line in refstags:
-                # if 'release/' is not in gitbranch, the second condition is always true
-                if line.startswith(githash) and releaseid in line:
-                    tag = line.replace(githash+' refs/tags/', '').replace('^{}', '')
-                    if branchpattern.match(tag):
-                        # split the version string into a tuple by the given delimiter,
-                        # then convert each element of the tuple from string to int
-                        # in order to sort the versions correctly.
-                        # "versions" is a dict in which keys are the parsed tuples of ints,
-                        # and values are the original version strings
-                        versions[tuple(tonumber(x) for x in delim.split(tag))] = tag
-        # sort the dict items by the first element (tuples of ints)
-        # and return the second element (the corresponding version string)
-        # of the highest value (i.e. most recent version)
-        return sorted(versions.items())[-1][1] if versions else ''
+def _get_last_tag(gitbranch, branchpattern, delim, hashes, refstags):
+    branchpattern = re.compile(branchpattern)
+    delim = re.compile(delim)
+    releaseid = gitbranch.split('/')[-1] if 'release/' in gitbranch else ''
+    versions = {}
+    for githash in hashes:
+        for line in refstags:
+            # if 'release/' is not in gitbranch, the second condition is always true
+            if line.startswith(githash) and releaseid in line:
+                tag = line.replace(githash+' refs/tags/', '').replace('^{}', '')
+                if branchpattern.match(tag):
+                    # split the version string into a tuple by the given delimiter,
+                    # then convert each element of the tuple from string to int
+                    # in order to sort the versions correctly.
+                    # "versions" is a dict in which keys are the parsed tuples of ints,
+                    # and values are the original version strings
+                    versions[tuple(_to_number(x) for x in delim.split(tag))] = tag
+    # sort the dict items by the first element (tuples of ints)
+    # and return the second element (the corresponding version string)
+    # of the highest value (i.e. most recent version)
+    return sorted(versions.items())[-1][1] if versions else ''
 
     def get_last_branch_tag(gitbranch):
         match = re.match(r'(PIPE-\d+)', gitbranch)
