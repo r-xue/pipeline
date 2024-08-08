@@ -18,13 +18,13 @@ from importlib.util import find_spec
 from pathlib import Path
 
 import casatasks
+import subprocess
 
 from .infrastructure import casa_tools
 from .infrastructure import logging
 from .infrastructure import mpihelpers
 from .infrastructure import utils
 from .infrastructure.mpihelpers import MPIEnvironment
-from .infrastructure.utils.subprocess import safe_run
 from .infrastructure.version import get_version_string_from_git
 from importlib.metadata import version, PackageNotFoundError
 
@@ -34,6 +34,62 @@ __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'pipel
            'dependency_details']
 from .infrastructure import logging
 LOG = logging.get_logger(__name__)
+from io import StringIO
+
+def _run(command: str, stdout=None, stderr=None, cwd=None, shell=True) -> int:
+    """
+    Run a command in a subprocess.
+
+    This helper function is intended to hide the boilerplate required to
+    create and handle a subprocess while capturing its output. Rather than
+    having functions call subprocess directly, they should consider calling
+    this routine so that we have uniform handling.
+
+    @param command: the command to execute
+    @param stdout: optional stream to direct stdout to
+    @param stderr: optional stream to direct stderr to
+    @param shell:
+    @param cwd: working directory for command
+    @return: exit code of the process in which the command executed
+    """
+    stdout = stdout or sys.stderr
+    stderr = stderr or sys.stderr
+
+    out = subprocess.PIPE if isinstance(stdout, StringIO) else stdout
+    err = subprocess.PIPE if isinstance(stderr, StringIO) else stderr
+
+    proc = subprocess.Popen(command, shell=shell, stdout=out, stderr=err, cwd=cwd)
+
+    proc_stdout, proc_stderr = proc.communicate()
+    if proc_stdout:
+        stdout.write(proc_stdout.decode("utf-8", errors="ignore"))
+    if proc_stderr:
+        stderr.write(proc_stderr.decode("utf-8", errors="ignore"))
+    return proc.returncode
+
+
+def _safe_run(command: str, on_error: str = 'N/A', cwd: Optional[str] = None, log_errors=True) -> str:
+    """
+    Safely run a command in a subprocess, returning the given string if an
+    error occurs.
+
+    @param command: the command to execute
+    @param on_error: message to return if an exception occurs
+    @param cwd: working directory for command
+    @param log_errors: whether to log errors that occur while running the command
+    @return: process output or error message
+    """
+    stdout = StringIO()
+    try:
+        exit_code = _run(command, stdout=stdout, stderr=subprocess.DEVNULL, cwd=cwd)
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        if log_errors:
+            LOG.exception(f'Error running {command}', exc_info=e)
+    else:
+        if exit_code == 0:
+            return stdout.getvalue().strip()
+
+    return on_error
 
 def _load(path: str, encoding: str = 'UTF-8') -> typing.AnyStr:
     """
@@ -191,13 +247,13 @@ class LinuxEnvironment(CommonEnvironment):
     def __init__(self):
         super(LinuxEnvironment, self).__init__()
 
-        lscpu_json = json.loads(safe_run('lscpu -J', on_error='{"lscpu": {}}'))
+        lscpu_json = json.loads(_safe_run('lscpu -J', on_error='{"lscpu": {}}'))
         self.cpu_type = self._from_lscpu(lscpu_json, 'Model name:')
         self.logical_cpu_cores = self._from_lscpu(lscpu_json, 'CPU(s):')
         self.physical_cpu_cores = self._from_lscpu(lscpu_json, "Core(s) per socket:")
 
         self.ram = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')
-        self.swap = safe_run('swapon --show=SIZE --bytes --noheadings')
+        self.swap = _safe_run('swapon --show=SIZE --bytes --noheadings')
 
         cgroup_controllers = CGroupControllerParser.get_controllers()
         self.cgroup_num_cpus = str(CGroupLimit.CPUAllocation.get_limit(cgroup_controllers))
@@ -357,7 +413,7 @@ class CGroupControllerParser:
             )
             results[name] = controller
 
-        is_cgroups_v2 = safe_run('stat -fc %T /sys/fs/cgroup/') == 'cgroup2fs'
+        is_cgroups_v2 = _safe_run('stat -fc %T /sys/fs/cgroup/') == 'cgroup2fs'
 
         # stage 2: read /proc/self/cgroup and determine:
         #   - the cgroup path for cgroups v2 or
@@ -599,7 +655,7 @@ class MacOSEnvironment(CommonEnvironment):
 
     @staticmethod
     def _from_sysctl(prop: str) -> str:
-        return safe_run(f'sysctl -n {prop}')
+        return _safe_run(f'sysctl -n {prop}')
 
     @staticmethod
     def _get_swap():

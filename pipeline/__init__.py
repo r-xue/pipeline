@@ -16,7 +16,7 @@ from casatasks import casalog
 
 # from . import config
 from . import domain, environment, infrastructure
-
+from .domain import measures
 from .infrastructure import Context, Pipeline
 
 from . import h
