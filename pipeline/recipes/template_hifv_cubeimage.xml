@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifv_contimage</ProcedureTitle>
+    <ProcedureTitle>hifv_cubeimage</ProcedureTitle>
 
     {{#importonly}}
     <!-- import MS: if importonly=True, no calibration shall be performed -->
