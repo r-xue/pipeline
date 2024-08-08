@@ -494,10 +494,13 @@ class Checkflag(basetask.StandardTaskTemplate):
         if self.inputs.checkflagmode in ('allcals-vla', 'allcals-vlass', 'allcals'):
             fieldselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_field_select_string.split(',')
             scanselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_scan_select_string.split(',')
-            checkflagfields = self.inputs.context.evla['msinfo'][ms.name].checkflagfields.split(',')
             testgainscans = self.inputs.context.evla['msinfo'][ms.name].testgainscans.split(',')
-            fieldselect = ','.join([fieldid for fieldid in fieldselect if fieldid not in checkflagfields])
             scanselect = ','.join([scan for scan in scanselect if scan not in testgainscans])
+            # PIPE-1335: only construct the field selection string if the scan selection string is not empty.
+            # Note the field selection string might include the bpd cals, but the combination of scan/field selection
+            # constrain is expected to pick up the desired data collections.
+            if scanselect:
+                fieldselect = ','.join(fieldid for fieldid in fieldselect)
 
         # select targets
         if self.inputs.checkflagmode in ('target-vla', 'target-vlass', 'vlass-imaging', 'target'):
@@ -809,7 +812,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                         if vis_ampstats['min'] == 1 and vis_ampstats['max'] == 1:
                             is_model_setjy = False
                             break
-                        msfile.reset()
+                    msfile.reset()
 
         return is_model_setjy
 
