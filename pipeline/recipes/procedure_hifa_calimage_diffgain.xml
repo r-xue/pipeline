@@ -49,12 +49,6 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifa_tsysflagcontamination</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
         <Command xmlns="">hifa_antpos</Command>
         <ParameterSet>
         </ParameterSet>
