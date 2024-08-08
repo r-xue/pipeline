@@ -739,16 +739,15 @@ class TsysData(object):
                 len(selection) == 1
             ), f"Selection antenna={antenna},spw={spw},scan={scan},field={field} has more than 1 match!"
             selection = selection[0]
+
             flag = flags[selection]
+            intent = intents[selection]
+            key = f"{spw}_{field}_{scan}_{antenna}_{intent}"
+
             if np.all(flag):
-                exclude = exclude.union(
-                    set([f"{spw}_{field}_{scan}_{antenna}_{intent}"])
-                )
+                exclude = exclude.union(set([key]))
             else:
-                intent = intents[selection]
-                tsys = tsyss[selection]
-                key = f"{spw}_{field}_{scan}_{antenna}_{intent}"
-                valid_dict[key] = tsys
+                valid_dict[key] = tsyss[selection]
         # valid = valid - exclude
         return valid_dict, exclude
 
