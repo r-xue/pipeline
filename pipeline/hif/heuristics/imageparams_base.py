@@ -1148,7 +1148,7 @@ class ImageParamsHeuristics(object):
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
-               centreonly=False, vislist=None, spwspec=None, intent: str = '', joint_intents: str = ''):
+               centreonly=False, vislist=None, spwspec=None, intent: str = '', joint_intents: str = '', specmode=None):
         """
         Image size heuristics for single fields and mosaics. The pixel count along x and y image dimensions
         is determined by the cell size, primary beam size and the spread of phase centers in case of mosaics.
@@ -1414,8 +1414,7 @@ class ImageParamsHeuristics(object):
         return 2.0 * (freq_limits['abs_max_freq'] - freq_limits['abs_min_freq']) / \
                (freq_limits['abs_min_freq'] + freq_limits['abs_max_freq'])
 
-    def robust(self):
-
+    def robust(self, specmode=None):
         """Default robust value."""
 
         return 0.5
@@ -2021,6 +2020,8 @@ class ImageParamsHeuristics(object):
         in case of online smoothing.
 
         This heuristic is currently optimized for ALMA data only.
+
+        Note: the input 'field' is a field id as an integer.
         """
 
         real_spwid = self.observing_run.virtual2real_spw_id(spw, ms_do)
@@ -2034,7 +2035,7 @@ class ImageParamsHeuristics(object):
 
             scanids = [str(scan.id) for scan in ms_do.scans
                        if intent in scan.intents
-                       and field in [fld.name for fld in scan.fields]]
+                       and field in [fld.id for fld in scan.fields]]
             scanids = ','.join(scanids)
             antenna_ids = self.antenna_ids(intent, [os.path.basename(ms_do.name)])
             taql = f"{'||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(ms_do.name)]])}&&" \
@@ -2220,13 +2221,15 @@ class ImageParamsHeuristics(object):
     def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None):
         return None
 
-    def uvrange(self, field=None, spwspec=None):
+    def uvrange(self, field=None, spwspec=None, specmode=None):
         return None, None
 
     def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         return None
 
-    def restfreq(self):
+    def restfreq(
+            self, specmode: Optional[str] = None, nchan: Optional[int] = None, start: Optional[Union[str, float]] = None,
+            width: Optional[Union[str, float]] = None) -> Optional[str]:
         return None
 
     def conjbeams(self):
