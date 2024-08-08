@@ -13,6 +13,7 @@ from pipeline.hifv.heuristics import getCalFlaggedSoln
 from pipeline.hifv.heuristics import weakbp, do_bandpass, uvrange
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
 from pipeline.hifv.heuristics import getBCalStatistics
 
 
@@ -28,7 +29,8 @@ class testBPdcalsInputs(vdp.StandardInputs):
     weakbp = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
     doflagundernspwlimit = vdp.VisDependentProperty(default=False)
-    flagbaddef = vdp.VisDependentProperty(default=True)    refant = vdp.VisDependentProperty(default='')
+    flagbaddef = vdp.VisDependentProperty(default=True)
+    refant = vdp.VisDependentProperty(default='')
 
     iglist = vdp.VisDependentProperty(default=True)
 
@@ -51,7 +53,8 @@ class testBPdcalsInputs(vdp.StandardInputs):
             flagbaddef(Boolean, optional): Enable/disable bad deformatter flagging. Default is True.
             iglist(dict, optional): When flagbaddef is True, skip bad deformatter flagging for elements in the ignore list.
                           Format: {antName:{band:{spw}}}
-                          Example: {'ea02': {'L': {0, 1, '10~13'}}}            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
+                          Example: {'ea02': {'L': {0, 1, '10~13'}}}
+            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
         """
         super(testBPdcalsInputs, self).__init__()
         self.context = context
@@ -953,7 +956,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                                 if "~" not in str(ispw):
                                     ignoredSPWs.append(ispw)
                                 else:
-                                    ignoredSPWs.append(np.arange(eval(ispw.split("~")[0]), eval(ispw.split("~")[1])))
+                                    ignoredSPWs.append(utils.range_to_list(ispw))
 
                         # PIPE-1183, skip bad deformatter flagging for SPWs in ignore list
                         for ispw in spwl:
