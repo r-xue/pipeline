@@ -167,6 +167,8 @@ class Circfeedpolcal(polarization.Polarization):
             spws = ','.join(spwslist)
             addcallib = True
             self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws)
+        if os.path.exists(tablesToAdd[0][0]):
+            addcallib = True
 
         if addcallib:
             LOG.info("Adding " + str(tablesToAdd[0][0]) + " to callibrary.")
