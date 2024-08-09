@@ -1341,7 +1341,7 @@ def detect_tsys_contamination(
             dega += k
             deg_baseline = 3
             xp_mod, baseline_mod = model_break(
-                atm, prominent_peaks_in_atm, window_length=5 * np.ceil(nchan / 128)
+                atm, prominent_peaks_in_atm, window_length=5 * np.ceil(nchan / 128).astype('int')
             )
 
             _dif = dif.copy()
