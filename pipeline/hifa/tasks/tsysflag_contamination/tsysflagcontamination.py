@@ -223,7 +223,7 @@ class TsysFlagContamination(StandardTaskTemplate):
                 result.task_incomplete_reason = reason
                 result.metric_order = "manual"  # required for renderer
 
-                LOG.exception(reason, e)
+                LOG.exception(reason, exc_info=e)
                 return result
             else:
                 # hard failure: raise exception, let the framework deal with it
