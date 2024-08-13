@@ -193,7 +193,7 @@ class QAScorePool(object):
         if not self.pool:
             return QAScore(None, 'No QA scores registered for this task', 'No QA')
 
-        # Maybe have different algorithms here. for now just return the
+        # Maybe have different algorithms here. For now just return the
         # QAScore with minimum score of all non-hidden numerical ones.
         numerical_scores = [score_obj for score_obj in scores_with_location(self.pool,
                            [WebLogLocation.ACCORDION, WebLogLocation.BANNER, WebLogLocation.UNSET])
@@ -295,6 +295,21 @@ class QAPlugin(object, metaclass=abc.ABCMeta):
     def handle(self, context, result):
         pass
 
+    def handle_with_exception_catch(self, context, result):
+        """
+        Handle QA scoring with an exception catch.
+
+        Args:
+            context: Pipeline context
+            result: A Pipeline task result instance
+        """
+        try:
+            self.handle(context, result)
+        except Exception as ex:
+            # PIPE-2216: use a short generic message and score=-0.1 for QA execution failures and
+            # present the exception error message in warning.
+            result.qa.pool.append(QAScore(-0.1, 'Unable to calculate QA scores.', 'Unable to calculate QA scores'))
+            LOG.warning('QA execution failed with an exception: %s', ex)
 
 class QARegistry(object):
     """
@@ -343,7 +358,7 @@ class QARegistry(object):
                 if handler.is_handler_for(result):
                     LOG.debug('%s handling QA analysis for %s' % (handler.__class__.__name__,
                                                                   result.__class__.__name__))
-                    handler.handle(context, result)
+                    handler.handle_with_exception_catch(context, result)
 
             if hasattr(result, 'logrecords'):
                 result.logrecords.extend(logging_handler.buffer)

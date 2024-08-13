@@ -1,17 +1,18 @@
 import copy
-import os
 import operator
+import os
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain import DataType
 from pipeline.hif.heuristics import imageparams_factory
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
+from pipeline.infrastructure import casa_tools, task_registry
+
 from .cleantarget import CleanTarget
 from .resultobjects import MakeImListResult
 
@@ -256,6 +257,15 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         sidebar_suffixes = {_SIDEBAR_SUFFIX.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')}
         result.metadata['sidebar suffix'] = '/'.join(sidebar_suffixes)
+
+        # Check if this stage has been disabled for vla (never set for ALMA)
+        if inputs.context.vla_skip_mfs_and_cube_imaging and inputs.specmode in ('mfs', 'cube'):
+            result.set_info({'msg': 'Line imaging stages have been disabled for VLA due to no MS being produced for line imaging.',
+                                 'intent': inputs.intent,
+                                 'specmode': inputs.specmode})
+            result.contfile = None
+            result.linesfile = None
+            return result
 
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters:
@@ -636,14 +646,22 @@ class MakeImList(basetask.StandardTaskTemplate):
         else:
             vislists = [inputs.vis]
 
-        # VLA only
-        if inputs.context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA') and inputs.specmode == 'cont':
-            ms = inputs.context.observing_run.get_ms(inputs.vis[0])
-            band = ms.get_vla_spw2band()
+        if 'VLA' in imaging_mode:
+            ref_ms = inputs.context.observing_run.get_ms(inputs.vis[0])
+            vla_band = ref_ms.get_vla_spw2band()
             band_spws = {}
-            for k, v in band.items():
+            for k, v in vla_band.items():
                 if str(k) in spwlist:
                     band_spws.setdefault(v, []).append(k)
+        elif 'ALMA' in imaging_mode:
+            ref_ms = inputs.context.observing_run.get_ms(inputs.vis[0])
+            band_spws = {}
+            for spwid in spwlist:
+                real_spw_id = inputs.context.observing_run.virtual2real_spw_id(int(spwid), ref_ms)
+                real_spw_id_obj = ref_ms.get_spectral_window(real_spw_id)
+                if real_spw_id_obj:
+                    band_name = real_spw_id_obj.band
+                    band_spws.setdefault(band_name, []).append(spwid)
         else:
             band_spws = {None: 0}
 
@@ -653,12 +671,15 @@ class MakeImList(basetask.StandardTaskTemplate):
         expected_num_targets = 0
         for selected_datatype_str, selected_datatype_info in zip(selected_datatypes_str, selected_datatypes_info):
             for band in band_spws:
-                if band != None:
-                    spw = band_spws[band].__repr__()
+                if band is not None:
+                    # The format of "spw" is "['<id1>','<id2>',...,'<idN>']", i.e. without any
+                    # blanks (see also above where the default spw value is computed for the non
+                    # band case).
+                    spw = "[" + ",".join(f"'{item}'" for item in band_spws[band]) + "]"
                     spwlist = band_spws[band]
                 for vislist in vislists:
                     if inputs.per_eb:
-                        imagename_prefix = os.path.basename(vislist[0]).strip('.ms')
+                        imagename_prefix = utils.remove_trailing_string(os.path.basename(vislist[0]), '.ms')
                     elif inputs.per_session:
                         imagename_prefix = inputs.context.observing_run.get_ms(vislist[0]).session
                     else:
@@ -697,7 +718,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         spwids = spwlist_local
 
                     # Generate list of observed vis/field/spw combinations
-                    vislist_field_spw_combinations = {}
+                    vislist_field_intent_spw_combinations = {}
                     for field_intent in field_intent_list:
                         vislist_for_field = []
                         spwids_for_field = set()
@@ -712,14 +733,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     # Get a field domain object. Make sure that it has the necessary intent. Otherwise the list of spw IDs
                                     # will not match with the available science spw IDs.
                                     # Using all intents (inputs.intent) here. Further filtering is performed in the next block.
-                                    if ms_domain_obj.get_fields(field_intent[0], intent=inputs.intent) != []:
-                                        field_domain_obj = ms_domain_obj.get_fields(field_intent[0], intent=inputs.intent)[0]
+                                    field_domain_objs = ms_domain_obj.get_fields(field_intent[0], intent=inputs.intent)
+                                    if field_domain_objs != []:
+                                        field_domain_obj = field_domain_objs[0]
                                         # Get all science spw IDs for this field and record the ones that are present in this MS
-                                        field_science_spwids = [spw_domain_obj.id for spw_domain_obj in field_domain_obj.valid_spws if spw_domain_obj.id in ms_science_spwids]
+                                        field_intent_science_spwids = [spw_domain_obj.id for spw_domain_obj in field_domain_obj.valid_spws if spw_domain_obj.id in ms_science_spwids and field_intent[1] in spw_domain_obj.intents]
                                         # Record the virtual spwids
                                         spwids_per_vis_and_field = [
                                             inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj)
-                                            for spwid in field_science_spwids
+                                            for spwid in field_intent_science_spwids
                                             if inputs.context.observing_run.real2virtual_spw_id(spwid, ms_domain_obj) in list(map(int, spwids))]
                                     else:
                                         spwids_per_vis_and_field = []
@@ -731,10 +753,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                             if spwids_per_vis_and_field != []:
                                 vislist_for_field.append(vis)
                                 spwids_for_field.update(spwids_per_vis_and_field)
-                        vislist_field_spw_combinations[field_intent[0]] = {'vislist': None, 'spwids': None}
+                        vislist_field_intent_spw_combinations[field_intent] = {'vislist': None, 'spwids': None}
                         if vislist_for_field != []:
-                            vislist_field_spw_combinations[field_intent[0]]['vislist'] = vislist_for_field
-                            vislist_field_spw_combinations[field_intent[0]]['spwids'] = sorted(list(spwids_for_field), key=int)
+                            vislist_field_intent_spw_combinations[field_intent]['vislist'] = vislist_for_field
+                            vislist_field_intent_spw_combinations[field_intent]['spwids'] = sorted(list(spwids_for_field), key=int)
                             # Count the observed field/spw combinations. If the selected data type
                             # is not available, the counter will be decremented later since that
                             # check happens further below.
@@ -743,11 +765,11 @@ class MakeImList(basetask.StandardTaskTemplate):
                             else:
                                 expected_num_targets += len(spwids_for_field)
 
-                    # Save original vislist_field_spw_combinations dictionary to be able to generate
+                    # Save original vislist_field_intent_spw_combinations dictionary to be able to generate
                     # proper messages if the vis list changes when falling back to a different data
-                    # type for a given source/spw combination later on. The vislist_field_spw_combinations
+                    # type for a given source/spw combination later on. The vislist_field_intent_spw_combinations
                     # dictionary is possibly being modified on-the-fly below.
-                    original_vislist_field_spw_combinations = copy.deepcopy(vislist_field_spw_combinations)
+                    original_vislist_field_intent_spw_combinations = copy.deepcopy(vislist_field_intent_spw_combinations)
 
                     # Remove bad spws and record actual vis/field/spw combinations containing data.
                     # Record all spws with actual data in a global list.
@@ -766,12 +788,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                             if field_intent not in valid_data[str(vislist)]:
                                 valid_data[str(vislist)][field_intent] = {}
                             # Check only possible field/spw combinations to speed up
-                            if vislist_field_spw_combinations.get(field_intent[0], None) is not None:
+                            if vislist_field_intent_spw_combinations.get(field_intent, None) is not None:
                                 # Check if this field is present in the current MS and has the necessary intent.
                                 # Using get_fields(name=...) since it does not throw an exception if the field is not found.
                                 if ms_domain_obj.get_fields(name=field_intent[0], intent=field_intent[1]) != []:
-                                    observed_vis_list = vislist_field_spw_combinations.get(field_intent[0], None).get('vislist', None)
-                                    observed_spwids_list = vislist_field_spw_combinations.get(field_intent[0], None).get('spwids', None)
+                                    observed_vis_list = vislist_field_intent_spw_combinations.get(field_intent, None).get('vislist', None)
+                                    observed_spwids_list = vislist_field_intent_spw_combinations.get(field_intent, None).get('spwids', None)
                                     if observed_vis_list is not None and observed_spwids_list is not None:
                                         # Save spws in main list
                                         all_spw_keys.extend(map(str, observed_spwids_list))
@@ -798,7 +820,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                         filtered_spwlist_local = filtered_spwlist
 
                     if filtered_spwlist_local == [] or filtered_spwlist_local == ['']:
-                        LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
+                        # We can get here for example if a multiband observations does not feature
+                        # LF or HF spws for a given field (PIPE-832). We should not log anything in
+                        # that case. Before PIPE-832 there used to be a provisional error message for
+                        # potential other cases, but this probably never happened. For now just
+                        # continuing in the loop.
+                        #LOG.error('No spws left for vis list {}'.format(','.join(os.path.basename(vis) for vis in vislist)))
                         continue
 
                     # Parse hm_cell to get optional pixperbeam setting
@@ -849,7 +876,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     elif 'robust' in inputs.context.imaging_parameters:
                         robust = inputs.context.imaging_parameters['robust']
                     else:
-                        robust = self.heuristics.robust()
+                        robust = self.heuristics.robust(specmode=inputs.specmode)
 
                     if inputs.uvtaper not in (None, []):
                         uvtaper = inputs.uvtaper
@@ -857,22 +884,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                         uvtaper = inputs.context.imaging_parameters['uvtaper']
                     else:
                         uvtaper = self.heuristics.uvtaper()
-
-                    # Get field specific uvrange value
-                    uvrange = {}
-                    bl_ratio = {}
-                    for field_intent in field_intent_list:
-                        for spwspec in filtered_spwlist_local:
-                            if inputs.uvrange not in (None, [], ''):
-                                uvrange[(field_intent[0], spwspec)] = inputs.uvrange
-                            else:
-                                try:
-                                    (uvrange[(field_intent[0], spwspec)], bl_ratio[(field_intent[0], spwspec)]) = \
-                                        self.heuristics.uvrange(field=field_intent[0], spwspec=spwspec)
-                                except Exception as e:
-                                    # problem defining uvrange
-                                    LOG.warning(e)
-                                    pass
 
                     # cell is a list of form [cellx, celly]. If the list has form [cell]
                     # then that means the cell is the same size in x and y. If cell is
@@ -885,9 +896,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                             # Use only fields that were observed in spwspec
                             actual_field_intent_list = []
                             for field_intent in field_intent_list:
-                                if (vislist_field_spw_combinations.get(field_intent[0], None) is not None and
-                                        vislist_field_spw_combinations[field_intent[0]].get('spwids', None) is not None and
-                                        spwspec in list(map(str, vislist_field_spw_combinations[field_intent[0]]['spwids']))):
+                                if (vislist_field_intent_spw_combinations.get(field_intent, None) is not None and
+                                        vislist_field_intent_spw_combinations[field_intent].get('spwids', None) is not None and
+                                        spwspec in list(map(str, vislist_field_intent_spw_combinations[field_intent]['spwids']))):
                                     actual_field_intent_list.append(field_intent)
 
                             synthesized_beams[spwspec], known_synthesized_beams = self.heuristics.synthesized_beam(
@@ -912,7 +923,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 min_cell = cells[spwspec] if (qaTool.convert(cells[spwspec][0], 'arcsec')['value'] < qaTool.convert(min_cell[0], 'arcsec')['value']) else min_cell
                         # Rounding to two significant figures
                         min_cell = ['%.2g%s' % (qaTool.getvalue(min_cell[0]), qaTool.getunit(min_cell[0]))]
-                        # Use same cell size for all spws (in a band (TODO))
                         # Need to populate all spw keys because the imsize heuristic picks
                         # up the lowest frequency spw.
                         for spwspec in all_spw_keys:
@@ -938,8 +948,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                     if phasecenter == '':
                         for field_intent in field_intent_list:
                             try:
-                                field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
-                                phasecenters[field_intent[0]], psf_phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'], intent=field_intent[1], primary_beam=largest_primary_beams[min_freq_spwlist[0]], shift_to_nearest_field=True)
+                                field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_intent_spw_combinations[field_intent]['vislist'])
+                                phasecenters[field_intent[0]], psf_phasecenters[field_intent[0]] = self.heuristics.phasecenter(field_ids, vislist=vislist_field_intent_spw_combinations[field_intent]['vislist'], intent=field_intent[1], primary_beam=largest_primary_beams[min_freq_spwlist[0]], shift_to_nearest_field=True)
                             except Exception as e:
                                 # problem defining center
                                 LOG.warning(e)
@@ -964,15 +974,18 @@ class MakeImList(basetask.StandardTaskTemplate):
                             for spwspec in min_freq_spwlist:
 
                                 try:
-                                    field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'])
+                                    field_ids = self.heuristics.field(field_intent[1], field_intent[0], vislist=vislist_field_intent_spw_combinations[field_intent]['vislist'])
                                     # Image size (FOV) may be determined depending on the fractional bandwidth of the
                                     # selected spectral windows. In continuum spectral mode pass the spw list string
                                     # to imsize heuristics (used only for VLA), otherwise pass None to disable the feature.
                                     imsize_spwlist = filtered_spwlist_local if inputs.specmode == 'cont' else None
                                     h_imsize = self.heuristics.imsize(
-                                        fields=field_ids, cell=cells[spwspec], primary_beam=largest_primary_beams[spwspec],
-                                        sfpblimit=sfpblimit, centreonly=False, vislist=vislist_field_spw_combinations[field_intent[0]]['vislist'],
-                                        spwspec=imsize_spwlist, intent=field_intent[1], joint_intents=inputs.intent)
+                                        fields=field_ids, cell=cells[spwspec],
+                                        primary_beam=largest_primary_beams[spwspec],
+                                        sfpblimit=sfpblimit, centreonly=False,
+                                        vislist=vislist_field_intent_spw_combinations[field_intent]['vislist'],
+                                        spwspec=imsize_spwlist, intent=field_intent[1],
+                                        joint_intents=inputs.intent, specmode=inputs.specmode)
                                     if field_intent[1] in [
                                             'PHASE',
                                             'BANDPASS',
@@ -982,7 +995,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                             'POLARIZATION',
                                             'POLANGLE',
                                             'POLLEAKAGE',
-                                            'DIFFGAIN'
+                                            'DIFFGAINREF',
+                                            'DIFFGAINSRC',
                                             ]:
                                         h_imsize = [min(npix, inputs.calmaxpix) for npix in h_imsize]
                                     imsizes[(field_intent[0], spwspec)] = h_imsize
@@ -998,7 +1012,6 @@ class MakeImList(basetask.StandardTaskTemplate):
                             if max_x_size == 1 or max_y_size == 1:
                                 LOG.error('imsize of [{:d}, {:d}] for field {!s} intent {!s} spw {!s} is degenerate.'.format(max_x_size, max_y_size, field_intent[0], field_intent[1], min_freq_spwlist))
                             else:
-                                # Use same size for all spws (in a band (TODO))
                                 # Need to populate all spw keys because the imsize for the cont
                                 # target is taken from this dictionary.
                                 for spwspec in all_spw_keys:
@@ -1054,17 +1067,17 @@ class MakeImList(basetask.StandardTaskTemplate):
                         mosweight = self.heuristics.mosweight(field_intent[1], field_intent[0])
                         for spwspec in filtered_spwlist_local:
                             # Start with original vis list
-                            vislist_field_spw_combinations[field_intent[0]]['vislist'] = original_vislist_field_spw_combinations[field_intent[0]]['vislist']
+                            vislist_field_intent_spw_combinations[field_intent]['vislist'] = original_vislist_field_intent_spw_combinations[field_intent]['vislist']
 
                             # The field/intent and spwspec loops still cover the full parameter
                             # space. Here we filter the actual combinations.
                             valid_field_spwspec_combination = False
                             actual_spwids = []
-                            if vislist_field_spw_combinations[field_intent[0]].get('spwids', None) is not None:
+                            if vislist_field_intent_spw_combinations[field_intent].get('spwids', None) is not None:
                                 for spwid in spwspec.split(','):
                                     if valid_data[str(vislist)].get(field_intent, None):
                                         if valid_data[str(vislist)][field_intent].get(str(spwid), None):
-                                            if int(spwid) in vislist_field_spw_combinations[field_intent[0]]['spwids']:
+                                            if int(spwid) in vislist_field_intent_spw_combinations[field_intent]['spwids']:
                                                 valid_field_spwspec_combination = True
                                                 actual_spwids.append(spwid)
                             if not valid_field_spwspec_combination:
@@ -1078,8 +1091,12 @@ class MakeImList(basetask.StandardTaskTemplate):
                             actual_spwspec_list = []
                             spwsel = {}
                             all_continuum = True
+                            low_bandwidth = True
+                            low_spread = True
                             cont_ranges_spwsel_dict = {}
                             all_continuum_spwsel_dict = {}
+                            low_bandwidth_spwsel_dict = {}
+                            low_spread_spwsel_dict = {}
                             spwsel_spwid_dict = {}
 
                             # Check if the globally selected data type is available for this field/spw combination.
@@ -1128,14 +1145,14 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 datacolumn = local_datacolumn
 
-                                if not inputs.per_eb and original_vislist_field_spw_combinations[field_intent[0]]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
-                                    vislist_field_spw_combinations[field_intent[0]]['vislist'] = [k.basename for k in local_ms_objects_and_columns.keys()]
+                                if not inputs.per_eb and original_vislist_field_intent_spw_combinations[field_intent]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
+                                    vislist_field_intent_spw_combinations[field_intent]['vislist'] = [k.basename for k in local_ms_objects_and_columns.keys()]
                                     if automatic_datatype_choice and local_selected_datatype_str != selected_datatype_str:
-                                        LOG.warn(f'''Modifying vis list from {original_vislist_field_spw_combinations[field_intent[0]]['vislist']} to {vislist_field_spw_combinations[field_intent[0]]['vislist']} for fallback data type {local_selected_datatype_str}.''')
+                                        LOG.warn(f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for fallback data type {local_selected_datatype_str}.''')
                                     else:
-                                        LOG.warn(f'''Modifying vis list from {original_vislist_field_spw_combinations[field_intent[0]]['vislist']} to {vislist_field_spw_combinations[field_intent[0]]['vislist']} for data type {local_selected_datatype_str}.''')
+                                        LOG.warn(f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for data type {local_selected_datatype_str}.''')
 
-                                    if vislist_field_spw_combinations[field_intent[0]]['vislist'] == []:
+                                    if vislist_field_intent_spw_combinations[field_intent]['vislist'] == []:
                                         LOG.warn(f'Empty vis list for field {field_intent[0]} specmode {specmode} data type {local_selected_datatype_str}. Skipping imaging target.')
                                         continue
                             else:
@@ -1155,15 +1172,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                             # Save the specific vislist in a copy of the heuristics object tailored to the
                             # current imaging target
                             target_heuristics = copy.deepcopy(self.heuristics)
-                            target_heuristics.vislist = vislist_field_spw_combinations[field_intent[0]]['vislist']
+                            target_heuristics.vislist = vislist_field_intent_spw_combinations[field_intent]['vislist']
 
                             for spwid in adjusted_spwspec.split(','):
-                                cont_ranges_spwsel_dict[spwid], all_continuum_spwsel_dict[spwid] = target_heuristics.cont_ranges_spwsel()
+                                cont_ranges_spwsel_dict[spwid], all_continuum_spwsel_dict[spwid], low_bandwidth_spwsel_dict[spwid], low_spread_spwsel_dict[spwid] = target_heuristics.cont_ranges_spwsel()
                                 spwsel_spwid_dict[spwid] = cont_ranges_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, 'NONE')
 
                             no_cont_ranges = False
                             if (field_intent[1] == 'TARGET' and specmode == 'cont' and
-                                    all([v == 'NONE' for v in spwsel_spwid_dict.values()])):
+                                    all([v == '' for v in spwsel_spwid_dict.values()])):
                                 LOG.warning('No valid continuum ranges were found for any spw. Creating an aggregate continuum'
                                             ' image from the full bandwidth from all spws, but this should be used with'
                                             ' caution.')
@@ -1171,8 +1188,8 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                             for spwid in adjusted_spwspec.split(','):
                                 spwsel_spwid = spwsel_spwid_dict[spwid]
-                                if field_intent[1] == 'TARGET' and not no_cont_ranges:
-                                    if spwsel_spwid == 'NONE':
+                                if 'ALMA' in imaging_mode and field_intent[1] == 'TARGET' and specmode in ('mfs', 'cont') and not no_cont_ranges:
+                                    if spwsel_spwid == '':
                                         if specmode == 'cont':
                                             LOG.warning('Spw {!s} will not be used in creating the aggregate continuum image'
                                                         ' of {!s} because no continuum range was found.'
@@ -1186,8 +1203,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     #    LOG.warning('Empty continuum frequency range for %s, spw %s. Run hif_findcont ?' % (field_intent[0], spwid))
 
                                 all_continuum = all_continuum and all_continuum_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
+                                low_bandwidth = low_bandwidth and low_bandwidth_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
+                                low_spread = low_spread and low_spread_spwsel_dict[spwid].get(utils.dequote(field_intent[0]), {}).get(spwid, False)
 
-                                if spwsel_spwid in ('ALL', '', 'NONE'):
+                                if spwsel_spwid in ('ALL', 'ALLCONT', '', 'NONE'):
                                     spwsel_spwid_freqs = ''
                                     if target_heuristics.is_eph_obj(field_intent[0]):
                                         spwsel_spwid_refer = 'SOURCE'
@@ -1250,9 +1269,9 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 # Remove MSs that do not contain data for the given field/intent combination
                                 # FIXME: This should already have been filtered above. This filter is just from the domain objects.
-                                scanidlist, visindexlist = target_heuristics.get_scanidlist(vislist_field_spw_combinations[field_intent[0]]['vislist'],
+                                scanidlist, visindexlist = target_heuristics.get_scanidlist(vislist_field_intent_spw_combinations[field_intent]['vislist'],
                                                                                             field_intent[0], field_intent[1])
-                                domain_filtered_vislist = [vislist_field_spw_combinations[field_intent[0]]['vislist'][i] for i in visindexlist]
+                                domain_filtered_vislist = [vislist_field_intent_spw_combinations[field_intent]['vislist'][i] for i in visindexlist]
                                 if inputs.specmode == 'cont':
                                     filtered_vislist = domain_filtered_vislist
                                 else:
@@ -1273,14 +1292,29 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 antenna = [','.join(map(str, antenna_ids.get(os.path.basename(v), '')))+'&'
                                            for v in filtered_vislist]
 
-                                drcorrect = self._get_drcorrect(field_intent[0], actual_spwspec, local_selected_datatype_str)
+                                drcorrect, maxthreshold = self._get_drcorrect_maxthreshold(
+                                    field_intent[0], actual_spwspec, local_selected_datatype_str)
+                                target_heuristics.imaging_params['maxthreshold'] = maxthreshold
 
                                 deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
                                                                                    actual_spwspec, stokes, inputs.specmode,
                                                                                    local_selected_datatype_str, target_heuristics)
 
                                 reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
+                                gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=actual_spwspec)
 
+                                # Get field-specific uvrange value
+                                uvrange = inputs.uvrange if inputs.uvrange not in (None, [], '') else None
+                                bl_ratio = None
+                                if uvrange is None:
+                                    try:
+                                        uvrange, bl_ratio = self.heuristics.uvrange(field=field_intent[0], spwspec=actual_spwspec)
+                                    except Exception as ex:
+                                        # After PIPE-2266, an exception is unlikely to occur because a null-selection condition has been excluded.
+                                        # Nevertheless, we retain this exception handler as an extra precaution.
+                                        LOG.warning("Error calculating the heuristics uvrange value for field %s spw %s : %s",
+                                                    field_intent[0], actual_spwspec, ex)
+                                              
                                 target = CleanTarget(
                                     antenna=antenna,
                                     field=field_intent[0],
@@ -1288,6 +1322,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     spw=actual_spwspec,
                                     spwsel_lsrk=spwsel,
                                     spwsel_all_cont=all_continuum,
+                                    spwsel_low_bandwidth=low_bandwidth,
+                                    spwsel_low_spread=low_spread,
                                     num_all_spws=num_all_spws,
                                     num_good_spws=num_good_spws,
                                     cell=cells[spwspec],
@@ -1295,15 +1331,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     phasecenter=phasecenters[field_intent[0]],
                                     psf_phasecenter=psf_phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
-                                    gridder=target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=spwspec),
+                                    gridder=gridder,
                                     imagename=imagename,
                                     start=inputs.start,
                                     width=widths[(field_intent[0], spwspec)],
                                     nbin=nbin,
                                     nchan=nchans[(field_intent[0], spwspec)],
                                     robust=robust,
-                                    uvrange=uvrange[(field_intent[0], spwspec)],
-                                    bl_ratio=bl_ratio[(field_intent[0], spwspec)],
+                                    uvrange=uvrange,
+                                    bl_ratio=bl_ratio,
                                     uvtaper=uvtaper,
                                     stokes=stokes,
                                     heuristics=target_heuristics,
@@ -1381,26 +1417,44 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         return deconvolver, nterms
 
-    def _get_drcorrect(self, field, spw, datatype_str):
+    def _get_drcorrect_maxthreshold(self, field, spw, datatype_str):
         """Get the modified drcorrect parameter based on existing selfcal results."""
 
-        drcorrect = None
+        drcorrect = maxthreshold = None
         context = self.inputs.context
 
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
-            return drcorrect
+            return drcorrect, maxthreshold
 
         if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw.split(','))
                 if sc_target['field'] == field and im_spw.intersection(sc_spw) and sc_target['sc_success']:
+
+                    # PIPE-1452: use previous succesfully selfcal results to modify DR correction values
                     drcorrect = sc_target['sc_rms_scale']
                     LOG.info(f"Using drcorrect={drcorrect} for field {field} and spw {spw} based "
                              "on previous selfcal aggregate continuum imaging results.")
+
+                    # PIPE-2117: use previous regcal reuslts to set the cleaning threshold upper limit
+                    for r in context.results:
+                        result = r.read()
+                        if isinstance(result, MakeImagesResult):
+                            for tclean_result in result.results:
+                                if tclean_result.datatype_info.startswith('REGCAL_CONTLINE') and \
+                                        tclean_result.specmode == 'cont' and \
+                                        tclean_result.sourcename == field and \
+                                        im_spw.intersection(set(tclean_result.spw.split(','))):
+                                    maxthreshold = tclean_result.threshold
+                    if maxthreshold is not None:
+                        LOG.info(
+                            f"Define an imaging threshold upper limit of {maxthreshold} for self-calibrated field {field} and spw {spw} "
+                            "based on previous regular aggregate continuum imaging results.")
                     break
 
-        return drcorrect
+        return drcorrect, maxthreshold
 
 
 # maps intent and specmode Inputs parameters to textual description of execution context.
@@ -1417,8 +1471,10 @@ _DESCRIPTIONS = {
     ('POLANGLE', 'cont'): 'polarization calibrator',
     ('POLLEAKAGE', 'mfs'): 'polarization calibrator',
     ('POLLEAKAGE', 'cont'): 'polarization calibrator',
-    ('DIFFGAIN', 'mfs'): 'diffgain calibrator',
-    ('DIFFGAIN', 'cont'): 'diffgain calibrator',
+    ('DIFFGAINREF', 'mfs'): 'diffgain calibrator',
+    ('DIFFGAINREF', 'cont'): 'diffgain calibrator',
+    ('DIFFGAINSRC', 'mfs'): 'diffgain calibrator',
+    ('DIFFGAINSRC', 'cont'): 'diffgain calibrator',
     ('CHECK', 'mfs'): 'check source',
     ('CHECK', 'cont'): 'check source',
     ('TARGET', 'mfs'): 'target per-spw continuum',
@@ -1434,8 +1490,10 @@ _SIDEBAR_SUFFIX = {
     ('BANDPASS', 'cont'): 'cals',
     ('AMPLITUDE', 'mfs'): 'cals',
     ('AMPLITUDE', 'cont'): 'cals',
-    ('DIFFGAIN', 'mfs'): 'cals',
-    ('DIFFGAIN', 'cont'): 'cals',
+    ('DIFFGAINREF', 'mfs'): 'cals',
+    ('DIFFGAINREF', 'cont'): 'cals',
+    ('DIFFGAINSRC', 'mfs'): 'cals',
+    ('DIFFGAINSRC', 'cont'): 'cals',
     ('POLARIZATION', 'mfs'): 'pol',
     ('POLARIZATION', 'cont'): 'pol',
     ('POLANGLE', 'mfs'): 'pol',

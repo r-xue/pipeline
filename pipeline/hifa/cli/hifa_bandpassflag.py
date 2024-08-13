@@ -9,7 +9,7 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
                       solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None,
                       combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None, antnegsig=None,
                       antpossig=None, tmantint=None, tmint=None, tmbl=None, antblnegsig=None, antblpossig=None,
-                      relaxed_factor=None, niter=None):
+                      relaxed_factor=None, niter=None, hm_auto_fillgaps=None):
     """
     hifa_bandpassflag ---- Bandpass calibration flagging
 
@@ -215,6 +215,17 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
                    iterations are skipped.
 
                    Example: niter=2
+    hm_auto_fillgaps
+                   If True, then the hm_bandpass = 'snr' or 'smoothed'
+                   modes, that solve bandpass per SpW, are performed with
+                   CASA bandpass task parameter 'fillgaps' set to a quarter
+                   of the respective SpW bandwidth (in channels).
+
+                   If False, then these bandpass solves will use
+                   fillgaps=0.
+
+                   The hm_bandpass='fixed' mode is unaffected by
+                   'hm_auto_fillgaps' and always uses fillgaps=0.
 
     --------- examples -----------------------------------------------------------
 

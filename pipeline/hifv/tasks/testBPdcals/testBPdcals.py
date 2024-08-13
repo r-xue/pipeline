@@ -28,8 +28,9 @@ class testBPdcalsInputs(vdp.StandardInputs):
     weakbp = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
     doflagundernspwlimit = vdp.VisDependentProperty(default=False)
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None):
+    def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, refant=None):
         """
         Args:
             context (:obj:): Pipeline context
@@ -38,7 +39,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
             refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
             doflagunderspwlimit(Boolean): Will identify individual spw when less than nspwlimit bad spw
                                           Used in the flagging of bad deformatters heuristics
-
+            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
         """
         super(testBPdcalsInputs, self).__init__()
         self.context = context
@@ -48,6 +49,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
         self.doflagundernspwlimit = doflagundernspwlimit
         self.gain_solint1 = 'int'
         self.gain_solint2 = 'int'
+        self.refant = refant
 
 
 class testBPdcalsResults(basetask.Results):
@@ -307,13 +309,19 @@ class testBPdcals(basetask.StandardTaskTemplate):
                 LOG.info("Removing table: {!s}".format(tablename))
                 shutil.rmtree(tablename)
 
-        refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+        # PIPE-1637: adding ',' in the manual and auto refantignore parameter
+        refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-        refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
-                                                geometry=True, flagging=True, intent='',
-                                                spw='', refantignore=refantignore)
 
-        RefAntOutput = refantobj.calculate()
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
+                                                    geometry=True, flagging=True, intent='',
+                                                    spw='', refantignore=refantignore)
+
+            RefAntOutput = refantobj.calculate()
+        else:
+            RefAntOutput = self.inputs.refant.split(",")
 
         LOG.info("RefAntOutput: {}".format(RefAntOutput))
 

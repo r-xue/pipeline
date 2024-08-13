@@ -648,11 +648,11 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                                 if field.name in list(utils.safe_split(inputs.field))]
 
             # If no valid fields were found, raise warning, and continue to
-            # next intent.
-            # PIPE-281: CHECK intent is optional and does not require a warning.
-            # PIPE-607: POLANGLE and POLLEAKAGE are also optional.
+            # next intent. The following intents are optional and do not require
+            # a warning: CHECK (PIPE-281), POLANGLE, POLLEAKAGE (PIPE-607),
+            # DIFFGAINREF, DIFFGAINSRC (PIPE-2082, PIPE-2145).
             if not valid_fields:
-                if intent not in ['CHECK', 'POLANGLE', 'POLLEAKAGE']:
+                if intent not in ['CHECK', 'DIFFGAINREF', 'DIFFGAINSRC', 'POLANGLE', 'POLLEAKAGE']:
                     LOG.warning("Invalid data selection for given intent(s) and field(s): fields {} do not include"
                                 " intent \'{}\'.".format(utils.commafy(utils.safe_split(inputs.field)), intent))
                 continue
@@ -1295,7 +1295,10 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                     # observations.
                     tmint_scaled = inputs.tmint * thresh_scale_factor
                     if nscans > 1:
-                        tmint_scaled = tmint_scaled * 2**0.5
+                        if icorr == 0:
+                            tmint_scaled = tmint_scaled * 2**0.5
+                        else: # increase the threshold for cross-polar visibilities, which can show an offset in scans taken near transit
+                            tmint_scaled = tmint_scaled * 3
 
                     # Identify "bad baselines" as those baselines whose number
                     # of timestamps with outliers exceeds the threshold.

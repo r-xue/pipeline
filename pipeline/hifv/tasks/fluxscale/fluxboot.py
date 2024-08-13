@@ -17,6 +17,7 @@ from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.domain.measures import FrequencyUnits
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -32,8 +33,9 @@ class FluxbootInputs(vdp.StandardInputs):
     caltable = vdp.VisDependentProperty(default=None)
     refantignore = vdp.VisDependentProperty(default='')
     fitorder = vdp.VisDependentProperty(default=-1)
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None):
+    def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None, refant=None):
         """
         Args:
             vis(str or list):  measurement set
@@ -42,6 +44,7 @@ class FluxbootInputs(vdp.StandardInputs):
                 and we proceed directly to the flux density bootstrapping.
             refantignore(str):  csv string of referance antennas to ignore   'ea24, ea18, ea12'
             fitorder(int):  User input value of the fit order.  Default is -1 (heuristics will determine)
+            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
         """
 
         if fitorder is None:
@@ -54,6 +57,7 @@ class FluxbootInputs(vdp.StandardInputs):
         self.refantignore = refantignore
         self.fitorder = fitorder
         self.spix = 0.0
+        self.refant = refant
 
 
 class FluxbootResults(basetask.Results):
@@ -245,14 +249,20 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
-            refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+            # PIPE-1637: adding ',' in the manual and auto refantignore parameter
+            refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
 
             refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-            refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
-                                                    geometry=True, flagging=True, intent='',
-                                                    spw='', refantignore=refantignore)
+            # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+            if len(self.inputs.refant) == 0:
+                refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
+                                                        geometry=True, flagging=True, intent='',
+                                                        spw='', refantignore=refantignore)
 
-            RefAntOutput = refantobj.calculate()
+                RefAntOutput = refantobj.calculate()
+            else:
+                RefAntOutput = self.inputs.refant.split(",")
+
             refAnt = ','.join(RefAntOutput)
 
             LOG.info("The pipeline will use antenna(s) " + refAnt + " as the reference")
@@ -517,9 +527,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
             fitorder = 1
         elif ((len(unique_bands) > 2) or
               (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands))):
-            if fractional_bandwidth > 1.6:
+            # PIPE-1758: lower dnu/nu = 1.5 for 4th order fit
+            if fractional_bandwidth >= 1.5:
                 fitorder = 4
-            elif 0.8 <= fractional_bandwidth < 1.6:
+            elif 0.8 <= fractional_bandwidth < 1.5:
                 fitorder = 3
             elif 0.4 <= fractional_bandwidth < 0.8:
                 fitorder = 2
@@ -528,6 +539,11 @@ class Fluxboot(basetask.StandardTaskTemplate):
         else:
             fitorder = 1
             LOG.warning('Heuristics could not determine a fitorder for fluxscale.  Defaulting to fitorder=1.')
+
+        # PIPE-1603, add fluxboot heuristics to use fitorder=0
+        mhz_deltaf = deltaf.to_units(FrequencyUnits.MEGAHERTZ)
+        if  mhz_deltaf < 257:
+            fitorder = 0
 
         LOG.info('Displaying fit order heuristics...')
         LOG.info('  Number of spws: {!s}'.format(str(len(spws))))
@@ -723,9 +739,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
                 # ------------------------------------------------------------------------
                 # Re-calculating a new reference frequency for a power-law SED
-                if len(logfittedfluxd) > 1:
+                if len(logfittedfluxd) > 1 and fitorderused != 0:
                     coef = [fitflx, spix, curvature, gamma, delta]
                     coef_errors = [fitflxerr, spixerr, curvatureerr, gammaerr, deltaerr]
+
                     ref_freq = reffreq
 
                     # first coefficient is log S
@@ -1090,6 +1107,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 p2.coefficients(np.array):  re-referenced coefficients
 
         """
+
         shift = np.log10(new_ref_freq / original_ref_freq)
         p1 = np.poly1d(c1[::-1])
         r2 = np.roots(p1) - shift
