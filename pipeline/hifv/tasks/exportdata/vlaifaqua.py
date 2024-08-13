@@ -75,6 +75,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         nodes = environment.cluster_details
         nx = ElementTree.Element("ExecutionMode")
         nmpiservers = None
+        hostlist = []
         if len(nodes) > 1:
             nx.text = "parallel"
             nmpiservers = ElementTree.Element("MPIServers")
@@ -84,14 +85,17 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         root.append(nx)
         if nmpiservers is not None:
             root.append(nmpiservers)
+
         for node in nodes:
-            nx = ElementTree.Element("Host")
-            ElementTree.SubElement(nx, "HostName").text = node['hostname']
-            ElementTree.SubElement(nx, "OperatingSystem").text = node['os']
-            ElementTree.SubElement(nx, "Cores").text = str(node['num_cores'])
-            ElementTree.SubElement(nx, "Memory").text = str(measures.FileSize(node['ram'], measures.FileSizeUnits.BYTES))
-            ElementTree.SubElement(nx, "CPU").text = str(node['cpu'])
-            root.append(nx)
+            if node["hostname"] not in hostlist:
+                nx = ElementTree.Element("Host")
+                ElementTree.SubElement(nx, "HostName").text = node['hostname']
+                ElementTree.SubElement(nx, "OperatingSystem").text = node['os']
+                ElementTree.SubElement(nx, "Cores").text = str(node['num_cores'])
+                ElementTree.SubElement(nx, "Memory").text = str(measures.FileSize(node['ram'], measures.FileSizeUnits.BYTES))
+                ElementTree.SubElement(nx, "CPU").text = str(node['cpu'])
+                root.append(nx)
+                hostlist.append(node["hostname"])
         return root
 
     def get_calibrators(self, context):
