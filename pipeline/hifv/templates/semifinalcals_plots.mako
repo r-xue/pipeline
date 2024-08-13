@@ -40,7 +40,26 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
             ${band}-band
 
     </h4> <br>
-    %if len(spwlist) > 0:
+     % for plot in sorted(plots, key=lambda p: bandsort[p.parameters['bandname']]):
+        % if band == plot.parameters['bandname']:
+        <div class="col-md-2 col-sm-3">
+                    <div class="thumbnail">
+                        <a data-fancybox="allplots"
+                           href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
+                           title="Antenna ${plot.parameters['ant']}  Band ${plot.parameters['bandname']}">
+                                <img   src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
+                                     title="Antenna ${plot.parameters['ant']}  Band ${plot.parameters['bandname']}"
+                                       alt="">
+                        </a>
+                        <div class="caption">
+                            <span class="text-center">Antenna ${plot.parameters['ant']} &nbsp;&nbsp; Band: ${plot.parameters['bandname']}</span>
+                        </div>
+                    </div>
+            </div>
+        %endif
+    %endfor
+    </div>
+    %if len(spwlist) > 0 and len(spw_plots) > 0:
         % for spw in spwlist: 
             <a id="${spw}"></a><br>
                 <hr>
@@ -54,9 +73,9 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
                        ${band}-band Spw: ${spw}
                 </h4> <br>
             <%
-            sorted_plots = sorted(plots, key=lambda x: x.parameters['spw'])
+            sorted_spw_plots = sorted(spw_plots, key=lambda x: x.parameters['spw'])
             %>
-            % for plot in sorted(sorted_plots, key=lambda p: bandsort[p.parameters['bandname']]):
+            % for plot in sorted(sorted_spw_plots, key=lambda p: bandsort[p.parameters['bandname']]):
                 % if band == plot.parameters['bandname'] and spw == plot.parameters['spw']:
                 <div class="col-md-2 col-sm-3">
                     <div class="thumbnail">
@@ -76,26 +95,6 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
             % endfor
             </div>
         %endfor
-    %else: 
-     % for plot in sorted(plots, key=lambda p: bandsort[p.parameters['bandname']]):
-        % if band == plot.parameters['bandname']:
-        <div class="col-md-2 col-sm-3">
-                    <div class="thumbnail">
-                        <a data-fancybox="allplots"
-                           href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
-                           title="Antenna ${plot.parameters['ant']}  Band ${plot.parameters['bandname']}">
-                                <img   src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                                     title="Antenna ${plot.parameters['ant']}  Band ${plot.parameters['bandname']}"
-                                       alt="">
-                        </a>
-                        <div class="caption">
-                            <span class="text-center">Antenna ${plot.parameters['ant']} &nbsp;&nbsp; Band: ${plot.parameters['bandname']}</span>
-                        </div>
-                    </div>
-            </div>
-        %endif
-    %endfor
-    %endif
-   </div>
+    % endif
     % endif
 % endfor

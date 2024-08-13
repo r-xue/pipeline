@@ -19,8 +19,6 @@ of the bandpass calibrator has not yet been determined.</p>
         <a class="replace"
            href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolamp_subpages[ms])}">BP Amp solution </a>|
         <a class="replace"
-           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolamp_perspw_subpages[ms])}">BP Amp per SPW solution </a>|
-        <a class="replace"
            href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolphase_subpages[ms])}">BP Phase solution </a>
     </h4>
 %endfor
@@ -65,7 +63,7 @@ of the bandpass calibrator has not yet been determined.</p>
         </%def>
 
         <%def name="caption_title(plot)">
-            semiFinalBPdcals per spw summary plot
+            Semi-final calibrated bandpass per specline spw
             Spw: ${plot.parameters['spw']}<br>
         </%def>
 </%self:plot_group>
