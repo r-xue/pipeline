@@ -19,6 +19,8 @@ of the bandpass calibrator has not yet been determined.</p>
         <a class="replace"
            href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolamp_subpages[ms])}">BP Amp solution </a>|
         <a class="replace"
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolamp_perspw_subpages[ms])}">BP Amp per SPW solution </a>|
+        <a class="replace"
            href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, bpsolphase_subpages[ms])}">BP Phase solution </a>
     </h4>
 %endfor
@@ -43,5 +45,27 @@ of the bandpass calibrator has not yet been determined.</p>
 
         <%def name="caption_title(plot)">
            Semi-final calibrated bandpass
+        </%def>
+</%self:plot_group>
+<%self:plot_group plot_dict="${summary_plots_per_spw}"
+                  url_fn="${lambda ms: 'noop'}">
+
+        <%def name="title()">
+            semiFinalBPdcals per spw summary plot
+        </%def>
+
+        <%def name="preamble()">
+        </%def>
+
+        <%def name="mouseover(plot)">Per-spw summary window </%def>
+
+        <%def name="fancybox_caption(plot)">
+            semiFinalBPdcals per spw summary plot
+            Spw: ${plot.parameters['spw']}<br>
+        </%def>
+
+        <%def name="caption_title(plot)">
+            semiFinalBPdcals per spw summary plot
+            Spw: ${plot.parameters['spw']}<br>
         </%def>
 </%self:plot_group>
