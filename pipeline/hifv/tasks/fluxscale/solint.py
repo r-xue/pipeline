@@ -13,6 +13,7 @@ from pipeline.hifv.heuristics import getCalFlaggedSoln, uvrange
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -576,14 +577,15 @@ class Solint(basetask.StandardTaskTemplate):
 
         for fieldidstring in fieldidlist:
             fieldid = int(fieldidstring)
-            uvrangestring = uvrange(self.setjy_results, fieldid)
-            task_args['field'] = fieldidstring
-            task_args['uvrange'] = uvrangestring
-            if os.path.exists(caltable):
-                task_args['append'] = True
+            if utils.get_row_count(calMs, fieldid) != 0:
+                uvrangestring = uvrange(self.setjy_results, fieldid)
+                task_args['field'] = fieldidstring
+                task_args['uvrange'] = uvrangestring
+                if os.path.exists(caltable):
+                    task_args['append'] = True
 
-            job = casa_tasks.gaincal(**task_args)
+                job = casa_tasks.gaincal(**task_args)
 
-            self._executor.execute(job)
+                self._executor.execute(job)
 
         return True

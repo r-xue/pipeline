@@ -471,7 +471,10 @@ class finalbpSolPhaseShortPerAntennaChart(object):
         plots = []
 
         LOG.info("Plotting phase short gaincal")
-
+        # PIPE-1729: check gaintable is present
+        if not os.path.exists(self.result.phaseshortgaincaltable):
+            LOG.warning("{!s} not found".format(self.result.phaseshortgaincaltable))
+            return plots
         spw2band = self.ms.get_vla_spw2band()
         band2spw = collections.defaultdict(list)
         spwobjlist = self.ms.get_spectral_windows(science_windows_only=True)
@@ -558,7 +561,10 @@ class finalAmpTimeCalPerAntennaChart(object):
         nplots = len(m.antennas)
 
         plots = []
-
+        # PIPE-1729: check final gain table is present
+        if not os.path.exists(self.result.finalampgaincaltable):
+            LOG.warning("{!s} not found".format(self.result.finalampgaincaltable))
+            return plots
         spw2band = self.ms.get_vla_spw2band()
         band2spw = collections.defaultdict(list)
         spwobjlist = self.ms.get_spectral_windows(science_windows_only=True)
@@ -655,7 +661,9 @@ class finalAmpFreqCalPerAntennaChart(object):
         nplots = len(m.antennas)
 
         plots = []
-
+        if not os.path.exists(self.result.finalampgaincaltable):
+            LOG.warning("{!s} not found.".format(self.result.finalampgaincaltable))
+            return plots
         spw2band = self.ms.get_vla_spw2band()
         band2spw = collections.defaultdict(list)
         spwobjlist = self.ms.get_spectral_windows(science_windows_only=True)
@@ -749,7 +757,9 @@ class finalPhaseGainCalPerAntennaChart(object):
         plots = []
 
         LOG.info("Plotting final phase freqcal")
-
+        if not os.path.exists(self.result.finalphasegaincaltable):
+            LOG.warning("{!s} not found.".format(self.result.finalphasegaincaltable))
+            return plots
         spw2band = self.ms.get_vla_spw2band()
         band2spw = collections.defaultdict(list)
         spwobjlist = self.ms.get_spectral_windows(science_windows_only=True)

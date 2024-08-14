@@ -1,4 +1,5 @@
 import collections
+import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
@@ -7,6 +8,7 @@ from pipeline.h.tasks import applycal as happlycal
 from pipeline.hif.tasks import applycal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -123,13 +125,16 @@ class Applycals(applycal.SerialIFApplycal):
                 # Note this is a temporary workaround ###
                 args['antenna'] = self.antenna_to_apply
                 # Note this is a temporary workaround ###
-                args['gaintable'] = calapp.gaintable
-                args['gainfield'] = calapp.gainfield
-                args['spwmap'] = calapp.spwmap
-                args['interp'] = calapp.interp
-                args['calwt'] = calapp.calwt
+                # PIPE-1729: including only the gain tables that are present.
+                for gaintable, field, spwmap, interp, calwt in zip(calapp.gaintable, calapp.gainfield, calapp.spwmap, calapp.interp, calapp.calwt):
+                    if os.path.exists(gaintable) and utils.get_row_count(gaintable, gainfield) != 0:
+                        args['gaintable'] = gaintable
+                        args['gainfield'] = gainfield
+                        args['spwmap'] = spwmap
+                        args['interp'] = interp
+                        args['calwt'] = calwt
                 args['applymode'] = inputs.applymode
-
+                # Ensure all gaintables are present
                 if inputs.gainmap:
                     # Determine what tables gainfield should used with if mode='gainmap'
                     for i, table in enumerate(args['gaintable']):

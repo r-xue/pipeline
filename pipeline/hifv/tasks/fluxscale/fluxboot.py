@@ -333,20 +333,22 @@ class Fluxboot(basetask.StandardTaskTemplate):
                         LOG.warning("No data found for {!s} band".format(ex))
                     except Exception as ex:
                         LOG.warning(ex)
-            # use flagdata to clip fluxflag.g outside the range 0.9-1.1
-            flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
-                                          datacolumn='CPARAM', clipminmax=[0.9, 1.1], clipoutside=True,
-                                          action='apply', flagbackup=False, savepars=False)
-            self._executor.execute(flagjob)
+            if os.path.isdir(fluxflagtable):
+                # use flagdata to clip fluxflag.g outside the range 0.9-1.1
+                flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
+                                            datacolumn='CPARAM', clipminmax=[0.9, 1.1], clipoutside=True,
+                                            action='apply', flagbackup=False, savepars=False)
+                self._executor.execute(flagjob)
 
-            # use applycal to apply fluxflag.g to calibrators_band.ms, applymode='flagonlystrict'
-            applycaljob = casa_tasks.applycal(vis=calMs, field="", spw="", intent="",
-                                              selectdata=False, docallib=False, gaintable=[fluxflagtable],
-                                              gainfield=[''], interp=[''], spwmap=[], calwt=[False], parang=False,
-                                              applymode='flagonlystrict', flagbackup=True)
+                # use applycal to apply fluxflag.g to calibrators_band.ms, applymode='flagonlystrict'
+                applycaljob = casa_tasks.applycal(vis=calMs, field="", spw="", intent="",
+                                                selectdata=False, docallib=False, gaintable=[fluxflagtable],
+                                                gainfield=[''], interp=[''], spwmap=[], calwt=[False], parang=False,
+                                                applymode='flagonlystrict', flagbackup=True)
 
-            self._executor.execute(applycaljob)
-
+                self._executor.execute(applycaljob)
+            else:
+                LOG.warning("{!s} not present".format(fluxflagtable))
             # -------------------------------------------------------------------------------
 
             for band, spwlist in band2spw.items():
@@ -379,7 +381,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
             weblog_results = []
             spindex_results = []
             fluxscale_result = []
-            fluxscale_result_list = self._do_fluxscale(calMs, caltable)
+            if os.path.isdir(caltable):
+                fluxscale_result_list = self._do_fluxscale(calMs, caltable)
+            else:
+                fluxscale_result_list = []
             LOG.info("Using fit from fluxscale.")
             for single_fs_result in fluxscale_result_list:
                 powerfit_results_single, weblog_results_single, spindex_results_single, single_fs_result = self._do_powerfit(single_fs_result)
@@ -461,7 +466,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
             spwlist = list(np.unique(spwlist))
             spwlist.sort()
             spwlist = [str(spwid) for spwid in spwlist if spwid in scispws]
-
             if self.inputs.fitorder == -1 and field not in fluxcalfieldlist:
                 fitorder = self.find_fitorder(spwlist)
             elif self.inputs.fitorder > -1:
@@ -1085,10 +1089,11 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 task_args['selectdata'] = True
                 if os.path.exists(caltable):
                     task_args['append'] = True
-
-                job = casa_tasks.gaincal(**task_args)
-                self._executor.execute(job)
-
+                if utils.get_row_count(calMs, fieldid) != 0:
+                    job = casa_tasks.gaincal(**task_args)
+                    self._executor.execute(job)
+                else:
+                    LOG.warning("No data found for field id {!s} in {!s}".format(fieldidstring, calMs))
             return True
         elif fluxflag and vlassmode:
             fieldobjlist = m.get_fields(name=field)
@@ -1106,10 +1111,11 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 if os.path.exists(caltable):
                     task_args['append'] = True
 
-                job = casa_tasks.gaincal(**task_args)
-
-                self._executor.execute(job)
-
+                if utils.get_row_count(calMs, fieldid) != 0:
+                    job = casa_tasks.gaincal(**task_args)
+                    self._executor.execute(job)
+                else:
+                    LOG.warning("No data found for field id {!s} in {!s}".format(fieldidstring, calMs))
             return True
         else:
             job = casa_tasks.gaincal(**task_args)

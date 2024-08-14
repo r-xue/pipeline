@@ -34,7 +34,7 @@ __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_ca
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
            'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'get_products_dir',
            'export_weblog_as_tar', 'ensure_products_dir_exists', 'ignore_pointing', 'request_omp_threading',
-           'open_with_lock', 'nested_dict', 'string_to_val', 'remove_trailing_string']
+           'open_with_lock', 'nested_dict', 'string_to_val', 'remove_trailing_string', 'get_row_count']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -886,3 +886,21 @@ def remove_trailing_string(s, t):
         return s[:-len(t)]
     else:
         return s
+
+
+def get_row_count(calMs, fieldid):
+    """
+    Returns the number of rows in the specified table for a given fieldid.
+    """
+    nrows = 0
+    try:
+        tb = casa_tools.table
+        tb.open(calMs)
+        subtb = tb.query('FIELD_ID==' + fieldid)
+        nrows = subtb.nrows()
+        tb.close()
+    except Exception as ex:
+        nrows = 0
+        LOG.warning(ex)
+
+    return nrows
