@@ -185,8 +185,11 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
             plots = plotter.plot()
             json_path = plotter.json_filename
 
+            plotter = semifinalBPdcalsdisplay.semifinalbpSolPhasePerAntennaPerSpwChart(context, result, suffix=suffix)
+            spw_plots = plotter.plot()
+
             # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'semifinalcals_plots.mako', 'bpsolphase', bandlist)
+            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'semifinalcals_plots.mako', 'bpsolphase', bandlist, spwlist, spw_plots=spw_plots)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 bpsolphase_subpages[ms] = renderer.filename
