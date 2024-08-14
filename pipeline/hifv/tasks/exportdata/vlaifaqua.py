@@ -11,6 +11,7 @@ from pipeline import environment
 from pipeline.h.tasks.exportdata.aqua import UNDEFINED, export_to_disk
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.infrastructure import utils
+from pipeline.infrastructure.renderer import htmlrenderer
 
 LOG = logging.get_logger(__name__)
 
@@ -72,6 +73,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         return report
 
     def get_processing_environment(self):
+        """
+        return XML for processing environment
+        """
         root = ElementTree.Element('ProcessingEnvironment')
         nodes = environment.cluster_details()
         nx = ElementTree.Element("ExecutionMode")
@@ -100,6 +104,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         return root
 
     def get_calibrators(self, context):
+        """
+        return XML for calibrators
+        """
         mslist = context.observing_run.get_measurement_sets()
         root = ElementTree.Element("Calibrators")
         for ms in mslist:
@@ -122,6 +129,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         return root
 
     def get_source_intents(self, ms, source):
+        """
+        return XML for source intents
+        """
         source_intents = None
         for s in ms.sources:
             if s.name == source:
@@ -130,6 +140,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         return source_intents
 
     def get_science_spws(self, context):
+        """
+        return XML for science SPWs
+        """
         mslist = context.observing_run.get_measurement_sets()
         root = ElementTree.Element("ScienceSPWs")
         for ms in mslist:
@@ -143,6 +156,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         return root
 
     def get_scans(self, context):
+        """
+        return XML for scan information
+        """
         mslist = context.observing_run.get_measurement_sets()
         root = ElementTree.Element("Scans")
         for ms in mslist:
@@ -160,6 +176,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         return root
 
     def get_observation_summary(self, context):
+        """
+        return XML for observation summary
+        """
         mslist = context.observing_run.get_measurement_sets()
         root = ElementTree.Element("ObservationSummary")
         for ms in mslist:
@@ -190,10 +209,20 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             nx = ElementTree.Element("TimeOnScienceTarget")
             nx.text = str(time_on_science)
             root.append(nx)
+
+            observatory = context.project_summary.telescope
+            el_min = htmlrenderer.compute_az_el_for_ms(ms, observatory, min)[1]
+            el_max = htmlrenderer.compute_az_el_for_ms(ms, observatory, max)[1]
+            el_range = el_max - el_min
+            nx = ElementTree.Element("ElevationRange")
+            nx.text = str(el_range)
+            root.append(nx)
         return root
 
     def get_flagged_fraction(self, context):
-
+        """
+        return flagged fraction
+        """
         applycal_result = None
         output_dict = {}
 

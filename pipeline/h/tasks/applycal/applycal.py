@@ -140,7 +140,6 @@ class ApplycalResults(basetask.Results):
 
         See :method:`~pipeline.Results.merge_with_context`
         """
-
         if not self.applied:
             LOG.error('No results to merge')
 
