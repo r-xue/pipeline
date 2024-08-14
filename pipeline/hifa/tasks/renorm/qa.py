@@ -29,7 +29,10 @@ class RenormQAHandler(pqa.QAPlugin):
         # loop below (result.stats[source][spw]['threshold']).
         threshold = result.threshold
         ms = context.observing_run.get_ms(result.vis)
-        bands_in_ms = {spw.band for spw in ms.get_spectral_windows()}
+        band9_10_in_ms = any([
+            spw for spw in ms.get_spectral_windows() if spw.band in ('ALMA Band 9', 'ALMA Band 10')
+            ])
+
         if result.exception is not None:
             score = 0.0
             shortmsg = 'Failure in renormalization'
@@ -37,7 +40,7 @@ class RenormQAHandler(pqa.QAPlugin):
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
             return
 
-        if result.alltdm and all([True if band in ('ALMA Band 9', 'ALMA Band 10') else False for band in bands_in_ms]):
+        if result.alltdm:
             # PIPE-2283: no QA score for TDM data
             return
 
@@ -46,6 +49,14 @@ class RenormQAHandler(pqa.QAPlugin):
             score = 0.0
             shortmsg = 'No cal table created'
             longmsg = 'EB {}: No cal table was created.'.format(os.path.basename(result.vis))
+            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
+
+        if band9_10_in_ms:
+            # PIPE-2283: blue score for band 9/10 FDM data
+            score = 0.9
+            shortmsg = "Double Sideband Receivers using FDM mode; check results carefully."
+            longmsg = (f"EB {os.path.basename(result.vis)}: "
+                       f"Double Sideband Receivers using FDM mode; check results carefully.")
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
         for source in result.stats:
@@ -75,19 +86,12 @@ class RenormQAHandler(pqa.QAPlugin):
                         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
 
                     if 1.0 <= max_factor <= threshold:
-                        if ms.get_spectral_window(spw).band in ('ALMA Band 9', 'ALMA Band 10'):
-                            # PIPE-2283: blue score for band 9/10 FDM data
-                            score = 0.9
-                            shortmsg = "Double Sideband Receivers using FDM mode; check results carefully."
-                            longmsg = (f"EB {os.path.basename(result.vis)} source {source} spw {spw}: "
-                                    f"Double Sideband Receivers using FDM mode; check results carefully.")
-                        else:
-                            scorer = scorers.linScorer(1.0, threshold, 1.0, 0.91)  # score stays between 1.0 and 0.91 - green
-                            score = scorer(max_factor)
-                            shortmsg = 'Renormalization factor within threshold'
-                            longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                      'is within threshold of {:.1%} and so was not applied'.format(
-                                          os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
+                        scorer = scorers.linScorer(1.0, threshold, 1.0, 0.91)  # score stays between 1.0 and 0.91 - green
+                        score = scorer(max_factor)
+                        shortmsg = 'Renormalization factor within threshold'
+                        longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
+                                    'is within threshold of {:.1%} and so was not applied'.format(
+                                        os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
                     elif max_factor > threshold:
                         if result.createcaltable:
