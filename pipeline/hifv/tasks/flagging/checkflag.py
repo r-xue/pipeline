@@ -476,31 +476,68 @@ class Checkflag(basetask.StandardTaskTemplate):
         return self._executor.execute(job)
 
     def _select_data(self):
-        """Select data according to the specified checkflagmode.
+        """Selects data according to the specified checkflagmode.
+
+        This method constructs selection strings for fields, scans, and intents based on the 
+        `checkflagmode` input. It also determines the appropriate data column to use 
+        ('corrected' or 'data').
 
         Returns:
-            tuple: (field_select_string, scan_select_string, intent_select_string)
+            tuple: A tuple containing:
+                - field_select_string (str): Comma-separated list of field IDs.
+                - scan_select_string (str): Comma-separated list of scan IDs.
+                - intent_select_string (str): String representing the intent selection.
+                - column_select_string (str): String representing the data column selection.
         """
+
+        # start with default
         fieldselect = scanselect = intentselect = ''
         columnselect = 'corrected'
+
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        msinfo = self.inputs.context.evla['msinfo'][ms.name]
+        sci_spw_list = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
 
-        # select bpd calibrators
+        # Select Bandpass/Delay (BPD) calibrators
         if self.inputs.checkflagmode in ('bpd-vla', 'bpd-vlass', '', 'bpd'):
-            fieldselect = self.inputs.context.evla['msinfo'][ms.name].checkflagfields
-            scanselect = self.inputs.context.evla['msinfo'][ms.name].testgainscans
+            fieldselect = msinfo.checkflagfields
+            # PIPE-1335: down-select scans using both msinfo.checkflagfields and msinfo.testgainscans.
+            # msinfo.testgainscans alone may include scans of fields not in msinfo.checkflagfields
+            # (e.g., second calibrators with bandpass or delay intents). See the 21A-311 case from PIPE-1335.
+            if msinfo.testgainscans:
+                testpbd_scans = {
+                    s.id for s in ms.get_scans(
+                        scan_id=list(map(int, msinfo.testgainscans.split(','))),
+                        field=msinfo.checkflagfields, spw=sci_spw_list)}
+            else:
+                testpbd_scans = set()
+            scanselect = ','.join(map(str, sorted(testpbd_scans)))
 
-        # select all calibrators but not bpd cals
+        # Select all calibrators excluding BPD calibrators
         if self.inputs.checkflagmode in ('allcals-vla', 'allcals-vlass', 'allcals'):
-            fieldselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_field_select_string.split(',')
-            scanselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_scan_select_string.split(',')
-            testgainscans = self.inputs.context.evla['msinfo'][ms.name].testgainscans.split(',')
-            scanselect = ','.join([scan for scan in scanselect if scan not in testgainscans])
+            if msinfo.testgainscans:
+                testpbd_scans = {
+                    s.id for s in ms.get_scans(
+                        scan_id=list(map(int, msinfo.testgainscans.split(','))),
+                        field=msinfo.checkflagfields, spw=sci_spw_list)}
+            else:
+                testpbd_scans = set()
+            allcals_scans = {
+                s.id for s in ms.get_scans(
+                    scan_id=list(map(int, msinfo.calibrator_scan_select_string.split(','))),
+                    field=msinfo.calibrator_field_select_string, spw=sci_spw_list)}
+            scanselect = ','.join(map(str, sorted(allcals_scans-testpbd_scans)))
+
             # PIPE-1335: only construct the field selection string if the scan selection string is not empty.
-            # Note the field selection string might include the bpd cals, but the combination of scan/field selection
-            # constrain is expected to pick up the desired data collections.
+            # Note that an exclusion based on msinfo.checkflagfield might accidentaly reject fields observed
+            # in different intents across scans. See the 21B-136 case from PIPE-1335.
             if scanselect:
-                fieldselect = ','.join(fieldid for fieldid in fieldselect)
+                fields_in_scans = {
+                    f.id for scan in ms.get_scans(
+                        scan_id=list(allcals_scans - testpbd_scans),
+                        field=msinfo.calibrator_field_select_string, spw=sci_spw_list)
+                    for f in scan.fields}
+                fieldselect = ','.join(map(str, sorted(fields_in_scans)))
 
         # select targets
         if self.inputs.checkflagmode in ('target-vla', 'target-vlass', 'vlass-imaging', 'target'):
@@ -510,8 +547,8 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         # select all calibrators
         if self.inputs.checkflagmode == 'semi':
-            fieldselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_field_select_string
-            scanselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_scan_select_string
+            fieldselect = msinfo.calibrator_field_select_string
+            scanselect = msinfo.calibrator_scan_select_string
 
         if self.inputs.checkflagmode == 'vlass-imaging':
             # use the 'data' column by default as 'vlass-imaging' is working on target-only MS.
