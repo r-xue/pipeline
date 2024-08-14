@@ -20,7 +20,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
                                        linesfile, imaging_params)
         self.imaging_mode = 'ALMA'
 
-    def robust(self):
+    def robust(self, specmode=None):
         """robust parameter heuristic."""
         if 'robust' in self.imaging_params:
             robust = self.imaging_params['robust']
