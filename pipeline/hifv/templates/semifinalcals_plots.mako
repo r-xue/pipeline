@@ -36,8 +36,20 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
             <a href="#${bb}">${bb}-band</a>&nbsp;|&nbsp;
         % endif
     % endfor
+    <%
+    if len(spwlist) > 0:
+        spwlist.sort()
+        first_spw = spwlist[0]
+    else: 
+        first_spw = None
+    %>
+    % if first_spw is not None: 
+     <a href="#${band}-${first_spw}">Per-Spw for spectral windows</a> | <a href="#topofpage">Top of page </a> | (Click to Jump)<br><br>
+            ${band}-band
+    % else:
      <a href="#topofpage">Top of page </a> | (Click to Jump)<br><br>
             ${band}-band
+    % endif
 
     </h4> <br>
      % for plot in sorted(plots, key=lambda p: bandsort[p.parameters['bandname']]):
@@ -61,13 +73,13 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
     </div>
     %if len(spwlist) > 0 and len(spw_plots) > 0:
         % for spw in spwlist: 
-            <a id="${spw}"></a><br>
+            <a id="${band}-${spw}"></a><br>
                 <hr>
                 <div class="row">
                 <h4>
                 Spw:
                 % for spwk in spwlist:
-                    <a href="#${spwk}">${spwk}</a>&nbsp;|&nbsp;
+                    <a href="#${band}-${spwk}">${spwk}</a>&nbsp;|&nbsp;
                 % endfor
                 <a href="#${band}">Top of ${band}-band</a> | (Click to Jump)<br><br>
                        ${band}-band Spw: ${spw}
