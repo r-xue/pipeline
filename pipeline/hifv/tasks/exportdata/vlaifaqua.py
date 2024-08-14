@@ -7,8 +7,9 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.launcher as launcher
 
 import pipeline.h.tasks.exportdata.aqua as aqua
-from pipeline.h.tasks.exportdata.aqua import UNDEFINED, export_to_disk
 from pipeline import environment
+from pipeline.h.tasks.exportdata.aqua import UNDEFINED, export_to_disk
+from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.infrastructure import utils
 
 LOG = logging.get_logger(__name__)
@@ -72,7 +73,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
     def get_processing_environment(self):
         root = ElementTree.Element('ProcessingEnvironment')
-        nodes = environment.cluster_details
+        nodes = environment.cluster_details()
         nx = ElementTree.Element("ExecutionMode")
         nmpiservers = None
         hostlist = []
@@ -87,15 +88,15 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             root.append(nmpiservers)
 
         for node in nodes:
-            if node["hostname"] not in hostlist:
+            if node.hostname not in hostlist:
                 nx = ElementTree.Element("Host")
-                ElementTree.SubElement(nx, "HostName").text = node['hostname']
-                ElementTree.SubElement(nx, "OperatingSystem").text = node['os']
-                ElementTree.SubElement(nx, "Cores").text = str(node['num_cores'])
-                ElementTree.SubElement(nx, "Memory").text = str(measures.FileSize(node['ram'], measures.FileSizeUnits.BYTES))
-                ElementTree.SubElement(nx, "CPU").text = str(node['cpu'])
+                ElementTree.SubElement(nx, "HostName").text = node.hostname
+                ElementTree.SubElement(nx, "OperatingSystem").text = node.host_distribution
+                ElementTree.SubElement(nx, "Cores").text = str(node.casa_cores)
+                ElementTree.SubElement(nx, "Memory").text = str(measures.FileSize(node.casa_memory, measures.FileSizeUnits.BYTES))
+                ElementTree.SubElement(nx, "CPU").text = str(node.cpu_type)
                 root.append(nx)
-                hostlist.append(node["hostname"])
+                hostlist.append(node.hostname)
         return root
 
     def get_calibrators(self, context):
@@ -173,7 +174,10 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             ElementTree.SubElement(nx, "Max").text = str(ms.antenna_array.baseline_max.length.value)
             root.append(nx)
             nx = ElementTree.Element("FlaggedFraction")
-            nx.text = str(context.evla['msinfo'][ms.name].flagged_fraction)
+            dict_flagged_fraction = self.get_flagged_fraction(context)
+            for msname in dict_flagged_fraction:
+                for reason in dict_flagged_fraction[msname]:
+                    ElementTree.SubElement(nx, reason).text = str(dict_flagged_fraction[msname][reason])
             root.append(nx)
 
             time_on_source = utils.total_time_on_source(ms.scans)
@@ -187,6 +191,38 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             nx.text = str(time_on_science)
             root.append(nx)
         return root
+
+    def get_flagged_fraction(self, context):
+
+        applycal_result = None
+        output_dict = {}
+
+        for result in context.results:
+            objresult = result.read()
+            if objresult.taskname == "hifv_applycals":
+                applycal_result = objresult[0]
+
+        if applycal_result is not None:
+
+            intents_to_summarise = flagutils.intents_to_summarise(context)
+            flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
+            flag_table_intents.extend(intents_to_summarise)
+            flag_totals = {}
+            flag_totals = utils.dict_merge(flag_totals, flagutils.flags_for_result(applycal_result, context, intents_to_summarise=intents_to_summarise))
+            reasons_to_export = ['online', 'shadow', 'qa0', 'qa2', 'before', 'template']
+
+            for ms in flag_totals:
+                output_dict[ms] = {}
+                for reason in flag_totals[ms]:
+                    for intent in flag_totals[ms][reason]:
+                        if reason in reasons_to_export:
+                            if "TOTAL" in intent:
+                                new = float(flag_totals[ms][reason][intent][0])
+                                total = float(flag_totals[ms][reason][intent][1])
+                                percentage = new/total * 100
+                                output_dict[ms][reason] = percentage
+
+        return output_dict
 
     def get_project_structure(self, context):
         # get base XML from base class
