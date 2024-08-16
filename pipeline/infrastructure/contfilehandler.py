@@ -302,6 +302,7 @@ class ContFileHandler(object):
 
         return virt_spw_id
 
+
 def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
     """Translate continuum ranges specified in contfile to frequency selection string.
 
@@ -314,26 +315,28 @@ def contfile_to_spwsel(vis, context, contfile='cont.dat', use_realspw=True):
 
     contfile_handler = ContFileHandler(contfile)
     contdict = contfile_handler.read(warn_nonexist=False)
-    m = context.observing_run.get_ms(vis)
+    ms = context.observing_run.get_ms(vis)
     fielddict = {}
 
     for field in contdict['fields']:
 
-        fieldobj = m.get_fields(name=field)
-        fieldobjlist = [fieldobjitem for fieldobjitem in fieldobj]
+        # Note that ContFileHandler and cont.dat use no-quotation ms-table-originated field names, rather than 
+        # the "casatask-safe" names (see PIPE-1887)
+        fieldid_list = [fieldobj.id for fieldobj in ms.fields if utils.dequote(fieldobj.name) == field]
 
-        # If field is not found, skip it.
-        if not fieldobjlist:
+        # If no field is found, skip it.
+        if not fieldid_list:
             continue
 
         spwstring = ''
         for virt_spw_id in contdict['fields'][field]:
             spw_name = context.observing_run.virtual_science_spw_ids[int(virt_spw_id)]
-            crange_list = [crange for crange in contdict['fields'][field][virt_spw_id]['ranges'] if crange not in ('NONE', 'ALL', 'ALLCONT')]
+            crange_list = [crange for crange in contdict['fields'][field]
+                           [virt_spw_id]['ranges'] if crange not in ('NONE', 'ALL', 'ALLCONT')]
             if crange_list[0]['refer'] in ('LSRK', 'SOURCE'):
                 LOG.info("Converting from %s to TOPO...", crange_list[0]['refer'])
                 sname = field
-                field_id = str(fieldobjlist[0].id)
+                field_id = str(fieldid_list[0])
 
                 cranges_spwsel = collections.OrderedDict()
                 cranges_spwsel[sname] = collections.OrderedDict()
@@ -419,6 +422,7 @@ def spwsel2chansel(vis, field, spwsel, excludechans):
         nspw = tb.nrows()
 
     fullspwids = str(list(range(nspw))).strip('[,]')
+    # Use field name values in ms field tables for TaQL, not "casatask-safe" field names.
     tql = {'field': field, 'spw': fullspwids}
 
     with casa_tools.MSReader(vis) as ms:

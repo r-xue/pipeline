@@ -4,12 +4,12 @@ import shutil
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-
 from pipeline.domain import DataType
-from pipeline.hifv.heuristics import set_add_model_column_parameters
-from pipeline.hifv.heuristics import RflagDevHeuristic, mssel_valid
+from pipeline.hifv.heuristics import (RflagDevHeuristic, mssel_valid,
+                                      set_add_model_column_parameters)
+from pipeline.infrastructure import (casa_tasks, casa_tools, task_registry,
+                                     utils)
 from pipeline.infrastructure.contfilehandler import contfile_to_spwsel
-from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 from .displaycheckflag import checkflagSummaryChart
 
@@ -165,11 +165,12 @@ class Checkflag(basetask.StandardTaskTemplate):
         if use_contdat:
             # cont.dat is present for target-vla, do the field-by-field flagging
             for field in fielddict:
-                self.do_rfi_flag(fieldselect=field, scanselect=scanselect,
+                fieldselect_cont = utils.fieldname_for_casa(field)
+                self.do_rfi_flag(fieldselect=fieldselect_cont, scanselect=scanselect,
                                  intentselect=intentselect, spwselect=fielddict[field])
                 # PIPE-1342: do a second pass of rflag in the 'target-vla' mode (equivalent to running hifv_targetvla)
                 if self.inputs.checkflagmode == 'target-vla':
-                    self.do_vla_targetflag(fieldselect=field, scanselect=scanselect,
+                    self.do_vla_targetflag(fieldselect=fieldselect_cont, scanselect=scanselect,
                                            intentselect=intentselect, spwselect=fielddict[field])
         else:
             # all other situations

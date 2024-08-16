@@ -805,10 +805,12 @@ class Selfcal(basetask.StandardTaskTemplate):
                 self._executable.flagmanager(vis=vis, mode='save', versionname='before_hif_selfcal')
 
             # note that contfile_to_chansel will do the virtual2real spw translation automatically.
+            # lines_sel_dict is keyed with "no-quotation" field names, which might not be identical to the
+            # casatask-safe field "name" property value.
             lines_sel_dict = contfile_to_chansel(
                 vis, self.inputs.context, contfile=self.inputs.contfile, excludechans=True)
 
             for field, lines_sel in lines_sel_dict.items():
                 LOG.info("Flagging lines in field {} with the spw selection {}".format(field, lines_sel))
-                self._executable.flagdata(vis=vis, field=field, mode='manual',
+                self._executable.flagdata(vis=vis, field=utils.fieldname_for_casa(field), mode='manual',
                                           spw=lines_sel, flagbackup=False, action='apply')
