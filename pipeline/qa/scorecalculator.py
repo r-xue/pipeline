@@ -6,17 +6,16 @@ Created on 9 Jan 2014
 # Do not evaluate type annotations at definition time.
 from __future__ import annotations
 
-import shutil
 import collections
 import datetime
 import functools
-import itertools
 import math
 import operator
 import os
 import re
+import shutil
 import traceback
-from typing import List, Optional, Tuple, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 import numpy as np
 from scipy import interpolate
@@ -24,7 +23,6 @@ from scipy.special import erf
 
 import pipeline.domain as domain
 import pipeline.domain.measures as measures
-from pipeline.domain.measurementset import MeasurementSet
 import pipeline.infrastructure.basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -32,6 +30,10 @@ import pipeline.infrastructure.renderer.rendererutils as rutils
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.checksource as checksource
 from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
+from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
+from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 from pipeline.infrastructure import casa_tools
 
 if TYPE_CHECKING:
@@ -93,10 +95,12 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_ms_history_entries_present',
            'score_contiguous_session',
            'score_multiply',
-           'score_mom8_fc_image']
+           'score_mom8_fc_image',
+           'score_iersstate',
+           'score_tsysflagcontamination_contamination_flagged',
+           'score_tsysflagcontamination_external_heuristic']
 
 LOG = logging.get_logger(__name__)
-
 
 # - utility functions --------------------------------------------------------------------------------------------------
 
@@ -4152,3 +4156,205 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
                           metric_units='Peak SNR / Histogram asymmetry, Max. segment size in beams, Max. segment fraction')
 
     return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+
+
+@log_qa
+def score_rasterscan_correctness_direction_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+    """Calculate QAScore of direction-domain raster scan heuristics analysis failure in importdata.
+
+    Args:
+        result (SDImportDataResults): instance of SDImportDataResults
+
+    Returns:
+        List[pqa.QAScore]: list of QAScores
+    """
+    msg = 'Direction-domain raster scan analysis failed, fallback to time-domain analysis'
+    return _score_rasterscan_correctness(result.rasterscan_heuristics_results_direction, msg)
+
+
+@log_qa
+def score_rasterscan_correctness_time_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+    """Calculate QAScore of time-domain raster scan heuristics analysis failure in importdata.
+
+    Args:
+        result (SDImportDataResults): instance of SDImportDataResults
+
+    Returns:
+        List[pqa.QAScore]: list of QAScores
+    """
+    msg = 'Time-domain raster scan analysis issue detected. Failed to identify gap between raster map iteration'
+    return _score_rasterscan_correctness(result.rasterscan_heuristics_results_time, msg)
+
+
+@log_qa
+def score_rasterscan_correctness_imaging_raster_gap(result: SDImagingResultItem) -> List[pqa.QAScore]:
+    """Calculate QAScore of gap existence in raster pattern of imaging.
+
+    Args:
+        result (SDImagingResultItem): instance of SDImagingResultItem
+
+    Returns:
+        List[pqa.QAScore]: list of QAScores
+    """
+    msg = 'Unable to identify gap between raster map iteration'
+    return _score_rasterscan_correctness(result.rasterscan_heuristics_results_rgap, msg)
+
+
+@log_qa
+def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDImagingResultItem) -> List[pqa.QAScore]:
+    """Calculate QAScore when raster scan analysis was incomplete in imaging.
+
+    Args:
+        result (SDImagingResultItem): instance of SDImagingResultItem
+
+    Returns:
+        List[pqa.QAScore]: list of QAScores
+    """
+    msg = 'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS'
+    return _score_rasterscan_correctness(result.rasterscan_heuristics_results_incomp, msg)
+
+
+def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, RasterScanHeuristicsResult], msg: str) -> List[pqa.QAScore]:
+    """Generate score of raster scan correctness of importdata or imaging.
+
+    Args:
+        rasterscan_heuristics_results (Dict[str, RasterScanHeuristicsResult]): Dictionary of raster heuristics result objects
+            treats QAScore of raster scan analysis.
+        msg (str): short message for QA
+
+    Returns:
+        List[pqa.QAScore]: lists contains QAScore objects.
+    """
+
+    qa_scores = []  # [pqa.QAScore]
+
+    # converting rasterscan_heuristics_results to QA score
+    for _execblock_id, _rasterscan_heuristics_results_list in rasterscan_heuristics_results.items():
+        for _results_list in _rasterscan_heuristics_results_list:
+            _failed_ants = np.unique(_results_list.get_antennas_rasterscan_failed())
+            if len(_failed_ants) > 0:
+                qa_scores.append(_rasterscan_failed_per_eb(_execblock_id, _failed_ants, msg))
+
+    return qa_scores
+
+
+def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str) -> 'pqa.QAScore':
+    """Return an object which has FAILED information in raster scan analysis.
+
+    Args:
+        execblock_id (str): Execute Block ID
+        failed_ants (list[str]): List of antenna names
+        msg: short message for QA
+
+    Returns:
+        pqa.QAScore: QA score object
+    """
+    SCORE_FAIL = 0.8
+    longmsg = msg + f' : EB:{execblock_id}:{",".join(failed_ants)}'
+    origin = pqa.QAOrigin(metric_name='score_rasterscan_correctness',
+                        metric_score=SCORE_FAIL,
+                        metric_units='raster scan correctness')
+    return pqa.QAScore(SCORE_FAIL, longmsg=longmsg, shortmsg=msg, origin=origin)
+
+
+@log_qa
+def score_tsysflagcontamination_contamination_flagged(vis, summaries) -> pqa.QAScore:
+    """
+    Calculate a score for the hifa_tsysflagcontamination task based on whether
+    any line contamination was flagged.
+
+    0% flagged  -> 1
+    >0% flagged -> 0.9
+    """
+    frac_flagged = calc_frac_newly_flagged(summaries)
+
+    if frac_flagged:
+        score = 0.9
+        longmsg = f'Tsys line contamination detected in {vis}.'
+        shortmsg = 'Tsys contamination flagged'
+    else:
+        score = 1.0
+        longmsg = f'No Tsys line contamination detected in {vis}.'
+        shortmsg = 'No Tsys line contamination'
+
+    origin = pqa.QAOrigin(metric_name='score_tsys_line_contamination_flagged',
+                          metric_score=frac_flagged,
+                          metric_units='Fraction of Tsys data that was identified as line contamination and flagged')
+    return pqa.QAScore(
+        score,
+        longmsg=longmsg,
+        shortmsg=shortmsg,
+        vis=os.path.basename(vis),
+        origin=origin,
+        applies_to=pqa.TargetDataSelection(vis={vis})
+    )
+
+
+@log_qa
+def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pqa.QAScore]) -> List[pqa.QAScore]:
+    """
+    Adopt QA scores that originate from the Tsysflag line contamination
+    heuristic.
+
+    The QA scores are generated in an external heuristic. This metric
+    is here mainly to log the QA scores to console for non-weblog runs
+    via the @log_qa decorator.
+    """
+    origin = pqa.QAOrigin(
+        metric_name="score_tsysflagcontamination_external_heuristic",
+        metric_score="N/A",
+        metric_units="",
+    )
+    qascores = []
+    for fq in foreign_qascores:
+        adopted_qascore = pqa.QAScore(
+            score=fq.score,
+            shortmsg=fq.shortmsg,
+            longmsg=fq.longmsg,
+            applies_to=fq.applies_to,
+            origin=origin
+        )
+        qascores.append(adopted_qascore)
+    return qascores
+
+
+@log_qa
+def score_iersstate(mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
+    """
+    Check state of IERS tables relative to observation date
+    """
+
+    iers_info = utils.IERSInfo()
+    # reorder MSes by start time
+    by_start = sorted(mses,
+                      key=lambda m: utils.get_epoch_as_datetime(m.start_time))
+
+    # create an interval for each one, including our tolerance
+    scores = []
+    for ms in by_start:
+        longmsg = (f"Dates for {ms.basename} fully covered by IERSeop2000.")
+        shortmsg = "MS dates fully covered by IERSeop2000."
+        time_end = utils.get_epoch_as_datetime(ms.end_time)
+
+        if iers_info.validate_date(time_end):
+            score = 1.0
+        elif iers_info.date_message_type(time_end) == "INFO":
+            score = 0.9
+            longmsg = (f"Dates for {ms.basename} not fully covered by IERSeop2000. CASA will use IERSpredict.")
+            shortmsg = "MS dates not fully covered by IERSeop2000. CASA will use IERSpredict."
+        elif iers_info.date_message_type(time_end) == "WARN":
+            score = 0.5
+            longmsg = (f"Dates for {ms.basename} not fully covered by IERSeop2000. CASA will use IERSpredict.")
+            shortmsg = "MS dates not fully covered by IERSeop2000. CASA will use IERSpredict."
+        else:
+            score = 0.3
+            longmsg = (f"Dates for {ms.basename} not fully covered by IERSeop2000. Please update your data repository.")
+            shortmsg = "MS dates not fully covered by IERSpredict. Please update your data repository."
+
+        origin = pqa.QAOrigin(metric_name='score_iersstate',
+                              metric_score=score,
+                              metric_units='state of IERS tables relative to observation date')
+
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
+
+    return scores
