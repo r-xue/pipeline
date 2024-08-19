@@ -76,5 +76,7 @@ Out[3]:
 ## Reference on ALMA Quality Assurance
 
 * [QA2 Data Products](https://almascience.nrao.edu/processing/qa2-data-products)
+* [Sec. 7 QA Scores, Hunter et al. 2023 PASP, 135, 074501](https://ui.adsabs.harvard.edu/abs/2023PASP..135g4501H/abstract)
+* [Sec. 11 Quality Assurance, ALMA Cycyle 11 Technical Handbook](https://almascience.nrao.edu/documents-and-tools/cycle11/alma-technical-handbook)
 * [ALMA quality assurance: concepts, procedures, and tools](https://ui.adsabs.harvard.edu/abs/2016SPIE.9910E..1HC/abstract)
 * [Improving ALMA's data processing efficiency using a holistic approach](https://ui.adsabs.harvard.edu/abs/2020SPIE11449E..1TN/abstract)
