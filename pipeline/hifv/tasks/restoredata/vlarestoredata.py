@@ -2,6 +2,8 @@ import os
 import shutil
 import tarfile
 
+from packaging import version
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.restoredata import restoredata
@@ -80,8 +82,24 @@ class VLARestoreData(restoredata.RestoreData):
         #    TBD: Add error handling
         import_results = self._do_importasdm(sessionlist=sessionlist, vislist=vislist)
 
+        # Extract CASA version and pipeline version for previous run from
+        # pipeline manifest.
+        casa_version, pipeline_version, _ = restoredata.RestoreData._extract_casa_pipeline_version(pipemanifest)
+
+        # Compare against version that changed the behavior of hanning smoothing in the case where spw.num.bin > 1
+        updated_hanning_version = version.parse("2024.1.0")
+        try:
+            if "-" in pipeline_version:
+                pipeline_version = pipeline_version.split("-")[0]
+            pre672_mode = version.parse(pipeline_version) < updated_hanning_version
+        except Exception as e:
+            # if version.parse fails for an older-style version number, assume pre672_mode
+            msg = "Failed to parse pipeline version '{}' as a version number: {}. Assuming pre-672 Hanning smoothing should be performed".format(pipeline_version, e)
+            LOG.warning(msg)
+            pre672_mode = True
+
         for ms in self.inputs.context.observing_run.measurement_sets:
-            hanning_results = self._do_hanningsmooth()
+            self._do_hanningsmooth(pre672_mode=pre672_mode)
 
         # Restore final MS.flagversions and flags
         self._do_restore_flags(pipemanifest)
@@ -165,8 +183,8 @@ class VLARestoreData(restoredata.RestoreData):
                 LOG.error("Application of final flags failed for %s" % ms.basename)
                 raise
 
-    def _do_hanningsmooth(self):
-        container = vdp.InputsContainer(hanning.Hanning, self.inputs.context)
+    def _do_hanningsmooth(self, pre672_mode=False):
+        container = vdp.InputsContainer(hanning.Hanning, self.inputs.context, pre672_mode=pre672_mode)
         hanning_task = hanning.Hanning(container)
         return self._executor.execute(hanning_task, merge=True)
 

@@ -22,7 +22,7 @@ class HanningInputs(vdp.StandardInputs):
     """
     maser_detection = vdp.VisDependentProperty(default=True)
 
-    def __init__(self, context, vis=None, maser_detection=None):
+    def __init__(self, context, vis=None, maser_detection=None, pre672_mode=False):
         """
         Args:
             context (:obj:): Pipeline context
@@ -33,6 +33,7 @@ class HanningInputs(vdp.StandardInputs):
         self.context = context
         self.vis = vis
         self.maser_detection = maser_detection
+        self.pre672_mode = pre672_mode
 
 
 class HanningResults(basetask.Results):
@@ -110,21 +111,34 @@ class Hanning(basetask.StandardTaskTemplate):
 
         smoothing_dict = {}
 
-        for spw in spws:
-            smoothing_dict[spw.id] = (False, "")
-            if spw.sdm_num_bin > 1:
-                smoothing_dict[spw.id] = (False, "online smoothing applied")
-            elif spw.specline_window:
-                if self.inputs.maser_detection and self._checkmaserline(str(spw.id)):
-                    smoothing_dict[spw.id] = (True, "spectral line, maser line")
-                else:
-                    smoothing_dict[spw.id] = (False, "spectral line")
+        # Replicate the behavior before PIPE-692. This is needed since vlarestoredata calls this task internally, and
+        # PL-2024+ should be able to replicate the results from the original < PL2024 run.
+        # If any sdm_num_bin > 1, don't do ANY hanning smoothing for ANY spw, otherwise smooth all spws.
+        if self.inputs.pre672_mode:
+            LOG.warning("Old hanning behavior requested. Running compatability mode")
+            if any([spw.sdm_num_bin > 1 for spw in spws]):
+                for spw in spws:
+                    smoothing_dict[spw.id] = (False, "online smoothing applied + pre672 mode")
+                LOG.warning("Data in this MS are pre-averaged.  CASA task hanningsmooth() was not executed.")
             else:
-                smoothing_dict[spw.id] = (True, "continuum")
+                for spw in spws:
+                    smoothing_dict[spw.id] = (True, "not already smoothed online + pre672 mode")
+        else:
+            for spw in spws:
+                smoothing_dict[spw.id] = (False, "")
+                if spw.sdm_num_bin > 1:
+                    smoothing_dict[spw.id] = (False, "online smoothing applied")
+                elif spw.specline_window:
+                    if self.inputs.maser_detection and self._checkmaserline(str(spw.id)):
+                        smoothing_dict[spw.id] = (True, "spectral line, maser line")
+                    else:
+                        smoothing_dict[spw.id] = (False, "spectral line")
+                else:
+                    smoothing_dict[spw.id] = (True, "continuum")
 
-            hs_dict = {}
-            for key, val in smoothing_dict.items():
-                hs_dict[key] = val[0]
+        hs_dict = {}
+        for key, val in smoothing_dict.items():
+            hs_dict[key] = val[0]
 
         if not any(hs_dict.values()):
             LOG.info("None of the science spectral windows were selected for smoothing.")
