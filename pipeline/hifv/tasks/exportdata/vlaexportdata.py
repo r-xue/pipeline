@@ -194,6 +194,7 @@ class VLAExportData(exportdata.ExportData):
             task_string += "\n    hifv_fixpointing()"
 
         task_string += "\n    hifv_statwt()"
+        task_string += "\n    hifv_mstransform()"
 
         template = '''h_init()
 try:
