@@ -42,7 +42,7 @@
     <!-- if mstransform=True, data selection, time and/or spectral averaging shall be performed -->
     {{#mstransform}}
     <ProcessingCommand>
-        <Command xmlns="">hif_mstransform</Command>
+        <Command xmlns="">hifv_mstransform</Command>
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">chanbin</Keyword>

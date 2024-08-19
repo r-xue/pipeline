@@ -30,7 +30,7 @@
 
     <ProcessingCommand>
         <Command xmlns="">hifv_hanning</Command>
-        </ParameterSet>
+        <ParameterSet />
     </ProcessingCommand>
 
     <ProcessingCommand>
