@@ -59,10 +59,6 @@ def make_renorm_table(context, results, weblog_dir):
         threshold = result.threshold
         vis = os.path.basename(result.inputs['vis'])
 
-        if result.alltdm:
-            alert = ['No FDM spectral windows are present, '
-                     'so the amplitude scale does not need to be '
-                     'assessed for renormalization.']
         for source, source_stats in result.stats.items():
             for spw, spw_stats in source_stats.items():
 
