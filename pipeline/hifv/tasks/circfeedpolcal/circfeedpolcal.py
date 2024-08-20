@@ -165,13 +165,23 @@ class Circfeedpolcal(polarization.Polarization):
             for spws in baseband_spwstr:
                 LOG.info("Executing gaincal on baseband with spws={!s}".format(spws))
                 self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws,
-                                combine='scan,spw', addcallib=addcallib)
+                                combine='scan,spw')
                 tablesToAdd[0][2] = self.do_spwmap()
         else:
             spwsobj = m.get_spectral_windows(science_windows_only=True)
             spwslist = [str(spw.id) for spw in spwsobj]
             spws = ','.join(spwslist)
-            self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws, addcallib=True)
+            addcallib = True
+            self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws)
+        if os.path.exists(tablesToAdd[0][0]):
+            addcallib = True
+
+        if addcallib:
+            LOG.info("Adding " + str(tablesToAdd[0][0]) + " to callibrary.")
+            calfrom = callibrary.CalFrom(gaintable=tablesToAdd[0][0], interp='', calwt=False, caltype='kcross')
+            calto = callibrary.CalTo(self.inputs.vis)
+            calapp = callibrary.CalApplication(calto, calfrom)
+            self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
         # Determine number of scans with POLLEAKGE intent and use the first POLLEAKAGE FIELD
         polleakagefield = ''
@@ -278,7 +288,7 @@ class Circfeedpolcal(polarization.Polarization):
 
         return GainTables
 
-    def do_gaincal(self, caltable, field='', spw='', combine='scan', addcallib=False):
+    def do_gaincal(self, caltable, field='', spw='', combine='scan'):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         minBL_for_cal = m.vla_minbaselineforcal()
@@ -286,7 +296,6 @@ class Circfeedpolcal(polarization.Polarization):
         append = False
         if os.path.exists(caltable):
             append = True
-            addcallib = True
             LOG.info("{!s} exists.  Appending to caltable.".format(caltable))
 
         GainTables = []
@@ -327,7 +336,7 @@ class Circfeedpolcal(polarization.Polarization):
         casa_task_args = {'vis': self.inputs.vis,
                           'caltable': caltable,
                           'field': field,
-                          'intent': 'CALIBRATE_FLUX#UNSPECIFIED,CALIBRATE_AMPLI#UNSPECIFIED,CALIBRATE_PHASE#UNSPECIFIED,CALIBRATE_BANDPASS#UNSPECIFIED',
+                          'intent': 'CALIBRATE_FLUX#UNSPECIFIED,CALIBRATE_AMPLI#UNSPECIFIED,CALIBRATE_PHASE#UNSPECIFIED,CALIBRATE_BANDPASS#UNSPECIFIED,CALIBRATE_POL_ANGLE#UNSPECIFIED',
                           'scan': '',
                           'spw': spw,
                           'solint': 'inf',
@@ -349,12 +358,6 @@ class Circfeedpolcal(polarization.Polarization):
 
         self._executor.execute(job)
 
-        if addcallib:
-            LOG.info("Adding " + str(caltable) + " to callibrary.")
-            calfrom = callibrary.CalFrom(gaintable=caltable, interp='', calwt=False, caltype='kcross')
-            calto = callibrary.CalTo(self.inputs.vis)
-            calapp = callibrary.CalApplication(calto, calfrom)
-            self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
         # return result
         return True
