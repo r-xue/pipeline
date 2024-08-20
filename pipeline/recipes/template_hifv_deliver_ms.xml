@@ -13,14 +13,6 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-
-    <!-- If onlineflag=True, online flag shall be applied to the imported MSes. -->
-    {{#onlineflag}}
-    <ProcessingCommand>
-        <Command xmlns="">hifv_flagdata</Command>
-        <ParameterSet/>
-    </ProcessingCommand>
-    {{/onlineflag}}
     {{/importonly}}
     {{^importonly}}
     <ProcessingCommand>
