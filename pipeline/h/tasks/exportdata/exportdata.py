@@ -468,7 +468,7 @@ class ExportData(basetask.StandardTaskTemplate):
         # and tar them up.
         flag_version_list = []
         for visfile in vislist:
-            flag_version_file = self._export_final_flagversion(visfile, flag_version_name, products_dir)
+            flag_version_file = self._export_final_flagversion(context, visfile, flag_version_name, products_dir)
             flag_version_list.append(flag_version_file)
 
         # Loop over the measurements sets in the working directory, and
@@ -514,11 +514,10 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return sessiondict
 
-    def _do_if_auxiliary_products(self, oussid, output_dir, products_dir, vislist, imaging_products_only):
+    def _do_if_auxiliary_products(self, oussid, output_dir, products_dir, vislist, imaging_products_only, pipeline_stats_file=None):
         """
         Generate the auxiliary products
         """
-
         if imaging_products_only:
             contfile_name = 'cont.dat'
             fluxfile_name = 'Undefined'
@@ -570,6 +569,10 @@ class ExportData(basetask.StandardTaskTemplate):
         if hasattr(self.inputs.context, 'selfcal_resources') and isinstance(self.inputs.context.selfcal_resources, list):
             selfcal_resources_list = self.inputs.context.selfcal_resources
         if selfcal_resources_list:
+            empty = False
+
+        # PIPE-2094: check for the pipeline stats file
+        if pipeline_stats_file and os.path.exists(pipeline_stats_file):
             empty = False
 
         if empty:
@@ -625,6 +628,12 @@ class ExportData(basetask.StandardTaskTemplate):
                     tar.add(selfcal_resource, arcname=selfcal_resource)
                     LOG.info('Saving auxiliary data product %s in %s', selfcal_resource, tarfilename)
 
+            # PIPE-2094: Save pipeline statistics file
+            if pipeline_stats_file and os.path.exists(pipeline_stats_file):
+                tar.add(pipeline_stats_file, arcname=pipeline_stats_file)
+                LOG.info('Saving pipeline statistics file %s in %s', pipeline_stats_file, tarfilename)
+            else:
+                LOG.info("Pipeline statistics file does not exist.")
             tar.close()
 
         return tarfilename
@@ -765,10 +774,10 @@ class ExportData(basetask.StandardTaskTemplate):
         """
 
         LOG.info('Saving final flags for %s in flag version %s', os.path.basename(vis), flag_version_name)
-        task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name)
+        task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name, comment="Final pipeline flags")
         self._executor.execute(task)
 
-    def _export_final_flagversion(self, vis, flag_version_name, products_dir):
+    def _export_final_flagversion(self, context, vis, flag_version_name, products_dir):
         """
         Save the final flags version to a compressed tarfile in products.
         """
@@ -777,22 +786,42 @@ class ExportData(basetask.StandardTaskTemplate):
         tarfilename = visname + '.flagversions.tgz'
         LOG.info('Storing final flags for %s in %s', visname, tarfilename)
 
-        # Define the directory to be saved, and where to store in tar archive.
-        flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
-        flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
-        LOG.info('Saving flag version %s', flag_version_name)
-
         # Define the versions list file to be saved
         flag_version_list = os.path.join(visname + '.flagversions', 'FLAG_VERSION_LIST')
-        ti = tarfile.TarInfo(flag_version_list)
-        line = "{} : Final pipeline flags\n".format(flag_version_name).encode(sys.stdout.encoding)
-        ti.size = len(line)
+        tar_info = tarfile.TarInfo(flag_version_list)
         LOG.info('Saving flag version list')
 
-        # Create the tar file
+        # retrieve all flagversions saved
+        task = casa_tasks.flagmanager(vis=visname, mode='list')
+        flag_dict = self._executor.execute(task)
+        # remove MS key entry if it exists; MS key does not conform with other entries
+        # more information about flagmanager return dictionary here:
+        # https://casadocs.readthedocs.io/en/stable/api/tt/casatasks.flagging.flagmanager.html#mode
+        flag_dict.pop('MS', None)
+        flag_dict = {x['name']:x['comment'] for x in flag_dict.values()}
+
+        # Define the versions list file to be saved
+        # Define the directory to be saved, and where to store in tar archive.
+        if not isinstance(flag_version_name, list):
+            flag_version_name = [flag_version_name]
+        # PIPE-933: Add flag version 'after_deterministic_flagging' to tarfile
+        if "after_deterministic_flagging" in flag_dict and "after_deterministic_flagging" not in flag_version_name:
+            flag_version_name.append("after_deterministic_flagging")
+
+        # Create the tar file and populate it
         tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-        tar.add(flagsname, arcname=flagsarcname)
-        tar.addfile(ti, io.BytesIO(line))
+
+        line = ""
+        for f in flag_version_name:
+            LOG.info('Saving flag version %s', f)
+            flagsname = os.path.join(vis + '.flagversions', 'flags.' + f)
+            flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + f)
+            line += "{} : {}\n".format(f, flag_dict[f])
+            tar.add(flagsname, arcname=flagsarcname)
+        
+        line = line.encode(sys.stdout.encoding)
+        tar_info.size = len(line)
+        tar.addfile(tar_info, io.BytesIO(line))
         tar.close()
 
         return tarfilename

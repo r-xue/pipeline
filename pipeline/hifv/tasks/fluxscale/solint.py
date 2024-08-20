@@ -34,15 +34,16 @@ class SolintInputs(vdp.StandardInputs):
     """
     limit_short_solint = vdp.VisDependentProperty(default='')
     refantignore = vdp.VisDependentProperty(default='')
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, limit_short_solint=None, refantignore=None):
+    def __init__(self, context, vis=None, limit_short_solint=None, refantignore=None, refant=None):
         """
         Args:
             context (:obj:): Pipeline context
             vis(str, optional): String name of the measurement set
             limit_short_solint(str):  Limit to the short solution interval
             refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
-
+            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
         """
         super(SolintInputs, self).__init__()
         self.context = context
@@ -51,6 +52,7 @@ class SolintInputs(vdp.StandardInputs):
         self.refantignore = refantignore
         self.gain_solint1 = 'int'
         self.gain_solint2 = 'int'
+        self.refant = refant
 
 
 class SolintResults(basetask.Results):
@@ -235,12 +237,15 @@ class Solint(basetask.StandardTaskTemplate):
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
         # PIPE-1637: adding ',' in the manual and auto refantignore parameter
         refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
+                                                    geometry=True, flagging=True, intent='',
+                                                    spw='', refantignore=refantignore)
 
-        refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
-                                                geometry=True, flagging=True, intent='',
-                                                spw='', refantignore=refantignore)
-
-        RefAntOutput = refantobj.calculate()
+            RefAntOutput = refantobj.calculate()
+        else:
+            RefAntOutput = self.inputs.refant.split(",")
 
         refAnt = ','.join(RefAntOutput)
 

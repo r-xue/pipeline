@@ -945,12 +945,19 @@ class SingleDishPointingChart(object):
         # Search for the first available SPW, antenna combination
         # observing_pattern is None for invalid combination.
         spw_id = None
-        for s in target_spws:
-            field_patterns = list(ms.observing_pattern[antenna_id][s.id].values())
-            if field_patterns.count(None) < len(field_patterns):
-                # at least one valid field exists.
-                spw_id = s.id
-                break
+        if target_field_id is None:
+            for s in target_spws:
+                field_patterns = list(ms.observing_pattern[antenna_id][s.id].values())
+                if field_patterns.count(None) < len(field_patterns):
+                    # at least one valid field exists.
+                    spw_id = s.id
+                    break
+        else:
+            for s in target_spws:
+                observing_pattern = ms.observing_pattern[antenna_id][s.id].get(target_field_id, None)
+                if observing_pattern:
+                    spw_id = s.id
+                    break
         if spw_id is None:
             LOG.info('No data with antenna=%d and spw=%s found in %s' % (antenna_id, str(target_spws), ms.basename))
             LOG.info('Skipping pointing plot')

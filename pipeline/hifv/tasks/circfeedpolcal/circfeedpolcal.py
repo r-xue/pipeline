@@ -67,6 +67,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
     refantignore = vdp.VisDependentProperty(default='')
     leakage_poltype = vdp.VisDependentProperty(default='')
     mbdkcross = vdp.VisDependentProperty(default=True)
+    refant = vdp.VisDependentProperty(default='')
     run_setjy = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
@@ -74,7 +75,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
         return [0.0, 0.25]
 
     def __init__(self, context, vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None,
-                 mbdkcross=None, clipminmax=None, run_setjy=None):
+                 mbdkcross=None, clipminmax=None, refant=None, run_setjy=None):
         super(CircfeedpolcalInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -83,6 +84,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
         self.leakage_poltype = leakage_poltype
         self.mbdkcross = mbdkcross
         self.clipminmax = clipminmax
+        self.refant = refant
         self.run_setjy = run_setjy
 
 @task_registry.set_equivalent_casa_task('hifv_circfeedpolcal')
@@ -124,10 +126,14 @@ class Circfeedpolcal(polarization.Polarization):
         # PIPE-1637: adding ',' in the manual and auto refantignore parameter
         refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-        refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
-                                                geometry=True, flagging=True, intent='', spw='',
-                                                refantignore=refantignore)
-        self.RefAntOutput = refantobj.calculate()
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
+                                                    geometry=True, flagging=True, intent='', spw='',
+                                                    refantignore=refantignore)
+            self.RefAntOutput = refantobj.calculate()
+        else:
+            self.RefAntOutput = self.inputs.refant.split(",")
 
         # setjy for amplitude/flux calibrator (VLASS 3C286 or 3C48)
         fluxcalfieldname, fluxcalfieldid, fluxcal = self._do_setjy()
@@ -162,13 +168,23 @@ class Circfeedpolcal(polarization.Polarization):
             for spws in baseband_spwstr:
                 LOG.info("Executing gaincal on baseband with spws={!s}".format(spws))
                 self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws,
-                                combine='scan,spw', addcallib=addcallib)
+                                combine='scan,spw')
                 tablesToAdd[0][2] = self.do_spwmap()
         else:
             spwsobj = m.get_spectral_windows(science_windows_only=True)
             spwslist = [str(spw.id) for spw in spwsobj]
             spws = ','.join(spwslist)
-            self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws, addcallib=True)
+            addcallib = True
+            self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws)
+        if os.path.exists(tablesToAdd[0][0]):
+            addcallib = True
+
+        if addcallib:
+            LOG.info("Adding " + str(tablesToAdd[0][0]) + " to callibrary.")
+            calfrom = callibrary.CalFrom(gaintable=tablesToAdd[0][0], interp='', calwt=False, caltype='kcross')
+            calto = callibrary.CalTo(self.inputs.vis)
+            calapp = callibrary.CalApplication(calto, calfrom)
+            self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
         # Determine number of scans with POLLEAKGE intent and use the first POLLEAKAGE FIELD
         polleakagefield = ''
@@ -275,7 +291,7 @@ class Circfeedpolcal(polarization.Polarization):
 
         return GainTables
 
-    def do_gaincal(self, caltable, field='', spw='', combine='scan', addcallib=False):
+    def do_gaincal(self, caltable, field='', spw='', combine='scan'):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         minBL_for_cal = m.vla_minbaselineforcal()
@@ -283,7 +299,6 @@ class Circfeedpolcal(polarization.Polarization):
         append = False
         if os.path.exists(caltable):
             append = True
-            addcallib = True
             LOG.info("{!s} exists.  Appending to caltable.".format(caltable))
 
         GainTables = []
@@ -324,7 +339,7 @@ class Circfeedpolcal(polarization.Polarization):
         casa_task_args = {'vis': self.inputs.vis,
                           'caltable': caltable,
                           'field': field,
-                          'intent': 'CALIBRATE_FLUX#UNSPECIFIED,CALIBRATE_AMPLI#UNSPECIFIED,CALIBRATE_PHASE#UNSPECIFIED,CALIBRATE_BANDPASS#UNSPECIFIED',
+                          'intent': 'CALIBRATE_FLUX#UNSPECIFIED,CALIBRATE_AMPLI#UNSPECIFIED,CALIBRATE_PHASE#UNSPECIFIED,CALIBRATE_BANDPASS#UNSPECIFIED,CALIBRATE_POL_ANGLE#UNSPECIFIED',
                           'scan': '',
                           'spw': spw,
                           'solint': 'inf',
@@ -347,12 +362,6 @@ class Circfeedpolcal(polarization.Polarization):
             self._executor.execute(job)
         except Exception as ex:
             LOG.warning(ex)
-        if addcallib:
-            LOG.info("Adding " + str(caltable) + " to callibrary.")
-            calfrom = callibrary.CalFrom(gaintable=caltable, interp='', calwt=False, caltype='kcross')
-            calto = callibrary.CalTo(self.inputs.vis)
-            calapp = callibrary.CalApplication(calto, calfrom)
-            self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
         # return result
         return True

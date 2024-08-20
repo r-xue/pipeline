@@ -333,10 +333,10 @@ class Syspower(basetask.StandardTaskTemplate):
                             dat_online_flags[antenna_names.index(this_ant), indices_to_flag] = True
 
             # remove requantizer changes from p_diff
-            pdrq = p_diff / (rq ** 2)
-            pdrq = np.ma.masked_invalid(pdrq)
+            pdrq = np.ma.masked_invalid(p_diff/(np.ma.masked_equal(rq, 0)**2))
 
             # read tables into arrays
+            # dat_filtered dimensions: (n_ant, n_spw, n_pol, n_hits)
             spw_problems = []
             for i, this_ant in enumerate(antenna_ids):
                 LOG.info('reading antenna {0}'.format(this_ant))
@@ -395,6 +395,7 @@ class Syspower(basetask.StandardTaskTemplate):
                         LOG.info('  processing band {0}, baseband {1},  polarization {2}'.format(band, bband, pol))
 
                         # create initial template
+                        # sp_data dimmensions: (n_spw, n_hits)
                         sp_data = dat_filtered[i, common_indices, pol, :]
                         sp_data = np.ma.array(sp_data)
                         sp_data.mask = np.ma.getmaskarray(sp_data)
@@ -408,16 +409,16 @@ class Syspower(basetask.StandardTaskTemplate):
                                                                        k=5, threshold=8, do_shift=True)
                         LOG.info('    total flagged data: {0:.2f}% in second pass'.format(flag_percent))
 
-                        sp_template = np.ma.median(sp_data, axis=0)
+                        if sp_data.shape[0] > 1:
+                            # flag residuals and recalculate template
+                            sp_template = np.ma.median(sp_data, axis=0)
+                            sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_median=True,
+                                                                           k=11, threshold=7, do_shift=False)
+                            LOG.info('    total flagged data: {0:.2f}% in third pass'.format(flag_percent))
 
-                        # flag residuals and recalculate template
-                        sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_median=True,
-                                                                       k=11, threshold=7, do_shift=False)
-                        LOG.info('    total flagged data: {0:.2f}% in third pass'.format(flag_percent))
-
-                        sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_rms=True,
-                                                                       k=5, threshold=7, do_shift=False)
-                        LOG.info('    total flagged data: {0:.2f}% in fourth pass'.format(flag_percent))
+                            sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_rms=True,
+                                                                           k=5, threshold=7, do_shift=False)
+                            LOG.info('    total flagged data: {0:.2f}% in fourth pass'.format(flag_percent))
 
                         sp_median_data = np.ma.median(sp_data, axis=0)
                         sp_median_mask = deepcopy(sp_median_data.mask)

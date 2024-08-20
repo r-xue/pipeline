@@ -209,7 +209,7 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">maxproductsize</Keyword>
-                <Value xmlns="">400.0</Value>
+                <Value xmlns="">100.0</Value>
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">maxcubesize</Keyword>

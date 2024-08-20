@@ -311,7 +311,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         for name in imlist:
             with casa_tools.ImageReader(name) as image:
                 info = image.miscinfo()
-                info['reject'] = reject
+                info['VLASSRJ'] = reject
                 LOG.info('mark the image %s as reject=%r', name, reject)
                 image.setmiscinfo(info)
 
@@ -518,7 +518,7 @@ class CleanTaskFactory(object):
         if target['robust'] not in (None, -999.0):
             task_args['robust'] = target['robust']
         else:
-            task_args['robust'] = image_heuristics.robust()
+            task_args['robust'] = image_heuristics.robust(sepecmode=target['specmode'])
 
         if target['uvtaper']:
             task_args['uvtaper'] = target['uvtaper']

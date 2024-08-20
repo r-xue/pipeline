@@ -1295,7 +1295,10 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                     # observations.
                     tmint_scaled = inputs.tmint * thresh_scale_factor
                     if nscans > 1:
-                        tmint_scaled = tmint_scaled * 2**0.5
+                        if icorr == 0:
+                            tmint_scaled = tmint_scaled * 2**0.5
+                        else: # increase the threshold for cross-polar visibilities, which can show an offset in scans taken near transit
+                            tmint_scaled = tmint_scaled * 3
 
                     # Identify "bad baselines" as those baselines whose number
                     # of timestamps with outliers exceeds the threshold.
