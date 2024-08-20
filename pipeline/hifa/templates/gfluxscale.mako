@@ -157,7 +157,17 @@ differing flux densities in their calibrated XX and YY visibilities.</p>
     <h3 id="flagging">Flagging</h3>
     <table class="table table-bordered table-striped">
         <caption>The temporary amplitude caltable(s) in this table are used only in this stage to derive flux scaling
-           factors, and are not registered to be applied to the measurement set(s).</caption>
+           factors, and are not registered to be applied to the measurement set(s).The values in this table are 
+		   computed from the temporarily-calibrated visibility data after applying the integration-based phase 'G' 
+		   solutions and the scan-based amplitude 'A' solutions computed in this stage. The "flagged before" column 
+		   is the percentage of flagged visibilities before also applying the newly-generated flags computed from 
+		   the statistical analysis of the surviving calibrated data, while the "flagged after" column also includes 
+		   those flags. High values on this page are indicative of low SNR achieved on the corresponding object on 
+		   the per-integration timescale. In all cases, both columns will naturally be higher than the corresponding 
+		   values seen on the later hif_applycal stage because in that stage the phase solutions are scan-based, thus 
+		   have higher SNR. The spw mapping/combination heuristics determined in hifa_spwphaseup are used in computing 
+		   the solutions in this stage. Note that with 50 antennas, a loss of 10% of the antenna solutions (5) will 
+		   result in a loss of 19% of the baselines (235). </caption>
         <thead>
             <tr>
                 <th>Temporary Caltable</th>
