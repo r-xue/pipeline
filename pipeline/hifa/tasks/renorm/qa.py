@@ -28,10 +28,6 @@ class RenormQAHandler(pqa.QAPlugin):
         # per spw needs to be fetched from the stats dictionary in the spw
         # loop below (result.stats[source][spw]['threshold']).
         threshold = result.threshold
-        ms = context.observing_run.get_ms(result.vis)
-        band9_10_in_ms = any([
-            spw for spw in ms.get_spectral_windows() if spw.band in ('ALMA Band 9', 'ALMA Band 10')
-            ])
 
         if result.exception is not None:
             score = 0.0
@@ -42,6 +38,9 @@ class RenormQAHandler(pqa.QAPlugin):
 
         if result.alltdm:
             # PIPE-2283: no QA score for TDM data
+            shortmsg = "No FDM spectral windows are present."
+            longmsg = "No FDM spectral windows are present, so the amplitude scale does not need to be assessed for renormalization."
+            result.qa.pool.append(pqa.QAScore(None, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
             return
 
         if result.createcaltable and result.caltable is not None and not result.alltdm and not result.calTableCreated:
@@ -49,14 +48,6 @@ class RenormQAHandler(pqa.QAPlugin):
             score = 0.0
             shortmsg = 'No cal table created'
             longmsg = 'EB {}: No cal table was created.'.format(os.path.basename(result.vis))
-            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
-
-        if band9_10_in_ms:
-            # PIPE-2283: blue score for band 9/10 FDM data
-            score = 0.9
-            shortmsg = "Double Sideband Receivers using FDM mode; check results carefully."
-            longmsg = (f"EB {os.path.basename(result.vis)}: "
-                       f"Double Sideband Receivers using FDM mode; check results carefully.")
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
 
         for source in result.stats:
@@ -203,3 +194,18 @@ class RenormListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
+
+        # add MOUS level score for band 9/10 data
+        band9_10_in_ms = []
+        for ms in context.observing_run.get_measurement_sets():
+            band9_10_in_ms.append(
+                any([spw for spw in ms.get_spectral_windows(science_windows_only=True) 
+                     if spw.band in ('ALMA Band 9', 'ALMA Band 10')])
+                     )
+        if any(band9_10_in_ms):
+            # PIPE-2283: blue score for band 9/10 FDM data
+            score = 0.9
+            shortmsg = "Double Sideband Receivers using FDM mode; check results carefully."
+            longmsg = (f"MOUS {context.get_oussid()}: "
+                       f"Double Sideband Receivers using FDM mode; check results carefully.")
+            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
