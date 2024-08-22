@@ -21,7 +21,7 @@ class VLARestoreDataInputs(restoredata.RestoreDataInputs):
     ocorr_mode = vdp.VisDependentProperty(default='co')
     asis = vdp.VisDependentProperty(default='Receiver CalAtmosphere')
     gainmap = vdp.VisDependentProperty(default=False)
-    specline_spws = vdp.VisDependentProperty(default='auto')
+    specline_spws = vdp.VisDependentProperty(default='none')
 
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None,
                  output_dir=None, session=None, vis=None, bdfflags=None, lazy=None, asis=None,
@@ -82,24 +82,8 @@ class VLARestoreData(restoredata.RestoreData):
         #    TBD: Add error handling
         import_results = self._do_importasdm(sessionlist=sessionlist, vislist=vislist)
 
-        # Extract CASA version and pipeline version for previous run from
-        # pipeline manifest.
-        casa_version, pipeline_version, _ = restoredata.RestoreData._extract_casa_pipeline_version(pipemanifest)
-
-        # Compare against version that changed the behavior of hanning smoothing in the case where spw.num.bin > 1
-        updated_hanning_version = version.parse("2024.1.0")
-        try:
-            if "-" in pipeline_version:
-                pipeline_version = pipeline_version.split("-")[0]
-            pre672_mode = version.parse(pipeline_version) < updated_hanning_version
-        except Exception as e:
-            # if version.parse fails for an older-style version number, assume pre672_mode
-            msg = "Failed to parse pipeline version '{}' as a version number: {}. Assuming pre-672 Hanning smoothing should be performed".format(pipeline_version, e)
-            LOG.warning(msg)
-            pre672_mode = True
-
         for ms in self.inputs.context.observing_run.measurement_sets:
-            self._do_hanningsmooth(pre672_mode=pre672_mode)
+            self._do_hanningsmooth()
 
         # Restore final MS.flagversions and flags
         self._do_restore_flags(pipemanifest)
@@ -183,8 +167,9 @@ class VLARestoreData(restoredata.RestoreData):
                 LOG.error("Application of final flags failed for %s" % ms.basename)
                 raise
 
-    def _do_hanningsmooth(self, pre672_mode=False):
-        container = vdp.InputsContainer(hanning.Hanning, self.inputs.context, pre672_mode=pre672_mode)
+    def _do_hanningsmooth(self):
+        #container = vdp.InputsContainer(hanning.Hanning, self.inputs.context, maser_detection=False)
+        container = vdp.InputsContainer(hanning.Hanning, self.inputs.context)
         hanning_task = hanning.Hanning(container)
         return self._executor.execute(hanning_task, merge=True)
 
