@@ -36,13 +36,6 @@ class RenormQAHandler(pqa.QAPlugin):
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
             return
 
-        if result.alltdm:
-            # PIPE-2283: no QA score for TDM data
-            shortmsg = "No FDM spectral windows are present."
-            longmsg = "No FDM spectral windows are present, so the amplitude scale does not need to be assessed for renormalization."
-            result.qa.pool.append(pqa.QAScore(None, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis))
-            return
-
         if result.createcaltable and result.caltable is not None and not result.alltdm and not result.calTableCreated:
             # Cal table not created
             score = 0.0
@@ -195,6 +188,12 @@ class RenormListQAHandler(pqa.QAPlugin):
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
 
+        if all([r.alltdm for r in result]):
+            # PIPE-2283: no QA score for TDM data
+            shortmsg = "No FDM spectral windows are present."
+            longmsg = "No FDM spectral windows are present, so the amplitude scale does not need to be assessed for renormalization."
+            result.qa.pool.append(pqa.QAScore(None, longmsg=longmsg, shortmsg=shortmsg))
+            return
         # add MOUS level score for band 9/10 data
         band9_10_in_ms = []
         for ms in context.observing_run.get_measurement_sets():
@@ -205,7 +204,6 @@ class RenormListQAHandler(pqa.QAPlugin):
         if any(band9_10_in_ms):
             # PIPE-2283: blue score for band 9/10 FDM data
             score = 0.9
-            shortmsg = "Double Sideband Receivers using FDM mode; check results carefully."
-            longmsg = (f"MOUS {context.get_oussid()}: "
-                       f"Double Sideband Receivers using FDM mode; check results carefully.")
+            shortmsg = "Double Sideband Receivers using FDM mode."
+            longmsg = "Double Sideband Receivers using FDM mode; check results carefully."
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
