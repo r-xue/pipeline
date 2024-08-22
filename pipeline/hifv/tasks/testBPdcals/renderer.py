@@ -144,7 +144,6 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                     ms = os.path.basename(result.inputs['vis'])
                     summary_plots_per_spw[ms].extend(plots)
                     spwlist.append(str(spw.id))
-            print(summary_plots_per_spw)
 
             # generate testdelay plots and JSON file
             plotter = testBPdcalsdisplay.testDelaysPerAntennaChart(context, result)
