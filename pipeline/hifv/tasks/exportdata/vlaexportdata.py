@@ -172,13 +172,42 @@ class VLAExportData(exportdata.ExportData):
         # VLA ocorr_value
         ocorr_mode = 'co'
 
+        # Set specline spws info that was used in the calibration run
+        specline_spws = 'none'  # default if no information 
+
+        # get value used in hifv_importdata
+        taskname = 'hifv_importdata'
+        LOG.debug(f'Looking for the vlaue of specline_spws used for hifv_importdata')
+
+        found_hifv_importdata = False
+        found_hifv_hanning = False
+        for rr in reversed(self.inputs.context.results):
+            try:
+                if hasattr(rr.read()[0], "pipeline_casa_task"):
+                    thistaskname = rr.read()[0].pipeline_casa_task
+                elif hasattr(rr.read(), "pipeline_casa_task"):
+                    thistaskname = rr.read().pipeline_casa_task
+            except(TypeError, IndexError, AttributeError) as ee:
+                LOG.debug(f'Could not get task name for {rr.read()}: {ee}')
+                continue
+            if taskname in thistaskname:
+                for importdataresult in rr.read():
+                    if importdataresult.input_specline_spws:
+                        specline_spws = importdataresult.input_specline_spws
+                        found_hifv_importdata = True
+                        LOG.debug(f'Found specline_spws value of {specline_spws} from hifv_importdata results')
+                        break
+
+            if found_hifv_importdata:
+                break
+            
         for vis in vislist:
             filename = os.path.basename(vis)
             if filename.endswith('.ms'):
                 filename, filext = os.path.splitext(filename)
             tmpvislist.append(filename)
-        task_string = "    hifv_restoredata (vis=%s, session=%s, ocorr_mode='%s', gainmap=%s)" % (
-        tmpvislist, session_list, ocorr_mode, self.inputs.gainmap)
+        task_string = "    hifv_restoredata (vis=%s, session=%s, ocorr_mode='%s', gainmap=%s, specline_spws='%s')" % (
+            tmpvislist, session_list, ocorr_mode, self.inputs.gainmap, specline_spws)
 
         # Is this a VLASS execution?
         vlassmode = False

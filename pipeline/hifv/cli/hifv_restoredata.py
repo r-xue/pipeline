@@ -74,6 +74,8 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
                   values are 'auto', 'none' (no spws will be defined as spectral line), or 
                   a string of spw definitions in the CASA format
                   example: specline_spws='2,3,4~9,23'
+    maser_detection If true, run maser detect algorithm on spectral line windows during hanning 
+                  smoothing
 
     --------- examples -----------------------------------------------------------
 

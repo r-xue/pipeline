@@ -22,10 +22,11 @@ class VLARestoreDataInputs(restoredata.RestoreDataInputs):
     asis = vdp.VisDependentProperty(default='Receiver CalAtmosphere')
     gainmap = vdp.VisDependentProperty(default=False)
     specline_spws = vdp.VisDependentProperty(default='none')
+    maser_detection = vdp.VisDependentProperty(default=False)
 
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None,
                  output_dir=None, session=None, vis=None, bdfflags=None, lazy=None, asis=None,
-                 ocorr_mode=None, gainmap=None, specline_spws=None):
+                 ocorr_mode=None, gainmap=None, specline_spws=None, maser_detection=None):
         super(VLARestoreDataInputs, self).__init__(context, copytoraw=copytoraw,
                                                    products_dir=products_dir, rawdata_dir=rawdata_dir,
                                                    output_dir=output_dir, session=session,
@@ -34,6 +35,7 @@ class VLARestoreDataInputs(restoredata.RestoreDataInputs):
 
         self.gainmap = gainmap
         self.specline_spws = specline_spws
+        self.maser_detection = maser_detection
 
 
 @task_registry.set_equivalent_casa_task('hifv_restoredata')
@@ -83,7 +85,7 @@ class VLARestoreData(restoredata.RestoreData):
         import_results = self._do_importasdm(sessionlist=sessionlist, vislist=vislist)
 
         for ms in self.inputs.context.observing_run.measurement_sets:
-            self._do_hanningsmooth()
+            self._do_hanningsmooth(maser_detection=self.inputs.maser_detection)
 
         # Restore final MS.flagversions and flags
         self._do_restore_flags(pipemanifest)
@@ -167,9 +169,9 @@ class VLARestoreData(restoredata.RestoreData):
                 LOG.error("Application of final flags failed for %s" % ms.basename)
                 raise
 
-    def _do_hanningsmooth(self):
-        #container = vdp.InputsContainer(hanning.Hanning, self.inputs.context, maser_detection=False)
-        container = vdp.InputsContainer(hanning.Hanning, self.inputs.context)
+    def _do_hanningsmooth(self, maser_detection=False):
+        container = vdp.InputsContainer(hanning.Hanning, self.inputs.context,
+                                        maser_detection=maser_detection)
         hanning_task = hanning.Hanning(container)
         return self._executor.execute(hanning_task, merge=True)
 
