@@ -40,7 +40,7 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
 
 
 class VLAImportDataResults(basetask.Results):
-    def __init__(self, mses=None, setjy_results=None, input_specline_spws=None):
+    def __init__(self, mses=None, setjy_results=None):
         super().__init__()
 
         if mses is None:
@@ -48,7 +48,6 @@ class VLAImportDataResults(basetask.Results):
         self.mses = mses
         self.setjy_results = setjy_results
         self.origin = {}
-        self.input_specline_spws = input_specline_spws
 
     def merge_with_context(self, context):
         target = context.observing_run
@@ -129,7 +128,7 @@ class SerialVLAImportData(importdata.ImportData):
         results = super().prepare()
 
         # create results object
-        myresults = VLAImportDataResults(mses=results.mses, setjy_results=results.setjy_results, input_specline_spws=self.inputs.specline_spws)
+        myresults = VLAImportDataResults(mses=results.mses, setjy_results=results.setjy_results)
 
         myresults.origin = results.origin
 
