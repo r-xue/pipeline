@@ -74,8 +74,8 @@ class RenormQAHandler(pqa.QAPlugin):
                         score = scorer(max_factor)
                         shortmsg = 'Renormalization factor within threshold'
                         longmsg = 'EB {} source {} spw {}: maximum renormalization factor of {:.3f} ' \
-                                    'is within threshold of {:.1%} and so was not applied'.format(
-                                        os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
+                                  'is within threshold of {:.1%} and so was not applied'.format(
+                                      os.path.basename(result.vis), source, spw, max_factor, threshold-1.0)
                         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=result.vis, origin=origin))
                     elif max_factor > threshold:
                         if result.createcaltable:
