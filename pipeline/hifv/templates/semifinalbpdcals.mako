@@ -49,7 +49,7 @@ of the bandpass calibrator has not yet been determined.</p>
                   url_fn="${lambda ms: 'noop'}">
 
         <%def name="title()">
-            semiFinalBPdcals per spw summary plot
+            semiFinalBPdcals per spectral line spw summary plot
         </%def>
 
         <%def name="preamble()">
@@ -58,12 +58,12 @@ of the bandpass calibrator has not yet been determined.</p>
         <%def name="mouseover(plot)">Per-spw summary window </%def>
 
         <%def name="fancybox_caption(plot)">
-            semiFinalBPdcals per spw summary plot
+            Semi-final calibrated bandpass,
             Spw: ${plot.parameters['spw']}<br>
         </%def>
 
         <%def name="caption_title(plot)">
-            Semi-final calibrated bandpass per specline spw
+            Semi-final calibrated bandpass,
             Spw: ${plot.parameters['spw']}<br>
         </%def>
 </%self:plot_group>

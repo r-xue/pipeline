@@ -49,7 +49,7 @@ from pipeline.infrastructure.renderer import rendererutils
                   url_fn="${lambda ms: 'noop'}">
 
         <%def name="title()">
-            testlBPdcals per spw summary plot
+            testBPdcals per spectral line spw summary plot
         </%def>
 
         <%def name="preamble()">
@@ -58,12 +58,12 @@ from pipeline.infrastructure.renderer import rendererutils
         <%def name="mouseover(plot)">Per-spw summary window </%def>
 
         <%def name="fancybox_caption(plot)">
-            Initial calibrated bandpass per spw summary plot
+            Initial calibrated bandpass,
             Spw: ${plot.parameters['spw']}<br>
         </%def>
 
         <%def name="caption_title(plot)">
-            Initial calibrated bandpass per specline spw
+            Initial calibrated bandpass,
             Spw: ${plot.parameters['spw']}<br>
         </%def>
 </%self:plot_group>

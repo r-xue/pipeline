@@ -158,7 +158,6 @@ class testBPdcalsPerSpwSummaryChart(object):
         return None
 
 
-
 class testDelaysPerAntennaChart(object):
     def __init__(self, context, result):
         self.context = context
@@ -430,7 +429,7 @@ class bpSolAmpPerAntennaChart(object):
         plots = []
 
         for bandname, bpcaltablename in self.result.bpcaltable.items():
-            maxmaxphase, maxmaxamp = get_maxphase_maxamp(self.result.bpdgain_touse[bandname], bpcaltablename)
+            _, maxmaxamp = get_maxphase_maxamp(self.result.bpdgain_touse[bandname], bpcaltablename)
             ampplotmax = maxmaxamp
 
             LOG.info("Plotting amp bandpass solutions")
@@ -511,7 +510,7 @@ class bpSolAmpPerAntennaPerSpwChart(object):
         for spw in spws:
             if spw.specline_window:
                 for bandname, bpcaltablename in self.result.bpcaltable.items():
-                    maxmaxphase, maxmaxamp = get_maxphase_maxamp(self.result.bpdgain_touse[bandname], bpcaltablename)
+                    _, maxmaxamp = get_maxphase_maxamp(self.result.bpdgain_touse[bandname], bpcaltablename)
                     ampplotmax = maxmaxamp
 
                     LOG.info("Plotting amp bandpass solutions")
@@ -570,6 +569,7 @@ class bpSolAmpPerAntennaPerSpwChart(object):
 
         return [p for p in plots if p is not None]
 
+
 class bpSolPhasePerAntennaChart(object):
     def __init__(self, context, result):
         self.context = context
@@ -589,7 +589,7 @@ class bpSolPhasePerAntennaChart(object):
         plots = []
 
         for bandname, bpcaltablename in self.result.bpcaltable.items():
-            maxmaxphase, maxmaxamp = get_maxphase_maxamp(self.result.bpdgain_touse[bandname], bpcaltablename)
+            maxmaxphase, _ = get_maxphase_maxamp(self.result.bpdgain_touse[bandname], bpcaltablename)
             phaseplotmax = maxmaxphase
 
             LOG.info("Plotting phase bandpass solutions")
@@ -670,7 +670,7 @@ class bpSolPhasePerAntennaPerSpwChart(object):
         for spw in spws:
             if spw.specline_window:
                 for bandname, bpcaltablename in self.result.bpcaltable.items():
-                    maxmaxphase, maxmaxamp = get_maxphase_maxamp(self.result.bpdgain_touse[bandname], bpcaltablename)
+                    maxmaxphase, _ = get_maxphase_maxamp(self.result.bpdgain_touse[bandname], bpcaltablename)
                     phaseplotmax = maxmaxphase
 
                     LOG.info("Plotting phase bandpass solutions")
@@ -741,14 +741,6 @@ def get_maxphase_maxamp(bpdgain_touse, bpcaltablename):
     Returns:
         tuple: The maximum amplitude and phase values.
     """
-    with casa_tools.TableReader(bpdgain_touse) as tb:
-        cpar = tb.getcol('CPARAM')
-        flgs = tb.getcol('FLAG')
-    amps = np.abs(cpar)
-    good = np.logical_not(flgs)
-    maxamp = np.max(amps[good])
-    plotmax = maxamp
-
     with casa_tools.TableReader(bpcaltablename) as tb:
         dataVarCol = tb.getvarcol('CPARAM')
         flagVarCol = tb.getvarcol('FLAG')
@@ -775,4 +767,4 @@ def get_maxphase_maxamp(bpdgain_touse, bpcaltablename):
                 maxmaxphase = maxphase
     ampplotmax = maxmaxamp
     phaseplotmax = maxmaxphase
-    return ampplotmax, phaseplotmax
+    return phaseplotmax, ampplotmax
