@@ -316,7 +316,6 @@ class finalbpSolAmpPerAntennaChart(object):
         return [p for p in plots if p is not None]
 
 
-# NEW
 class finalbpSolAmpPerAntennaPerSpwChart(object):
     def __init__(self, context, result):
         self.context = context
@@ -494,7 +493,6 @@ class finalbpSolPhasePerAntennaChart(object):
         return [p for p in plots if p is not None]
 
 
-# NEW
 class finalbpSolPhasePerAntennaPerSpwChart(object):
     def __init__(self, context, result):
         self.context = context
@@ -770,7 +768,6 @@ class finalAmpTimeCalPerAntennaChart(object):
         return [p for p in plots if p is not None]
 
 
-# NEW
 class finalAmpTimeCalPerAntennaPerSpwChart(object):
     def __init__(self, context, result):
         self.context = context
