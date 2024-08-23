@@ -91,10 +91,8 @@ class testBPdcalsPerSpwSummaryChart(object):
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.spw = str(spw)
-        # self.caltable = result.final[0].gaintable
 
     def plot(self):
-        # science_spws = self.ms.get_spectral_windows(science_windows_only=True)
         plots = [self.get_plot_wrapper('BPcal'), self.get_plot_wrapper('delaycal')]
         return [p for p in plots if p is not None]
 

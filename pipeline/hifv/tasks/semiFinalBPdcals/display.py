@@ -378,18 +378,17 @@ class semifinalbpSolAmpPerAntennaChart(object):
 
 
 class semifinalbpSolAmpPerAntennaPerSpwChart(object):
-    def __init__(self, context, result, suffix='', spw=''):
+    def __init__(self, context, result, suffix=''):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
         self.suffix = suffix
         ms = self.ms
-        spw = str(spw)
 
         self.json = {}
         self.json_filename = os.path.join(context.report_dir,
                                           'stage%s' % result.stage_number,
-                                          'bpsolamp-spw-' + self.suffix + '%s.json' % ms)
+                                          'bpsolamp-' + self.suffix + '%s.json' % ms)
 
     def plot(self):
         context = self.context
