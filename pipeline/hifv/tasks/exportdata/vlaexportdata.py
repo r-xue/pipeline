@@ -11,6 +11,7 @@ from pipeline.h.tasks.exportdata import exportdata
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import utils
 from pipeline.infrastructure.filenamer import fitsname
 from . import vlaifaqua
 
@@ -172,42 +173,59 @@ class VLAExportData(exportdata.ExportData):
         # VLA ocorr_value
         ocorr_mode = 'co'
 
-        # Set specline spws info that was used in the calibration run
-        specline_spws = 'none'  # default if no information 
+        # Set specline_spws and maser_detection info that was used in the calibration run
+        specline_spws = 'none'   # default to 'none' if no information
+        maser_detection = False  # default to False if no information
 
         # get value used in hifv_importdata
-        taskname = 'hifv_importdata'
+        import_taskname = 'hifv_importdata'
+        hanning_taskname = 'hifv_hanning'
         LOG.debug(f'Looking for the vlaue of specline_spws used for hifv_importdata')
 
         found_hifv_importdata = False
         found_hifv_hanning = False
-        for rr in reversed(self.inputs.context.results):
+        for result in reversed(context.results):
             try:
-                if hasattr(rr.read()[0], "pipeline_casa_task"):
-                    thistaskname = rr.read()[0].pipeline_casa_task
-                elif hasattr(rr.read(), "pipeline_casa_task"):
-                    thistaskname = rr.read().pipeline_casa_task
-            except(TypeError, IndexError, AttributeError) as ee:
-                LOG.debug(f'Could not get task name for {rr.read()}: {ee}')
+                if hasattr(result.read()[0], "pipeline_casa_task"):
+                    thistaskname = result.read()[0].pipeline_casa_task
+                elif hasattr(result.read(), "pipeline_casa_task"):
+                    thistaskname = result.read().pipeline_casa_task
+            except (TypeError, IndexError, AttributeError) as ee:
+                LOG.debug(f'Could not get task name for {result.read()}: {ee}')
                 continue
-            if taskname in thistaskname:
-                for importdataresult in rr.read():
-                    if importdataresult.input_specline_spws:
-                        specline_spws = importdataresult.input_specline_spws
+
+            if import_taskname in thistaskname:
+                for importdataresult in result.read():
+                    if importdataresult.inputs['specline_spws']:
+                        specline_spws = importdataresult.inputs['specline_spws']
                         found_hifv_importdata = True
                         LOG.debug(f'Found specline_spws value of {specline_spws} from hifv_importdata results')
                         break
 
-            if found_hifv_importdata:
+            if hanning_taskname in thistaskname:
+                for hanningresult in result.read():
+                    if hanningresult.inputs['maser_detection']:
+                        maser_detection = hanningresult.inputs['maser_detection']
+                        found_hifv_hanning = True
+                        LOG.debug(f'Found maser_detection value of {maser_detection} from hifv_hanning results')
+                        break
+
+            if found_hifv_importdata and found_hifv_hanning:
                 break
-            
+
+        # Alternative that is safer for future reproducability, in my opinion
+        mses = context.observing_run.get_measurement_sets()[0]  # Can we have different spws for different MSes? How is this handled? VDP subtelties
+        spws = mses.get_spectral_windows(science_windows_only=True)
+        specline_spws_list = [str(spw.id) for spw in spws if spw.specline_window]
+        specline_spws = utils.find_ranges(specline_spws_list)
+
         for vis in vislist:
             filename = os.path.basename(vis)
             if filename.endswith('.ms'):
                 filename, filext = os.path.splitext(filename)
             tmpvislist.append(filename)
-        task_string = "    hifv_restoredata (vis=%s, session=%s, ocorr_mode='%s', gainmap=%s, specline_spws='%s')" % (
-            tmpvislist, session_list, ocorr_mode, self.inputs.gainmap, specline_spws)
+        task_string = "    hifv_restoredata (vis=%s, session=%s, ocorr_mode='%s', gainmap=%s, specline_spws='%s', maser_detection=%s)" % (
+            tmpvislist, session_list, ocorr_mode, self.inputs.gainmap, specline_spws, maser_detection)
 
         # Is this a VLASS execution?
         vlassmode = False

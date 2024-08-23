@@ -2,8 +2,6 @@ import os
 import shutil
 import tarfile
 
-from packaging import version
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.restoredata import restoredata
