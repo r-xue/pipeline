@@ -110,7 +110,7 @@ class Hanning(basetask.StandardTaskTemplate):
 
         smoothing_dict = {}
 
-        # If any spws had online smmothing applied, do not smooth any spws
+        # If any spws had online smoothing applied, do not smooth any spws
         if any([spw.sdm_num_bin > 1 for spw in spws]):
             for spw in spws:
                 smoothing_dict[spw.id] = (False, "online smoothing applied")
