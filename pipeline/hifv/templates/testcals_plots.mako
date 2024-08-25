@@ -41,7 +41,7 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
     % endfor
     <%
     if len(spwlist) > 0:
-        spwlist.sort()
+        spwlist.sort(key=lambda x: int(x))
         first_spw = spwlist[0]
     else: 
         first_spw = None

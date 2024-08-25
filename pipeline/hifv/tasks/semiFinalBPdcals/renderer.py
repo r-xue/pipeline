@@ -133,16 +133,17 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
 
             # generate per-SPW semifinalBPdcals plots
             spws = m.get_spectral_windows(science_windows_only=True)
-            summary_plots_per_spw[ms] = []
             spwlist = []
+            per_spw_plots = []
             for spw in spws:
                 if spw.specline_window:
                     plotter = semifinalBPdcalsdisplay.semifinalBPdcalsSpwSummaryChart(context, result, suffix=suffix, spw=spw.id)
                     plots = plotter.plot()
-                    ms = os.path.basename(result.inputs['vis'])
-                    summary_plots_per_spw[ms].extend(plots)
+                    per_spw_plots.extend(plots)
                     spwlist.append(str(spw.id))
-            print(summary_plots_per_spw)
+
+            if per_spw_plots:
+                summary_plots_per_spw[ms].extend(plots)
 
             # generate testdelay plots and JSON file
             plotter = semifinalBPdcalsdisplay.DelaysPerAntennaChart(context, result, suffix=suffix)
