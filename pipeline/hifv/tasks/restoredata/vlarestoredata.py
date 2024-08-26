@@ -4,6 +4,7 @@ import tarfile
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure.utils import conversion 
 from pipeline.h.tasks.restoredata import restoredata
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import casa_tasks
@@ -19,12 +20,10 @@ class VLARestoreDataInputs(restoredata.RestoreDataInputs):
     ocorr_mode = vdp.VisDependentProperty(default='co')
     asis = vdp.VisDependentProperty(default='Receiver CalAtmosphere')
     gainmap = vdp.VisDependentProperty(default=False)
-    specline_spws = vdp.VisDependentProperty(default='none')
-    maser_detection = vdp.VisDependentProperty(default=False)
 
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None,
                  output_dir=None, session=None, vis=None, bdfflags=None, lazy=None, asis=None,
-                 ocorr_mode=None, gainmap=None, specline_spws=None, maser_detection=None):
+                 ocorr_mode=None, gainmap=None):
         super(VLARestoreDataInputs, self).__init__(context, copytoraw=copytoraw,
                                                    products_dir=products_dir, rawdata_dir=rawdata_dir,
                                                    output_dir=output_dir, session=session,
@@ -32,9 +31,6 @@ class VLARestoreDataInputs(restoredata.RestoreDataInputs):
                                                    ocorr_mode=ocorr_mode)
 
         self.gainmap = gainmap
-        self.specline_spws = specline_spws
-        self.maser_detection = maser_detection
-
 
 @task_registry.set_equivalent_casa_task('hifv_restoredata')
 class VLARestoreData(restoredata.RestoreData):
@@ -75,15 +71,32 @@ class VLARestoreData(restoredata.RestoreData):
         else:
             pipemanifest = self._do_get_manifest('*pipeline_manifest.xml', '*cal*pipeline_manifest.xml')
 
+        # Retrieve smoothing and spectral line spws information from the manifest
+        spws_to_smooth = None  # If not found in the manifest, assume old data.
+        specline_spws = ''
+        params = None
+        ms_name = "{}.ms".format(os.path.basename(vislist[0]))
+        for asdm in pipemanifest.get_ous().findall(f".//asdm[@name=\'{ms_name}\']"):
+            params = getattr(asdm.find('restoredata'), 'attrib', None)
+        if params:
+            spws_to_smooth = params.get('smoothed_spws', None)
+            specline_spws = params.get('specline_spws', '')
+            LOG.debug("Found smoothed_spws: {} and specline_spws: {} in the manifest".format(spws_to_smooth, specline_spws))
+        else:
+            LOG.debug("Didn't find smoothed_spws, specline_spws in the manifest.")
+
         # Convert ASDMS assumed to be on disk in rawdata_dir. After this step
         # has been completed the MS and MS.flagversions directories will exist
         # and MS,flagversions will contain a copy of the original MS flags,
         # Flags.Original.
         #    TBD: Add error handling
-        import_results = self._do_importasdm(sessionlist=sessionlist, vislist=vislist)
+        import_results = self._do_importasdm(sessionlist=sessionlist, vislist=vislist, specline_spws=specline_spws)
+
+        if spws_to_smooth is not None:
+            spws_to_smooth = conversion.range_to_list(spws_to_smooth)
 
         for ms in self.inputs.context.observing_run.measurement_sets:
-            self._do_hanningsmooth(maser_detection=self.inputs.maser_detection)
+            self._do_hanningsmooth(spws_to_smooth=spws_to_smooth)
 
         # Restore final MS.flagversions and flags
         self._do_restore_flags(pipemanifest)
@@ -106,14 +119,14 @@ class VLARestoreData(restoredata.RestoreData):
 
     # Override generic method and use an ALMA specific one. Not much difference
     # now but should simplify parameters in future
-    def _do_importasdm(self, sessionlist, vislist):
+    def _do_importasdm(self, sessionlist, vislist, specline_spws):
         inputs = self.inputs
         container = vdp.InputsContainer(
             importdata.VLAImportData, inputs.context,
             vis=vislist, session=sessionlist, save_flagonline=False,
             lazy=inputs.lazy, bdfflags=inputs.bdfflags,
             asis=inputs.asis, ocorr_mode=inputs.ocorr_mode,
-            specline_spws=inputs.specline_spws)
+            specline_spws=specline_spws)
         importdata_task = importdata.VLAImportData(container)
         return self._executor.execute(importdata_task, merge=True)
 
@@ -167,9 +180,9 @@ class VLARestoreData(restoredata.RestoreData):
                 LOG.error("Application of final flags failed for %s" % ms.basename)
                 raise
 
-    def _do_hanningsmooth(self, maser_detection=False):
+    def _do_hanningsmooth(self, spws_to_smooth):
         container = vdp.InputsContainer(hanning.Hanning, self.inputs.context,
-                                        maser_detection=maser_detection)
+                                        spws_to_smooth=spws_to_smooth)
         hanning_task = hanning.Hanning(container)
         return self._executor.execute(hanning_task, merge=True)
 

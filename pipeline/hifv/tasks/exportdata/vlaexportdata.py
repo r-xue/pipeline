@@ -4,10 +4,12 @@ import shutil
 import collections
 import tarfile
 import io
+import xml.etree.cElementTree as eltree
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.exportdata import exportdata
+from pipeline.h.tasks.common import manifest
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -130,6 +132,9 @@ class VLAExportData(exportdata.ExportData):
             recipe_name = self.inputs.context.project_structure.recipe_name
             self._add_to_manifest(manifest_file, auxfproducts, False, [], pipe_aqua_reportfile, oussid, recipe_name)
 
+        # Set specline_spws and smoothed_spw info that was used in the calibration run
+        self._export_specline_smoothing(results, vislist)
+
         return results
 
     def _shorten_spwlist(self, image):
@@ -173,53 +178,14 @@ class VLAExportData(exportdata.ExportData):
         # VLA ocorr_value
         ocorr_mode = 'co'
 
-        # Set specline_spws and maser_detection info that was used in the calibration run
-        specline_spws = 'none'   # default to 'none' if no information
-        maser_detection = False  # default to False if no information
-
-        # Get the valuse used for maser_detect in hifv_hanning from the results
-        hanning_taskname = 'hifv_hanning'
-        LOG.debug('Looking for the value of maser_detect used in hifv_hanning')
-
-        found_hifv_hanning = False
-        for result in reversed(context.results):
-            try:
-                if hasattr(result.read()[0], "pipeline_casa_task"):
-                    thistaskname = result.read()[0].pipeline_casa_task
-                elif hasattr(result.read(), "pipeline_casa_task"):
-                    thistaskname = result.read().pipeline_casa_task
-            except (TypeError, IndexError, AttributeError) as ee:
-                LOG.debug(f'Could not get task name for {result.read()}: {ee}')
-                continue
-
-            if hanning_taskname in thistaskname:
-                for hanningresult in result.read():
-                    if hanningresult.inputs['maser_detection']:
-                        maser_detection = hanningresult.inputs['maser_detection']
-                        found_hifv_hanning = True
-                        LOG.debug(f'Found maser_detection value of {maser_detection} from hifv_hanning results')
-                        break
-
-            if found_hifv_hanning:
-                break
-
-        # Determine the specline_spws for this run
-
-        # hifv_importdata only allows one set of specline_spws to be specified for all MSes, so pick the first MS
-        mses = context.observing_run.get_measurement_sets()[0] 
-        spws = mses.get_spectral_windows(science_windows_only=True)
-        specline_spws_list = [str(spw.id) for spw in spws if spw.specline_window]
-        if len(specline_spws_list) > 0:
-            specline_spws = utils.find_ranges(specline_spws_list)
-
         for vis in vislist:
             filename = os.path.basename(vis)
             if filename.endswith('.ms'):
                 filename, _ = os.path.splitext(filename)
             tmpvislist.append(filename)
 
-        task_string = "    hifv_restoredata (vis=%s, session=%s, ocorr_mode='%s', gainmap=%s, specline_spws='%s', maser_detection=%s)" % (
-            tmpvislist, session_list, ocorr_mode, self.inputs.gainmap, specline_spws, maser_detection)
+        task_string = "    hifv_restoredata (vis=%s, session=%s, ocorr_mode='%s', gainmap=%s)" % (
+            tmpvislist, session_list, ocorr_mode, self.inputs.gainmap)
 
         # Is this a VLASS execution?
         vlassmode = False
@@ -356,3 +322,70 @@ finally:
         tar.close()
 
         return tarfilename
+
+    def _export_specline_smoothing(self, results, vislist):
+        """
+        Export the specline_spws and smoothed_spws information to the manifest
+        """
+
+        # Get which spws were smoothed by hifv_hanning from the results
+        smoothed_spws_dict = {}
+        hanning_taskname = 'hifv_hanning'
+        LOG.debug('Looking for which spws were smoothed by hifv_hanning')
+
+        found_hifv_hanning = False
+        for result in reversed(self.inputs.context.results):
+            try:
+                if hasattr(result.read()[0], "pipeline_casa_task"):
+                    thistaskname = result.read()[0].pipeline_casa_task
+                elif hasattr(result.read(), "pipeline_casa_task"):
+                    thistaskname = result.read().pipeline_casa_task
+            except (TypeError, IndexError, AttributeError) as ee:
+                LOG.debug(f'Could not get task name for {result.read()}: {ee}')
+                continue
+
+            if hanning_taskname in thistaskname:
+                for hanningresult in result.read():
+                    if hanningresult.smoothed_spws:
+                        smoothed_spws_dict = hanningresult.smoothed_spws
+                        found_hifv_hanning = True
+                        LOG.debug('Found smoothed spw information from hifv_hanning results')
+                        break
+
+            if found_hifv_hanning:
+                break
+
+        smoothed_spws = []
+        if smoothed_spws_dict:
+            for spwid, (smoothed, _) in smoothed_spws_dict.items():
+                LOG.debug(f'Found smoothed spw {spwid} with value {smoothed}')
+                if smoothed:
+                    smoothed_spws.append(spwid)
+
+        smoothed_spws_str = ''
+        if len(smoothed_spws) > 0:
+            smoothed_spws_str = utils.find_ranges(smoothed_spws)
+
+        # Determine the specline_spws for this run
+
+        # hifv_importdata only allows one set of specline_spws to be specified for all MSes, so pick the first MS
+        specline_spws = ''
+        mses = self.inputs.context.observing_run.get_measurement_sets()[0]
+        spws = mses.get_spectral_windows(science_windows_only=True)
+        specline_spws_list = [str(spw.id) for spw in spws if spw.specline_window]
+        if len(specline_spws_list) > 0:
+            specline_spws = utils.find_ranges(specline_spws_list)
+
+        # Add the specline_spws and smoothed_spws information to the mainfest
+        manifest_inputs = {}
+        manifest_inputs['specline_spws'] = specline_spws
+        manifest_inputs['smoothed_spws'] = smoothed_spws_str
+
+        pipemanifest = manifest.PipelineManifest('')
+        manifest_file = os.path.join(self.inputs.products_dir, results.manifest)
+        pipemanifest.import_xml(manifest_file)
+
+        for asdm in pipemanifest.get_ous().findall(f".//asdm[@name=\'{vislist[0]}\']"):  
+            newinputs = {key: str(value) for (key, value) in manifest_inputs.items()}  # stringify the values
+            eltree.SubElement(asdm, "restoredata", newinputs)
+        pipemanifest.write(manifest_file)
