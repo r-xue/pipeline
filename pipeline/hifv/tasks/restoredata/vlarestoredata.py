@@ -73,14 +73,14 @@ class VLARestoreData(restoredata.RestoreData):
 
         # Retrieve smoothing and spectral line spws information from the manifest
         spws_to_smooth = None  # If not found in the manifest, assume old data.
-        specline_spws = ''
+        specline_spws = 'none'
         params = None
         ms_name = "{}.ms".format(os.path.basename(vislist[0]))
         for asdm in pipemanifest.get_ous().findall(f".//asdm[@name=\'{ms_name}\']"):
             params = getattr(asdm.find('restoredata'), 'attrib', None)
         if params:
             spws_to_smooth = params.get('smoothed_spws', None)
-            specline_spws = params.get('specline_spws', '')
+            specline_spws = params.get('specline_spws', 'none')
             LOG.debug("Found smoothed_spws: {} and specline_spws: {} in the manifest".format(spws_to_smooth, specline_spws))
         else:
             LOG.debug("Didn't find smoothed_spws, specline_spws in the manifest.")
