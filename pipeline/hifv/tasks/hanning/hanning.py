@@ -34,7 +34,7 @@ class HanningInputs(vdp.StandardInputs):
         self.context = context
         self.vis = vis
         self.maser_detection = maser_detection
-        spws_to_smooth = spws_to_smooth
+        self.spws_to_smooth = spws_to_smooth
 
 
 class HanningResults(basetask.Results):
