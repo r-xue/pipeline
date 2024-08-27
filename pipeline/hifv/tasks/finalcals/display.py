@@ -376,7 +376,7 @@ class finalbpSolAmpPerAntennaPerSpwChart(object):
                                 job = casa_tasks.plotms(vis=self.result.bpcaltable, xaxis='freq', yaxis='amp', field='',
                                                 antenna=antPlot, spw=str(spw.id), timerange='',
                                                 coloraxis='', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
-                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}'.format('finalBPcal.tbl', antName, bandname),
+                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}  Spw: {!s}'.format('finalBPcal.tbl', antName, bandname, str(spw.id)),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                                 xconnector='step')
 
@@ -554,7 +554,7 @@ class finalbpSolPhasePerAntennaPerSpwChart(object):
                                                 antenna=antPlot, spw=str(spw.id), timerange='',
                                                 coloraxis='', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
                                                 symbolshape='circle',
-                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}'.format('finalBPcal.tbl', antName, bandname),
+                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}  Spw: {!s}'.format('finalBPcal.tbl', antName, bandname, str(spw.id)),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                                 xconnector='step')
 
@@ -840,7 +840,7 @@ class finalAmpTimeCalPerAntennaPerSpwChart(object):
                                 job = casa_tasks.plotms(vis=self.result.finalampgaincaltable, xaxis='time', yaxis='amp', field='',
                                                 antenna=antPlot, spw=str(spw.id), timerange='',
                                                 coloraxis='', plotrange=[mintime, maxtime, 0, plotmax], symbolshape='circle',
-                                                title='G table: finalampgaincal.tbl   Antenna: {!s}  Band: {!s}'.format(antName, bandname),
+                                                title='G table: finalampgaincal.tbl   Antenna: {!s}  Band: {!s}  Spw: {!s}'.format(antName, bandname, str(spw.id)),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                                 xconnector='line')
 
@@ -1113,7 +1113,7 @@ class finalPhaseGainCalPerAntennaPerSpwChart(object):
                                 job = casa_tasks.plotms(vis=self.result.finalphasegaincaltable, xaxis='time', yaxis='phase', field='',
                                                 antenna=antPlot, spw=str(spw.id), timerange='',
                                                 coloraxis='', plotrange=[mintime, maxtime, -180, 180], symbolshape='circle',
-                                                title='G table: finalphasegaincal.tbl   Antenna: {!s}  Band: {!s}'.format(antName, bandname),
+                                                title='G table: finalphasegaincal.tbl   Antenna: {!s}  Band: {!s}  Spw: {!s}'.format(antName, bandname, str(spw.id)),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                                 xconnector='line')
 

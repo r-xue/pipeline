@@ -662,7 +662,7 @@ class semifinalbpSolPhasePerAntennaPerSpwChart(object):
                                                 spw=str(spw.id),
                                                 coloraxis='', plotrange=[0, 0, -phaseplotmax, phaseplotmax],
                                                 symbolshape='circle',
-                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}'.format('BPcal.tbl', antName, bandname),
+                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}  Spw: {!s}'.format('BPcal.tbl', antName, bandname, str(spw.id)),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                                 xconnector='step')
 
