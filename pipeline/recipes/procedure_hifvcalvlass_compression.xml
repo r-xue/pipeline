@@ -5,6 +5,10 @@
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specline_spws</Keyword>
+                <Value xmlns="">none</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
