@@ -27,14 +27,16 @@ class VlaMstransformInputs(mst.MstransformInputs):
         return vis_root + '_targets.ms'
 
     spw_line = vdp.VisDependentProperty(default='')
+    omit_line_ms = vdp.VisDependentProperty(default=False)
 
     def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None,
-                 spw_line=None, chanbin=None, timebin=None, outputvis_for_line=None):
+                 spw_line=None, chanbin=None, timebin=None, outputvis_for_line=None, omit_line_ms=None):
 
         super().__init__(context, output_dir, vis, outputvis, field, intent, spw, chanbin, timebin)
         self.spw_line = spw_line
         self.outputvis = outputvis
         self.outputvis_for_line = outputvis_for_line
+        self.omit_line_ms = omit_line_ms
 
 
 @task_registry.set_equivalent_casa_task('hifv_mstransform')
@@ -50,6 +52,7 @@ class VlaMstransform(mst.Mstransform):
         # Remove input member variables that don't belong as input to the mstransform task
         mstransform_args.pop('outputvis_for_line', None)
         mstransform_args.pop('spw_line', None)
+        mstransform_args.pop('omit_line_ms', None)
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
         try:
@@ -60,8 +63,11 @@ class VlaMstransform(mst.Mstransform):
         # Copy across requisite XML files.
         mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis)
 
-        # Create output MS for line data (_target.ms)
-        produce_lines_ms = self._create_targets_ms(inputs, mstransform_args)
+        produce_lines_ms = False
+
+        if not self.inputs.omit_line_ms:
+            # Create output MS for line data (_target.ms)
+            produce_lines_ms = self._create_targets_ms(inputs, mstransform_args)
 
         # Create the results structure
         result = VlaMstransformResults(vis=inputs.vis, outputvis=inputs.outputvis,
@@ -78,7 +84,7 @@ class VlaMstransform(mst.Mstransform):
 
         # Check for existence of the output vis for line processing.
         if not os.path.exists(result.outputvis_for_line):
-            LOG.info('Could not create science targets cont+line MS for line imaging: %s. Subsequent stages will not do line imaging.' % (os.path.basename(result.outputvis_for_line)))
+            LOG.info('Did not create science targets cont+line MS for line imaging: %s. Subsequent stages will not do line imaging.' % (os.path.basename(result.outputvis_for_line)))
 
         # Import the new measurement sets.
         try:

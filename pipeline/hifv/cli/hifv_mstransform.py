@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=None, intent=None, spw=None, spw_line=None, chanbin=None, timebin=None):
+def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=None, intent=None, spw=None, spw_line=None, chanbin=None, timebin=None, omit_line_ms=None):
 
     """
     hifv_mstransform ---- Create new MeasurementSets for science target imaging
@@ -62,6 +62,8 @@ def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=No
     timebin             Bin width for time averaging. If timebin > 0s then
                         timeaverage is automatically switched to True.
 
+    omit_line_ms        If True, don't make the line ms (_targets.ms)
+                        
     --------- examples -----------------------------------------------------------
 
 
