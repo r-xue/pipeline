@@ -11,7 +11,12 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-    
+
+    <ProcessingCommand>
+        <Command xmlns="">hifv_flagtargetsdata</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_mstransform</Command>
