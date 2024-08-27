@@ -143,7 +143,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
                     spwlist.append(str(spw.id))
 
             if per_spw_plots:
-                summary_plots_per_spw[ms] = {}
+                summary_plots_per_spw[ms] = []
                 summary_plots_per_spw[ms].extend(plots)
 
             # generate testdelay plots and JSON file
