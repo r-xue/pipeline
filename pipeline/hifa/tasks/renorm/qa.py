@@ -28,6 +28,7 @@ class RenormQAHandler(pqa.QAPlugin):
         # per spw needs to be fetched from the stats dictionary in the spw
         # loop below (result.stats[source][spw]['threshold']).
         threshold = result.threshold
+
         if result.exception is not None:
             score = 0.0
             shortmsg = 'Failure in renormalization'
@@ -186,3 +187,23 @@ class RenormListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
+
+        if all([r.alltdm for r in result]):
+            # PIPE-2283: no QA score for TDM data
+            shortmsg = "No FDM spectral windows are present."
+            longmsg = "No FDM spectral windows are present, so the amplitude scale does not need to be assessed for renormalization."
+            result.qa.pool.append(pqa.QAScore(None, longmsg=longmsg, shortmsg=shortmsg))
+            return
+        # add MOUS level score for band 9/10 data
+        band9_10_in_ms = []
+        for ms in context.observing_run.get_measurement_sets():
+            band9_10_in_ms.append(
+                any([spw for spw in ms.get_spectral_windows(science_windows_only=True) 
+                     if spw.band in ('ALMA Band 9', 'ALMA Band 10')])
+                     )
+        if any(band9_10_in_ms):
+            # PIPE-2283: blue score for band 9/10 FDM data
+            score = 0.9
+            shortmsg = "Double Sideband Receivers using FDM mode."
+            longmsg = "Double Sideband Receivers using FDM mode; check results carefully."
+            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
