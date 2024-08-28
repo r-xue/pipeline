@@ -46,11 +46,11 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
     else: 
         first_spw = None
     %>
+    <a href="#topofpage">Top of page </a> | (Click to Jump)<br><br>
     % if first_spw is not None: 
-        <a href="#${band}-${first_spw}">Per-Spw for spectral line spws</a> | <a href="#topofpage">Top of page </a> | (Click to Jump)<br><br>
+        <a href="#${band}-${first_spw}">${band}-band per-spw</a><br><br>
             ${band}-band
      % else:
-         <a href="#topofpage">Top of page </a> | (Click to Jump)<br><br>
             ${band}-band
     % endif 
     </h4> <br>

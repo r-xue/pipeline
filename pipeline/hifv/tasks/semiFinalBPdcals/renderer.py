@@ -144,7 +144,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
 
             if per_spw_plots:
                 summary_plots_per_spw[ms] = []
-                summary_plots_per_spw[ms].extend(plots)
+                summary_plots_per_spw[ms].extend(per_spw_plots)
 
             # generate testdelay plots and JSON file
             plotter = semifinalBPdcalsdisplay.DelaysPerAntennaChart(context, result, suffix=suffix)
