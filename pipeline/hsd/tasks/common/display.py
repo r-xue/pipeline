@@ -1645,16 +1645,5 @@ def ch_to_freq(ch: float, frequency: List[float]) -> float:
     Returns:
         float: Frequency value corresponding to ch.
     """
-    ich = int(ch)
-    offset_min = ch - float(ich)
-    if ich < 0:
-        freq = frequency[0]
-    elif ich >= len(frequency):
-        freq = frequency[-1]
-    elif offset_min == 0 or ich == len(frequency) - 1:
-        freq = frequency[ich]
-    else:
-        jch = ich + 1
-        df = frequency[jch] - frequency[ich]
-        freq = frequency[ich] + offset_min * df
-    return freq
+    return np.interp(ch, np.arange(len(frequency)), frequency, left=frequency[0], right=frequency[-1])
+
