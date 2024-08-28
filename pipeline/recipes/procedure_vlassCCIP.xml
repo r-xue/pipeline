@@ -9,10 +9,6 @@
                 <Keyword xmlns="">nocopy</Keyword>
                 <Value xmlns="">True</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">specline_spws</Keyword>
-                <Value xmlns="">none</Value>
-            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
