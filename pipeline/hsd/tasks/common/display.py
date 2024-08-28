@@ -1524,23 +1524,23 @@ class SDSparseMapPlotter(object):
             (ch1, ch2) = self.edge
             LOG.info('ch1, ch2: [%s, %s]' % (ch1,ch2))
             fedge0 = ch_to_freq(0, frequency)
-            fedge1 = ch_to_freq(ch1-1, frequency)
-            fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
-            fedge3 = ch_to_freq(len(frequency)-1, frequency)
+            fedge1 = ch_to_freq(ch1 - 1 + 0.5, frequency)
+            fedge2 = ch_to_freq(len(frequency) - ch2 - 1 - 0.5, frequency)
+            fedge3 = ch_to_freq(len(frequency) - 1, frequency)
             axes.axvspan(fedge0, fedge1, color='lightgray')
             axes.axvspan(fedge2, fedge3, color='lightgray')
             fedge_span = (fedge0, fedge1, fedge2, fedge3)
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
-                fmin = ch_to_freq(chmin, frequency)
-                fmax = ch_to_freq(chmax, frequency)
+                fmin = ch_to_freq(chmin - 0.5, frequency)
+                fmax = ch_to_freq(chmax + 0.5, frequency)
                 LOG.debug('plotting line range for mean spectrum: [%s, %s]', chmin, chmax)
                 axes.axvspan(fmin, fmax, color='cyan')
         if self.deviation_mask is not None:
             LOG.debug('plotting deviation mask %s', self.deviation_mask)
             for chmin, chmax in self.deviation_mask:
-                fmin = ch_to_freq(chmin, frequency)
-                fmax = ch_to_freq(chmax, frequency)
+                fmin = ch_to_freq(chmin - 0.5, frequency)
+                fmax = ch_to_freq(chmax + 0.5, frequency)
                 axes.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
 
         if overlay_atm_transmission:
@@ -1596,8 +1596,8 @@ class SDSparseMapPlotter(object):
                     axes.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
                     if self.lines_map is not None and self.lines_map[x][y] is not None:
                         for chmin, chmax in self.lines_map[x][y]:
-                            fmin = ch_to_freq(chmin, frequency)
-                            fmax = ch_to_freq(chmax, frequency)
+                            fmin = ch_to_freq(chmin - 0.5, frequency)
+                            fmax = ch_to_freq(chmax + 0.5, frequency)
                             LOG.debug('plotting line range for %s, %s: [%s, %s]', x, y, chmin, chmax)
                             axes.axvspan(fmin, fmax, color='cyan')
                     if fedge_span is not None:
