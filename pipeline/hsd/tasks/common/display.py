@@ -1451,6 +1451,10 @@ class SDSparseMapPlotter(object):
 
         global_xmin = min(frequency[0], frequency[-1])
         global_xmax = max(frequency[0], frequency[-1])
+        channel_width = abs(frequency[1] - frequency[0])
+        spw_width = channel_width * len(frequency)
+        global_xmin -= spw_width * 0.01
+        global_xmax += spw_width * 0.01
         LOG.debug('global_xmin=%s, global_xmax=%s', global_xmin, global_xmax)
 
         # Auto scaling
