@@ -201,6 +201,7 @@
         </ParameterSet>
     </ProcessingCommand>
 
+    <!-- line imaging -->
     <ProcessingCommand>
         <Command xmlns="">hif_checkproductsize</Command>
         <ParameterSet>
@@ -219,7 +220,6 @@
         </ParameterSet>
     </ProcessingCommand>
 
-    <!-- line imaging -->
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>

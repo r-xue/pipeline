@@ -201,6 +201,7 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
+
     <ProcessingCommand>
         <Command xmlns="">hif_checkproductsize</Command>
         <ParameterSet>
@@ -255,6 +256,10 @@
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">3.0</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -334,6 +339,10 @@
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">3.0</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
