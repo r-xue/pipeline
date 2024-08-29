@@ -168,7 +168,7 @@
         <Command xmlns="">hifv_mstransform</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">omit_line_ms</Keyword>
+                <Keyword xmlns="">omit_contline_ms</Keyword>
                 <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>
