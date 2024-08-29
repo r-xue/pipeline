@@ -1523,18 +1523,19 @@ class SDSparseMapPlotter(object):
                 os.path.basename(figfile)
             )
             return False
-        fedge_span = None
+        fedge_span = np.array([0, 0, 0, 0], dtype=float)
         if self.edge is not None:
             (ch1, ch2) = self.edge
-            LOG.info('ch1, ch2: [%s, %s]' % (ch1,ch2))
+            LOG.info('ch1, ch2: [%s, %s]' % (ch1, ch2))
             # TODO: consolidate the following ch_to_freq calls into single call
-            fedge0 = ch_to_freq(0, frequency)
-            fedge1 = ch_to_freq(ch1 - 1 + 0.5, frequency)
-            fedge2 = ch_to_freq(len(frequency) - ch2 - 1 - 0.5, frequency)
-            fedge3 = ch_to_freq(len(frequency) - 1, frequency)
-            axes.axvspan(fedge0, fedge1, color='lightgray')
-            axes.axvspan(fedge2, fedge3, color='lightgray')
-            fedge_span = (fedge0, fedge1, fedge2, fedge3)
+            if ch1 > 0:
+                fedge_span[0] = ch_to_freq(-0.5, frequency)
+                fedge_span[1] = ch_to_freq(ch1 - 1 + 0.5, frequency)
+                axes.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
+            if ch2 > 0:
+                fedge_span[2] = ch_to_freq(len(frequency) - 1 - (ch2 - 1) - 0.5, frequency)
+                fedge_span[3] = ch_to_freq(len(frequency) - 1 + 0.5, frequency)
+                axes.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
         if self.lines_averaged is not None:
             # TODO: consolidate the ch_to_freq calls in the loop into single call
             for chmin, chmax in self.lines_averaged:
@@ -1608,7 +1609,7 @@ class SDSparseMapPlotter(object):
                             fmax = ch_to_freq(chmax + 0.5, frequency)
                             LOG.debug('plotting line range for %s, %s: [%s, %s]', x, y, chmin, chmax)
                             axes.axvspan(fmin, fmax, color='cyan')
-                    if fedge_span is not None:
+                    if any(fedge_span > 0):
                         axes.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
                         axes.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
 
