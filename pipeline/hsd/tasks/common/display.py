@@ -1654,5 +1654,4 @@ def ch_to_freq(ch: float, frequency: List[float]) -> float:
     Returns:
         float: Frequency value corresponding to ch.
     """
-    return np.interp(ch, np.arange(len(frequency)), frequency, left=frequency[0], right=frequency[-1])
-
+    return np.interp(ch, np.arange(len(frequency)), frequency)
