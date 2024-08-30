@@ -327,51 +327,28 @@ finally:
         """
         Export the specline_spws and smoothed_spws information to the manifest
         """
+        # hifv_importdata only allows one set of specline_spws to be specified for all MSes, so pick the first MS
+        mses = self.inputs.context.observing_run.get_measurement_sets()[0]
+        spws = mses.get_spectral_windows(science_windows_only=True)
 
-        # Get which spws were smoothed by hifv_hanning from the results
-        smoothed_spws_dict = {}
-        hanning_taskname = 'hifv_hanning'
-        LOG.debug('Looking for which spws were smoothed by hifv_hanning')
-
-        found_hifv_hanning = False
-        for result in reversed(self.inputs.context.results):
-            try:
-                if hasattr(result.read()[0], "pipeline_casa_task"):
-                    thistaskname = result.read()[0].pipeline_casa_task
-                elif hasattr(result.read(), "pipeline_casa_task"):
-                    thistaskname = result.read().pipeline_casa_task
-            except (TypeError, IndexError, AttributeError) as ee:
-                LOG.debug(f'Could not get task name for {result.read()}: {ee}')
-                continue
-
-            if hanning_taskname in thistaskname:
-                for hanningresult in result.read():
-                    if hanningresult.smoothed_spws:
-                        smoothed_spws_dict = hanningresult.smoothed_spws
-                        found_hifv_hanning = True
-                        LOG.debug('Found smoothed spw information from hifv_hanning results')
-                        break
-
-            if found_hifv_hanning:
-                break
+        with casa_tools.TableReader(mses.name + '/SPECTRAL_WINDOW') as table:
+            if 'OFFLINE_HANNING_SMOOTH' in table.colnames():
+                hanning_smoothed = table.getcol('OFFLINE_HANNING_SMOOTH')
+                LOG.debug('Found smoothed spw information in SPECTRAL_WINDOW table')
+            else:
+                LOG.info("Could not find hanning smoothing information in SPECTRAL WINDOW table.")
 
         smoothed_spws = []
-        if smoothed_spws_dict:
-            for spwid, (smoothed, _) in smoothed_spws_dict.items():
-                LOG.debug(f'Found smoothed spw {spwid} with value {smoothed}')
-                if smoothed:
-                    smoothed_spws.append(spwid)
+        for spw in spws:
+            real_spwid = self.inputs.context.observing_run.virtual2real_spw_id(spw.id, mses)
+            if hanning_smoothed[real_spwid]:
+                smoothed_spws.append(spw.id)
 
         smoothed_spws_str = ''
         if len(smoothed_spws) > 0:
             smoothed_spws_str = utils.find_ranges(smoothed_spws)
 
-        # Determine the specline_spws for this run
-
-        # hifv_importdata only allows one set of specline_spws to be specified for all MSes, so pick the first MS
         specline_spws = ''
-        mses = self.inputs.context.observing_run.get_measurement_sets()[0]
-        spws = mses.get_spectral_windows(science_windows_only=True)
         specline_spws_list = [str(spw.id) for spw in spws if spw.specline_window]
         if len(specline_spws_list) > 0:
             specline_spws = utils.find_ranges(specline_spws_list)
@@ -385,7 +362,7 @@ finally:
         manifest_file = os.path.join(self.inputs.products_dir, results.manifest)
         pipemanifest.import_xml(manifest_file)
 
-        for asdm in pipemanifest.get_ous().findall(f".//asdm[@name=\'{vislist[0]}\']"):  
+        for asdm in pipemanifest.get_ous().findall(f".//asdm[@name=\'{vislist[0]}\']"):
             newinputs = {key: str(value) for (key, value) in manifest_inputs.items()}  # stringify the values
             eltree.SubElement(asdm, "restoredata", newinputs)
         pipemanifest.write(manifest_file)

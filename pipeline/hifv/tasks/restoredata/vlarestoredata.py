@@ -4,7 +4,7 @@ import tarfile
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure.utils import conversion 
+from pipeline.infrastructure.utils import conversion
 from pipeline.h.tasks.restoredata import restoredata
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import casa_tasks
@@ -81,9 +81,15 @@ class VLARestoreData(restoredata.RestoreData):
         if params:
             spws_to_smooth = params.get('smoothed_spws', None)
             specline_spws = params.get('specline_spws', 'none')
+
             LOG.debug("Found smoothed_spws: {} and specline_spws: {} in the manifest".format(spws_to_smooth, specline_spws))
         else:
             LOG.debug("Didn't find smoothed_spws, specline_spws in the manifest.")
+
+        # If there was an empty string, indicating no specline spws, in the manifest,
+        # set the specline_spws to 'none' for hifv_importdata.
+        if len(specline_spws) == 0:
+            specline_spws = 'none'
 
         # Convert ASDMS assumed to be on disk in rawdata_dir. After this step
         # has been completed the MS and MS.flagversions directories will exist
