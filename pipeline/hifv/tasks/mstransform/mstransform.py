@@ -63,15 +63,13 @@ class VlaMstransform(mst.Mstransform):
         # Copy across requisite XML files.
         mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis)
 
-        produce_lines_ms = False
-
         if not self.inputs.omit_contline_ms:
             # Create output MS for line data (_target.ms)
-            produce_lines_ms = self._create_targets_ms(inputs, mstransform_args)
+            self._create_targets_ms(inputs, mstransform_args)
 
         # Create the results structure
         result = VlaMstransformResults(vis=inputs.vis, outputvis=inputs.outputvis,
-                                       outputvis_for_line=inputs.outputvis_for_line, produce_lines_ms=produce_lines_ms)
+                                       outputvis_for_line=inputs.outputvis_for_line)
 
         return result
 
@@ -186,10 +184,9 @@ class VlaMstransform(mst.Mstransform):
 
 
 class VlaMstransformResults(mst.MstransformResults):
-    def __init__(self, vis, outputvis, outputvis_for_line, produce_lines_ms=False):
+    def __init__(self, vis, outputvis, outputvis_for_line):
         super().__init__(vis, outputvis)
         self.outputvis_for_line = outputvis_for_line
-        self.produce_lines_ms = produce_lines_ms
 
     def merge_with_context(self, context):
         # Check for an output vis

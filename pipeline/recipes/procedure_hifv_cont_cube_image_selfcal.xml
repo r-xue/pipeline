@@ -5,10 +5,6 @@
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
         <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">datacolumns</Keyword>
-                <Value xmlns="">{'data':'raw','corrected':'regcal_contline_all'}</Value>
-            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
