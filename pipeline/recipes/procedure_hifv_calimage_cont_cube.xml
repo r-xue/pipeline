@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifv_spectral_lines_selfcal</ProcedureTitle>
+    <ProcedureTitle>hifv_calimage_cont_cube</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
@@ -56,7 +56,7 @@
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_checkflag</Command>
         <ParameterSet>
@@ -66,13 +66,13 @@
             </Parameter>            
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_semiFinalBPdcals</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_checkflag</Command>
         <ParameterSet>
@@ -249,89 +249,6 @@
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cube</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">hm_cyclefactor</Keyword>
-                <Value xmlns="">3.0</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_checkproductsize</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">maximsize</Keyword>
-                <Value xmlns="">16384</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_selfcal</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <!-- cont imaging -->
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cont</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">selfcal</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">hm_cyclefactor</Keyword>
-                <Value xmlns="">3.0</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_checkproductsize</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">maxproductsize</Keyword>
-                <Value xmlns="">100.0</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">maxcubesize</Keyword>
-                <Value xmlns="">20.0</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">maxcubelimit</Keyword>
-                <Value xmlns="">40.0</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cube</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">selfcal</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
