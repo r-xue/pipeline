@@ -20,7 +20,7 @@ rsc_path = ""
         <thead>
            <tr>
             <th scope="col">Original Measurement Set</th>
-            <th scope="col">Science Targets Continuum+Line Measurement Set For Continuum Imaging</th>
+            <th scope="col">Science Targets Measurement Set For Continuum Imaging</th>
             <th scope="col">Science Targets Continuum+Line Measurement Set For Line Imaging</th>
           </tr>
         </thead>
