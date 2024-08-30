@@ -4,6 +4,7 @@ from typing import Type, Dict
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+from pipeline.infrastructure.utils import conversion
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -36,6 +37,8 @@ class HanningInputs(vdp.StandardInputs):
         self.maser_detection = maser_detection
         self.spws_to_smooth = spws_to_smooth
 
+        if self.spws_to_smooth is not None:
+            self.spws_to_smooth = conversion.range_to_list(self.spws_to_smooth)
 
 class HanningResults(basetask.Results):
     """Results class for the hifv_hanning pipeline smoothing task.  Used on VLA measurement sets.

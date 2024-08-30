@@ -98,9 +98,6 @@ class VLARestoreData(restoredata.RestoreData):
         #    TBD: Add error handling
         import_results = self._do_importasdm(sessionlist=sessionlist, vislist=vislist, specline_spws=specline_spws)
 
-        if spws_to_smooth is not None:
-            spws_to_smooth = conversion.range_to_list(spws_to_smooth)
-
         for ms in self.inputs.context.observing_run.measurement_sets:
             self._do_hanningsmooth(spws_to_smooth=spws_to_smooth)
 

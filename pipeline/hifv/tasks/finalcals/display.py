@@ -1048,7 +1048,6 @@ class finalPhaseGainCalPerAntennaChart(object):
         return [p for p in plots if p is not None]
 
 
-# TODO: come back to this one
 class finalPhaseGainCalPerAntennaPerSpwChart(object):
     def __init__(self, context, result):
         self.context = context
