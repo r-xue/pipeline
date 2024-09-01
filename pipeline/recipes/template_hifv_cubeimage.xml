@@ -258,10 +258,6 @@
     <!-- end of the continuum imaging section -->
     {{/cont_image}}
 
-    <!-- end of the selfcal section -->
-    {{/selfcal}}    
-
-
     {{#cube_image}}
     <ProcessingCommand>
         <Command xmlns="">hif_checkproductsize</Command>
@@ -342,6 +338,9 @@
     {{/cube_list}}
     <!-- end loop -->
     {{/cube_image}}
+    <!-- end of the selfcal section -->
+    {{/selfcal}}
+
     {{#cont_image}}
     <ProcessingCommand>
         <Command xmlns="">hifv_pbcor</Command>
