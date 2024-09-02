@@ -1451,6 +1451,10 @@ class SDSparseMapPlotter(object):
 
         global_xmin = min(frequency[0], frequency[-1])
         global_xmax = max(frequency[0], frequency[-1])
+        channel_width = abs(frequency[1] - frequency[0])
+        spw_width = channel_width * len(frequency)
+        global_xmin -= spw_width * 0.01
+        global_xmax += spw_width * 0.01
         LOG.debug('global_xmin=%s, global_xmax=%s', global_xmin, global_xmax)
 
         # Auto scaling
@@ -1519,28 +1523,32 @@ class SDSparseMapPlotter(object):
                 os.path.basename(figfile)
             )
             return False
-        fedge_span = None
+        fedge_span = np.array([0, 0, 0, 0], dtype=float)
         if self.edge is not None:
             (ch1, ch2) = self.edge
-            LOG.info('ch1, ch2: [%s, %s]' % (ch1,ch2))
-            fedge0 = ch_to_freq(0, frequency)
-            fedge1 = ch_to_freq(ch1-1, frequency)
-            fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
-            fedge3 = ch_to_freq(len(frequency)-1, frequency)
-            axes.axvspan(fedge0, fedge1, color='lightgray')
-            axes.axvspan(fedge2, fedge3, color='lightgray')
-            fedge_span = (fedge0, fedge1, fedge2, fedge3)
+            LOG.info('ch1, ch2: [%s, %s]' % (ch1, ch2))
+            # TODO: consolidate the following ch_to_freq calls into single call
+            if ch1 > 0:
+                fedge_span[0] = ch_to_freq(-0.5, frequency)
+                fedge_span[1] = ch_to_freq(ch1 - 1 + 0.5, frequency)
+                axes.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
+            if ch2 > 0:
+                fedge_span[2] = ch_to_freq(len(frequency) - 1 - (ch2 - 1) - 0.5, frequency)
+                fedge_span[3] = ch_to_freq(len(frequency) - 1 + 0.5, frequency)
+                axes.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
         if self.lines_averaged is not None:
+            # TODO: consolidate the ch_to_freq calls in the loop into single call
             for chmin, chmax in self.lines_averaged:
-                fmin = ch_to_freq(chmin, frequency)
-                fmax = ch_to_freq(chmax, frequency)
+                fmin = ch_to_freq(chmin - 0.5, frequency)
+                fmax = ch_to_freq(chmax + 0.5, frequency)
                 LOG.debug('plotting line range for mean spectrum: [%s, %s]', chmin, chmax)
                 axes.axvspan(fmin, fmax, color='cyan')
         if self.deviation_mask is not None:
             LOG.debug('plotting deviation mask %s', self.deviation_mask)
+            # TODO: consolidate the ch_to_freq calls in the loop into single call
             for chmin, chmax in self.deviation_mask:
-                fmin = ch_to_freq(chmin, frequency)
-                fmax = ch_to_freq(chmax, frequency)
+                fmin = ch_to_freq(chmin - 0.5, frequency)
+                fmax = ch_to_freq(chmax + 0.5, frequency)
                 axes.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
 
         if overlay_atm_transmission:
@@ -1595,12 +1603,13 @@ class SDSparseMapPlotter(object):
                 if map_data[x][y].min() > NoDataThreshold:
                     axes.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
                     if self.lines_map is not None and self.lines_map[x][y] is not None:
+                        # TODO: consolidate the ch_to_freq calls in the loop into single call
                         for chmin, chmax in self.lines_map[x][y]:
-                            fmin = ch_to_freq(chmin, frequency)
-                            fmax = ch_to_freq(chmax, frequency)
+                            fmin = ch_to_freq(chmin - 0.5, frequency)
+                            fmax = ch_to_freq(chmax + 0.5, frequency)
                             LOG.debug('plotting line range for %s, %s: [%s, %s]', x, y, chmin, chmax)
                             axes.axvspan(fmin, fmax, color='cyan')
-                    if fedge_span is not None:
+                    if any(fedge_span > 0):
                         axes.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
                         axes.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
 
@@ -1645,16 +1654,4 @@ def ch_to_freq(ch: float, frequency: List[float]) -> float:
     Returns:
         float: Frequency value corresponding to ch.
     """
-    ich = int(ch)
-    offset_min = ch - float(ich)
-    if ich < 0:
-        freq = frequency[0]
-    elif ich >= len(frequency):
-        freq = frequency[-1]
-    elif offset_min == 0 or ich == len(frequency) - 1:
-        freq = frequency[ich]
-    else:
-        jch = ich + 1
-        df = frequency[jch] - frequency[ich]
-        freq = frequency[ich] + offset_min * df
-    return freq
+    return np.interp(ch, np.arange(len(frequency)), frequency)
