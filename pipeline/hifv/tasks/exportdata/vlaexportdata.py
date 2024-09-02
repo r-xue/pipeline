@@ -358,7 +358,10 @@ finally:
         # Add the specline_spws and smoothed_spws information to the mainfest
         manifest_inputs = {}
         manifest_inputs['specline_spws'] = specline_spws
-        manifest_inputs['smoothed_spws'] = smoothed_spws_str
+
+        # Only include hanning smoothing information if available
+        if hanning_smoothed is not None:
+            manifest_inputs['smoothed_spws'] = smoothed_spws_str
 
         pipemanifest = manifest.PipelineManifest('')
         manifest_file = os.path.join(self.inputs.products_dir, results.manifest)

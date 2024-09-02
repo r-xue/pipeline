@@ -40,6 +40,7 @@ class HanningInputs(vdp.StandardInputs):
         if self.spws_to_smooth is not None:
             self.spws_to_smooth = conversion.range_to_list(self.spws_to_smooth)
 
+
 class HanningResults(basetask.Results):
     """Results class for the hifv_hanning pipeline smoothing task.  Used on VLA measurement sets.
 
