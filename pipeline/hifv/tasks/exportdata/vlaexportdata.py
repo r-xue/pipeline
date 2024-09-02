@@ -331,6 +331,7 @@ finally:
         mses = self.inputs.context.observing_run.get_measurement_sets()[0]
         spws = mses.get_spectral_windows(science_windows_only=True)
 
+        hanning_smoothed = None
         with casa_tools.TableReader(mses.name + '/SPECTRAL_WINDOW') as table:
             if 'OFFLINE_HANNING_SMOOTH' in table.colnames():
                 hanning_smoothed = table.getcol('OFFLINE_HANNING_SMOOTH')
@@ -339,10 +340,11 @@ finally:
                 LOG.info("Could not find hanning smoothing information in SPECTRAL WINDOW table.")
 
         smoothed_spws = []
-        for spw in spws:
-            real_spwid = self.inputs.context.observing_run.virtual2real_spw_id(spw.id, mses)
-            if hanning_smoothed[real_spwid]:
-                smoothed_spws.append(spw.id)
+        if hanning_smoothed is not None:
+            for spw in spws:
+                real_spwid = self.inputs.context.observing_run.virtual2real_spw_id(spw.id, mses)
+                if hanning_smoothed[real_spwid]:
+                    smoothed_spws.append(spw.id)
 
         smoothed_spws_str = ''
         if len(smoothed_spws) > 0:
