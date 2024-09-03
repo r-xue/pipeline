@@ -363,6 +363,7 @@ class finalbpSolAmpPerAntennaPerSpwChart(object):
 
                         figfile = os.path.join(stage_dir, filename)
 
+                        plot_failed = False
                         if not os.path.exists(figfile):
                             try:
                                 # Get antenna name
@@ -383,23 +384,27 @@ class finalbpSolAmpPerAntennaPerSpwChart(object):
                                 job.execute()
 
                             except Exception as ex:
+                                plot_failed = True
                                 LOG.warning("Unable to plot " + filename + str(ex))
                         else:
                             LOG.debug('Using existing ' + filename + ' plot.')
 
-                        try:
-                            real_figfile = figfile
+                        if not plot_failed:
+                            try:
+                                real_figfile = figfile
 
-                            plot = logger.Plot(real_figfile, x_axis='Freq', y_axis='Amp', field='',
-                                            parameters={'spw': str(spw.id),
-                                                        'pol': '',
-                                                        'ant': antName,
-                                                        'bandname': bandname,
-                                                        'type': 'BP Amp solution',
-                                                        'file': os.path.basename(real_figfile)})
-                            plots.append(plot)
-                        except Exception as ex:
-                            LOG.warning("Unable to add plot to stack.  " + str(ex))
+                                plot = logger.Plot(real_figfile, x_axis='Freq', y_axis='Amp', field='',
+                                                parameters={'spw': str(spw.id),
+                                                            'pol': '',
+                                                            'ant': antName,
+                                                            'bandname': bandname,
+                                                            'type': 'BP Amp solution',
+                                                            'file': os.path.basename(real_figfile)})
+                                plots.append(plot)
+                            except Exception as ex:
+                                LOG.warning("Unable to add plot to stack.  " + str(ex))
+                                plots.append(None)
+                        else:
                             plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -540,6 +545,7 @@ class finalbpSolPhasePerAntennaPerSpwChart(object):
 
                         figfile = os.path.join(stage_dir, filename)
 
+                        plot_failed = False
                         if not os.path.exists(figfile):
                             try:
                                 # Get antenna name
@@ -561,23 +567,27 @@ class finalbpSolPhasePerAntennaPerSpwChart(object):
                                 job.execute()
 
                             except Exception as ex:
+                                plot_failed = True
                                 LOG.warning("Unable to plot " + filename + str(ex))
                         else:
                             LOG.debug('Using existing ' + filename + ' plot.')
 
-                        try:
-                            real_figfile = figfile
+                        if not plot_failed:
+                            try:
+                                real_figfile = figfile
 
-                            plot = logger.Plot(real_figfile, x_axis='Freq', y_axis='Phase', field='',
-                                            parameters={'spw': str(spw.id),
-                                                        'pol': '',
-                                                        'ant': antName,
-                                                        'bandname': bandname,
-                                                        'type': 'BP Phase solution',
-                                                        'file': os.path.basename(real_figfile)})
-                            plots.append(plot)
-                        except Exception as ex:
-                            LOG.warning("Unable to add plot to stack.  " + str(ex))
+                                plot = logger.Plot(real_figfile, x_axis='Freq', y_axis='Phase', field='',
+                                                parameters={'spw': str(spw.id),
+                                                            'pol': '',
+                                                            'ant': antName,
+                                                            'bandname': bandname,
+                                                            'type': 'BP Phase solution',
+                                                            'file': os.path.basename(real_figfile)})
+                                plots.append(plot)
+                            except Exception as ex:
+                                LOG.warning("Unable to add plot to stack.  " + str(ex))
+                                plots.append(None)
+                        else:
                             plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -827,6 +837,7 @@ class finalAmpTimeCalPerAntennaPerSpwChart(object):
 
                         figfile = os.path.join(stage_dir, filename)
 
+                        plot_failed = False
                         if not os.path.exists(figfile):
                             try:
                                 # Get antenna name
@@ -847,21 +858,25 @@ class finalAmpTimeCalPerAntennaPerSpwChart(object):
                                 job.execute()
 
                             except Exception as ex:
+                                plot_failed = True
                                 LOG.warning("Unable to plot " + filename + str(ex))
                         else:
                             LOG.debug('Using existing ' + filename + ' plot.')
 
-                        try:
-                            plot = logger.Plot(figfile, x_axis='Time', y_axis='Amp', field='',
-                                            parameters={'spw': str(spw.id),
-                                                        'pol': '',
-                                                        'ant': antName,
-                                                        'bandname': bandname,
-                                                        'type': 'Final amp time cal',
-                                                        'file': os.path.basename(figfile)})
-                            plots.append(plot)
-                        except Exception as ex:
-                            LOG.warning("Unable to add plot to stack.  " + str(ex))
+                        if not plot_failed:
+                            try:
+                                plot = logger.Plot(figfile, x_axis='Time', y_axis='Amp', field='',
+                                                parameters={'spw': str(spw.id),
+                                                            'pol': '',
+                                                            'ant': antName,
+                                                            'bandname': bandname,
+                                                            'type': 'Final amp time cal',
+                                                            'file': os.path.basename(figfile)})
+                                plots.append(plot)
+                            except Exception as ex:
+                                LOG.warning("Unable to add plot to stack.  " + str(ex))
+                                plots.append(None)
+                        else:
                             plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -1099,6 +1114,7 @@ class finalPhaseGainCalPerAntennaPerSpwChart(object):
 
                         figfile = os.path.join(stage_dir, filename)
 
+                        plot_failed = False
                         if not os.path.exists(figfile):
                             try:
                                 # Get antenna name
@@ -1119,21 +1135,25 @@ class finalPhaseGainCalPerAntennaPerSpwChart(object):
                                 job.execute()
 
                             except Exception as ex:
+                                plot_failed = True
                                 LOG.warning("Problem with plotting " + filename + str(ex))
                         else:
                             LOG.debug('Using existing ' + filename + ' plot.')
 
-                        try:
-                            plot = logger.Plot(figfile, x_axis='time', y_axis='phase', field='',
-                                            parameters={'spw': str(spw.id),
-                                                        'pol': '',
-                                                        'ant': antName,
-                                                        'bandname': bandname,
-                                                        'type': 'Final phase gain cal',
-                                                        'file': os.path.basename(figfile)})
-                            plots.append(plot)
-                        except Exception as ex:
-                            LOG.warning("Unable to add plot to stack.  " + str(ex))
+                        if not plot_failed:
+                            try:
+                                plot = logger.Plot(figfile, x_axis='time', y_axis='phase', field='',
+                                                parameters={'spw': str(spw.id),
+                                                            'pol': '',
+                                                            'ant': antName,
+                                                            'bandname': bandname,
+                                                            'type': 'Final phase gain cal',
+                                                            'file': os.path.basename(figfile)})
+                                plots.append(plot)
+                            except Exception as ex:
+                                LOG.warning("Unable to add plot to stack.  " + str(ex))
+                                plots.append(None)
+                        else: 
                             plots.append(None)
 
         return [p for p in plots if p is not None]

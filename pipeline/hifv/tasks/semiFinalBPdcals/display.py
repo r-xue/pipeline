@@ -397,14 +397,12 @@ class semifinalbpSolAmpPerAntennaPerSpwChart(object):
         spws = m.get_spectral_windows(science_windows_only=True)
 
         nplots = len(m.antennas)
-
         plots = []
 
         LOG.info("Plotting amp bandpass solutions per spw for spectral window spws")
 
         for spw in spws:
             if spw.specline_window:
-                #TODO: I think I can move this out or delete it and pass in maxamp to the function.
                 for bandname, bpcaltablename in self.result.bpcaltable.items():
 
                     with casa_tools.TableReader(self.result.bpcaltable[bandname]) as tb:
@@ -442,6 +440,7 @@ class semifinalbpSolAmpPerAntennaPerSpwChart(object):
 
                         figfile = os.path.join(stage_dir, filename)
 
+                        plot_failed = False
                         if not os.path.exists(figfile):
                             try:
                                 # Get antenna name
@@ -462,21 +461,25 @@ class semifinalbpSolAmpPerAntennaPerSpwChart(object):
                                 job.execute()
 
                             except:
+                                plot_failed = True
                                 LOG.warning("Unable to plot " + filename)
                         else:
                             LOG.debug('Using existing ' + filename + ' plot.')
 
-                        try:
-                            plot = logger.Plot(figfile, x_axis='Freq', y_axis='Amp', field='',
-                                            parameters={'spw': str(spw.id),
-                                                        'pol': '',
-                                                        'ant': antName,
-                                                        'bandname': bandname,
-                                                        'type': 'bpsolamp' + self.suffix,
-                                                        'file': os.path.basename(figfile)})
-                            plots.append(plot)
-                        except:
-                            LOG.warning("Unable to add plot to stack")
+                        if not plot_failed:
+                            try:
+                                plot = logger.Plot(figfile, x_axis='Freq', y_axis='Amp', field='',
+                                                parameters={'spw': str(spw.id),
+                                                            'pol': '',
+                                                            'ant': antName,
+                                                            'bandname': bandname,
+                                                            'type': 'bpsolamp' + self.suffix,
+                                                            'file': os.path.basename(figfile)})
+                                plots.append(plot)
+                            except:
+                                LOG.warning("Unable to add plot to stack")
+                                plots.append(None)
+                        else:
                             plots.append(None)
 
         return [p for p in plots if p is not None]
@@ -648,6 +651,7 @@ class semifinalbpSolPhasePerAntennaPerSpwChart(object):
 
                         figfile = os.path.join(stage_dir, filename)
 
+                        plot_failed = False
                         if not os.path.exists(figfile):
                             try:
                                 # Get antenna name
@@ -669,21 +673,25 @@ class semifinalbpSolPhasePerAntennaPerSpwChart(object):
                                 job.execute()
 
                             except:
+                                plot_failed = True
                                 LOG.warning("Unable to plot " + filename)
                         else:
                             LOG.debug('Using existing ' + filename + ' plot.')
 
-                        try:
-                            plot = logger.Plot(figfile, x_axis='Freq', y_axis='Phase', field='',
-                                            parameters={'spw': str(spw.id),
-                                                        'pol': '',
-                                                        'ant': antName,
-                                                        'bandname': bandname,
-                                                        'type': 'bpsolphase' + self.suffix,
-                                                        'file': os.path.basename(figfile)})
-                            plots.append(plot)
-                        except:
-                            LOG.warning("Unable to add plot to stack")
+                        if not plot_failed:
+                            try:
+                                plot = logger.Plot(figfile, x_axis='Freq', y_axis='Phase', field='',
+                                                parameters={'spw': str(spw.id),
+                                                            'pol': '',
+                                                            'ant': antName,
+                                                            'bandname': bandname,
+                                                            'type': 'bpsolphase' + self.suffix,
+                                                            'file': os.path.basename(figfile)})
+                                plots.append(plot)
+                            except:
+                                LOG.warning("Unable to add plot to stack")
+                                plots.append(None)
+                        else:
                             plots.append(None)
 
                 # Get BPcal.b to close...
