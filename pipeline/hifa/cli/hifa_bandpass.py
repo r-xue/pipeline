@@ -137,7 +137,7 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
     minbpsnr
                         The minimum required SNR for the bandpass solution
                         when strong atmospheric lines exist in Tsys spectra.
-                        Used only if hm_bandpass='snr'.
+                        Used only if ``hm_bandpass``='snr'.
 
                         Example: minbpsnr=10.0
     bpnsols
@@ -179,7 +179,7 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
 
                         Example: unregister_existing=True
     hm_auto_fillgaps
-                        If True, then the hm_bandpass = 'snr' or 'smoothed'
+                        If True, then the ``hm_bandpass`` = 'snr' or 'smoothed'
                         modes, that solve bandpass per SpW, are performed with
                         CASA bandpass task parameter 'fillgaps' set to a quarter
                         of the respective SpW bandwidth (in channels).
@@ -187,7 +187,7 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
                         If False, then these bandpass solves will use
                         fillgaps=0.
 
-                        The hm_bandpass='fixed' mode is unaffected by
+                        The ``hm_bandpass`` = 'fixed' mode is unaffected by
                         'hm_auto_fillgaps' and always uses fillgaps=0.
 
     --------- examples -----------------------------------------------------------
