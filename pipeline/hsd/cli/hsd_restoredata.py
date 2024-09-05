@@ -53,10 +53,10 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
 
     vis           List of raw visibility data files to be restored. Assumed to be
                   in the directory specified by rawdata_dir.
-
+                  
                   example: vis=['uid___A002_X30a93d_X43e']
     session       List of sessions one per visibility file.
-
+                  
                   example: session=['session_3']
     products_dir  Name of the data products directory to copy calibration
                   products from. The parameter is effective only when copytoraw = True.
@@ -68,20 +68,20 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
 
                   example: copytoraw=False
     rawdata_dir   Name of the raw data directory.
-
+                  
                   example: rawdata_dir='myrawdatapath'
-    lazy          Use the lazy filler option
-
+    lazy          Use the lazy filler option.
+                  
                   example: lazy=True
-    bdfflags      Set the BDF flags
-
+    bdfflags      Set the BDF flags.
+                  
                   example: bdfflags=False
-    ocorr_mode    Set ocorr_mode
-
+    ocorr_mode    Set ocorr_mode.
+                  
                   example: ocorr_mode='ca'
     asis          Creates verbatim copies of the ASDM tables in the output MS.
                   The value given to this option must be a list of table names separated by space characters.
-
+                  
                   example: asis='Source Receiver'
     hm_rasterscan Heuristics method for raster scan analysis. Two analysis modes,
                   time-domain analysis ('time') and direction analysis ('direction'), are available.
