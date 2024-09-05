@@ -22,7 +22,7 @@ def hifv_hanning(vis=None, maser_detection=None):
 
     vis              The list of input MeasurementSets. Defaults to the list of MeasurementSets
                      specified in the h_init or hifv_importdata task.
-    maser_detection  Run maser detect algorithm on spectral line windows.
+    maser_detection  Run maser detect algorithm on spectral line windows. Defaults to True.
 
     --------- examples -----------------------------------------------------------
 
