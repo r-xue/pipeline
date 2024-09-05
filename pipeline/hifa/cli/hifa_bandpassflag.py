@@ -225,7 +225,7 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
                    fillgaps=0.
 
                    The ``hm_bandpass`` = 'fixed' mode is unaffected by
-                   'hm_auto_fillgaps' and always uses fillgaps=0.
+                   ``hm_auto_fillgaps`` and always uses fillgaps=0.
 
     --------- examples -----------------------------------------------------------
 

@@ -86,7 +86,7 @@ def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=No
 
     2. Load an MS in the current directory into the context.
 
-    >>> hifv_importdata (vis=[uid___A002_X30a93d_X43e.ms])
+    >>> hifv_importdata (vis=['uid___A002_X30a93d_X43e.ms'])
 
     3. Load a tarred ASDM in ../rawdata into the context.
 

@@ -81,7 +81,7 @@ def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None
 
     2. Load an MS in the current directory into the context:
 
-    >>> hsdn_importdata (vis=[uid___A002_X30a93d_X43e.ms])
+    >>> hsdn_importdata (vis=['uid___A002_X30a93d_X43e.ms'])
 
     3. Load a tarred ASDM in ../rawdata into the context:
 
