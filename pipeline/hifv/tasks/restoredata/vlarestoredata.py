@@ -4,7 +4,6 @@ import tarfile
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure.utils import conversion
 from pipeline.h.tasks.restoredata import restoredata
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import casa_tasks
