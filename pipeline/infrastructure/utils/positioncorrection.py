@@ -87,6 +87,30 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             offset_pa = list(rtq(calc_wide_field_pos_cor(ra=ra_head, dec=dec_head, obs_long=obs_long,
                                                          obs_lat=obs_lat, date_time=date_time, offset_pa=True)))
 
+            # Compute Zenith angle
+            # Get original coordinates in radians
+            ra_rad = casa_tools.quanta.convert(ra_head, 'rad')['value']
+            dec_rad = casa_tools.quanta.convert(dec_head, 'rad')['value']
+
+            # Mean geographic coordinates of antennas in radians
+            obs_long_rad = casa_tools.quanta.convert(obs_long, 'rad')['value']
+            obs_lat_rad = casa_tools.quanta.convert(obs_lat, 'rad')['value']
+
+            # Greenwich Mean Sidereal Time
+            GMST = casa_tools.measures.measure(date_time, 'GMST1')
+
+            # Local Sidereal Time
+            LST = casa_tools.quanta.convert(GMST['m0'], 'h')['value'] % 24.0 + np.rad2deg(obs_long_rad) / 15.0
+            if LST < 0:
+                LST = LST + 24
+            LST_rad = np.deg2rad(LST * 15)  # in radians
+
+            # Hour angle (in radians)
+            ha_rad = LST_rad - ra_rad
+            if ha_rad < 0.0:
+                ha_rad = ha_rad + 2.0 * np.pi
+            zenith_angle = calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad)
+
             # PIPE-1356: perform additional freqency-dependent scaling from the 3GHz prediction.
             freq_scale = (3.e9/freq_head['value'])**2
             offset_pa[0] = offset_pa[0]*freq_scale
@@ -174,11 +198,10 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
     # The amplitude of 0.25 arcsec is defined in VLASS Memo #14 at 3GHz.
     amp = np.deg2rad(0.25 / 3600.0)
     offset = np.zeros(2)
-    zd = np.arccos(np.sin(obs_lat_rad) * np.sin(dec_rad) + np.cos(obs_lat_rad)
-                   * np.cos(dec_rad) * np.cos(ha_rad))
+    zenith_angle = calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad)
     chi = np.arctan(np.sin(ha_rad) / (np.cos(dec_rad) * np.tan(obs_lat_rad) -
                                       np.sin(dec_rad) * np.cos(ha_rad)))
-    deltatot = amp * np.tan(zd)
+    deltatot = amp * np.tan(zenith_angle)
 
     # Restrict ha_rad to the -np.pi to +np.pi range in order to deal with
     # denominator of parallactic angle term going to zero at declination of
@@ -201,3 +224,8 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
     offset[1] = deltatot * np.cos(chi)
     return ({'value': offset[0], 'unit': 'rad'},
             {'value': offset[1], 'unit': 'rad'})
+
+
+def calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad):
+    return np.arccos(np.sin(obs_lat_rad) * np.sin(dec_rad) + np.cos(obs_lat_rad)
+                             * np.cos(dec_rad) * np.cos(ha_rad))

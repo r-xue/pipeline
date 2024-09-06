@@ -1,3 +1,5 @@
+import numpy as np
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
@@ -7,12 +9,13 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class AnalyzealphaResults(basetask.Results):
-    def __init__(self, max_location=None, alpha_and_error=None, image_at_max=None):
+    def __init__(self, max_location=None, alpha_and_error=None, image_at_max=None, zenith_angle=None):
         super().__init__()
         self.pipeline_casa_task = 'Analyzealpha'
         self.max_location = max_location
         self.alpha_and_error = alpha_and_error
         self.image_at_max = image_at_max
+        self.zenith_angle = zenith_angle
 
     def merge_with_context(self, context):
         """
@@ -71,6 +74,7 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             #
             with casa_tools.ImageReader(subimagefile) as image:
                 stats = image.statistics(robust=False)
+                header = image.fitsheader()
 
                 # Extract the position of the maximum from imstat return dictionary
                 maxposx = stats['maxpos'][0]
@@ -104,7 +108,37 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             alpha_and_error = '%s +/- %s' % (alpha_string, alphaerror_string)
             LOG.info('|* Alpha at restored max {}'.format(alpha_and_error))
 
-        return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error, image_at_max=image_at_max)
+            # PIPE-1527: Calculate zenith angle
+            date_obs = header['date-obs']
+            timesys = header['timesys']
+            date_time = casa_tools.measures.epoch(timesys, date_obs)
+            ra_head = {'unit': header['cunit1'], 'value': header['crval1']}
+            dec_head = {'unit': header['cunit2'], 'value': header['crval2']}
+            ra_rad = casa_tools.quanta.convert(ra_head, 'rad')['value']
+            dec_rad = casa_tools.quanta.convert(dec_head, 'rad')['value']
+            observatory = casa_tools.measures.observatory('VLA')
+            obs_long = observatory['m0']
+            obs_lat = observatory['m1']
+            obs_long_rad = casa_tools.quanta.convert(obs_long, 'rad')['value']
+            obs_lat_rad = casa_tools.quanta.convert(obs_lat, 'rad')['value']
+            # Greenwich Mean Sidereal Time
+            GMST = casa_tools.measures.measure(date_time, 'GMST1')
+
+            # Local Sidereal Time
+            LST = casa_tools.quanta.convert(GMST['m0'], 'h')['value'] % 24.0 + np.rad2deg(obs_long_rad) / 15.0
+            if LST < 0:
+                LST = LST + 24
+            LST_rad = np.deg2rad(LST * 15)  # in radians
+
+            # Hour angle (in radians)
+            ha_rad = LST_rad - ra_rad
+            if ha_rad < 0.0:
+                ha_rad = ha_rad + 2.0 * np.pi
+
+            zenith_angle = utils.positioncorrection.calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad)
+
+        return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error,
+                                   image_at_max=image_at_max, zenith_angle=zenith_angle)
 
     def analyse(self, results):
         return results
