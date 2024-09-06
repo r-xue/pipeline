@@ -2484,13 +2484,16 @@ class ImageParamsHeuristics(object):
         return None
 
     def get_outmaskratio(self, iteration: int,  image: str, pbimage: str, cleanmask: str,
-                         pblimit: float = 0.4, frac_lim:float = 0.2) -> Union[None, float]:
+                         pblimit: float = 0.4, frac_lim: float = 0.2) -> Union[None, float]:
         """Determine fractional flux in final image outside cleanmask"""
         return None
 
     def weighting(self, specmode: str) -> str:
         """Determine the weighting scheme."""
-        return 'briggs'
+        if specmode in ('mfs', 'cont'):
+            return 'briggs'
+        else:
+            return 'briggsbwtaper'
 
     def perchanweightdensity(self, specmode: str) -> bool:
         """Determine the perchanweightdensity parameter."""

@@ -466,13 +466,6 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return 'I'
 
-    def weighting(self, specmode: str) -> str:
-        """Determine the weighting scheme."""
-        if specmode in ('mfs', 'cont'):
-            return 'briggs'
-        else:
-            return 'briggsbwtaper'
-
     def reffreq(self, deconvolver: Optional[str] = None, specmode: Optional[str] = None, spwsel: Optional[dict] = None) -> Optional[str]:
         """PIPE-1838: Tclean reffreq parameter heuristics."""
 
