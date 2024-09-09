@@ -1642,10 +1642,10 @@ def ch_to_freq(ch: Union[float, List[float]], frequency: List[float]) -> Union[f
     """Convert channel into frequency.
 
     Args:
-        ch (float): Channel value.
-        frequency (List[float]): Frequency labels.
+        ch: Channel value, or list of channel values.
+        frequency: Frequency labels.
 
     Returns:
-        float: Frequency value corresponding to ch.
+        float: Frequency value(s) corresponding to ch.
     """
     return np.interp(ch, np.arange(len(frequency)), frequency)
