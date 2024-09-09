@@ -4,13 +4,16 @@ import shutil
 import collections
 import tarfile
 import io
+import xml.etree.cElementTree as eltree
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.exportdata import exportdata
+from pipeline.h.tasks.common import manifest
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import utils
 from pipeline.infrastructure.filenamer import fitsname
 from . import vlaifaqua
 
@@ -129,6 +132,9 @@ class VLAExportData(exportdata.ExportData):
             recipe_name = self.inputs.context.project_structure.recipe_name
             self._add_to_manifest(manifest_file, auxfproducts, False, [], pipe_aqua_reportfile, oussid, recipe_name)
 
+        # Set specline_spws and smoothed_spw info that was used in the calibration run
+        self._export_specline_smoothing(results, vislist)
+
         return results
 
     def _shorten_spwlist(self, image):
@@ -175,10 +181,11 @@ class VLAExportData(exportdata.ExportData):
         for vis in vislist:
             filename = os.path.basename(vis)
             if filename.endswith('.ms'):
-                filename, filext = os.path.splitext(filename)
+                filename, _ = os.path.splitext(filename)
             tmpvislist.append(filename)
+
         task_string = "    hifv_restoredata (vis=%s, session=%s, ocorr_mode='%s', gainmap=%s)" % (
-        tmpvislist, session_list, ocorr_mode, self.inputs.gainmap)
+            tmpvislist, session_list, ocorr_mode, self.inputs.gainmap)
 
         # Is this a VLASS execution?
         vlassmode = False
@@ -194,6 +201,7 @@ class VLAExportData(exportdata.ExportData):
             task_string += "\n    hifv_fixpointing()"
 
         task_string += "\n    hifv_statwt()"
+        task_string += "\n    hifv_mstransform()"
 
         template = '''h_init()
 try:
@@ -314,3 +322,52 @@ finally:
         tar.close()
 
         return tarfilename
+
+    def _export_specline_smoothing(self, results, vislist):
+        """
+        Export the specline_spws and smoothed_spws information to the manifest
+        """
+        # hifv_importdata only allows one set of specline_spws to be specified for all MSes, so pick the first MS
+        mses = self.inputs.context.observing_run.get_measurement_sets()[0]
+        spws = mses.get_spectral_windows(science_windows_only=True)
+
+        hanning_smoothed = None
+        with casa_tools.TableReader(mses.name + '/SPECTRAL_WINDOW') as table:
+            if 'OFFLINE_HANNING_SMOOTH' in table.colnames():
+                hanning_smoothed = table.getcol('OFFLINE_HANNING_SMOOTH')
+                LOG.debug('Found smoothed spw information in SPECTRAL_WINDOW table')
+            else:
+                LOG.info("Could not find hanning smoothing information in SPECTRAL WINDOW table.")
+
+        smoothed_spws = []
+        if hanning_smoothed is not None:
+            for spw in spws:
+                real_spwid = self.inputs.context.observing_run.virtual2real_spw_id(spw.id, mses)
+                if hanning_smoothed[real_spwid]:
+                    smoothed_spws.append(spw.id)
+
+        smoothed_spws_str = ''
+        if len(smoothed_spws) > 0:
+            smoothed_spws_str = utils.find_ranges(smoothed_spws)
+
+        specline_spws = ''
+        specline_spws_list = [str(spw.id) for spw in spws if spw.specline_window]
+        if len(specline_spws_list) > 0:
+            specline_spws = utils.find_ranges(specline_spws_list)
+
+        # Add the specline_spws and smoothed_spws information to the mainfest
+        manifest_inputs = {}
+        manifest_inputs['specline_spws'] = specline_spws
+
+        # Only include hanning smoothing information if available
+        if hanning_smoothed is not None:
+            manifest_inputs['smoothed_spws'] = smoothed_spws_str
+
+        pipemanifest = manifest.PipelineManifest('')
+        manifest_file = os.path.join(self.inputs.products_dir, results.manifest)
+        pipemanifest.import_xml(manifest_file)
+
+        for asdm in pipemanifest.get_ous().findall(f".//asdm[@name=\'{vislist[0]}\']"):
+            newinputs = {key: str(value) for (key, value) in manifest_inputs.items()}  # stringify the values
+            eltree.SubElement(asdm, "restoredata", newinputs)
+        pipemanifest.write(manifest_file)

@@ -68,12 +68,6 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     gainmap       If True, map gainfields to a particular list of scans when
                   applying calibration tables.
     asis          List of tables to import asis.
-    specline_spws String indicating how the pipeline should determine whether a spw should
-                  be processed as a spectral line window or continuum. The default setting of 
-                  'auto' will use defined heuristics to determine this definition. Accepted
-                  values are 'auto', 'none' (no spws will be defined as spectral line), or 
-                  a string of spw definitions in the CASA format
-                  example: specline_spws='2,3,4~9,23'
 
     --------- examples -----------------------------------------------------------
 
