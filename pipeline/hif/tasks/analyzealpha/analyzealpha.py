@@ -109,11 +109,11 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             LOG.info('|* Alpha at restored max {}'.format(alpha_and_error))
 
             # PIPE-1527: Calculate zenith angle
-            date_obs = header['date-obs']
-            timesys = header['timesys']
+            date_obs = header['DATE-OBS']
+            timesys = header['TIMESYS']
             date_time = casa_tools.measures.epoch(timesys, date_obs)
-            ra_head = {'unit': header['cunit1'], 'value': header['crval1']}
-            dec_head = {'unit': header['cunit2'], 'value': header['crval2']}
+            ra_head = {'unit': header['CUNIT1'], 'value': header['CRVAL'][0]}
+            dec_head = {'unit': header['CUNIT2'], 'value': header['CRVAL'][1]}
             ra_rad = casa_tools.quanta.convert(ra_head, 'rad')['value']
             dec_rad = casa_tools.quanta.convert(dec_head, 'rad')['value']
             observatory = casa_tools.measures.observatory('VLA')
