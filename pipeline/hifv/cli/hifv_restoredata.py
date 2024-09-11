@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
-                     bdfflags=None, ocorr_mode=None, gainmap=None, asis=None, specline_spws=None):
+                     bdfflags=None, ocorr_mode=None, gainmap=None, asis=None):
 
     """
     hifv_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run
