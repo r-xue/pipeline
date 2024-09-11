@@ -109,7 +109,8 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             ha_rad = LST_rad - ra_rad
             if ha_rad < 0.0:
                 ha_rad = ha_rad + 2.0 * np.pi
-            zenith_angle = calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad)
+            # Compute zenith angle
+            za_rad = calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad)
 
             # PIPE-1356: perform additional freqency-dependent scaling from the 3GHz prediction.
             freq_scale = (3.e9/freq_head['value'])**2
@@ -127,6 +128,8 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             header['cunit1'] = 'deg'
             header['crval2'] = dec_fixed.to_value(u.deg)
             header['cunit2'] = 'deg'
+            header['zaval'] = casa_tools.quanta.convert(za_rad, 'deg')['value']
+            header['zaunit'] = 'deg'
 
             # Update history, "Position correction..." message should remain the last record in list.
             messages = ['Uncorrected CRVAL1 = {:.12E} deg'.format(casa_tools.quanta.convert(ra_head, 'deg')['value']),

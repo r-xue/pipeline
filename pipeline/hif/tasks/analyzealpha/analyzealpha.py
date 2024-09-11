@@ -135,7 +135,9 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             if ha_rad < 0.0:
                 ha_rad = ha_rad + 2.0 * np.pi
 
-            zenith_angle = utils.positioncorrection.calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad)
+            za_rad = utils.positioncorrection.calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad)
+            zenith_angle = casa_tools.quanta.convert(za_rad, 'deg')['value']
+
 
         return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error,
                                    image_at_max=image_at_max, zenith_angle=zenith_angle)
