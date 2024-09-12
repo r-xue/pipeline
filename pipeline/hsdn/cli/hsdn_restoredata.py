@@ -93,8 +93,7 @@ def hsdn_restoredata(vis=None, caltable=None, reffile=None,
                   all the factors are set to 1.0.
 
                   example: reffile='', reffile='nroscalefactor.csv'
-    products_dir  Name of the data products directory. Currently not
-                  used.
+    products_dir  Name of the data products directory.
                   Default: '../products'
 
                   example: products_dir='myproductspath'
