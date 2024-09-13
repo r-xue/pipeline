@@ -230,5 +230,6 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
 
 
 def calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad):
+    LOG.debug(f"Obs. Latitude: {obs_lat_rad}; DEC: {dec_rad}; HA: {ha_rad}")
     return np.arccos(np.sin(obs_lat_rad) * np.sin(dec_rad) + np.cos(obs_lat_rad)
                              * np.cos(dec_rad) * np.cos(ha_rad))
