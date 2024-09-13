@@ -216,7 +216,7 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
 
                    Example: niter=2
     hm_auto_fillgaps
-                   If True, then the hm_bandpass = 'snr' or 'smoothed'
+                   If True, then the ``hm_bandpass`` = 'snr' or 'smoothed'
                    modes, that solve bandpass per SpW, are performed with
                    CASA bandpass task parameter 'fillgaps' set to a quarter
                    of the respective SpW bandwidth (in channels).
@@ -224,8 +224,8 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
                    If False, then these bandpass solves will use
                    fillgaps=0.
 
-                   The hm_bandpass='fixed' mode is unaffected by
-                   'hm_auto_fillgaps' and always uses fillgaps=0.
+                   The ``hm_bandpass`` = 'fixed' mode is unaffected by
+                   ``hm_auto_fillgaps`` and always uses fillgaps=0.
 
     --------- examples -----------------------------------------------------------
 
