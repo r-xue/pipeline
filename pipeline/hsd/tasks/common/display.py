@@ -1451,6 +1451,7 @@ class SDSparseMapPlotter(object):
 
         global_xmin = min(frequency[0], frequency[-1])
         global_xmax = max(frequency[0], frequency[-1])
+        # NOTE: we assume channels are equally binned
         channel_width = abs(frequency[1] - frequency[0])
         spw_width = channel_width * len(frequency)
         global_xmin -= spw_width * 0.01
