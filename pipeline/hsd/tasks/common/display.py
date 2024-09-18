@@ -2,11 +2,11 @@
 import abc
 import collections
 import copy
-import datetime
 import enum
 import itertools
 import math
 import os
+import scipy
 from typing import Generator, List, NoReturn, Optional, Tuple, Union
 
 from casatools import coordsys as casa_coordsys  # Used for annotation purpose.
@@ -1648,4 +1648,9 @@ def ch_to_freq(ch: Union[float, List[float]], frequency: List[float]) -> Union[f
     Returns:
         float: Frequency value(s) corresponding to ch.
     """
-    return np.interp(ch, np.arange(len(frequency)), frequency)
+    interpolator = scipy.interpolate.interp1d(
+        np.arange(len(frequency)),
+        frequency,
+        kind='linear',
+        fill_value='extrapolate')
+    return interpolator(ch)
