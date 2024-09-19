@@ -59,45 +59,45 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
 
     vis           List of raw visibility data files to be restored. Assumed to be
                   in the directory specified by rawdata_dir.
-
+                  
                   example: vis=['uid___A002_X30a93d_X43e']
     session       List of sessions one per visibility file.
-
+                  
                   example: session=['session_3']
     products_dir  Name of the data products directory to copy calibration
                   products from.
                   Default: '../products'
-
+                  
                   The parameter is effective only when ``copytoraw`` = True.
                   When ``copytoraw`` = False, calibration products in
                   ``rawdata_dir`` will be used.
-
+                  
                   example: products_dir='myproductspath'
     copytoraw     Copy calibration and flagging tables from ``products_dir`` to
                   ``rawdata_dir`` directory.
                   Default: True
-
+                  
                   example: copytoraw=False
     rawdata_dir   Name of the raw data directory.
                   Default: '../rawdata'
-
+                  
                   example: rawdata_dir='myrawdatapath'
     lazy          Use the lazy filler option
                   Default: False
-
+                  
                   example: lazy=True
     bdfflags      Set the BDF flags
                   Default: True
-
+                  
                   example: bdfflags=False
     ocorr_mode    Set ocorr_mode
                   Default: 'ao'
-
+                  
                   example: ocorr_mode='ca'
     asis          Creates verbatim copies of the ASDM tables in the output MS.
                   The value given to this option must be a list of table names separated by space characters.
                   Default: 'SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR'
-
+                  
                   example: asis='Source Receiver'
     hm_rasterscan Heuristics method for raster scan analysis. Two analysis modes,
                   time-domain analysis ('time') and direction analysis ('direction'), are available.

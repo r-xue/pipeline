@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
-                     bdfflags=None, ocorr_mode=None, gainmap=None, asis=None, specline_spws=None):
+                     bdfflags=None, ocorr_mode=None, gainmap=None, asis=None):
 
     """
     hifv_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run
@@ -41,6 +41,7 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     hifv_restoredata performs the following operations:
 
     - imports the ASDM(s)
+    - runs the hanning smoothing task
     - removes the default MS.flagversions directory created by the filler
     - restores the final MS.flagversions directory stored by the pipeline
     - restores the final set of pipeline flags to the MS
