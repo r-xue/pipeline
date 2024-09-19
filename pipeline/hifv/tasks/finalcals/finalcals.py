@@ -13,6 +13,7 @@ from pipeline.hifv.heuristics import getCalFlaggedSoln
 from pipeline.infrastructure.tablereader import find_EVLA_band
 from pipeline.hifv.heuristics import standard as standard
 from pipeline.hifv.heuristics import weakbp, do_bandpass, uvrange
+from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -175,10 +176,12 @@ class Finalcals(basetask.StandardTaskTemplate):
         """
 
         self.parang = True
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        # PIPE-2164: getting result using taskname
+        importdata_result = utils.get_task_result(self.inputs.context, "hifv_importdata", VLAImportDataResults)
+        if importdata_result is not None:
+            self.setjy_results = importdata_result.setjy_results
+        else:
+            LOG.warning("Could not retrieve results for 'hifv_importdata', setjy_results will not be set.")
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1

@@ -34,7 +34,7 @@ __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_ca
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
            'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'get_products_dir',
            'export_weblog_as_tar', 'ensure_products_dir_exists', 'ignore_pointing', 'request_omp_threading',
-           'open_with_lock', 'nested_dict', 'string_to_val', 'remove_trailing_string']
+           'open_with_lock', 'nested_dict', 'string_to_val', 'remove_trailing_string', 'get_task_result']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -886,3 +886,24 @@ def remove_trailing_string(s, t):
         return s[:-len(t)]
     else:
         return s
+
+def get_task_result(context, taskname, resulttype = None):
+    """
+    Returns a result within the context.result list for the specified task.
+
+    Note: The result is returned only if the specified task has already been executed and its result is available
+    in the context.result list. If the result is not found in the context.result list, None will be returned.
+    """
+    # A task may be executed multiple times, so a loop break is not
+    # performed to ensure the latest task result is returned.
+    for result in context.results:
+        read_result = result.read()
+        # if result is stored as ResultList, it has taskname attribute
+        if hasattr(read_result, "taskname") and read_result.taskname == taskname :
+            return read_result[0]
+
+        if resulttype is not None and isinstance(read_result, resulttype):
+            # result is stored as task result object
+            return read_result
+
+    return None

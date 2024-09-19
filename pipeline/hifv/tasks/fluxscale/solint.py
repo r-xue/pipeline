@@ -8,11 +8,14 @@ from scipy import stats
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getCalFlaggedSoln, uvrange
+from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -202,10 +205,12 @@ class Solint(basetask.StandardTaskTemplate):
 
         (longsolint, gain_solint2) = self._do_determine_solint(calMs, ','.join(spwlist))
 
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        # PIPE-2164: getting result using taskname
+        importdata_result = utils.get_task_result(self.inputs.context, "hifv_importdata", VLAImportDataResults)
+        if importdata_result is not None:
+            self.setjy_results = importdata_result.setjy_results
+        else:
+            LOG.warning("Could not retrieve results for 'hifv_importdata', setjy_results will not be set.")
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1

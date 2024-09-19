@@ -10,6 +10,7 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -174,12 +175,19 @@ class Syspower(basetask.StandardTaskTemplate):
         elif isinstance(self.inputs.antexclude, dict):
             antexclude_dict = self.inputs.antexclude
 
-        # Assumes hifv_priorcals was executed as the previous stage
-        try:
-            rq_table = self.inputs.context.results[-1].read()[0].rq_result[0].final[0].gaintable
-        except Exception as ex:
-            rq_table = self.inputs.context.results[-1].read()[0].rq_result.final[0].gaintable
-            LOG.debug(ex)
+        # PIPE-2164: getting result using taskname
+        priorcals_result = utils.get_task_result(self.inputs.context, "hifv_priorcals")
+
+        if priorcals_result is not None:
+            # Assumes hifv_priorcals was executed as the previous stage
+            try:
+                rq_table = priorcals_result.rq_result[0].final[0].gaintable
+            except Exception as ex:
+                rq_table = priorcals_result.rq_result.final[0].gaintable
+                LOG.debug(ex)
+        else:
+            rq_table = ""
+            LOG.warning("'hifv_priorcals' result not found in context.results list. Setting rq_table = ''")
 
         band_baseband_spw = collections.defaultdict(dict)
 

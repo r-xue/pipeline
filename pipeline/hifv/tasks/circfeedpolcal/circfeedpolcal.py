@@ -7,12 +7,17 @@ import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.hif.tasks.gaincal as gaincal
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks.polarization import polarization
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.hifv.heuristics import uvrange
+from pipeline.hifv.tasks.finalcals.finalcals import FinalcalsResults as FinalcalsResults
+from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -94,10 +99,12 @@ class Circfeedpolcal(polarization.Polarization):
     def prepare(self):
 
         self.callist = []
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        # PIPE-2164: getting result using taskname
+        importdata_result = utils.get_task_result(self.inputs.context, "hifv_importdata", VLAImportDataResults)
+        if importdata_result is not None:
+            self.setjy_results = importdata_result.setjy_results
+        else:
+            LOG.warning("Could not retrieve results for 'hifv_importdata', setjy_results will not be set.")
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         intents = list(m.intents)
@@ -279,10 +286,8 @@ class Circfeedpolcal(polarization.Polarization):
         for i, table in enumerate(GainTables):
             if 'finalphasegaincal' in table:
                 idx = i
-                try:
-                    finalcals_result = self.inputs.context.results[-1].read()[0]
-                except Exception as e:
-                    finalcals_result = self.inputs.context.results[-1].read()
+                finalcals_result = utils.get_task_result(self.inputs.context, "hifv_finalcals", FinalcalsResults)
+
                 newtable = finalcals_result.phaseshortgaincaltable
         GainTables[idx] = newtable
 

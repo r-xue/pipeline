@@ -13,11 +13,13 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import uvrange
 from pipeline.infrastructure.tablereader import find_EVLA_band
 from pipeline.hifv.heuristics import standard as standard
+from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.domain.measures import FrequencyUnits
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -175,10 +177,12 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     vlassmode = True
             except:
                 continue
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        # PIPE-2164: getting result using taskname
+        importdata_result = utils.get_task_result(self.inputs.context, "hifv_importdata", VLAImportDataResults)
+        if importdata_result is not None:
+            self.setjy_results = importdata_result.setjy_results
+        else:
+            LOG.warning("Could not retrieve results for 'hifv_importdata', setjy_results will not be set.")
 
         if self.inputs.caltable is None:
             # Original Fluxgain stage from the scripted pipeline
