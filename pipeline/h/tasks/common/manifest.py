@@ -3,7 +3,7 @@ import collections
 import itertools
 import operator
 # import platform
-import xml.etree.cElementTree as eltree
+import xml.etree.ElementTree as eltree
 from xml.dom import minidom
 
 from pipeline import environment
@@ -56,7 +56,7 @@ class PipelineManifest(object):
         Currently this assumes there is only one ous as is the case
         for member ous processing
         """
-        return self.piperesults.getchildren()[0]
+        return list(self.piperesults)[0]
 
     @staticmethod
     def add_manifest(ous, manifestname, ous_name="N/A", level="N/A", package="N/A"):
