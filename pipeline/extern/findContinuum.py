@@ -868,19 +868,19 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         if mask != '':
             print("The mask parameter is not relevant for meanSpectrumMethod='mom0mom8jointMask'.  Use the userJointMask parameter instead.")
             return
-        if type(trimChannels) in [str, np.string_]:
+        if type(trimChannels) in [str, np.bytes_]:
             trimChannelsString = "'" + trimChannels + "'"
         else:
             trimChannelsString = str(trimChannels)
-        if type(spectralDynamicRangeBandWidth) in [str, np.string_]:
+        if type(spectralDynamicRangeBandWidth) in [str, np.bytes_]:
             spectralDynamicRangeString = "'" + spectralDynamicRangeBandWidth + "'"
         else:
             spectralDynamicRangeString = str(spectralDynamicRangeBandWidth)
-        if type(narrow) in [str, np.string_]:
+        if type(narrow) in [str, np.bytes_]:
             narrowString = "'" + narrow + "'"
         else:
             narrowString = str(narrow)
-        if type(amendMaskIterations) in [str, np.string_]:
+        if type(amendMaskIterations) in [str, np.bytes_]:
             amendMaskIterationsString = "'" + amendMaskIterations + "'"
         else:
             amendMaskIterationsString = str(amendMaskIterations)
@@ -892,7 +892,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
     if (len(vis) > 0):
         # convert vis to a list (if it is a string)
         # vis is a non-blank list or non-blank string
-        if (type(vis) in [str,np.string_]):
+        if (type(vis) in [str,np.bytes_]):
             vis = vis.split(',')
         # vis is now assured to be a non-blank list
         for v in vis:
@@ -7043,7 +7043,7 @@ def splitListIntoContiguousListsAndTrim(totalChannels, channels, trimChannels=0.
     maxTrim and maxTrimChannels: used in 'auto' mode
     Returns: a new single list
     """
-    if type(trimChannels) not in [str, np.string_]:
+    if type(trimChannels) not in [str, np.bytes_]:
         if (trimChannels <= 0):
             return(np.array(channels))
     length = len(channels)
@@ -8560,7 +8560,7 @@ def widenSelections(datfiles, eachside=1, minwidth=0, verbose=True, nchan=None):
        multiple files are passed, then return the bandwidth increase factor
     """
     newBW = 0; oldBW = 0
-    if type(datfiles) in [str, np.string_]:
+    if type(datfiles) in [str, np.bytes_]:
         if datfiles.find('*') >= 0:
             datfiles = sorted(glob.glob(datfiles))
         else:
@@ -10212,7 +10212,7 @@ def recalcMomDiffSNR(priorValuesFile, img='', intersectRanges='',
         return
     chanInfo = numberOfChannelsInCube(cube, returnChannelWidth=True, returnFreqs=True) 
     nchan, firstFreq, lastFreq, channelWidth = chanInfo
-    if type(intersectRanges) in [str, np.string_]:
+    if type(intersectRanges) in [str, np.bytes_]:
         selection = intersectRanges
     elif type(intersectRanges) in [list, np.ndarray]:
         selection = intersectRanges[0]
@@ -11380,7 +11380,7 @@ def transitions(vis, spw, source='', intent='OBSERVE_TARGET',
             source = mymsmd.namesforfields(fields[0])[0]
             if verbose:
                 print("For spw %d, picked source: " % (spw), source)
-    if (type(source) == str or type(source) == np.string_):
+    if (type(source) == str or type(source) == np.bytes_):
         sourcerows = np.where(names==source)[0]
         if (len(sourcerows) == 0):
             # look for characters ()/ and replace with underscore
