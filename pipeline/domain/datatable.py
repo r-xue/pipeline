@@ -34,7 +34,7 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.utils import absolute_path
+from pipeline.infrastructure.utils import absolute_path, list_to_str
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -837,7 +837,7 @@ class DataTableImpl(object):
         LOG.info('from_fields = {}'.format(from_fields))
 
         with casa_tools.TableReader(tsystable) as tb:
-            tsel = tb.query('FIELD_ID IN {}'.format(list(from_fields)))
+            tsel = tb.query('FIELD_ID IN {}'.format(list_to_str(from_fields)))
             spws = tsel.getcol('SPECTRAL_WINDOW_ID')
             times = tsel.getcol('TIME')
             #fieldids = tsel.getcol('FIELD_ID')
