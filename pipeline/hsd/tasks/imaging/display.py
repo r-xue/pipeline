@@ -2,6 +2,7 @@
 import copy
 import itertools
 import math
+from math import ceil, floor
 import os
 import time
 from typing import Callable, Generator, List, Optional, Union
@@ -889,13 +890,13 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        is_freq_chan_reversed_image = False
+        is_chan_inverted_image = False
         if isinstance(self.inputs.result, SDImagingResultItem):
-            is_freq_chan_reversed_image = self.inputs.result.frequency_channel_reversed
+            is_chan_inverted_image = self.inputs.result.frequency_channel_reversed
 
         # retrieve line list from reduction group
         # key is antenna and spw id
-        line_list = self.inputs.valid_lines(is_freq_chan_reversed_image)
+        line_list = self.inputs.valid_lines()
 
         # 2010/6/9 in the case of non-detection of the lines
         if len(line_list) == 0:
@@ -946,39 +947,34 @@ class SDChannelMapDisplay(SDImageDisplay):
         data = self.data
         mask = self.mask
 
-        # If the frequency channel of the image cube has been reversed to ascending,
-        # indices of frequency and velocity must have an offset to get a center value of them.
-        if is_freq_chan_reversed_image:
-            _offset = 0.5
-            _left_edge = self.edge[1]
-        else:
-            _offset = 0
-            _left_edge = self.edge[0]
-
-        # NOTE: Variable names MUST be easy to understand.
-        # The variables with the prefixes, 'idx_' and 'indices_', indicate they are an index or
-        # sequence (list, set, array, etc.) of indices in the loop below.
-
         for line_window in line_list:
-            _line_center = line_window[0]
-            _line_width = line_window[1]
-            _line_center_shifted = _line_center - _left_edge
-
-            # Offset calculation of index(int) from line(float) when the line has a decimal point of 0.5
-            # and frequency channel of the image is reversed;
-            # ex) n=107.5, nchan=128, reversed_n = nchan-1-n = 19.5
-            # when the real numeric cut-edge is 0.5 then the calculation of index 1-0.5 is to be neary 0.5 and not 0.5.
-            # So, the cut-edge which has 0.5 + offset 0.5 like int(19.5 + 0.5) must be 19, not 20.
-            _cut_edge_offset = 0
-            if is_freq_chan_reversed_image and _line_center_shifted - int(_line_center_shifted) == 0.5:
-                _cut_edge_offset = 1
+            (line_center, line_width) = (line_window[0] - self.edge[0], line_window[1])
 
             # shift channel according to the edge parameter
-            idx_line_center = int(_line_center_shifted + 0.5) - _cut_edge_offset
-            if float(idx_line_center) == _line_center_shifted:
+            idx_line_center = floor(line_center + 0.5)
+            indices_slice_width = max(floor(line_width / self.NUM_CHANNELMAP + 0.5), 1)
+            
+            # make the both side position of red lines
+            idx_left_end = idx_line_center - ceil(self.NUM_CHANNELMAP / 2.0 * indices_slice_width - 0.5)
+            idx_right_end = idx_left_end + indices_slice_width * self.NUM_CHANNELMAP - 1
+
+            # invert the line if the line is LSB
+            if is_chan_inverted_image:
+                idx_line_center, line_center, idx_left_end, idx_right_end = \
+                    map(self._invert, [idx_line_center, line_center, idx_right_end, idx_left_end])
+
+            # adjust index of both side within channel
+            _max_left_edge = floor(line_center - line_width / 2 + 0.5)
+            _max_right_edge = floor(line_center + line_width / 2 + 0.5)
+            if _max_left_edge < 0 or _max_right_edge > self.nchan:
+                indices_slice_width = floor(line_center * 2.0 / self.NUM_CHANNELMAP)
+                if indices_slice_width == 0:
+                    return False
+            
+            if float(idx_line_center) == line_center:
                 velocity_line_center = self.velocity[idx_line_center]
             else:
-                if is_freq_chan_reversed_image:
+                if is_chan_inverted_image:
                     velocity_line_center = 0.5 * (self.velocity[idx_line_center + 1] +
                                                   self.velocity[idx_line_center])
                 else:
@@ -991,26 +987,8 @@ class SDChannelMapDisplay(SDImageDisplay):
                 ChanVelWidth = abs(self.velocity[idx_line_center] - self.velocity[idx_line_center + 1])
 
             LOG.debug(f"center frequency[{idx_line_center}]: {self.frequency[idx_line_center]}")
-            # 2007/9/13 Change the magnification factor 1.2 to your preference (to Dirk)
-            # be sure the width of one channel map is integer
-            # 2014/1/12 factor 1.4 -> 1.0 since velocity structure was taken into account for the range in validation.py
-            indices_slice_width = max(int(_line_width / self.NUM_CHANNELMAP + 0.5), 1)
-            idx_left_end = int(idx_line_center - self.NUM_CHANNELMAP / 2.0 * indices_slice_width + 0.5 + _offset)
-            # 2007/9/10 remedy for 'out of index' error
-            LOG.debug('idx_left_end, indices_slice_width, NchanMap : '
-                      f'{idx_left_end}, {indices_slice_width}, {self.NUM_CHANNELMAP}')
-            if idx_left_end < 0:
-                indices_slice_width = int(idx_line_center * 2.0 / self.NUM_CHANNELMAP)
-                if indices_slice_width == 0:
-                    continue
-                idx_left_end = int(idx_line_center - self.NUM_CHANNELMAP / 2.0 * indices_slice_width)
-            elif idx_left_end + indices_slice_width * self.NUM_CHANNELMAP > self.nchan:
-                indices_slice_width = int((self.nchan - 1 - idx_line_center) * 2.0 / self.NUM_CHANNELMAP)
-                if indices_slice_width == 0:
-                    continue
-                idx_left_end = int(idx_line_center - self.NUM_CHANNELMAP / 2.0 * indices_slice_width)
 
-            chan0 = max(idx_left_end - 1, 0)
+            chan0 = idx_left_end - 1
             chan1 = min(idx_left_end + self.NUM_CHANNELMAP * indices_slice_width, self.nchan - 1)
             V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
             V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
@@ -1043,19 +1021,6 @@ class SDChannelMapDisplay(SDImageDisplay):
             )
 
             LOG.debug('Relative velocities of the vertical lines: %s', vertlines)
-
-            # MEMO: 
-            # - For the velocity plot #2, the red vertical lines are drawn at the relative velocity
-            #   values calculated by linear interpolation.
-            #   These lines indicate the boundaries of NUM_CHANNELMAP slices, with each slice having
-            #   a number of indices_slice_width channels. The velocity values at the boundaries are
-            #   calculated by linear interpolating the channel-center velocity values (self.velocity[]).
-            #   Extrapolation for 1/2 channels will be done to calculate the velocity values at the
-            #   very end of the line_window.
-            # - On the other hand, for the frequency plot #1, the channel-center velocity values
-            #   (self.velocity[]) are directly used to indicate the bounderies of the line_window as two
-            #   red vertical lines, hence no interpolations. Therefore the positions of the red lines of
-            #   plot #1 are slightly shifted by 0.5 ch compared to the corresponding lines in plot #2.
 
             # loop over polarizations
             for pol in range(self.npol):
@@ -1217,6 +1182,8 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return plot_list
 
+    def _invert(self, val):
+        return self.nchan - 1 - val
 
 class SDRmsMapDisplay(SDImageDisplay):
     """Plotter to create a baseline rms map."""
