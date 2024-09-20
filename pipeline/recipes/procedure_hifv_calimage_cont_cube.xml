@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifv_spectral_lines</ProcedureTitle>
+    <ProcedureTitle>hifv_calimage_cont_cube</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
@@ -56,7 +56,7 @@
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_checkflag</Command>
         <ParameterSet>
@@ -66,13 +66,13 @@
             </Parameter>            
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_semiFinalBPdcals</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_checkflag</Command>
         <ParameterSet>
@@ -173,7 +173,6 @@
 
     <ProcessingCommand>
         <Command xmlns="">hif_checkproductsize</Command>
-        <!--This will likely be updated, see PIPEREQ-302 -->
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">maximsize</Keyword>
@@ -257,6 +256,10 @@
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">3.0</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 

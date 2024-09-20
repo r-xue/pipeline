@@ -11,16 +11,22 @@ def hsdn_restoredata(vis=None, caltable=None, reffile=None,
     hsdn_restoredata ---- Restore flagged and calibration single dish data from a pipeline run
 
     The hsdn_restoredata task restores flagged and calibrated data from archived
-    ASDMs and pipeline flagging and calibration data products. Pending archive
-    retrieval support hsdn_restoredata assumes that the required products
-    are available in the rawdata_dir in the format produced by the
-    hifa_exportdata task.
+    ASDMs and pipeline flagging and calibration data products.
 
-    hsdn_restoredata assumes that the following entities are available in the raw
-    data directory:
+    hsdn_restoredata assumes that the ASDMs to be restored are present in the
+    directory specified by the ``rawdata_dir`` (default: '../rawdata').
 
-    - the ASDMs to be restored
-    - for each ASDM in the input list:
+    By default (``copytoraw`` = True), hsdn_restoredata assumes that for each
+    ASDM in the input list, the corresponding pipeline flagging and calibration
+    data products (in the format produced by the hsdn_exportdata task) are
+    present in the directory specified by ``products_dir`` (default: '../products').
+    At the start of the task, these products are copied from the ``products_dir``
+    to the ``rawdata_dir``.
+
+    If ``copytoraw`` = False, hsdn_restoredata assumes that these products are
+    to be found in ``rawdata_dir`` along with the ASDMs.
+
+    The expected flagging and calibration products (for each ASDM) include:
 
         - a compressed tar file of the final flagversions file, e.g.
           uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
@@ -87,14 +93,16 @@ def hsdn_restoredata(vis=None, caltable=None, reffile=None,
                   all the factors are set to 1.0.
 
                   example: reffile='', reffile='nroscalefactor.csv'
-    products_dir  Name of the data products directory. Currently not
-                  used.
+    products_dir  Name of the data products directory.
+                  Default: '../products'
 
                   example: products_dir='myproductspath'
     copytoraw     Copy calibration and flagging tables to raw data directory.
+                  Default: True
 
                   example: copytoraw=False
     rawdata_dir   Name of the raw data directory.
+                  Default: '../rawdata'
 
                   example: rawdata_dir='myrawdatapath'
     hm_rasterscan Heuristics method for raster scan analysis. Two analysis modes,

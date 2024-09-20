@@ -101,8 +101,8 @@ def hif_rawflagchans(vis=None, spw=None, intent=None,
 
     equivalent to:
 
-    >>> hif_rawflagchans(flag_hilo=True, fhl_limit=20, flag_bad_quadrant=True, fbq_hilo_limit=8,
-        fbq_antenna_frac_limit=0.2, fbq_baseline_frac_limit=1.0)
+    >>> hif_rawflagchans(flag_hilo=True, fhl_limit=20, flag_bad_quadrant=True, fbq_hilo_limit=8, 
+    ...                  fbq_antenna_frac_limit=0.2, fbq_baseline_frac_limit=1.0)
 
 
     """
