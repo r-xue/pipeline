@@ -23,7 +23,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
     <td>${result[0].alpha_and_error}</td>
   </tr>
   <tr>
-    <td><b>Zenith Angle</b></td>
+    <td><b>Zenith angle</b></td>
     <td>${result[0].zenith_angle}</td>
   </tr>
 </table>

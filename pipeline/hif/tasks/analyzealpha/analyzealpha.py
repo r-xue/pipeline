@@ -92,6 +92,7 @@ class Analyzealpha(basetask.StandardTaskTemplate):
 
             # Extract the value of that pixel from the alpha subimage
             with casa_tools.ImageReader(alphafile) as image:
+                header = image.fitsheader()
                 # TODO possibly replace round with round_half_up in python3 pipeline
                 alpha_val = image.pixelvalue(image.topixel(subim_worldcoords)['numeric'][:2].round())
 
@@ -108,36 +109,9 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             alpha_and_error = '%s +/- %s' % (alpha_string, alphaerror_string)
             LOG.info('|* Alpha at restored max {}'.format(alpha_and_error))
 
-            # PIPE-1527: Calculate zenith angle
-            date_obs = header['DATE-OBS']
-            timesys = header['TIMESYS']
-            date_time = casa_tools.measures.epoch(timesys, date_obs)
-            ra_head = {'unit': header['CUNIT1'], 'value': header['CRVAL'][0]}
-            dec_head = {'unit': header['CUNIT2'], 'value': header['CRVAL'][1]}
-            ra_rad = casa_tools.quanta.convert(ra_head, 'rad')['value']
-            dec_rad = casa_tools.quanta.convert(dec_head, 'rad')['value']
-            observatory = casa_tools.measures.observatory('VLA')
-            obs_long = observatory['m0']
-            obs_lat = observatory['m1']
-            obs_long_rad = casa_tools.quanta.convert(obs_long, 'rad')['value']
-            obs_lat_rad = casa_tools.quanta.convert(obs_lat, 'rad')['value']
-            # Greenwich Mean Sidereal Time
-            GMST = casa_tools.measures.measure(date_time, 'GMST1')
-
-            # Local Sidereal Time
-            LST = casa_tools.quanta.convert(GMST['m0'], 'h')['value'] % 24.0 + np.rad2deg(obs_long_rad) / 15.0
-            if LST < 0:
-                LST = LST + 24
-            LST_rad = np.deg2rad(LST * 15)  # in radians
-
-            # Hour angle (in radians)
-            ha_rad = LST_rad - ra_rad
-            if ha_rad < 0.0:
-                ha_rad = ha_rad + 2.0 * np.pi
-
-            za_rad = utils.positioncorrection.calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad)
+            za_rad = utils.positioncorrection.calc_zenith_angle(header)
             zenith_angle = casa_tools.quanta.convert(za_rad, 'deg')['value']
-
+            LOG.info('|* Zenith angle of alpha image in degrees {}'.format(zenith_angle))
 
         return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error,
                                    image_at_max=image_at_max, zenith_angle=zenith_angle)

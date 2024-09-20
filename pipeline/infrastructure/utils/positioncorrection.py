@@ -83,34 +83,14 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
                 timesys = header['timesys']
                 date_time = casa_tools.measures.epoch(timesys, date_obs)
 
+            # Compute zenith angle
+            za_rad = calc_zenith_angle(header)
+
             # Compute correction
             offset_pa = list(rtq(calc_wide_field_pos_cor(ra=ra_head, dec=dec_head, obs_long=obs_long,
-                                                         obs_lat=obs_lat, date_time=date_time, offset_pa=True)))
-
-            # Compute Zenith angle
-            # Get original coordinates in radians
-            ra_rad = casa_tools.quanta.convert(ra_head, 'rad')['value']
-            dec_rad = casa_tools.quanta.convert(dec_head, 'rad')['value']
-
-            # Mean geographic coordinates of antennas in radians
-            obs_long_rad = casa_tools.quanta.convert(obs_long, 'rad')['value']
-            obs_lat_rad = casa_tools.quanta.convert(obs_lat, 'rad')['value']
-
-            # Greenwich Mean Sidereal Time
-            GMST = casa_tools.measures.measure(date_time, 'GMST1')
-
-            # Local Sidereal Time
-            LST = casa_tools.quanta.convert(GMST['m0'], 'h')['value'] % 24.0 + np.rad2deg(obs_long_rad) / 15.0
-            if LST < 0:
-                LST = LST + 24
-            LST_rad = np.deg2rad(LST * 15)  # in radians
-
-            # Hour angle (in radians)
-            ha_rad = LST_rad - ra_rad
-            if ha_rad < 0.0:
-                ha_rad = ha_rad + 2.0 * np.pi
-            # Compute zenith angle
-            za_rad = calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad)
+                                                         obs_lat=obs_lat, date_time=date_time,
+                                                         zenith_angle=za_rad,
+                                                         offset_pa=True)))
 
             # PIPE-1356: perform additional freqency-dependent scaling from the 3GHz prediction.
             freq_scale = (3.e9/freq_head['value'])**2
@@ -149,7 +129,7 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
 
 
 def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
-                            date_time: Dict, offset_pa: bool = False) -> Tuple[Dict, Dict]:
+                            date_time: Dict, zenith_angle, offset_pa: bool = False) -> Tuple[Dict, Dict]:
     """Computes the wide field position correction.
 
     Args:
@@ -158,6 +138,7 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
         obs_long: Geographic longitude of observatory.
         obs_lat: Geographic latitude of observatory.
         date_time: Date and time of observation.
+        zenith_angle: Zenith angle 
         offset_pa: Return the angular offset and parallactic angle instead of offset along RA and Dec.
 
     The arguments are all in casa_tools.quanta format (dictionary containing
@@ -201,7 +182,7 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
     # The amplitude of 0.25 arcsec is defined in VLASS Memo #14 at 3GHz.
     amp = np.deg2rad(0.25 / 3600.0)
     offset = np.zeros(2)
-    zenith_angle = calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad)
+
     chi = np.arctan(np.sin(ha_rad) / (np.cos(dec_rad) * np.tan(obs_lat_rad) -
                                       np.sin(dec_rad) * np.cos(ha_rad)))
     deltatot = amp * np.tan(zenith_angle)
@@ -229,7 +210,41 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
             {'value': offset[1], 'unit': 'rad'})
 
 
-def calc_zenith_angle(obs_lat_rad, dec_rad, ha_rad):
-    LOG.debug(f"Obs. Latitude: {obs_lat_rad}; DEC: {dec_rad}; HA: {ha_rad}")
+def calc_zenith_angle(imageheader):
+    """PIPE-1527: Calculate zenith angle
+    Args:
+        imageheader: image header containing necessary image metadata
+    Returns:
+        The zenith angle of the image in radians.
+    """
+
+    date_obs = imageheader['DATE-OBS']
+    timesys = imageheader['TIMESYS']
+    date_time = casa_tools.measures.epoch(timesys, date_obs)
+    ra_head = {'unit': imageheader['CUNIT1'],
+               'value': imageheader['CRVAL'][0]}
+    dec_head = {'unit': imageheader['CUNIT2'],
+                'value': imageheader['CRVAL'][1]}
+    ra_rad = casa_tools.quanta.convert(ra_head, 'rad')['value']
+    dec_rad = casa_tools.quanta.convert(dec_head, 'rad')['value']
+    observatory = casa_tools.measures.observatory('VLA')
+    obs_long = observatory['m0']
+    obs_lat = observatory['m1']
+    obs_long_rad = casa_tools.quanta.convert(obs_long, 'rad')['value']
+    obs_lat_rad = casa_tools.quanta.convert(obs_lat, 'rad')['value']
+    # Greenwich Mean Sidereal Time
+    GMST = casa_tools.measures.measure(date_time, 'GMST1')
+
+    # Local Sidereal Time
+    LST = casa_tools.quanta.convert(GMST['m0'], 'h')['value'] % 24.0 + np.rad2deg(obs_long_rad) / 15.0
+    if LST < 0:
+        LST = LST + 24
+    LST_rad = np.deg2rad(LST * 15)  # in radians
+
+    # Hour angle (in radians)
+    ha_rad = LST_rad - ra_rad
+    if ha_rad < 0.0:
+        ha_rad = ha_rad + 2.0 * np.pi
+
     return np.arccos(np.sin(obs_lat_rad) * np.sin(dec_rad) + np.cos(obs_lat_rad)
                              * np.cos(dec_rad) * np.cos(ha_rad))
