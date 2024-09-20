@@ -324,7 +324,7 @@ def segmentEdges(seq, gap, label, sortdata = True):
         startseg = seq[0]
         enseg = seq[-1]
 
-    return np.array([(startseg[i], endseg[i], label) for i in range(len(startseg))],np.dtype([('tstart',np.float64),('tend',np.float64),('intent',np.unicode_,40)]))
+    return np.array([(startseg[i], endseg[i], label) for i in range(len(startseg))],np.dtype([('tstart',np.float64),('tend',np.float64),('intent',np.str_,40)]))
 
 def selectRanges(timeseq, rangetable):
     '''Return selection boolean array for a time sequence, given a table of time ranges.
