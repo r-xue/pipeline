@@ -11,7 +11,6 @@ from pipeline import environment
 from pipeline.h.tasks.exportdata.aqua import UNDEFINED, export_to_disk
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.infrastructure import utils
-from pipeline.infrastructure.renderer import htmlrenderer
 
 LOG = logging.get_logger(__name__)
 
@@ -211,8 +210,8 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             root.append(nx)
 
             observatory = context.project_summary.telescope
-            el_min = htmlrenderer.compute_az_el_for_ms(ms, observatory, min)[1]
-            el_max = htmlrenderer.compute_az_el_for_ms(ms, observatory, max)[1]
+            el_min = ms.compute_az_el_for_ms(observatory, min)[1]
+            el_max = ms.compute_az_el_for_ms(observatory, max)[1]
             el_range = el_max - el_min
             nx = ElementTree.Element("ElevationRange")
             nx.text = str(el_range)

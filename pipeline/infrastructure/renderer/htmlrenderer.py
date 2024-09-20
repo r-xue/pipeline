@@ -931,8 +931,8 @@ class T2_1DetailsRenderer(object):
 
         # Get min, max elevation
         observatory = context.project_summary.telescope
-        el_min = "%.2f" % compute_az_el_for_ms(ms, observatory, min)[1]
-        el_max = "%.2f" % compute_az_el_for_ms(ms, observatory, max)[1]
+        el_min = "%.2f" % ms.compute_az_el_for_ms(observatory, min)[1]
+        el_max = "%.2f" % ms.compute_az_el_for_ms(observatory, max)[1]
 
         dirname = os.path.join('session%s' % ms.session, ms.basename)
 
@@ -2164,36 +2164,6 @@ def get_ms_attr_for_result(context, vis, accessor):
     ms_basename = os.path.basename(vis)
     ms = context.observing_run.get_ms(ms_basename)
     return accessor(ms)
-
-
-def compute_az_el_to_field(field, epoch, observatory):
-    me = casa_tools.measures
-
-    me.doframe(epoch)
-    me.doframe(me.observatory(observatory))
-    myazel = me.measure(field.mdirection, 'AZELGEO')
-    myaz = myazel['m0']['value']
-    myel = myazel['m1']['value']
-    myaz = (myaz * 180 / numpy.pi) % 360
-    myel *= 180 / numpy.pi
-
-    return [myaz, myel]
-
-
-def compute_az_el_for_ms(ms, observatory, func):
-    cal_scans = ms.get_scans(scan_intent='POINTING,SIDEBAND,ATMOSPHERE')
-    scans = [s for s in ms.scans if s not in cal_scans]
-
-    az = []
-    el = []
-    for scan in scans:
-        for field in scan.fields:
-            az0, el0 = compute_az_el_to_field(field, scan.start_time, observatory)
-            az1, el1 = compute_az_el_to_field(field, scan.end_time, observatory)
-            az.append(func([az0, az1]))
-            el.append(func([el0, el1]))
-
-    return func(az), func(el)
 
 
 def cmp(a, b):
