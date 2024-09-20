@@ -1,4 +1,4 @@
-from typing import Union, List, Dict, Tuple
+from typing import Any, Union, List, Dict, Tuple
 from unittest.mock import Mock
 
 import numpy as np
@@ -12,7 +12,7 @@ from pipeline.infrastructure import casa_tools, casa_tasks
 from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_intervals, \
     get_casa_quantity, get_num_caltable_polarizations, fieldname_for_casa, fieldname_clean, \
     get_field_accessor, get_field_identifiers, get_receiver_type_for_spws, place_repr_source_first, \
-    get_taskhistory_fromimage
+    get_taskhistory_fromimage, list_to_str
 
 params_find_ranges = [('', ''), ([], ''), ('1:2', '1:2'), ([1, 2, 3], '1~3'),
                       (['5~12', '14', '16:17'], '5~12,14,16:17'),
@@ -274,3 +274,17 @@ def test_get_taskhistory_fromimage(tmpdir):
     for idx, task_job in enumerate(tclean_job_list):
         for k, v in task_job.items():
             assert task_history_list[idx][k] == v
+
+
+@pytest.mark.parametrize(
+    'value, expected',
+    [
+        ([1, 2, 3], '[1, 2, 3]'),
+        (np.array([1, 2, 3]), '[1, 2, 3]'),
+        ([np.int64(1), np.int64(2), np.int64(3)], '[1, 2, 3]'),
+        (1, '1')
+    ]
+)
+def test_list_to_str(value: Any, expected: str):
+    svalue = list_to_str(value)
+    assert svalue == expected
