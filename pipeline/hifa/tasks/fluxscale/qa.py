@@ -572,7 +572,7 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
         tsys_spw = phase_spw_to_tsys_spw[phase_spw]
         scan_data = wrapper.filter(spw=tsys_spw.id, scan=first_tsys_scan.id)
         if numpy.all(scan_data['FPARAM'].mask):  # Assign NaN if everything is masked
-            median_tsys[phase_spw.id] = numpy.NaN
+            median_tsys[phase_spw.id] = numpy.nan
             get_snr_info = True
         else:
             median_tsys[phase_spw.id] = numpy.ma.median(scan_data['FPARAM'])
