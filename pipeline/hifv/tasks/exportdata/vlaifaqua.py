@@ -7,7 +7,11 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.launcher as launcher
 
 import pipeline.h.tasks.exportdata.aqua as aqua
+from pipeline import environment
 from pipeline.h.tasks.exportdata.aqua import UNDEFINED, export_to_disk
+from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
+from pipeline.infrastructure import utils
+from pipeline.infrastructure.renderer import htmlrenderer
 
 LOG = logging.get_logger(__name__)
 
@@ -59,6 +63,196 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
     def __init__(self):
         super(VLAAquaXmlGenerator, self).__init__()
 
+    def get_report_xml(self, context):
+        report = super().get_report_xml(context)
+        report.append(self.get_processing_environment())
+        report.append(self.get_calibrators(context))
+        report.append(self.get_science_spws(context))
+        report.append(self.get_scans(context))
+        report.append(self.get_observation_summary(context))
+        return report
+
+    def get_processing_environment(self):
+        """
+        return XML for processing environment
+        """
+        root = ElementTree.Element('ProcessingEnvironment')
+        nodes = environment.cluster_details()
+        nx = ElementTree.Element("ExecutionMode")
+        nmpiservers = None
+        hostlist = []
+        if len(nodes) > 1:
+            nx.text = "parallel"
+            nmpiservers = ElementTree.Element("MPIServers")
+            nmpiservers.text = str(len(nodes))
+        else:
+            nx.text = "serial"
+        root.append(nx)
+        if nmpiservers is not None:
+            root.append(nmpiservers)
+
+        for node in nodes:
+            if node.hostname not in hostlist:
+                nx = ElementTree.Element("Host")
+                ElementTree.SubElement(nx, "HostName").text = node.hostname
+                ElementTree.SubElement(nx, "OperatingSystem").text = node.host_distribution
+                ElementTree.SubElement(nx, "Cores").text = str(node.casa_cores)
+                ElementTree.SubElement(nx, "Memory").text = str(measures.FileSize(node.casa_memory, measures.FileSizeUnits.BYTES))
+                ElementTree.SubElement(nx, "CPU").text = str(node.cpu_type)
+                root.append(nx)
+                hostlist.append(node.hostname)
+        return root
+
+    def get_calibrators(self, context):
+        """
+        return XML for calibrators
+        """
+        mslist = context.observing_run.get_measurement_sets()
+        root = ElementTree.Element("Calibrators")
+        for ms in mslist:
+            if len(context.evla['msinfo'][ms.name].spindex_results) != 0 :
+                for calibrator in context.evla['msinfo'][ms.name].spindex_results:
+                    nx = ElementTree.Element("Calibrator")
+                    ElementTree.SubElement(nx, 'Name').text = calibrator["source"]
+
+                    ElementTree.SubElement(nx, 'Fitorder').text = calibrator["fitorder"]
+                    ElementTree.SubElement(nx, 'FluxDensity').text = ','.join([str(fitflx) for fitflx in calibrator["fitflx"]])
+                    ElementTree.SubElement(nx, 'SpectralIndex').text = str(calibrator["spix"])
+                    root.append(nx)
+
+                    source_intents = self.get_source_intents(ms, calibrator["source"])
+                    if source_intents is not None:
+                        ElementTree.SubElement(nx, 'Intents').text = source_intents
+                    else:
+                        LOG.warning("Unable to get source intents for AQUA report")
+
+        return root
+
+    def get_source_intents(self, ms, source):
+        """
+        return XML for source intents
+        """
+        source_intents = None
+        for s in ms.sources:
+            if s.name == source:
+                source_intents = ",".join(s.intents)
+                break
+        return source_intents
+
+    def get_science_spws(self, context):
+        """
+        return XML for science SPWs
+        """
+        mslist = context.observing_run.get_measurement_sets()
+        root = ElementTree.Element("ScienceSPWs")
+        for ms in mslist:
+            spwlist = ms.get_spectral_windows(science_windows_only=True)
+            for spw in spwlist:
+                nx = ElementTree.Element("SPW")
+                chanfreq = [str(t) for t in spw.channels.chan_freqs]
+                ElementTree.SubElement(nx, 'Frequency').text = ",".join(chanfreq)
+                root.append(nx)
+
+        return root
+
+    def get_scans(self, context):
+        """
+        return XML for scan information
+        """
+        mslist = context.observing_run.get_measurement_sets()
+        root = ElementTree.Element("Scans")
+        for ms in mslist:
+            scans = ms.scans
+            for sc in scans:
+                nx = ElementTree.Element("Scan")
+                ElementTree.SubElement(nx, 'ID').text = str(sc.id)
+                ElementTree.SubElement(nx, 'Start').text = str(sc.start_time["m0"]["value"])
+                ElementTree.SubElement(nx, 'End').text = str(sc.end_time["m0"]["value"])
+                ElementTree.SubElement(nx, 'SPWIDs').text = ",".join([str(spw.id) for spw in sc.spws])
+                ElementTree.SubElement(nx, 'FieldIDs').text = ",".join([str(field.id) for field in sc.fields])
+                ElementTree.SubElement(nx, 'Intents').text = ",".join([str(intent) for intent in sc.intents])
+                root.append(nx)
+
+        return root
+
+    def get_observation_summary(self, context):
+        """
+        return XML for observation summary
+        """
+        mslist = context.observing_run.get_measurement_sets()
+        root = ElementTree.Element("ObservationSummary")
+        for ms in mslist:
+            nx = ElementTree.Element("StartTime")
+            nx.text = str(ms.start_time["m0"]["value"])
+            root.append(nx)
+            nx = ElementTree.Element("EndTime")
+            nx.text = str(ms.end_time["m0"]["value"])
+            root.append(nx)
+            nx = ElementTree.Element("Baseline")
+            ElementTree.SubElement(nx, "Min").text = str(ms.antenna_array.baseline_min.length.value)
+            ElementTree.SubElement(nx, "Max").text = str(ms.antenna_array.baseline_max.length.value)
+            root.append(nx)
+            nx = ElementTree.Element("FlaggedFraction")
+            dict_flagged_fraction = self.get_flagged_fraction(context)
+            for msname in dict_flagged_fraction:
+                for reason in dict_flagged_fraction[msname]:
+                    ElementTree.SubElement(nx, reason).text = str(dict_flagged_fraction[msname][reason])
+            root.append(nx)
+
+            time_on_source = utils.total_time_on_source(ms.scans)
+            nx = ElementTree.Element("TimeOnSource")
+            nx.text = str(time_on_source)
+            root.append(nx)
+
+            science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
+            time_on_science = utils.total_time_on_source(science_scans)
+            nx = ElementTree.Element("TimeOnScienceTarget")
+            nx.text = str(time_on_science)
+            root.append(nx)
+
+            observatory = context.project_summary.telescope
+            el_min = htmlrenderer.compute_az_el_for_ms(ms, observatory, min)[1]
+            el_max = htmlrenderer.compute_az_el_for_ms(ms, observatory, max)[1]
+            el_range = el_max - el_min
+            nx = ElementTree.Element("ElevationRange")
+            nx.text = str(el_range)
+            root.append(nx)
+        return root
+
+    def get_flagged_fraction(self, context):
+        """
+        return flagged fraction
+        """
+        applycal_result = None
+        output_dict = {}
+
+        for result in context.results:
+            objresult = result.read()
+            if objresult.taskname == "hifv_applycals":
+                applycal_result = objresult[0]
+
+        if applycal_result is not None:
+
+            intents_to_summarise = flagutils.intents_to_summarise(context)
+            flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
+            flag_table_intents.extend(intents_to_summarise)
+            flag_totals = {}
+            flag_totals = utils.dict_merge(flag_totals, flagutils.flags_for_result(applycal_result, context, intents_to_summarise=intents_to_summarise))
+            reasons_to_export = ['online', 'shadow', 'qa0', 'qa2', 'before', 'template']
+
+            for ms in flag_totals:
+                output_dict[ms] = {}
+                for reason in flag_totals[ms]:
+                    for intent in flag_totals[ms][reason]:
+                        if reason in reasons_to_export:
+                            if "TOTAL" in intent:
+                                new = float(flag_totals[ms][reason][intent][0])
+                                total = float(flag_totals[ms][reason][intent][1])
+                                percentage = new/total * 100
+                                output_dict[ms][reason] = percentage
+
+        return output_dict
+
     def get_project_structure(self, context):
         # get base XML from base class
         root = super(VLAAquaXmlGenerator, self).get_project_structure(context)
@@ -95,6 +289,25 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             xml_root.extend(flux_xml)
 
         sensitivity_xml = aqua.sensitivity_xml_for_stages(context, topic_results)
+        # omit containing element if no measurements were found
+        if len(list(sensitivity_xml)) > 0:
+            xml_root.extend(sensitivity_xml)
+
+        return xml_root
+
+    def get_imaging_topic(self, context, topic_results):
+        """
+        Get the XML for the imaging topic.
+
+        :param context: pipeline context
+        :param topic_results: list of Results for this topic
+        :return: XML for imaging topic
+        :rtype: xml.etree.cElementTree.Element
+        """
+        # get base XML from base class
+        xml_root = super(VLAAquaXmlGenerator, self).get_imaging_topic(context, topic_results)
+
+        sensitivity_xml = aqua.sensitivity_xml_for_stages(context, topic_results, name='ImageSensitivities')
         # omit containing element if no measurements were found
         if len(list(sensitivity_xml)) > 0:
             xml_root.extend(sensitivity_xml)
