@@ -10,17 +10,23 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
     """
     hsd_restoredata ---- Restore flagged and calibration single dish data from a pipeline run
 
-    The hsd_restoredata task restores flagged and calibrated data from archived
-    ASDMs and pipeline flagging and calibration data products. Pending archive
-    retrieval support hsd_restoredata assumes that the required products
-    are available in the rawdata_dir in the format produced by the
-    hifa_exportdata task.
+    The hsd_restoredata task restores flagged and calibrated MeasurementSets
+    from archived ASDMs and pipeline flagging and calibration data products.
 
-    hsd_restoredata assumes that the following entities are available in the raw
-    data directory:
+    hsd_restoredata assumes that the ASDMs to be restored are present in the
+    directory specified by the ``rawdata_dir`` (default: '../rawdata').
 
-    - the ASDMs to be restored
-    - for each ASDM in the input list:
+    By default (``copytoraw`` = True), hsd_restoredata assumes that for each
+    ASDM in the input list, the corresponding pipeline flagging and calibration
+    data products (in the format produced by the hsd_exportdata task) are
+    present in the directory specified by ``products_dir`` (default: '../products').
+    At the start of the task, these products are copied from the ``products_dir``
+    to the ``rawdata_dir``.
+
+    If ``copytoraw`` = False, hsd_restoredata assumes that these products are
+    to be found in ``rawdata_dir`` along with the ASDMs.
+
+    The expected flagging and calibration products (for each ASDM) include:
 
         - a compressed tar file of the final flagversions file, e.g.
           uid___A002_X30a93d_X43e.ms.flagversions.tar.gz
@@ -53,39 +59,49 @@ def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, r
 
     vis           List of raw visibility data files to be restored. Assumed to be
                   in the directory specified by rawdata_dir.
-
+                  
                   example: vis=['uid___A002_X30a93d_X43e']
     session       List of sessions one per visibility file.
-
+                  
                   example: session=['session_3']
     products_dir  Name of the data products directory to copy calibration
-                  products from. The parameter is effective only when copytoraw = True.
-                  When copytoraw = False, calibration products in rawdata_dir will be used.
-
+                  products from.
+                  Default: '../products'
+                  
+                  The parameter is effective only when ``copytoraw`` = True.
+                  When ``copytoraw`` = False, calibration products in
+                  ``rawdata_dir`` will be used.
+                  
                   example: products_dir='myproductspath'
-    copytoraw     Copy calibration and flagging tables from products_dir to
-                  rawdata_dir directory.
-
+    copytoraw     Copy calibration and flagging tables from ``products_dir`` to
+                  ``rawdata_dir`` directory.
+                  Default: True
+                  
                   example: copytoraw=False
     rawdata_dir   Name of the raw data directory.
-
+                  Default: '../rawdata'
+                  
                   example: rawdata_dir='myrawdatapath'
     lazy          Use the lazy filler option
-
+                  Default: False
+                  
                   example: lazy=True
     bdfflags      Set the BDF flags
-
+                  Default: True
+                  
                   example: bdfflags=False
     ocorr_mode    Set ocorr_mode
-
+                  Default: 'ao'
+                  
                   example: ocorr_mode='ca'
     asis          Creates verbatim copies of the ASDM tables in the output MS.
                   The value given to this option must be a list of table names separated by space characters.
-
+                  Default: 'SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR'
+                  
                   example: asis='Source Receiver'
     hm_rasterscan Heuristics method for raster scan analysis. Two analysis modes,
                   time-domain analysis ('time') and direction analysis ('direction'), are available.
-                  Default is 'time'.
+                  Default: 'time'
 
     --------- examples -----------------------------------------------------------
 

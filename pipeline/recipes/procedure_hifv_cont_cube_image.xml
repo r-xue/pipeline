@@ -1,14 +1,10 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifv_contimage</ProcedureTitle>
+    <ProcedureTitle>hifv_cont_cube_image</ProcedureTitle>
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_restoredata</Command>
+        <Command xmlns="">hifv_importdata</Command>
         <ParameterSet>
-          <Parameter>
-            <Keyword xmlns="">copytoraw</Keyword>
-            <Value xmlns="">False</Value>
-          </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -17,23 +13,10 @@
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-        
-    <ProcessingCommand>
-        <Command xmlns="">hifv_statwt</Command>
-        <ParameterSet/>
-    </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hif_mstransform</Command>
+        <Command xmlns="">hifv_mstransform</Command>
         <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">field</Keyword>
-                <Value xmlns="">{{field}}</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">spw</Keyword>
-                <Value xmlns="">{{spw}}</Value>
-            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -47,6 +30,7 @@
         </ParameterSet>
     </ProcessingCommand>
 
+    <!-- cont imaging -->
     <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
@@ -54,10 +38,6 @@
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">regcal</Value>
-            </Parameter>              
         </ParameterSet>
     </ProcessingCommand>
 
@@ -71,11 +51,43 @@
         </ParameterSet>
     </ProcessingCommand>
 
-    {{#selfcal}}
-    <!-- run selfcal and save selfcal'ed data in 'corrected' if selfcal=true -->
-    
+    <!-- line imaging -->
     <ProcessingCommand>
-        <Command xmlns="">hif_selfcal</Command>
+        <Command xmlns="">hif_checkproductsize</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maxproductsize</Keyword>
+                <Value xmlns="">100.0</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">maxcubesize</Keyword>
+                <Value xmlns="">20.0</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">maxcubelimit</Keyword>
+                <Value xmlns="">40.0</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">mfs</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_findcont</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_uvcontsub</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
@@ -85,12 +97,8 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cont</Value>
+                <Value xmlns="">cube</Value>
             </Parameter>
-            <Parameter>
-                <Keyword xmlns="">datatype</Keyword>
-                <Value xmlns="">selfcal</Value>
-            </Parameter>              
         </ParameterSet>
     </ProcessingCommand>
 
@@ -103,15 +111,12 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-
-    <!-- end of the selfcal section -->
-    {{/selfcal}}    
 
     <ProcessingCommand>
         <Command xmlns="">hifv_pbcor</Command>
         <ParameterSet>
         </ParameterSet>
-    </ProcessingCommand>    
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>
