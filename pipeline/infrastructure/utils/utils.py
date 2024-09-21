@@ -17,6 +17,7 @@ import pickle
 import re
 import shutil
 import string
+import sys
 import tarfile
 from typing import Collection, Dict, List, Optional, Sequence, Tuple, Union
 
@@ -906,7 +907,7 @@ def list_to_str(value: Union[List, npt.NDArray]) -> str:
     """
     if isinstance(value, (list, np.ndarray)):
         arr = np.asarray(value)
-        ret = np.array2string(arr, separator=', ')
+        ret = np.array2string(arr, separator=', ', threshold=sys.maxsize, max_line_width=sys.maxsize)
     else:
         ret = str(value)
     return ret
