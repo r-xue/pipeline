@@ -362,7 +362,18 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
 
     rahrstr = phasecenter.split()[1] + ' hours'
     declist = phasecenter.split()[2].split('.')
-    decdegstr = declist[0] + ':' + declist[1] + ':' + declist[2] + '.' + declist[3] + ' degrees'
+    decstr = ''
+    if len(declist) <= 4:
+        for i, dec in enumerate(declist):
+            decstr += dec
+            if i < 2 and i != len(declist) - 1:
+                decstr += ":"
+            elif i == 2:
+                decstr += "."
+    else:
+        LOG.warning("Inappropriate declination for phase center is provided.")
+
+    decdegstr = decstr + ' degrees'
     phasecentcoord = SkyCoord(ra=Angle(rahrstr), dec=Angle(decdegstr), frame=ICRS)
     racat = catalog_dat['RA']   # degrees from FITS file column
     deccat = catalog_dat['DEC']  # degrees from FITS file column
