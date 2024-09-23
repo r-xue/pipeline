@@ -74,7 +74,6 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             #
             with casa_tools.ImageReader(subimagefile) as image:
                 stats = image.statistics(robust=False)
-                header = image.fitsheader()
 
                 # Extract the position of the maximum from imstat return dictionary
                 maxposx = stats['maxpos'][0]

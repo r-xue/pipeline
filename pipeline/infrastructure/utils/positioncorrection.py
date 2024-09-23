@@ -218,13 +218,18 @@ def calc_zenith_angle(imageheader):
         The zenith angle of the image in radians.
     """
 
+    imageheader = {key.upper():value for key, value in imageheader.items()}
+    # extract relevant parameters
     date_obs = imageheader['DATE-OBS']
     timesys = imageheader['TIMESYS']
     date_time = casa_tools.measures.epoch(timesys, date_obs)
+    # account for differences between image and fits header keys
+    ra_value = imageheader['CRVAL1'] if 'CRVAL1' in imageheader.keys() else imageheader['CRVAL'][0]
+    dec_value = imageheader['CRVAL2'] if 'CRVAL2' in imageheader.keys() else imageheader['CRVAL'][1]
     ra_head = {'unit': imageheader['CUNIT1'],
-               'value': imageheader['CRVAL'][0]}
+               'value': ra_value}
     dec_head = {'unit': imageheader['CUNIT2'],
-                'value': imageheader['CRVAL'][1]}
+                'value': dec_value}
     ra_rad = casa_tools.quanta.convert(ra_head, 'rad')['value']
     dec_rad = casa_tools.quanta.convert(dec_head, 'rad')['value']
     observatory = casa_tools.measures.observatory('VLA')
