@@ -957,6 +957,15 @@ class SDChannelMapDisplay(SDImageDisplay):
             # make the both side position of red lines
             idx_left_end = idx_line_center - ceil(self.NUM_CHANNELMAP / 2.0 * indices_slice_width - 0.5)
             idx_right_end = idx_left_end + indices_slice_width * self.NUM_CHANNELMAP - 1
+            
+            # get rid of indice out of channel range
+            # this logic should be merged with the two lines above, but at this moment it must remain to understand the flow
+            if idx_left_end < 0 or idx_right_end > self.nchan - 1:
+                _indice = [j for j in [i * indices_slice_width + idx_left_end for i in range(self.NUM_CHANNELMAP)] if 0 <= j < self.nchan]
+                if len(_indice) < 2:
+                    return False
+                idx_left_end = _indice[0]
+                idx_right_end = _indice[-1] - 1
 
             # invert the line if the line is LSB
             if is_chan_inverted_image:
