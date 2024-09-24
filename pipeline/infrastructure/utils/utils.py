@@ -906,8 +906,12 @@ def list_to_str(value: Union[List, npt.NDArray]) -> str:
         sequence of elements.
     """
     if isinstance(value, (list, np.ndarray)):
-        arr = np.asarray(value)
-        ret = np.array2string(arr, separator=', ', threshold=sys.maxsize, max_line_width=sys.maxsize)
+        # set threshold to sys.maxsize to force listing all array elements
+        # set max_line_width to sys.maxsize to disable newlines
+        ret = np.array2string(
+            np.asarray(value), separator=', ',
+            threshold=sys.maxsize, max_line_width=sys.maxsize
+        )
     else:
         ret = str(value)
     return ret
