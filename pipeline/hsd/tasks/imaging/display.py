@@ -890,9 +890,9 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        is_chan_inverted_image = False
+        is_freq_chan_reversed_image = False
         if isinstance(self.inputs.result, SDImagingResultItem):
-            is_chan_inverted_image = self.inputs.result.frequency_channel_reversed
+            is_freq_chan_reversed_image = self.inputs.result.frequency_channel_reversed
 
         # retrieve line list from reduction group
         # key is antenna and spw id
@@ -976,14 +976,14 @@ class SDChannelMapDisplay(SDImageDisplay):
                 idx_right_end = _indice[-1] - 1
 
             # invert the line if the line is LSB
-            if is_chan_inverted_image:
+            if is_freq_chan_reversed_image:
                 idx_line_center, line_center, idx_left_end, idx_right_end = \
-                    map(self._invert, [idx_line_center, line_center, idx_right_end, idx_left_end])
+                    map(lambda x: self.nchan-1-x, [idx_line_center, line_center, idx_right_end, idx_left_end])
             
             if float(idx_line_center) == line_center:
                 velocity_line_center = self.velocity[idx_line_center]
             else:
-                if is_chan_inverted_image:
+                if is_freq_chan_reversed_image:
                     velocity_line_center = 0.5 * (self.velocity[idx_line_center + 1] +
                                                   self.velocity[idx_line_center])
                 else:
@@ -1191,8 +1191,6 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return plot_list
 
-    def _invert(self, val):
-        return self.nchan - 1 - val
 
 class SDRmsMapDisplay(SDImageDisplay):
     """Plotter to create a baseline rms map."""
