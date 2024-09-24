@@ -284,7 +284,8 @@ def test_get_taskhistory_fromimage(tmpdir):
         (np.array([1, 2, 3]), '[1, 2, 3]'),
         ([np.int64(1), np.int64(2), np.int64(3)], '[1, 2, 3]'),
         (1, '1'),
-        (list(np.arange(10000)), lambda: '['+', '.join([f'{i:4d}' for i in range(10000)])+ ']')
+        (np.arange(10000), lambda: str(list(range(10000)))),
+        (list(np.arange(10000)), lambda: str(list(range(10000))))
     ]
 )
 def test_list_to_str(value: Any, expected: Union[str, Callable]):
