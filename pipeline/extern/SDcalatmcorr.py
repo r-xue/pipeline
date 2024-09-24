@@ -1,7 +1,7 @@
 #
 # [SCRIPT INFORMATION]
-# GIT REPO: https://bitbucket.alma.cl/scm/~harold.francke_ar/sd-atm-line-correction-prototype.git
-# COMMIT: a75554f8bb0
+# GIT REPO: https://bitbucket.alma.cl/scm/~harold.francke/sd-atm-line-correction-prototype.git
+# COMMIT: d563bd9cd29
 #
 #SDcalatmcorr: Casapipescript with wrapper for TS script "atmcorr.py" for the removal
 #of atmospheric line residuals.
