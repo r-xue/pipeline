@@ -954,14 +954,22 @@ class SDChannelMapDisplay(SDImageDisplay):
             idx_line_center = floor(line_center + 0.5)
             indices_slice_width = max(floor(line_width / self.NUM_CHANNELMAP + 0.5), 1)
             
+            # adjust index of both side within channel
+            _max_left_edge = floor(line_center - line_width / 2 + 0.5)
+            _max_right_edge = floor(line_center + line_width / 2 + 0.5)
+            if _max_left_edge < 0 or _max_right_edge > self.nchan:
+                indices_slice_width = floor(line_center * 2.0 / self.NUM_CHANNELMAP)
+                if indices_slice_width == 0:
+                    return False
+            
             # make the both side position of red lines
             idx_left_end = idx_line_center - ceil(self.NUM_CHANNELMAP / 2.0 * indices_slice_width - 0.5)
             idx_right_end = idx_left_end + indices_slice_width * self.NUM_CHANNELMAP - 1
             
-            # get rid of indice out of channel range
-            # this logic should be merged with the two lines above, but at this moment it must remain to understand the flow
+            # eliminate indice of out of channel range
+            # this logic should be merged with the two lines above, but at this moment it must remain to understand the flow easily
             if idx_left_end < 0 or idx_right_end > self.nchan - 1:
-                _indice = [j for j in [i * indices_slice_width + idx_left_end for i in range(self.NUM_CHANNELMAP)] if 0 <= j < self.nchan]
+                _indice = [j for j in [idx_left_end + i * indices_slice_width for i in range(self.NUM_CHANNELMAP)] if 0 <= j < self.nchan]
                 if len(_indice) < 2:
                     return False
                 idx_left_end = _indice[0]
@@ -971,14 +979,6 @@ class SDChannelMapDisplay(SDImageDisplay):
             if is_chan_inverted_image:
                 idx_line_center, line_center, idx_left_end, idx_right_end = \
                     map(self._invert, [idx_line_center, line_center, idx_right_end, idx_left_end])
-
-            # adjust index of both side within channel
-            _max_left_edge = floor(line_center - line_width / 2 + 0.5)
-            _max_right_edge = floor(line_center + line_width / 2 + 0.5)
-            if _max_left_edge < 0 or _max_right_edge > self.nchan:
-                indices_slice_width = floor(line_center * 2.0 / self.NUM_CHANNELMAP)
-                if indices_slice_width == 0:
-                    return False
             
             if float(idx_line_center) == line_center:
                 velocity_line_center = self.velocity[idx_line_center]
