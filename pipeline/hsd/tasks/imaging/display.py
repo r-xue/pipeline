@@ -1031,6 +1031,19 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             LOG.debug('Relative velocities of the vertical lines: %s', vertlines)
 
+            # MEMO: 
+            # - For the velocity plot #2, the red vertical lines are drawn at the relative velocity
+            #   values calculated by linear interpolation.
+            #   These lines indicate the boundaries of NUM_CHANNELMAP slices, with each slice having
+            #   a number of indices_slice_width channels. The velocity values at the boundaries are
+            #   calculated by linear interpolating the channel-center velocity values (self.velocity[]).
+            #   Extrapolation for 1/2 channels will be done to calculate the velocity values at the
+            #   very end of the line_window.
+            # - On the other hand, for the frequency plot #1, the channel-center velocity values
+            #   (self.velocity[]) are directly used to indicate the bounderies of the line_window as two
+            #   red vertical lines, hence no interpolations. Therefore the positions of the red lines of
+            #   plot #1 are slightly shifted by 0.5 ch compared to the corresponding lines in plot #2.
+
             # loop over polarizations
             for pol in range(self.npol):
                 plotted_objects = []
