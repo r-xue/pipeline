@@ -966,7 +966,7 @@ class SingleDishPointingChart(object):
             LOG.debug('Generate pointing plot using antenna=%d and spw=%d of %s' % (antenna_id, spw_id, ms.basename))
         beam_size = casa_tools.quanta.convert(ms.beam_sizes[antenna_id][spw_id], 'deg')
         beam_size_in_deg = casa_tools.quanta.getvalue(beam_size)
-        obs_pattern = ms.observing_pattern[antenna_id][spw_id]
+        obs_pattern = dict((int(k), v) for k, v in ms.observing_pattern[antenna_id][spw_id].items())
         antenna_ids = self.datatable.getcol('ANTENNA')
         spw_ids = self.datatable.getcol('IF')
         if self.target_only:
