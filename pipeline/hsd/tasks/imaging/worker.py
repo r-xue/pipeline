@@ -605,7 +605,9 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                       'restfreq': restfreq,
                       'stokes': stokes,
                       'ephemsrcname': ephemsrcname,
-                      'brightnessunit': brightnessunit}
+                      'brightnessunit': brightnessunit,
+                      # temporary parameter tweak for verification of PIPE-2264
+                      'interpolation': 'nearest'}
 
         # remove existing image explicitly
         for rmname in [imagename, imagename.rstrip('/') + '.weight']:
