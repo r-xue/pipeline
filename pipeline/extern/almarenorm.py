@@ -392,7 +392,7 @@ class ACreNorm(object):
             sortlist='ANTENNA1'
 
         mytb.open(self.msname)
-        ddid=str([str(i) for i in self.msmeta.datadescids(spw)])
+        ddid=str(self.msmeta.datadescids(spw).tolist())
         if field is not None:  # i.e. science data
             quer='SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1==ANTENNA2 && FIELD_ID=='+str(field) 
         else:
@@ -449,7 +449,7 @@ class ACreNorm(object):
             casalog.post('ERROR: '+str(datacolumn)+' does NOT exist!')
             raise RuntimeError(str(datacolumn)+' does not exist.')
 
-        ddid=str([str(i) for i in self.msmeta.datadescids(spw)])
+        ddid=str(self.msmeta.datadescids(spw).tolist())
         st=mytb.query('SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
         cd=st.getcol(datacolumn)  ## WARNING CASA6.2 might not obey row order 
         a1=st.getcol('ANTENNA1')
@@ -471,7 +471,7 @@ class ACreNorm(object):
             casalog.post('ERROR: '+str(datacolumn)+' does NOT exist!')
             raise RuntimeError(str(datacolumn)+' does not exist.')
 
-        ddid=str([str(i) for i in self.msmeta.datadescids(spw)])
+        ddid=str(self.msmeta.datadescids(spw).tolist())
         st=mytb.query('SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
         cd=st.getcol(datacolumn) 
         a1=st.getcol('ANTENNA1')
