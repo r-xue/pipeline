@@ -98,7 +98,9 @@ class ImageAxesManager(MapAxesManagerBase):
             axes.colorbar = colorbar
         else:
             colorbar.mappable.set_clim((value_min, value_max))
-            colorbar.draw_all()
+            # it is recommended to call figure.draw_without_rendering() instead of colorbar.draw_all()
+            # colorbar.draw_all()
+            self.figure.draw_without_rendering()
             # set_clim and draw_all clears y-label
         fontsize = colorbar.ax.get_yticklabels()[0].get_fontsize()
         colorbar.ax.set_ylabel('[%s]' % value_unit, fontsize=fontsize)
@@ -1037,14 +1039,14 @@ class SDChannelMapDisplay(SDImageDisplay):
             # calculate relative velocities for red vertical lines
             _chans = [idx_left_end + i * indices_slice_width - 0.5 for i in range(self.NUM_CHANNELMAP + 1)]
             vertlines = chan2vel(_chans) - velocity_line_center
-            
+
             vertical_lines.extend(
                 (axes_integsp2.axvline(x, linewidth=0.3, color='r') for x in vertlines)
             )
 
             LOG.debug('Relative velocities of the vertical lines: %s', vertlines)
 
-            # MEMO: 
+            # MEMO:
             # - For the velocity plot #2, the red vertical lines are drawn at the relative velocity
             #   values calculated by linear interpolation.
             #   These lines indicate the boundaries of NUM_CHANNELMAP slices, with each slice having
