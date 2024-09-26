@@ -27,6 +27,7 @@ test_params_func = [({'unit': 'deg', 'value': 239.9618166667},
                      {'unit': 'deg', 'value': 33.90049},
                      {'m0': {'unit': 'd', 'value': 58089.82306510417},
                       'refer': 'UTC', 'type': 'epoch'},
+                      0.2981984027696308,
                      ({'unit': 'deg', 'value': 2.1182175269636022e-05},
                       {'unit': 'deg', 'value': 2.6288231112869233e-06})
                      ),
@@ -36,6 +37,7 @@ test_params_func = [({'unit': 'deg', 'value': 239.9618166667},
                      {'unit': 'deg', 'value': 33.90049},
                      {'m0': {'unit': 'd', 'value': 58565.8652734375},
                       'refer': 'UTC', 'type': 'epoch'},
+                      0.6200683050479315,
                      ({'unit': 'deg', 'value': -4.507762670427747e-05},
                       {'unit': 'deg', 'value': 2.065425008498102e-05})
                      )]
@@ -86,9 +88,10 @@ def test_do_wide_field_corr(fitsname: str, obs_long: Dict[str, Union[str, float]
     assert abs(delta_ra) < epsilon and abs(delta_dec) < epsilon
 
 
-@pytest.mark.parametrize('ra, dec, obs_long, obs_lat, date_time, offset_expected', test_params_func)
+@pytest.mark.parametrize('ra, dec, obs_long, obs_lat, date_time, zenith_angle, offset_expected', test_params_func)
 def test_calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
-                                 date_time: Dict, offset_expected: Tuple[Dict, Dict],
+                                 date_time: Dict, zenith_angle: float,
+                                 offset_expected: Tuple[Dict, Dict],
                                  epsilon: float = 1.0e-9):
     """Test calc_wide_field_pos_cor()
 
@@ -98,7 +101,7 @@ def test_calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: D
     """
     # Compute correction
     offset = calc_wide_field_pos_cor(ra=ra, dec=dec, obs_long=obs_long, obs_lat=obs_lat,
-                                     date_time=date_time)
+                                     date_time=date_time, zenith_angle=zenith_angle)
 
     # Compute relative error
     ra_offset = casa_tools.quanta.convert(offset[0], 'deg')['value']

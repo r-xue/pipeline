@@ -129,7 +129,7 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
 
 
 def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
-                            date_time: Dict, zenith_angle, offset_pa: bool = False) -> Tuple[Dict, Dict]:
+                            date_time: Dict, zenith_angle: float, offset_pa: bool = False) -> Tuple[Dict, Dict]:
     """Computes the wide field position correction.
 
     Args:
@@ -138,7 +138,7 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
         obs_long: Geographic longitude of observatory.
         obs_lat: Geographic latitude of observatory.
         date_time: Date and time of observation.
-        zenith_angle: Zenith angle 
+        zenith_angle: Zenith angle in radians
         offset_pa: Return the angular offset and parallactic angle instead of offset along RA and Dec.
 
     The arguments are all in casa_tools.quanta format (dictionary containing
