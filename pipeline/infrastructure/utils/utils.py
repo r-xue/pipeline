@@ -5,19 +5,25 @@ classes.
 import ast
 import bisect
 import collections
+from collections.abc import Iterable
 import contextlib
 import copy
+from datetime import datetime
 import errno
 import fcntl
+from functools import wraps
 import glob
+import inspect
 import itertools
 import operator
 import os
 import pickle
+from pprint import pprint
 import re
 import shutil
 import string
 import tarfile
+import time
 from typing import Collection, Dict, List, Optional, Sequence, Tuple, Union
 
 import casaplotms
@@ -886,3 +892,137 @@ def remove_trailing_string(s, t):
         return s[:-len(t)]
     else:
         return s
+
+
+def function_io_dumper(to_pickle=True, to_json=False, json_max_depth=5):
+    """Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON file.
+    
+    This function is a helper method for development. It should not be used in production codes.
+    
+    Useage:
+    @function_io_dumper()
+    def foobar(self, baz):
+        ...
+        return ret
+    
+    When foobar() is executed, the decolator makes a directory 'foobar.[timestamp]', then it dumps
+    all objects of arguments and return values of foobar() as pickle files and|or JSON files.
+    We can get the same behavior of foobar() with the pickles as when they were dumped:
+    
+    with open('baz.pickle', 'rb') as f:
+        baz = pickle.load(f)
+    foobar(baz)
+    
+    or, understand input/result of the function by JSON output.
+
+    """
+     
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            
+            # create timestamp
+            epoch_time = time.time()
+            dt = datetime.fromtimestamp(epoch_time)
+            ns = int((epoch_time - int(epoch_time)) * 1_000_000_000)
+            timestamp = dt.strftime(f'%Y%m%d-%H:%M:%S.{ns}')
+
+            exec_dumpargs = True
+
+            # make output folder name
+            folder_name = f"{func.__name__}.{timestamp}"
+            
+            # make signatures of args
+            sig = inspect.signature(func)
+            bound_args = sig.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+            
+            json_dict = None
+            if to_json:
+                json_dict = object_to_dict(bound_args.arguments, max_depth=json_max_depth)
+            
+            try:
+                os.makedirs(folder_name, exist_ok=True)
+
+                LOG.info(f"Function '{_get_full_method_path(func)}' called at {timestamp}")
+
+                for arg_name, arg_value in bound_args.arguments.items():
+                    _dump(arg_value, folder_name, arg_name, dump_pickle=to_pickle, dump_json=to_json, json_dict=json_dict)
+
+            except pickle.PicklingError as e:
+                exec_dumpargs = False
+                LOG.warn(f'Contained unpicklable object: {e}')
+            except Exception as e:
+                exec_dumpargs = False
+                LOG.warn(f'Exception occured: {e}')
+
+            result = func(*args, **kwargs)
+
+            if exec_dumpargs and result is not None:
+                try:
+                    _name = f'{folder_name}.result'
+                    if to_json:
+                        json_dict = object_to_dict({_name:result}, max_depth=json_max_depth)
+                    _dump({_name:result}, folder_name, _name, dump_pickle=to_pickle, dump_json=to_json, json_dict=json_dict)
+                except pickle.PicklingError as e:
+                    LOG.warn(f'Contained unpicklable object: {e}')
+                except Exception as e:
+                    LOG.warn(f'Exception occured: {e}')
+
+            return result
+        return wrapper
+    return decorator
+
+
+def _dump(obj, path, name, dump_pickle=True, dump_json=False, json_dict={}):
+    file_path = os.path.join(path, f"{name}")
+    
+    if dump_pickle:
+        with open(file_path+'.pickle', 'wb') as f:
+            pickle.dump(obj, f)
+    if dump_json:
+        with open(file_path+'.json', 'w') as f:
+            pprint(json_dict[name], f)
+
+def _get_full_method_path(func):
+    module_name = func.__module__
+    if hasattr(func, '__qualname__'):
+        qualname = func.__qualname__
+    else:
+        qualname = func.__name__
+    return f"{module_name}.{qualname}"
+
+def object_to_dict(obj, max_depth=5, current_depth=0):
+
+    if current_depth > max_depth:
+        return None
+
+    if isinstance(obj, dict):
+        result = {}
+        for key, value in obj.items():
+            if hasattr(value, '__dict__') or isinstance(value, Iterable):
+                result[key] = object_to_dict(value, max_depth=max_depth, current_depth=current_depth + 1)
+            else:
+                result[key] = value
+        return result
+
+    elif isinstance(obj, Iterable) and not isinstance(obj, (str, bytes)):
+        result = []
+        for item in obj:
+            if hasattr(item, '__dict__') or isinstance(item, Iterable):
+                result.append(object_to_dict(item, max_depth=max_depth, current_depth=current_depth + 1))
+            else:
+                result.append(item)
+        return result
+
+    elif hasattr(obj, '__dict__'):
+        result = {}
+        for key, value in obj.__dict__.items():
+            if hasattr(value, '__dict__') or isinstance(value, Iterable):
+                result[key] = object_to_dict(value, max_depth=max_depth, current_depth=current_depth + 1)
+            else:
+                result[key] = value
+        return result
+
+    else:
+        return obj
