@@ -2,9 +2,7 @@ import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.hifv.tasks.finalcals.finalcals import FinalcalsResults as FinalcalsResults
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
@@ -59,8 +57,7 @@ class Flagcal(basetask.StandardTaskTemplate):
         # Check finalcal stage prefixes.
         caltable = self.inputs.caltable
         if not os.path.exists(caltable):
-            finalcals_result = utils.get_task_result(self.inputs.context, "hifv_finalcals", FinalcalsResults)
-            caltable = finalcals_result.finalampgaincaltable
+            caltable = list(self.inputs.context.callibrary.active.get_caltable('finalcal'))[3]
 
         flagcal_result = self._do_flagdata(caltable=caltable,
                                            clipminmax=self.inputs.clipminmax)

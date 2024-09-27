@@ -82,6 +82,7 @@ class VLAImportDataResults(basetask.Results):
                     context.evla['msinfo'][m.name].new_gain_solint1[bandname] = '1.0s'
 
         if self.setjy_results:
+            context.evla['msinfo'][m.name].setjy_results = self.setjy_results
             for result in self.setjy_results:
                 result.merge_with_context(context)
 

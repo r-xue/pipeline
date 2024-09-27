@@ -99,14 +99,10 @@ class Circfeedpolcal(polarization.Polarization):
     def prepare(self):
 
         self.callist = []
-        # PIPE-2164: getting result using taskname
-        importdata_result = utils.get_task_result(self.inputs.context, "hifv_importdata", VLAImportDataResults)
-        if importdata_result is not None:
-            self.setjy_results = importdata_result.setjy_results
-        else:
-            LOG.warning("Could not retrieve results for 'hifv_importdata', setjy_results will not be set.")
-
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
+
         intents = list(m.intents)
 
         self.RefAntOutput = ['']
@@ -280,15 +276,13 @@ class Circfeedpolcal(polarization.Polarization):
         Returns: replaces the finalphasegaincal name with the phaseshortgaincal table from hifv_finalcals
 
         '''
-
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         idx = -1  # Should be last element
         newtable = ''
         for i, table in enumerate(GainTables):
             if 'finalphasegaincal' in table:
                 idx = i
-                finalcals_result = utils.get_task_result(self.inputs.context, "hifv_finalcals", FinalcalsResults)
-
-                newtable = finalcals_result.phaseshortgaincaltable
+                newtable = self.inputs.context.evla['msinfo'][m.name].phaseshortgaincaltable
         GainTables[idx] = newtable
 
         return GainTables

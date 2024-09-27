@@ -8,10 +8,8 @@ from scipy import stats
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getCalFlaggedSoln, uvrange
-from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -204,13 +202,9 @@ class Solint(basetask.StandardTaskTemplate):
         # Solint section
 
         (longsolint, gain_solint2) = self._do_determine_solint(calMs, ','.join(spwlist))
-
-        # PIPE-2164: getting result using taskname
-        importdata_result = utils.get_task_result(self.inputs.context, "hifv_importdata", VLAImportDataResults)
-        if importdata_result is not None:
-            self.setjy_results = importdata_result.setjy_results
-        else:
-            LOG.warning("Could not retrieve results for 'hifv_importdata', setjy_results will not be set.")
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
@@ -224,7 +218,7 @@ class Solint(basetask.StandardTaskTemplate):
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band),
                         '10_{!s}.tbl'.format(band), 'scan_{!s}.tbl'.format(band), 'limit_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+
         soltimes = [m.get_vla_max_integration_time() * x for x in soltimes]
 
         solints = ['int', str(soltimes[1]) + 's', str(soltimes[2]) + 's']

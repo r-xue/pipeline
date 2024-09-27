@@ -175,19 +175,9 @@ class Syspower(basetask.StandardTaskTemplate):
         elif isinstance(self.inputs.antexclude, dict):
             antexclude_dict = self.inputs.antexclude
 
-        # PIPE-2164: getting result using taskname
-        priorcals_result = utils.get_task_result(self.inputs.context, "hifv_priorcals")
-
-        if priorcals_result is not None:
-            # Assumes hifv_priorcals was executed as the previous stage
-            try:
-                rq_table = priorcals_result.rq_result[0].final[0].gaintable
-            except Exception as ex:
-                rq_table = priorcals_result.rq_result.final[0].gaintable
-                LOG.debug(ex)
-        else:
-            rq_table = ""
-            LOG.warning("'hifv_priorcals' result not found in context.results list. Setting rq_table = ''")
+        # PIPE-2164: getting rq table from context
+        # Assumes hifv_priorcals was executed as the previous stage
+        rq_table = next(iter(self.inputs.context.callibrary.active.get_caltable('rq')))
 
         band_baseband_spw = collections.defaultdict(dict)
 

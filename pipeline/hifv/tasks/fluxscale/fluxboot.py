@@ -13,7 +13,6 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import uvrange
 from pipeline.infrastructure.tablereader import find_EVLA_band
 from pipeline.hifv.heuristics import standard as standard
-from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -177,12 +176,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     vlassmode = True
             except:
                 continue
-        # PIPE-2164: getting result using taskname
-        importdata_result = utils.get_task_result(self.inputs.context, "hifv_importdata", VLAImportDataResults)
-        if importdata_result is not None:
-            self.setjy_results = importdata_result.setjy_results
-        else:
-            LOG.warning("Could not retrieve results for 'hifv_importdata', setjy_results will not be set.")
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         if self.inputs.caltable is None:
             # Original Fluxgain stage from the scripted pipeline
@@ -193,7 +189,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             standard_source_names, standard_source_fields = standard_sources(calMs)
 
-            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
             field_spws = m.get_vla_field_spws()
             spw2band = m.get_vla_spw2band()
 

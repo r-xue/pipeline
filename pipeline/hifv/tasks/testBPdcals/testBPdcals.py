@@ -8,14 +8,13 @@ import numpy as np
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getCalFlaggedSoln
 from pipeline.hifv.heuristics import weakbp, do_bandpass, uvrange
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.hifv.heuristics import getBCalStatistics
-from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -280,13 +279,9 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         LOG.info("Executing for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
         self.parang = True
-
-        # PIPE-2164: getting result using taskname
-        importdata_result = utils.get_task_result(self.inputs.context, "hifv_importdata", VLAImportDataResults)
-        if importdata_result is not None:
-            self.setjy_results = importdata_result.setjy_results
-        else:
-            LOG.warning("Could not retrieve results for 'hifv_importdata', setjy_results will not be set.")
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
@@ -301,7 +296,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         tablebase = tableprefix + str(stage_number) + '_3.' + 'testBPdinitialgain'
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band), '10_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+
         soltimes = [m.get_vla_max_integration_time() * x for x in soltimes]
         solints = ['int', str(soltimes[1]) + 's', str(soltimes[2]) + 's']
         soltime = soltimes[0]
