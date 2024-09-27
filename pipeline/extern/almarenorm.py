@@ -196,7 +196,7 @@ class ACreNorm(object):
     def __init__(self,msname, caltable=None):
 
         # Version
-        self.RNversion='v1.8-2024/07/17-PLWG'
+        self.RNversion='v2.1-2024/09/26-PLWG'
 
         if isinstance(msname, str) == False:
             raise TypeError('Input for msname must be a string')
@@ -392,15 +392,19 @@ class ACreNorm(object):
             sortlist='ANTENNA1'
 
         mytb.open(self.msname)
-        ddid=str(self.msmeta.datadescids(spw).tolist())
+        #ddid=str(list(self.msmeta.datadescids(spw)))
+        ddid = str(self.msmeta.datadescids(spw).tolist())
+        # deal with numpy 2.0 strict data typing
         if isinstance(scan, (list, np.ndarray)):
             scans = str(np.asarray(scan).tolist())
         else:
             scans = str(scan)
         if field is not None:  # i.e. science data
+            #quer='SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1==ANTENNA2 && FIELD_ID=='+str(field) 
             quer='SCAN_NUMBER IN ['+scans+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1==ANTENNA2 && FIELD_ID=='+str(field)
         else:
             # because the getTsysSpectra passes scans but wont pass the field or Bandpass doesn't pass field actually
+            #quer='SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1==ANTENNA2' 
             quer='SCAN_NUMBER IN ['+scans+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1==ANTENNA2'
 
         if len(stateid)>0:
@@ -442,31 +446,6 @@ class ACreNorm(object):
             mytb.close()
         return d
 
-    # DEPRECATED - Solutions are now written to a cal table so accessing the XC data is no longer necessary
-    def getXCdata(self,scan,spw,field,datacolumn='CORRECTED_DATA'):
-        casalog.post('  Extracting CROSS-correlation data from spw='+str(spw)+' and scan='+str(scan)+' and field='+str(field))
-
-        mytb.open(self.msname)
-
-        if mytb.colnames().count(datacolumn)==0:
-            mytb.close()
-            casalog.post('ERROR: '+str(datacolumn)+' does NOT exist!')
-            raise RuntimeError(str(datacolumn)+' does not exist.')
-
-        ddid=str(self.msmeta.datadescids(spw).tolist())
-        if isinstance(scan, (list, np.ndarray)):
-            scans = str(np.asarray(scan).tolist())
-        else:
-            scans = str(scan)
-        st=mytb.query('SCAN_NUMBER IN ['+scans+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
-        cd=st.getcol(datacolumn)  ## WARNING CASA6.2 might not obey row order
-        a1=st.getcol('ANTENNA1')
-        a2=st.getcol('ANTENNA2')
-        st.close()
-        mytb.close()
-
-        return (a1,a2,cd)
-
     # Mimics part of getXCdata, but gets the FLAG column
     def getXCflags(self,scan,spw,field,datacolumn='FLAG', verbose=False):
         if verbose:
@@ -479,13 +458,16 @@ class ACreNorm(object):
             casalog.post('ERROR: '+str(datacolumn)+' does NOT exist!')
             raise RuntimeError(str(datacolumn)+' does not exist.')
 
-        ddid=str(self.msmeta.datadescids(spw).tolist())
+        #ddid=str(list(self.msmeta.datadescids(spw)))
+        #st=mytb.query('SCAN_NUMBER IN ['+str(scan)+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
+        ddid = str(self.msmeta.datadescids(spw).tolist())
+        # Deal with numpy 2.0 strict data typing
         if isinstance(scan, (list, np.ndarray)):
             scans = str(np.asarray(scan).tolist())
         else:
             scans = str(scan)
-        st=mytb.query('SCAN_NUMBER IN ['+scans+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
-        cd=st.getcol(datacolumn)
+        st = mytb.query('SCAN_NUMBER IN ['+scans+'] && DATA_DESC_ID IN '+ddid+' && ANTENNA1!=ANTENNA2 && FIELD_ID =='+str(field))
+        cd=st.getcol(datacolumn) 
         a1=st.getcol('ANTENNA1')
         a2=st.getcol('ANTENNA2')
         st.close()
