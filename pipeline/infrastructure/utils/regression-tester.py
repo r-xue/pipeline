@@ -648,6 +648,29 @@ def test_13A_537__restore__PPR__regression():
     pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
 
 
+@pytest.mark.vla
+@pytest.mark.fast
+def test_13A_537__restore__post1553__PPR__regression():
+    """Run VLA calibration restoredata regression with a PPR file
+
+    PPR name:                   PPR_13A-537_restore.xml
+    Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
+    Expected results version:   casa-6.6.1-17-pipeline-2024.1.1.7
+    """
+    input_dir = 'pl-regressiontest/13A-537'
+    pr = PipelineRegression(input_dir=input_dir,
+                            visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
+                            expectedoutput_file=(f'{input_dir}/' +
+                                            '13A-537.casa-6.6.1-17-pipeline-2024.1.1.7.restore.results.txt'),
+                            output_dir='13A_537__restore__post1553__PPR__regression')
+
+    # copy files use restore task into products folder
+    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+    shutil.copytree(input_products, f'{pr.output_dir}/products')
+
+    pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
+
+
 @pytest.mark.vlass
 @pytest.mark.fast
 def test_vlass_quicklook():
