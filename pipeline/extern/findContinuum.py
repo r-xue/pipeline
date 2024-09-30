@@ -12,6 +12,8 @@ As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
 Code changes for Pipeline2025 (as of July 24, 2024)
 0) Fix crash in recalcMomDiffSNR (not used by pipeline)
+1) Prevent crash due to no pyfits module available in CASA 6.6.6.
+2) Change np.string_ to np.bytes_
 
 Code changes for Pipeline2024 (as of July 30, 2024)
 0) No longer disable onlyExtraMask when returnBluePoints==True
@@ -226,12 +228,13 @@ if (casaVersion >= '5.9.9'):
     try:
         import astropy.io.fits as pyfits
     except:
-        with warnings.catch_warnings():
-            # ignore pyfits deprecation message, maybe casa will include astropy.io.fits soon
-            # Note: you cannot set category=DeprecationWarning in the call to filterwarnings() because the actual 
-            #       warning is PyFITSDeprecationWarning, which of course is not defined until you import pyfits!
-            warnings.filterwarnings("ignore") #, category=DeprecationWarning)  
-            import pyfits 
+        if casaVersion < '6.6.6':
+            with warnings.catch_warnings():
+                # ignore pyfits deprecation message, maybe casa will include astropy.io.fits soon
+                # Note: you cannot set category=DeprecationWarning in the call to filterwarnings() because the actual 
+                #       warning is PyFITSDeprecationWarning, which of course is not defined until you import pyfits!
+                warnings.filterwarnings("ignore") #, category=DeprecationWarning)  
+                import pyfits 
 else:
     try:
         import pyfits
@@ -305,7 +308,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle11.py,v 7.22 2024/07/30 15:22:26 we Exp $" 
+    myversion = "$Id: findContinuumCycle12.py,v 8.2 2024/09/26 19:51:04 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -892,7 +895,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
     if (len(vis) > 0):
         # convert vis to a list (if it is a string)
         # vis is a non-blank list or non-blank string
-        if isinstance(vis, (str, np.bytes_)):
+        if isinstance(vis, (str,np.bytes_)):
             vis = vis.split(',')
         # vis is now assured to be a non-blank list
         for v in vis:
