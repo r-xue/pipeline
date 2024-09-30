@@ -997,7 +997,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             LOG.debug(f"center frequency[{idx_line_center}]: {self.frequency[idx_line_center]}")
 
-            chan0 = idx_left_end - 1
+            chan0 = max(idx_left_end - 1, 0)
             chan1 = min(idx_left_end + self.NUM_CHANNELMAP * indices_slice_width, self.nchan - 1)
             V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
             V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
