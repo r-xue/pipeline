@@ -8,7 +8,6 @@ import shutil
 
 import numpy
 
-import pipeline.environment as environment
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
@@ -607,12 +606,6 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                       'stokes': stokes,
                       'ephemsrcname': ephemsrcname,
                       'brightnessunit': brightnessunit}
-
-        # temporary parameter tweak for verification of PIPE-2264
-        casa_version = environment.casa_version
-        version_number = casa_version[0] * 100 + casa_version[1] * 10 + casa_version[2]
-        if version_number >= 666:
-            image_args.update(interpolation='nearest')
 
         # remove existing image explicitly
         for rmname in [imagename, imagename.rstrip('/') + '.weight']:
