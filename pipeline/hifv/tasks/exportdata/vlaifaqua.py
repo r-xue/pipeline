@@ -60,7 +60,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
     """
 
     def __init__(self):
-        super(VLAAquaXmlGenerator, self).__init__()
+        super().__init__()
 
     def get_report_xml(self, context):
         report = super().get_report_xml(context)
@@ -221,16 +221,15 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         """
         return flagged fraction
         """
-        applycal_result = None
+        applycal_results = []
         output_dict = {}
 
         for result in context.results:
             objresult = result.read()
             if objresult.taskname == "hifv_applycals":
-                applycal_result = objresult[0]
+                applycal_results = objresult
 
-        if applycal_result is not None:
-
+        for applycal_result in applycal_results:
             intents_to_summarise = flagutils.intents_to_summarise(context)
             flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
             flag_table_intents.extend(intents_to_summarise)
@@ -253,7 +252,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
     def get_project_structure(self, context):
         # get base XML from base class
-        root = super(VLAAquaXmlGenerator, self).get_project_structure(context)
+        root = super().get_project_structure(context)
 
         # add our ALMA-specific elements
         ElementTree.SubElement(root, 'OusEntityId').text = context.project_structure.ous_entity_id
@@ -264,7 +263,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
     def get_calibration_topic(self, context, topic_results):
         # get base XML from base class
-        xml_root = super(VLAAquaXmlGenerator, self).get_calibration_topic(context, topic_results)
+        xml_root = super().get_calibration_topic(context, topic_results)
 
         m = {
             'hifa_gfluxscale': (operator.attrgetter('measurements'), lambda r: str(r.qa.representative.score))
@@ -276,7 +275,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
     def get_dataset_topic(self, context, topic_results):
         # get base XML from base class
-        xml_root = super(VLAAquaXmlGenerator, self).get_dataset_topic(context, topic_results)
+        xml_root = super().get_dataset_topic(context, topic_results)
 
         m = {
             'hifv_importdata': (lambda x: x.setjy_results[0].measurements, lambda _: UNDEFINED),
@@ -303,7 +302,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         :rtype: xml.etree.cElementTree.Element
         """
         # get base XML from base class
-        xml_root = super(VLAAquaXmlGenerator, self).get_imaging_topic(context, topic_results)
+        xml_root = super().get_imaging_topic(context, topic_results)
 
         sensitivity_xml = aqua.sensitivity_xml_for_stages(context, topic_results, name='ImageSensitivities')
         # omit containing element if no measurements were found
