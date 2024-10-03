@@ -63,6 +63,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         super().__init__()
 
     def get_report_xml(self, context):
+        """
+        generate XML report
+        """
         report = super().get_report_xml(context)
         report.append(self.get_processing_environment())
         report.append(self.get_calibrators(context))
@@ -113,7 +116,6 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                 for calibrator in context.evla['msinfo'][ms.name].spindex_results:
                     nx = ElementTree.Element("Calibrator")
                     ElementTree.SubElement(nx, 'Name').text = calibrator["source"]
-
                     ElementTree.SubElement(nx, 'Fitorder').text = calibrator["fitorder"]
                     ElementTree.SubElement(nx, 'FluxDensity').text = ','.join([str(fitflx) for fitflx in calibrator["fitflx"]])
                     ElementTree.SubElement(nx, 'SpectralIndex').text = str(calibrator["spix"])
@@ -184,13 +186,16 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             nx = ElementTree.Element("StartTime")
             nx.text = str(ms.start_time["m0"]["value"])
             root.append(nx)
+
             nx = ElementTree.Element("EndTime")
             nx.text = str(ms.end_time["m0"]["value"])
             root.append(nx)
+
             nx = ElementTree.Element("Baseline")
             ElementTree.SubElement(nx, "Min").text = str(ms.antenna_array.baseline_min.length.value)
             ElementTree.SubElement(nx, "Max").text = str(ms.antenna_array.baseline_max.length.value)
             root.append(nx)
+
             nx = ElementTree.Element("FlaggedFraction")
             dict_flagged_fraction = self.get_flagged_fraction(context)
             for msname in dict_flagged_fraction:
