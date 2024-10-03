@@ -665,7 +665,7 @@ def test_13A_537__restore__post1553__PPR__regression():
                             output_dir='13A_537__restore__post1553__PPR__regression')
 
     # copy files use restore task into products folder
-    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+    input_products = casa_tools.utils.resolve(f'{input_dir}/post1553_products')
     shutil.copytree(input_products, f'{pr.output_dir}/products')
 
     pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
