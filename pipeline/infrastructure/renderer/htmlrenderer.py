@@ -930,9 +930,8 @@ class T2_1DetailsRenderer(object):
         el_vs_time_plot = task.plot()
 
         # Get min, max elevation
-        observatory = context.project_summary.telescope
-        el_min = "%.2f" % ms.compute_az_el_for_ms(observatory, min)[1]
-        el_max = "%.2f" % ms.compute_az_el_for_ms(observatory, max)[1]
+        el_min = "%.2f" % ms.compute_az_el_for_ms(min)[1]
+        el_max = "%.2f" % ms.compute_az_el_for_ms(max)[1]
 
         dirname = os.path.join('session%s' % ms.session, ms.basename)
 

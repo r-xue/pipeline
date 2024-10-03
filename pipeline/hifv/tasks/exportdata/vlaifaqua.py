@@ -209,9 +209,8 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             nx.text = str(time_on_science)
             root.append(nx)
 
-            observatory = context.project_summary.telescope
-            el_min = ms.compute_az_el_for_ms(observatory, min)[1]
-            el_max = ms.compute_az_el_for_ms(observatory, max)[1]
+            el_min = ms.compute_az_el_for_ms(min)[1]
+            el_max = ms.compute_az_el_for_ms(max)[1]
             el_range = el_max - el_min
             nx = ElementTree.Element("ElevationRange")
             nx.text = str(el_range)
