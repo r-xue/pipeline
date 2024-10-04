@@ -21,7 +21,7 @@ def hifv_semiFinalBPdcals(vis=None, weakbp=None, refantignore=None, refant=None)
                   specified in the h_init or hifv_importdata task.
     weakbp        Activate weak bandpass heuristics
     refantignore  String list of antennas to ignore
-    refant        A csv string of reference antenna(s). When used, disables refantignore.
+    refant        A csv string of reference antenna(s). When used, disables ``refantignore``.
                   Example: refant = 'ea01, ea02'
 
     --------- examples -----------------------------------------------------------

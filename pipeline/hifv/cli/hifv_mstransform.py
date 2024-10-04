@@ -4,17 +4,22 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=None, intent=None, spw=None, spw_line=None, chanbin=None, timebin=None):
+def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=None, intent=None, spw=None, spw_line=None, chanbin=None, timebin=None, omit_contline_ms=None):
 
     """
     hifv_mstransform ---- Create new MeasurementSets for science target imaging
 
 
     Create new MeasurementSets for imaging from the corrected column of the input
-    MeasurementSet via a single call to mstransform with all data selection parameters.
-    By default, all science target data is copied to the new MS. The
+    MeasurementSet via calling mstransform with all data selection parameters.
+    By default, all science target data is copied to the new MS(s). The
     new MeasurementSet is not re-indexed to the selected data and the new MS will
     have the same source, field, and spw names and ids as it does in the parent MS.
+
+    The first MeasurementSet that is produced is intended for continuum imaging and
+    will end in targets_cont.ms. If there are spws that have been detected or specified as
+    spectral line spws in the input MeasurementSet, an MS for science target line imaging
+    will also be produced, which will end in _targets.ms.
 
     Output
 
@@ -61,7 +66,9 @@ def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=No
                         switched to True.
     timebin             Bin width for time averaging. If timebin > 0s then
                         timeaverage is automatically switched to True.
-
+    omit_contline_ms    If True, don't make the contline ms (_targets.ms). Only make
+                        cont MS (_targets_cont.ms). Default is False.
+                        
     --------- examples -----------------------------------------------------------
 
 

@@ -63,7 +63,7 @@ def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, over
 
     2. Load an MS in the current directory into the context:
 
-    >>> h_importdata(vis=[uid___A002_X30a93d_X43e.ms])
+    >>> h_importdata(vis=['uid___A002_X30a93d_X43e.ms'])
 
     3. Load a tarred ASDM in ../rawdata into the context:
 
