@@ -11,6 +11,7 @@ import errno
 import fcntl
 import glob
 import itertools
+from numbers import Number
 import operator
 import os
 import pickle
@@ -890,7 +891,7 @@ def remove_trailing_string(s, t):
         return s
 
 
-def list_to_str(value: Union[List, npt.NDArray]) -> str:
+def list_to_str(value: Union[List[Union[Number, str]], npt.NDArray]) -> str:
     """Convert list or numpy.ndarray into string.
 
     The list/ndarray should be 1-dimensional. In that case, the function
@@ -905,7 +906,8 @@ def list_to_str(value: Union[List, npt.NDArray]) -> str:
         compliance with the requirement, it will be comma-separated
         sequence of elements.
     """
-    if isinstance(value, (list, np.ndarray)):
+    if isinstance(value, (list, np.ndarray)) \
+       and all(isinstance(x, (Number, str)) for x in value):
         # use np.ndarray.tolist to ensure all the elements
         # have Python builtin types
         ret = str(np.asarray(value).tolist())

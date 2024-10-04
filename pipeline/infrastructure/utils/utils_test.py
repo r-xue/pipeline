@@ -1,4 +1,5 @@
 from collections.abc import Callable
+import sys
 from typing import Any, Union, List, Dict, Tuple
 from unittest.mock import Mock
 
@@ -284,11 +285,26 @@ def test_get_taskhistory_fromimage(tmpdir):
         (np.array([1, 2, 3]), '[1, 2, 3]'),
         ([np.int64(1), np.int64(2), np.int64(3)], '[1, 2, 3]'),
         (1, '1'),
+        # large list and numpy array should not be abbreviated
         (np.arange(10000), lambda: str(list(range(10000)))),
         (list(np.arange(10000)), lambda: str(list(range(10000))))
     ]
 )
 def test_list_to_str(value: Any, expected: Union[str, Callable]):
+    svalue = list_to_str(value)
+    expected = expected() if isinstance(expected, Callable) else expected
+    assert svalue == expected
+
+
+@pytest.mark.skipif(sys.version_info < (3, 10), reason='requires python 3.10 or higher')
+@pytest.mark.parametrize(
+    'value, expected',
+    [
+        # nested list is not properly processed
+        ([[np.int64(1)], [np.int64(2), np.int64(3)]], '[[np.int64(1)], [np.int64(2), np.int64(3)]]')
+    ]
+)
+def test_list_to_str_py310(value: Any, expected: Union[str, Callable]):
     svalue = list_to_str(value)
     expected = expected() if isinstance(expected, Callable) else expected
     assert svalue == expected
