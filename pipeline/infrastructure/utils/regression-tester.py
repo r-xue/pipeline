@@ -585,10 +585,6 @@ def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
                              'csv_3899_eb2_small.casa-6.6.1-17-pipeline-2024.1.1.7.results.txt'),
                             output_dir='csv_3899_eb2_small')
 
-    # copy files use restore task into products folder
-    # input_products = casa_tools.utils.resolve(f'{input_dir}/products')
-    # shutil.copytree(input_products, f'{pr.output_dir}/products')
-
     pr.run()
 
 
