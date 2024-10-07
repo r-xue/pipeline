@@ -45,10 +45,23 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
     fit_func = vdp.VisDependentProperty(default='cspline')
     fit_order = vdp.VisDependentProperty(default='automatic')
     switchpoly = vdp.VisDependentProperty(default=True)
-    edge = vdp.VisDependentProperty(default=(0, 0))
     deviationmask = vdp.VisDependentProperty(default={})
     bloutput = vdp.VisDependentProperty(default=None)
     org_directions_dict = vdp.VisDependentProperty(default=None)
+
+    @property
+    def edge(self):
+        if isinstance(self._edge, (list, tuple, numpy.ndarray)) \
+          and 1 <= len(self._edge) and len(self._edge) <= 2 \
+          and all(isinstance(x, int) for x in self._edge):
+            return self._edge
+        else:
+            return (0, 0)
+
+    @edge.setter
+    def edge(self, value):
+        print(f'edge: value is {value}')
+        self._edge = value
 
     @vdp.VisDependentProperty
     def prefix(self) -> str:
