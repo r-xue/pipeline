@@ -486,12 +486,13 @@ class SDBaseline(basetask.StandardTaskTemplate):
         plan = [registry[ms] for ms in registry]
         blparam = [blparam_file(ms) for ms in registry]
         deviationmask_list = [deviation_mask[ms.basename] for ms in registry]
+        edge_list = [edge for _ in registry]
         worker_cls = worker.BaselineSubtractionWorker
         fitter_inputs = vdp.InputsContainer(worker_cls, context,
                                             vis=vislist, plan=plan,
                                             fit_func=fitfunc,
                                             fit_order=fitorder, switchpoly=switchpoly,
-                                            edge=edge, blparam=blparam,
+                                            edge=edge_list, blparam=blparam,
                                             deviationmask=deviationmask_list,
                                             org_directions_dict=org_directions_dict,
                                             parallel=self.inputs.parallel)
