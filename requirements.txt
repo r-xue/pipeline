@@ -1,6 +1,6 @@
 #####################################################################################################################
-# CASA ver>=6.5.4,<6.6.3 py3.8 (monolithic)
-# 
+# CASA ver>=6.6.1 (monolithic)
+#
 # usage:
 #
 #   PYTHONNOUSERSITE=1 ${casa_bin}/pip3 --disable-pip-version-check install \
