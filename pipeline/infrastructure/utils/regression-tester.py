@@ -648,6 +648,25 @@ def test_13A_537__restore__PPR__regression():
     pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
 
 
+@pytest.mark.vla
+@pytest.mark.fast
+def test_13A_537__procedure_hifv__cont__cube__selfcal():
+    """PIPE-2357: Run VLA calibration regression for standard procedure_hifv_calimage_cont_cube_selfcal.xml recipe.
+
+    Recipe name:                procedure_hifv_calimage_cont_cube_selfcal.xml
+    Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
+    """
+
+    input_dir = 'pl-regressiontest/13A-537'
+    pr = PipelineRegression(recipe='procedure_hifv_calimage_cont_cube_selfcal.xml',
+                            input_dir=input_dir,
+                            visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
+                            expectedoutput_dir=input_dir,
+                            output_dir='13A_537__procedure_hifv__cont__cube__selfcal')
+
+    pr.run(telescope='vla', omp_num_threads=1)
+
+
 @pytest.mark.vlass
 @pytest.mark.fast
 def test_vlass_quicklook():
