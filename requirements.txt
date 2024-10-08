@@ -30,5 +30,7 @@ ps_mem == 3.14              # https://pypi.org/project/ps-mem
 astropy == 5.2.2;python_version < '3.10'  # https://docs.astropy.org/en/stable/changelog.html
                                           # the latest version compatible with Python 3.8
 astropy == 6.1.4;python_version >= '3.10'
-bdsf == 1.10.3              # https://github.com/lofar-astron/PyBDSF
+bdsf == 1.10.3;python_version<'3.10' or (sys_platform=='darwin' and platform_machine == "x86_64")
+                            # https://github.com/lofar-astron/PyBDSF
                             # only required for the VLASS pipeline
+                            # bdsf is not NumPy 2 compatible yet
