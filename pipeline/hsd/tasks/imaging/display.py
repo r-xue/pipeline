@@ -951,17 +951,21 @@ class SDChannelMapDisplay(SDImageDisplay):
             (line_center, line_width) = (line_window[0] - self.edge[0], line_window[1])
 
             # shift channel according to the edge parameter
-            idx_line_center = floor(line_center + 0.5)
+            idx_line_center = int(line_center + 0.5)
             indices_slice_width = max(floor(line_width / self.NUM_CHANNELMAP + 0.5), 1)
             
             # adjust index of both side within channel
             _max_left_edge = floor(line_center - line_width / 2 + 0.5)
             _max_right_edge = floor(line_center + line_width / 2 + 0.5)
-            if _max_left_edge < 0 or _max_right_edge > self.nchan:
-                indices_slice_width = floor(line_center * 2.0 / self.NUM_CHANNELMAP)
+            if _max_left_edge < 0:
+                indices_slice_width = abs(int(line_center * 2.0 / self.NUM_CHANNELMAP))
                 if indices_slice_width == 0:
-                    return False
-            
+                    continue
+            elif _max_right_edge > self.nchan:
+                indices_slice_width = abs(int((self.nchan - 1 - idx_line_center) * 2.0 / self.NUM_CHANNELMAP))
+                if indices_slice_width == 0:
+                    continue
+
             # make the both side position of red lines
             idx_left_end = idx_line_center - ceil(self.NUM_CHANNELMAP / 2.0 * indices_slice_width - 0.5)
             idx_right_end = idx_left_end + indices_slice_width * self.NUM_CHANNELMAP - 1
@@ -971,7 +975,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             if idx_left_end < 0 or idx_right_end > self.nchan - 1:
                 _indice = [j for j in [idx_left_end + i * indices_slice_width for i in range(self.NUM_CHANNELMAP)] if 0 <= j < self.nchan]
                 if len(_indice) < 2:
-                    return False
+                    continue
                 idx_left_end = _indice[0]
                 idx_right_end = _indice[-1] - 1
 
