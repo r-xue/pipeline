@@ -1020,9 +1020,8 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             # Drawing red vertical lines for integrated spectrum #2
             # For detail, see the MEMO below.
-            _indices_width_of_emission_line = indices_slice_width * self.NUM_CHANNELMAP
-            _x_chan = numpy.arange(idx_left_end, idx_left_end + _indices_width_of_emission_line)
-            _y_vel = self.velocity[idx_left_end:idx_left_end + _indices_width_of_emission_line]
+            _y_vel = self.velocity[idx_left_end:idx_left_end + indices_slice_width * self.NUM_CHANNELMAP]
+            _x_chan = numpy.arange(idx_left_end, idx_left_end + len(_y_vel))
             chan2vel = interpolate.interp1d(_x_chan, _y_vel, bounds_error=False, fill_value='extrapolate')
 
             # calculate relative velocities for red vertical lines
