@@ -4,7 +4,7 @@ import shutil
 import collections
 import tarfile
 import io
-import xml.etree.cElementTree as eltree
+import xml.etree.ElementTree as eltree
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
@@ -302,7 +302,7 @@ finally:
             hifv_comment = [y for y in flag_dict.values() if y['name'] == 'hifv_checkflag_target-vla'][0]['comment']
             export_final_flags_dict['hifv_checkflag_target-vla'] = hifv_comment
 
-        if 'statwt_1' in flag_keys: 
+        if 'statwt_1' in flag_keys:
             statwt_comment = [y for y in flag_dict.values() if y['name'] == 'statwt_1'][0]['comment']
             export_final_flags_dict['statwt_1'] = statwt_comment
 

@@ -56,7 +56,7 @@ class PipelineManifest(object):
         Currently this assumes there is only one ous as is the case
         for member ous processing
         """
-        return list(self.piperesults)[0]
+        return self.piperesults[0]
 
     @staticmethod
     def add_manifest(ous, manifestname, ous_name="N/A", level="N/A", package="N/A"):
