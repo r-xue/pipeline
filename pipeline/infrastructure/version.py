@@ -3,6 +3,9 @@ import re
 import subprocess
 import textwrap
 from typing import Tuple, Optional
+import re
+from typing import List
+from typing import Optional, List, Tuple
 
 __all__ = ['get_version_string_from_git']
 
@@ -38,24 +41,6 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
           * the dirty repo
     """
 
-    commit_hash: str
-    branch: str
-    branch_tag: str
-    release_tag: str
-    dirty: bool
-
-    @property
-    def pipeline_version(self) -> str:
-        commit_hash = 'unknown_hash' if self.commit_hash == 'N/A' else self.commit_hash
-        branch = 'unknown_branch' if self.branch in ('N/A', 'HEAD') else self.branch
-
-        if branch == "main" or branch.startswith("release/"):
-            local_version_label = '+dirty' if self.dirty else ''
-        else:
-            local_version_label = '+' + self._sanitise(f'{commit_hash}-{branch}')
-
-        return f"{self.release_tag}{local_version_label}"
-
     try:
         gitbranch = subprocess.check_output(
             ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
@@ -70,105 +55,103 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
         ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
         stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
 
+    branch_hashes = subprocess.check_output(
+        ['git', 'log', '--since', '2019-10-01', '--simplify-by-decoration', "--pretty=%H", gitbranch],
+        stderr=subprocess.DEVNULL, cwd=cwd).decode().splitlines()
 
-def get_version(cwd=None) -> str:
-    """
-    Analyses the source code to determine the pipeline version.
+    refstags = subprocess.check_output(
+        ['git', 'show-ref', '--tags', '-d'],
+        stderr=subprocess.DEVNULL, cwd=cwd).decode().splitlines()
 
-    @return: version string
-    """
-    cwd_saferun = functools.partial(_safe_run, cwd=cwd)
-
-    commit_hash = cwd_saferun('git describe --always --tags --long --dirty')
-    current_branch = cwd_saferun("git rev-parse --abbrev-ref HEAD")
-    branch_hashes = cwd_saferun(
-        f"git log --since 2019-10-01 --simplify-by-decoration --pretty=%H {current_branch}",
-        on_error=''
-    ).splitlines()
-    refstags = cwd_saferun('git show-ref --tags -d', on_error='').splitlines()
-    clean_workspace = cwd_saferun('git status -s -uno') == ''
-
-    last_release_tag = _get_last_release_tag(current_branch, branch_hashes, refstags)
-    # handle case where a release tag couldn't be identified, which can be artificially
-    # manufactured by invalidating one or all of the current_branch, branch_hashes, or
-    # refstags commands.
-    if not last_release_tag:
-        last_release_tag = '0.0.dev0'
-
-    if current_branch in ['main', 'master'] or 'release/' in current_branch:
+    last_release_tag = _get_last_release_tag(gitbranch, branch_hashes, refstags)
+    if gitbranch in ['main', 'master'] or 'release/' in gitbranch:
         last_branch_tag = last_release_tag
     else:
-        last_branch_tag = _get_last_branch_tag(current_branch, branch_hashes, refstags)
-
-    is_dirty = False
-    if not clean_workspace or last_branch_tag == '':
-        # No tag at all for branch
-        is_dirty = True
-
-    else:
-        # Check if the latest tag is the latest commit
-        headcommit = cwd_saferun('git rev-parse HEAD')
-        tagcommit = cwd_saferun(f'git rev-list -n 1 {last_branch_tag}')
-        if tagcommit != headcommit != 'N/A':
-            is_dirty = True
-
-    # If no Git commit info could be found, then attempt to load version
-    # from the _version module that is created when pipeline package is
-    # built.
-    if commit_hash == "N/A":
-        try:
-            from pipeline._version import version
-            return version
-        except ModuleNotFoundError:
-            last_release_tag = "0.0.dev0"
-
-    return VersionInfo(
-        commit_hash=commit_hash,
-        branch=current_branch,
-        branch_tag=last_branch_tag,
-        release_tag=last_release_tag,
-        dirty=is_dirty
-    ).pipeline_version
-
-
-def _to_number(value):
-    try:
-        return int(value)
-    except ValueError:
-        return 0
-
-    def get_last_tag(gitbranch, branchpattern, delim):
-        branchpattern = re.compile(branchpattern)
-        delim = re.compile(delim)
-        releaseid = gitbranch.split('/')[-1] if 'release/' in gitbranch else ''
-        versions = {}
-        for githash in hashes:
-            for line in refstags:
-                # if 'release/' is not in gitbranch, the second condition is always true
-                if line.startswith(githash) and releaseid in line:
-                    tag = line.replace(githash+' refs/tags/', '').replace('^{}', '')
-                    if branchpattern.match(tag):
-                        # split the version string into a tuple by the given delimiter,
-                        # then convert each element of the tuple from string to int
-                        # in order to sort the versions correctly.
-                        # "versions" is a dict in which keys are the parsed tuples of ints,
-                        # and values are the original version strings
-                        versions[tuple(tonumber(x) for x in delim.split(tag))] = tag
-        # sort the dict items by the first element (tuples of ints)
-        # and return the second element (the corresponding version string)
-        # of the highest value (i.e. most recent version)
-        return sorted(versions.items())[-1][1] if versions else ''
-
-def _get_last_branch_tag(gitbranch, hashes, refstags):
-    match = re.match(r'(PIPE-\d+)', gitbranch)
-    if match:
-        branchpattern = match.group(1) + r'-\d+'
-    else:
-        branchpattern = gitbranch + r'-\d+'
-    return _get_last_tag(gitbranch, branchpattern, '-', hashes, refstags)
+        last_branch_tag = _get_last_branch_tag(gitbranch, branch_hashes, refstags)
 
 def _get_last_release_tag(gitbranch, hashes, refstags):
     return _get_last_tag(gitbranch, r'^\d+\.\d+\.\d+\.\d+$', r'\.', hashes, refstags)
+
+
+def _get_last_tag(gitbranch: str, branchpattern: str, delim: str, hashes: List[str], refstags: List[str]) -> str:
+    """
+    Gets the most recent tag for the specified git branch matching the given branch pattern.
+
+    Args:
+        gitbranch (str): The name of the git branch.
+        branchpattern (str): The regex pattern to match branch names.
+        delim (str): The delimiter used to split version strings.
+        hashes (List[str]): A list of git hashes.
+        refstags (List[str]): A list of reference tags.
+
+    Returns:
+        str: The most recent version tag matching the criteria, or an empty string if none found.
+    """
+    branchpattern = re.compile(branchpattern)
+    delim = re.compile(delim)
+    releaseid = gitbranch.split('/')[-1] if 'release/' in gitbranch else ''
+    versions = {}
+
+    for githash in hashes:
+        for line in refstags:
+            if line.startswith(githash) and releaseid in line:
+                tag = line.replace(f'{githash} refs/tags/', '').replace('^{}', '')
+                if branchpattern.match(tag):
+                    version_tuple = tuple(_to_number(x) for x in delim.split(tag))
+                    versions[version_tuple] = tag
+
+    return versions[max(versions)] if versions else ''
+
+
+
+
+def _get_last_branch_tag(gitbranch: str, hashes: List[str], refstags: List[str]) -> str:
+    """
+    Gets the most recent tag for the specified git branch following the PIPE-<number>-<number> pattern.
+
+    Args:
+        gitbranch (str): The name of the git branch.
+        hashes (List[str]): A list of git hashes.
+        refstags (List[str]): A list of reference tags.
+
+    Returns:
+        str: The most recent branch tag matching the pattern, or an empty string if none found.
+    """
+    match = re.match(r'(PIPE-\d+)', gitbranch)
+    branchpattern = match.group(1) + r'-\d+' if match else gitbranch + r'-\d+'
+    return _get_last_tag(gitbranch, branchpattern, '-', hashes, refstags)
+
+
+def _get_last_release_tag(gitbranch: str, hashes: List[str], refstags: List[str]) -> str:
+    """
+    Gets the most recent release tag for the specified git branch following the version pattern <number>.<number>.<number>.<number>.
+
+    Args:
+        gitbranch (str): The name of the git branch.
+        hashes (List[str]): A list of git hashes.
+        refstags (List[str]): A list of reference tags.
+
+    Returns:
+        str: The most recent release tag matching the pattern, or an empty string if none found.
+    """
+    return _get_last_tag(gitbranch, r'^\d+\.\d+\.\d+\.\d+$', r'\.', hashes, refstags)
+
+
+def _to_number(s: str) -> int:
+    """
+    Converts a string to an integer for version comparison. If conversion fails, returns 0.
+
+    Args:
+        s (str): The string to convert.
+
+    Returns:
+        int: The converted integer or 0 if conversion fails.
+    """
+    try:
+        return int(s)
+    except ValueError:
+        return 0
+
 
 
 def get_version_string_from_git(cwd: Optional[str] = None, verbose: bool = False) -> str:
