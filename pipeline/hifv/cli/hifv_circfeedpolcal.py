@@ -24,11 +24,11 @@ def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_
 
     vis             List of input visibility data
     Dterm_solint    D-terms spectral averaging.  Example:  refantignore='ea02,ea03'
-    refantignore    Help appears with Dterm_solint parameter
+    refantignore    String list of antennas to ignore
     leakage_poltype poltype to use in first polcal execution - blank string means use default heuristics
     mbdkcross       Run gaincal KCROSS grouped by baseband
     clipminmax      Acceptable range for leakage amplitudes, values outside will be flagged.
-    refant          A csv string of reference antenna(s). When used, disables refantignore.
+    refant          A csv string of reference antenna(s). When used, disables ``refantignore``.
                     Example: refant = 'ea01, ea02'
     run_setjy       Run setjy for amplitude/flux calibrator, default set to True.
     --------- examples -----------------------------------------------------------

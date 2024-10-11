@@ -136,13 +136,6 @@ class SerialRenorm(basetask.StandardTaskTemplate):
 
             rnstats_light = self._get_rnstats_light(stats, rnstats)
 
-            if not alltdm:
-                # Issue warning if current MS contains Band 9 and/or 10 data.
-                bands_in_ms = {spw.band for spw in inp.ms.get_spectral_windows()}
-                for band in ('ALMA Band 9', 'ALMA Band 10'):
-                    if band in bands_in_ms:
-                        LOG.attention(f"{inp.ms.basename}: running hifa_renorm on {band} (DSB) data.")
-
             calapps = self._get_calapps(calTableCreated)
 
             result = RenormResults(inp.vis, inp.createcaltable, inp.threshold, inp.spw,

@@ -33,7 +33,7 @@ def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, p
                                      parameter is set, uvtapering may be performed.
                                      '': automatic from performance parameters (default)
                                      Example: '1.0arcsec'
-    calcsb                           Force (re-)calculation of sensitivities and beams
+    calcsb                           Force (re-)calculation of sensitivities and beams; defaults to False
     parallel                         Use MPI cluster where possible
 
     --------- examples -----------------------------------------------------------

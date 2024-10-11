@@ -22,7 +22,7 @@ def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwli
     refantignore         String list of antennas to ignore
                          Example:  refantignore='ea02,ea03'
     doflagundernspwlimit If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.
-    refant               A csv string of reference antenna(s). When used, disables refantignore.
+    refant               A csv string of reference antenna(s). When used, disables ``refantignore``.
                          Example: refant = 'ea01, ea02'
 
     --------- examples -----------------------------------------------------------
