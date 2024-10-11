@@ -24,7 +24,7 @@ import shutil
 import string
 import tarfile
 import time
-from typing import Collection, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Collection, Dict, List, Optional, Sequence, Tuple, Union
 
 import casaplotms
 import numpy as np
@@ -894,14 +894,15 @@ def remove_trailing_string(s, t):
         return s
 
 
-def function_io_dumper(to_pickle=True, to_json=False, json_max_depth=5):
+def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth: int=5,
+                       condition: Dict[str, Dict[str, Dict[str, Any]]]=None, timestamp: bool=True):
     """Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON file.
     
     This function is a helper method for development. It should not be used in production codes.
     
     Useage:
     @function_io_dumper()
-    def foobar(self, baz):
+    def foobar(self, bar):
         ...
         return ret
     
@@ -909,14 +910,13 @@ def function_io_dumper(to_pickle=True, to_json=False, json_max_depth=5):
     all objects of arguments and return values of foobar() as pickle files and|or JSON files.
     We can get the same behavior of foobar() with the pickles as when they were dumped:
     
-    with open('baz.pickle', 'rb') as f:
-        baz = pickle.load(f)
-    foobar(baz)
+    with open('bar.pickle', 'rb') as f:
+        bar = pickle.load(f)
+    foobar(bar)
     
-    or, understand input/result of the function by JSON output.
-
+    or, understand input/result of the function by JSON-like output. To avoid recursive or tremendous output,
+    it sets max depth of recursive (default to 5).
     """
-     
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -925,57 +925,60 @@ def function_io_dumper(to_pickle=True, to_json=False, json_max_depth=5):
             epoch_time = time.time()
             dt = datetime.fromtimestamp(epoch_time)
             ns = int((epoch_time - int(epoch_time)) * 1_000_000_000)
-            timestamp = dt.strftime(f'%Y%m%d-%H:%M:%S.{ns}')
-
-            exec_dumpargs = True
-
-            # make output folder name
-            folder_name = f"{func.__name__}.{timestamp}"
+            _timestamp = dt.strftime(f'%Y%m%d-%H:%M:%S.{ns}')
             
             # make signatures of args
             sig = inspect.signature(func)
             bound_args = sig.bind(*args, **kwargs)
             bound_args.apply_defaults()
             
+            exec_dumpargs = _eval_condition(condition, bound_args)
+
+            extention = ''
+            if timestamp:
+                extention = f'.{_timestamp}'
+                
+            output_folder_name = f"{func.__name__}{extention}"
+
             json_dict = None
             if to_json:
                 json_dict = object_to_dict(bound_args.arguments, max_depth=json_max_depth)
             
             try:
-                os.makedirs(folder_name, exist_ok=True)
+                os.makedirs(output_folder_name, exist_ok=True)
 
-                LOG.info(f"Function '{_get_full_method_path(func)}' called at {timestamp}")
+                LOG.info(f"Function '{_get_full_method_path(func)}' called at {_timestamp}")
 
                 for arg_name, arg_value in bound_args.arguments.items():
-                    _dump(arg_value, folder_name, arg_name, dump_pickle=to_pickle, dump_json=to_json, json_dict=json_dict)
+                    _dump(arg_value, output_folder_name, arg_name, dump_pickle=to_pickle, dump_json=to_json, json_dict=json_dict)
 
             except pickle.PicklingError as e:
                 exec_dumpargs = False
-                LOG.warn(f'Contained unpicklable object: {e}')
+                LOG.warning(f'Contained unpicklable object: {e}')
             except Exception as e:
                 exec_dumpargs = False
-                LOG.warn(f'Exception occured: {e}')
+                LOG.warning(f'Exception occured: {e}')
 
             result = func(*args, **kwargs)
 
             if exec_dumpargs and result is not None:
                 try:
-                    _name = f'{folder_name}.result'
+                    _name = f'{output_folder_name}.result'
                     if to_json:
                         json_dict = object_to_dict({_name:result}, max_depth=json_max_depth)
-                    _dump({_name:result}, folder_name, _name, dump_pickle=to_pickle, dump_json=to_json, json_dict=json_dict)
+                    _dump({_name:result}, output_folder_name, _name, dump_pickle=to_pickle, dump_json=to_json, json_dict=json_dict)
                 except pickle.PicklingError as e:
-                    LOG.warn(f'Contained unpicklable object: {e}')
+                    LOG.warning(f'Contained unpicklable object: {e}')
                 except Exception as e:
-                    LOG.warn(f'Exception occured: {e}')
+                    LOG.warning(f'Exception occured: {e}')
 
             return result
         return wrapper
     return decorator
 
 
-def _dump(obj, path, name, dump_pickle=True, dump_json=False, json_dict={}):
-    file_path = os.path.join(path, f"{name}")
+def _dump(obj: object, path: str, name: str, dump_pickle: bool=True, dump_json: bool=False, json_dict={}):
+    file_path = os.path.join(path, f'{name}')
     
     if dump_pickle:
         with open(file_path+'.pickle', 'wb') as f:
@@ -984,13 +987,33 @@ def _dump(obj, path, name, dump_pickle=True, dump_json=False, json_dict={}):
         with open(file_path+'.json', 'w') as f:
             pprint(json_dict[name], f)
 
+
 def _get_full_method_path(func):
     module_name = func.__module__
     if hasattr(func, '__qualname__'):
         qualname = func.__qualname__
     else:
         qualname = func.__name__
-    return f"{module_name}.{qualname}"
+    return f'{module_name}.{qualname}'
+
+
+def _eval_condition(condition, args):
+    # {'self', {'spw':10}}, needs unittest
+    if condition is None:
+        return True
+    
+    LOG.info(f'condition: {condition}')
+    
+    for key, val in condition:
+        arg = args.get(key, False)
+        if arg:
+            for propname, propval in val:
+                if isinstance(arg, dict) and arg.get(propname, False):
+                    obj = arg.getattr(propname)
+                    if obj == propval:
+                        return True
+    return False
+
 
 def object_to_dict(obj, max_depth=5, current_depth=0):
 
@@ -1026,3 +1049,27 @@ def object_to_dict(obj, max_depth=5, current_depth=0):
 
     else:
         return obj
+
+
+def decorate_iodumper(cls: object, functions: List[str]=[], *args: Any, **kwargs: Any):
+    if len(functions) == 0:
+        _functions = inspect.getmembers(cls, predicate=inspect.isfunction)
+    else:
+        _functions = []
+        for _f in functions:
+            _c = _str_to_func(cls, _f)
+            if _c:
+                _functions.append(_c)
+    print(_functions)
+    for _func in _functions:
+        _name = _func.__name__
+        decorated_func = function_io_dumper(*args, **kwargs)(_func)
+        setattr(cls, _name, decorated_func)
+
+
+def _str_to_func(cls: object, _name: str):
+    if hasattr(cls, _name):
+        _c = getattr(cls, _name)
+        if callable(_c):
+            return _c
+    return False
