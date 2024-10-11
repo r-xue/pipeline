@@ -11,30 +11,27 @@ import os
 import platform
 import re
 import resource
+import subprocess
 import sys
 import typing
-from importlib.metadata import version, PackageNotFoundError
+from importlib.metadata import PackageNotFoundError, version
 from importlib.util import find_spec
 from pathlib import Path
-
+from io import StringIO
 import casatasks
-import subprocess
 
-from .infrastructure import casa_tools
-from .infrastructure import logging
-from .infrastructure import mpihelpers
-from .infrastructure import utils
+from .infrastructure import casa_tools, logging, mpihelpers, utils
 from .infrastructure.mpihelpers import MPIEnvironment
 from .infrastructure.version import get_version_string_from_git
-from importlib.metadata import version, PackageNotFoundError
 
 LOG = logging.get_logger(__name__)
 
 __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'pipeline_revision', 'cluster_details',
            'dependency_details']
-from .infrastructure import logging
+
+
 LOG = logging.get_logger(__name__)
-from io import StringIO
+
 
 def _run(command: str, stdout=None, stderr=None, cwd=None, shell=True) -> int:
     """
@@ -90,6 +87,7 @@ def _safe_run(command: str, on_error: str = 'N/A', cwd: Optional[str] = None, lo
             return stdout.getvalue().strip()
 
     return on_error
+
 
 def _load(path: str, encoding: str = 'UTF-8') -> typing.AnyStr:
     """
@@ -187,6 +185,7 @@ class CommonEnvironment:
     CommonEnvironment does not provide all required properties to satisfy the
     Environment interface, and is not intended to be instantiated directly.
     """
+
     def __init__(self):
         logsink = casa_tools.logsink
 
@@ -696,7 +695,7 @@ def _pipeline_revision() -> str:
     except PackageNotFoundError:
         # likely the package is not installed
         LOG.debug('Pipeline version is not found from importlib.metadata; '
-                 'the package is likely not pip-installed but added at runtime.')
+                  'the package is likely not pip-installed but added at runtime.')
 
     # more reliable method with the string most correctly preserved.
     try:
@@ -805,6 +804,7 @@ pipeline_revision = _pipeline_revision()
 
 ENVIRONMENT = EnvironmentFactory.create()
 
+
 def cluster_details():
     # defer calculation as running this code at import time blocks MPI
     # see https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/pull-requests/1244/overview?commentId=13655
@@ -823,5 +823,6 @@ def cluster_details():
         _cluster_details = env_details
 
     return _cluster_details
+
 
 _cluster_details = None

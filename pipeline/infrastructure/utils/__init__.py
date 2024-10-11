@@ -15,12 +15,12 @@ from .conversion import *
 from .diagnostics import *
 from .framework import *
 from .imaging import *
+from .math import *
+from .positioncorrection import *
 from .ppr import *
 from .sorting import *
 from .utils import *
 from .weblog import *
-from .math import *
-from .positioncorrection import *
 
 # IMPORTANT! If you import from a new submodule, please add it to the list below
 _all_modules = [

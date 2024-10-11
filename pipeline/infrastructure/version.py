@@ -3,6 +3,9 @@ import re
 import subprocess
 import textwrap
 from typing import Tuple, Optional
+import re
+from typing import List
+from typing import Optional, List, Tuple
 
 __all__ = ['get_version_string_from_git']
 
@@ -38,45 +41,6 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
           * the dirty repo
     """
 
-    def tonumber(value):
-        try:
-            return int(value)
-        except ValueError:
-            return 0
-
-    def get_last_tag(gitbranch, branchpattern, delim):
-        branchpattern = re.compile(branchpattern)
-        delim = re.compile(delim)
-        releaseid = gitbranch.split('/')[-1] if 'release/' in gitbranch else ''
-        versions = {}
-        for githash in hashes:
-            for line in refstags:
-                # if 'release/' is not in gitbranch, the second condition is always true
-                if line.startswith(githash) and releaseid in line:
-                    tag = line.replace(githash+' refs/tags/', '').replace('^{}', '')
-                    if branchpattern.match(tag):
-                        # split the version string into a tuple by the given delimiter,
-                        # then convert each element of the tuple from string to int
-                        # in order to sort the versions correctly.
-                        # "versions" is a dict in which keys are the parsed tuples of ints,
-                        # and values are the original version strings
-                        versions[tuple(tonumber(x) for x in delim.split(tag))] = tag
-        # sort the dict items by the first element (tuples of ints)
-        # and return the second element (the corresponding version string)
-        # of the highest value (i.e. most recent version)
-        return sorted(versions.items())[-1][1] if versions else ''
-
-    def get_last_branch_tag(gitbranch):
-        match = re.match(r'(PIPE-\d+)', gitbranch)
-        if match:
-            branchpattern = match.group(1) + r'-\d+'
-        else:
-            branchpattern = gitbranch + r'-\d+'
-        return get_last_tag(gitbranch, branchpattern, '-')
-
-    def get_last_release_tag(gitbranch):
-        return get_last_tag(gitbranch, r'^\d+\.\d+\.\d+\.\d+$', r'\.')
-
     try:
         gitbranch = subprocess.check_output(
             ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
@@ -91,7 +55,7 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
         ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
         stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
 
-    hashes = subprocess.check_output(
+    branch_hashes = subprocess.check_output(
         ['git', 'log', '--since', '2019-10-01', '--simplify-by-decoration', "--pretty=%H", gitbranch],
         stderr=subprocess.DEVNULL, cwd=cwd).decode().splitlines()
 
@@ -99,11 +63,11 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
         ['git', 'show-ref', '--tags', '-d'],
         stderr=subprocess.DEVNULL, cwd=cwd).decode().splitlines()
 
-    last_release_tag = get_last_release_tag(gitbranch)
+    last_release_tag = _get_last_release_tag(gitbranch, branch_hashes, refstags)
     if gitbranch in ['main', 'master'] or 'release/' in gitbranch:
         last_branch_tag = last_release_tag
     else:
-        last_branch_tag = get_last_branch_tag(gitbranch)
+        last_branch_tag = _get_last_branch_tag(gitbranch, branch_hashes, refstags)
 
     output = (last_branch_tag, last_release_tag)
     dirty_workspace = subprocess.call(['git', 'diff', '--quiet'], cwd=cwd)
@@ -123,6 +87,87 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
             output += ('dirty',)
 
     return output
+
+
+def _get_last_tag(gitbranch: str, branchpattern: str, delim: str, hashes: List[str], refstags: List[str]) -> str:
+    """
+    Gets the most recent tag for the specified git branch matching the given branch pattern.
+
+    Args:
+        gitbranch (str): The name of the git branch.
+        branchpattern (str): The regex pattern to match branch names.
+        delim (str): The delimiter used to split version strings.
+        hashes (List[str]): A list of git hashes.
+        refstags (List[str]): A list of reference tags.
+
+    Returns:
+        str: The most recent version tag matching the criteria, or an empty string if none found.
+    """
+    branchpattern = re.compile(branchpattern)
+    delim = re.compile(delim)
+    releaseid = gitbranch.split('/')[-1] if 'release/' in gitbranch else ''
+    versions = {}
+
+    for githash in hashes:
+        for line in refstags:
+            if line.startswith(githash) and releaseid in line:
+                tag = line.replace(f'{githash} refs/tags/', '').replace('^{}', '')
+                if branchpattern.match(tag):
+                    version_tuple = tuple(_to_number(x) for x in delim.split(tag))
+                    versions[version_tuple] = tag
+
+    return versions[max(versions)] if versions else ''
+
+
+
+
+def _get_last_branch_tag(gitbranch: str, hashes: List[str], refstags: List[str]) -> str:
+    """
+    Gets the most recent tag for the specified git branch following the PIPE-<number>-<number> pattern.
+
+    Args:
+        gitbranch (str): The name of the git branch.
+        hashes (List[str]): A list of git hashes.
+        refstags (List[str]): A list of reference tags.
+
+    Returns:
+        str: The most recent branch tag matching the pattern, or an empty string if none found.
+    """
+    match = re.match(r'(PIPE-\d+)', gitbranch)
+    branchpattern = match.group(1) + r'-\d+' if match else gitbranch + r'-\d+'
+    return _get_last_tag(gitbranch, branchpattern, '-', hashes, refstags)
+
+
+def _get_last_release_tag(gitbranch: str, hashes: List[str], refstags: List[str]) -> str:
+    """
+    Gets the most recent release tag for the specified git branch following the version pattern <number>.<number>.<number>.<number>.
+
+    Args:
+        gitbranch (str): The name of the git branch.
+        hashes (List[str]): A list of git hashes.
+        refstags (List[str]): A list of reference tags.
+
+    Returns:
+        str: The most recent release tag matching the pattern, or an empty string if none found.
+    """
+    return _get_last_tag(gitbranch, r'^\d+\.\d+\.\d+\.\d+$', r'\.', hashes, refstags)
+
+
+def _to_number(s: str) -> int:
+    """
+    Converts a string to an integer for version comparison. If conversion fails, returns 0.
+
+    Args:
+        s (str): The string to convert.
+
+    Returns:
+        int: The converted integer or 0 if conversion fails.
+    """
+    try:
+        return int(s)
+    except ValueError:
+        return 0
+
 
 
 def get_version_string_from_git(cwd: Optional[str] = None, verbose: bool = False) -> str:
