@@ -1,37 +1,37 @@
 # Pipeline Recipes
 
-| Project, Procedure/Template | Description | NRAO-JIRA Ticket |
-|----------|----------|----------|
-| ***VLA*** | | |
-| procedure_hifv.xml | VLA PI calibration |  |
-| procedure_hifv_contimage.xml | VLA PI user defined target continuum imaging. Input is a calibrated MS. | PIPE-784 |
-| procedure_hifv_contimage_selfcal.xml | | |
-| procedure_hifv_calimage_cont.xml | VLA PI calibration + user defined target continuum imaging | PIPE-783 |
-| procedure_hifv_calimage_cont_selfcal.xml | | |
-| template_hifv_contimage.xml | VLA PI recipe for user defined target continuum imaging. Input is a calibrated MS. Archive template version. | PIPE-731 |
-| template_hifv_deliver_ms.xml | SRDP template recipe for user requested MS delivery via SSA interface | PIPE-72 |
-| ***VLASS*** | | |
-| procedure_hifvcalvlass.xml | VLASS calibration | CAS-9625 |
-| procedure_hifvcalvlass_compression.xml | alternate VLASS calibration when compression is needed | PIPE-506 |
-| procedure_vlassQLIP.xml | VLASS Quick Look Imaging | CAS-9631 |
-| procedure_vlassSEIP.xml | VLASS Single Epoch Continuum Imaging | PIPE-718 |
-| procedure_vlassCCIP.xml | VLASS Coarse Cube Imaging | PIPE-1357 |
-| ***ALMA-IF*** | | |
-| procedure_hifa_cal.xml | ALMA interferometric calibration | PIPE-1590 |
-| procedure_hifa_image.xml | ALMA interferometric target imaging |  |
-| procedure_hifa_image_selfcal.xml | ALMA interferometric target imaging with self-calibration | |
-| procedure_hifa_image_selfcal_nocube.xml | ALMA interferometric target imaging with self-calibration, but skip spectral cube imaging of self-calibrated data | |
-| procedure_hifa_calimage.xml | ALMA interferometric calibration + target imaging | PIPE-1590 |
-| procedure_hifa_calimage_selfcal.xml | ALMA interferometric calibration + target imaging with self-calibration.xml | |
-| procedure_hifa_calimage_selfcal_nocube.xml | ALMA interferometric calibration + target imaging with self-calibration, but skip spectral cube imaging of self-calibrated data | |
-| procedure_hifa_calsurvey.xml | ALMA interferometric calibrator survey processing (data usually needs editing intents to add TARGET and set that in SBSummary) | PIPE-1590 |
-| procedure_hifa_polcal.xml | "Polarization friendly" ALMA interferometric calibration | PIPE-606 |
-| procedure_hifa_polcal_totalintensity.xml | "Polarization friendly" ALMA interferometric calibration | |
-| procedure_hifa_polcalimage.xml | "Polarization friendly" ALMA interferometric calibration + target imaging (not used regularly in operations in C7,8 but good to test periodically because we do offer it as supported) | PIPE-606 |
-| procedure_hifa_polcalimage_totalintensity.xml | "Polarization friendly" ALMA interferometric calibration | |
-| template_hifa_deliver_ms.xml | SRDP template recipe for user requested MS delivery via SSA interface | PIPE-72 |
-| template_hifa_cubeimage.xml | SRDP template recipe to support ALMA optimized cube generation via SSA interface | PIPE-2
-| ***ALMA-SD*** | | |
-| procedure_hsd_calimage.xml | ALMA Single Dish calibration + target imaging |  |
-| ***Nobeyama-SD*** | | |
-| procedure_hsdn_calimage.xml | Nobeyama Single Dish calibration + target imaging | CAS-10763 |
+| Project, Procedure/Template                   | Description                                                                                                                                                                            | NRAO-JIRA Ticket |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| ***VLA***                                     |                                                                                                                                                                                        |                  |
+| procedure_hifv.xml                            | VLA PI calibration                                                                                                                                                                     |                  |
+| procedure_hifv_contimage.xml                  | VLA PI user defined target continuum imaging. Input is a calibrated MS.                                                                                                                | PIPE-784         |
+| procedure_hifv_contimage_selfcal.xml          |                                                                                                                                                                                        |                  |
+| procedure_hifv_calimage_cont.xml              | VLA PI calibration + user defined target continuum imaging                                                                                                                             | PIPE-783         |
+| procedure_hifv_calimage_cont_selfcal.xml      |                                                                                                                                                                                        |                  |
+| template_hifv_contimage.xml                   | VLA PI recipe for user defined target continuum imaging. Input is a calibrated MS. Archive template version.                                                                           | PIPE-731         |
+| template_hifv_deliver_ms.xml                  | SRDP template recipe for user requested MS delivery via SSA interface                                                                                                                  | PIPE-72          |
+| ***VLASS***                                   |                                                                                                                                                                                        |                  |
+| procedure_hifvcalvlass.xml                    | VLASS calibration                                                                                                                                                                      | CAS-9625         |
+| procedure_hifvcalvlass_compression.xml        | alternate VLASS calibration when compression is needed                                                                                                                                 | PIPE-506         |
+| procedure_vlassQLIP.xml                       | VLASS Quick Look Imaging                                                                                                                                                               | CAS-9631         |
+| procedure_vlassSEIP.xml                       | VLASS Single Epoch Continuum Imaging                                                                                                                                                   | PIPE-718         |
+| procedure_vlassCCIP.xml                       | VLASS Coarse Cube Imaging                                                                                                                                                              | PIPE-1357        |
+| ***ALMA-IF***                                 |                                                                                                                                                                                        |                  |
+| procedure_hifa_cal.xml                        | ALMA interferometric calibration                                                                                                                                                       | PIPE-1590        |
+| procedure_hifa_image.xml                      | ALMA interferometric target imaging                                                                                                                                                    |                  |
+| procedure_hifa_image_selfcal.xml              | ALMA interferometric target imaging with self-calibration                                                                                                                              |                  |
+| procedure_hifa_image_selfcal_nocube.xml       | ALMA interferometric target imaging with self-calibration, but skip spectral cube imaging of self-calibrated data                                                                      |                  |
+| procedure_hifa_calimage.xml                   | ALMA interferometric calibration + target imaging                                                                                                                                      | PIPE-1590        |
+| procedure_hifa_calimage_selfcal.xml           | ALMA interferometric calibration + target imaging with self-calibration.xml                                                                                                            |                  |
+| procedure_hifa_calimage_selfcal_nocube.xml    | ALMA interferometric calibration + target imaging with self-calibration, but skip spectral cube imaging of self-calibrated data                                                        |                  |
+| procedure_hifa_calsurvey.xml                  | ALMA interferometric calibrator survey processing (data usually needs editing intents to add TARGET and set that in SBSummary)                                                         | PIPE-1590        |
+| procedure_hifa_polcal.xml                     | "Polarization friendly" ALMA interferometric calibration                                                                                                                               | PIPE-606         |
+| procedure_hifa_polcal_totalintensity.xml      | "Polarization friendly" ALMA interferometric calibration                                                                                                                               |                  |
+| procedure_hifa_polcalimage.xml                | "Polarization friendly" ALMA interferometric calibration + target imaging (not used regularly in operations in C7,8 but good to test periodically because we do offer it as supported) | PIPE-606         |
+| procedure_hifa_polcalimage_totalintensity.xml | "Polarization friendly" ALMA interferometric calibration                                                                                                                               |                  |
+| template_hifa_deliver_ms.xml                  | SRDP template recipe for user requested MS delivery via SSA interface                                                                                                                  | PIPE-72          |
+| template_hifa_cubeimage.xml                   | SRDP template recipe to support ALMA optimized cube generation via SSA interface                                                                                                       | PIPE-2           |
+| ***ALMA-SD***                                 |                                                                                                                                                                                        |                  |
+| procedure_hsd_calimage.xml                    | ALMA Single Dish calibration + target imaging                                                                                                                                          |                  |
+| ***Nobeyama-SD***                             |                                                                                                                                                                                        |                  |
+| procedure_hsdn_calimage.xml                   | Nobeyama Single Dish calibration + target imaging                                                                                                                                      | CAS-10763        |
