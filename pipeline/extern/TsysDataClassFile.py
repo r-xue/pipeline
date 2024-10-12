@@ -1,3 +1,4 @@
+
 import bz2
 import itertools
 import math
@@ -5,7 +6,7 @@ import pickle
 import re
 
 import numpy as np
-from casarecipes.almahelpers import tsysspwmap
+
 from casatools import atmosphere as attool
 from casatools import measures as metool
 from casatools import ms as mstool
@@ -13,10 +14,10 @@ from casatools import msmetadata as msmdtool
 from casatools import quanta as qatool
 from casatools import table as tbtool
 
+from pipeline.h.heuristics.tsysspwmap import tsysspwmap
 import pipeline.infrastructure.logging
 
 LOG = pipeline.infrastructure.logging.get_logger(__name__)
-
 
 ms = mstool()
 msmd = msmdtool()
