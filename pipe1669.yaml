@@ -36,79 +36,6 @@
 #     $ xvfb-run -a python run_pipeline.py
 #     $ xvfb-run -a mpirun -n 4 python run_pipeline.py
 #
-# Workaround of CAS-14037 (!!important for casampi runs!!)
-#
-#     * If you run a parallel CASA session without going through casashell e.g. mpirun -n 4 python run_script.py
-#     you have to put the code snippet below at the very beginning of your python script **before** any casatasks
-#     import actions. Otherwise, it will cause deadlock the first time casatasks gets imported.
-#
-#     * If you run a parallel CASA session with casashell, e.g. mpirun -n 4 python -m casashell -c run_script.py
-#     you need to put the code snippet inside ~/.casa/config.py. Again, failing to do so will also cause a deadlock
-#     when casatasks gets imported for the first time.
-#
-#     ```python
-#     try:
-#         import casampi.private.start_mpi  # assign the client and server roles
-#         import casatasks                  # ensure the time-based logfile name
-#     except (ImportError, RuntimeError) as error:
-#         pass
-#     ```
-# Useful aliases/shortcuts to emulate monolithic CASA executables
-#
-#     $ mamba activate pipe1669
-#
-#     $ export casa_omp_num_threads=4
-#     $ export casa_mpi_nproc=4
-#     $ export TMPDIR=/tmp
-#
-#     $ export mpicasa6='mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none --mca btl ^openib -x OMP_NUM_THREADS'
-#     $ export casa6shell='python -m casashell'
-#     $ export xvfb_run_auto='xvfb-run -a' # debian/ubuntu/redhat
-#     $ export xvfb_run_auto='xvfb-run -d' # redhat
-#
-#     $ alias pipeline_flag='--nologger --log2term --agg'
-#     $ alias casa6='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} ${casa6shell}'
-#     $ alias casa6_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=${casa_omp_num_threads} ${xvfb_run_auto} ${casa6shell}' # not usable on macOS
-#     $ alias casa6mpi='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 ${mpicasa6} -n ${casa_mpi_nproc} ${casa6shell}'
-#     $ alias casa6mpi_xvfb='PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 ${xvfb_run_auto} ${mpicasa6} -n ${casa_mpi_nproc} ${casa6shell}' # not usable on macOS
-#
-#     For executing a headless parallel Pipeline processing session, you could try:
-#
-#     $ casa6mpi_xvfb pipeline_flag -c run_pipeline.py
-#
-# Notes for macOS (including Apple Silicon):
-#
-#     * Because the casatools wheels only start being built from CASA ver>=6.6.4 with Py3.10 on the ARM64 (Apple Silicon) platform:
-#
-#       * If your local conda install architecture is "arm64 (Apple Silicon)" rather than "x86_64", you have to manually edit "python=3.8"
-#       to "python=3.10" below for the Python version specification. You will also skip the installation of two optional dependencies: "almatasks" and "pybsdf"
-#
-#       * If your local conda install architecture is "x86_64" (either an Intel machine or Apple Silicon Macs with the Rosetta 2 emulation layer),
-#       you can keep using the "python=3.8" specification for full compatibility and support of all Pipeline features. Note one might need to set
-#       an environment variable (SYSTEM_VERSION_COMPAT=0) for your Conda command because Conda-Python3.8 is too old for pip to recognize the macOS version label
-#       in the "casatools/casatasks" wheel release tag:
-#           https://github.com/pypa/packaging/pull/319
-#
-#       * About the conda installation architecture, please see: https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge3
-#
-#
-#     * A parallel Pipeline data process session might exit with a hang on macOS due to holdover active casaplotms.app sub-processes.
-#       Although this issue doesn't affect the processing run, to get a clean exist, one can put the code snippet below at the end
-#       of the Python script:
-#
-#     try:
-#         from casampi.MPIEnvironment import MPIEnvironment
-#         mpi_server_list = MPIEnvironment.mpi_server_rank_list()
-#         client.push_command_request('from casaplotms import plotmstool', block=True,
-#                                 target_server=mpi_server_list)
-#         rs_list = client.push_command_request('plotmstool.__proc!=None', block=True,
-#                                            target_server=mpi_server_list)
-#         servers_with_active_plotms = [rs['server'] for rs in rs_list if rs['ret']]
-#         if servers_with_active_plotms:
-#             print(f'servers with active plotms instances: {servers_with_active_plotms}')
-#             client.push_command_request('plotmstool.__proc.kill()', block=True, target_server=servers_with_active_plotms)
-#     except:
-#         pass
 #
 #######################################################################################################################
 
@@ -120,8 +47,8 @@ channels:
 
 dependencies:
   - conda-ecosystem-user-package-isolation
-  # - git
-  - python=3.8 # use python=3.10 for macOS/arm64
+  - git
+  - python=3.10
   - ipython
   - pip
   - numpy
@@ -130,22 +57,17 @@ dependencies:
   - openmpi
   - mpi4py
   - certifi
-  - protobuf
+  - protobuf=3.20 # casatplotms requires ver<=3.20 currently
   - poppler # required for PL
   - imagemagick # required for PL
   # - python-casacore # if you want a different I/O option.
   - pip:
       - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
-      - casatools==6.6.1.*  ; platform_machine != "arm64"
-      - casatasks==6.6.1.*  ; platform_machine != "arm64"
-      - casashell==6.6.1.*  ; platform_machine != "arm64"
-      # native ARM64 builds for ver6.6.4.*
-      - casatools==6.6.4.*  ; platform_machine == "arm64"
-      - casatasks==6.6.4.*  ; platform_machine == "arm64"
-      - casashell==6.6.4.*  ; platform_machine == "arm64"
+      - casatools==6.6.6.* #  native macOS/ARM64 builds started from ver6.6.4.*
+      - casatasks==6.6.6.*
+      - casashell==6.6.6.*
       - casadata
       - casampi
-      - almatasks ; platform_machine != "arm64" # avoid accidentally pull the older PyPI ver0.0.3 meta package
       - casaplotms
       - casaplotserver
       - .
