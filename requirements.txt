@@ -21,8 +21,8 @@
 ### PL production dependencies 
 
 csscompressor == 0.9.5      # for minifying CSS files
-cachetools == 5.3.1         # https://github.com/tkem/cachetools
-mako == 1.2.4               # https://github.com/sqlalchemy/mako
+cachetools == 5.5.0         # https://github.com/tkem/cachetools
+mako == 1.3.5               # https://github.com/sqlalchemy/mako
 pypubsub == 4.0.3           # https://pypi.org/project/PyPubSub
 intervaltree == 3.1.0       # https://pypi.org/project/intervaltree
 logutils == 0.3.5           # https://pypi.org/project/logutils
@@ -30,7 +30,7 @@ ps_mem == 3.14              # https://pypi.org/project/ps-mem
 astropy == 5.2.2;python_version < '3.10'  # https://docs.astropy.org/en/stable/changelog.html
                                           # the latest version compatible with Python 3.8
 astropy == 6.1.4;python_version >= '3.10'
-bdsf == 1.10.3;python_version<'3.10' or (sys_platform=='darwin' and platform_machine == "x86_64")
+bdsf == 1.11.1;python_version<'3.10' or sys_platform=='darwin'
                             # https://github.com/lofar-astron/PyBDSF
                             # only required for the VLASS pipeline
                             # bdsf is not NumPy 2 compatible yet
