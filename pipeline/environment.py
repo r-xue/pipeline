@@ -780,7 +780,7 @@ def _get_dependency_details(package_list=None):
     """
     if package_list is None:
         package_list = ['numpy', 'scipy', 'matplotlib', 'astropy', 'bdsf',
-                        'casatools', 'casatasks', 'almatasks', 'casadata',
+                        'casatools', 'casatasks', 'almatasks',
                         'casampi', 'casaplotms']
 
     package_details = dict.fromkeys(package_list)
