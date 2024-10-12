@@ -676,7 +676,7 @@ class TsysData(object):
     def tsysmap(
         vis, tsystable, msmdtool_instance, intent="OBSERVE_TARGET#ON_SOURCE"
     ):  # v2.4, this function
-        _tsysmap = np.array(tsysspwmap(vis=vis, tsystable=tsystable))
+        _tsysmap = np.array(tsysspwmap(vis, tsystable))
         mymsmd = msmdtool_instance
         # mymsmd.open(vis)
         allIntents = mymsmd.intents()
