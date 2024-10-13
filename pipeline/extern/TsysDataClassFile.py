@@ -1,4 +1,3 @@
-
 import bz2
 import itertools
 import math
@@ -14,10 +13,11 @@ from casatools import msmetadata as msmdtool
 from casatools import quanta as qatool
 from casatools import table as tbtool
 
-from pipeline.h.heuristics.tsysspwmap import tsysspwmap
 import pipeline.infrastructure.logging
+from pipeline.extern.almahelpers import tsysspwmap
 
 LOG = pipeline.infrastructure.logging.get_logger(__name__)
+
 
 ms = mstool()
 msmd = msmdtool()
@@ -676,7 +676,7 @@ class TsysData(object):
     def tsysmap(
         vis, tsystable, msmdtool_instance, intent="OBSERVE_TARGET#ON_SOURCE"
     ):  # v2.4, this function
-        _tsysmap = np.array(tsysspwmap(vis, tsystable))
+        _tsysmap = np.array(tsysspwmap(vis=vis, tsystable=tsystable))
         mymsmd = msmdtool_instance
         # mymsmd.open(vis)
         allIntents = mymsmd.intents()
