@@ -581,8 +581,7 @@ def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
     pr = PipelineRegression(recipe='procedure_hifa_calimage.xml',
                             input_dir=input_dir,
                             visname=['uid___A002_X1181695_X1c6a4_8ant.ms'],
-                            expectedoutput_file=(f'{input_dir}/' +
-                             'csv_3899_eb2_small.casa-6.6.1-17-pipeline-2024.1.1.7.results.txt'),
+                            expectedoutput_dir=input_dir,
                             output_dir='csv_3899_eb2_small')
 
     pr.run()
