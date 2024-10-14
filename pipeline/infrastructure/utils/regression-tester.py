@@ -637,7 +637,7 @@ def test_13A_537__restore__PPR__regression():
     input_dir = 'pl-regressiontest/13A-537'
     pr = PipelineRegression(input_dir=input_dir,
                             visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
-                            expectedoutput_file=(f'{input_dir}/' +
+                            expectedoutput_file=(f'{input_dir}/restore/' +
                                             '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt'),
                             output_dir='13A_537__restore__PPR__regression')
 
@@ -660,7 +660,7 @@ def test_13A_537__restore__post1553__PPR__regression():
     input_dir = 'pl-regressiontest/13A-537'
     pr = PipelineRegression(input_dir=input_dir,
                             visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
-                            expectedoutput_file=(f'{input_dir}/' +
+                            expectedoutput_file=(f'{input_dir}/restore/' +
                                             '13A-537.casa-6.6.1-17-pipeline-2024.1.1.7.restore.results.txt'),
                             output_dir='13A_537__restore__post1553__PPR__regression')
 
