@@ -4,16 +4,35 @@ on: push
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: (${{ matrix.os }}, Miniforge)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]  
     permissions:
       contents: write
+    defaults:
+      run:
+        shell: bash -el {0}      
     steps:
-    - uses: actions/checkout@v4
-    - name: Build HTML
-      uses: ammaraskar/sphinx-action@master
+    - uses: actions/checkout@v4  
+    - uses: conda-incubator/setup-miniconda@v3.0.4
       with:
-        docs-folder: "docs/"
-        build-command: "make html_docs"      
+        activate-environment: pipe1669
+        environment-file: pipe1669.yaml
+        channel-priority: strict
+        use-only-tar-bz2: true
+        show-channel-urls: true        
+    - run: conda info
+    - run: conda list
+    - run: conda config --show
+    - run: conda env list 
+    - run: type -a python
+    - name: Pre-build Setup
+      run: python -m pip install -r requirements.txt && python -m pip install -r requirements_docs.txt && mkdir -p ~/.casa/data
+    - name: Build HTML
+      working-directory: ./docs
+      run: make html_docs    
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
