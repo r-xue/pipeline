@@ -1,53 +1,55 @@
 
 
-pipeline
-================================
+``pipeline.hifa.tasks``
+------------------------------
 
 .. automodapi:: pipeline.hifa.tasks
    :inheritance-diagram:
    :include-all-objects:
+   :inherited-members:
    :no-heading:  
+   :sort:
 
-
-pipeline-l2
-================================
+``pipeline.hif.tasks``
+-----------------------------
 
 .. automodapi:: pipeline.hif.tasks
    :inheritance-diagram:
    :include-all-objects:
+   :inherited-members:
    :no-heading: 
+   :sort:
 
-pipeline-l3
-================================
+``pipeline.hif``
+------------------------
 
 .. automodapi:: pipeline.hif
    :inheritance-diagram:
    :include-all-objects:
-   :no-heading: 
+   :inherited-members:
+   :no-heading:
+   :sort: 
 
 
-pipeline-diagram
-================================
+Pipeline Inheritance Diagrams
+------------------------------
 
-Inheriance Diagram for ImportData Classes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Inheritance Diagram: ``ImportData`` Classes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. inheritance-diagram:: 
-    :parts: -1
-    pipeline.h.tasks.ImportData
-    pipeline.hifa.tasks.ALMAImportData
-    pipeline.hifv.tasks.VLAImportData
-    pipeline.hsd.tasks.SDImportData
-    pipeline.hsdn.tasks.NROImportData
+|importdataclasses_diagram|
 
-Inheriance Diagram TaskClass
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Inheritance Diagram: ``Task`` Classes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 |taskclasses_diagram|
-    :parts: -1
 
-Inheriance Diagram InputClass
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Inheritance Diagram: ``Inputs`` Classes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 |inputsclasses_diagram|
-    :parts: -1
+
+Inheritance Diagram: ``Results`` Classes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+|resultsclasses_diagram|

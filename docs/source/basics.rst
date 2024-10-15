@@ -1,16 +1,20 @@
 
-pipeline.domain
-===============
+``pipeline.domain`` module
+==========================
 
 .. automodapi:: pipeline.domain
-   :inheritance-diagram:
-   :no-heading:
+   :no-inheritance-diagram:
+   :include-all-objects:
    :inherited-members:
+   :no-heading:  
+   :sort:
 
-pipeline.infrastructure.launcher
-================================
+``pipeline.infrastructure.launcher`` module
+===========================================
 
 .. automodapi:: pipeline.infrastructure.launcher
-   :inheritance-diagram:
-   :no-heading:
+   :no-inheritance-diagram:
+   :include-all-objects:
    :inherited-members:
+   :no-heading:  
+   :sort:
