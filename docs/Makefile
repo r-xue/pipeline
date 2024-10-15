@@ -46,7 +46,7 @@ taskdocs:
 html_docs:
 	@make taskdocs
 	@make apidoc
-	@rm -rf ${BUILDDIR}/html ${BUILDDIR}/doctrees ${SOURCEDIR}/_autosummary ${SOURCEDIR}/_autosummary ${SOURCEDIR}/pipeline_tasks/_autosummary_tasks
+	@rm -rf ${BUILDDIR}/html ${BUILDDIR}/doctrees ${SOURCEDIR}/_autosummary ${SOURCEDIR}/_autosummary ${SOURCEDIR}/_automodapi ${SOURCEDIR}/pipeline_tasks/_autosummary_tasks
 	@make html
 	@rm -rf casa-*.log ${SOURCEDIR}/casa-*log
 
